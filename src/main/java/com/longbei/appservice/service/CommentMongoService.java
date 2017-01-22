@@ -42,4 +42,13 @@ public interface CommentMongoService {
 	 */
 	BaseResp<Object> deleteComment(String id);
 	
+	/**
+	 * @author yinxc
+	 * 查看评论总数
+	 * 2017年1月21日
+	 * return_type
+	 * CommentMongoDao
+	 */
+	BaseResp<Object> selectCommentCountSum(String itypeid, String itype);
+	
 }

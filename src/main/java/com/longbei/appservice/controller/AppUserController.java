@@ -229,14 +229,14 @@ public class AppUserController extends BaseController {
 	@RequestMapping(value = "/updateNickName")
     @ResponseBody
     public BaseResp<Object> updateNickName(@RequestParam("userid") String userid, @RequestParam("nickname") String nickname,
-    		String invitecode) {
+    		String inviteusername) {
 		//必传参数 userid nickname
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
 		if(StringUtils.hasBlankParams(userid,nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-    			baseResp = userService.updateNickName(userid, nickname, invitecode);	
+    		baseResp = userService.updateNickName(userid, nickname, inviteusername);	
 		} catch (Exception e) {
 			logger.error("thirdupdate error and msg = {}",e);
 		}

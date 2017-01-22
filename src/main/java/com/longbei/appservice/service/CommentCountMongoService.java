@@ -21,7 +21,7 @@ public interface CommentCountMongoService {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	CommentCount selectCommentCountByItypeid(String itypeid, String itype);
+	CommentCount selectCommentCountByCommentid(String commentid);
 	
 	/**
 	 * @author yinxc
@@ -34,11 +34,20 @@ public interface CommentCountMongoService {
 	
 	/**
 	 * @author yinxc
+	 * 根据主评论id批量删除评论总数
+	 * 2017年1月21日
+	 * return_type
+	 * CommentCountMongoDao
+	 */
+	void deleteCommentCountByCommentid(String commentid);
+	
+	/**
+	 * @author yinxc
 	 * 修改评论总数及点赞总数
 	 * 2017年1月21日
 	 * return_type
 	 * CommentCountMongoDao
 	 */
-	void updateCommentCount(String itypeid, String itype, String comcount, String likes);
+	void updateCommentCount(String commentid, String comcount, String likes);
 	
 }

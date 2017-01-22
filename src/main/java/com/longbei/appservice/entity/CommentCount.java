@@ -15,8 +15,9 @@ public class CommentCount {
 
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
-	private String itype;      //类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
-	private String itypeid;    //各类型对应的id
+//	private String itype;      //类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+//	private String itypeid;    //各类型对应的id
+	private String commentid;  //主评论id
 	private int comcount;        //评论总数
 	private int likes;         //点赞数
 	private String createtime; //添加时间
@@ -34,21 +35,12 @@ public class CommentCount {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public String getItype() {
-		return itype;
+	public String getCommentid() {
+		return commentid;
 	}
 
-	public void setItype(String itype) {
-		this.itype = itype;
-	}
-
-	@JsonInclude(Include.ALWAYS)
-	public String getItypeid() {
-		return itypeid;
-	}
-
-	public void setItypeid(String itypeid) {
-		this.itypeid = itypeid;
+	public void setCommentid(String commentid) {
+		this.commentid = commentid;
 	}
 
 	@JsonInclude(Include.ALWAYS)
