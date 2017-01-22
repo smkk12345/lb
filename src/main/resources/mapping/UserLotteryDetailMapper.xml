@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserLotteryDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserLotteryDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="ltype" property="ltype" jdbcType="CHAR" />
+    <result column="money" property="money" jdbcType="INTEGER" />
+    <result column="rankid" property="rankid" jdbcType="BIGINT" />
+    <result column="impcoin" property="impcoin" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, ltype, money, rankid, impcoin, createtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_lottery_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_lottery_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserLotteryDetail" >
+    insert into user_lottery_detail (id, userid, ltype, 
+      money, rankid, impcoin, 
+      createtime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{ltype,jdbcType=CHAR}, 
+      #{money,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{impcoin,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserLotteryDetail" >
+    insert into user_lottery_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="ltype != null" >
+        ltype,
+      </if>
+      <if test="money != null" >
+        money,
+      </if>
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="impcoin != null" >
+        impcoin,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="ltype != null" >
+        #{ltype,jdbcType=CHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="impcoin != null" >
+        #{impcoin,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserLotteryDetail" >
+    update user_lottery_detail
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="ltype != null" >
+        ltype = #{ltype,jdbcType=CHAR},
+      </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        rankid = #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="impcoin != null" >
+        impcoin = #{impcoin,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserLotteryDetail" >
+    update user_lottery_detail
+    set userid = #{userid,jdbcType=BIGINT},
+      ltype = #{ltype,jdbcType=CHAR},
+      money = #{money,jdbcType=INTEGER},
+      rankid = #{rankid,jdbcType=BIGINT},
+      impcoin = #{impcoin,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

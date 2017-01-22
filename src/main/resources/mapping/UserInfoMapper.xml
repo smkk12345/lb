@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="totalflower" property="totalflower" jdbcType="INTEGER" />
+    <result column="totaldiamond" property="totaldiamond" jdbcType="INTEGER" />
+    <result column="totalmoney" property="totalmoney" jdbcType="INTEGER" />
+    <result column="totalcoin" property="totalcoin" jdbcType="INTEGER" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="realname" property="realname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="CHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="constellation" property="constellation" jdbcType="VARCHAR" />
+    <result column="blood" property="blood" jdbcType="CHAR" />
+    <result column="feeling" property="feeling" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="payword" property="payword" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="rcuserid" property="rcuserid" jdbcType="BIGINT" />
+    <result column="invitecode" property="invitecode" jdbcType="VARCHAR" />
+    <result column="inviteuserid" property="inviteuserid" jdbcType="BIGINT" />
+    <result column="rytoken" property="rytoken" jdbcType="VARCHAR" />
+    <result column="hcnickname" property="hcnickname"/>
+    <result column="deviceindex" property="deviceindex"/>
+    <result column="devicetype" property="devicetype"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
+    sex, city, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
+    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="getByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where username = #{username}
+  </select>
+  <select id="getByNickName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where nickname = #{nickname}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserInfo" >
+    insert into user_info (id, userid, totalflower, 
+      totaldiamond, totalmoney, totalcoin, 
+      nickname, realname, sex, 
+      city, brief, birthday, 
+      constellation, blood, feeling, 
+      updatetime, createtime, payword, 
+      avatar, username, rcuserid, 
+      invitecode, inviteuserid, rytoken,deviceindex,devicetype
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{totalflower,jdbcType=INTEGER}, 
+      #{totaldiamond,jdbcType=INTEGER}, #{totalmoney,jdbcType=INTEGER}, #{totalcoin,jdbcType=INTEGER}, 
+      #{nickname,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
+      #{city,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
+      #{constellation,jdbcType=VARCHAR}, #{blood,jdbcType=CHAR}, #{feeling,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{payword,jdbcType=VARCHAR}, 
+      #{avatar,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{rcuserid,jdbcType=BIGINT}, 
+      #{invitecode,jdbcType=VARCHAR}, #{inviteuserid,jdbcType=BIGINT}, #{rytoken,jdbcType=VARCHAR},#{deviceindex},#{devicetype}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="totalflower != null" >
+        totalflower,
+      </if>
+      <if test="totaldiamond != null" >
+        totaldiamond,
+      </if>
+      <if test="totalmoney != null" >
+        totalmoney,
+      </if>
+      <if test="totalcoin != null" >
+        totalcoin,
+      </if>
+      <if test="nickname != null" >
+        nickname,
+      </if>
+      <if test="realname != null" >
+        realname,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="constellation != null" >
+        constellation,
+      </if>
+      <if test="blood != null" >
+        blood,
+      </if>
+      <if test="feeling != null" >
+        feeling,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="payword != null" >
+        payword,
+      </if>
+      <if test="avatar != null" >
+        avatar,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="rcuserid != null" >
+        rcuserid,
+      </if>
+      <if test="invitecode != null" >
+        invitecode,
+      </if>
+      <if test="inviteuserid != null" >
+        inviteuserid,
+      </if>
+      <if test="rytoken != null" >
+        rytoken,
+      </if>
+      <if test="deviceindex != null" >
+        deviceindex,
+      </if>
+      <if test="devicetype != null" >
+        devicetype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="totalflower != null" >
+        #{totalflower,jdbcType=INTEGER},
+      </if>
+      <if test="totaldiamond != null" >
+        #{totaldiamond,jdbcType=INTEGER},
+      </if>
+      <if test="totalmoney != null" >
+        #{totalmoney,jdbcType=INTEGER},
+      </if>
+      <if test="totalcoin != null" >
+        #{totalcoin,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=CHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="constellation != null" >
+        #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="blood != null" >
+        #{blood,jdbcType=CHAR},
+      </if>
+      <if test="feeling != null" >
+        #{feeling,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payword != null" >
+        #{payword,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null" >
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="rcuserid != null" >
+        #{rcuserid,jdbcType=BIGINT},
+      </if>
+      <if test="invitecode != null" >
+        #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteuserid != null" >
+        #{inviteuserid,jdbcType=BIGINT},
+      </if>,
+      <if test="deviceindex != null" >
+        #{deviceindex,jdbcType=VARCHAR},
+      </if>
+      <if test="rytoken != null" >
+        #{rytoken,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceindex != null" >
+        #{deviceindex,jdbcType=VARCHAR},
+      </if>      
+      <if test="devicetype != null" >
+        #{devicetype,jdbcType=VARCHAR},
+      </if>         
+    </trim>
+  </insert>
+  <update id="updateByUseridSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
+    update user_info
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="totalflower != null" >
+        totalflower = #{totalflower,jdbcType=INTEGER},
+      </if>
+      <if test="totaldiamond != null" >
+        totaldiamond = #{totaldiamond,jdbcType=INTEGER},
+      </if>
+      <if test="totalmoney != null" >
+        totalmoney = #{totalmoney,jdbcType=INTEGER},
+      </if>
+      <if test="totalcoin != null" >
+        totalcoin = #{totalcoin,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null" >
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        realname = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=CHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="constellation != null" >
+        constellation = #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="blood != null" >
+        blood = #{blood,jdbcType=CHAR},
+      </if>
+      <if test="feeling != null" >
+        feeling = #{feeling,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payword != null" >
+        payword = #{payword,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="rcuserid != null" >
+        rcuserid = #{rcuserid,jdbcType=BIGINT},
+      </if>
+      <if test="invitecode != null" >
+        invitecode = #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteuserid != null" >
+        inviteuserid = #{inviteuserid,jdbcType=BIGINT},
+      </if>
+      <if test="rytoken != null" >
+        token = #{rytoken,jdbcType=VARCHAR},
+      </if>
+      <if test="hcnickname != null">
+      	hcnickname = #{hcnickname,jdbcType=CHAR},
+      </if>
+      <if test="deviceindex != null">
+      	deviceindex = #{deviceindex,jdbcType=VARCHAR},
+      </if>
+      <if test="devicetype != null">
+      	devicetype = #{devicetype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInfo" >
+    update user_info
+    set userid = #{userid,jdbcType=BIGINT},
+      totalflower = #{totalflower,jdbcType=INTEGER},
+      totaldiamond = #{totaldiamond,jdbcType=INTEGER},
+      totalmoney = #{totalmoney,jdbcType=INTEGER},
+      totalcoin = #{totalcoin,jdbcType=INTEGER},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      realname = #{realname,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      city = #{city,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      constellation = #{constellation,jdbcType=VARCHAR},
+      blood = #{blood,jdbcType=CHAR},
+      feeling = #{feeling,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      payword = #{payword,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      rcuserid = #{rcuserid,jdbcType=BIGINT},
+      invitecode = #{invitecode,jdbcType=VARCHAR},
+      deviceindex = #{deviceindex,jdbcType=VARCHAR},
+      devicetype = #{devicetype,jdbcType=VARCHAR},
+      inviteuserid = #{inviteuserid,jdbcType=BIGINT},
+      rytoken = #{rytoken,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

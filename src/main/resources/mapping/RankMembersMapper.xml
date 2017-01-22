@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.RankMembersMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankMembers" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rankid" property="rankid" jdbcType="BIGINT" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="itype" property="itype" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="iswinning" property="iswinning" jdbcType="CHAR" />
+    <result column="improvecount" property="improvecount" jdbcType="INTEGER" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="flowers" property="flowers" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rankid, userid, itype, createtime, updatetime, sortnum, iswinning, improvecount, 
+    likes, flowers
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rank_members
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rank_members
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankMembers" >
+    insert into rank_members (id, rankid, userid, 
+      itype, createtime, updatetime, 
+      sortnum, iswinning, improvecount, 
+      likes, flowers)
+    values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{sortnum,jdbcType=INTEGER}, #{iswinning,jdbcType=CHAR}, #{improvecount,jdbcType=INTEGER}, 
+      #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankMembers" >
+    insert into rank_members
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="itype != null" >
+        itype,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
+      <if test="iswinning != null" >
+        iswinning,
+      </if>
+      <if test="improvecount != null" >
+        improvecount,
+      </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+      <if test="flowers != null" >
+        flowers,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="itype != null" >
+        #{itype,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sortnum != null" >
+        #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="iswinning != null" >
+        #{iswinning,jdbcType=CHAR},
+      </if>
+      <if test="improvecount != null" >
+        #{improvecount,jdbcType=INTEGER},
+      </if>
+      <if test="likes != null" >
+        #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        #{flowers,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankMembers" >
+    update rank_members
+    <set >
+      <if test="rankid != null" >
+        rankid = #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="itype != null" >
+        itype = #{itype,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sortnum != null" >
+        sortnum = #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="iswinning != null" >
+        iswinning = #{iswinning,jdbcType=CHAR},
+      </if>
+      <if test="improvecount != null" >
+        improvecount = #{improvecount,jdbcType=INTEGER},
+      </if>
+      <if test="likes != null" >
+        likes = #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        flowers = #{flowers,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankMembers" >
+    update rank_members
+    set rankid = #{rankid,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT},
+      itype = #{itype,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      sortnum = #{sortnum,jdbcType=INTEGER},
+      iswinning = #{iswinning,jdbcType=CHAR},
+      improvecount = #{improvecount,jdbcType=INTEGER},
+      likes = #{likes,jdbcType=INTEGER},
+      flowers = #{flowers,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

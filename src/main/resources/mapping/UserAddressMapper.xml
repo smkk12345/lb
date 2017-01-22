@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserAddressMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserAddress" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="region" property="region" jdbcType="VARCHAR" />
+    <result column="addresses" property="addresses" jdbcType="VARCHAR" />
+    <result column="isdefault" property="isdefault" jdbcType="CHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="reveiver" property="reveiver" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, region, addresses, isdefault, mobile, reveiver, isdel, createtime, 
+    updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where id = #{id,jdbcType=INTEGER} and isdel = '0'
+  </select>
+  
+  <select id="selectDefaultAddressByUserid" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where userid = #{userid} and isdefault = '0' and isdel = '0'
+  </select>
+  
+  <select id="selectUserAddressAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+  </select>
+  
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where userid = #{userid} and isdel = '0' 
+    <if test="pageSize != 0" >
+      LIMIT #{pageNo},#{pageSize}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_address
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserAddress" >
+    insert into user_address (id, userid, region, 
+      addresses, isdefault, mobile, 
+      reveiver, isdel, createtime, 
+      updatetime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{region,jdbcType=VARCHAR}, 
+      #{addresses,jdbcType=VARCHAR}, #{isdefault,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{reveiver,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserAddress" >
+    insert into user_address
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="region != null" >
+        region,
+      </if>
+      <if test="addresses != null" >
+        addresses,
+      </if>
+      <if test="isdefault != null" >
+        isdefault,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="reveiver != null" >
+        reveiver,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="addresses != null" >
+        #{addresses,jdbcType=VARCHAR},
+      </if>
+      <if test="isdefault != null" >
+        #{isdefault,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="reveiver != null" >
+        #{reveiver,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserAddress" >
+    update user_address
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="region != null" >
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="addresses != null" >
+        addresses = #{addresses,jdbcType=VARCHAR},
+      </if>
+      <if test="isdefault != null" >
+        isdefault = #{isdefault,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="reveiver != null" >
+        reveiver = #{reveiver,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserAddress" >
+    update user_address 
+    set userid = #{userid,jdbcType=BIGINT},
+      region = #{region,jdbcType=VARCHAR},
+      addresses = #{addresses,jdbcType=VARCHAR},
+      isdefault = #{isdefault,jdbcType=CHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      reveiver = #{reveiver,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=CHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateIsdefaultByAddressId">
+    update user_address 
+    set isdefault = #{isdefault,jdbcType=CHAR} 
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateIsdefaultByUserId">
+    update user_address 
+    set isdefault = '1'
+    where userid = #{userid} and isdefault = '0'
+  </update>
+  
+  <update id="removeIsdel">
+    update user_address 
+    set isdel = '1' 
+    where id = #{id}
+  </update>
+  
+</mapper>

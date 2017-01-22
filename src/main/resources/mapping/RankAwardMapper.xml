@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.RankAwardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankAward" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rankid" property="rankid" jdbcType="VARCHAR" />
+    <result column="awardid" property="awardid" jdbcType="VARCHAR" />
+    <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
+    <result column="awardrate" property="awardrate" jdbcType="DOUBLE" />
+    <result column="awardcount" property="awardcount" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rankid, awardid, awardlevel, awardrate, awardcount, createtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rank_award
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rank_award
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankAward" >
+    insert into rank_award (id, rankid, awardid, 
+      awardlevel, awardrate, awardcount, 
+      createtime)
+    values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=VARCHAR}, #{awardid,jdbcType=VARCHAR}, 
+      #{awardlevel,jdbcType=INTEGER}, #{awardrate,jdbcType=DOUBLE}, #{awardcount,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankAward" >
+    insert into rank_award
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="awardid != null" >
+        awardid,
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel,
+      </if>
+      <if test="awardrate != null" >
+        awardrate,
+      </if>
+      <if test="awardcount != null" >
+        awardcount,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        #{rankid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardid != null" >
+        #{awardid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardlevel != null" >
+        #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardrate != null" >
+        #{awardrate,jdbcType=DOUBLE},
+      </if>
+      <if test="awardcount != null" >
+        #{awardcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankAward" >
+    update rank_award
+    <set >
+      <if test="rankid != null" >
+        rankid = #{rankid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardid != null" >
+        awardid = #{awardid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel = #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardrate != null" >
+        awardrate = #{awardrate,jdbcType=DOUBLE},
+      </if>
+      <if test="awardcount != null" >
+        awardcount = #{awardcount,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAward" >
+    update rank_award
+    set rankid = #{rankid,jdbcType=VARCHAR},
+      awardid = #{awardid,jdbcType=VARCHAR},
+      awardlevel = #{awardlevel,jdbcType=INTEGER},
+      awardrate = #{awardrate,jdbcType=DOUBLE},
+      awardcount = #{awardcount,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

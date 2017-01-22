@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.ClassroomMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Classroom" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="classtitle" property="classtitle" jdbcType="VARCHAR" />
+    <result column="classphotos" property="classphotos" jdbcType="VARCHAR" />
+    <result column="claacateid" property="claacateid" jdbcType="INTEGER" />
+    <result column="classinvoloed" property="classinvoloed" jdbcType="INTEGER" />
+    <result column="classlimited" property="classlimited" jdbcType="INTEGER" />
+    <result column="classbrief" property="classbrief" jdbcType="VARCHAR" />
+    <result column="classverify" property="classverify" jdbcType="INTEGER" />
+    <result column="classnotice" property="classnotice" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
+    classverify, classnotice, createtime, updatetime, ptype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from classroom
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
+    insert into classroom (id, classtitle, classphotos, 
+      claacateid, classinvoloed, classlimited, 
+      classbrief, classverify, classnotice, 
+      createtime, updatetime, ptype
+      )
+    values (#{id,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, #{classphotos,jdbcType=VARCHAR}, 
+      #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
+      #{classbrief,jdbcType=VARCHAR}, #{classverify,jdbcType=INTEGER}, #{classnotice,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Classroom" >
+    insert into classroom
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="classtitle != null" >
+        classtitle,
+      </if>
+      <if test="classphotos != null" >
+        classphotos,
+      </if>
+      <if test="claacateid != null" >
+        claacateid,
+      </if>
+      <if test="classinvoloed != null" >
+        classinvoloed,
+      </if>
+      <if test="classlimited != null" >
+        classlimited,
+      </if>
+      <if test="classbrief != null" >
+        classbrief,
+      </if>
+      <if test="classverify != null" >
+        classverify,
+      </if>
+      <if test="classnotice != null" >
+        classnotice,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="ptype != null" >
+        ptype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="classtitle != null" >
+        #{classtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="classphotos != null" >
+        #{classphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="claacateid != null" >
+        #{claacateid,jdbcType=INTEGER},
+      </if>
+      <if test="classinvoloed != null" >
+        #{classinvoloed,jdbcType=INTEGER},
+      </if>
+      <if test="classlimited != null" >
+        #{classlimited,jdbcType=INTEGER},
+      </if>
+      <if test="classbrief != null" >
+        #{classbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="classverify != null" >
+        #{classverify,jdbcType=INTEGER},
+      </if>
+      <if test="classnotice != null" >
+        #{classnotice,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ptype != null" >
+        #{ptype,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Classroom" >
+    update classroom
+    <set >
+      <if test="classtitle != null" >
+        classtitle = #{classtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="classphotos != null" >
+        classphotos = #{classphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="claacateid != null" >
+        claacateid = #{claacateid,jdbcType=INTEGER},
+      </if>
+      <if test="classinvoloed != null" >
+        classinvoloed = #{classinvoloed,jdbcType=INTEGER},
+      </if>
+      <if test="classlimited != null" >
+        classlimited = #{classlimited,jdbcType=INTEGER},
+      </if>
+      <if test="classbrief != null" >
+        classbrief = #{classbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="classverify != null" >
+        classverify = #{classverify,jdbcType=INTEGER},
+      </if>
+      <if test="classnotice != null" >
+        classnotice = #{classnotice,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ptype != null" >
+        ptype = #{ptype,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Classroom" >
+    update classroom
+    set classtitle = #{classtitle,jdbcType=VARCHAR},
+      classphotos = #{classphotos,jdbcType=VARCHAR},
+      claacateid = #{claacateid,jdbcType=INTEGER},
+      classinvoloed = #{classinvoloed,jdbcType=INTEGER},
+      classlimited = #{classlimited,jdbcType=INTEGER},
+      classbrief = #{classbrief,jdbcType=VARCHAR},
+      classverify = #{classverify,jdbcType=INTEGER},
+      classnotice = #{classnotice,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      ptype = #{ptype,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

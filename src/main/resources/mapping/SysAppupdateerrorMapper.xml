@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SysAppupdateerrorMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysAppupdateerror" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ttype" property="ttype" jdbcType="VARCHAR" />
+    <result column="appversion" property="appversion" jdbcType="VARCHAR" />
+    <result column="erromessage" property="erromessage" jdbcType="VARCHAR" />
+    <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ttype, appversion, erromessage, drawdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_appupdateerror
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_appupdateerror
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.SysAppupdateerror" >
+    insert into sys_appupdateerror (id, ttype, appversion, 
+      erromessage, drawdate)
+    values (#{id,jdbcType=INTEGER}, #{ttype,jdbcType=VARCHAR}, #{appversion,jdbcType=VARCHAR}, 
+      #{erromessage,jdbcType=VARCHAR}, #{drawdate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SysAppupdateerror" >
+    insert into sys_appupdateerror
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ttype != null" >
+        ttype,
+      </if>
+      <if test="appversion != null" >
+        appversion,
+      </if>
+      <if test="erromessage != null" >
+        erromessage,
+      </if>
+      <if test="drawdate != null" >
+        drawdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ttype != null" >
+        #{ttype,jdbcType=VARCHAR},
+      </if>
+      <if test="appversion != null" >
+        #{appversion,jdbcType=VARCHAR},
+      </if>
+      <if test="erromessage != null" >
+        #{erromessage,jdbcType=VARCHAR},
+      </if>
+      <if test="drawdate != null" >
+        #{drawdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SysAppupdateerror" >
+    update sys_appupdateerror
+    <set >
+      <if test="ttype != null" >
+        ttype = #{ttype,jdbcType=VARCHAR},
+      </if>
+      <if test="appversion != null" >
+        appversion = #{appversion,jdbcType=VARCHAR},
+      </if>
+      <if test="erromessage != null" >
+        erromessage = #{erromessage,jdbcType=VARCHAR},
+      </if>
+      <if test="drawdate != null" >
+        drawdate = #{drawdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysAppupdateerror" >
+    update sys_appupdateerror
+    set ttype = #{ttype,jdbcType=VARCHAR},
+      appversion = #{appversion,jdbcType=VARCHAR},
+      erromessage = #{erromessage,jdbcType=VARCHAR},
+      drawdate = #{drawdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

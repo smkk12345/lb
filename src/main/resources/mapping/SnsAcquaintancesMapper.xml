@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SnsAcquaintancesMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SnsAcquaintances" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="hasregister" property="hasregister" jdbcType="CHAR" />
+    <result column="isfriend" property="isfriend" jdbcType="CHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, mobile, hasregister, isfriend, nickname, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sns_acquaintances
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sns_acquaintances
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.SnsAcquaintances" >
+    insert into sns_acquaintances (id, userid, mobile, 
+      hasregister, isfriend, nickname, 
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, 
+      #{hasregister,jdbcType=CHAR}, #{isfriend,jdbcType=CHAR}, #{nickname,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsAcquaintances" >
+    insert into sns_acquaintances
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="hasregister != null" >
+        hasregister,
+      </if>
+      <if test="isfriend != null" >
+        isfriend,
+      </if>
+      <if test="nickname != null" >
+        nickname,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="hasregister != null" >
+        #{hasregister,jdbcType=CHAR},
+      </if>
+      <if test="isfriend != null" >
+        #{isfriend,jdbcType=CHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SnsAcquaintances" >
+    update sns_acquaintances
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="hasregister != null" >
+        hasregister = #{hasregister,jdbcType=CHAR},
+      </if>
+      <if test="isfriend != null" >
+        isfriend = #{isfriend,jdbcType=CHAR},
+      </if>
+      <if test="nickname != null" >
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SnsAcquaintances" >
+    update sns_acquaintances
+    set userid = #{userid,jdbcType=BIGINT},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      hasregister = #{hasregister,jdbcType=CHAR},
+      isfriend = #{isfriend,jdbcType=CHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

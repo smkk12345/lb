@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.RankImageMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankImage" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rankid" property="rankid" jdbcType="BIGINT" />
+    <result column="ranktitle" property="ranktitle" jdbcType="VARCHAR" />
+    <result column="rankbrief" property="rankbrief" jdbcType="VARCHAR" />
+    <result column="rankdetail" property="rankdetail" jdbcType="VARCHAR" />
+    <result column="ranklimite" property="ranklimite" jdbcType="INTEGER" />
+    <result column="rankinvolved" property="rankinvolved" jdbcType="INTEGER" />
+    <result column="rankscope" property="rankscope" jdbcType="CHAR" />
+    <result column="rankphotos" property="rankphotos" jdbcType="VARCHAR" />
+    <result column="rankrate" property="rankrate" jdbcType="INTEGER" />
+    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="areaname" property="areaname" jdbcType="VARCHAR" />
+    <result column="coordinate" property="coordinate" jdbcType="VARCHAR" />
+    <result column="isfinish" property="isfinish" jdbcType="CHAR" />
+    <result column="createuserid" property="createuserid" jdbcType="BIGINT" />
+    <result column="ranktype" property="ranktype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="rankcateid" property="rankcateid" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="likescore" property="likescore" jdbcType="INTEGER" />
+    <result column="flowerscore" property="flowerscore" jdbcType="INTEGER" />
+    <result column="diamondscore" property="diamondscore" jdbcType="INTEGER" />
+    <result column="codeword" property="codeword" jdbcType="VARCHAR" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="companyname" property="companyname" jdbcType="VARCHAR" />
+    <result column="companyphotos" property="companyphotos" jdbcType="VARCHAR" />
+    <result column="companybrief" property="companybrief" jdbcType="VARCHAR" />
+    <result column="sourcetype" property="sourcetype" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
+    rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
+    ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
+    codeword, ptype,companyname,companyphotos,companybrief,sourcetype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rankimage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rankimage
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankImage" >
+    insert into rankimage (id, ranktitle, rankbrief,
+      rankdetail, ranklimite, rankinvolved, 
+      rankscope, rankphotos, rankrate, 
+      starttime, endtime, areaname, 
+      coordinate, isfinish, createuserid, 
+      ranktype, ispublic, rankcateid, 
+      createtime, updatetime, likescore, 
+      flowerscore, diamondscore, codeword, 
+      ptype)
+    values (#{id,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
+      #{rankdetail,jdbcType=VARCHAR}, #{ranklimite,jdbcType=INTEGER}, #{rankinvolved,jdbcType=INTEGER}, 
+      #{rankscope,jdbcType=CHAR}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER}, 
+      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{areaname,jdbcType=VARCHAR}, 
+      #{coordinate,jdbcType=VARCHAR}, #{isfinish,jdbcType=CHAR}, #{createuserid,jdbcType=BIGINT}, 
+      #{ranktype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, #{rankcateid,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{likescore,jdbcType=INTEGER}, 
+      #{flowerscore,jdbcType=INTEGER}, #{diamondscore,jdbcType=INTEGER}, #{codeword,jdbcType=VARCHAR}, 
+      #{ptype,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankImage" >
+    insert into rankimage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="ranktitle != null" >
+        ranktitle,
+      </if>
+      <if test="rankbrief != null" >
+        rankbrief,
+      </if>
+      <if test="rankdetail != null" >
+        rankdetail,
+      </if>
+      <if test="ranklimite != null" >
+        ranklimite,
+      </if>
+      <if test="rankinvolved != null" >
+        rankinvolved,
+      </if>
+      <if test="rankscope != null" >
+        rankscope,
+      </if>
+      <if test="rankphotos != null" >
+        rankphotos,
+      </if>
+      <if test="rankrate != null" >
+        rankrate,
+      </if>
+      <if test="starttime != null" >
+        starttime,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+      <if test="areaname != null" >
+        areaname,
+      </if>
+      <if test="coordinate != null" >
+        coordinate,
+      </if>
+      <if test="isfinish != null" >
+        isfinish,
+      </if>
+      <if test="createuserid != null" >
+        createuserid,
+      </if>
+      <if test="ranktype != null" >
+        ranktype,
+      </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
+      <if test="rankcateid != null" >
+        rankcateid,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="likescore != null" >
+        likescore,
+      </if>
+      <if test="flowerscore != null" >
+        flowerscore,
+      </if>
+      <if test="diamondscore != null" >
+        diamondscore,
+      </if>
+      <if test="codeword != null" >
+        codeword,
+      </if>
+      <if test="ptype != null" >
+        ptype,
+      </if>
+      <if test="companyname != null" >
+        companyname,
+      </if>
+      <if test="companyphotos != null" >
+        companyphotos,
+      </if>
+      <if test="companybrief != null" >
+        companybrief,
+      </if>
+      <if test="sourcetype != null" >
+        sourcetype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="ranktitle != null" >
+        #{ranktitle,jdbcType=VARCHAR},
+      </if>
+      <if test="rankbrief != null" >
+        #{rankbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="rankdetail != null" >
+        #{rankdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="ranklimite != null" >
+        #{ranklimite,jdbcType=INTEGER},
+      </if>
+      <if test="rankinvolved != null" >
+        #{rankinvolved,jdbcType=INTEGER},
+      </if>
+      <if test="rankscope != null" >
+        #{rankscope,jdbcType=CHAR},
+      </if>
+      <if test="rankphotos != null" >
+        #{rankphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="rankrate != null" >
+        #{rankrate,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="areaname != null" >
+        #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="coordinate != null" >
+        #{coordinate,jdbcType=VARCHAR},
+      </if>
+      <if test="isfinish != null" >
+        #{isfinish,jdbcType=CHAR},
+      </if>
+      <if test="createuserid != null" >
+        #{createuserid,jdbcType=BIGINT},
+      </if>
+      <if test="ranktype != null" >
+        #{ranktype,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="rankcateid != null" >
+        #{rankcateid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="likescore != null" >
+        #{likescore,jdbcType=INTEGER},
+      </if>
+      <if test="flowerscore != null" >
+        #{flowerscore,jdbcType=INTEGER},
+      </if>
+      <if test="diamondscore != null" >
+        #{diamondscore,jdbcType=INTEGER},
+      </if>
+      <if test="codeword != null" >
+        #{codeword,jdbcType=VARCHAR},
+      </if>
+      <if test="ptype != null" >
+        #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphotos != null" >
+        #{companyphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="companybrief != null" >
+        #{companybrief,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcetype != null" >
+        #{sourcetype,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
+    update rankimage
+    <set >
+      <if test="ranktitle != null" >
+        ranktitle = #{ranktitle,jdbcType=VARCHAR},
+      </if>
+      <if test="rankbrief != null" >
+        rankbrief = #{rankbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="rankdetail != null" >
+        rankdetail = #{rankdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="ranklimite != null" >
+        ranklimite = #{ranklimite,jdbcType=INTEGER},
+      </if>
+      <if test="rankinvolved != null" >
+        rankinvolved = #{rankinvolved,jdbcType=INTEGER},
+      </if>
+      <if test="rankscope != null" >
+        rankscope = #{rankscope,jdbcType=CHAR},
+      </if>
+      <if test="rankphotos != null" >
+        rankphotos = #{rankphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="rankrate != null" >
+        rankrate = #{rankrate,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        starttime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="areaname != null" >
+        areaname = #{areaname,jdbcType=VARCHAR},
+      </if>
+      <if test="coordinate != null" >
+        coordinate = #{coordinate,jdbcType=VARCHAR},
+      </if>
+      <if test="isfinish != null" >
+        isfinish = #{isfinish,jdbcType=CHAR},
+      </if>
+      <if test="createuserid != null" >
+        createuserid = #{createuserid,jdbcType=BIGINT},
+      </if>
+      <if test="ranktype != null" >
+        ranktype = #{ranktype,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="rankcateid != null" >
+        rankcateid = #{rankcateid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="likescore != null" >
+        likescore = #{likescore,jdbcType=INTEGER},
+      </if>
+      <if test="flowerscore != null" >
+        flowerscore = #{flowerscore,jdbcType=INTEGER},
+      </if>
+      <if test="diamondscore != null" >
+        diamondscore = #{diamondscore,jdbcType=INTEGER},
+      </if>
+      <if test="codeword != null" >
+        codeword = #{codeword,jdbcType=VARCHAR},
+      </if>
+      <if test="ptype != null" >
+        ptype = #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="companyname != null" >
+        companyname = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphotos != null" >
+        companyphotos = #{companyphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="companybrief != null" >
+        companybrief = #{companybrief,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcetype != null" >
+        sourcetype = #{sourcetype,jdbcType=CHAR},
+      </if>
+    </set>
+    where rankid = #{rankid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankImage" >
+    update rankimage
+    set ranktitle = #{ranktitle,jdbcType=VARCHAR},
+      rankbrief = #{rankbrief,jdbcType=VARCHAR},
+      rankdetail = #{rankdetail,jdbcType=VARCHAR},
+      ranklimite = #{ranklimite,jdbcType=INTEGER},
+      rankinvolved = #{rankinvolved,jdbcType=INTEGER},
+      rankscope = #{rankscope,jdbcType=CHAR},
+      rankphotos = #{rankphotos,jdbcType=VARCHAR},
+      rankrate = #{rankrate,jdbcType=INTEGER},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP},
+      areaname = #{areaname,jdbcType=VARCHAR},
+      coordinate = #{coordinate,jdbcType=VARCHAR},
+      isfinish = #{isfinish,jdbcType=CHAR},
+      createuserid = #{createuserid,jdbcType=BIGINT},
+      ranktype = #{ranktype,jdbcType=CHAR},
+      ispublic = #{ispublic,jdbcType=CHAR},
+      rankcateid = #{rankcateid,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      likescore = #{likescore,jdbcType=INTEGER},
+      flowerscore = #{flowerscore,jdbcType=INTEGER},
+      diamondscore = #{diamondscore,jdbcType=INTEGER},
+      codeword = #{codeword,jdbcType=VARCHAR},
+      ptype = #{ptype,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

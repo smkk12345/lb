@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserMsgMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserMsg" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="friendid" property="friendid" jdbcType="BIGINT" />
+    <result column="msgtype" property="msgtype" jdbcType="CHAR" />
+    <result column="snsid" property="snsid" jdbcType="BIGINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="isread" property="isread" jdbcType="CHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, friendid, msgtype, snsid, remark, isdel, isread, createtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_msg
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_msg
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
+    insert into user_msg (id, userid, friendid, 
+      msgtype, snsid, remark, 
+      isdel, isread, createtime
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, 
+      #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
+      #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserMsg" >
+    insert into user_msg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="friendid != null" >
+        friendid,
+      </if>
+      <if test="msgtype != null" >
+        msgtype,
+      </if>
+      <if test="snsid != null" >
+        snsid,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="isread != null" >
+        isread,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="friendid != null" >
+        #{friendid,jdbcType=BIGINT},
+      </if>
+      <if test="msgtype != null" >
+        #{msgtype,jdbcType=CHAR},
+      </if>
+      <if test="snsid != null" >
+        #{snsid,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="isread != null" >
+        #{isread,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserMsg" >
+    update user_msg
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="friendid != null" >
+        friendid = #{friendid,jdbcType=BIGINT},
+      </if>
+      <if test="msgtype != null" >
+        msgtype = #{msgtype,jdbcType=CHAR},
+      </if>
+      <if test="snsid != null" >
+        snsid = #{snsid,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="isread != null" >
+        isread = #{isread,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserMsg" >
+    update user_msg
+    set userid = #{userid,jdbcType=BIGINT},
+      friendid = #{friendid,jdbcType=BIGINT},
+      msgtype = #{msgtype,jdbcType=CHAR},
+      snsid = #{snsid,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=CHAR},
+      isread = #{isread,jdbcType=CHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

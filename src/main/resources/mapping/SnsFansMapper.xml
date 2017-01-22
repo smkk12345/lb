@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SnsFansMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SnsFans" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="likeuserid" property="likeuserid" jdbcType="BIGINT" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, likeuserid, createtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sns_fans
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectFansByUserid" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from sns_fans
+    where userid = #{userid} limit #{startNum},#{endNum}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sns_fans
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByUidAndLid" >
+    delete from sns_fans
+    where userid = #{id} and likeuserid=#{likeuserid}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.SnsFans" >
+    insert into sns_fans (id, userid, likeuserid, 
+      createtime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{likeuserid,jdbcType=BIGINT}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsFans" >
+    insert into sns_fans
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="likeuserid != null" >
+        likeuserid,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="likeuserid != null" >
+        #{likeuserid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SnsFans" >
+    update sns_fans
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="likeuserid != null" >
+        likeuserid = #{likeuserid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SnsFans" >
+    update sns_fans
+    set userid = #{userid,jdbcType=BIGINT},
+      likeuserid = #{likeuserid,jdbcType=BIGINT},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

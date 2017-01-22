@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SysRulePerfectTenMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysRulePerfectTen" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="minscore" property="minscore" jdbcType="INTEGER" />
+    <result column="maxscore" property="maxscore" jdbcType="INTEGER" />
+    <result column="plevel" property="plevel" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, minscore, maxscore, plevel, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_rule_perfect_ten
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_rule_perfect_ten
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.SysRulePerfectTen" >
+    insert into sys_rule_perfect_ten (id, minscore, maxscore, 
+      plevel, createtime, updatetime
+      )
+    values (#{id,jdbcType=INTEGER}, #{minscore,jdbcType=INTEGER}, #{maxscore,jdbcType=INTEGER}, 
+      #{plevel,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SysRulePerfectTen" >
+    insert into sys_rule_perfect_ten
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="minscore != null" >
+        minscore,
+      </if>
+      <if test="maxscore != null" >
+        maxscore,
+      </if>
+      <if test="plevel != null" >
+        plevel,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="minscore != null" >
+        #{minscore,jdbcType=INTEGER},
+      </if>
+      <if test="maxscore != null" >
+        #{maxscore,jdbcType=INTEGER},
+      </if>
+      <if test="plevel != null" >
+        #{plevel,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SysRulePerfectTen" >
+    update sys_rule_perfect_ten
+    <set >
+      <if test="minscore != null" >
+        minscore = #{minscore,jdbcType=INTEGER},
+      </if>
+      <if test="maxscore != null" >
+        maxscore = #{maxscore,jdbcType=INTEGER},
+      </if>
+      <if test="plevel != null" >
+        plevel = #{plevel,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysRulePerfectTen" >
+    update sys_rule_perfect_ten
+    set minscore = #{minscore,jdbcType=INTEGER},
+      maxscore = #{maxscore,jdbcType=INTEGER},
+      plevel = #{plevel,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

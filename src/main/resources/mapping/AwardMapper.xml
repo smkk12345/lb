@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.AwardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Award" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="awardtitle" property="awardtitle" jdbcType="VARCHAR" />
+    <result column="awardbrief" property="awardbrief" jdbcType="VARCHAR" />
+    <result column="awardcateid" property="awardcateid" jdbcType="INTEGER" />
+    <result column="awardprice" property="awardprice" jdbcType="DOUBLE" />
+    <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
+    <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
+    <result column="awardtype" property="awardtype" jdbcType="CHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype, 
+    createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from award
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from award
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.Award" >
+    insert into award (id, awardtitle, awardbrief, 
+      awardcateid, awardprice, awardlevel, 
+      awardphotos, awardtype, createtime, 
+      updatetime)
+    values (#{id,jdbcType=INTEGER}, #{awardtitle,jdbcType=VARCHAR}, #{awardbrief,jdbcType=VARCHAR}, 
+      #{awardcateid,jdbcType=INTEGER}, #{awardprice,jdbcType=DOUBLE}, #{awardlevel,jdbcType=INTEGER}, 
+      #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Award" >
+    insert into award
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="awardtitle != null" >
+        awardtitle,
+      </if>
+      <if test="awardbrief != null" >
+        awardbrief,
+      </if>
+      <if test="awardcateid != null" >
+        awardcateid,
+      </if>
+      <if test="awardprice != null" >
+        awardprice,
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel,
+      </if>
+      <if test="awardphotos != null" >
+        awardphotos,
+      </if>
+      <if test="awardtype != null" >
+        awardtype,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="awardtitle != null" >
+        #{awardtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="awardbrief != null" >
+        #{awardbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="awardcateid != null" >
+        #{awardcateid,jdbcType=INTEGER},
+      </if>
+      <if test="awardprice != null" >
+        #{awardprice,jdbcType=DOUBLE},
+      </if>
+      <if test="awardlevel != null" >
+        #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardphotos != null" >
+        #{awardphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="awardtype != null" >
+        #{awardtype,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Award" >
+    update award
+    <set >
+      <if test="awardtitle != null" >
+        awardtitle = #{awardtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="awardbrief != null" >
+        awardbrief = #{awardbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="awardcateid != null" >
+        awardcateid = #{awardcateid,jdbcType=INTEGER},
+      </if>
+      <if test="awardprice != null" >
+        awardprice = #{awardprice,jdbcType=DOUBLE},
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel = #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardphotos != null" >
+        awardphotos = #{awardphotos,jdbcType=VARCHAR},
+      </if>
+      <if test="awardtype != null" >
+        awardtype = #{awardtype,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Award" >
+    update award
+    set awardtitle = #{awardtitle,jdbcType=VARCHAR},
+      awardbrief = #{awardbrief,jdbcType=VARCHAR},
+      awardcateid = #{awardcateid,jdbcType=INTEGER},
+      awardprice = #{awardprice,jdbcType=DOUBLE},
+      awardlevel = #{awardlevel,jdbcType=INTEGER},
+      awardphotos = #{awardphotos,jdbcType=VARCHAR},
+      awardtype = #{awardtype,jdbcType=CHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserIdcardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserIdcard" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="idcard" property="idcard" jdbcType="VARCHAR" />
+    <result column="validateemail" property="validateemail" jdbcType="VARCHAR" />
+    <result column="validateidcard" property="validateidcard" jdbcType="CHAR" />
+    <result column="idcardimage" property="idcardimage" jdbcType="VARCHAR" />
+    <result column="checkuserid" property="checkuserid" jdbcType="BIGINT" />
+    <result column="checkoption" property="checkoption" jdbcType="VARCHAR" />
+    <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="applydate" property="applydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, idcard, validateemail, validateidcard, idcardimage, checkuserid, checkoption, 
+    checkdate, userid, applydate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_idcard
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByUserid" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_idcard
+    where userid = #{userid}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_idcard
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserIdcard" >
+    insert into user_idcard (id, idcard, validateemail, 
+      validateidcard, idcardimage, checkuserid, 
+      checkoption, checkdate, userid, 
+      applydate)
+    values (#{id,jdbcType=INTEGER}, #{idcard,jdbcType=VARCHAR}, #{validateemail,jdbcType=VARCHAR}, 
+      #{validateidcard,jdbcType=CHAR}, #{idcardimage,jdbcType=VARCHAR}, #{checkuserid,jdbcType=BIGINT}, 
+      #{checkoption,jdbcType=VARCHAR}, #{checkdate,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT}, 
+      #{applydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserIdcard" >
+    insert into user_idcard
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="validateemail != null" >
+        validateemail,
+      </if>
+      <if test="validateidcard != null" >
+        validateidcard,
+      </if>
+      <if test="idcardimage != null" >
+        idcardimage,
+      </if>
+      <if test="checkuserid != null" >
+        checkuserid,
+      </if>
+      <if test="checkoption != null" >
+        checkoption,
+      </if>
+      <if test="checkdate != null" >
+        checkdate,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="applydate != null" >
+        applydate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="validateemail != null" >
+        #{validateemail,jdbcType=VARCHAR},
+      </if>
+      <if test="validateidcard != null" >
+        #{validateidcard,jdbcType=CHAR},
+      </if>
+      <if test="idcardimage != null" >
+        #{idcardimage,jdbcType=VARCHAR},
+      </if>
+      <if test="checkuserid != null" >
+        #{checkuserid,jdbcType=BIGINT},
+      </if>
+      <if test="checkoption != null" >
+        #{checkoption,jdbcType=VARCHAR},
+      </if>
+      <if test="checkdate != null" >
+        #{checkdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="applydate != null" >
+        #{applydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserIdcard" >
+    update user_idcard
+    <set >
+      <if test="idcard != null" >
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="validateemail != null" >
+        validateemail = #{validateemail,jdbcType=VARCHAR},
+      </if>
+      <if test="validateidcard != null" >
+        validateidcard = #{validateidcard,jdbcType=CHAR},
+      </if>
+      <if test="idcardimage != null" >
+        idcardimage = #{idcardimage,jdbcType=VARCHAR},
+      </if>
+      <if test="checkuserid != null" >
+        checkuserid = #{checkuserid,jdbcType=BIGINT},
+      </if>
+      <if test="checkoption != null" >
+        checkoption = #{checkoption,jdbcType=VARCHAR},
+      </if>
+      <if test="checkdate != null" >
+        checkdate = #{checkdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applydate != null" >
+        applydate = #{applydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where userid = #{userid}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserIdcard" >
+    update user_idcard
+    set idcard = #{idcard,jdbcType=VARCHAR},
+      validateemail = #{validateemail,jdbcType=VARCHAR},
+      validateidcard = #{validateidcard,jdbcType=CHAR},
+      idcardimage = #{idcardimage,jdbcType=VARCHAR},
+      checkuserid = #{checkuserid,jdbcType=BIGINT},
+      checkoption = #{checkoption,jdbcType=VARCHAR},
+      checkdate = #{checkdate,jdbcType=TIMESTAMP},
+      userid = #{userid,jdbcType=BIGINT},
+      applydate = #{applydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

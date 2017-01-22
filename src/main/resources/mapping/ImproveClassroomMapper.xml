@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.ImproveClassroomMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImproveClassroom" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="impid" property="impid" jdbcType="BIGINT" />
+    <result column="itype" property="itype" jdbcType="CHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="pickey" property="pickey" jdbcType="VARCHAR" />
+    <result column="filekey" property="filekey" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="CHAR" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="indexnum" property="indexnum" jdbcType="INTEGER" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="ismainimp" property="ismainimp" jdbcType="CHAR" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
+    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from improve_classroom
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from improve_classroom
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ImproveClassroom" >
+    insert into improve_classroom (id, impid, itype, 
+      brief, pickey, filekey, 
+      userid, businessid, businesstype, 
+      likes, flowers, diamonds, 
+      createtime, updatetime, indexnum, 
+      isdel, ismainimp, ptype, ispublic
+      )
+    values (#{id,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, #{itype,jdbcType=CHAR}, 
+      #{brief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, #{filekey,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=BIGINT}, #{businessid,jdbcType=BIGINT}, #{businesstype,jdbcType=CHAR}, 
+      #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER}, #{diamonds,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{indexnum,jdbcType=INTEGER}, 
+      #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImproveClassroom" >
+    insert into improve_classroom
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="impid != null" >
+        impid,
+      </if>
+      <if test="itype != null" >
+        itype,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="pickey != null" >
+        pickey,
+      </if>
+      <if test="filekey != null" >
+        filekey,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="businessid != null" >
+        businessid,
+      </if>
+      <if test="businesstype != null" >
+        businesstype,
+      </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+      <if test="flowers != null" >
+        flowers,
+      </if>
+      <if test="diamonds != null" >
+        diamonds,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="indexnum != null" >
+        indexnum,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="ismainimp != null" >
+        ismainimp,
+      </if>
+      <if test="ptype != null" >
+        ptype,
+      </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="impid != null" >
+        #{impid,jdbcType=BIGINT},
+      </if>
+      <if test="itype != null" >
+        #{itype,jdbcType=CHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="pickey != null" >
+        #{pickey,jdbcType=VARCHAR},
+      </if>
+      <if test="filekey != null" >
+        #{filekey,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="businessid != null" >
+        #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=CHAR},
+      </if>
+      <if test="likes != null" >
+        #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="diamonds != null" >
+        #{diamonds,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="indexnum != null" >
+        #{indexnum,jdbcType=INTEGER},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="ismainimp != null" >
+        #{ismainimp,jdbcType=CHAR},
+      </if>
+      <if test="ptype != null" >
+        #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ImproveClassroom" >
+    update improve_classroom
+    <set >
+      <if test="impid != null" >
+        impid = #{impid,jdbcType=BIGINT},
+      </if>
+      <if test="itype != null" >
+        itype = #{itype,jdbcType=CHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="pickey != null" >
+        pickey = #{pickey,jdbcType=VARCHAR},
+      </if>
+      <if test="filekey != null" >
+        filekey = #{filekey,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="businessid != null" >
+        businessid = #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        businesstype = #{businesstype,jdbcType=CHAR},
+      </if>
+      <if test="likes != null" >
+        likes = #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        flowers = #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="diamonds != null" >
+        diamonds = #{diamonds,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="indexnum != null" >
+        indexnum = #{indexnum,jdbcType=INTEGER},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="ismainimp != null" >
+        ismainimp = #{ismainimp,jdbcType=CHAR},
+      </if>
+      <if test="ptype != null" >
+        ptype = #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImproveClassroom" >
+    update improve_classroom
+    set impid = #{impid,jdbcType=BIGINT},
+      itype = #{itype,jdbcType=CHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      pickey = #{pickey,jdbcType=VARCHAR},
+      filekey = #{filekey,jdbcType=VARCHAR},
+      userid = #{userid,jdbcType=BIGINT},
+      businessid = #{businessid,jdbcType=BIGINT},
+      businesstype = #{businesstype,jdbcType=CHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      flowers = #{flowers,jdbcType=INTEGER},
+      diamonds = #{diamonds,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      indexnum = #{indexnum,jdbcType=INTEGER},
+      isdel = #{isdel,jdbcType=CHAR},
+      ismainimp = #{ismainimp,jdbcType=CHAR},
+      ptype = #{ptype,jdbcType=CHAR},
+      ispublic = #{ispublic,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <update id="remove" parameterType="String">
+    UPDATE improve_classroom SET isdel = '1' WHERE businessid=#{classroomid} AND  impid=#{improveid} AND userid=#{userid}
+  </update>
+</mapper>
