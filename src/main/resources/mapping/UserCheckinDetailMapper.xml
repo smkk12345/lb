@@ -21,9 +21,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserCheckinDetail" >
-    insert into user_checkin_detail (id, userid, checkindate, 
+    insert into user_checkin_detail (userid, checkindate, 
       createtime)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{checkindate,jdbcType=TIMESTAMP}, 
+    values ( #{userid,jdbcType=BIGINT}, #{checkindate,jdbcType=TIMESTAMP}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserCheckinDetail" >
