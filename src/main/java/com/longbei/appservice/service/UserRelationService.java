@@ -73,4 +73,6 @@ public interface UserRelationService {
 	* @currentdate:2017年1月20日
 	 */
 	public BaseResp<Object> selectFansListByUserId(long userid,int startNum,int endNum);
+
+
 }

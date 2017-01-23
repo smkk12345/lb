@@ -4,6 +4,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
@@ -118,7 +119,11 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert sigle immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = "addtest";
+            //id,businesstype,businessid,userid,date
+            String message = improve.getImpid() +
+                    "," + Constant.IMPROVE_SINGLE_TYPE +
+                    ",-1," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -134,7 +139,11 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert circle immprove:{} is error:{}", JSONObject.fromObject(improveCircle).toString(),e);
         }
         if(res != 0){
-            String message = "addtest";
+            String message = improveCircle.getImpid() +
+                    "," + Constant.IMPROVE_CIRCLE_TYPE +
+                    "," + improveCircle.getBusinessid() +
+                    "," + improveCircle.getUserid() +
+                    "," + DateUtils.formatDateTime1(improveCircle.getCreatetime());
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -150,7 +159,12 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert classroom immprove:{} is error:{}", JSONObject.fromObject(improveClassroom).toString(),e);
         }
         if(res != 0){
-            String message = "addtest";
+            String message = improveClassroom.getImpid() +
+                    "," + Constant.IMPROVE_CLASSROOM_TYPE +
+                    "," + improveClassroom.getBusinessid() +
+                    "," + improveClassroom.getUserid() +
+                    "," + DateUtils.formatDateTime1(improveClassroom.getCreatetime());
+
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -166,7 +180,11 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improveRank).toString(),e);
         }
         if(res != 0){
-            String message = "addtest";
+            String message = improveRank.getImpid() +
+                    "," + Constant.IMPROVE_RANK_TYPE +
+                    "," + improveRank.getBusinessid() +
+                    "," + improveRank.getUserid() +
+                    "," + DateUtils.formatDateTime1(improveRank.getCreatetime());
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -182,7 +200,12 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improveGoal).toString(),e);
         }
         if(res != 0){
-            String message = "addtest";
+            String message = improveGoal.getImpid() +
+                    "," + Constant.IMPROVE_GOAL_TYPE +
+                    "," + improveGoal.getBusinessid() +
+                    "," + improveGoal.getUserid() +
+                    "," + DateUtils.formatDateTime1(improveGoal.getCreatetime());
+
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
