@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import org.slf4j.Logger;
@@ -29,10 +30,18 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	public AppUserMongoEntity updateAppUserMongoEntity(UserInfo user) {
 		Query query = Query.query(Criteria.where("userid").is(user.getUserid()));
 		Update update = new Update();
-		update.set("username", user.getUsername());
-		update.set("nickname", user.getNickname());
-		update.set("avatar",user.getAvatar());
-		update.set("gender", user.getSex());
+		if(StringUtils.isBlank(user.getUsername())){
+			update.set("username", user.getUsername());
+		}
+		if(StringUtils.isBlank(user.getNickname())){
+			update.set("nickname", user.getNickname());
+		}
+		if(StringUtils.isBlank(user.getAvatar())){
+			update.set("avatar",user.getAvatar());
+		}
+		if(StringUtils.isBlank(user.getSex())){
+			update.set("sex", user.getSex());
+		}
 		AppUserMongoEntity mongoUser =  updateOne(query,update);
 		return mongoUser;
 	}

@@ -368,6 +368,8 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		try {
 			userInfoMapper.updateByUseridSelective(userInfo);
+			//更新信息到mongodb
+			userMongoDao.updateAppUserMongoEntity(userInfo);
 		} catch (Exception e) {
 			logger.error("updateUserInfo error and msg={}",e);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
@@ -401,6 +403,8 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 			int temp = userInfoMapper.updateByUseridSelective(userInfo);
+			//更新信息到mongodb
+			userMongoDao.updateAppUserMongoEntity(userInfo);
 			if(temp > 0){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
