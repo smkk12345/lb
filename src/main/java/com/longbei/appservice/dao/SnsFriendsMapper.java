@@ -3,8 +3,8 @@ package com.longbei.appservice.dao;
 import java.util.List;
 
 import com.longbei.appservice.entity.SnsFriends;
+import org.apache.ibatis.annotations.Param;
 
-import feign.Param;
 
 public interface SnsFriendsMapper {
     int deleteByPrimaryKey(Integer id);
@@ -19,7 +19,7 @@ public interface SnsFriendsMapper {
 
     int updateByPrimaryKey(SnsFriends record);
     
-    List<SnsFriends> selectListByUsrid(@Param("userid")long userid,
+    List<SnsFriends> selectListByUsrid(@Param("userid") long userid,
     		@Param("startNum")int startNum,@Param("endNum")long endNum);
     
     int  deleteByUidAndFid(@Param("userid")long userid,@Param("friendid")long friendid);
