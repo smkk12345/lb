@@ -30,7 +30,7 @@
     select 
     <include refid="Base_Column_List" />
     from improve_circle
-    where id = #{id,jdbcType=BIGINT}
+    where impid = #{impid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve_circle
@@ -260,4 +260,20 @@
   <update id="remove" parameterType="String">
     UPDATE improve_circle SET isdel = '1' WHERE businessid=#{circleid} AND  impid=#{improveid} AND userid=#{userid}
   </update>
+
+
+  <select id="selectByCircleId" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_circle
+    where
+    circleid = #{circleid}
+    <if test="ismainimp != null" >
+      AND ismainimp = #{ismainimp}
+    </if>
+    ORDER BY createtime DESC
+  </select>
+
+
+
 </mapper>

@@ -3,46 +3,47 @@ package com.longbei.appservice.entity;
 import java.util.Date;
 
 public class Improve {
-    private Long id;
 
-    private Long impid;//微进步id
+    protected Long id;
 
-    private String itype;//类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+    protected Long impid;//微进步id
 
-    private String brief;//说明
+    protected String itype;//类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
 
-    private String pickey;//图片的key
+    protected String brief;//说明
 
-
-    private String filekey;//文件key  视频文件  音频文件 普通文件
-
-    private Long userid;//用户id
+    protected String pickey;//图片的key
 
 
-    private Long businessid;//业务id  榜单id  圈子id 教室id
+    protected String filekey;//文件key  视频文件  音频文件 普通文件
 
-    private String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
-
-    private Integer likes;//点赞数量
-
-    private Integer flowers;//花数量
+    protected Long userid;//用户id
 
 
-    private Integer diamonds;//钻石
+    protected Long businessid;//业务id  榜单id  圈子id 教室id
 
-    private Date createtime;//创建时间
+    protected String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
 
-    private Date updatetime;//更新时间
+    protected Integer likes;//点赞数量
 
-    private Integer indexnum;//子进步的排序好
+    protected Integer flowers;//花数量
 
-    private String isdel;//假删  0 未删除  1 删除
 
-    private String ismainimp;//0 普通微进步  1 最新微进步
+    protected Integer diamonds;//钻石
 
-    private String ptype;//十全十美id
+    protected Date createtime;//创建时间
 
-    private String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
+    protected Date updatetime;//更新时间
+
+    protected Integer indexnum;//子进步的排序好
+
+    protected String isdel;//假删  0 未删除  1 删除
+
+    protected String ismainimp;//0 普通微进步  1 最新微进步
+
+    protected String ptype;//十全十美id
+
+    protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
 
     /**
      * 

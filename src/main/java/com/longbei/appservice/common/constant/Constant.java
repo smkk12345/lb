@@ -126,7 +126,7 @@ public class Constant {
 	 */
 
 	public static final String  IMPROVE_SINGLE_TYPE = "0";    //独立进步
-	public static final String  IMPROVE_TOPIC_TYPE = "1";     //目标
+	public static final String  IMPROVE_GOAL_TYPE = "1";     //目标
 	public static final String  IMPROVE_RANK_TYPE = "2";      //榜
 	public static final String  IMPROVE_CIRCLE_TYPE = "3";    //圈子
 	public static final String  IMPROVE_CLASSROOM_TYPE = "4"; //教室

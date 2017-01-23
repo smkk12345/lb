@@ -22,13 +22,9 @@ public class TimeLine {
 	private String remark;
 	@DBRef
 	private TimeLineDetail contents;
-	
-	private Date createdate;
-
 	private String messagetype; // 1 -- improve 2 --- rank 3 --- old award 4 -- new award
-	
-	private String ctype = "1";  //圈类型   0 龙杯默认全部公开进步圈  1 好友今不全  2 熟人圈 等等
-
+	private String ctype = "1";  //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+	private Date createdate;
 
 	public String getMessagetype() {
 		return messagetype;

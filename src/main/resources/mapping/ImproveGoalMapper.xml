@@ -30,7 +30,7 @@
     select 
     <include refid="Base_Column_List" />
     from improve_goal
-    where id = #{id,jdbcType=BIGINT}
+    where impid = #{impid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve_goal
@@ -255,4 +255,21 @@
       ispublic = #{ispublic,jdbcType=CHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <update id="remove" parameterType="String">
+    UPDATE improve_goal SET isdel = '1' WHERE businessid=#{topicid} AND  impid=#{improveid} AND userid=#{userid}
+  </update>
+
+
+  <select id="selectByGoalId" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_goal
+    where
+    goalid = #{goalid}
+    ORDER BY createtime DESC
+  </select>
+
+
+
 </mapper>

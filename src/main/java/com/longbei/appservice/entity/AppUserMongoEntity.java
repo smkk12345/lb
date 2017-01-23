@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
-@Document(collection = "appusermongo")
+@Document(collection = "appuser")
 public class AppUserMongoEntity {
 	@Id
 	private String id; //用户id

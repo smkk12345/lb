@@ -105,7 +105,4 @@
   </update>
 
 
-  <update id="remove" parameterType="String">
-    UPDATE improve_topic SET isdel = '1' WHERE businessid=#{topicid} AND  impid=#{improveid} AND userid=#{userid}
-  </update>
 </mapper>

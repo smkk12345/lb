@@ -29,13 +29,13 @@ public class QueueMessageSendService {
     private Queue updatequeue;
 
 
-    public void sendAddMessage() {
-        this.jmsMessagingTemplate.convertAndSend(this.addqueue, "addtest");
+    public void sendAddMessage(String message) {
+        this.jmsMessagingTemplate.convertAndSend(this.addqueue, message);
     }
 
 
-    public void sendUpdateMessage() {
-        this.jmsMessagingTemplate.convertAndSend(this.updatequeue, "updatetest");
+    public void sendUpdateMessage(String message) {
+        this.jmsMessagingTemplate.convertAndSend(this.updatequeue, message);
     }
 
 

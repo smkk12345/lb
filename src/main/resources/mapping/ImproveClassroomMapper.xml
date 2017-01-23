@@ -30,7 +30,7 @@
     select 
     <include refid="Base_Column_List" />
     from improve_classroom
-    where id = #{id,jdbcType=BIGINT}
+    where impid = #{impid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve_classroom
@@ -260,4 +260,21 @@
   <update id="remove" parameterType="String">
     UPDATE improve_classroom SET isdel = '1' WHERE businessid=#{classroomid} AND  impid=#{improveid} AND userid=#{userid}
   </update>
+
+
+  <select id="selectByClassroomId" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_classroom
+    where
+    classroomid = #{classroomid}
+    <if test="ismainimp != null" >
+      AND ismainimp = #{ismainimp}
+    </if>
+    ORDER BY createtime DESC
+  </select>
+
+
+
+
 </mapper>

@@ -11,7 +11,7 @@ public interface ImproveMapper {
 
     int insertSelective(Improve record);
 
-    Improve selectByPrimaryKey(Long id);
+    Improve selectByPrimaryKey(Long impid);
 
     int updateByPrimaryKeySelective(Improve record);
 

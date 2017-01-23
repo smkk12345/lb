@@ -16,14 +16,5 @@ public interface ImproveTopicMapper {
 
     int updateByPrimaryKey(ImproveTopic record);
 
-    /**
-     * 假删
-     * @param userid 用户id
-     * @param topicid 目标ID
-     * @param improveid  进步id
-     * @return
-     */
-    int remove(@Param("userid") String userid,
-               @Param("topicid") String topicid,
-               @Param("improveid") String improveid);
+
 }

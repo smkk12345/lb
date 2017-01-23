@@ -45,8 +45,8 @@ import java.util.Properties;
 /**
  * MyBatis基础配置
  *
- * @author liuzh
- * @since 2015-12-19 10:11
+ * @author luye
+ * @since 2016-12-19 10:11
  */
 @Configuration
 @EnableTransactionManagement

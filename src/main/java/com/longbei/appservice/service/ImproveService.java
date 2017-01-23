@@ -1,6 +1,6 @@
 package com.longbei.appservice.service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import com.longbei.appservice.entity.*;
 
@@ -58,10 +58,92 @@ public interface ImproveService {
 
     /**
      * 添加目标中进步
-     * @param improveTopic
+     * @param improveGoal
      * @return
      */
-    boolean insertImproveForTopic(ImproveTopic improveTopic);
+    boolean insertImproveForGoal(ImproveGoal improveGoal);
+
+
+    /**
+     * 查询进步详情
+     * @param impid
+     * @return
+     */
+    Improve selectImproveByImpid(Long impid,String userid,
+                          String businesstype,String businessid);
+
+
+    /**
+     *  榜中成员动态
+     * @param userid
+     * @param rankid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveRank> selectRankImproveList(String userid,String rankid,int pageNo,int pageSize);
+
+    /**
+     *  榜中按时间排序
+     * @param userid
+     * @param rankid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveRank> selectRankImproveListByDate(String userid,String rankid,int pageNo,int pageSize);
+
+    /**
+     *  圈子中成员动态
+      * @param userid
+     * @param circleid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveCircle> selectCircleImproveList(String userid,String circleid,int pageNo,int pageSize);
+
+    /**
+     *  圈子中按时间排序
+     * @param userid
+     * @param circleid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveCircle> selectCircleImproveListByDate(String userid,String circleid,int pageNo,int pageSize);
+
+    /**
+     *  教室中成员动态
+     * @param userid
+     * @param classroomid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveClassroom> selectClassroomImproveList(String userid,String classroomid,int pageNo,int pageSize);
+
+    /**
+     *  教室中按时间排序
+     * @param userid
+     * @param classroomid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveClassroom> selectClassroomImproveListByDate(String userid,String classroomid,int pageNo,int pageSize);
+
+
+    /**
+     *  获取目标中进步列表
+     * @param userid
+     * @param goalid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<ImproveGoal> selectGoalImproveList(String userid,String goalid,int pageNo,int pageSize);
+
 
     /**
      * 删除进步入口
@@ -113,11 +195,11 @@ public interface ImproveService {
     /**
      * 删除目标中的进步
      * @param userid  用户id
-     * @param topicid  目标id
+     * @param goalid  目标id
      * @param improveid  进步id
      * @return
      */
-    boolean removeTopicImprove(String userid,String topicid,String improveid);
+    boolean removeGoalImprove(String userid,String goalid,String improveid);
 
 
 

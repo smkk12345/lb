@@ -63,8 +63,8 @@ spring:
                       max-connections: 100
                 queue:
                        name:
-                             add: improvecircle.add.dev.luye.test
-                             update: improvecircle.update.dev.luye.test
+                             add: improvecircle.add.dev.luye3
+                             update: improvecircle.update.dev.luye3
                 topic:
                        name:
                              common: common.dev.luye
