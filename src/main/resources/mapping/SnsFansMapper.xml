@@ -20,7 +20,10 @@
     select 
     <include refid="Base_Column_List" />
     from sns_fans
-    where userid = #{userid} limit #{startNum},#{endNum}
+    where userid = #{userid}
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_fans
