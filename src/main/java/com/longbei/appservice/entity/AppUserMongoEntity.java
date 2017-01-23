@@ -8,18 +8,13 @@ import java.util.UUID;
 @Document(collection = "appusermongo")
 public class AppUserMongoEntity {
 	@Id
-	private String id; //用户id
+	private Long id; //用户id
 	private String username;//手机号
 	private String nickname;//昵称
 	private String avatar;//头像
-	private String gender;//性别
-	
-	public String getGender() {
-		return gender;
-	}
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+
+	private String sex;//性别
+
 	private Double[] gispoint;
 	
 	public Double[] getGispoint() {
@@ -28,10 +23,10 @@ public class AppUserMongoEntity {
 	public void setGispoint(Double[] gispoint) {
 		this.gispoint = gispoint;
 	}
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getUsername() {
@@ -52,4 +47,13 @@ public class AppUserMongoEntity {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
 }

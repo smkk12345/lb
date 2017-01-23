@@ -2,6 +2,9 @@ package com.longbei.appservice.service.impl;
 
 import java.util.UUID;
 
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ public class UserServiceImpl implements UserService {
 	private IdGenerateService idGenerateService;
 	//@Autowired
 	private JedisDao jedisDao;
+
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -74,7 +80,7 @@ public class UserServiceImpl implements UserService {
 		if (ri) {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
-			boolean ro = registerOther(userid);
+			boolean ro = registerOther(userInfo);
 		} else {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
@@ -91,7 +97,7 @@ public class UserServiceImpl implements UserService {
 	*/
 	private boolean existNickName(String nickname) {
 		UserInfo userInfo =  getByNickName(nickname);
-		return userInfo == null ? false:true;
+		return userInfo != null;
 	}
 	
 	/**
@@ -102,13 +108,32 @@ public class UserServiceImpl implements UserService {
 	* @auther smkk
 	* @currentdate 2017年1月14日
 	 */
-	private boolean registerOther(long userid) {
+	private boolean registerOther(UserInfo userInfo) {
+		//保存到mongodb
+		saveUserInfoToMongo(userInfo);
+		//保存其他信息,如个人信息等
+		return true;
+	}
+
+	/**
+	 * 保存用户常用信息到mongouser
+	 * @param userInfo
+	 * @return Boolean
+	 */
+	private Boolean saveUserInfoToMongo(UserInfo userInfo){
+		AppUserMongoEntity userMongoEntity = new AppUserMongoEntity();
+		userMongoEntity.setAvatar(userInfo.getAvatar());
+		userMongoEntity.setId(userInfo.getUserid());
+		userMongoEntity.setUsername(userInfo.getUsername());
+		userMongoEntity.setSex(userInfo.getSex());
+		userMongoEntity.setNickname(userInfo.getNickname());
+		userMongoDao.save(userMongoEntity);
 		return true;
 	}
 
 	private boolean registerInfo(UserInfo userInfo) {
 		int n = userInfoMapper.insert(userInfo);
-		return n > 0 ? true : false;
+		return n > 0;
 	}
 
 	/* (non-Javadoc)
@@ -154,18 +179,24 @@ public class UserServiceImpl implements UserService {
         String rtn = "";
         try {
             String operateName = "注册";
-            if (operateType.equals("0")) {
+            if (operateType.equals("0")) {//已经注册  直接返回了
+				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
+				if(null != userInfo){
+					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_02,Constant.RTNINFO_SYS_02);
+				}
                 operateName = "注册";
             } else if (operateType.equals("1")) {
                 operateName = "修改密码";
             } else if (operateType.equals("2")) {
                 operateName = "找回密码";
-            }
+            } else if (operateType.equals("3")){
+				operateName = "绑定手机号";
+			}
             rtn = AlidayuSmsUtils.sendMsgValidate(mobile, randomCode, operateName);
 
             if (StringUtils.isBlank(rtn)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-            		jedisDao.sadd(mobile, randomCode, 2*60*1000);
+            		jedisDao.sadd(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
                 logger.debug("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
             } else {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
