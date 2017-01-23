@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
 	private Boolean saveUserInfoToMongo(UserInfo userInfo){
 		AppUserMongoEntity userMongoEntity = new AppUserMongoEntity();
 		userMongoEntity.setAvatar(userInfo.getAvatar());
-		userMongoEntity.setId(userInfo.getUserid());
+		userMongoEntity.setId(String.valueOf(userInfo.getUserid()));
 		userMongoEntity.setUsername(userInfo.getUsername());
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());

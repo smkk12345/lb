@@ -8,7 +8,7 @@ import java.util.UUID;
 @Document(collection = "appuser")
 public class AppUserMongoEntity {
 	@Id
-	private Long id; //用户id
+	private String  id; //用户id
 	private String username;//手机号
 	private String nickname;//昵称
 	private String avatar;//头像
@@ -23,12 +23,15 @@ public class AppUserMongoEntity {
 	public void setGispoint(Double[] gispoint) {
 		this.gispoint = gispoint;
 	}
-	public Long getId() {
+
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+
+	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getUsername() {
 		return username;
 	}
