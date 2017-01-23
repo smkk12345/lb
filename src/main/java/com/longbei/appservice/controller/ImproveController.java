@@ -46,7 +46,7 @@ public class ImproveController {
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype,String businessid, String ptype,
                                           String ispublic, String itype){
-        logger.debug("insertImprove brief:{}," +
+        logger.info("insertImprove brief:{}," +
                 "pickey:{},filekey:{},businesstype:{},ptype:{}," +
                 "ispublic:{},itype:{}",brief,pickey,filekey,businesstype,ptype,
                 ispublic,itype);

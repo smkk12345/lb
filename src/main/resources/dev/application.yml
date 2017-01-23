@@ -24,7 +24,7 @@ spring:
                   max-wait: -1
       data:
             mongodb:
-#                  uri: mongodb://longbei:LongXiao@015@192.168.1.45:27017/longbei
+                  uri: mongodb://longbei:LongXiao@015@192.168.1.45:27017/longbei
                   host: 192.168.1.45
                   port: 27017
                   database: longbei
@@ -78,6 +78,9 @@ alidayu:
         appSecret: d55b04747b89790eb39646fcebc8bfc4
         aliUrl: http://gw.api.taobao.com/router/rest
         signName: \u9F99\u676F
+logging:
+        config: classpath:longbei-logback.xml
+##        path: ../log
 
 
 
