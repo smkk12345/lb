@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import java.util.List;
 
 import com.longbei.appservice.entity.SnsFans;
+import org.apache.ibatis.annotations.Param;
 
 public interface SnsFansMapper {
     int deleteByPrimaryKey(Integer id);
@@ -19,6 +20,6 @@ public interface SnsFansMapper {
     
     int deleteByUidAndLid(long userid,long likeuserid);
     
-    List<SnsFans> selectFansByUserid(long userid,int startNum,int endNum);
+    List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
     
 }
