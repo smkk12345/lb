@@ -21,7 +21,7 @@ public class TimeLine {
 	private String userid;
 	private String remark;
 	@DBRef
-	private TimeLineDetail contents;
+	private TimeLineDetail timeLineDetail;
 	private String messagetype; // 1 -- improve 2 --- rank 3 --- old award 4 -- new award
 	private String ctype = "1";  //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	private Date createdate;
@@ -58,12 +58,12 @@ public class TimeLine {
 		this.userid = userid;
 	}
 
-	public TimeLineDetail getContents() {
-		return contents;
+	public TimeLineDetail getTimeLineDetail() {
+		return timeLineDetail;
 	}
 
-	public void setContents(TimeLineDetail contents) {
-		this.contents = contents;
+	public void setTimeLineDetail(TimeLineDetail timeLineDetail) {
+		this.timeLineDetail = timeLineDetail;
 	}
 
 	public String getCreatedate() {
@@ -95,5 +95,6 @@ public class TimeLine {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
 	
 }

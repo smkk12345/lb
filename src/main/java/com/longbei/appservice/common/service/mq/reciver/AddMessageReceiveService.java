@@ -1,13 +1,14 @@
 package com.longbei.appservice.common.service.mq.reciver;
 
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.MongoUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.ActiveMQConfig;
 import com.longbei.appservice.dao.*;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.TimeLine;
-import com.longbei.appservice.entity.TimeLineDetail;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.impl.ImproveServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -35,11 +38,15 @@ public class AddMessageReceiveService{
     private TimeLineDao timeLineDao;
     @Autowired
     private TimeLineDetailDao timeLineDetailDao;
+    @Autowired
+    private UserRelationService relationService;
+
 
 
     @JmsListener(destination="${spring.activemq.queue.name.add}")
     public void receiveMessage(String msg){
 
+        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
         if (StringUtils.isBlank(msg)
                 || msg.indexOf(",") == -1
                 || msg.split(",").length < 5
@@ -55,45 +62,112 @@ public class AddMessageReceiveService{
         String userid = content[3];
         String date = content[4];
 
-        Improve improve = improveService.selectImproveByImpid(Long.parseLong(id),userid,businesstype,businessid);
+        Date creatdate = null;
+        try {
+            creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
+        } catch (ParseException e) {
+            creatdate = new Date();
+            logger.error("string:{} to date is error:{}",date,e);
+        }
 
+        //保存时间线详情
+        insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
+    }
+
+
+
+    private void insertTimeLineDetail(String id,String businesstype,String businessid,String userid,Date date){
+
+        Improve improve = improveService.selectImproveByImpid(Long.parseLong(id),userid,businesstype,businessid);
         AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
         appUserMongoEntity.setId(userid);
         TimeLineDetail timeLineDetail = new TimeLineDetail();
+        timeLineDetail.setUser(appUserMongoEntity);
+        timeLineDetail.setImproveId(Long.parseLong(id));
+        timeLineDetail.setBrief(improve.getBrief());
+        timeLineDetail.setPhotos(improve.getPickey());
+        timeLineDetail.setItype(improve.getItype());
+        timeLineDetail.setIspublic(improve.getIspublic());
+        timeLineDetail.setCreatedate(date);
+        //保存详情
+        timeLineDetailDao.save(timeLineDetail);
+        //保存时间线
+        insertTimeLine(userid,timeLineDetail,"",date);
 
-
-
-
-
-        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
     }
 
-    private void insertTimeLine(String userid, String remark, String messagetype, String ctype, Date createdate){
-
-
-//        @Id
-//        private String id = UUID.randomUUID().toString().replace("-", "_");
-//        private String userid;
-//        private String remark;
-//        @DBRef
-//        private TimeLineDetail contents;
-//        private String messagetype; // 1 -- improve 2 --- rank 3 --- old award 4 -- new award
-//        private String ctype = "1";  //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
-//        private Date createdate;
-
+    private void insertTimeLine(String userid,TimeLineDetail timeLineDetail, String remark,Date createdate){
 
         TimeLine timeLine = new TimeLine();
-        timeLine.setUserid(userid);
+        timeLine.setTimeLineDetail(timeLineDetail);
         timeLine.setRemark(remark);
-        timeLine.setMessagetype(messagetype);
-        timeLine.setCtype(ctype);
         timeLine.setCreatedate(createdate);
 
-        timeLineDao.save(timeLine);
-
+        //广场
+        insertTimeLinePublic(timeLine);
+        //我的
+        insertTimeLineSelf(timeLine,userid);
+        //动态
+        insertTimeLineDyn(timeLine,userid);
+        //好友
+        insertTimeLineFriend(timeLine,userid);
+        //关注
+        insertTimeLineAttr(timeLine,userid);
+        //熟人
+        insertTimeLineAcq(timeLine,userid);
     }
 
 
+    private void insertTimeLinePublic(TimeLine timeLine){
+        timeLine.setId(MongoUtils.UUID());
+        timeLine.setUserid("0");
+        timeLine.setCtype("0");
+        timeLineDao.save(timeLine);
+    }
 
+    private void insertTimeLineSelf(TimeLine timeLine,String userid){
+        timeLine.setId(MongoUtils.UUID());
+        timeLine.setUserid(userid);
+        timeLine.setCtype("1");
+        timeLineDao.save(timeLine);
+    }
+
+    //动态线
+    private void insertTimeLineDyn(TimeLine timeLine,String userid){
+
+    }
+
+    //好友线
+    private void insertTimeLineFriend(TimeLine timeLine,String userid){
+        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),0,0);
+        if(baseResp.getCode() != 0){
+            return;
+        }
+        List<SnsFriends> snsFriendses = (List<SnsFriends>) baseResp.getData();
+        for (SnsFriends snsFriends : snsFriendses) {
+            timeLine.setId(MongoUtils.UUID());
+            timeLine.setUserid(String.valueOf(snsFriends.getUserid()));
+            timeLine.setCtype("3");
+            timeLineDao.save(timeLine);
+        }
+    }
+    //关注线
+    private void insertTimeLineAttr(TimeLine timeLine,String userid){
+        BaseResp<Object> baseResp = relationService.selectFansListByUserId(Long.parseLong(userid),0,0);
+        if(baseResp.getCode() != 0){
+            return;
+        }
+        List<SnsFans> snsFanses = (List<SnsFans>) baseResp.getData();
+        for (SnsFans friends : snsFanses) {
+            timeLine.setId(MongoUtils.UUID());
+            timeLine.setUserid(String.valueOf(friends.getUserid()));
+            timeLine.setCtype("4");
+            timeLineDao.save(timeLine);
+        }
+    }
+    //熟人线
+    private void insertTimeLineAcq(TimeLine timeLine,String userid){
+
+    }
 
 }
