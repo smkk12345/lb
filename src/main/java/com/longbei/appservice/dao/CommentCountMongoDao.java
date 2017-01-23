@@ -42,17 +42,14 @@ public class CommentCountMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public CommentCount selectCommentCountByItypeid(String itypeid, String itype){
+	public CommentCount selectCommentCountByCommentid(String commentid){
 		CommentCount commentCount = null;
 		try {
-			Criteria criteria  = Criteria.where("itype").is(itype);
-			if (!StringUtils.isBlank(itypeid)) {
-				criteria = criteria.and("itypeid").is(itypeid);
-			}
+			Criteria criteria  = Criteria.where("commentid").is(commentid);
 			Query query = Query.query(criteria);
 			commentCount = mongoTemplate1.findOne(query,CommentCount.class);
 		} catch (Exception e) {
-			logger.error("selectCommentCountByid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
 		}
 		return commentCount;
 	}
@@ -75,15 +72,30 @@ public class CommentCountMongoDao {
 	
 	/**
 	 * @author yinxc
+	 * 根据主评论id批量删除评论总数
+	 * 2017年1月21日
+	 * return_type
+	 * CommentCountMongoDao
+	 */
+	public void deleteCommentCountByCommentid(String commentid){
+		try {
+			Query query = Query.query(Criteria.where("commentid").is(commentid));
+			mongoTemplate1.remove(query, CommentCount.class);
+		} catch (Exception e) {
+			logger.error("deleteCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
+		}
+	}
+	
+	/**
+	 * @author yinxc
 	 * 修改评论总数及点赞总数
 	 * 2017年1月21日
 	 * return_type
 	 * CommentCountMongoDao
 	 */
-	public void updateCommentCount(String itypeid, String itype, String comcount, String likes){
+	public void updateCommentCount(String commentid, String comcount, String likes){
 		try {
-			Query query = Query.query(Criteria.where("itypeid").is(itypeid)
-					.and("itype").is(itype));
+			Query query = Query.query(Criteria.where("commentid").is(commentid));
 			
 			Update update = new Update();
 			update.set("comcount", Integer.parseInt(comcount));

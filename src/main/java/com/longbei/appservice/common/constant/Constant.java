@@ -143,7 +143,12 @@ public class Constant {
 	public static final String TOKEN_SIGN_COMMON = "commonservice&token";
 
 
-
+	/**
+	 * redis中缓存的过期时间
+	 */
+	public static final long EXPIRE_USER_RANDOMCODE = 2*60*1000;//用户发送验证码过期时间
+	public static final long EXPIRE_USER_TOKEN = 0;//用户登录token过期时间
+	public static final long EXPIRE_USER_MAILCODE = 0;//邮箱验证码过期时间
 
 
 

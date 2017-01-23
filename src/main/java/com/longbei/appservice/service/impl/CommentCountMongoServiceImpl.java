@@ -36,12 +36,12 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 	}
 
 	@Override
-	public CommentCount selectCommentCountByItypeid(String itypeid, String itype) {
+	public CommentCount selectCommentCountByCommentid(String commentid) {
 		CommentCount commentCount = null;
 		try {
-			commentCount = commentCountMongoDao.selectCommentCountByItypeid(itypeid, itype);
+			commentCount = commentCountMongoDao.selectCommentCountByCommentid(commentid);
 		} catch (Exception e) {
-			logger.error("selectCommentCountByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itypeid, e);
+			logger.error("selectCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
 		}
 		return commentCount;
 	}
@@ -63,8 +63,17 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 	}
 
 	@Override
-	public void updateCommentCount(String itypeid, String itype, String comcount, String likes) {
-		commentCountMongoDao.updateCommentCount(itypeid, itype, comcount, likes);
+	public void updateCommentCount(String commentid, String comcount, String likes) {
+		commentCountMongoDao.updateCommentCount(commentid, comcount, likes);
+	}
+
+	@Override
+	public void deleteCommentCountByCommentid(String commentid) {
+		try {
+			commentCountMongoDao.deleteCommentCountByCommentid(commentid);
+		} catch (Exception e) {
+			logger.error("deleteCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
+		}
 	}
 
 }

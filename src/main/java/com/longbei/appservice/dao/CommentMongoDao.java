@@ -80,6 +80,25 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
+	public List<Comment> selectCommentByItypeid(String itypeid, String itype){
+		List<Comment> list = null;
+		try {
+			Query query = Query.query(Criteria.where("itypeid").is(itypeid)
+					.and("itype").is(itype));
+			list = mongoTemplate1.find(query,Comment.class);
+		} catch (Exception e) {
+			logger.error("selectCommentByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+		}
+		return list;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 根据id获取主评论信息
+	 * 2017年1月21日
+	 * return_type
+	 * CommentMongoDao
+	 */
 	public Comment selectCommentByid(String id){
 		Comment comment = null;
 		try {

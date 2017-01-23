@@ -33,13 +33,13 @@
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
-    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype
+    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from user_info
-    where id = #{id,jdbcType=INTEGER}
+    where userid = #{userid}
   </select>
   
   
@@ -328,7 +328,7 @@
       	devicetype = #{devicetype,jdbcType=VARCHAR},
       </if>
     </set>
-    where userid = #{userid,jdbcType=INTEGER}
+    where userid = #{userid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
