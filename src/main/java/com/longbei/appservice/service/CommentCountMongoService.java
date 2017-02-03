@@ -48,6 +48,6 @@ public interface CommentCountMongoService {
 	 * return_type
 	 * CommentCountMongoDao
 	 */
-	void updateCommentCount(String commentid, String comcount, String likes);
+	void updateCommentCount(String commentid, String comcount);
 	
 }

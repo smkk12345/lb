@@ -18,7 +18,7 @@ public class CommentCountMongoDao {
 	@Autowired
 	private MongoTemplate mongoTemplate1;
 	
-	private static Logger logger = LoggerFactory.getLogger(CommentMongoDao.class);
+	private static Logger logger = LoggerFactory.getLogger(CommentCountMongoDao.class);
 	
 	/**
 	 * @author yinxc
@@ -66,7 +66,7 @@ public class CommentCountMongoDao {
 			Query query = Query.query(Criteria.where("_id").is(id));
 			mongoTemplate1.remove(query, CommentCount.class);
 		} catch (Exception e) {
-			logger.error("deleteComment id = {}, msg = {}", id, e);
+			logger.error("deleteCommentCount id = {}, msg = {}", id, e);
 		}
 	}
 	
@@ -88,23 +88,68 @@ public class CommentCountMongoDao {
 	
 	/**
 	 * @author yinxc
-	 * 修改评论总数及点赞总数
+	 * 修改评论总数
 	 * 2017年1月21日
 	 * return_type
 	 * CommentCountMongoDao
 	 */
-	public void updateCommentCount(String commentid, String comcount, String likes){
+	public void updateCommentCount(String commentid, String comcount){
 		try {
 			Query query = Query.query(Criteria.where("commentid").is(commentid));
 			
 			Update update = new Update();
 			update.set("comcount", Integer.parseInt(comcount));
-			if(!StringUtils.isBlank(likes)){
-				update.set("likes", Integer.parseInt(likes));
-			}
+//			if(!StringUtils.isBlank(likes)){
+//				update.set("likes", Integer.parseInt(likes));
+//			}
 			mongoTemplate1.updateMulti(query, update, CommentCount.class);
 		} catch (Exception e) {
 			logger.error("updateCommentCount comcount = {}, msg = {}", comcount, e);
+		}
+	}
+	
+	/**
+	 * @author yinxc
+	 * 修改评论点赞  -----点赞总数+1  递增
+	 * 2017年2月3日
+	 * return_type
+	 * CommentCountMongoDao
+	 */
+	public void updateCommentAddLikes(String commentid, String likes){
+		try {
+			Query query = Query.query(Criteria.where("commentid").is(commentid));
+			
+			Update update = new Update();
+			if(!StringUtils.isBlank(likes)){
+//				update.set("likes", Integer.parseInt(likes));
+				//递增+1
+				update.inc("likes", 1);
+			}
+			mongoTemplate1.updateMulti(query, update, CommentCount.class);
+		} catch (Exception e) {
+			logger.error("updateCommentAddLikes likes = {}, msg = {}", likes, e);
+		}
+	}
+	
+	/**
+	 * @author yinxc
+	 * 修改评论点赞  -----点赞总数-1  递减
+	 * 2017年2月3日
+	 * return_type
+	 * CommentCountMongoDao
+	 */
+	public void updateCommentDecreaseLikes(String commentid, String likes){
+		try {
+			Query query = Query.query(Criteria.where("commentid").is(commentid));
+			Update update = new Update();
+			if(!StringUtils.isBlank(likes)){
+//				update.set("likes", Integer.parseInt(likes));
+				//递增-1
+				update.inc("likes", -1);
+			}
+			mongoTemplate1.updateMulti(query, update, CommentCount.class);
+		} catch (Exception e) {
+			logger.error("updateCommentDecreaseLikes likes = {}, msg = {}", likes, e);
 		}
 	}
 	
