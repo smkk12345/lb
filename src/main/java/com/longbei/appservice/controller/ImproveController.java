@@ -4,7 +4,13 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ImproveCircle;
+import com.longbei.appservice.entity.ImproveClassroom;
+import com.longbei.appservice.entity.ImproveGoal;
+import com.longbei.appservice.entity.ImproveRank;
 import com.longbei.appservice.service.ImproveService;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 进步操作
@@ -42,7 +51,7 @@ public class ImproveController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "insert",method = RequestMethod.GET)
+    @RequestMapping(value = "insert",method = RequestMethod.POST)
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype,String businessid, String ptype,
                                           String ispublic, String itype){
@@ -82,7 +91,7 @@ public class ImproveController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "remove",method = RequestMethod.GET)
+    @RequestMapping(value = "remove",method = RequestMethod.POST)
     public BaseResp<Object> removeImprove(String userid,String improveid,
                                           String businesstype,String businessid){
         logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}"
@@ -103,5 +112,185 @@ public class ImproveController {
         logger.info("remove improve fail");
         return new BaseResp(Constant.STATUS_SYS_42,Constant.RTNINFO_SYS_42);
     }
+
+
+    /**
+     * url: http://ip:port/app_service/improve/rank/list
+     * method: POST
+     * 获取进步列表(榜中)
+     * @param userid  用户id
+     * @param rankid  榜单id
+     * @param sorttype 排序类型（ 0 - 默认 1 - 动态 2 - 时间）
+     * @param startNo  开始条数
+     * @param pageSize 页面显示条数
+     * @return
+     * @author:luye
+     */
+    @ResponseBody
+    @RequestMapping(value = "rank/list",method = RequestMethod.POST)
+    public BaseResp selectRankImproveList(String userid,
+                                              String rankid,String sorttype,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, rankid, sorttype)){
+            return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.isBlank(startNo)){
+            startNo = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        List<ImproveRank> improves = null;
+        try {
+            if("1".equals(sorttype)){
+                improves = improveService.selectRankImproveList(userid,rankid,
+                        Integer.parseInt(startNo),Integer.parseInt(pageSize));
+
+            } else {
+                improves = improveService.selectRankImproveListByDate(userid,rankid,
+                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+            }
+        } catch (Exception e) {
+            logger.error("select rank improve list is error:{}",e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<ImproveRank>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+    /**
+     * 获取进步列表（圈中）
+     * @param userid   用户id
+     * @param circleid  圈子中id
+     * @param sorttype  排序类型  0 - 默认 1 - 动态 2 - 时间）
+     * @param startNo   分页开始条数
+     * @param pageSize  分页每页显示条数
+     * @return
+     * @author:luye
+     * @date 2017/2/4
+     */
+    @ResponseBody
+    @RequestMapping(value = "circle/list",method = RequestMethod.POST)
+    public BaseResp selectCircleImproveList(String userid,
+                                          String circleid,String sorttype,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, circleid, sorttype)){
+            return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.isBlank(startNo)){
+            startNo = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        List<ImproveCircle> improves = null;
+        try {
+            if("1".equals(sorttype)){
+                improves = improveService.selectCircleImproveList(userid,circleid,
+                        Integer.parseInt(startNo),Integer.parseInt(pageSize));
+
+            } else {
+                improves = improveService.selectCircleImproveListByDate(userid,circleid,
+                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+            }
+        } catch (Exception e) {
+            logger.error("select circle improve list is error:{}",e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<ImproveCircle>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+
+    /**
+     * 获取教室中进步列表
+     * @param userid 用户id
+     * @param classroomid  教室id
+     * @param sorttype  排序类型
+     * @param startNo  分页开始条数
+     * @param pageSize 分页每页显示条数
+     * @return
+     * @author:luye
+     * @date 2017/2/4
+     */
+    @ResponseBody
+    @RequestMapping(value = "classroom/list",method = RequestMethod.POST)
+    public BaseResp selectClassroomImproveList(String userid,
+                                            String classroomid,String sorttype,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, classroomid, sorttype)){
+            return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.isBlank(startNo)){
+            startNo = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        List<ImproveClassroom> improves = null;
+        try {
+            if("1".equals(sorttype)){
+                improves = improveService.selectClassroomImproveList(userid,classroomid,
+                        Integer.parseInt(startNo),Integer.parseInt(pageSize));
+
+            } else {
+                improves = improveService.selectClassroomImproveListByDate(userid,classroomid,
+                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+            }
+        } catch (Exception e) {
+            logger.error("select classroom improve list is error:{}",e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<ImproveClassroom>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+    /**
+     * 获取目标中的进步
+     * @param userid  用户id
+     * @param goalid  目标id
+     * @param startNo  分页开始条数
+     * @param pageSize 分页每页显示条数
+     * @return
+     * @author:luye
+     * @date 2017/2/4
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value = "goal/list",method = RequestMethod.POST)
+    public BaseResp selectGoalImproveList(String userid,
+                                               String goalid,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, goalid)){
+            return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.isBlank(startNo)){
+            startNo = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        List<ImproveGoal> improves =  null;
+        try {
+            improves = improveService.selectGoalImproveList(userid,goalid,
+                        Integer.parseInt(startNo),Integer.parseInt(pageSize));
+        } catch (Exception e) {
+            logger.error("select goal improve list is error:{}",e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<ImproveGoal>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+
+
 
 }
