@@ -24,7 +24,7 @@ public class CommentLikes {
 	private String id = UUID.randomUUID().toString().replace("-", "_");
 	private String commentid;  //主评论id
 	private String userid;     //主评论商户id
-	private String friendid;   //被评论点赞商户id
+	private String friendid;   //点赞者商户id
 	private String createtime; //评论时间
 	
 	public CommentLikes(){

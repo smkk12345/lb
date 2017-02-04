@@ -25,6 +25,8 @@ public class Comment {
 	private String itypeid;    //各类型对应的id
 	@Transient
 	private List<CommentLower> lowerList = new ArrayList<>();
+	@Transient
+	private String isaddlike = "0";  //是否已点赞     0:未点赞  1：已点赞
 	
 	public Comment(){
 		super();
@@ -89,4 +91,14 @@ public class Comment {
 	public void setLowerList(List<CommentLower> lowerList) {
 		this.lowerList = lowerList;
 	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsaddlike() {
+		return isaddlike;
+	}
+
+	public void setIsaddlike(String isaddlike) {
+		this.isaddlike = isaddlike;
+	}
+	
 }

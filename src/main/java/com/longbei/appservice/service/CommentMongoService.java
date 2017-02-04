@@ -26,6 +26,16 @@ public interface CommentMongoService {
 	
 	/**
 	 * @author yinxc
+	 * 根据评论类型及类型id获取当前类型的评论列表(分页)
+	 * 2017年1月21日
+	 * return_type
+	 * CommentMongoDao
+	 */
+	BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype, int startNo,
+			int pageSize);
+	
+	/**
+	 * @author yinxc
 	 * 根据id获取主评论信息
 	 * 2017年1月21日
 	 * return_type

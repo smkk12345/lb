@@ -18,7 +18,7 @@ public class Constant {
 	public static final String OSS_CDN_HTTP = "http://pic1.longbeidata.com/";
 	
 	/**
-	 * 服务端返回代码  code
+	 * 服务端返回代码  code  
 	 */
 	public static final int STATUS_SYS_00 = 0;
 	public static final int STATUS_SYS_01 = -1;
@@ -39,6 +39,7 @@ public class Constant {
 	
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
+	public static final int STATUS_SYS_22 = -22;
 	
 
 
@@ -63,6 +64,7 @@ public class Constant {
 	/**
 	 * 服务端返回描述
 	 */
+	//1-19  lxb
 	public static final String RTNINFO_SYS_00 = "系统正常";
 	public static final String RTNINFO_SYS_01 = "系统异常";
 	public static final String RTNINFO_SYS_02 = "您已注册，请您直接登录";
@@ -80,10 +82,12 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	
+	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
 	public static final String RTNINFO_SYS_21 = "暂无评论信息";
+	public static final String RTNINFO_SYS_22 = "该评论已点赞";
 
-
+	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
 	public static final String RTNINFO_SYS_41 = "发布进步成功";
 	public static final String RTNINFO_SYS_42 = "发布进步失败";
