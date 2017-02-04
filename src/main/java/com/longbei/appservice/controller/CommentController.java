@@ -16,6 +16,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentLower;
+import com.longbei.appservice.service.CommentLikesMongoService;
 import com.longbei.appservice.service.CommentLowerMongoService;
 import com.longbei.appservice.service.CommentMongoService;
 
@@ -37,6 +38,9 @@ public class CommentController extends BaseController {
 	private CommentLowerMongoService commentLowerMongoService;
 //	@Autowired
 //	private CommentCountMongoService commentCountMongoService;
+	@Autowired
+	private CommentLikesMongoService commentLikesMongoService;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentController.class);
 	

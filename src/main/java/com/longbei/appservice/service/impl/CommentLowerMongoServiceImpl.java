@@ -56,8 +56,8 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		if(null != commentCount){
 			int count = commentCount.getComcount() + 1;
 			//点赞先为空，01-22日，点赞需求还不固定
-			String likes = "";
-			updateCount(commentid, count+"", likes);
+//			String likes = "";
+			updateCount(commentid, count+"");
 		}
 	}
 	
@@ -76,13 +76,13 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 				count = commentCount.getComcount() - 1;
 			}
 			//点赞先为空，01-22日，点赞需求还不固定
-			String likes = "";
-			updateCount(commentid, count+"", likes);
+//			String likes = "";
+			updateCount(commentid, count+"");
 		}
 	}
 	
-	private void updateCount(String commentid, String comcount, String likes){
-		commentCountMongoDao.updateCommentCount(commentid, comcount, likes);
+	private void updateCount(String commentid, String comcount){
+		commentCountMongoDao.updateCommentCount(commentid, comcount);
 	}
 
 	@Override

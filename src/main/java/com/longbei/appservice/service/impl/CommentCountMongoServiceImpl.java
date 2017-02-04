@@ -63,8 +63,8 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 	}
 
 	@Override
-	public void updateCommentCount(String commentid, String comcount, String likes) {
-		commentCountMongoDao.updateCommentCount(commentid, comcount, likes);
+	public void updateCommentCount(String commentid, String comcount) {
+		commentCountMongoDao.updateCommentCount(commentid, comcount);
 	}
 
 	@Override
