@@ -39,7 +39,7 @@ public interface CommentLikesMongoService {
 	 * return_type
 	 * CommentLikesMongoDao
 	 */
-	BaseResp<Object> deleteCommentLikesByCommentidAndUserid(String commentid, String userid);
+	BaseResp<Object> deleteCommentLikesByCommentidAndFriendid(String commentid, String friendid);
 	
 	/**
 	 * @author yinxc

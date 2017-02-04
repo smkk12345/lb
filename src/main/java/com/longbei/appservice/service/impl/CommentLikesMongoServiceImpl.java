@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.entity.CommentLikes;
 import com.longbei.appservice.service.CommentLikesMongoService;
@@ -16,6 +17,8 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 
 	@Autowired
 	private CommentLikesMongoDao commentLikesMongoDao;
+	@Autowired
+	private CommentCountMongoDao commentCountMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentLikesMongoServiceImpl.class);
 	
@@ -23,12 +26,31 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 	public BaseResp<Object> insertCommentLikes(CommentLikes commentLikes) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			insert(commentLikes);
-			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			//判断是否已点赞
+			CommentLikes likes = commentLikesMongoDao.selectCommentLikesByCommentid(commentLikes.getCommentid(), commentLikes.getFriendid());
+			if(null != likes){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_22, Constant.RTNINFO_SYS_22);
+			}else{
+				insert(commentLikes);
+				//修改CommentCount点赞数量+1
+				otherAddLikes(commentLikes.getCommentid());
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
 		} catch (Exception e) {
 			logger.error("insertCommentLikes commentLikes={},msg={}",commentLikes,e);
 		}
 		return reseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 修改CommentCount点赞数量   ------点赞
+	 * 2017年2月3日
+	 * return_type
+	 * CommentLikesMongoServiceImpl
+	 */
+	private void otherAddLikes(String commentid){
+		commentCountMongoDao.updateCommentAddLikes(commentid);
 	}
 	
 	private void insert(CommentLikes commentLikes){
@@ -36,12 +58,12 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 	}
 
 	@Override
-	public CommentLikes selectCommentLikesByCommentid(String commentid, String userid) {
+	public CommentLikes selectCommentLikesByCommentid(String commentid, String friendid) {
 		CommentLikes commentLikes = null;
 		try {
-			commentLikes = commentLikesMongoDao.selectCommentLikesByCommentid(commentid, userid);
+			commentLikes = commentLikesMongoDao.selectCommentLikesByCommentid(commentid, friendid);
 		} catch (Exception e) {
-			logger.error("selectCommentLikesByCommentid commentid = {}, userid = {}, msg = {}", commentid, userid, e);
+			logger.error("selectCommentLikesByCommentid commentid = {}, friendid = {}, msg = {}", commentid, friendid, e);
 		}
 		return commentLikes;
 	}
@@ -63,19 +85,32 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 	}
 	
 	@Override
-	public BaseResp<Object> deleteCommentLikesByCommentidAndUserid(String commentid, String userid) {
+	public BaseResp<Object> deleteCommentLikesByCommentidAndFriendid(String commentid, String friendid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			deleteByuserid(commentid, userid);
+			deleteByfriendid(commentid, friendid);
+			//修改CommentCount点赞数量-1   取消点赞
+			otherDecreaseLikes(commentid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLikesByCommentidAndUserid commentid = {}, userid = {}, msg = {}", commentid, userid, e);
+			logger.error("deleteCommentLikesByCommentidAndFriendid commentid = {}, friendid = {}, msg = {}", commentid, friendid, e);
 		}
 		return reseResp;
 	}
 	
-	private void deleteByuserid(String commentid, String userid){
-		commentLikesMongoDao.deleteCommentLikesByCommentidAndUserid(commentid, userid);
+	/**
+	 * @author yinxc
+	 * 修改CommentCount点赞数量   ------取消点赞
+	 * 2017年2月3日
+	 * return_type
+	 * CommentLikesMongoServiceImpl
+	 */
+	private void otherDecreaseLikes(String commentid){
+		commentCountMongoDao.updateCommentDecreaseLikes(commentid);
+	}
+	
+	private void deleteByfriendid(String commentid, String friendid){
+		commentLikesMongoDao.deleteCommentLikesByCommentidAndFriendid(commentid, friendid);
 	}
 
 	@Override

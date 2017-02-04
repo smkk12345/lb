@@ -47,10 +47,10 @@ public class CommentLikesMongoDao {
 	 * return_type
 	 * CommentLikesMongoDao
 	 */
-	public CommentLikes selectCommentLikesByCommentid(String commentid, String userid){
+	public CommentLikes selectCommentLikesByCommentid(String commentid, String friendid){
 		CommentLikes commentLikes = null;
 		try {
-			Criteria criteria  = Criteria.where("commentid").is(commentid).and("userid").is(userid);
+			Criteria criteria  = Criteria.where("commentid").is(commentid).and("friendid").is(friendid);
 			Query query = Query.query(criteria);
 			commentLikes = mongoTemplate1.findOne(query,CommentLikes.class);
 		} catch (Exception e) {
@@ -82,12 +82,12 @@ public class CommentLikesMongoDao {
 	 * return_type
 	 * CommentLikesMongoDao
 	 */
-	public void deleteCommentLikesByCommentidAndUserid(String commentid, String userid){
+	public void deleteCommentLikesByCommentidAndFriendid(String commentid, String friendid){
 		try {
-			Query query = Query.query(Criteria.where("commentid").is(commentid).and("userid").is(userid));
+			Query query = Query.query(Criteria.where("commentid").is(commentid).and("friendid").is(friendid));
 			mongoTemplate1.remove(query, CommentLikes.class);
 		} catch (Exception e) {
-			logger.error("deleteCommentLikesByCommentidAndUserid commentid = {}, userid = {}, msg = {}", commentid, userid, e);
+			logger.error("deleteCommentLikesByCommentidAndFriendid commentid = {}, friendid = {}, msg = {}", commentid, friendid, e);
 		}
 	}
 	
