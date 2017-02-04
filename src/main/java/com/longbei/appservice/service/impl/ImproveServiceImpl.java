@@ -43,6 +43,12 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private QueueMessageSendService queueMessageSendService;
 
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImprove(String userid, String brief,
                                  String pickey, String filekey,
@@ -109,7 +115,13 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return isok;
     }
-
+    
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImproveSingle(Improve improve) {
         int res = 0;
@@ -129,7 +141,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImproveForCircle(ImproveCircle improveCircle) {
         int res = 0;
@@ -149,7 +166,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImproveForClassroom(ImproveClassroom improveClassroom) {
         int res = 0;
@@ -170,7 +192,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImproveForRank(ImproveRank improveRank) {
         int res = 0;
@@ -190,7 +217,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public boolean insertImproveForGoal(ImproveGoal improveGoal) {
         int res = 0;
@@ -211,7 +243,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public Improve selectImproveByImpid(Long impid,String userid,
                                  String businesstype,String businessid) {
@@ -241,7 +278,12 @@ public class ImproveServiceImpl implements ImproveService{
 
         return improve;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public List<ImproveRank> selectRankImproveList(String userid, String rankid, int pageNo, int pageSize) {
         List<ImproveRank> improveRanks = new ArrayList<>();
@@ -252,7 +294,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveRanks;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public List<ImproveRank> selectRankImproveListByDate(String userid, String rankid, int pageNo, int pageSize) {
         List<ImproveRank> improveRanks = new ArrayList<>();
@@ -263,7 +310,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveRanks;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public List<ImproveCircle> selectCircleImproveList(String userid, String circleid, int pageNo, int pageSize) {
         List<ImproveCircle> improveCircles = new ArrayList<>();
@@ -274,7 +326,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveCircles;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public List<ImproveCircle> selectCircleImproveListByDate(String userid, String circleid, int pageNo, int pageSize) {
         List<ImproveCircle> improveCircles = new ArrayList<>();
@@ -285,7 +342,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveCircles;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:54
+     *  @update 2017/1/23 下午4:54
+     */
     @Override
     public List<ImproveClassroom> selectClassroomImproveList(String userid, String classroomid, int pageNo, int pageSize) {
         List<ImproveClassroom> improveClassrooms = new ArrayList<>();
@@ -296,7 +358,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveClassrooms;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public List<ImproveClassroom> selectClassroomImproveListByDate(String userid, String classroomid, int pageNo, int pageSize) {
         List<ImproveClassroom> improveClassrooms = new ArrayList<>();
@@ -307,7 +374,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveClassrooms;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public List<ImproveGoal> selectGoalImproveList(String userid, String goalid, int pageNo, int pageSize) {
         List<ImproveGoal> improveGoals = new ArrayList<>();
@@ -318,7 +390,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improveGoals;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeImprove(String userid,String improveid,
                                  String businesstype,String businessid) {
@@ -341,7 +418,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return isok;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeSingleImprove(String userid, String improveid) {
 
@@ -359,7 +441,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
@@ -376,7 +463,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeCircleImprove(String userid, String circleid, String improveid) {
         int res = 0;
@@ -393,7 +485,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeClassroomImprove(String userid, String classroomid, String improveid) {
         int res = 0;
@@ -410,7 +507,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
-
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;

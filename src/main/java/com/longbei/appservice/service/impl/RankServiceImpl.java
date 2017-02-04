@@ -29,6 +29,12 @@ public class RankServiceImpl implements RankService{
     @Autowired
     private RankImageMapper rankImageMapper;
 
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午4:55
+     *  @update 2017/1/23 下午4:55
+     */
     @Override
     public boolean insertRank(String rankdetail, String ranktitle,
                               int ranklimite, String rankscope,
@@ -78,6 +84,12 @@ public class RankServiceImpl implements RankService{
         return res != 0;
     }
 
+    /**
+     *  @author luye
+     *  @desp 
+     *  @create 2017/1/23 下午6:12
+     *  @update 2017/1/23 下午6:12
+     */
     @Override
     public boolean updateRank(long rankid, String rankdetail, String ranktitle,
                               int ranklimite, String rankscope, String rankphotos,

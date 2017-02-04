@@ -42,7 +42,11 @@ public class AddMessageReceiveService{
     private UserRelationService relationService;
 
 
-
+    /**
+     * 接收mq消息
+     * @author luye
+     * @param msg 消息内容
+     */
     @JmsListener(destination="${spring.activemq.queue.name.add}")
     public void receiveMessage(String msg){
 
@@ -75,7 +79,15 @@ public class AddMessageReceiveService{
     }
 
 
-
+    /**
+     * 添加时间线中节点详情
+     * @author luye
+     * @param id 进步id
+     * @param businesstype 业务类型
+     * @param businessid 业务id
+     * @param userid 用户id
+     * @param date 创建时间
+     */
     private void insertTimeLineDetail(String id,String businesstype,String businessid,String userid,Date date){
 
         Improve improve = improveService.selectImproveByImpid(Long.parseLong(id),userid,businesstype,businessid);
@@ -96,6 +108,15 @@ public class AddMessageReceiveService{
 
     }
 
+
+    /**
+     * 添加时间线
+     * @author luye
+     * @param userid 用户id
+     * @param timeLineDetail 节点详情
+     * @param remark 备注
+     * @param createdate 创建日期
+     */
     private void insertTimeLine(String userid,TimeLineDetail timeLineDetail, String remark,Date createdate){
 
         TimeLine timeLine = new TimeLine();
@@ -117,14 +138,22 @@ public class AddMessageReceiveService{
         insertTimeLineAcq(timeLine,userid);
     }
 
-
+    /**
+     * 广场
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLinePublic(TimeLine timeLine){
         timeLine.setId(MongoUtils.UUID());
         timeLine.setUserid("0");
         timeLine.setCtype("0");
         timeLineDao.save(timeLine);
     }
-
+    /**
+     * 我的
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLineSelf(TimeLine timeLine,String userid){
         timeLine.setId(MongoUtils.UUID());
         timeLine.setUserid(userid);
@@ -132,12 +161,20 @@ public class AddMessageReceiveService{
         timeLineDao.save(timeLine);
     }
 
-    //动态线
+    /**
+     * 动态
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLineDyn(TimeLine timeLine,String userid){
 
     }
 
-    //好友线
+    /**
+     * 好友
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLineFriend(TimeLine timeLine,String userid){
         BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),0,0);
         if(baseResp.getCode() != 0){
@@ -151,7 +188,11 @@ public class AddMessageReceiveService{
             timeLineDao.save(timeLine);
         }
     }
-    //关注线
+    /**
+     * 关注
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLineAttr(TimeLine timeLine,String userid){
         BaseResp<Object> baseResp = relationService.selectFansListByUserId(Long.parseLong(userid),0,0);
         if(baseResp.getCode() != 0){
@@ -165,7 +206,11 @@ public class AddMessageReceiveService{
             timeLineDao.save(timeLine);
         }
     }
-    //熟人线
+    /**
+     * 熟人
+     * @author luye
+     * @param timeLine 时间线信息
+     */
     private void insertTimeLineAcq(TimeLine timeLine,String userid){
 
     }
