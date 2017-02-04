@@ -114,7 +114,7 @@ public class CommentController extends BaseController {
     * @param @param userid
     * @param @param friendid   当前访问者商户id
 	* @param @param itypeid  各类型对应的id
-    * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+    * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
     * @param @param startNo
     * @param @param pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -150,7 +150,7 @@ public class CommentController extends BaseController {
      * @Title: http://ip:port/appservice/comment/addComment
      * @Description: 添加主评论
      * @param @param userid
-     * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
      * @param @param itypeid  各类型对应的id
      * @param @param content
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -274,7 +274,7 @@ public class CommentController extends BaseController {
    	/**
      * @Title: http://ip:port/appservice/comment/selectCommentCountSum
      * @Description: 查看评论总数
-     * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
      * @param @param itypeid  各类型对应的id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc

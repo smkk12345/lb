@@ -104,7 +104,6 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			List<Comment> list = commentMongoDao.selectCommentListByItypeid(itypeid, itype, startNo, pageSize);
 //			String commentids = "";
-			Map<String, Object> expandData = new HashMap<String, Object>();
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
@@ -116,7 +115,6 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //						comment.setIsaddlike("1");
 //					}
 				}
-				expandData.put("commentList", list);
 				//获取热门评论   点赞数最高的5个
 				//只要圈子评论才有热门评论     点赞和热门评论暂时不做  02-04
 //				if(commentids.length()>0){
@@ -124,11 +122,12 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //					List<CommentCount> countList = commentCountMongoDao.selectCommentCountListByCommentids(commentids);
 //					expandData.put("hotComment", countList);
 //				}
+				reseResp.setData(list);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
-			reseResp.setExpandData(expandData);
+//			reseResp.setExpandData(expandData);
 		} catch (Exception e) {
 			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
 		}
@@ -181,9 +180,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 					zong = zong + commentCount.getComcount();
 				}
 			}
-			Map<String, Object> expandData = new HashMap<String, Object>();
-			expandData.put("zong", zong);
-			reseResp.setExpandData(expandData);
+			reseResp.setData(zong);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectCommentCountSum itypeid = {}, msg = {}", itypeid, e);
 		}
