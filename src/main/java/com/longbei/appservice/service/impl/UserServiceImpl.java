@@ -1,13 +1,16 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
@@ -39,7 +42,8 @@ public class UserServiceImpl implements UserService {
 	private IdGenerateService idGenerateService;
 	//@Autowired
 	private JedisDao jedisDao;
-
+	@Autowired
+	private SpringJedisDao springJedisDao;
 	@Autowired
 	private UserMongoDao userMongoDao;
 	
