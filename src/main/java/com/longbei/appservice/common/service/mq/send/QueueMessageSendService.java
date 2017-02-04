@@ -28,12 +28,18 @@ public class QueueMessageSendService {
     @Qualifier("updatequeue")
     private Queue updatequeue;
 
-
+    /**
+     * 向添加队列发送消息
+     * @param message
+     */
     public void sendAddMessage(String message) {
         this.jmsMessagingTemplate.convertAndSend(this.addqueue, message);
     }
 
-
+    /**
+     * 向更新的队列发送消息
+     * @param message
+     */
     public void sendUpdateMessage(String message) {
         this.jmsMessagingTemplate.convertAndSend(this.updatequeue, message);
     }

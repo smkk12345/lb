@@ -13,8 +13,9 @@ public class BaseResp<T extends Object> implements Serializable {
 
     public static int SUCCESS = 0;
     public static int FAIlURE = -1;
-    private int code;
-    private T data;
+    private int code;//状态码
+    private T data;//数据
+    private int displayStatus = 0;//展示状态
     private String rtnInfo;
     private Map<String, Object> expandData = new HashMap<>();
 

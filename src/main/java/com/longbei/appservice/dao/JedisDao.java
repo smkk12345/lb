@@ -5,6 +5,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -20,7 +21,12 @@ public class JedisDao {
 //	@Autowired
 	private JedisPool jedisPool;
 
+
+	@Autowired
+	private StringRedisTemplate jedisTemplate;
+
 	public JedisPool getJedisPool() {
+
 		return jedisPool;
 	}
 
@@ -93,7 +99,7 @@ public class JedisDao {
 		}
 		return rtnLong;
 	}
-	
+
 	public long hsetWithExpire(final String key, final String field, final String value,int expire) {
 		long rtnLong = 0;
 		Jedis jedis = null;
@@ -111,7 +117,7 @@ public class JedisDao {
 		}
 		return rtnLong;
 	}
-	
+
 	public long hdel(final String key, final String field) {
 		long rtnLong = 0;
 		Jedis jedis = null;
@@ -128,7 +134,7 @@ public class JedisDao {
 		}
 		return rtnLong;
 	}
-	
+
 	public long hzudel(final String key) {
 		long rtnLong = 0;
 		Jedis jedis = null;
@@ -145,7 +151,7 @@ public class JedisDao {
 		}
 		return rtnLong;
 	}
-	
+
 	public String hget(final String key, final String field) {
 		String value = null;
 		Jedis jedis = null;
@@ -183,7 +189,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//取出map中的"like","flower"字段值
 	public List<String> hmget(final String key,String likekey, String flowerkey) {
 		List<String> value = null;
@@ -202,7 +208,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//HashMap存放Key自增  nember
 	public long hmhincr(final String key, final String field, final long nember) {
 		long value = 0;
@@ -264,7 +270,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//取出map中的好友备注
 //	public List<String> hmContactRemarkget(final String key,String likekey) {
 //		List<String> value = null;
@@ -283,7 +289,7 @@ public class JedisDao {
 //		}
 //		return value;
 //	}
-	
+
 	//存入redis中的好友备注
 //	public String hmContactRemarkset(final String key, Map<String, String> map) {
 //		String value = null;
@@ -303,7 +309,7 @@ public class JedisDao {
 //		}
 //		return value;
 //	}
-	
+
 	public String hmset(final String key, Map<String, String> map) {
 		String value = null;
 		Jedis jedis = null;
@@ -321,7 +327,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public String hmsetWithExpire(final String key, Map<String, String> map,int expire) {
 		String value = null;
 		Jedis jedis = null;
@@ -340,7 +346,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public String setBytesWithExpire(final String key, byte[] bt,int expire) {
 		String value = null;
 		Jedis jedis = null;
@@ -359,7 +365,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public byte[] getBytes(final String key) {
 		byte[] value = null;
 		Jedis jedis = null;
@@ -376,7 +382,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public long hincr(final String key, final String field) {
 		long value = 0;
 		Jedis jedis = null;
@@ -431,14 +437,14 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public String sadd(final String key, final String member,int sencends) {
 		String value = null;
 		Jedis jedis = null;
 		try {
-			
+
 			jedis = getResource();
-			
+
 			if(sencends>0){
 				value = jedis.setex(key, sencends, member);
 			}else{
@@ -454,8 +460,8 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
-	
+
+
 	//返回该menber是否在集合中  在 返回1
 	public boolean sismember(final String key, final String member) {
 		boolean value = false;
@@ -473,7 +479,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public Set<String> smembers(final String key) {
 		Set<String> value = null;
 		Jedis jedis = null;
@@ -507,7 +513,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public long srem(final String key, final String member) {
 		long value = 0;
 		Jedis jedis = null;
@@ -561,7 +567,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	public Set<String> zrevrangeByScore(final String key, final int min, final int max, final int offset, final int count) {
 		Set<String> value = null;
 		Jedis jedis = null;
@@ -606,7 +612,7 @@ public class JedisDao {
 		}
 		return jedis;
 	}
-	
+
 	//添加一个元素倒链表的低端
 	public long rPush(final String key, final String str) {
 		long value = 0;
@@ -624,7 +630,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//添加一个元素倒链表的顶端
 	public long lPush(final String key, final String str) {
 		long value = 0;
@@ -642,7 +648,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//添加一个元素倒链表的顶端
 	public List<String> lrange(final String key, final long start,final long  end) {
 		List<String> list = null;
@@ -660,8 +666,8 @@ public class JedisDao {
 		}
 		return list;
 	}
-	
-	
+
+
 	//获取集合中的排名,从小到大
 	public long zrank(final String key, final String  member) {
 		long value = -1;
@@ -679,8 +685,8 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
-	
+
+
 	//获取集合中的排名,从大到小
 	public long zrevrank(final String key, final String  member) {
 		long value = -1;
@@ -698,7 +704,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//Zrevrang返回从大到小的范围内的集合
 	public Set<String> zrevrange(final String key, final int start, final int end) {
 		Set<String> value = null;
@@ -716,7 +722,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//添加key生存周期----单位是秒
 	public long expire(String key, int sec){
 		long value = 0;
@@ -734,7 +740,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//set增量 --
 	public double zincrby(String key, long sec, String field){
 		double value = 0;
@@ -752,7 +758,7 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	//HINCRBY  map value 自增
 	public long hincrby(String key, String field, long sec){
 		long value = 0;
@@ -770,12 +776,12 @@ public class JedisDao {
 		}
 		return value;
 	}
-	
+
 	/**
 	* @Title: getString
 	* @Description: 通过key获取redis中的值
 	* @param @param key
-	* @param @return 
+	* @param @return
 	* @return String 获取到的值
 	* @throws
 	 */
@@ -794,9 +800,9 @@ public class JedisDao {
 				jedis = null;
 			}
 		}
-		return result;	
+		return result;
 	}
-	
+
 	/**
 	 * 通过key和field获取zset中的分值
 	 * @param key
@@ -819,7 +825,7 @@ public class JedisDao {
 		}
 		return result.longValue();
 	}
-	
+
 	public long zcard(String key){
 		Jedis jedis = null;
 		long result = 0;
