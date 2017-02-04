@@ -139,7 +139,7 @@ public class CommentController extends BaseController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeid(itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
 		} catch (Exception e) {
 			logger.error("commentList userid = {}, itypeid = {},itype = {},msg={}", userid, itypeid, itype, e);
 		}
