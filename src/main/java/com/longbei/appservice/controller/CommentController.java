@@ -126,19 +126,13 @@ public class CommentController extends BaseController {
     public BaseResp<Object> commentList(@RequestParam("friendid") String friendid, 
     		@RequestParam("itypeid") String itypeid, 
     		@RequestParam("itype") String itype,
-    		String startNo, String pageSize) {
+    		int startNo, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.isBlank(startNo)){
-			startNo = "0";
-		}
-		if(StringUtils.isBlank(pageSize)){
-			pageSize = "10";
-		}
 		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, startNo, pageSize);
 		} catch (Exception e) {
 			logger.error("commentList itypeid = {},itype = {},msg={}", itypeid, itype, e);
 		}

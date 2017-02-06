@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class SnsFans {
     private Integer id;
 
@@ -10,7 +13,13 @@ public class SnsFans {
     private Long likeuserid;//被关注人id
 
     private Date createtime;//创建时间
-
+    
+    private String likeNickname;  //被关注者昵称
+    
+    private String liekAvatar;  //被关注者头像
+    
+    private String isfriend = "0"; //是否是好友    0：不是   1：是
+    
     public SnsFans(){};
     
     public SnsFans(long userid,long likeuserid){
@@ -38,6 +47,7 @@ public class SnsFans {
      * 关注人id
      * @return userid 关注人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -54,6 +64,7 @@ public class SnsFans {
      * 被关注人id
      * @return likeuserid 被关注人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getLikeuserid() {
         return likeuserid;
     }
@@ -81,4 +92,30 @@ public class SnsFans {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+	public String getLikeNickname() {
+		return likeNickname;
+	}
+
+	public void setLikeNickname(String likeNickname) {
+		this.likeNickname = likeNickname;
+	}
+
+	public String getLiekAvatar() {
+		return liekAvatar;
+	}
+
+	public void setLiekAvatar(String liekAvatar) {
+		this.liekAvatar = liekAvatar;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsfriend() {
+		return isfriend;
+	}
+
+	public void setIsfriend(String isfriend) {
+		this.isfriend = isfriend;
+	}
+    
 }
