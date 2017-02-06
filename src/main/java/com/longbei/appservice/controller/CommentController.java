@@ -15,6 +15,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.Comment;
+import com.longbei.appservice.entity.CommentLikes;
 import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.service.CommentLikesMongoService;
 import com.longbei.appservice.service.CommentLowerMongoService;
@@ -46,11 +47,73 @@ public class CommentController extends BaseController {
 	
 	
 	/**
+    * @Title: http://ip:port/appservice/comment/decreaseCommentLikes
+    * @Description: 给主评论取消点赞
+    * @param @param commentid  主评论id
+    * @param @param friendid   点赞者商户id
+    * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年2月4日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/decreaseCommentLikes")
+    @ResponseBody
+    public BaseResp<Object> decreaseCommentLikes(@RequestParam("commentid") String commentid, 
+    		@RequestParam("friendid") String friendid) {
+    	
+  		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(friendid, commentid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = commentLikesMongoService.deleteCommentLikesByCommentidAndFriendid(commentid, friendid);
+		} catch (Exception e) {
+			logger.error("decreaseCommentLikes commentid = {}, friendid = {},msg={}", commentid, friendid, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/appservice/comment/addCommentLikes
+    * @Description: 给主评论点赞
+    * @param @param userid   评论者id
+    * @param @param commentid  主评论id
+    * @param @param friendid   点赞者商户id
+    * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年2月3日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/addCommentLikes")
+    @ResponseBody
+    public BaseResp<Object> addCommentLikes(@RequestParam("userid") String userid, 
+    		@RequestParam("commentid") String commentid, 
+    		@RequestParam("friendid") String friendid) {
+    	
+  		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, friendid, commentid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		
+  		CommentLikes commentLikes = new CommentLikes();
+  		commentLikes.setCommentid(commentid);
+  		commentLikes.setFriendid(friendid);
+  		commentLikes.setUserid(userid);
+  		commentLikes.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  		try {
+  			baseResp = commentLikesMongoService.insertCommentLikes(commentLikes);
+		} catch (Exception e) {
+			logger.error("addCommentLikes userid = {}, commentid = {}, friendid = {},msg={}", userid, commentid, friendid, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
     * @Title: http://ip:port/appservice/comment/commentList
-    * @Description: 查看评论列表
-    * @param @param userid
+    * @Description: 查看最新评论列表
+    * @param @param friendid   当前访问者商户id
 	* @param @param itypeid  各类型对应的id
-    * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+    * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
     * @param @param startNo
     * @param @param pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -60,7 +123,8 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/commentList")
     @ResponseBody
-    public BaseResp<Object> commentList(@RequestParam("userid") String userid, @RequestParam("itypeid") String itypeid, 
+    public BaseResp<Object> commentList(@RequestParam("friendid") String friendid, 
+    		@RequestParam("itypeid") String itypeid, 
     		@RequestParam("itype") String itype,
     		String startNo, String pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -70,22 +134,50 @@ public class CommentController extends BaseController {
 		if(StringUtils.isBlank(pageSize)){
 			pageSize = "10";
 		}
-		if (StringUtils.hasBlankParams(userid, itypeid, itype)) {
+		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeid(itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
 		} catch (Exception e) {
-			logger.error("commentList userid = {}, itypeid = {},itype = {},msg={}", userid, itypeid, itype, e);
+			logger.error("commentList itypeid = {},itype = {},msg={}", itypeid, itype, e);
 		}
 		return baseResp;
 	}
     
     /**
+     * @Title: http://ip:port/appservice/comment/commentHotList
+     * @Description: 查看热门评论列表(5条)
+     * @param @param friendid   当前访问者商户id
+ 	 * @param @param itypeid  各类型对应的id
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
+     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+     * @auther yxc
+     * @currentdate:2017年1月22日
+ 	*/
+    @SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "/commentHotList")
+    @ResponseBody
+    public BaseResp<Object> commentHotList(@RequestParam("friendid") String friendid, 
+     	@RequestParam("itypeid") String itypeid, 
+     	@RequestParam("itype") String itype) {
+    	BaseResp<Object> baseResp = new BaseResp<>();
+ 		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
+ 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+ 		}
+ 		try {
+ 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(friendid, itypeid, itype);
+ 		} catch (Exception e) {
+ 			logger.error("commentHotList itypeid = {},itype = {},msg={}", itypeid, itype, e);
+ 		}
+ 		return baseResp;
+ 	}
+    
+    /**
      * @Title: http://ip:port/appservice/comment/addComment
      * @Description: 添加主评论
      * @param @param userid
-     * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
      * @param @param itypeid  各类型对应的id
      * @param @param content
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -209,7 +301,7 @@ public class CommentController extends BaseController {
    	/**
      * @Title: http://ip:port/appservice/comment/selectCommentCountSum
      * @Description: 查看评论总数
-     * @param @param itype  类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
      * @param @param itypeid  各类型对应的id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
