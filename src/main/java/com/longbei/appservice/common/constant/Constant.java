@@ -16,7 +16,15 @@ public class Constant {
 	public static final String OSS_CDN = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";//图片路径 ＋／imgName。png
 //	public static final String OSS_CDN = "https://pic1.longbeidata.com/";//图片路径 ＋／imgName。png
 	public static final String OSS_CDN_HTTP = "http://pic1.longbeidata.com/";
-	
+
+
+
+	public static final String DEFAULT_START_NO = "0";   //默认分页开始条数
+	public static final String DEFAULT_PAGE_SIZE = "15"; //默认分页时每页显示条数
+
+
+
+
 	/**
 	 * 服务端返回代码  code  
 	 */
@@ -93,6 +101,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
 	public static final String RTNINFO_SYS_41 = "发布进步成功";
 	public static final String RTNINFO_SYS_42 = "发布进步失败";
+	public static final String RTNINFO_SYS_43 = "获取进步列表失败";
+	public static final String RTNINFO_SYS_44 = "获取进步列表成功";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";

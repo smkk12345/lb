@@ -2,7 +2,6 @@ package com.longbei.appservice.service.impl;
 
 
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.*;
@@ -124,6 +123,10 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveSingle(Improve improve) {
+
+        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_SINGLE_TYPE)){
+            return false;
+        }
         int res = 0;
         try {
             res = improveMapper.insertSelective(improve);
@@ -149,6 +152,10 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveForCircle(ImproveCircle improveCircle) {
+
+        if(!insertImproveFilter(improveCircle.getUserid(),Constant.IMPROVE_CIRCLE_TYPE)){
+            return false;
+        }
         int res = 0;
         try {
             res = improveCircleMapper.insertSelective(improveCircle);
@@ -174,6 +181,10 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveForClassroom(ImproveClassroom improveClassroom) {
+
+        if(!insertImproveFilter(improveClassroom.getUserid(),Constant.IMPROVE_CLASSROOM_TYPE)){
+            return false;
+        }
         int res = 0;
         try {
             res = improveClassroomMapper.insertSelective(improveClassroom);
@@ -200,6 +211,11 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveForRank(ImproveRank improveRank) {
+
+        if(!insertImproveFilter(improveRank.getUserid(),Constant.IMPROVE_RANK_TYPE)){
+            return false;
+        }
+
         int res = 0;
         try {
             res = improveRankMapper.insertSelective(improveRank);
@@ -225,6 +241,11 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveForGoal(ImproveGoal improveGoal) {
+
+        if(!insertImproveFilter(improveGoal.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
+            return false;
+        }
+
         int res = 0;
         try {
             res = improveGoalMapper.insertSelective(improveGoal);
@@ -286,9 +307,12 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveRank> selectRankImproveList(String userid, String rankid, int pageNo, int pageSize) {
-        List<ImproveRank> improveRanks = new ArrayList<>();
+        List<ImproveRank> improveRanks = null;
         try {
             improveRanks = improveRankMapper.selectByRankId(rankid,null);
+            if(null == improveRanks){
+                improveRanks = new ArrayList<>();
+            }
         } catch (Exception e) {
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
@@ -302,9 +326,12 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveRank> selectRankImproveListByDate(String userid, String rankid, int pageNo, int pageSize) {
-        List<ImproveRank> improveRanks = new ArrayList<>();
+        List<ImproveRank> improveRanks = null;
         try {
             improveRanks = improveRankMapper.selectByRankId(rankid,"1");
+            if(null == improveRanks){
+                improveRanks = new ArrayList<>();
+            }
         } catch (Exception e) {
             logger.error("selectRankImproveListByDate userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
@@ -318,7 +345,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveCircle> selectCircleImproveList(String userid, String circleid, int pageNo, int pageSize) {
-        List<ImproveCircle> improveCircles = new ArrayList<>();
+        List<ImproveCircle> improveCircles = null;
         try {
             improveCircles = improveCircleMapper.selectByCircleId(circleid,null);
         } catch (Exception e) {
@@ -334,7 +361,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveCircle> selectCircleImproveListByDate(String userid, String circleid, int pageNo, int pageSize) {
-        List<ImproveCircle> improveCircles = new ArrayList<>();
+        List<ImproveCircle> improveCircles = null;
         try {
             improveCircles = improveCircleMapper.selectByCircleId(circleid,"1");
         } catch (Exception e) {
@@ -350,7 +377,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveClassroom> selectClassroomImproveList(String userid, String classroomid, int pageNo, int pageSize) {
-        List<ImproveClassroom> improveClassrooms = new ArrayList<>();
+        List<ImproveClassroom> improveClassrooms = null;
         try {
             improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,null);
         } catch (Exception e) {
@@ -366,7 +393,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveClassroom> selectClassroomImproveListByDate(String userid, String classroomid, int pageNo, int pageSize) {
-        List<ImproveClassroom> improveClassrooms = new ArrayList<>();
+        List<ImproveClassroom> improveClassrooms = null;
         try {
             improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,"1");
         } catch (Exception e) {
@@ -382,7 +409,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<ImproveGoal> selectGoalImproveList(String userid, String goalid, int pageNo, int pageSize) {
-        List<ImproveGoal> improveGoals = new ArrayList<>();
+        List<ImproveGoal> improveGoals = null;
         try {
             improveGoals = improveGoalMapper.selectByGoalId(goalid);
         } catch (Exception e) {
@@ -529,4 +556,44 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
+
+    /**
+     * 能否发布进步过滤
+     * @author:luye
+     * @param userid
+     * @param improvetype
+     * @return
+     * @author:luye
+     */
+    private boolean insertImproveFilter(Long userid,String improvetype){
+        return true;
+    }
+
+
+    /**
+     * 向improve中的赞，献花，钻石，评论数赋值
+     * @param improve
+     * @author:luye
+     */
+    private void initImproveAttachInfo(Improve improve){
+
+
+
+    }
+
+    /**
+     * 初始化进步中用户信息
+     * @param improve
+     * @author:luye
+     */
+    private void initImproveUserInfo(Improve improve){
+
+    }
+
+
+    
+
+
+
+
 }
