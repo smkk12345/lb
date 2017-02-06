@@ -2,6 +2,8 @@ package com.longbei.appservice.config;
 
 
 import com.longbei.appservice.common.security.SecurityFilter;
+import com.longbei.appservice.common.security.SpringUtil;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +33,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        registration.addUrlPatterns("/");
 //        return registration;
 //    }
+    
+    @Bean
+    public SpringUtil initSpringUtil(){
+    	return new SpringUtil();
+    }
 
 
 
