@@ -110,8 +110,7 @@ public class CommentController extends BaseController {
 	
 	/**
     * @Title: http://ip:port/appservice/comment/commentList
-    * @Description: 查看评论列表
-    * @param @param userid
+    * @Description: 查看最新评论列表
     * @param @param friendid   当前访问者商户id
 	* @param @param itypeid  各类型对应的id
     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
@@ -124,7 +123,7 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/commentList")
     @ResponseBody
-    public BaseResp<Object> commentList(@RequestParam("userid") String userid, @RequestParam("friendid") String friendid, 
+    public BaseResp<Object> commentList(@RequestParam("friendid") String friendid, 
     		@RequestParam("itypeid") String itypeid, 
     		@RequestParam("itype") String itype,
     		String startNo, String pageSize) {
@@ -135,16 +134,44 @@ public class CommentController extends BaseController {
 		if(StringUtils.isBlank(pageSize)){
 			pageSize = "10";
 		}
-		if (StringUtils.hasBlankParams(userid, friendid, itypeid, itype)) {
+		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
 			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, Integer.parseInt(startNo), Integer.parseInt(pageSize));
 		} catch (Exception e) {
-			logger.error("commentList userid = {}, itypeid = {},itype = {},msg={}", userid, itypeid, itype, e);
+			logger.error("commentList itypeid = {},itype = {},msg={}", itypeid, itype, e);
 		}
 		return baseResp;
 	}
+    
+    /**
+     * @Title: http://ip:port/appservice/comment/commentHotList
+     * @Description: 查看热门评论列表(5条)
+     * @param @param friendid   当前访问者商户id
+ 	 * @param @param itypeid  各类型对应的id
+     * @param @param itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
+     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+     * @auther yxc
+     * @currentdate:2017年1月22日
+ 	*/
+    @SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "/commentHotList")
+    @ResponseBody
+    public BaseResp<Object> commentHotList(@RequestParam("friendid") String friendid, 
+     	@RequestParam("itypeid") String itypeid, 
+     	@RequestParam("itype") String itype) {
+    	BaseResp<Object> baseResp = new BaseResp<>();
+ 		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
+ 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+ 		}
+ 		try {
+ 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(friendid, itypeid, itype);
+ 		} catch (Exception e) {
+ 			logger.error("commentHotList itypeid = {},itype = {},msg={}", itypeid, itype, e);
+ 		}
+ 		return baseResp;
+ 	}
     
     /**
      * @Title: http://ip:port/appservice/comment/addComment

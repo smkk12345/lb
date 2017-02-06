@@ -28,8 +28,6 @@ public class UserAddressServiceImpl implements UserAddressService {
 			boolean temp = delete(id);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 			}
 		} catch (Exception e) {
 			logger.error("deleteByPrimaryKey id={},msg={}",id,e);
@@ -55,9 +53,6 @@ public class UserAddressServiceImpl implements UserAddressService {
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-//			else {
-//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
-//			}
 		} catch (Exception e) {
 			logger.error("insertSelective record={},msg={}",record,e);
 		}
@@ -99,9 +94,6 @@ public class UserAddressServiceImpl implements UserAddressService {
 			if (temp > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-//			else {
-//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
-//			}
 		} catch (Exception e) {
 			logger.error("updateByPrimaryKeySelective record={},msg={}",record,e);
 		}
