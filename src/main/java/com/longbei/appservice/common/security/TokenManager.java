@@ -42,7 +42,7 @@ public class TokenManager {
         if(StringUtils.isBlank(token)){
             token = getTokenFromTargetService(servicename);
             //将token放入redis
-            springJedisDao.set(Constant.SERVER_USER_SERVICE, token, -1);
+            springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
         }
         logger.debug("token is "+token);
         JSONObject tokenjson = JSONObject.fromObject(token);
@@ -50,7 +50,7 @@ public class TokenManager {
         if(Long.parseLong((String) tokenjson.get("exp")) <= new java.util.Date().getTime()){
             token = getTokenFromTargetService(servicename);
             //将token放入redis
-            springJedisDao.set(Constant.SERVER_USER_SERVICE, token, -1);
+            springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
             tokenjson = JSONObject.fromObject(token);
         }
         return (String) tokenjson.get("token");

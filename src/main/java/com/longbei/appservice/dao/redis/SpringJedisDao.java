@@ -6,6 +6,7 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -62,7 +63,8 @@ public class SpringJedisDao {
     public String get(String key){
         String result = null;
         try{
-            result = redisTemplate.opsForValue().get(key);
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            result = valueOperations.get(key);
         }catch (Exception e){
             logger.error("redis get error key={},msg={}",key,e);
         }
