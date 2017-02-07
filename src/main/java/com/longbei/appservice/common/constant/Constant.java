@@ -144,6 +144,14 @@ public class Constant {
 	public static final String  IMPROVE_RANK_TYPE = "2";      //榜
 	public static final String  IMPROVE_CIRCLE_TYPE = "3";    //圈子
 	public static final String  IMPROVE_CLASSROOM_TYPE = "4"; //教室
+
+	/**
+	 * 进步列表过滤
+	 */
+	public static final String IMPROVE_LIST_ALL = "0";  //全部
+	public static final String IMPROVE_LIST_FANS = "1";  //关注
+	public static final String IMPROVE_LIST_FRIEND = "2";  //好友
+	public static final String IMPROVE_LIST_ACQUAINTANCE = "3";  //熟人
 	
 	/**
 	 * 评论相关配置    itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
