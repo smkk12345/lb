@@ -3,7 +3,8 @@ package com.longbei.appservice.common.security;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.JedisDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
+//import com.longbei.appservice.dao.JedisDao;
 import com.longbei.appservice.service.api.FeignApiProxy;
 import net.sf.json.JSONObject;
 
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenManager {
 
-
-	private JedisDao jedisDao;
+	@Autowired
+	private SpringJedisDao springJedisDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(TokenManager.class);
 	
@@ -37,11 +38,11 @@ public class TokenManager {
     public String getTokenFromCache(String servicename){
 
         //从redis中获取token 通过servicename
-        String token = jedisDao.getString(Constant.SERVER_USER_SERVICE);
+        String token = springJedisDao.get(Constant.SERVER_USER_SERVICE);
         if(StringUtils.isBlank(token)){
             token = getTokenFromTargetService(servicename);
             //将token放入redis
-            jedisDao.sadd(Constant.SERVER_USER_SERVICE, token, -1);
+            springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
         }
         logger.debug("token is "+token);
         JSONObject tokenjson = JSONObject.fromObject(token);
@@ -49,7 +50,7 @@ public class TokenManager {
         if(Long.parseLong((String) tokenjson.get("exp")) <= new java.util.Date().getTime()){
             token = getTokenFromTargetService(servicename);
             //将token放入redis
-            jedisDao.sadd(Constant.SERVER_USER_SERVICE, token, -1);
+            springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
             tokenjson = JSONObject.fromObject(token);
         }
         return (String) tokenjson.get("token");

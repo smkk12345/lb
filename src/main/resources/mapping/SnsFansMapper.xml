@@ -16,6 +16,14 @@
     from sns_fans
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByUidAndLikeid" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sns_fans
+    where userid = #{id} and likeuserid=#{likeuserid} 
+  </select>
+  
   <select id="selectFansByUserid" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
