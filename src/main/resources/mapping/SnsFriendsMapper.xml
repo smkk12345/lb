@@ -12,12 +12,23 @@
   <sql id="Base_Column_List" >
     id, userid, friendid, remark, ispublic, createtime
   </sql>
+  <sql id="Bid_Column_List" >
+    friendid
+  </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from sns_friends
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectListidByUid" resultType="java.lang.String">
+    select 
+    <include refid="Bid_Column_List" />
+    from sns_friends
+    where userid = #{userid}
+  </select>
+  
   <select id="selectListByUsrid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

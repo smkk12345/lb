@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserInfo {
     private Integer id;
 
@@ -57,6 +60,10 @@ public class UserInfo {
     
     private String hcnickname;//是否修改了用户昵称  0 未修改  1 已经修改
     
+    private String islike = "0";//是否关注   0：未关注   1：已关注
+    
+    private String isfriend = "0"; //是否是好友    0：不是   1：是
+    
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
     		super();
@@ -86,6 +93,7 @@ public class UserInfo {
      * 用户id 
      * @return userid 用户id 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -102,6 +110,7 @@ public class UserInfo {
      * 花
      * @return totalflower 花
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getTotalflower() {
         return totalflower;
     }
@@ -118,6 +127,7 @@ public class UserInfo {
      * 钻石
      * @return totaldiamond 钻石
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getTotaldiamond() {
         return totaldiamond;
     }
@@ -134,6 +144,7 @@ public class UserInfo {
      * 龙币
      * @return totalmoney 龙币
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getTotalmoney() {
         return totalmoney;
     }
@@ -150,6 +161,7 @@ public class UserInfo {
      * 进步币
      * @return totalcoin 进步币
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getTotalcoin() {
         return totalcoin;
     }
@@ -198,6 +210,7 @@ public class UserInfo {
      * 性别  0 男  1 女
      * @return sex 性别  0 男  1 女
      */
+    @JsonInclude(Include.ALWAYS)
     public String getSex() {
         return sex;
     }
@@ -278,6 +291,7 @@ public class UserInfo {
      * 血型
      * @return blood 血型
      */
+    @JsonInclude(Include.ALWAYS)
     public String getBlood() {
         return blood;
     }
@@ -294,6 +308,7 @@ public class UserInfo {
      * 感情状态
      * @return feeling 感情状态
      */
+    @JsonInclude(Include.ALWAYS)
     public String getFeeling() {
         return feeling;
     }
@@ -342,6 +357,7 @@ public class UserInfo {
      * 支付密码
      * @return payword 支付密码
      */
+    @JsonInclude(Include.ALWAYS)
     public String getPayword() {
         return payword;
     }
@@ -390,6 +406,7 @@ public class UserInfo {
      * 推荐人id
      * @return rcuserid 推荐人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getRcuserid() {
         return rcuserid;
     }
@@ -406,6 +423,7 @@ public class UserInfo {
      * 邀请人ids
      * @return invitecode 邀请人ids
      */
+    @JsonInclude(Include.ALWAYS)
     public String getInvitecode() {
         return invitecode;
     }
@@ -422,6 +440,7 @@ public class UserInfo {
      * 邀请人id
      * @return inviteuserid 邀请人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getInviteuserid() {
         return inviteuserid;
     }
@@ -444,6 +463,7 @@ public class UserInfo {
 		this.deviceindex = deviceindex;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public String getDevicetype() {
 		return devicetype;
 	}
@@ -451,16 +471,37 @@ public class UserInfo {
 	public void setDevicetype(String devicetype) {
 		this.devicetype = devicetype;
 	}
+	
+	@JsonInclude(Include.ALWAYS)
 	public String getHcnickname() {
 		return hcnickname;
 	}
 	public void setHcnickname(String hcnickname) {
 		this.hcnickname = hcnickname;
 	}
+	
+	@JsonInclude(Include.ALWAYS)
 	public String getRytoken() {
 		return rytoken;
 	}
 	public void setRytoken(String rytoken) {
 		this.rytoken = rytoken;
+	}
+	
+	@JsonInclude(Include.ALWAYS)
+	public String getIslike() {
+		return islike;
+	}
+	
+	public void setIslike(String islike) {
+		this.islike = islike;
+	}
+	
+	@JsonInclude(Include.ALWAYS)
+	public String getIsfriend() {
+		return isfriend;
+	}
+	public void setIsfriend(String isfriend) {
+		this.isfriend = isfriend;
 	}
 }

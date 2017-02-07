@@ -50,6 +50,7 @@ public class Constant {
 	public static final int STATUS_SYS_22 = -22;
 	
 	public static final int STATUS_SYS_26 = -26;
+	public static final int STATUS_SYS_27 = -27;
 
 
 	public static final int STATUS_SYS_40 = -40;
@@ -96,6 +97,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_22 = "该评论已点赞";
 	
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
+	public static final String RTNINFO_SYS_27 = "暂无搜索信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -146,6 +148,14 @@ public class Constant {
 	public static final String  IMPROVE_RANK_TYPE = "2";      //榜
 	public static final String  IMPROVE_CIRCLE_TYPE = "3";    //圈子
 	public static final String  IMPROVE_CLASSROOM_TYPE = "4"; //教室
+
+	/**
+	 * 进步列表过滤
+	 */
+	public static final String IMPROVE_LIST_ALL = "0";  //全部
+	public static final String IMPROVE_LIST_FANS = "1";  //关注
+	public static final String IMPROVE_LIST_FRIEND = "2";  //好友
+	public static final String IMPROVE_LIST_ACQUAINTANCE = "3";  //熟人
 	
 	/**
 	 * 评论相关配置    itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论

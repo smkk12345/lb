@@ -10,6 +10,17 @@
   <sql id="Base_Column_List" >
     id, userid, likeuserid, createtime
   </sql>
+  <sql id="Bid_Column_List" >
+    likeuserid
+  </sql>
+  
+  <select id="selectListidByUid" resultType="java.lang.String">
+    select 
+    <include refid="Bid_Column_List" />
+    from sns_fans
+    where userid = #{userid}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

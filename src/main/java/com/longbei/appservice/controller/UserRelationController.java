@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserRelationService;
 /**
@@ -29,6 +31,59 @@ public class UserRelationController extends BaseController {
 	 private UserRelationService userRelationService;
 	
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
+	 
+	 /**
+	 * @Title: http://ip:port/appservice/user/searchLongRange
+     * @Description: 通讯录远程搜索(手机号和昵称搜索)
+     * @param @param userid
+	 * @param @param nickname
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年2月7日
+	 */
+	 @SuppressWarnings("unchecked")
+	 @ResponseBody
+     @RequestMapping(value = "searchLongRange")
+	 public BaseResp<Object> searchLongRange(String userid, String nickname){
+		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
+		 BaseResp<Object> baseResp = new BaseResp<>();
+		 if (StringUtils.hasBlankParams(userid, nickname)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+         }
+		 try {
+			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname);
+		 } catch (Exception e) {
+			 logger.error("searchLongRange userid = {}, nickname = {}, msg = {}", userid, nickname, e);
+		 }
+		 return baseResp;
+	 }
+	 
+	 /**
+	 * @Title: http://ip:port/appservice/user/searchLocal
+     * @Description: 通讯录本地搜索(手机号和昵称搜索)  (没用到接口，3.0版本客户端做本地搜索)
+     * @param @param userid
+	 * @param @param nickname
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年2月7日
+	 */
+	 @SuppressWarnings("unchecked")
+	 @ResponseBody
+     @RequestMapping(value = "searchLocal")
+	 public BaseResp<Object> searchLocal(String userid, String nickname){
+		 logger.info("searchLocal params userid={},nickname={}",userid,nickname);
+		 BaseResp<Object> baseResp = new BaseResp<>();
+		 if (StringUtils.hasBlankParams(userid, nickname)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+         }
+		 try {
+			 return userRelationService.selectLocalListByUnameAndNname(Long.parseLong(userid), nickname);
+		 } catch (Exception e) {
+			 logger.error("searchLocal userid = {}, nickname = {}, msg = {}", userid, nickname, e);
+		 }
+		 return baseResp;
+	 }
+	 
 	/**
 	* @Title: insertFriend
 	* @Description: 添加好友
@@ -36,14 +91,18 @@ public class UserRelationController extends BaseController {
 	* @param @param friendid
 	* @auther smkk
 	* @currentdate:2017年1月20日
-	 */
+	*/
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "insert")
-	public BaseResp<Object> insertFriend(long userid,long friendid){
+	public BaseResp<Object> insertFriend(String userid, String friendid){
 		logger.info("insertfriend params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, friendid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.insertFriend(userid, friendid);
+			return userRelationService.insertFriend(Long.parseLong(userid), Long.parseLong(friendid));
 		} catch (Exception e) {
 			logger.error("insertfriend error and msg={}",e);
 		}
@@ -57,13 +116,17 @@ public class UserRelationController extends BaseController {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "selectListByUserId")
-	public BaseResp<Object> selectListByUserId(long userid,int startNum,int endNum){
+	public BaseResp<Object> selectListByUserId(String userid,int startNum,int endNum){
 		logger.info("selectListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.selectListByUserId(userid, startNum, endNum);
+			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum);
 		} catch (Exception e) {
 			logger.error("selectListByUserId error and msg={}",e);
 		}
@@ -78,18 +141,48 @@ public class UserRelationController extends BaseController {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "delete")
-	public BaseResp<Object> delete(long userid,long friendid){
+	public BaseResp<Object> delete(String userid, String friendid){
 		logger.info("delete params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, friendid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.delete(userid, friendid);
+			return userRelationService.delete(Long.parseLong(userid), Long.parseLong(friendid));
 		} catch (Exception e) {
 			logger.error("delete error and msg={}",e);
 		}
 		return baseResp;
 	}
+	
+	/**
+    * @Title: http://ip:port/appservice/user/updateUserInfo
+    * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
+    * @param @param request  avatar  nickname  userid sex brief
+    * @param @param code 0
+    * @auther smkk
+    * @currentdate:2017年1月19日
+    */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+    @RequestMapping(value = "updateRemark")
+	public BaseResp<Object> updateRemark(String userid, String friendid, String remark){
+		logger.info("updateRemark params userid = {}, friendid = {}, remark = {}", userid, friendid, remark);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, friendid, remark)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+		try {
+			return userRelationService.updateRemarkByUidAndFid(Long.parseLong(userid), Long.parseLong(friendid), remark);
+		} catch (Exception e) {
+			logger.error("delete error and msg={}",e);
+		}
+		return baseResp;
+	}
+	
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_fans－start－－－－－－－－－－－－
 	/**
@@ -101,13 +194,17 @@ public class UserRelationController extends BaseController {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "insertFans")
-	public BaseResp<Object> insertFans(long userid,long friendid){
+	public BaseResp<Object> insertFans(String userid, String friendid){
 		logger.info("insertFans params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, friendid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.insertFans(userid, friendid);
+			return userRelationService.insertFans(Long.parseLong(userid), Long.parseLong(friendid));
 		} catch (Exception e) {
 			logger.error("insertFans error and msg={}",e);
 		}
@@ -122,13 +219,17 @@ public class UserRelationController extends BaseController {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "deleteFans")
-	public BaseResp<Object> deleteFans(long userid,long friendid){
+	public BaseResp<Object> deleteFans(String userid, String friendid){
 		logger.info("deleteFans params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, friendid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.deleteFans(userid, friendid);
+			return userRelationService.deleteFans(Long.parseLong(userid), Long.parseLong(friendid));
 		} catch (Exception e) {
 			logger.error("deleteFans error and msg={}",e);
 		}
@@ -142,13 +243,17 @@ public class UserRelationController extends BaseController {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<Object> selectFansListByUserId(long userid,int startNum,int endNum){
+	public BaseResp<Object> selectFansListByUserId(String userid, int startNum, int endNum){
 		logger.info("selectFansListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
 		try {
-			return userRelationService.selectFansListByUserId(userid, startNum, endNum);
+			return userRelationService.selectFansListByUserId(Long.parseLong(userid), startNum, endNum);
 		} catch (Exception e) {
 			logger.error("selectFansListByUserId error and msg={}",e);
 		}

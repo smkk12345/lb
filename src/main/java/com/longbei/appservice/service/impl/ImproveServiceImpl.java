@@ -306,10 +306,26 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveRank> selectRankImproveList(String userid, String rankid, int pageNo, int pageSize) {
+    public List<ImproveRank> selectRankImproveList(String userid, String rankid,String sift, int pageNo, int pageSize) {
         List<ImproveRank> improveRanks = null;
         try {
-            improveRanks = improveRankMapper.selectByRankId(rankid,null);
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveRanks = improveRankMapper.selectByRankId(rankid,null);
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
+
             if(null == improveRanks){
                 improveRanks = new ArrayList<>();
             }
@@ -325,10 +341,25 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveRank> selectRankImproveListByDate(String userid, String rankid, int pageNo, int pageSize) {
+    public List<ImproveRank> selectRankImproveListByDate(String userid, String rankid,String sift, int pageNo, int pageSize) {
         List<ImproveRank> improveRanks = null;
         try {
-            improveRanks = improveRankMapper.selectByRankId(rankid,"1");
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveRanks = improveRankMapper.selectByRankId(rankid, "1");
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
             if(null == improveRanks){
                 improveRanks = new ArrayList<>();
             }
@@ -344,10 +375,25 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveCircle> selectCircleImproveList(String userid, String circleid, int pageNo, int pageSize) {
+    public List<ImproveCircle> selectCircleImproveList(String userid, String circleid,String sift, int pageNo, int pageSize) {
         List<ImproveCircle> improveCircles = null;
         try {
-            improveCircles = improveCircleMapper.selectByCircleId(circleid,null);
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveCircles = improveCircleMapper.selectByCircleId(circleid, null);
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
         } catch (Exception e) {
             logger.error("selectCircleImproveList userid:{} circleid:{} is error:{}",userid,circleid,e);
         }
@@ -360,10 +406,25 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveCircle> selectCircleImproveListByDate(String userid, String circleid, int pageNo, int pageSize) {
+    public List<ImproveCircle> selectCircleImproveListByDate(String userid, String circleid,String sift, int pageNo, int pageSize) {
         List<ImproveCircle> improveCircles = null;
         try {
-            improveCircles = improveCircleMapper.selectByCircleId(circleid,"1");
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveCircles = improveCircleMapper.selectByCircleId(circleid, "1");
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
         } catch (Exception e) {
             logger.error("selectCircleImproveListByDate userid:{} circleid:{} is error:{}",userid,circleid,e);
         }
@@ -376,10 +437,25 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveClassroom> selectClassroomImproveList(String userid, String classroomid, int pageNo, int pageSize) {
+    public List<ImproveClassroom> selectClassroomImproveList(String userid, String classroomid,String sift, int pageNo, int pageSize) {
         List<ImproveClassroom> improveClassrooms = null;
         try {
-            improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,null);
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid, null);
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
         } catch (Exception e) {
             logger.error("selectClassroomImproveList userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
@@ -392,10 +468,25 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public List<ImproveClassroom> selectClassroomImproveListByDate(String userid, String classroomid, int pageNo, int pageSize) {
+    public List<ImproveClassroom> selectClassroomImproveListByDate(String userid, String classroomid,String sift, int pageNo, int pageSize) {
         List<ImproveClassroom> improveClassrooms = null;
         try {
-            improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,"1");
+            //全部
+            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+                improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,"1");
+            }
+            //关注
+            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+
+            }
+            //好友
+            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+
+            }
+            //熟人
+            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+
+            }
         } catch (Exception e) {
             logger.error("selectClassroomImproveListByDate userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
@@ -591,7 +682,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    
+
 
 
 
