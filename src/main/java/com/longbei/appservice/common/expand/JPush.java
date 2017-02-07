@@ -1,8 +1,6 @@
 package com.longbei.appservice.common.expand;
 
 import org.apache.commons.lang3.StringUtils;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 import com.longbei.appservice.config.AliServiceConfig;
 
@@ -17,6 +15,8 @@ import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JPush {
 	public static final String REGID = "1104a89792aaa3447e4";
@@ -24,7 +24,7 @@ public class JPush {
 	public static final String TITLE = "标题2";
 	public static final String CONTENT = "测试消息文本2";
 	public static JPushClient jpushClient = null;
-//	private static final Logger log = LoggerFactory.getLogger(JPush.class);
+	private static final Logger logger = LoggerFactory.getLogger(JPush.class);
 	
 	public static String apiKey = "";
 	public static String masterKey = ""; 
@@ -39,17 +39,6 @@ public class JPush {
 		if(!StringUtils.isBlank(apiKey)&&!StringUtils.isBlank(masterKey)){
 			return;
 		}
-//		Properties p = new Properties();
-//		try {
-//			InputStream inputStream = ClientContext.class.getClassLoader().getResourceAsStream("config.properties");
-//			p.load(inputStream);
-//		} catch (IOException e) {
-//			log.error(MessageTemplate.print(MessageTemplate.FILE_ACCESS_MSG, new String[] { "config.properties" }));
-//			return; 
-//		}
-//		apiKey = CustomizedPropertyConfigurer.getContextProperty("jpush_api_key");
-//		masterKey = CustomizedPropertyConfigurer.getContextProperty("jpush_master_key");
-//		String production = CustomizedPropertyConfigurer.getContextProperty("isproduction");
 		apiKey = AliServiceConfig.jpush_api_key;
 		masterKey = AliServiceConfig.jpush_master_key;
 		String production = AliServiceConfig.isproduction;
@@ -69,46 +58,35 @@ public class JPush {
 		jpushClient = new JPushClient(masterKey, apiKey);
 		PushPayload payload = push_android_and_ios_alert(alias, alert, title, content);
 		try {
-			System.out.println(payload.toString());
-			PushResult result = jpushClient.sendPush(payload);
-			System.out.println("推送返回结果：" + result);
+			jpushClient.sendPush(payload);
 		} catch (APIConnectionException e) {
-			System.out.println("连接错误，请重试：" + e);
+			logger.debug("连接错误，请重试：{}",e);
 		} catch (APIRequestException e) {
-			System.out.println("极光推送服务器故障：" + e);
-			System.out.println(String.format("HTTP Status: %d, Error Code: %d, Error Message: %s, Msg ID: %s", e.getStatus(), e.getErrorCode(), e.getErrorMessage(), e.getMsgId()));
+			logger.debug("极光推送服务器故障：{}",e);
 		}
 	}
 
 	public static void messagePush(String regid, String alert, String title, String content) {
 		jpushClient = new JPushClient(masterKey, apiKey);
-		//PushPayload payload = push_android_and_ios_alert(alias, alert, title, content);
 		PushPayload payload = push_android_iso_alert_with_title(regid, alert, title, content);
 		try {
-			System.out.println(payload.toString());
-			PushResult result = jpushClient.sendPush(payload);
-			System.out.println("推送返回结果：" + result);
+			jpushClient.sendPush(payload);
 		} catch (APIConnectionException e) {
-			System.out.println("连接错误，请重试：" + e);
+			logger.debug("连接错误，请重试：{}",e);
 		} catch (APIRequestException e) {
-			System.out.println("极光推送服务器故障：" + e);
-			System.out.println(String.format("HTTP Status: %d, Error Code: %d, Error Message: %s, Msg ID: %s", e.getStatus(), e.getErrorCode(), e.getErrorMessage(), e.getMsgId()));
+			logger.debug("极光推送服务器故障：{}",e);
 		}
 	}
 	
 	public static void messageIosPush(String regid, String alert, String title, String content) {
 		jpushClient = new JPushClient(masterKey, apiKey);
-		//PushPayload payload = push_android_and_ios_alert(alias, alert, title, content);
 		PushPayload payload = push_ios_alert_with_title(regid, alert, title, content);
 		try {
-			System.out.println(payload.toString());
-			PushResult result = jpushClient.sendPush(payload);
-			System.out.println("推送返回结果：" + result);
+			jpushClient.sendPush(payload);
 		} catch (APIConnectionException e) {
-			System.out.println("连接错误，请重试：" + e);
+			logger.debug("连接错误，请重试：{}",e);
 		} catch (APIRequestException e) {
-			System.out.println("极光推送服务器故障：" + e);
-			System.out.println(String.format("HTTP Status: %d, Error Code: %d, Error Message: %s, Msg ID: %s", e.getStatus(), e.getErrorCode(), e.getErrorMessage(), e.getMsgId()));
+			logger.debug("极光推送服务器故障：{}",e);
 		}
 	}
 	
@@ -117,14 +95,11 @@ public class JPush {
 		//PushPayload payload = push_android_and_ios_alert(alias, alert, title, content);
 		PushPayload payload = push_android_alert_with_title(regid, alert, title, content);
 		try {
-			System.out.println(payload.toString());
 			PushResult result = jpushClient.sendPush(payload);
-			System.out.println("推送返回结果：" + result);
 		} catch (APIConnectionException e) {
-			System.out.println("连接错误，请重试：" + e);
+			logger.debug("连接错误，请重试：{}",e);
 		} catch (APIRequestException e) {
-			System.out.println("极光推送服务器故障：" + e);
-			System.out.println(String.format("HTTP Status: %d, Error Code: %d, Error Message: %s, Msg ID: %s", e.getStatus(), e.getErrorCode(), e.getErrorMessage(), e.getMsgId()));
+			logger.debug("极光推送服务器故障：{}",e);
 		}
 	}
 
