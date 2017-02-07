@@ -30,10 +30,10 @@ public class JPush {
 	public static String masterKey = ""; 
 	public static boolean isproduction = false;
 	
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
 //		messagePush(Constant.JPUSH_API_KEY, Constant.JPUSH_MASTER_KEY, REGID, ALERT, TITLE, CONTENT);
 //		messagePush("a436cf75a3cb2debcdbc1294", "588062101de0b620b681fccc", "171976fa8a83a0a2c31", "发送aaaaa", "", "");
-	}
+//	}
 
 	private static void initFromPropertiesFile() {
 		if(!StringUtils.isBlank(apiKey)&&!StringUtils.isBlank(masterKey)){
