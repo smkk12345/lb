@@ -119,5 +119,6 @@ public interface UserService {
 	* @currentdate:2017年1月17日
 	 */
 	BaseResp<Object> updateUserInfo(UserInfo userInfo);
-	
+
+
 }

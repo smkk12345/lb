@@ -184,7 +184,21 @@ public class Constant {
 	public static final long EXPIRE_USER_TOKEN = 0;//用户登录token过期时间
 	public static final long EXPIRE_USER_MAILCODE = 0;//邮箱验证码过期时间
 
+	/**
+	 * 每日可操作参数    签到   发进步  点赞 ...
+	 */
+	public static final String PERDAY_CHECK_IN = "checkIn";//签到
+	public static final String PERDAY_ADD_IMPROVE = "addImprove";//发进步
+	public static final String PERDAY_ADD_LIKE = "addLike";//点赞
 
+	/**
+	 * 缓存一日数据
+	 */
+	public static final String PERDAY_POINT = "point";
 
+	/**
+	 * redis中各种请求前缀   redis_prefix
+	 */
+	public static final String RP_USER_PERDAY = "user_perday_";
 
 }

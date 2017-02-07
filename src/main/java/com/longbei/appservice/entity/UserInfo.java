@@ -63,6 +63,10 @@ public class UserInfo {
     private String islike = "0";//是否关注   0：未关注   1：已关注
     
     private String isfriend = "0"; //是否是好友    0：不是   1：是
+
+    private Integer point;//龙分
+    private Integer grade;//等级
+
     
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
@@ -72,7 +76,23 @@ public class UserInfo {
     		this.avatar = avatar;
     		this.sex = sex;
     }
-    
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
+    }
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public Integer getPoint() {
+        return point;
+    }
+
     /**
      * 
      * @return id 
