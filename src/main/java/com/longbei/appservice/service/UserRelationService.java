@@ -101,7 +101,7 @@ public interface UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname);
+	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc
@@ -110,6 +110,6 @@ public interface UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname);
+	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
 
 }

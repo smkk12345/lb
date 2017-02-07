@@ -34,7 +34,7 @@ public class UserRelationController extends BaseController {
 	 
 	 /**
 	 * @Title: http://ip:port/appservice/user/searchLongRange
-     * @Description: 通讯录远程搜索(手机号和昵称搜索)
+     * @Description: 通讯录远程搜索(手机号和昵称搜索) 分页  startNum,endNum
      * @param @param userid
 	 * @param @param nickname
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -44,14 +44,14 @@ public class UserRelationController extends BaseController {
 	 @SuppressWarnings("unchecked")
 	 @ResponseBody
      @RequestMapping(value = "searchLongRange")
-	 public BaseResp<Object> searchLongRange(String userid, String nickname){
+	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int endNum){
 		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
 		 try {
-			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname);
+			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, endNum);
 		 } catch (Exception e) {
 			 logger.error("searchLongRange userid = {}, nickname = {}, msg = {}", userid, nickname, e);
 		 }
@@ -61,6 +61,7 @@ public class UserRelationController extends BaseController {
 	 /**
 	 * @Title: http://ip:port/appservice/user/searchLocal
      * @Description: 通讯录本地搜索(手机号和昵称搜索)  (没用到接口，3.0版本客户端做本地搜索)
+     *  分页  startNum,endNum
      * @param @param userid
 	 * @param @param nickname
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -70,14 +71,14 @@ public class UserRelationController extends BaseController {
 	 @SuppressWarnings("unchecked")
 	 @ResponseBody
      @RequestMapping(value = "searchLocal")
-	 public BaseResp<Object> searchLocal(String userid, String nickname){
+	 public BaseResp<Object> searchLocal(String userid, String nickname, int startNum, int endNum){
 		 logger.info("searchLocal params userid={},nickname={}",userid,nickname);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
 		 try {
-			 return userRelationService.selectLocalListByUnameAndNname(Long.parseLong(userid), nickname);
+			 return userRelationService.selectLocalListByUnameAndNname(Long.parseLong(userid), nickname, startNum, endNum);
 		 } catch (Exception e) {
 			 logger.error("searchLocal userid = {}, nickname = {}, msg = {}", userid, nickname, e);
 		 }
@@ -159,12 +160,14 @@ public class UserRelationController extends BaseController {
 	}
 	
 	/**
-    * @Title: http://ip:port/appservice/user/updateUserInfo
-    * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
-    * @param @param request  avatar  nickname  userid sex brief
+    * @Title: http://ip:port/appservice/user/updateRemark
+    * @Description: 修改好友备注
+    * @param @param userid
+    * @param @param friendid
+    * @param @param remark
     * @param @param code 0
-    * @auther smkk
-    * @currentdate:2017年1月19日
+    * @auther yinxc
+    * @currentdate:2017年2月7日
     */
 	@SuppressWarnings("unchecked")
 	@ResponseBody
