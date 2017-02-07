@@ -77,61 +77,67 @@ public interface ImproveService {
      *  榜中成员动态
      * @param userid
      * @param rankid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveRank> selectRankImproveList(String userid,String rankid,int pageNo,int pageSize);
+    List<ImproveRank> selectRankImproveList(String userid,String rankid,String sift,int pageNo,int pageSize);
 
     /**
      *  榜中按时间排序
      * @param userid
      * @param rankid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveRank> selectRankImproveListByDate(String userid,String rankid,int pageNo,int pageSize);
+    List<ImproveRank> selectRankImproveListByDate(String userid,String rankid,String sift,int pageNo,int pageSize);
 
     /**
      *  圈子中成员动态
       * @param userid
      * @param circleid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveCircle> selectCircleImproveList(String userid,String circleid,int pageNo,int pageSize);
+    List<ImproveCircle> selectCircleImproveList(String userid,String circleid,String sift,int pageNo,int pageSize);
 
     /**
      *  圈子中按时间排序
      * @param userid
      * @param circleid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveCircle> selectCircleImproveListByDate(String userid,String circleid,int pageNo,int pageSize);
+    List<ImproveCircle> selectCircleImproveListByDate(String userid,String circleid,String sift,int pageNo,int pageSize);
 
     /**
      *  教室中成员动态
      * @param userid
      * @param classroomid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveClassroom> selectClassroomImproveList(String userid,String classroomid,int pageNo,int pageSize);
+    List<ImproveClassroom> selectClassroomImproveList(String userid,String classroomid,String sift,int pageNo,int pageSize);
 
     /**
      *  教室中按时间排序
      * @param userid
      * @param classroomid
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<ImproveClassroom> selectClassroomImproveListByDate(String userid,String classroomid,int pageNo,int pageSize);
+    List<ImproveClassroom> selectClassroomImproveListByDate(String userid,String classroomid,String sift,int pageNo,int pageSize);
 
 
     /**

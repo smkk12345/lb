@@ -129,8 +129,8 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "rank/list",method = RequestMethod.POST)
     public BaseResp selectRankImproveList(String userid,
-                                              String rankid,String sorttype,String startNo,String pageSize){
-        if(StringUtils.hasBlankParams(userid, rankid, sorttype)){
+                                              String rankid,String sorttype,String sift,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, rankid, sorttype, sift)){
             return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(StringUtils.isBlank(startNo)){
@@ -142,11 +142,11 @@ public class ImproveController {
         List<ImproveRank> improves = null;
         try {
             if("1".equals(sorttype)){
-                improves = improveService.selectRankImproveList(userid,rankid,
+                improves = improveService.selectRankImproveList(userid,rankid,sift,
                         Integer.parseInt(startNo),Integer.parseInt(pageSize));
 
             } else {
-                improves = improveService.selectRankImproveListByDate(userid,rankid,
+                improves = improveService.selectRankImproveListByDate(userid,rankid,sift,
                         Integer.parseInt(startNo), Integer.parseInt(pageSize));
             }
         } catch (Exception e) {
@@ -174,8 +174,8 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "circle/list",method = RequestMethod.POST)
     public BaseResp selectCircleImproveList(String userid,
-                                          String circleid,String sorttype,String startNo,String pageSize){
-        if(StringUtils.hasBlankParams(userid, circleid, sorttype)){
+                                          String circleid,String sorttype,String sift,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, circleid, sorttype, sift)){
             return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(StringUtils.isBlank(startNo)){
@@ -187,11 +187,11 @@ public class ImproveController {
         List<ImproveCircle> improves = null;
         try {
             if("1".equals(sorttype)){
-                improves = improveService.selectCircleImproveList(userid,circleid,
+                improves = improveService.selectCircleImproveList(userid,circleid,sift,
                         Integer.parseInt(startNo),Integer.parseInt(pageSize));
 
             } else {
-                improves = improveService.selectCircleImproveListByDate(userid,circleid,
+                improves = improveService.selectCircleImproveListByDate(userid,circleid,sift,
                         Integer.parseInt(startNo), Integer.parseInt(pageSize));
             }
         } catch (Exception e) {
@@ -220,8 +220,8 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "classroom/list",method = RequestMethod.POST)
     public BaseResp selectClassroomImproveList(String userid,
-                                            String classroomid,String sorttype,String startNo,String pageSize){
-        if(StringUtils.hasBlankParams(userid, classroomid, sorttype)){
+                                            String classroomid,String sorttype,String sift,String startNo,String pageSize){
+        if(StringUtils.hasBlankParams(userid, classroomid, sorttype, sift)){
             return new BaseResp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(StringUtils.isBlank(startNo)){
@@ -233,11 +233,11 @@ public class ImproveController {
         List<ImproveClassroom> improves = null;
         try {
             if("1".equals(sorttype)){
-                improves = improveService.selectClassroomImproveList(userid,classroomid,
+                improves = improveService.selectClassroomImproveList(userid,classroomid,sift,
                         Integer.parseInt(startNo),Integer.parseInt(pageSize));
 
             } else {
-                improves = improveService.selectClassroomImproveListByDate(userid,classroomid,
+                improves = improveService.selectClassroomImproveListByDate(userid,classroomid,sift,
                         Integer.parseInt(startNo), Integer.parseInt(pageSize));
             }
         } catch (Exception e) {
