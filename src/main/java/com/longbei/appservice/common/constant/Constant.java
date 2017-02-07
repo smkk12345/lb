@@ -1,5 +1,9 @@
 package com.longbei.appservice.common.constant;
 
+import com.longbei.appservice.common.utils.DateUtils;
+
+import java.util.Date;
+
 /**
  * 全局常量类
  */
@@ -200,5 +204,9 @@ public class Constant {
 	 * redis中各种请求前缀   redis_prefix
 	 */
 	public static final String RP_USER_PERDAY = "user_perday_";
+	/**
+	 * redis 缓存时间 单位秒
+	 */
+	public static final long CACHE_24X60X60 = 24*3600;
 
 }

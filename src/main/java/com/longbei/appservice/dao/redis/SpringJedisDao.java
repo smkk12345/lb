@@ -82,6 +82,18 @@ public class SpringJedisDao {
         return result;
     }
 
+    //设置key的过期时间
+    public boolean expire(String key,long timeout){
+        boolean result = false;
+        try{
+            redisTemplate.expire(key,timeout,TimeUnit.SECONDS);
+            result = true;
+        }catch (Exception e){
+            logger.error("redis expire error key={},msg={}",key,e);
+        }
+        return result;
+    }
+
     //--------------Map-----------------//
     //put整个map
     public boolean putAll(String key, Map map){
