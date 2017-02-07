@@ -3,8 +3,8 @@ package com.longbei.appservice.config;
 import com.aliyun.oss.OSSClient;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({"classpath:longbei.properties"})
 public class AliServiceConfig {
 
-    private static Logger logger = LoggerFactory.getLogger(AliServiceConfig.class);
+//    private static Logger logger = LoggerFactory.getLogger(AliServiceConfig.class);
 
     @Value("${oss.endpoint}")
     private String endpoint;
@@ -44,6 +44,11 @@ public class AliServiceConfig {
     
     public static String rongyun_key;
     public static String rongyun_secret;
+    
+    //Jpush
+    public static String jpush_api_key;
+    public static String jpush_master_key;
+    public static String isproduction;
 
     public static OSSClient ossClient;   //ossclient
     public static TaobaoClient alidayuclient; //alidayu
@@ -136,6 +141,30 @@ public class AliServiceConfig {
 
 	public static void setRongyun_secret(String rongyun_secret) {
 		AliServiceConfig.rongyun_secret = rongyun_secret;
+	}
+
+	public static String getJpush_api_key() {
+		return jpush_api_key;
+	}
+
+	public static void setJpush_api_key(String jpush_api_key) {
+		AliServiceConfig.jpush_api_key = jpush_api_key;
+	}
+
+	public static String getJpush_master_key() {
+		return jpush_master_key;
+	}
+
+	public static void setJpush_master_key(String jpush_master_key) {
+		AliServiceConfig.jpush_master_key = jpush_master_key;
+	}
+
+	public static String getIsproduction() {
+		return isproduction;
+	}
+
+	public static void setIsproduction(String isproduction) {
+		AliServiceConfig.isproduction = isproduction;
 	}
     
 	
