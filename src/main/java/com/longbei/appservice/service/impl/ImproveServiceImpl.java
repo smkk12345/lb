@@ -1,11 +1,16 @@
 package com.longbei.appservice.service.impl;
 
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
@@ -41,6 +46,10 @@ public class ImproveServiceImpl implements ImproveService{
     private ImproveGoalMapper improveGoalMapper;
     @Autowired
     private QueueMessageSendService queueMessageSendService;
+    @Autowired
+    private CommentMongoService commentMongoService;
+    @Autowired
+    private UserMongoDao userMongoDao;
 
     /**
      *  @author luye
@@ -67,50 +76,23 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setItype(itype);
         improve.setCreatetime(new Date());
         improve.setUpdatetime(new Date());
+        improve.setBusinessid(Long.parseLong(businessid));
 
         boolean isok = false;
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
             isok = insertImproveSingle(improve);
         }
         if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-            improve.setBusinessid(Long.parseLong(businessid));
-            ImproveRank improveRank = new ImproveRank();
-            try {
-                BeanUtils.copyProperties(improveRank,improve);
-            } catch (Exception e) {
-                logger.error("bean properties copy is error:{}",e);
-            }
-            isok = insertImproveForRank(improveRank);
+            isok = insertImproveForRank(improve);
         }
         if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-            improve.setBusinessid(Long.parseLong(businessid));
-            ImproveClassroom improveClassroom = new ImproveClassroom();
-            try {
-                BeanUtils.copyProperties(improveClassroom,improve);
-            } catch (Exception e) {
-                logger.error("bean properties copy is error:{}",e);
-            }
-            isok = insertImproveForClassroom(improveClassroom);
+            isok = insertImproveForClassroom(improve);
         }
         if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-            improve.setBusinessid(Long.parseLong(businessid));
-            ImproveCircle improveCircle = new ImproveCircle();
-            try {
-                BeanUtils.copyProperties(improveCircle,improve);
-            } catch (Exception e) {
-                logger.error("bean properties copy is error:{}",e);
-            }
-            isok = insertImproveForCircle(improveCircle);
+            isok = insertImproveForCircle(improve);
         }
         if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-            improve.setBusinessid(Long.parseLong(businessid));
-            ImproveGoal improveGoal = new ImproveGoal();
-            try {
-                BeanUtils.copyProperties(improveGoal,improve);
-            } catch (Exception e) {
-                logger.error("bean properties copy is error:{}",e);
-            }
-            isok = insertImproveForGoal(improveGoal);
+            isok = insertImproveForGoal(improve);
         }
         return isok;
     }
@@ -129,7 +111,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         int res = 0;
         try {
-            res = improveMapper.insertSelective(improve);
+            res = improveMapper.insertSelective(improve,Constant_table.IMPROVE);
         } catch (Exception e) {
             logger.error("insert sigle immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
@@ -151,23 +133,23 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public boolean insertImproveForCircle(ImproveCircle improveCircle) {
+    public boolean insertImproveForCircle(Improve improve) {
 
-        if(!insertImproveFilter(improveCircle.getUserid(),Constant.IMPROVE_CIRCLE_TYPE)){
+        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_CIRCLE_TYPE)){
             return false;
         }
         int res = 0;
         try {
-            res = improveCircleMapper.insertSelective(improveCircle);
+            res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_CIRCLE);
         } catch (Exception e) {
-            logger.error("insert circle immprove:{} is error:{}", JSONObject.fromObject(improveCircle).toString(),e);
+            logger.error("insert circle immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improveCircle.getImpid() +
+            String message = improve.getImpid() +
                     "," + Constant.IMPROVE_CIRCLE_TYPE +
-                    "," + improveCircle.getBusinessid() +
-                    "," + improveCircle.getUserid() +
-                    "," + DateUtils.formatDateTime1(improveCircle.getCreatetime());
+                    "," + improve.getBusinessid() +
+                    "," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -180,23 +162,23 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public boolean insertImproveForClassroom(ImproveClassroom improveClassroom) {
+    public boolean insertImproveForClassroom(Improve improve) {
 
-        if(!insertImproveFilter(improveClassroom.getUserid(),Constant.IMPROVE_CLASSROOM_TYPE)){
+        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_CLASSROOM_TYPE)){
             return false;
         }
         int res = 0;
         try {
-            res = improveClassroomMapper.insertSelective(improveClassroom);
+            res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_CLASSROOM);
         } catch (Exception e) {
-            logger.error("insert classroom immprove:{} is error:{}", JSONObject.fromObject(improveClassroom).toString(),e);
+            logger.error("insert classroom immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improveClassroom.getImpid() +
+            String message = improve.getImpid() +
                     "," + Constant.IMPROVE_CLASSROOM_TYPE +
-                    "," + improveClassroom.getBusinessid() +
-                    "," + improveClassroom.getUserid() +
-                    "," + DateUtils.formatDateTime1(improveClassroom.getCreatetime());
+                    "," + improve.getBusinessid() +
+                    "," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
 
             queueMessageSendService.sendAddMessage(message);
             return true;
@@ -210,24 +192,24 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public boolean insertImproveForRank(ImproveRank improveRank) {
+    public boolean insertImproveForRank(Improve improve) {
 
-        if(!insertImproveFilter(improveRank.getUserid(),Constant.IMPROVE_RANK_TYPE)){
+        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_RANK_TYPE)){
             return false;
         }
 
         int res = 0;
         try {
-            res = improveRankMapper.insertSelective(improveRank);
+            res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
         } catch (Exception e) {
-            logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improveRank).toString(),e);
+            logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improveRank.getImpid() +
+            String message = improve.getImpid() +
                     "," + Constant.IMPROVE_RANK_TYPE +
-                    "," + improveRank.getBusinessid() +
-                    "," + improveRank.getUserid() +
-                    "," + DateUtils.formatDateTime1(improveRank.getCreatetime());
+                    "," + improve.getBusinessid() +
+                    "," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
             queueMessageSendService.sendAddMessage(message);
             return true;
         }
@@ -240,24 +222,24 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public boolean insertImproveForGoal(ImproveGoal improveGoal) {
+    public boolean insertImproveForGoal(Improve improve) {
 
-        if(!insertImproveFilter(improveGoal.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
+        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
             return false;
         }
 
         int res = 0;
         try {
-            res = improveGoalMapper.insertSelective(improveGoal);
+            res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_GOAL);
         } catch (Exception e) {
-            logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improveGoal).toString(),e);
+            logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improveGoal.getImpid() +
+            String message = improve.getImpid() +
                     "," + Constant.IMPROVE_GOAL_TYPE +
-                    "," + improveGoal.getBusinessid() +
-                    "," + improveGoal.getUserid() +
-                    "," + DateUtils.formatDateTime1(improveGoal.getCreatetime());
+                    "," + improve.getBusinessid() +
+                    "," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
 
             queueMessageSendService.sendAddMessage(message);
             return true;
@@ -277,19 +259,19 @@ public class ImproveServiceImpl implements ImproveService{
         Improve improve = null;
         try {
             if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE);
             }
             if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-                improve = improveRankMapper.selectByPrimaryKey(impid);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK);
             }
             if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-                improve = improveClassroomMapper.selectByPrimaryKey(impid);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM);
             }
             if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                improve = improveCircleMapper.selectByPrimaryKey(impid);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE);
             }
             if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-                improve = improveGoalMapper.selectByPrimaryKey(impid);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL);
             }
         } catch (Exception e) {
             logger.error("select improve by userid:{}" +
@@ -306,12 +288,12 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveRank> selectRankImproveList(String userid, String rankid,String sift, int pageNo, int pageSize) {
-        List<ImproveRank> improveRanks = null;
+    public List<Improve> selectRankImproveList(String userid, String rankid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveRanks = improveRankMapper.selectByRankId(rankid,null);
+
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -325,14 +307,16 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
-
-            if(null == improveRanks){
-                improveRanks = new ArrayList<>();
+            improves = improveMapper.selectListByBusinessid
+                    (rankid, Constant_table.IMPROVE_RANK,null,pageNo,pageSize);
+            initImproveListOtherInfo(improves);
+            if(null == improves){
+                improves = new ArrayList<>();
             }
         } catch (Exception e) {
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
-        return improveRanks;
+        return improves;
     }
     /**
      *  @author luye
@@ -341,12 +325,12 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveRank> selectRankImproveListByDate(String userid, String rankid,String sift, int pageNo, int pageSize) {
-        List<ImproveRank> improveRanks = null;
+    public List<Improve> selectRankImproveListByDate(String userid, String rankid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveRanks = improveRankMapper.selectByRankId(rankid, "1");
+
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -360,13 +344,16 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
-            if(null == improveRanks){
-                improveRanks = new ArrayList<>();
+            improves = improveMapper.selectListByBusinessid
+                    (rankid, Constant_table.IMPROVE_RANK,"1",pageNo,pageSize);
+            initImproveListOtherInfo(improves);
+            if(null == improves){
+                improves = new ArrayList<>();
             }
         } catch (Exception e) {
             logger.error("selectRankImproveListByDate userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
-        return improveRanks;
+        return improves;
     }
     /**
      *  @author luye
@@ -375,12 +362,12 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveCircle> selectCircleImproveList(String userid, String circleid,String sift, int pageNo, int pageSize) {
-        List<ImproveCircle> improveCircles = null;
+    public List<Improve> selectCircleImproveList(String userid, String circleid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveCircles = improveCircleMapper.selectByCircleId(circleid, null);
+
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -394,10 +381,13 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
+            improves = improveMapper.selectListByBusinessid
+                    (circleid, Constant_table.IMPROVE_CIRCLE,null,pageNo,pageSize);
+            initImproveListOtherInfo(improves);
         } catch (Exception e) {
             logger.error("selectCircleImproveList userid:{} circleid:{} is error:{}",userid,circleid,e);
         }
-        return improveCircles;
+        return improves;
     }
     /**
      *  @author luye
@@ -406,12 +396,11 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveCircle> selectCircleImproveListByDate(String userid, String circleid,String sift, int pageNo, int pageSize) {
-        List<ImproveCircle> improveCircles = null;
+    public List<Improve> selectCircleImproveListByDate(String userid, String circleid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveCircles = improveCircleMapper.selectByCircleId(circleid, "1");
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -425,10 +414,13 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
+            improves = improveMapper.selectListByBusinessid
+                    (circleid, Constant_table.IMPROVE_CIRCLE,"1",pageNo,pageSize);
+            initImproveListOtherInfo(improves);
         } catch (Exception e) {
             logger.error("selectCircleImproveListByDate userid:{} circleid:{} is error:{}",userid,circleid,e);
         }
-        return improveCircles;
+        return improves;
     }
     /**
      *  @author luye
@@ -437,12 +429,11 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<ImproveClassroom> selectClassroomImproveList(String userid, String classroomid,String sift, int pageNo, int pageSize) {
-        List<ImproveClassroom> improveClassrooms = null;
+    public List<Improve> selectClassroomImproveList(String userid, String classroomid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid, null);
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -456,10 +447,13 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
+            improves = improveMapper.selectListByBusinessid
+                    (classroomid, Constant_table.IMPROVE_CLASSROOM,null,pageNo,pageSize);
+            initImproveListOtherInfo(improves);
         } catch (Exception e) {
             logger.error("selectClassroomImproveList userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
-        return improveClassrooms;
+        return improves;
     }
     /**
      *  @author luye
@@ -468,12 +462,11 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public List<ImproveClassroom> selectClassroomImproveListByDate(String userid, String classroomid,String sift, int pageNo, int pageSize) {
-        List<ImproveClassroom> improveClassrooms = null;
+    public List<Improve> selectClassroomImproveListByDate(String userid, String classroomid,String sift, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
             //全部
             if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-                improveClassrooms = improveClassroomMapper.selectByClassroomId(classroomid,"1");
             }
             //关注
             if (Constant.IMPROVE_LIST_FANS.equals(sift)){
@@ -487,10 +480,14 @@ public class ImproveServiceImpl implements ImproveService{
             if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
 
             }
+
+            improves = improveMapper.selectListByBusinessid
+                    (classroomid, Constant_table.IMPROVE_CLASSROOM,"1",pageNo,pageSize);
+            initImproveListOtherInfo(improves);
         } catch (Exception e) {
             logger.error("selectClassroomImproveListByDate userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
-        return improveClassrooms;
+        return improves;
     }
     /**
      *  @author luye
@@ -499,14 +496,16 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public List<ImproveGoal> selectGoalImproveList(String userid, String goalid, int pageNo, int pageSize) {
-        List<ImproveGoal> improveGoals = null;
+    public List<Improve> selectGoalImproveList(String userid, String goalid, int pageNo, int pageSize) {
+        List<Improve> improves = null;
         try {
-            improveGoals = improveGoalMapper.selectByGoalId(goalid);
+            improves = improveMapper.selectListByBusinessid
+                    (goalid, Constant_table.IMPROVE_GOAL,null,pageNo,pageSize);
+            initImproveListOtherInfo(improves);
         } catch (Exception e) {
             logger.error("selectGoalImproveList userid:{} goalid:{} is error:{}",userid,goalid,e);
         }
-        return improveGoals;
+        return improves;
     }
     /**
      *  @author luye
@@ -661,6 +660,19 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
+    private void initImproveListOtherInfo(List<Improve> improves){
+        if(null == improves || 0 == improves.size()){
+            return;
+        }
+        for (Improve improve : improves){
+
+            initImproveAttachInfo(improve);
+            initImproveUserInfo(improve);
+
+        }
+    }
+
+
     /**
      * 向improve中的赞，献花，钻石，评论数赋值
      * @param improve
@@ -668,6 +680,22 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initImproveAttachInfo(Improve improve){
 
+        //对进步的评论数赋值
+        BaseResp<Object> baseResp = commentMongoService.selectCommentCountSum
+                        (String.valueOf(improve.getId()),Constant.COMMENT_SINGLE_TYPE);
+        if (ResultUtil.isSuccess(baseResp)){
+            improve.setCommentnum((Integer)baseResp.getData());
+        } else {
+            improve.setCommentnum(0);
+        }
+
+        //对进步的赞数赋值
+
+
+        //对进步的鲜花数赋值
+
+
+        //对进步的钻石数赋值
 
 
     }
@@ -678,7 +706,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @author:luye
      */
     private void initImproveUserInfo(Improve improve){
-
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(improve.getUserid()));
+        improve.setAppUserMongoEntity(appUserMongoEntity);
     }
 
 

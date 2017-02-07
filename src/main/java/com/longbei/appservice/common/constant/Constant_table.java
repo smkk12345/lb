@@ -58,6 +58,13 @@ public class Constant_table {
 	public static final String SYS_RULES =DATABASE_NAME+ "sys_rules";
 	public static final String SYS_SENSITIVE = DATABASE_NAME+ "sys_sensitive";
 	public static final String SYS_LONGBEIINFO = DATABASE_NAME+ "sys_longbeiinfo";
+
+	public static final String IMPROVE = "improve";
+	public static final String IMPROVE_CIRCLE = "improve_circle";
+	public static final String IMPROVE_RANK = "improve_rank";
+	public static final String IMPROVE_GOAL = "improve_goal";
+	public static final String IMPROVE_CLASSROOM = "improve_classroom";
+
 	
 	
 }
