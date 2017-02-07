@@ -45,6 +45,26 @@ public class Improve {
 
     protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
 
+    protected Integer commentnum; //评论数
+
+    protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Integer getCommentnum() {
+        return commentnum;
+    }
+
+    public void setCommentnum(Integer commentnum) {
+        this.commentnum = commentnum;
+    }
+
     /**
      * 
      * @return id 

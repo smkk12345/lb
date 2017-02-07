@@ -40,28 +40,28 @@ public interface ImproveService {
      * @param improveCircle
      * @return
      */
-    boolean insertImproveForCircle(ImproveCircle improveCircle);
+    boolean insertImproveForCircle(Improve improveCircle);
 
     /**
      * 添加教室中进步
      * @param improveClassroom
      * @return
      */
-    boolean insertImproveForClassroom(ImproveClassroom improveClassroom);
+    boolean insertImproveForClassroom(Improve improveClassroom);
 
     /**
      * 添加榜单中进步
      * @param improveRank
      * @return
      */
-    boolean insertImproveForRank(ImproveRank improveRank);
+    boolean insertImproveForRank(Improve improveRank);
 
     /**
      * 添加目标中进步
      * @param improveGoal
      * @return
      */
-    boolean insertImproveForGoal(ImproveGoal improveGoal);
+    boolean insertImproveForGoal(Improve improveGoal);
 
 
     /**
@@ -82,7 +82,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveRank> selectRankImproveList(String userid,String rankid,String sift,int pageNo,int pageSize);
+    List<Improve> selectRankImproveList(String userid,String rankid,String sift,int pageNo,int pageSize);
 
     /**
      *  榜中按时间排序
@@ -93,7 +93,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveRank> selectRankImproveListByDate(String userid,String rankid,String sift,int pageNo,int pageSize);
+    List<Improve> selectRankImproveListByDate(String userid,String rankid,String sift,int pageNo,int pageSize);
 
     /**
      *  圈子中成员动态
@@ -104,7 +104,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveCircle> selectCircleImproveList(String userid,String circleid,String sift,int pageNo,int pageSize);
+    List<Improve> selectCircleImproveList(String userid,String circleid,String sift,int pageNo,int pageSize);
 
     /**
      *  圈子中按时间排序
@@ -115,7 +115,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveCircle> selectCircleImproveListByDate(String userid,String circleid,String sift,int pageNo,int pageSize);
+    List<Improve> selectCircleImproveListByDate(String userid,String circleid,String sift,int pageNo,int pageSize);
 
     /**
      *  教室中成员动态
@@ -126,7 +126,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveClassroom> selectClassroomImproveList(String userid,String classroomid,String sift,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveList(String userid,String classroomid,String sift,int pageNo,int pageSize);
 
     /**
      *  教室中按时间排序
@@ -137,7 +137,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveClassroom> selectClassroomImproveListByDate(String userid,String classroomid,String sift,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveListByDate(String userid,String classroomid,String sift,int pageNo,int pageSize);
 
 
     /**
@@ -148,7 +148,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<ImproveGoal> selectGoalImproveList(String userid,String goalid,int pageNo,int pageSize);
+    List<Improve> selectGoalImproveList(String userid,String goalid,int pageNo,int pageSize);
 
 
     /**

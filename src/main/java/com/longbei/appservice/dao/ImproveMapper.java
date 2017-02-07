@@ -1,7 +1,10 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.ImproveGoal;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ImproveMapper {
 
@@ -9,9 +12,20 @@ public interface ImproveMapper {
 
     int insert(Improve record);
 
-    int insertSelective(Improve record);
+    int insertSelective(@Param("improve") Improve improve,@Param("tablename") String tablename);
 
-    Improve selectByPrimaryKey(Long impid);
+    Improve selectByPrimaryKey(Long impid,String tablename);
+
+    /**
+     * 获取进步列表
+     *
+     * @return
+     */
+    List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
+                                         @Param("tablename")String tablename,
+                                         @Param("ismainimp")String ismainimp,
+                                         @Param("startno")int startno,
+                                         @Param("pagesize")int pagesize);
 
     int updateByPrimaryKeySelective(Improve record);
 

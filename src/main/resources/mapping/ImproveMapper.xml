@@ -26,10 +26,10 @@
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  statementType="STATEMENT">
     select 
     <include refid="Base_Column_List" />
-    from improve
+    from ${tablename}
     where impid = #{impid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
@@ -52,8 +52,8 @@
       #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Improve" >
-    insert into improve
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Improve" statementType="STATEMENT">
+    insert into ${tablename}
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -261,6 +261,18 @@
     UPDATE improve SET isdel = '1' WHERE impid=#{improveid} AND userid=#{userid}
   </update>
 
+  <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap"  statementType="STATEMENT">
+    select
+    <include refid="Base_Column_List" />
+    from ${tablename}
+    where
+     businessid = #{businessid}
+    <if test="ismainimp != null" >
+      AND ismainimp = #{ismainimp}
+    </if>
+    ORDER BY createtime DESC
+    limit #{startno},#{pagesize}
+  </select>
 
 
 </mapper>
