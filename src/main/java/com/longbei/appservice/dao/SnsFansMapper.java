@@ -13,13 +13,17 @@ public interface SnsFansMapper {
     int insertSelective(SnsFans record);
 
     SnsFans selectByPrimaryKey(Integer id);
+    
+    SnsFans selectByUidAndLikeid(@Param("userid") long userid, @Param("likeuserid") long likeuserid);
 
     int updateByPrimaryKeySelective(SnsFans record);
 
     int updateByPrimaryKey(SnsFans record);
     
-    int deleteByUidAndLid(long userid,long likeuserid);
+    int deleteByUidAndLid(@Param("userid") long userid, @Param("likeuserid") long likeuserid);
     
     List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    List<String> selectListidByUid(@Param("userid") long userid);
     
 }

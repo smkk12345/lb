@@ -42,6 +42,21 @@
     where userid = #{userid}
   </select>
   
+  <select id="selectLikeListByUnameAndNname" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where 
+    <if test="type == 0" >
+      userid in #{ids} 
+    </if>
+    <if test="type == 1" >
+      userid not in #{ids} 
+    </if>
+    and (nickname LIKE CONCAT(CONCAT('%', #{nickname}),'%') 
+       or username LIKE CONCAT(CONCAT('%', #{nickname}),'%'))
+      
+  </select>
   
   <select id="getByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

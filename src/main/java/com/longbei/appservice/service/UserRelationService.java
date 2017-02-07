@@ -9,6 +9,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.SnsFriends;
 
 /**
  * @author smkk
@@ -44,6 +45,25 @@ public interface UserRelationService {
 	* @currentdate:2017年1月20日
 	 */
 	public BaseResp<Object> delete(long userid,long friendid);
+	
+	/**
+	 * @author yinxc
+	 * 获取好友信息
+	 * 2017年2月4日
+	 * return_type
+	 * SnsFriendsService
+	 */
+	SnsFriends selectByUidAndFid(long userid, long friendid);
+	
+	/**
+	 * @author yinxc
+	 * 修改好友备注信息
+	 * 2017年2月4日
+	 * return_type
+	 * SnsFriendsService
+	 */
+	BaseResp<Object> updateRemarkByUidAndFid(long userid, long friendid, String remark);
+	
 	/**
 	* @Title: insertFans
 	* @Description: 关注
@@ -74,5 +94,22 @@ public interface UserRelationService {
 	 */
 	public BaseResp<Object> selectFansListByUserId(long userid,int startNum,int endNum);
 
+	/**
+	 * @author yinxc
+	 * 通讯录本地搜索(手机号和昵称搜索)
+	 * 2017年2月6日
+	 * return_type
+	 * UserRelationService
+	 */
+	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname);
+	
+	/**
+	 * @author yinxc
+	 * 通讯录远程搜索(手机号和昵称搜索)
+	 * 2017年2月6日
+	 * return_type
+	 * UserRelationService
+	 */
+	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname);
 
 }

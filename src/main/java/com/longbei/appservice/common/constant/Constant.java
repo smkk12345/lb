@@ -50,6 +50,7 @@ public class Constant {
 	public static final int STATUS_SYS_22 = -22;
 	
 	public static final int STATUS_SYS_26 = -26;
+	public static final int STATUS_SYS_27 = -27;
 
 
 	public static final int STATUS_SYS_40 = -40;
@@ -96,6 +97,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_22 = "该评论已点赞";
 	
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
+	public static final String RTNINFO_SYS_27 = "暂无搜索信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
