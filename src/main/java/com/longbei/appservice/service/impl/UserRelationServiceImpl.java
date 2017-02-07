@@ -215,7 +215,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname) {
+	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
@@ -223,7 +223,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0");
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0", startNum, endNum);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getUserid())){
@@ -250,7 +250,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname) {
+	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
@@ -258,7 +258,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1");
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getUserid())){

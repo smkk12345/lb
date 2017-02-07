@@ -55,7 +55,9 @@
     </if>
     and (nickname LIKE CONCAT(CONCAT('%', #{nickname}),'%') 
        or username LIKE CONCAT(CONCAT('%', #{nickname}),'%'))
-      
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
   </select>
   
   <select id="getByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >

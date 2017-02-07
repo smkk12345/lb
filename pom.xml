@@ -200,6 +200,12 @@
             <artifactId>alidayu</artifactId>
             <version>1.0</version>
         </dependency>
+        <!-- Jpush -->
+        <dependency>
+			<groupId>cn.jpush.api</groupId>
+			<artifactId>jpush-client</artifactId>
+			<version>3.2.8</version>
+		</dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
