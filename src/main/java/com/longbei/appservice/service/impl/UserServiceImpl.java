@@ -1,16 +1,12 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.HashMap;
 import java.util.UUID;
-
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
@@ -19,7 +15,6 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.expand.AlidayuSmsUtils;
 import com.longbei.appservice.common.expand.RongCloudProxy;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.JedisDao;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserService;
@@ -41,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private IdGenerateService idGenerateService;
 	//@Autowired
-	private JedisDao jedisDao;
+//	private JedisDao jedisDao;
 	@Autowired
 	private SpringJedisDao springJedisDao;
 	@Autowired
@@ -160,7 +155,7 @@ public class UserServiceImpl implements UserService {
 		baseResp.getExpandData().put("userid", userid);
 		baseResp.getExpandData().put("nickname", nickname);
 		//token 放到redis中去
-		jedisDao.sadd("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
+		springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
 		return baseResp;
 	}
 
@@ -176,6 +171,7 @@ public class UserServiceImpl implements UserService {
 	 * @see com.longbei.appservice.service.UserService#sms(java.lang.String, java.lang.String)
 	 * 2017年1月16日
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -200,7 +196,7 @@ public class UserServiceImpl implements UserService {
 
             if (StringUtils.isBlank(rtn)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-            		jedisDao.sadd(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
+            		springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
                 logger.debug("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
             } else {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
@@ -219,7 +215,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> checkSms(String mobile, String random) {
-		String res = jedisDao.getString(mobile);
+		String res = springJedisDao.get(mobile);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {
 			logger.debug("{}  验证码{} 失效", mobile, random);
@@ -240,7 +236,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> findPassword(String username, String newpwd, String randomCode) {
-		String res = jedisDao.getString(username);
+		String res = springJedisDao.get(username);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {
 			logger.debug("{}  验证码{} 失效", username, randomCode);
@@ -260,7 +256,7 @@ public class UserServiceImpl implements UserService {
 					UserInfo userInfo = userInfoMapper.getByUserName(username);
 					if(null != userInfo){
 						//token 放到redis中去
-						jedisDao.sadd("userid&token&"+userInfo.getUserid(), token);
+						springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					}
 				}
 			}
@@ -282,7 +278,7 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
 			if(deviceindex.equals(userInfo.getDeviceindex())){
 				//token 放到redis中去
-				jedisDao.sadd("userid&token&"+userInfo.getUserid(), token);
+				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 				returnResp.setData(userInfo);
 				returnResp.getExpandData().put("token", token);
 			}else{
@@ -354,7 +350,7 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			if(userInfo.getDeviceindex().equals(deviceindex)){
 				//token 放到redis中去
-				jedisDao.sadd("userid&token&"+userInfo.getUserid(), token);
+				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 				baseResp.setData(userInfo);
 			}else{
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
