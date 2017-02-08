@@ -297,10 +297,7 @@
     <!--</repositories>-->
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>spring-milestone</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
+
         <pluginRepository>
             <id>public</id>
             <name>Public Repositories</name>
@@ -321,6 +318,10 @@
         <pluginRepository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestone</id>
+            <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
     <profiles>
