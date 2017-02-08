@@ -14,7 +14,7 @@ public interface ImproveMapper {
 
     int insertSelective(@Param("improve") Improve improve,@Param("tablename") String tablename);
 
-    Improve selectByPrimaryKey(Long impid,String tablename);
+    Improve selectByPrimaryKey(@Param("impid")Long impid,@Param("tablename")String tablename);
 
     /**
      * 获取进步列表

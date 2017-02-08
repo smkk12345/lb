@@ -4,10 +4,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.entity.ImproveCircle;
-import com.longbei.appservice.entity.ImproveClassroom;
-import com.longbei.appservice.entity.ImproveGoal;
-import com.longbei.appservice.entity.ImproveRank;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
 import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
@@ -51,7 +48,7 @@ public class ImproveController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "insert",method = RequestMethod.POST)
+    @RequestMapping(value = "insert",method = RequestMethod.GET)
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype,String businessid, String ptype,
                                           String ispublic, String itype){
@@ -139,7 +136,7 @@ public class ImproveController {
         if(StringUtils.isBlank(pageSize)){
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<ImproveRank> improves = null;
+        List<Improve> improves = null;
         try {
             if("1".equals(sorttype)){
                 improves = improveService.selectRankImproveList(userid,rankid,sift,
@@ -155,7 +152,7 @@ public class ImproveController {
         if (null == improves) {
             return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<ImproveRank>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
     }
@@ -184,7 +181,7 @@ public class ImproveController {
         if(StringUtils.isBlank(pageSize)){
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<ImproveCircle> improves = null;
+        List<Improve> improves = null;
         try {
             if("1".equals(sorttype)){
                 improves = improveService.selectCircleImproveList(userid,circleid,sift,
@@ -200,7 +197,7 @@ public class ImproveController {
         if (null == improves) {
             return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<ImproveCircle>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
     }
@@ -230,7 +227,7 @@ public class ImproveController {
         if(StringUtils.isBlank(pageSize)){
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<ImproveClassroom> improves = null;
+        List<Improve> improves = null;
         try {
             if("1".equals(sorttype)){
                 improves = improveService.selectClassroomImproveList(userid,classroomid,sift,
@@ -246,7 +243,7 @@ public class ImproveController {
         if (null == improves) {
             return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<ImproveClassroom>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
     }
@@ -275,7 +272,7 @@ public class ImproveController {
         if(StringUtils.isBlank(pageSize)){
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<ImproveGoal> improves =  null;
+        List<Improve> improves =  null;
         try {
             improves = improveService.selectGoalImproveList(userid,goalid,
                         Integer.parseInt(startNo),Integer.parseInt(pageSize));
@@ -285,7 +282,7 @@ public class ImproveController {
         if (null == improves) {
             return new BaseResp(Constant.STATUS_SYS_43,Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<ImproveGoal>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
     }
