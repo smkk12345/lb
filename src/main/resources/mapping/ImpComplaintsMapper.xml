@@ -17,7 +17,7 @@
     <result column="gtype" property="gtype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, pid, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
+    id, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
     contenttype, rankid, gtype
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.ImpComplaintsKey" >
@@ -25,20 +25,18 @@
     <include refid="Base_Column_List" />
     from imp_complaints
     where id = #{id,jdbcType=BIGINT}
-      and pid = #{pid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpComplaintsKey" >
     delete from imp_complaints
     where id = #{id,jdbcType=BIGINT}
-      and pid = #{pid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ImpComplaints" >
-    insert into imp_complaints (id, pid, userid, 
+    insert into imp_complaints (id, userid, 
       impid, content, createtime, 
       status, dealtime, dealuser, 
       checkoption, contenttype, rankid, 
       gtype)
-    values (#{id,jdbcType=BIGINT}, #{pid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
       #{impid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=CHAR}, #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, 
       #{checkoption,jdbcType=VARCHAR}, #{contenttype,jdbcType=VARCHAR}, #{rankid,jdbcType=BIGINT}, 
@@ -49,9 +47,6 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
-      </if>
-      <if test="pid != null" >
-        pid,
       </if>
       <if test="userid != null" >
         userid,
@@ -90,9 +85,6 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
-      </if>
-      <if test="pid != null" >
-        #{pid,jdbcType=BIGINT},
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
@@ -167,7 +159,6 @@
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
-      and pid = #{pid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpComplaints" >
     update imp_complaints
@@ -183,6 +174,5 @@
       rankid = #{rankid,jdbcType=BIGINT},
       gtype = #{gtype,jdbcType=CHAR}
     where id = #{id,jdbcType=BIGINT}
-      and pid = #{pid,jdbcType=BIGINT}
   </update>
 </mapper>

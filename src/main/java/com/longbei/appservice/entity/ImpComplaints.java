@@ -2,7 +2,12 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
-public class ImpComplaints extends ImpComplaintsKey {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+public class ImpComplaints {
+	private Long id;
+	
     private Long userid;//用户id
 
     private Long impid;//进步组id
@@ -29,6 +34,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 用户id
      * @return userid 用户id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -45,6 +51,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 进步组id
      * @return impid 进步组id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getImpid() {
         return impid;
     }
@@ -93,6 +100,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 0--未处理 1---无用 2---有用
      * @return status 0--未处理 1---无用 2---有用
      */
+    @JsonInclude(Include.ALWAYS)
     public String getStatus() {
         return status;
     }
@@ -157,6 +165,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 
      * @return contenttype 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getContenttype() {
         return contenttype;
     }
@@ -173,6 +182,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 榜单id
      * @return rankid 榜单id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getRankid() {
         return rankid;
     }
@@ -189,6 +199,7 @@ public class ImpComplaints extends ImpComplaintsKey {
      * 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      * @return gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      */
+    @JsonInclude(Include.ALWAYS)
     public String getGtype() {
         return gtype;
     }
@@ -200,4 +211,12 @@ public class ImpComplaints extends ImpComplaintsKey {
     public void setGtype(String gtype) {
         this.gtype = gtype == null ? null : gtype.trim();
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
