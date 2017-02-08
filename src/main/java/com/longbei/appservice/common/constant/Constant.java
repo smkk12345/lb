@@ -1,9 +1,5 @@
 package com.longbei.appservice.common.constant;
 
-import com.longbei.appservice.common.utils.DateUtils;
-
-import java.util.Date;
-
 /**
  * 全局常量类
  */
@@ -55,7 +51,7 @@ public class Constant {
 	
 	public static final int STATUS_SYS_26 = -26;
 	public static final int STATUS_SYS_27 = -27;
-
+	public static final int STATUS_SYS_28 = -28;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -102,6 +98,7 @@ public class Constant {
 	
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
 	public static final String RTNINFO_SYS_27 = "暂无搜索信息";
+	public static final String RTNINFO_SYS_28 = "暂无消息记录";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
