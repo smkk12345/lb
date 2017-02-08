@@ -20,13 +20,13 @@
     id, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
     contenttype, rankid, gtype
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.ImpComplaintsKey" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.ImpComplaints" >
     select 
     <include refid="Base_Column_List" />
     from imp_complaints
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpComplaintsKey" >
+  <delete id="deleteByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpComplaints" >
     delete from imp_complaints
     where id = #{id,jdbcType=BIGINT}
   </delete>
