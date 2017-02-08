@@ -26,7 +26,7 @@
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  statementType="STATEMENT">
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from ${tablename}
@@ -52,124 +52,124 @@
       #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Improve" statementType="STATEMENT">
+  <insert id="insertSelective"  >
     insert into ${tablename}
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="improve.id != null" >
         id,
       </if>
-      <if test="impid != null" >
+      <if test="improve.impid != null" >
         impid,
       </if>
-      <if test="itype != null" >
+      <if test="improve.itype != null" >
         itype,
       </if>
-      <if test="brief != null" >
+      <if test="improve.brief != null" >
         brief,
       </if>
-      <if test="pickey != null" >
+      <if test="improve.pickey != null" >
         pickey,
       </if>
-      <if test="filekey != null" >
+      <if test="improve.filekey != null" >
         filekey,
       </if>
-      <if test="userid != null" >
+      <if test="improve.userid != null" >
         userid,
       </if>
-      <if test="businessid != null" >
+      <if test="improve.businessid != null" >
         businessid,
       </if>
-      <if test="businesstype != null" >
+      <if test="improve.businesstype != null" >
         businesstype,
       </if>
-      <if test="likes != null" >
+      <if test="improve.likes != null" >
         likes,
       </if>
-      <if test="flowers != null" >
+      <if test="improve.flowers != null" >
         flowers,
       </if>
-      <if test="diamonds != null" >
+      <if test="improve.diamonds != null" >
         diamonds,
       </if>
-      <if test="createtime != null" >
+      <if test="improve.createtime != null" >
         createtime,
       </if>
-      <if test="updatetime != null" >
+      <if test="improve.updatetime != null" >
         updatetime,
       </if>
-      <if test="indexnum != null" >
+      <if test="improve.indexnum != null" >
         indexnum,
       </if>
-      <if test="isdel != null" >
+      <if test="improve.isdel != null" >
         isdel,
       </if>
-      <if test="ismainimp != null" >
+      <if test="improve.ismainimp != null" >
         ismainimp,
       </if>
-      <if test="ptype != null" >
+      <if test="improve.ptype != null" >
         ptype,
       </if>
-      <if test="ispublic != null" >
+      <if test="improve.ispublic != null" >
         ispublic,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
+      <if test="improve.id != null" >
+        #{improve.id,jdbcType=BIGINT},
       </if>
-      <if test="impid != null" >
-        #{impid,jdbcType=BIGINT},
+      <if test="improve.impid != null" >
+        #{improve.impid,jdbcType=BIGINT},
       </if>
-      <if test="itype != null" >
-        #{itype,jdbcType=CHAR},
+      <if test="improve.itype != null" >
+        #{improve.itype,jdbcType=CHAR},
       </if>
-      <if test="brief != null" >
-        #{brief,jdbcType=VARCHAR},
+      <if test="improve.brief != null" >
+        #{improve.brief,jdbcType=VARCHAR},
       </if>
-      <if test="pickey != null" >
-        #{pickey,jdbcType=VARCHAR},
+      <if test="improve.pickey != null" >
+        #{improve.pickey,jdbcType=VARCHAR},
       </if>
-      <if test="filekey != null" >
-        #{filekey,jdbcType=VARCHAR},
+      <if test="improve.filekey != null" >
+        #{improve.filekey,jdbcType=VARCHAR},
       </if>
-      <if test="userid != null" >
-        #{userid,jdbcType=BIGINT},
+      <if test="improve.userid != null" >
+        #{improve.userid,jdbcType=BIGINT},
       </if>
-      <if test="businessid != null" >
-        #{businessid,jdbcType=BIGINT},
+      <if test="improve.businessid != null" >
+        #{improve.businessid,jdbcType=BIGINT},
       </if>
-      <if test="businesstype != null" >
-        #{businesstype,jdbcType=CHAR},
+      <if test="improve.businesstype != null" >
+        #{improve.businesstype,jdbcType=CHAR},
       </if>
-      <if test="likes != null" >
-        #{likes,jdbcType=INTEGER},
+      <if test="improve.likes != null" >
+        #{improve.likes,jdbcType=INTEGER},
       </if>
-      <if test="flowers != null" >
-        #{flowers,jdbcType=INTEGER},
+      <if test="improve.flowers != null" >
+        #{improve.flowers,jdbcType=INTEGER},
       </if>
-      <if test="diamonds != null" >
-        #{diamonds,jdbcType=INTEGER},
+      <if test="improve.diamonds != null" >
+        #{improve.diamonds,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
+      <if test="improve.createtime != null" >
+        #{improve.createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
+      <if test="improve.updatetime != null" >
+        #{improve.updatetime,jdbcType=TIMESTAMP},
       </if>
-      <if test="indexnum != null" >
-        #{indexnum,jdbcType=INTEGER},
+      <if test="improve.indexnum != null" >
+        #{improve.indexnum,jdbcType=INTEGER},
       </if>
-      <if test="isdel != null" >
-        #{isdel,jdbcType=CHAR},
+      <if test="improve.isdel != null" >
+        #{improve.isdel,jdbcType=CHAR},
       </if>
-      <if test="ismainimp != null" >
-        #{ismainimp,jdbcType=CHAR},
+      <if test="improve.ismainimp != null" >
+        #{improve.ismainimp,jdbcType=CHAR},
       </if>
-      <if test="ptype != null" >
-        #{ptype,jdbcType=CHAR},
+      <if test="improve.ptype != null" >
+        #{improve.ptype,jdbcType=CHAR},
       </if>
-      <if test="ispublic != null" >
-        #{ispublic,jdbcType=CHAR},
+      <if test="improve.ispublic != null" >
+        #{improve.ispublic,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -261,7 +261,7 @@
     UPDATE improve SET isdel = '1' WHERE impid=#{improveid} AND userid=#{userid}
   </update>
 
-  <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap"  statementType="STATEMENT">
+  <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from ${tablename}

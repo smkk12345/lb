@@ -275,8 +275,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
         } catch (Exception e) {
             logger.error("select improve by userid:{}" +
-                    "id:{} businesstype:{} businessid:{}",
-                    userid,impid,businesstype,businessid);
+                    "id:{} businesstype:{} businessid:{} is error:{}",
+                    userid,impid,businesstype,businessid,e);
         }
 
         return improve;
