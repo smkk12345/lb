@@ -29,7 +29,8 @@ public class SpringJedisDao {
     public boolean set(String key,String value){
         boolean result = false;
         try {
-            redisTemplate.opsForValue().set(key,value);
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            valueOperations.set(key,value);
             result = true;
         }catch (Exception e){
             logger.error("redis set error key={},value={},msg={}",key,value,e);
@@ -41,7 +42,8 @@ public class SpringJedisDao {
     public boolean set(String key,String value,long timeout){
         boolean result = false;
         try {
-            redisTemplate.opsForValue().set(key,value,timeout);
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            valueOperations.set(key,value,timeout,TimeUnit.SECONDS);
             result = true;
         }catch (Exception e){
             logger.error("redis set error key={},value={},timeout={},msg={}",key,value,timeout,e);
@@ -52,7 +54,8 @@ public class SpringJedisDao {
     //带过期时间类型
     public boolean set(String key,String value,long timeout, TimeUnit unit){
         try {
-            redisTemplate.opsForValue().set(key,value,timeout,unit);
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            valueOperations.set(key,value,timeout,unit);
         }catch (Exception e){
             logger.error("redis set error key={},value={},timeout={},unit={},msg={}",key,value,timeout,unit,e);
             return false;
@@ -99,7 +102,8 @@ public class SpringJedisDao {
     public boolean putAll(String key, Map map){
         boolean result = false;
         try{
-            redisTemplate.opsForHash().putAll(key,map);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            options.putAll(key,map);
             result = true;
         }catch (Exception e){
             logger.error("redis putAll error key={},map={},msg={}",key,map,e);
@@ -110,7 +114,8 @@ public class SpringJedisDao {
     public boolean putAll(String key, Map map,long timeout){
         boolean result = false;
         try{
-            redisTemplate.opsForHash().putAll(key,map);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            options.putAll(key,map);
             redisTemplate.expire(key,timeout,TimeUnit.SECONDS);
             result = true;
         }catch (Exception e){
@@ -122,7 +127,8 @@ public class SpringJedisDao {
     public  boolean put(String key,String hashKey,String hashValue){
         boolean result = false;
         try{
-            redisTemplate.opsForHash().put(key,hashKey,hashValue);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            options.put(key,hashKey,hashValue);
             result = true;
         }catch (Exception e){
             logger.error("redis put error key={},hashKey={},hashValue={},msg={}",key,hashKey,hashValue,e);
@@ -132,7 +138,8 @@ public class SpringJedisDao {
     //判断map中hashKey是否存在
     public boolean hasKey(String key,String hashKey){
         try{
-            return redisTemplate.opsForHash().hasKey(key,hashKey);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            return options.hasKey(key,hashKey);
         }catch (Exception e){
             logger.error("redis hasKey error key={},hashKey={},msg={}",key,hashKey,e);
         }
@@ -141,7 +148,8 @@ public class SpringJedisDao {
     //get  获取map中键的值
     public Object getHashValue(String key,String hashKey){
         try{
-            return redisTemplate.opsForHash().get(key,hashKey);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            return options.get(key,hashKey);
         }catch (Exception e){
             logger.error("redis get error key={},hashKey={},msg={}",key,hashKey,e);
         }
@@ -161,7 +169,8 @@ public class SpringJedisDao {
     //delete 删除map中的key 可以是多个
     public long delete(String key,String... hashKeys){
         try{
-            return redisTemplate.opsForHash().delete(key,hashKeys);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            return options.delete(key,hashKeys);
         }catch (Exception e){
             logger.error("redis delete error key={},hashKeys={},msg={}",key,hashKeys,e);
         }
@@ -170,7 +179,8 @@ public class SpringJedisDao {
     //increment map中的key对应的value 做递增操作
     public long increment(String key,String hashKey,long delta){
         try {
-            return redisTemplate.opsForHash().increment(key,hashKey,delta);
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            return options.increment(key,hashKey,delta);
         }catch (Exception e){
             logger.error("redis delete error key={},hashKey={},delta={},msg={}",key,hashKey,delta,e);
         }

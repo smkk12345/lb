@@ -139,7 +139,7 @@ public class Constant {
 	/**
 	 * 移动端调用api的token失效
 	 */
-	public static final int APP_TOKEN_EXPIRE = 30*24*60*60*1000;
+	public static final int APP_TOKEN_EXPIRE = 30*24*60*60;
 	
 	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms,/user/registerbasic,/user/thirdlogin,/user/thirdregister";
 
