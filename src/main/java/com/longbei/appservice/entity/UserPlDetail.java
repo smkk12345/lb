@@ -17,7 +17,7 @@ public class UserPlDetail {
 
     private Date updatetime;
 
-    private String scorce;
+    private Integer scorce;
 
     /**
      * 
@@ -135,7 +135,7 @@ public class UserPlDetail {
      * 
      * @return scorce 
      */
-    public String getScorce() {
+    public Integer getScorce() {
         return scorce;
     }
 
@@ -143,7 +143,7 @@ public class UserPlDetail {
      * 
      * @param scorce 
      */
-    public void setScorce(String scorce) {
-        this.scorce = scorce == null ? null : scorce.trim();
+    public void setScorce(Integer scorce) {
+        this.scorce = scorce;
     }
 }

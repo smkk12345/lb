@@ -1,11 +1,14 @@
 package com.longbei.appservice.service.impl;
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.service.UserBehaviourService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +25,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     @Autowired
     private SpringJedisDao springJedisDao;
+    @Autowired
+    private UserPlDetailMapper userPlDetailMapper;
+
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
+
+
 
     @Override
     public BaseResp<Object> canOperateMore(long userid,UserInfo userInfo, String operateType) {
@@ -103,7 +111,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     levelUpAsyn(userInfo,iPoint);
                 }
             }else{
-                int point = userInfo.getPoint();
+                int point = userInfo.getPoint();//这里需要改
                 int leftPoint = point - iPoint;
                 if(point > 0 && leftPoint > 0){
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");
@@ -112,9 +120,38 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     levelUpAsyn(userInfo,iPoint);
                 }
             }
-            getHashValueFromCache(getPerKey(userInfo.getUserid()),dateStr+Constant.PERDAY_POINT);
         }catch(Exception e){
             logger.error("levelUp error and msg = {}",e);
+        }
+        return baseResp;
+    }
+
+    private BaseResp<Object> subLevelUp(UserInfo userInfo, int iPoint,int pType,String dateStr){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            String key = getPerKey(userInfo.getUserid());
+            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT+pType);
+            if(hasKey){
+                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT+pType);
+                int leftPoint = point - iPoint;
+                if(point > 0 && leftPoint > 0){//未升级
+                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
+                }else{//升级
+                    levelUpAsyn(userInfo,iPoint);
+                }
+            }else{
+                //这里通过10大分类获取用户point分数
+                //UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userid,pType);
+               // int point = userPlDetail.getScorce();
+                int leftPoint = 0 - iPoint;
+                if(0 > 0 && leftPoint > 0){
+                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
+                }else{//升级
+                    levelUpAsyn(userInfo,iPoint);
+                }
+            }
+        }catch (Exception e){
+            logger.error("subLevelUp error and msg = {}",e);
         }
         return baseResp;
     }
