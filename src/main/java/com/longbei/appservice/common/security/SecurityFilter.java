@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.*;
 
 import com.longbei.appservice.dao.JedisDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import net.sf.json.JSONObject;
@@ -30,7 +31,7 @@ import java.util.*;
 @WebFilter(filterName="myFilter",urlPatterns="/*")
 public class SecurityFilter extends OncePerRequestFilter {
 	private static String localAddress = "";
-	private static JedisDao jedisDao = null;
+	private static SpringJedisDao springJedisDao = null;
 	private static Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
 	 
 	/**
@@ -115,8 +116,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 				urlPath = urlPath.replace("/app_service/", "");
 				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1) {
 					token = "longbei2017";
-				} else {   
-					token = jedisDao.hget("userid&token&"+uid, "token");
+				} else {
+					token = springJedisDao.get("userid&token&"+uid);
 				}
 				if (StringUtils.isBlank(token)) {
 					//token过期
@@ -244,12 +245,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 	
 	@Override
 	protected void initFilterBean() throws ServletException {
-		if(null == jedisDao){
+		if(null == springJedisDao){
 			BeanFactory beans = WebApplicationContextUtils
 					.getWebApplicationContext(getServletContext());
 
 			try {
-				jedisDao = (JedisDao) beans.getBean("jedisDao");
+				springJedisDao = (SpringJedisDao) beans.getBean("springJedisDao");
 			} catch (Exception e) {
 
 			}

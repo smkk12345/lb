@@ -44,7 +44,7 @@ public class TokenManager {
             //将token放入redis
             springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
         }
-        logger.debug("token is "+token);
+        logger.info("token is "+token);
         JSONObject tokenjson = JSONObject.fromObject(token);
         
         if(Long.parseLong((String) tokenjson.get("exp")) <= new java.util.Date().getTime()){

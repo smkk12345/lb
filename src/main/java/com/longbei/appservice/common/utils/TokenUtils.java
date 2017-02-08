@@ -24,6 +24,7 @@ public class TokenUtils {
 			return "";
 		}
 		String mToken = token.charAt(2) + "" + token.charAt(5) + "" + token.charAt(8);
+		//mToken = mToken.toLowerCase();
 		int mInt = Integer.parseInt(mToken, 16);
 		int index = mInt % 8;
 		String mtoken = "";
@@ -65,9 +66,8 @@ public class TokenUtils {
 		return random;
 	}
 
-//	public static String getToken1() {
-//		
-//		return "0cc175b9c0f1b6a831c399e269772661";
+//	public static void main(String[] agrs) {
+//		String token = cryptToken("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJsb25nYmVpIiwiaWF0IjoxNDg2NTU2MTg1LCJzdWIiOiJhcHBzZXJ2aWNlIiwiaXNzIjoiYXBpIiwiZXhwIjoxNDg3NTk1NDE0fQ.A8mfKFiMC8An2CV8J5NKbCDoRp9mDo2o8_v31XEcC58");
 //	}
 	
 	public static String createToken(String mobile) {

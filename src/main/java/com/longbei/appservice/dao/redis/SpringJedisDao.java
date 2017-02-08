@@ -146,7 +146,7 @@ public class SpringJedisDao {
         return false;
     }
     //get  获取map中键的值
-    public Object getHashValue(String key,String hashKey){
+    public String getHashValue(String key,String hashKey){
         try{
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.get(key,hashKey);

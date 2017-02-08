@@ -229,14 +229,14 @@ public class AppUserController extends BaseController {
 	@RequestMapping(value = "/updateNickName")
     @ResponseBody
     public BaseResp<Object> updateNickName(@RequestParam("userid") String userid, @RequestParam("nickname") String nickname,
-    		String inviteusername,String isJump) {
+    		String inviteusername,boolean isJump) {
 		//必传参数 userid nickname  isJump 0
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
 		if(StringUtils.hasBlankParams(userid,nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-            if(isJump.equals("1")){
+            if(isJump){
                 baseResp = userService.updateNickName(userid, "", "");
             }else{
     		    baseResp = userService.updateNickName(userid, nickname, inviteusername);

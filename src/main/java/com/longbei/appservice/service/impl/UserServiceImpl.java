@@ -4,6 +4,7 @@ import java.util.UUID;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
+import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,15 +273,14 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
 		BaseResp<Object> baseResp = FeignApiProxy.userBasicService.gettoken(username, password);
 		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
-		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-			String token = (String)baseResp.getData();
+		if(baseResp.getCode() == Constant.STATUS_SYS_00){String token = (String)baseResp.getData();
+
 			baseResp.getExpandData().put("token", token);
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
+			returnResp.setData(userInfo);
+			returnResp.getExpandData().put("token", token);
+			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			if(deviceindex.equals(userInfo.getDeviceindex())){
-				//token 放到redis中去
-				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
-				returnResp.setData(userInfo);
-				returnResp.getExpandData().put("token", token);
 			}else{
 				returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
 			}
@@ -324,6 +324,7 @@ public class UserServiceImpl implements UserService {
 				BaseResp<Object> baseResp2 = FeignApiProxy.userBasicService.gettoken(username, password);
 				if(baseResp.getCode()==Constant.STATUS_SYS_00||baseResp2.getCode()==Constant.STATUS_SYS_00){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+					baseResp.setData(baseResp2.getData());
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
@@ -346,7 +347,8 @@ public class UserServiceImpl implements UserService {
 			JSONObject jsonObject = JSONObject.fromObject(data);
 			String token = (String)jsonObject.get("token");
 			baseResp.getExpandData().put("token", token);
-			long userid = (long) jsonObject.get("userid");
+
+			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			if(userInfo.getDeviceindex().equals(deviceindex)){
 				//token 放到redis中去
@@ -387,10 +389,12 @@ public class UserServiceImpl implements UserService {
 		userInfo.setInvitecode(invitecode);
 		userInfo.setHcnickname("1");
 		try {
-			//判断昵称是否存在
-			UserInfo infos = userInfoMapper.getByNickName(nickname);
-			if(null != infos){
-				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
+			if(!StringUtils.isBlank(nickname)){
+				//判断昵称是否存在
+				UserInfo infos = userInfoMapper.getByNickName(nickname);
+				if(null != infos){
+					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
+				}
 			}
 			//判断邀请人是否是龙杯用户
 			if(!StringUtils.hasBlankParams(invitecode)){
