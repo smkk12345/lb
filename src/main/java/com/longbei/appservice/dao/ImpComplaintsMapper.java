@@ -1,16 +1,15 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.ImpComplaints;
-import com.longbei.appservice.entity.ImpComplaintsKey;
 
 public interface ImpComplaintsMapper {
-    int deleteByPrimaryKey(ImpComplaintsKey key);
+    int deleteByPrimaryKey(ImpComplaints record);
 
     int insert(ImpComplaints record);
 
     int insertSelective(ImpComplaints record);
 
-    ImpComplaints selectByPrimaryKey(ImpComplaintsKey key);
+    ImpComplaints selectByPrimaryKey(ImpComplaints record);
 
     int updateByPrimaryKeySelective(ImpComplaints record);
 
