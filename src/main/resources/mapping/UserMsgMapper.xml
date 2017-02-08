@@ -10,10 +10,12 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="isread" property="isread" jdbcType="CHAR" />
+    <result column="gtype" property="gtype" jdbcType="CHAR" />
+    <result column="mtype" property="mtype" jdbcType="CHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, friendid, msgtype, snsid, remark, isdel, isread, createtime
+    id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, mtype, createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -21,18 +23,39 @@
     from user_msg
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByUserid" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_msg
+    where userid = #{userid} 
+    and mtype = 0 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_msg
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  
+  <delete id="deleteByUserid">
+    delete from user_msg
+    where userid = #{userid} 
+    and mtype = #{mtype}
+  </delete>
+  
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
     insert into user_msg (id, userid, friendid, 
       msgtype, snsid, remark, 
-      isdel, isread, createtime
+      isdel, isread, gtype, mtype, createtime
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, 
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
-      #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}
+      #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{mtype,jdbcType=CHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserMsg" >
@@ -61,6 +84,12 @@
       </if>
       <if test="isread != null" >
         isread,
+      </if>
+      <if test="gtype != null" >
+        gtype,
+      </if>
+      <if test="mtype != null" >
+        mtype,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -91,6 +120,12 @@
       <if test="isread != null" >
         #{isread,jdbcType=CHAR},
       </if>
+      <if test="gtype != null" >
+        #{gtype,jdbcType=CHAR},
+      </if>
+      <if test="mtype != null" >
+        #{mtype,jdbcType=CHAR},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -120,6 +155,12 @@
       <if test="isread != null" >
         isread = #{isread,jdbcType=CHAR},
       </if>
+      <if test="gtype != null" >
+        gtype = #{gtype,jdbcType=CHAR},
+      </if>
+      <if test="mtype != null" >
+        mtype = #{mtype,jdbcType=CHAR},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -135,7 +176,23 @@
       remark = #{remark,jdbcType=VARCHAR},
       isdel = #{isdel,jdbcType=CHAR},
       isread = #{isread,jdbcType=CHAR},
+      gtype = #{gtype,jdbcType=CHAR},
+      mtype = #{mtype,jdbcType=CHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateIsreadByid">
+    update user_msg
+      isread = 1
+    where id = #{id}
+  </update>
+  
+  <update id="updateIsreadByUserid">
+    update user_msg
+      isread = 1 
+    where userid = #{userid} 
+    and mtype = #{mtype}
+  </update>
+  
 </mapper>
