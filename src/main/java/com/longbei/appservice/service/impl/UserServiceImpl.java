@@ -39,8 +39,7 @@ public class UserServiceImpl implements UserService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private IdGenerateService idGenerateService;
-	//@Autowired
-//	private JedisDao jedisDao;
+
 	@Autowired
 	private SpringJedisDao springJedisDao;
 	@Autowired
