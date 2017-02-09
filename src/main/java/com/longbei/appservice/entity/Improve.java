@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Improve {
 
     protected Long id;
@@ -44,6 +47,8 @@ public class Improve {
     protected String ptype;//十全十美id
 
     protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
+    
+    protected Integer goalid;//进步组id
 
     protected Integer commentnum; //评论数
 
@@ -57,6 +62,7 @@ public class Improve {
         this.appUserMongoEntity = appUserMongoEntity;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Integer getCommentnum() {
         return commentnum;
     }
@@ -85,6 +91,7 @@ public class Improve {
      * 微进步id
      * @return impid 微进步id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getImpid() {
         return impid;
     }
@@ -101,6 +108,7 @@ public class Improve {
      * 类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
      * @return itype 类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
      */
+    @JsonInclude(Include.ALWAYS)
     public String getItype() {
         return itype;
     }
@@ -165,6 +173,7 @@ public class Improve {
      * 用户id 
      * @return userid 用户id 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -181,6 +190,7 @@ public class Improve {
      * 业务id  榜单id  圈子id 教室id
      * @return businessid 业务id  榜单id  圈子id 教室id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getBusinessid() {
         return businessid;
     }
@@ -197,6 +207,7 @@ public class Improve {
      * 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
      * @return businesstype 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
      */
+    @JsonInclude(Include.ALWAYS)
     public String getBusinesstype() {
         return businesstype;
     }
@@ -213,6 +224,7 @@ public class Improve {
      * 点赞数量
      * @return likes 点赞数量
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getLikes() {
         return likes;
     }
@@ -229,6 +241,7 @@ public class Improve {
      * 花数量 
      * @return flowers 花数量 
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getFlowers() {
         return flowers;
     }
@@ -245,6 +258,7 @@ public class Improve {
      * 钻石
      * @return diamonds 钻石
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getDiamonds() {
         return diamonds;
     }
@@ -293,6 +307,7 @@ public class Improve {
      * 子进步的排序好
      * @return indexnum 子进步的排序好
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getIndexnum() {
         return indexnum;
     }
@@ -309,6 +324,7 @@ public class Improve {
      * 假删  0 未删除  1 删除
      * @return isdel 假删  0 未删除  1 删除
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
         return isdel;
     }
@@ -325,6 +341,7 @@ public class Improve {
      * 0 普通微进步  1 最新微进步
      * @return ismainimp 0 普通微进步  1 最新微进步
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsmainimp() {
         return ismainimp;
     }
@@ -341,6 +358,7 @@ public class Improve {
      * 十全十美id
      * @return ptype 十全十美id
      */
+    @JsonInclude(Include.ALWAYS)
     public String getPtype() {
         return ptype;
     }
@@ -357,6 +375,7 @@ public class Improve {
      * 可见程度  0 私密 1 好友可见 2 全部可见
      * @return ispublic 可见程度  0 私密 1 好友可见 2 全部可见
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIspublic() {
         return ispublic;
     }
@@ -368,4 +387,14 @@ public class Improve {
     public void setIspublic(String ispublic) {
         this.ispublic = ispublic == null ? null : ispublic.trim();
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public Integer getGoalid() {
+		return goalid;
+	}
+
+	public void setGoalid(Integer goalid) {
+		this.goalid = goalid;
+	}
+    
 }

@@ -24,6 +24,22 @@ public interface SnsFansMapper {
     
     List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
     
+    /**
+	 * @author yinxc
+	 * 获取当前用户粉丝idList
+	 * 2017年2月9日
+	 * return_type
+	 * SnsFansMapper
+	 */
     List<String> selectListidByUid(@Param("userid") long userid);
+    
+    /**
+	 * @author yinxc
+	 * 获取当前用户粉丝idList(分页)
+	 * 2017年2月9日
+	 * return_type
+	 * SnsFansMapper
+	 */
+    List<String> selectListidByUidNum(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
     
 }

@@ -21,6 +21,17 @@
     where userid = #{userid}
   </select>
   
+  <select id="selectListidByUidNum" resultType="java.lang.String">
+    select 
+    <include refid="Bid_Column_List" />
+    from sns_fans
+    where userid = #{userid} 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -39,11 +50,13 @@
     select 
     <include refid="Base_Column_List" />
     from sns_fans
-    where userid = #{userid}
+    where userid = #{userid} 
+    order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
   </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_fans
     where id = #{id,jdbcType=INTEGER}

@@ -14,11 +14,15 @@ public class SnsFans {
 
     private Date createtime;//创建时间
     
-    private String likeNickname;  //被关注者昵称
-    
-    private String liekAvatar;  //被关注者头像
+//    private String likeNickname;  //被关注者昵称
+//    
+//    private String liekAvatar;  //被关注者头像
     
     private String isfriend = "0"; //是否是好友    0：不是   1：是
+    
+    private String isread = "1";// 0 未读 1 已读
+    
+    private AppUserMongoEntity appUserMongoEntityLikeuserid; //粉丝用户信息----likeuserid
     
     public SnsFans(){};
     
@@ -93,21 +97,21 @@ public class SnsFans {
         this.createtime = createtime;
     }
 
-	public String getLikeNickname() {
-		return likeNickname;
-	}
-
-	public void setLikeNickname(String likeNickname) {
-		this.likeNickname = likeNickname;
-	}
-
-	public String getLiekAvatar() {
-		return liekAvatar;
-	}
-
-	public void setLiekAvatar(String liekAvatar) {
-		this.liekAvatar = liekAvatar;
-	}
+//	public String getLikeNickname() {
+//		return likeNickname;
+//	}
+//
+//	public void setLikeNickname(String likeNickname) {
+//		this.likeNickname = likeNickname;
+//	}
+//
+//	public String getLiekAvatar() {
+//		return liekAvatar;
+//	}
+//
+//	public void setLiekAvatar(String liekAvatar) {
+//		this.liekAvatar = liekAvatar;
+//	}
 
 	@JsonInclude(Include.ALWAYS)
 	public String getIsfriend() {
@@ -116,6 +120,23 @@ public class SnsFans {
 
 	public void setIsfriend(String isfriend) {
 		this.isfriend = isfriend;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsread() {
+		return isread;
+	}
+
+	public void setIsread(String isread) {
+		this.isread = isread;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityLikeuserid() {
+		return appUserMongoEntityLikeuserid;
+	}
+
+	public void setAppUserMongoEntityLikeuserid(AppUserMongoEntity appUserMongoEntityLikeuserid) {
+		this.appUserMongoEntityLikeuserid = appUserMongoEntityLikeuserid;
 	}
     
 }
