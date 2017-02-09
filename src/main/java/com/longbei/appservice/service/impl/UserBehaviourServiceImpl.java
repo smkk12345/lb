@@ -165,7 +165,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(point > 0 && leftPoint > 0){//未升级
                     springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
                 }else{//升级
-                    subLevelUpAsyn(userInfo,iPoint,pType);
+                    saveLevelUpInfo(userInfo,pType,iPoint);
                 }
             }else{
                 //这里通过10大分类获取用户point分数
@@ -175,7 +175,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(leftPoint > 0){
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
                 }else{//升级
-                    subLevelUpAsyn(userInfo,iPoint,pType);
+                    saveLevelUpInfo(userInfo,pType,iPoint);
                 }
             }
             saveUserPointDetail(userInfo,iPoint,pType);
@@ -208,8 +208,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return Constant.RP_USER_PERDAY+userid;
     }
 
-    private void subLevelUpAsyn(UserInfo userInfo,int iPoint,String ptype){
+    private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint){
+        try{
+            UserPlDetail userPlDetail = new UserPlDetail();
+            userPlDetail.setCreatetime(new Date());
+            userPlDetail.setLeve(userInfo.getGrade());
+            if(iPoint == 0){
+                userPlDetail.setScorce(userInfo.getPoint());
+            }
+            else{
+                userPlDetail.setScorce(userInfo.getPoint()+iPoint);
+            }
+            userPlDetail.setPtype(ptype);
 
+            userPlDetail.setUserid(userInfo.getUserid());
+            userPlDetailMapper.insert(userPlDetail);
+        }catch (Exception e){
+            logger.error("subLevelUpAsyn error and msg = {}",e);
+        }
     }
 
 
@@ -222,14 +238,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
             userInfoMapper.updateByUseridSelective(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
-            UserPlDetail userPlDetail = new UserPlDetail();
-            userPlDetail.setCreatetime(new Date());
-            userPlDetail.setLeve(userInfo.getGrade());
-            userPlDetail.setPtype("a");
-            userPlDetail.setPerfectname("龙级");
-            userPlDetail.setScorce(userInfo.getPoint());
-            userPlDetail.setUserid(userInfo.getUserid());
-            userPlDetailMapper.insert(userPlDetail);
+            saveLevelUpInfo(userInfo,"a",0);
             //推送一条信
             //           JPush.messagePush();
         }catch (Exception e){
