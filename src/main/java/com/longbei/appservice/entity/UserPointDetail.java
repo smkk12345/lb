@@ -2,8 +2,10 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+/**
+ * 用户十全十美积分明细表
+ */
 public class UserPointDetail {
-    private Integer pid;
 
     private Long id;//编码
 
@@ -13,22 +15,14 @@ public class UserPointDetail {
 
     private Date drawdate;//获得时间
 
-    private Long perfectid;//十全十美id
+    private String ptype;//十全十美id
 
-    /**
-     * 
-     * @return pid 
-     */
-    public Integer getPid() {
-        return pid;
+    public String getPtype() {
+        return ptype;
     }
 
-    /**
-     * 
-     * @param pid 
-     */
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
     }
 
     /**
@@ -95,19 +89,5 @@ public class UserPointDetail {
         this.drawdate = drawdate;
     }
 
-    /**
-     * 十全十美id
-     * @return perfectid 十全十美id
-     */
-    public Long getPerfectid() {
-        return perfectid;
-    }
 
-    /**
-     * 十全十美id
-     * @param perfectid 十全十美id
-     */
-    public void setPerfectid(Long perfectid) {
-        this.perfectid = perfectid;
-    }
 }

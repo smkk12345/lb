@@ -21,13 +21,13 @@ public interface UserBehaviourService {
      * @param userid
      * @return
      */
-    BaseResp<Object> levelUp(long userid,int iPoint,int pType);
+    BaseResp<Object> levelUp(long userid,int iPoint,String pType);
     /**
      * 是否升级
      * @param userInfo
      * @return
      */
-    BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,int pType);
+    BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,String pType);
 
 
 }

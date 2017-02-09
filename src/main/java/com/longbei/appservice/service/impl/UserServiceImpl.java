@@ -194,6 +194,8 @@ public class UserServiceImpl implements UserService {
                 operateName = "找回密码";
             } else if (operateType.equals("3")){
 				operateName = "绑定手机号";
+			}else if (operateType.equals("4")){
+				operateName = "安全验证";
 			}
             rtn = AlidayuSmsUtils.sendMsgValidate(mobile, randomCode, operateName);
 

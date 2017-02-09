@@ -20,6 +20,13 @@
     from user_pl_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByUserIdAndType" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_list" />
+    FROM user_pl_detail
+    where userid=#{userid} and ptype=#{ptype} ORDER BY level desc limit 0,1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail
     where id = #{id,jdbcType=INTEGER}
