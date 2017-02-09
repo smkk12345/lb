@@ -39,4 +39,10 @@ public interface UserInfoMapper {
 	List<UserInfo> selectLikeListByUnameAndNname(@Param("nickname") String nickname, @Param("ids") String ids,
 			@Param("type") String type, @Param("startNum") int startNum, @Param("endNum") int endNum);
 
+	/**
+	 * 更新设备号和设备类型
+	 * @param userInfo
+	 * @return
+     */
+	int updateDeviceIndexByUserName(UserInfo userInfo);
 }

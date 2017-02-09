@@ -50,7 +50,7 @@ public interface UserService {
 	* @auther smkk
 	* @currentdate:2017年1月16日
 	*/
-	BaseResp<Object> checkSms(String mobile, String random);
+	BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype);
 	/**
 	* @Title: findPassword
 	* @Description: TODO

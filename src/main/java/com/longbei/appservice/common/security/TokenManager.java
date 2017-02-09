@@ -4,7 +4,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-//import com.longbei.appservice.dao.JedisDao;
 import com.longbei.appservice.service.api.FeignApiProxy;
 import net.sf.json.JSONObject;
 

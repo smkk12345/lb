@@ -66,6 +66,7 @@ public class UserInfo {
 
     private Integer point;//龙分
     private Integer grade;//等级
+    private Integer curpoint;//当前龙分
 
     
     public UserInfo(){}
@@ -75,6 +76,14 @@ public class UserInfo {
     		this.nickname = nickname;
     		this.avatar = avatar;
     		this.sex = sex;
+    }
+
+    public void setCurpoint(Integer curpoint) {
+        this.curpoint = curpoint;
+    }
+
+    public Integer getCurpoint() {
+        return curpoint;
     }
 
     public void setGrade(Integer grade) {

@@ -263,6 +263,14 @@
       </if>         
     </trim>
   </insert>
+  <update id="updateDeviceIndexByUserName" parameterType="com.longbei.appservice.entity.UserInfo">
+    update user_info
+    <set>
+      deviceindex = #{deviceindex},
+      devicetype = #{devicetype},
+    </set>
+    where username = #{username}
+  </update>
   <update id="updateByUseridSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     <set >

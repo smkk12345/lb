@@ -2,32 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.longbei.appservice.dao.UserPointDetailMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserPointDetail" >
-    <id column="pid" property="pid" jdbcType="INTEGER" />
-    <result column="id" property="id" jdbcType="BIGINT" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="point" property="point" jdbcType="INTEGER" />
     <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP" />
-    <result column="perfectid" property="perfectid" jdbcType="BIGINT" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    pid, id, userid, point, drawdate, perfectid
+    id, userid, point, drawdate, perfectid
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from user_point_detail
-    where pid = #{pid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from user_point_detail
-    where pid = #{pid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserPointDetail" >
     insert into user_point_detail (pid, id, userid, 
       point, drawdate, perfectid
       )
     values (#{pid,jdbcType=INTEGER}, #{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{perfectid,jdbcType=BIGINT}
+      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserPointDetail" >
@@ -48,8 +47,8 @@
       <if test="drawdate != null" >
         drawdate,
       </if>
-      <if test="perfectid != null" >
-        perfectid,
+      <if test="ptype != null" >
+        ptype,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -68,8 +67,8 @@
       <if test="drawdate != null" >
         #{drawdate,jdbcType=TIMESTAMP},
       </if>
-      <if test="perfectid != null" >
-        #{perfectid,jdbcType=BIGINT},
+      <if test="ptype != null" >
+        #{ptype},
       </if>
     </trim>
   </insert>
@@ -88,8 +87,8 @@
       <if test="drawdate != null" >
         drawdate = #{drawdate,jdbcType=TIMESTAMP},
       </if>
-      <if test="perfectid != null" >
-        perfectid = #{perfectid,jdbcType=BIGINT},
+      <if test="ptype != null" >
+        ptype = #{perfectid},
       </if>
     </set>
     where pid = #{pid,jdbcType=INTEGER}
@@ -100,7 +99,7 @@
       userid = #{userid,jdbcType=BIGINT},
       point = #{point,jdbcType=INTEGER},
       drawdate = #{drawdate,jdbcType=TIMESTAMP},
-      perfectid = #{perfectid,jdbcType=BIGINT}
+      ptype = #{ptype}
     where pid = #{pid,jdbcType=INTEGER}
   </update>
 </mapper>
