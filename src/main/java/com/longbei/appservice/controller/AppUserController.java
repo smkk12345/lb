@@ -65,7 +65,7 @@ public class AppUserController extends BaseController {
         if (StringUtils.hasBlankParams(username, password, randomCode,deviceindex)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        baseResp = userService.checkSms(username, randomCode);
+        baseResp = userService.checkSms(username, randomCode,deviceindex,devicetype);
         if (baseResp.getCode() != Constant.STATUS_SYS_00) {
             return baseResp;
         }
@@ -80,7 +80,7 @@ public class AppUserController extends BaseController {
     /**
      * http://ip:port/appservice/user/sms
      * 短信验证
-     * @param mobile operateType 0 注册 1 修改密码 2 找回密码
+     *  operateType 0 注册 1 修改密码 2 找回密码
      * @param response 
      * @return 正确返回 code 0 错误返回相应code 和 描述
      */
@@ -103,22 +103,23 @@ public class AppUserController extends BaseController {
     }
 
     /**
+     * url http://ip:port/app_service/user/checkSms
      * @param @param mobile
-     * @param @param random
+     * @param @param random  deviceindex
      * @Title: checkSms
-     * @Description: 验证码是否正确
+     * @Description: 验证
      * @auther smkk
      * @currentdate:2017年1月16日
      */
     @ResponseBody
     @RequestMapping(value = "/checkSms")
-    public BaseResp<Object> checkSms(String mobile, String random) {
+    public BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype) {
         logger.info("checkSms params mobile={},random={}", mobile, random);
-        if(StringUtils.isBlank(mobile)){
+        if(StringUtils.hasBlankParams(mobile,random,deviceindex)){
     			return new BaseResp<>(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            return userService.checkSms(mobile, random);
+            return userService.checkSms(mobile, random,deviceindex,devicetype);
         } catch (Exception e) {
             logger.error("checkSms error and msg={}", e);
         }
@@ -397,9 +398,6 @@ public class AppUserController extends BaseController {
     		
     		return baseResp;
     }
-    
-    
-    
-    
-    
+
+
 }

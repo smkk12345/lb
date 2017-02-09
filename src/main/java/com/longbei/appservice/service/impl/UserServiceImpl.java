@@ -1,6 +1,9 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.UUID;
+
+import com.longbei.appservice.common.utils.RequestUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -198,7 +201,7 @@ public class UserServiceImpl implements UserService {
             if (StringUtils.isBlank(rtn)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             		springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
-                logger.debug("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
+                logger.info("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
             } else {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
                 logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
@@ -215,7 +218,26 @@ public class UserServiceImpl implements UserService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> checkSms(String mobile, String random) {
+	public BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype) {
+		BaseResp<Object> baseResp = checkSms(mobile,random);
+		if(StringUtils.isBlank(deviceindex)){
+			return baseResp;
+		}
+		if(ResultUtil.isSuccess(baseResp)){
+			UserInfo userInfo = new UserInfo();
+			userInfo.setUsername(mobile);
+			userInfo.setDeviceindex(deviceindex);
+			userInfo.setDevicetype(devicetype);
+			try{
+				userInfoMapper.updateDeviceIndexByUserName(userInfo);
+			}catch(Exception e){
+				logger.error("updateDeviceIndexByUserName error and msg={}",e);
+			}
+		}
+		return baseResp;
+	}
+
+	private BaseResp<Object> checkSms(String mobile, String random){
 		String res = springJedisDao.get(mobile);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {
