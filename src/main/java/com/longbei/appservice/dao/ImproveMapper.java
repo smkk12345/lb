@@ -1,7 +1,6 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.ImproveGoal;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,6 +25,15 @@ public interface ImproveMapper {
                                          @Param("ismainimp")String ismainimp,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
+    
+    /**
+	 * @author yinxc
+	 * 获取目标进步最新微进步
+	 * 2017年2月9日
+	 * return_type
+	 * ImproveMapper
+	 */
+    Improve selectImproveGoalByGoalid(@Param("goalid") String goalid);
 
     int updateByPrimaryKeySelective(Improve record);
 

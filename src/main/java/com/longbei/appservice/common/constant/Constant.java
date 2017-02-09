@@ -166,6 +166,19 @@ public class Constant {
 	public static final String  COMMENT_RANK_TYPE = "2";      //榜评论
 	public static final String  COMMENT_CIRCLE_TYPE = "3";    //圈子评论
 	public static final String  COMMENT_CLASSROOM_TYPE = "4"; //教室微进步评论
+	
+	/**
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+     * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+     * msgtype
+	 */
+	public static final String  MSG_CHAT_TYPE = "0";     //聊天
+	public static final String  MSG_COMMENT_TYPE = "1";  //评论
+	public static final String  MSG_LIKE_TYPE = "2";     //点赞
+	public static final String  MSG_FLOWER_TYPE = "3";   //送花
+	public static final String  MSG_DIAMOND_TYPE = "4";  //送钻石
+	public static final String  MSG_FANS_TYPE = "5";     //粉丝
+	
 
 	/**
 	 * activemq

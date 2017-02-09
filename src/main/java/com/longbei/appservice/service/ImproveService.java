@@ -149,8 +149,7 @@ public interface ImproveService {
      * @return
      */
     List<Improve> selectGoalImproveList(String userid,String goalid,int pageNo,int pageSize);
-
-
+    
     /**
      * 删除进步入口
      * @param userid  用户id

@@ -21,6 +21,8 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.entity.SnsFriends;
 import com.longbei.appservice.entity.UserInfo;
@@ -39,7 +41,11 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Autowired
 	private SnsFansMapper snsFansMapper;
 	@Autowired
+	private UserMongoDao userMongoDao;
+	
+	@Autowired
 	private UserInfoMapper userInfoMapper;
+	
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#insertFriend(long, long)
 	 * 2017年1月20日
@@ -163,16 +169,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (SnsFans snsFans : list) {
-					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(snsFans.getLikeuserid());
-					if(null != userInfo){
-						snsFans.setLikeNickname(userInfo.getNickname());
-						snsFans.setLiekAvatar(userInfo.getAvatar());
+					initMsgUserInfoByLikeuserid(snsFans);
+//					if(null != userInfo){
+//						snsFans.setLikeNickname(userInfo.getNickname());
+//						snsFans.setLiekAvatar(userInfo.getAvatar());
 						//判断已关注者是否是好友关系
 						SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid());
 						if(null != snsFriends){
 							snsFans.setIsfriend("1");
 						}
-					}
+//					}
 				}
 			}
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -306,5 +312,15 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		return ids;
 	}
+	
+	/**
+     * 初始化消息中用户信息 ------Friendid
+     * @param improve
+     * @author:luye
+     */
+    private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+        snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+    }
 
 }
