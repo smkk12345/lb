@@ -12,11 +12,11 @@
   <sql id="Base_Column_List" >
     id, minscore, maxscore, plevel, createtime, updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectAll" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from sys_rule_perfect_ten
-    where id = #{id,jdbcType=INTEGER}
+    where 1=1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_rule_perfect_ten

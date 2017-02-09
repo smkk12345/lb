@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.SysRulePerfectTen;
+import java.util.List;
 
 public interface SysRulePerfectTenMapper {
     int deleteByPrimaryKey(Integer id);
@@ -9,7 +10,7 @@ public interface SysRulePerfectTenMapper {
 
     int insertSelective(SysRulePerfectTen record);
 
-    SysRulePerfectTen selectByPrimaryKey(Integer id);
+    List<SysRulePerfectTen> selectAll();
 
     int updateByPrimaryKeySelective(SysRulePerfectTen record);
 
