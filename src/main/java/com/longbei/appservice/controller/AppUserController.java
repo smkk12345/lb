@@ -219,7 +219,7 @@ public class AppUserController extends BaseController {
     
     /**  http://ip:port/appservice/user/updateNickName
      * @param @param userid
-     * @param @param nickname
+     * @param @param nickname  sex   pl   isJump(boolean)
      * @param @param invitecode  邀请人手机号
      * @Title: thirdupdate
      * @Description: 第三方注册后，修改推荐人手机号及昵称，昵称数据库去重
@@ -230,7 +230,7 @@ public class AppUserController extends BaseController {
 	@RequestMapping(value = "/updateNickName")
     @ResponseBody
     public BaseResp<Object> updateNickName(@RequestParam("userid") String userid, @RequestParam("nickname") String nickname,
-    		String inviteusername,boolean isJump) {
+    		String inviteusername,boolean isJump,String sex,String pl) {
 		//必传参数 userid nickname  isJump 0
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
 		if(StringUtils.hasBlankParams(userid,nickname)){
@@ -238,9 +238,9 @@ public class AppUserController extends BaseController {
 		}
 		try {
             if(isJump){
-                baseResp = userService.updateNickName(userid, "", "");
+                baseResp = userService.updateNickName(userid, "", "","","");
             }else{
-    		    baseResp = userService.updateNickName(userid, nickname, inviteusername);
+    		    baseResp = userService.updateNickName(userid, nickname, inviteusername,sex,pl);
             }
 		} catch (Exception e) {
 			logger.error("thirdupdate error and msg = {}",e);

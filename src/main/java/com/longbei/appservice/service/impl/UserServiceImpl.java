@@ -7,6 +7,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.longbei.appservice.entity.UserPlDetail;
 import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,8 +114,21 @@ public class UserServiceImpl implements UserService {
 	private boolean registerOther(UserInfo userInfo) {
 		//保存到mongodb
 		saveUserInfoToMongo(userInfo);
-		//保存其他信息,如个人信息等
+		//保存其他信息,如个人信息等  十全十美数据
+		saveUserPointInfo(userInfo);
 		return true;
+	}
+
+	/**
+	 *
+	 * @return
+     */
+	private boolean saveUserPointInfo(UserInfo userInfo){
+//		UserPlDetail
+//		for (int i=0;i<10;i++){
+//
+//		}
+		return false;
 	}
 
 	/**
@@ -404,11 +418,12 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode) {
+	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserid(Long.parseLong(userid));
 		userInfo.setNickname(nickname);
+		userInfo.setSex(sex);
 		userInfo.setInvitecode(invitecode);
 		userInfo.setHcnickname("1");
 		try {

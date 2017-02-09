@@ -98,7 +98,7 @@ public interface UserService {
 	* @auther smkk
 	* @currentdate:2017年1月17日
 	*/
-	BaseResp<Object> updateNickName(String userid, String nickname, String invitecode);
+	BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl);
 	
 	/**
 	* @Title: thirdlogin

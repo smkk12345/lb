@@ -164,6 +164,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 int leftPoint = point - iPoint;
                 if(point > 0 && leftPoint > 0){//未升级
                     springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
+                    //没有升级 更新userPlDetail数据
+                    updateToUserPLDetail(userInfo,iPoint,pType);
                 }else{//升级
                     saveLevelUpInfo(userInfo,pType,iPoint);
                 }
@@ -174,6 +176,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 int leftPoint = point - iPoint;
                 if(leftPoint > 0){
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
+                    updateToUserPLDetail(userInfo,iPoint,pType);
                 }else{//升级
                     saveLevelUpInfo(userInfo,pType,iPoint);
                 }
@@ -183,6 +186,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             logger.error("subLevelUp error and msg = {}",e);
         }
         return baseResp;
+    }
+
+    public boolean updateToUserPLDetail(UserInfo userInfo,int iPoint,String pType){
+        return false;
     }
 
     /**
