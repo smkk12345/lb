@@ -3,6 +3,7 @@ package com.longbei.appservice.common.Cache;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRuleLp;
 import com.longbei.appservice.entity.SysRules;
+import com.longbei.appservice.entity.UserLevel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class SysRulesCache {
     /**
      * 龙级没级所需龙分
      */
-    public static Map<Integer,Integer> levelPointMap = new HashMap<>();
+    public static Map<Integer,UserLevel> levelPointMap = new HashMap<>();
     /**
      *等级特权map  key--等级 value--特权
      */

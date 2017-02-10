@@ -11,6 +11,7 @@ import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserPointDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.UserPointDetail;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -124,7 +125,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }else{
                 //通过级别获取升级下以及所需分数  进行缓存
                 int curpoint = userInfo.getCurpoint();//这里需要改
-                int upCount = SysRulesCache.levelPointMap.get(userInfo.getGrade()+1);
+                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade()+1);
+                int upCount = userLevel.getDiff();
                 int leftPoint = upCount -curpoint - iPoint;
                 if(leftPoint > 0){
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");

@@ -1,12 +1,10 @@
 package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
-import com.longbei.appservice.dao.SysRuleCheckinMapper;
-import com.longbei.appservice.dao.SysRuleLpMapper;
-import com.longbei.appservice.dao.SysRulePerfectTenMapper;
-import com.longbei.appservice.dao.SysScoringRuleMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
+import com.longbei.appservice.entity.UserLevel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +35,8 @@ public class InitConfig implements CommandLineRunner {
     //计分规则
     @Autowired
     private SysScoringRuleMapper sysScoringRuleMapper;
+    @Autowired
+    private UserLevelMapper userLevelMapper;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -58,7 +58,7 @@ public class InitConfig implements CommandLineRunner {
             SysRuleCheckin sysRuleCheckin = list.get(i);
             map.put(sysRuleCheckin.getContinues(),sysRuleCheckin);
         }
-        System.out.print(JSONObject.fromObject(map));
+        //System.out.print(JSONObject.fromObject(map));
         SysRulesCache.sysRuleCheckinMap = map;
     }
 
@@ -79,9 +79,13 @@ public class InitConfig implements CommandLineRunner {
      *龙级升级每级所需龙分缓存
      */
     private void initSysRuleLevelPointCache(){
-        Map<Integer,Integer> map = new HashMap<>();
+        Map<Integer,UserLevel> map = new HashMap<>();
         //这里做初始化
-
+        List<UserLevel> list = userLevelMapper.selectAll();
+        for (int i = 0; i < list.size(); i++) {
+            UserLevel userLevel = list.get(i);
+            map.put(userLevel.getGrade(),userLevel);
+        }
         SysRulesCache.levelPointMap = map;
     }
 

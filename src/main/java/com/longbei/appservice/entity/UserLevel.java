@@ -3,7 +3,7 @@ package com.longbei.appservice.entity;
 public class UserLevel {
     private Long id;//编码
 
-    private String grade;//等级名称
+    private Integer grade;//等级名称
 
     private String star;//星级
 
@@ -33,7 +33,7 @@ public class UserLevel {
      * 等级名称
      * @return grade 等级名称
      */
-    public String getGrade() {
+    public Integer getGrade() {
         return grade;
     }
 
@@ -41,8 +41,8 @@ public class UserLevel {
      * 等级名称
      * @param grade 等级名称
      */
-    public void setGrade(String grade) {
-        this.grade = grade == null ? null : grade.trim();
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
     /**

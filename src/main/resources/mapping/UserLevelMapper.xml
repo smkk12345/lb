@@ -3,7 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.UserLevelMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserLevel" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="grade" property="grade" jdbcType="CHAR" />
+    <result column="grade" property="grade" />
     <result column="star" property="star" jdbcType="CHAR" />
     <result column="diff" property="diff" jdbcType="INTEGER" />
     <result column="point" property="point" jdbcType="INTEGER" />
@@ -17,6 +17,12 @@
     <include refid="Base_Column_List" />
     from user_level
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_level
+    where 1=1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from user_level
