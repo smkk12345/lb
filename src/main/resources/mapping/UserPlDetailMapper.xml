@@ -11,18 +11,18 @@
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="scorce" property="scorce" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column" >
     id, userid, leve, ptype, perfectname, createtime, updatetime, scorce
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column" />
     from user_pl_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectByUserIdAndType" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_list" />
+    <include refid="Base_Column" />
     FROM user_pl_detail
     where userid=#{userid} and ptype=#{ptype} ORDER BY level desc limit 0,1
   </select>

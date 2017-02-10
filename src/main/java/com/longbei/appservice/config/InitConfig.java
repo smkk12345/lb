@@ -7,6 +7,8 @@ import com.longbei.appservice.dao.SysRulePerfectTenMapper;
 import com.longbei.appservice.dao.SysScoringRuleMapper;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -41,7 +43,7 @@ public class InitConfig implements CommandLineRunner {
         //初始化相关
         initSysRuleCheckInCache();
         //十全十美每级所需龙分缓存
-        initSysRulePLevelPointCache();
+       // initSysRulePLevelPointCache();
         //龙级升级每级所需龙分缓存
         initSysRuleLevelPointCache();
     }
@@ -56,6 +58,7 @@ public class InitConfig implements CommandLineRunner {
             SysRuleCheckin sysRuleCheckin = list.get(i);
             map.put(sysRuleCheckin.getContinues(),sysRuleCheckin);
         }
+        System.out.print(JSONObject.fromObject(map));
         SysRulesCache.sysRuleCheckinMap = map;
     }
 

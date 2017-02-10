@@ -15,6 +15,57 @@ public class UserGoal {
 
     private Date updatetime;
 
+    private String ispublic;
+
+    private String ptype;
+
+    private String needwarn;
+
+    private String warntime;
+
+    private String week;
+
+
+    public String getPtype() {
+        return ptype;
+    }
+
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
+    }
+
+    public String getNeedwarn() {
+        return needwarn;
+    }
+
+    public void setNeedwarn(String needwarn) {
+        this.needwarn = needwarn;
+    }
+
+    public String getWarntime() {
+        return warntime;
+    }
+
+    public void setWarntime(String warntime) {
+        this.warntime = warntime;
+    }
+
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
+        this.week = week;
+    }
+
+    public String getIspublic() {
+        return ispublic;
+    }
+
+    public void setIspublic(String ispublic) {
+        this.ispublic = ispublic;
+    }
+
     /**
      * 
      * @return id 
