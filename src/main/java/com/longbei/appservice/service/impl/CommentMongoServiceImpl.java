@@ -15,11 +15,17 @@ import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
+import com.longbei.appservice.dao.UserMsgMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLikes;
 import com.longbei.appservice.entity.CommentLower;
+import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentMongoService;
+
+import net.sf.json.JSONObject;
 
 @Service("commentMongoService")
 public class CommentMongoServiceImpl implements CommentMongoService {
@@ -32,6 +38,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	private CommentCountMongoDao commentCountMongoDao;
 	@Autowired
 	private CommentLikesMongoDao commentLikesMongoDao;
+	@Autowired
+	private UserMsgMapper userMsgMapper;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
@@ -42,7 +52,9 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			insert(comment);
 //			comment = commentMongoDao.selectCommentByItypeid(comment.getItypeid(), comment.getItype());
 			//添加评论总数
-			insertOther(comment);
+			insertCount(comment);
+			//添加评论消息
+			insertMsg(comment);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertComment comment={},msg={}",comment,e);
@@ -50,17 +62,54 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		return reseResp;
 	}
 	
-	private void insert(Comment comment){
-		commentMongoDao.insertComment(comment);;
+	/**
+	 * @author yinxc
+	 * 添加评论消息
+	 * 2017年2月10日
+	 * return_type
+	 * CommentMongoServiceImpl
+	 */
+	private void insertMsg(Comment comment){
+		UserMsg record = new UserMsg();
+		record.setUserid(Long.valueOf(comment.getFriendid()));
+		record.setCreatetime(new Date());
+		record.setFriendid(Long.valueOf(comment.getUserid()));
+		record.setGtype(comment.getItype());
+		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+		record.setMsgtype("1");
+		record.setSnsid(Long.valueOf(comment.getItypeid()));
+		record.setRemark(comment.getContent());
+		record.setIsdel("0");
+		record.setIsread("0");
+		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+		// 送花 4 送钻石  5:粉丝  等等)
+		record.setMtype("1");
+		try {
+			userMsgMapper.insertSelective(record);
+		} catch (Exception e) {
+			logger.error("insertMsg record = {}, msg = {}", JSONObject.fromObject(record).toString(), e);
+		}
 	}
 	
-	private void insertOther(Comment comment){
+	private void insert(Comment comment){
+		try {
+			commentMongoDao.insertComment(comment);
+		} catch (Exception e) {
+			logger.error("insert comment = {}, msg = {}", JSONObject.fromObject(comment).toString(), e);
+		}
+	}
+	
+	private void insertCount(Comment comment){
 		CommentCount commentCount = new CommentCount();
 		commentCount.setComcount(1);
 		commentCount.setCreatetime(DateUtils.formatDateTime1(new Date()));
 		commentCount.setLikes(0);
 		commentCount.setCommentid(comment.getId());
-		commentCountMongoDao.insertCommentCount(commentCount);
+		try {
+			commentCountMongoDao.insertCommentCount(commentCount);
+		} catch (Exception e) {
+			logger.error("insertCount commentCount = {}, msg = {}", JSONObject.fromObject(commentCount).toString(), e);
+		}
 	}
 
 	@Override
@@ -101,7 +150,11 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			List<Comment> list = commentMongoDao.selectCommentListByItypeid(itypeid, itype, startNo, pageSize);
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
+					//初始化用户信息
+					initCommentUserInfoByUserid(comment);
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
+					//初始化用户信息
+					initCommentLowerUserInfoList(lowers);
 					comment.setLowerList(lowers);
 					//判断是否点赞
 //					CommentLikes commentLikes = commentLikesMongoDao.selectCommentLikesByCommentid(comment.getId(), friendid);
@@ -218,5 +271,29 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		}
 		return reseResp;
 	}
+	
+	//------------------------公用方法，初始化消息中用户信息------------------------------------------
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
+    	if(null != lowers && lowers.size()>0){
+    		for (CommentLower commentLower : lowers) {
+    			AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(commentLower.getFriendid()));
+    	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	        AppUserMongoEntity appUserMongo = userMongoDao.findById(String.valueOf(commentLower.getUserid()));
+    	        commentLower.setAppUserMongoEntityUserid(appUserMongo);
+			}
+    	}
+        
+    }
+    
+    /**
+     * 初始化消息中用户信息 ------Userid
+     */
+    private void initCommentUserInfoByUserid(Comment comment){
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(comment.getUserid()));
+        comment.setAppUserMongoEntityUserid(appUserMongoEntity);
+    }
 
 }

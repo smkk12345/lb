@@ -179,6 +179,14 @@ public class Constant {
 	public static final String  MSG_DIAMOND_TYPE = "4";  //送钻石
 	public static final String  MSG_FANS_TYPE = "5";     //粉丝
 	
+	/*
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+     * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+     * 消息展示模版
+	 */
+	public static final String  MSG_FLOWER_MODEL = "给这条微进步献了n朵花"; //进步送花消息模板
+	public static final String  MSG_LIKE_MODEL = "赞了这条微进步"; //进步点赞消息模板
+	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; //进步送钻石消息模板
 
 	/**
 	 * activemq
