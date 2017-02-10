@@ -90,8 +90,9 @@ public class ImproveController {
 	 *            文件key 视频文件 音频文件 普通文件
 	 * @param businesstype
 	 *            微进步关联的业务类型 0 未关联 1 目标 2 榜 3 圈子 4教室
+	 * @param businessid 业务id
 	 * @param ptype
-	 *            十全十美id
+	 *            十全十美类型
 	 * @param ispublic
 	 *            可见程度 0 私密 1 好友可见 2 全部可见
 	 * @param itype
