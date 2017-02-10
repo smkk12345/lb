@@ -9,9 +9,11 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.UserBehaviourService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -50,6 +52,10 @@ public class ImproveServiceImpl implements ImproveService{
     private CommentMongoService commentMongoService;
     @Autowired
     private UserMongoDao userMongoDao;
+    @Autowired
+    private UserBehaviourService userBehaviourService;
+    @Autowired
+    private SpringJedisDao springJedisDao;
 
     /**
      *  @author luye
@@ -58,7 +64,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public boolean insertImprove(String userid, String brief,
+    public BaseResp<Object> insertImprove(String userid, String brief,
                                  String pickey, String filekey,
                                  String businesstype,String businessid, String ptype,
                                  String ispublic, String itype) {
@@ -77,7 +83,7 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setCreatetime(new Date());
         improve.setUpdatetime(new Date());
         improve.setBusinessid(Long.parseLong(businessid));
-
+        BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
             isok = insertImproveSingle(improve);
@@ -94,7 +100,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
             isok = insertImproveForGoal(improve);
         }
-        return isok;
+        //进步发布完成之后
+        if(isok){
+//            userBehaviourService.levelUp(userid,,);
+        }
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
     
     /**
@@ -235,6 +245,20 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
+            /**
+             * 目标进步发布成功 更新redis中缓存进步id  更新目标进步统计表中的进步id
+             *
+             */
+            long n = springJedisDao.sAdd(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid()
+                    ,improve.getImpid()+"");
+            if(n > 0){
+                boolean exist = true;
+                if(exist){ //如果存在 更新
+
+                }else{ //不存在  插入
+
+                }
+            }
             String message = improve.getImpid() +
                     "," + Constant.IMPROVE_GOAL_TYPE +
                     "," + improve.getBusinessid() +
@@ -246,6 +270,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
+
+
+
     /**
      *  @author luye
      *  @desp 
@@ -640,6 +667,10 @@ public class ImproveServiceImpl implements ImproveService{
                     goalid,improveid,userid,e);
         }
         if(res != 0){
+            //删除成功之后
+            springJedisDao.sRem(Constant.RP_IMPROVE_NDAY+goalid,improveid+DateUtils.getDate("yyyy-MM-dd"));
+            long n = springJedisDao.sCard(Constant.RP_IMPROVE_NDAY+goalid);
+
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             return true;
@@ -654,8 +685,23 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improvetype
      * @return
      * @author:luye
+     * @date update 02月10日
      */
     private boolean insertImproveFilter(Long userid,String improvetype){
+        switch (improvetype){
+            case Constant.IMPROVE_SINGLE_TYPE:
+                break;
+            case Constant.IMPROVE_CIRCLE_TYPE:
+                break;
+            case Constant.IMPROVE_CLASSROOM_TYPE:
+                break;
+            case Constant.IMPROVE_GOAL_TYPE:
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                break;
+            default:
+                break;
+        }
         return true;
     }
 

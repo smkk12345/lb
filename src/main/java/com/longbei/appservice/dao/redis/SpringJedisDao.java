@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -207,7 +208,47 @@ public class SpringJedisDao {
 //        return null;
 //    }
     //---------------------set---------------------//
+    public long sAdd(String key,String... values){
+        try{
+            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+            //the number of elements that were added to the set,
+            // not including all the elements already present into the set.
+            long n = setOperations.add(key,values);
+            return n;
+        }catch (Exception e){
+            logger.error("redis set add error and msg={}",e);
+        }
+        return 0;
+    }
+
+    //redis set 移除
+    public long sRem(String key,String... hashKeys){
+        try {
+            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+            //the number of members that were removed from the set,
+            // not including non existing members
+            return setOperations.remove(key,hashKeys);
+
+        }catch (Exception e){
+            logger.error("redis set sRem error and msg={}",e);
+        }
+        return 0;
+    }
+
+    //the cardinality (number of elements) of the set, or 0 if key does not exist.
+    public long sCard(String key){
+        try{
+            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+            long n = setOperations.size(key);
+            return n;
+        }catch(Exception e){
+            logger.error("redis set sSize error and msg={} ",e);
+        }
+        return 0;
+    }
+
 
     //---------------------list--------------------//
+
 
 }
