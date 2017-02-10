@@ -49,6 +49,8 @@ public class Improve {
     protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
     
     protected Integer goalid;//进步组id
+    
+    protected Integer rankid; //榜id
 
     protected Integer commentnum; //评论数
 
@@ -395,6 +397,15 @@ public class Improve {
 
 	public void setGoalid(Integer goalid) {
 		this.goalid = goalid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getRankid() {
+		return rankid;
+	}
+
+	public void setRankid(Integer rankid) {
+		this.rankid = rankid;
 	}
     
 }
