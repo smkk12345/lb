@@ -12,10 +12,14 @@
     <result column="isread" property="isread" jdbcType="CHAR" />
     <result column="gtype" property="gtype" jdbcType="CHAR" />
     <result column="mtype" property="mtype" jdbcType="CHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, mtype, createtime
+    id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, mtype, num, createtime
+  </sql>
+  <sql id="Fid_Column_List" >
+    friendid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -36,6 +40,53 @@
     </if>
   </select>
   
+  <select id="selectExceptList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_msg
+    where userid = #{userid} 
+    and mtype = 1 
+    and msgtype not in (2,5)  
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectLikeList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_msg
+    where userid = #{userid} 
+    and mtype = 1 
+    and msgtype = #{msgtype}  
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+   <select id="selectIdByMsgtypeList" resultType="java.lang.String">
+    select 
+    <include refid="Fid_Column_List" />
+    from user_msg
+    where userid = #{userid} 
+    and mtype = 1 
+    and isread = 0 
+    and msgtype = #{msgtype}  
+    order by createtime desc 
+  </select>
+  
+  <select id="selectCountByType" resultType="int">
+  	SELECT count(*) from user_msg 
+  	where userid = #{userid} 
+  	and mtype = 1 
+    and msgtype = #{msgtype}
+    <if test="isread != null" >
+    	and isread = #{isread}
+    </if> 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_msg
     where id = #{id,jdbcType=INTEGER}
@@ -47,15 +98,23 @@
     and mtype = #{mtype}
   </delete>
   
+  <delete id="deleteByLikeUserid">
+    delete from user_msg
+    where userid = #{userid} 
+    and mtype = 1 
+    and msgtype = #{msgtype}
+  </delete>
+  
+  
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
     insert into user_msg (id, userid, friendid, 
       msgtype, snsid, remark, 
-      isdel, isread, gtype, mtype, createtime
+      isdel, isread, gtype, mtype, num, createtime
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, 
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
       #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{mtype,jdbcType=CHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}
+      #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserMsg" >
@@ -90,6 +149,9 @@
       </if>
       <if test="mtype != null" >
         mtype,
+      </if>
+      <if test="num != null" >
+        num,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -126,6 +188,9 @@
       <if test="mtype != null" >
         #{mtype,jdbcType=CHAR},
       </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -161,6 +226,9 @@
       <if test="mtype != null" >
         mtype = #{mtype,jdbcType=CHAR},
       </if>
+	  <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -178,6 +246,7 @@
       isread = #{isread,jdbcType=CHAR},
       gtype = #{gtype,jdbcType=CHAR},
       mtype = #{mtype,jdbcType=CHAR},
+      num = #{num,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -193,6 +262,9 @@
       isread = 1 
     where userid = #{userid} 
     and mtype = #{mtype}
+    <if test="msgtype != null" >
+    	and msgtype = #{msgtype}
+    </if>
   </update>
   
 </mapper>

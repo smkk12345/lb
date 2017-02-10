@@ -25,9 +25,24 @@ public class UserMsg {
 	private String gtype; // 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
 
 	private String mtype; // 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
-							// 送花 4 送钻石 等等)
-
+							// 送花 4 送钻石  5:粉丝  等等)
+	private Integer num;  //送花  送钻石   个数
+	
 	private Date createtime;
+	
+	private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
+	
+	private AppUserMongoEntity appUserMongoEntityFriendid; //消息用户信息----Friendid
+	
+	private String impItype;//类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+	
+	private String impBrief;//进步说明
+	
+	private String impPicFilekey;//图片的key----文件key  视频文件  音频文件 普通文件
+	
+//	private String impPickey;//图片的key
+	
+//	private String impkey;//文件key  视频文件  音频文件 普通文件
 
 	/**
 	 * 
@@ -211,5 +226,71 @@ public class UserMsg {
 	public void setMtype(String mtype) {
 		this.mtype = mtype;
 	}
+
+	public AppUserMongoEntity getAppUserMongoEntityUserid() {
+		return appUserMongoEntityUserid;
+	}
+
+	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
+		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityFriendid() {
+		return appUserMongoEntityFriendid;
+	}
+
+	public void setAppUserMongoEntityFriendid(AppUserMongoEntity appUserMongoEntityFriendid) {
+		this.appUserMongoEntityFriendid = appUserMongoEntityFriendid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getImpItype() {
+		return impItype;
+	}
+
+	public void setImpItype(String impItype) {
+		this.impItype = impItype;
+	}
+
+	public String getImpBrief() {
+		return impBrief;
+	}
+
+	public void setImpBrief(String impBrief) {
+		this.impBrief = impBrief;
+	}
+
+	public String getImpPicFilekey() {
+		return impPicFilekey;
+	}
+
+	public void setImpPicFilekey(String impPicFilekey) {
+		this.impPicFilekey = impPicFilekey;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+//	public String getImpPickey() {
+//		return impPickey;
+//	}
+//
+//	public void setImpPickey(String impPickey) {
+//		this.impPickey = impPickey;
+//	}
+//
+//	public String getImpFilekey() {
+//		return impFilekey;
+//	}
+//
+//	public void setImpFilekey(String impFilekey) {
+//		this.impFilekey = impFilekey;
+//	}
 	
 }
