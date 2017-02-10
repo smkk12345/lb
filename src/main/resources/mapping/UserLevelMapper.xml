@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserLevelMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserLevel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="grade" property="grade" jdbcType="CHAR" />
+    <result column="star" property="star" jdbcType="CHAR" />
+    <result column="diff" property="diff" jdbcType="INTEGER" />
+    <result column="point" property="point" jdbcType="INTEGER" />
+    <result column="discount" property="discount" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, grade, star, diff, point, discount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_level
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user_level
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserLevel" >
+    insert into user_level (id, grade, star, diff, 
+      point, discount)
+    values (#{id,jdbcType=BIGINT}, #{grade,jdbcType=CHAR}, #{star,jdbcType=CHAR}, #{diff,jdbcType=INTEGER}, 
+      #{point,jdbcType=INTEGER}, #{discount,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserLevel" >
+    insert into user_level
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="star != null" >
+        star,
+      </if>
+      <if test="diff != null" >
+        diff,
+      </if>
+      <if test="point != null" >
+        point,
+      </if>
+      <if test="discount != null" >
+        discount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=CHAR},
+      </if>
+      <if test="star != null" >
+        #{star,jdbcType=CHAR},
+      </if>
+      <if test="diff != null" >
+        #{diff,jdbcType=INTEGER},
+      </if>
+      <if test="point != null" >
+        #{point,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserLevel" >
+    update user_level
+    <set >
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=CHAR},
+      </if>
+      <if test="star != null" >
+        star = #{star,jdbcType=CHAR},
+      </if>
+      <if test="diff != null" >
+        diff = #{diff,jdbcType=INTEGER},
+      </if>
+      <if test="point != null" >
+        point = #{point,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null" >
+        discount = #{discount,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserLevel" >
+    update user_level
+    set grade = #{grade,jdbcType=CHAR},
+      star = #{star,jdbcType=CHAR},
+      diff = #{diff,jdbcType=INTEGER},
+      point = #{point,jdbcType=INTEGER},
+      discount = #{discount,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
