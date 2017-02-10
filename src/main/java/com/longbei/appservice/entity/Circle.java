@@ -2,9 +2,14 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Circle {
     private Integer id;
 
+    private Long circleid;
+    
     private String circletitle;//兴趣圈标题
 
     private String circlephotos;//兴趣圈图片
@@ -75,6 +80,7 @@ public class Circle {
      * 兴趣圈类别id
      * @return circlecateid 兴趣圈类别id
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getCirclecateid() {
         return circlecateid;
     }
@@ -107,6 +113,7 @@ public class Circle {
      * 兴趣圈参与人数
      * @return circleinvoloed 兴趣圈参与人数
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getCircleinvoloed() {
         return circleinvoloed;
     }
@@ -123,6 +130,7 @@ public class Circle {
      * 兴趣圈创建人id
      * @return createuserid 兴趣圈创建人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getCreateuserid() {
         return createuserid;
     }
@@ -171,6 +179,7 @@ public class Circle {
      * 十全十美分类
      * @return ptype 十全十美分类
      */
+    @JsonInclude(Include.ALWAYS)
     public String getPtype() {
         return ptype;
     }
@@ -182,4 +191,14 @@ public class Circle {
     public void setPtype(String ptype) {
         this.ptype = ptype == null ? null : ptype.trim();
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public Long getCircleid() {
+		return circleid;
+	}
+
+	public void setCircleid(Long circleid) {
+		this.circleid = circleid;
+	}
+    
 }

@@ -3,6 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.CircleMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Circle" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="circleid" property="circleid" jdbcType="BIGINT" />
     <result column="circletitle" property="circletitle" jdbcType="VARCHAR" />
     <result column="circlephotos" property="circlephotos" jdbcType="VARCHAR" />
     <result column="circlecateid" property="circlecateid" jdbcType="INTEGER" />
@@ -14,25 +15,25 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, circletitle, circlephotos, circlecateid, circlebrief, circleinvoloed, createuserid, 
+    id, circleid, circletitle, circlephotos, circlecateid, circlebrief, circleinvoloed, createuserid, 
     createtime, updatetime, ptype
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from circle
-    where id = #{id,jdbcType=INTEGER}
+    where circleid = #{circleid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from circle
-    where id = #{id,jdbcType=INTEGER}
+    where circleid = #{circleid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Circle" >
-    insert into circle (id, circletitle, circlephotos, 
+    insert into circle (id, circleid, circletitle, circlephotos, 
       circlecateid, circlebrief, circleinvoloed, 
       createuserid, createtime, updatetime, 
       ptype)
-    values (#{id,jdbcType=INTEGER}, #{circletitle,jdbcType=VARCHAR}, #{circlephotos,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{circleid,jdbcType=INTEGER}, #{circletitle,jdbcType=VARCHAR}, #{circlephotos,jdbcType=VARCHAR}, 
       #{circlecateid,jdbcType=INTEGER}, #{circlebrief,jdbcType=VARCHAR}, #{circleinvoloed,jdbcType=INTEGER}, 
       #{createuserid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
       #{ptype,jdbcType=CHAR})
@@ -42,6 +43,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="circleid != null" >
+        circleid,
       </if>
       <if test="circletitle != null" >
         circletitle,
@@ -74,6 +78,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="circleid != null" >
+        #{circleid,jdbcType=INTEGER},
       </if>
       <if test="circletitle != null" >
         #{circletitle,jdbcType=VARCHAR},
@@ -135,7 +142,7 @@
         ptype = #{ptype,jdbcType=CHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where circleid = #{circleid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Circle" >
     update circle
@@ -148,6 +155,6 @@
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       ptype = #{ptype,jdbcType=CHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where circleid = #{circleid,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -3,6 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.ClassroomMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Classroom" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
     <result column="classtitle" property="classtitle" jdbcType="VARCHAR" />
     <result column="classphotos" property="classphotos" jdbcType="VARCHAR" />
     <result column="claacateid" property="claacateid" jdbcType="INTEGER" />
@@ -16,26 +17,26 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
+    id, classroomid, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
     classverify, classnotice, createtime, updatetime, ptype
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from classroom
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
-    insert into classroom (id, classtitle, classphotos, 
+    insert into classroom (id, classroomid, classtitle, classphotos, 
       claacateid, classinvoloed, classlimited, 
       classbrief, classverify, classnotice, 
       createtime, updatetime, ptype
       )
-    values (#{id,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, #{classphotos,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, #{classphotos,jdbcType=VARCHAR}, 
       #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
       #{classbrief,jdbcType=VARCHAR}, #{classverify,jdbcType=INTEGER}, #{classnotice,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}
@@ -46,6 +47,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="classroomid != null" >
+        classroomid,
       </if>
       <if test="classtitle != null" >
         classtitle,
@@ -84,6 +88,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="classroomid != null" >
+        #{classroomid,jdbcType=INTEGER},
       </if>
       <if test="classtitle != null" >
         #{classtitle,jdbcType=VARCHAR},
@@ -157,7 +164,7 @@
         ptype = #{ptype,jdbcType=CHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Classroom" >
     update classroom
@@ -172,6 +179,6 @@
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       ptype = #{ptype,jdbcType=CHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid,jdbcType=INTEGER}
   </update>
 </mapper>

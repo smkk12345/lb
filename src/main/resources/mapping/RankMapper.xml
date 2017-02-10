@@ -30,23 +30,23 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos, 
+    id, rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos, 
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from rank
-    where id = #{id,jdbcType=INTEGER}
+    where rankid = #{rankid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
-    where id = #{id,jdbcType=INTEGER}
+    where rankid = #{rankid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Rank" >
-    insert into rank (id, ranktitle, rankbrief, 
+    insert into rank (id, rankid, ranktitle, rankbrief, 
       rankdetail, ranklimite, rankinvolved, 
       rankscope, rankphotos, rankrate, 
       starttime, endtime, areaname, 
@@ -55,7 +55,7 @@
       createtime, updatetime, likescore, 
       flowerscore, diamondscore, codeword, 
       ptype)
-    values (#{id,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER},#{rankid,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
       #{rankdetail,jdbcType=VARCHAR}, #{ranklimite,jdbcType=INTEGER}, #{rankinvolved,jdbcType=INTEGER}, 
       #{rankscope,jdbcType=CHAR}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER}, 
       #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{areaname,jdbcType=VARCHAR}, 
@@ -304,7 +304,7 @@
         ptype = #{ptype,jdbcType=CHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where rankid = #{rankid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Rank" >
     update rank
@@ -332,6 +332,6 @@
       diamondscore = #{diamondscore,jdbcType=INTEGER},
       codeword = #{codeword,jdbcType=VARCHAR},
       ptype = #{ptype,jdbcType=CHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where rankid = #{rankid,jdbcType=INTEGER}
   </update>
 </mapper>

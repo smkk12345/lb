@@ -2,8 +2,13 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Classroom {
     private Integer id;
+    
+    private Long classroomid;
 
     private String classtitle;//教室标题
 
@@ -79,6 +84,7 @@ public class Classroom {
      * 教室类别id
      * @return claacateid 教室类别id
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getClaacateid() {
         return claacateid;
     }
@@ -95,6 +101,7 @@ public class Classroom {
      * 教室参与人数
      * @return classinvoloed 教室参与人数
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getClassinvoloed() {
         return classinvoloed;
     }
@@ -111,6 +118,7 @@ public class Classroom {
      * 教室限制人数
      * @return classlimited 教室限制人数
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getClasslimited() {
         return classlimited;
     }
@@ -143,6 +151,7 @@ public class Classroom {
      * 0 — 不需要。1—需要
      * @return classverify 0 — 不需要。1—需要
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getClassverify() {
         return classverify;
     }
@@ -207,6 +216,7 @@ public class Classroom {
      * 十全十美类型
      * @return ptype 十全十美类型
      */
+    @JsonInclude(Include.ALWAYS)
     public String getPtype() {
         return ptype;
     }
@@ -218,4 +228,13 @@ public class Classroom {
     public void setPtype(String ptype) {
         this.ptype = ptype == null ? null : ptype.trim();
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public Long getClassroomid() {
+		return classroomid;
+	}
+
+	public void setClassroomid(Long classroomid) {
+		this.classroomid = classroomid;
+	}
 }

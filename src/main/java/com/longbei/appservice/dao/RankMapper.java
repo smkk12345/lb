@@ -3,13 +3,13 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.Rank;
 
 public interface RankMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer rankid);
 
     int insert(Rank record);
 
     int insertSelective(Rank record);
 
-    Rank selectByPrimaryKey(Integer id);
+    Rank selectByPrimaryKey(Long rankid);
 
     int updateByPrimaryKeySelective(Rank record);
 
