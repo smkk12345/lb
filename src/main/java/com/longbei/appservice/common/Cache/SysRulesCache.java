@@ -40,7 +40,7 @@ public class SysRulesCache {
     /**
      * 十全十美
      */
-    public static Map<Integer,String> perfectTenMap = new HashMap<>(){{
+    public static Map<Integer,String> perfectTenMap = new HashMap(){{
         put(0,"学习");
         put(1,"运动");
         put(2,"社交");
