@@ -18,15 +18,19 @@ public class Comment {
 
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
-	private String userid;
+	private String userid;     //评论商户id
+	@Transient
+	private String friendid;   //被评论商户id
 	private String content;    //评论内容
 	private String createtime; //评论时间
-	private String itype;      //类型    0:进步(零散)评论  1：榜评论   2：教室微进步评论   3：圈子评论   4:目标进步评论
+	private String itype;      //类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
 	private String itypeid;    //各类型对应的id
 	@Transient
 	private List<CommentLower> lowerList = new ArrayList<>();
 	@Transient
 	private String isaddlike = "0";  //是否已点赞     0:未点赞  1：已点赞
+	@Transient
+	private AppUserMongoEntity appUserMongoEntityUserid; //评论用户信息----Userid
 	
 	public Comment(){
 		super();
@@ -99,6 +103,23 @@ public class Comment {
 
 	public void setIsaddlike(String isaddlike) {
 		this.isaddlike = isaddlike;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getFriendid() {
+		return friendid;
+	}
+
+	public void setFriendid(String friendid) {
+		this.friendid = friendid;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityUserid() {
+		return appUserMongoEntityUserid;
+	}
+
+	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
+		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
 	}
 	
 }

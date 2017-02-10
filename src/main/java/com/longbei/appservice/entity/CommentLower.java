@@ -3,6 +3,7 @@ package com.longbei.appservice.entity;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,10 @@ public class CommentLower {
 	private String createtime; //评论时间
 	private String commentid;  //主评论id
 	private String status;     //0:不显示回复    1:显示回复
+	@Transient
+	private AppUserMongoEntity appUserMongoEntityUserid; //评论用户信息----Userid
+	@Transient
+	private AppUserMongoEntity appUserMongoEntityFriendid; //评论用户信息----Friendid
 
 	public CommentLower(){
 		super();
@@ -90,6 +95,22 @@ public class CommentLower {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityUserid() {
+		return appUserMongoEntityUserid;
+	}
+
+	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
+		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityFriendid() {
+		return appUserMongoEntityFriendid;
+	}
+
+	public void setAppUserMongoEntityFriendid(AppUserMongoEntity appUserMongoEntityFriendid) {
+		this.appUserMongoEntityFriendid = appUserMongoEntityFriendid;
 	}
 
 }
