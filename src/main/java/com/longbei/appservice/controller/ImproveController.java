@@ -2,6 +2,7 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
@@ -101,7 +102,7 @@ public class ImproveController {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ResponseBody
-	@RequestMapping(value = "insert", method = RequestMethod.POST)
+	@RequestMapping(value = "insert")
 	public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
 			String businesstype, String businessid, String ptype, String ispublic, String itype) {
 		logger.info(
@@ -115,12 +116,12 @@ public class ImproveController {
 		}
 		boolean flag = false;
 		try {
-			flag = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
+			BaseResp<Object> baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
 					ispublic, itype);
-			if (flag) {
+			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");
-				return BaseResp.ok(Constant.RTNINFO_SYS_41);
 			}
+			return baseResp;
 		} catch (Exception e) {
 			logger.error("insert improve is error:{}", e);
 		}

@@ -2,6 +2,7 @@ package com.longbei.appservice.service;
 
 import java.util.List;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.*;
 
 /**
@@ -25,9 +26,9 @@ public interface ImproveService {
      * @param itype 类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
      * @return
      */
-    boolean insertImprove(String userid,String brief,String pickey,String filekey,
-                      String businesstype,String businessid,String ptype,
-                      String ispublic,String itype);
+    BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
+                           String businesstype, String businessid, String ptype,
+                           String ispublic, String itype);
     /**
      * 添加独立进步
      * @param improve

@@ -202,9 +202,14 @@ public class Constant {
 	/**
 	 * redis中缓存的过期时间
 	 */
-	public static final long EXPIRE_USER_RANDOMCODE = 2*60*1000;//用户发送验证码过期时间
+	public static final long EXPIRE_USER_RANDOMCODE = 2*60;//用户发送验证码过期时间
 	public static final long EXPIRE_USER_TOKEN = 0;//用户登录token过期时间
 	public static final long EXPIRE_USER_MAILCODE = 0;//邮箱验证码过期时间
+	/**
+	 * redis 缓存时间 单位秒
+	 */
+	public static final long CACHE_24X60X60 = 24*3600;
+	public static final long CACHE_24X60X60X2 = 24*3600*2;
 
 	/**
 	 * 每日可操作参数    签到   发进步  点赞 ...
@@ -217,14 +222,17 @@ public class Constant {
 	 * 缓存一日数据
 	 */
 	public static final String PERDAY_POINT = "point";
-
+	//-------------各种缓存前缀  improve  rank user 等------------------//
 	/**
 	 * redis中各种请求前缀   redis_prefix
 	 */
 	public static final String RP_USER_PERDAY = "user_perday_";
+
 	/**
-	 * redis 缓存时间 单位秒
+	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
 	 */
-	public static final long CACHE_24X60X60 = 24*3600;
+	public static final String RP_IMPROVE_NDAY = "improve_day_";
+
+
 
 }

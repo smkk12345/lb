@@ -3,6 +3,8 @@ package com.longbei.appservice.entity;
 public class SysRules {
 	
 	private static final long serialVersionUID = 1L;
+	private int addimprove = 10;//发进步
+
 	private int maximprove;//一天最多发的进步数量
 	private int maxrank;//一天最多参加的榜
 	private int register;//注册＋龙分数
@@ -40,6 +42,13 @@ public class SysRules {
 	private int flowered;//被送花积分数
 
 
+	public void setAddimprove(int addimprove) {
+		this.addimprove = addimprove;
+	}
+
+	public int getAddimprove() {
+		return addimprove;
+	}
 
 	public int getMaximprove() {
 		return maximprove;
