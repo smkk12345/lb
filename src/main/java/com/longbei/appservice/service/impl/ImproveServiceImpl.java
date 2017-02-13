@@ -2,11 +2,13 @@ package com.longbei.appservice.service.impl;
 
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -56,6 +58,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
+    @Autowired
+    private ImpGoalPerdayMapper impGoalPerdayMapper;
 
     /**
      *  @author luye
@@ -82,7 +86,11 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setItype(itype);
         improve.setCreatetime(new Date());
         improve.setUpdatetime(new Date());
-        improve.setBusinessid(Long.parseLong(businessid));
+        if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+//
+        }else{
+            improve.setBusinessid(Long.parseLong(businessid));
+        }
         BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
@@ -102,8 +110,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //进步发布完成之后
         if(isok){
-//            userBehaviourService.levelUp(userid,,);
+            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
         }
+        baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
     
@@ -249,16 +258,7 @@ public class ImproveServiceImpl implements ImproveService{
              * 目标进步发布成功 更新redis中缓存进步id  更新目标进步统计表中的进步id
              *
              */
-            long n = springJedisDao.sAdd(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid()
-                    ,improve.getImpid()+"");
-            if(n > 0){
-                boolean exist = true;
-                if(exist){ //如果存在 更新
-
-                }else{ //不存在  插入
-
-                }
-            }
+            updateGoalPerDay(improve);
             String message = improve.getImpid() +
                     "," + Constant.IMPROVE_GOAL_TYPE +
                     "," + improve.getBusinessid() +
@@ -271,7 +271,19 @@ public class ImproveServiceImpl implements ImproveService{
         return false;
     }
 
-
+    private void updateGoalPerDay(Improve improve){
+        long n = springJedisDao.sAdd(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid()
+                ,improve.getImpid()+"");
+        springJedisDao.expire(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid(),Constant.CACHE_24X60X60X2);
+        if(n > 0){
+//            boolean exist = impGoalPerdayMapper.selectByUidAndDate();
+//            if(exist){ //如果存在 更新
+//
+//            }else{ //不存在  插入
+//
+//            }
+        }
+    }
 
     /**
      *  @author luye

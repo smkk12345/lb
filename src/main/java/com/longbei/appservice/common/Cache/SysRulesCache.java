@@ -19,7 +19,7 @@ public class SysRulesCache {
     /**
      * 系统规则
      */
-    public static SysRules sysRules;
+    public static SysRules sysRules = new SysRules();
 
     /**
      * 签到规则  key--天数  value--规则实体

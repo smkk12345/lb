@@ -29,11 +29,14 @@
     <result column="hcnickname" property="hcnickname"/>
     <result column="deviceindex" property="deviceindex"/>
     <result column="devicetype" property="devicetype"/>
+    <result column="curpoint" property="curpoint"/>
+    <result column="point" property="point"/>
+    <result column="grade" property="grade"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
-    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname
+    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select 

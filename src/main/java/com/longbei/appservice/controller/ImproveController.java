@@ -102,7 +102,7 @@ public class ImproveController {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ResponseBody
-	@RequestMapping(value = "insert", method = RequestMethod.POST)
+	@RequestMapping(value = "insert")
 	public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
 			String businesstype, String businessid, String ptype, String ispublic, String itype) {
 		logger.info(
@@ -120,10 +120,8 @@ public class ImproveController {
 					ispublic, itype);
 			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");
-				return BaseResp.ok(Constant.RTNINFO_SYS_41);
-			}else{
-				return baseResp;
 			}
+			return baseResp;
 		} catch (Exception e) {
 			logger.error("insert improve is error:{}", e);
 		}

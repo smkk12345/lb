@@ -14,4 +14,7 @@ public interface ImpGoalPerdayMapper {
     int updateByPrimaryKeySelective(ImpGoalPerday record);
 
     int updateByPrimaryKey(ImpGoalPerday record);
+
+    ImpGoalPerday selectByUidAndDate(long userid,String date);
+
 }

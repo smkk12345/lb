@@ -94,7 +94,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     @Override
     public BaseResp<Object> levelUp(long userid, int iPoint,String pType) {
-        UserInfo userInfo = null;//此处通过id获取用户信息
+        UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);//此处通过id获取用户信息
         return levelUp(userInfo,iPoint,pType);
     }
 

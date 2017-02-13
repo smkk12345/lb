@@ -219,7 +219,7 @@ public class Improve {
      * @param businesstype 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
      */
     public void setBusinesstype(String businesstype) {
-        this.businesstype = businesstype == null ? null : businesstype.trim();
+        this.businesstype = businesstype;
     }
 
     /**
