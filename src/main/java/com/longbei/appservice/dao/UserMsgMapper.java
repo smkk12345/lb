@@ -11,9 +11,12 @@ public interface UserMsgMapper {
     
     /**
 	 * @author yinxc
-	 * 删除消息(假删)
+	 * 删除消息
 	 * 2017年2月7日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
 	 * UserMsgService
 	 */
@@ -21,9 +24,25 @@ public interface UserMsgMapper {
     
     /**
 	 * @author yinxc
+	 * 删除用户类型消息(mtype,msgtype)
+	 * 2017年2月7日
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * return_type
+	 * UserMsgService
+	 */
+    int deleteByMtypeAndMsgtype(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype);
+    
+    /**
+	 * @author yinxc
 	 * 清空点赞消息
 	 * 2017年2月10日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
 	 * UserMsgMapper
 	 */
@@ -57,7 +76,10 @@ public interface UserMsgMapper {
 	 * @author yinxc
 	 * 获取消息列表信息(对话消息除赞消息,粉丝消息)
 	 * 2017年2月7日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
 	 * UserMsgService
 	 */
@@ -65,20 +87,38 @@ public interface UserMsgMapper {
     
     /**
 	 * @author yinxc
-	 * 根据msgtype获取消息列表信息(对话消息)
+	 * 根据mtype,msgtype获取不同mtype类型消息列表信息
 	 * 2017年2月7日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
 	 * UserMsgService
 	 */
-    List<UserMsg> selectLikeList(@Param("userid") long userid, @Param("msgtype") String msgtype, @Param("startNum") int startNum, @Param("endNum") int endNum);
+    List<UserMsg> selectOtherList(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+	 * @author yinxc
+	 * 根据msgtype获取消息列表信息(对话消息)
+	 * 2017年2月7日
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 */
+    List<UserMsg> selectLikeList(@Param("userid") long userid, @Param("msgtype") String msgtype, @Param("startNum") int startNum, 
+    		@Param("endNum") int endNum);
     
     /**
 	 * @author yinxc
 	 * 根据msgtype获取消息id列表信息(对话消息----未读)
 	 * 2017年2月7日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
-	 * return_type
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * UserMsgService
 	 */
     List<String> selectIdByMsgtypeList(@Param("userid") long userid, @Param("msgtype") String msgtype);
@@ -112,7 +152,10 @@ public interface UserMsgMapper {
 	 * @author yinxc
 	 * 修改消息已读状态信息
 	 * 2017年2月7日
-	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
 	 * UserMsgService
 	 */

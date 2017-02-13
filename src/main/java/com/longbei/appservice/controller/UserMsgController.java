@@ -23,13 +23,48 @@ public class UserMsgController extends BaseController {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgController.class);
 	
+	
+	
+	/**
+    * @Title: http://ip:port/app_service/userMsg/msgOtherList
+    * @Description: 获取@我消息---(分页)
+    * @param @param userid  
+    * @param @param startNum   endNum
+    * @param @param mtype 0 系统消息(通知消息.进步消息等) 
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+    * @param @param msgtype 可为null 获取@我消息
+    * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年2月8日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/msgOtherList")
+    @ResponseBody
+    public BaseResp<Object> msgOtherList(@RequestParam("userid") String userid, String mtype, String msgtype, 
+    		int startNum, int endNum) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, mtype)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = userMsgService.selectOtherList(Long.parseLong(userid), mtype, msgtype, startNum, endNum);
+		} catch (Exception e) {
+			logger.error("msgOtherList userid = {}, msg = {}", userid, e);
+		}
+  		return baseResp;
+	}
+	
 	/**
     * @Title: http://ip:port/app_service/userMsg/msgLikeList
     * @Description: 获取对话---点赞和粉丝消息列表(分页)(对话消息)
     * @param @param userid  
     * @param @param startNum   endNum
     * @param @param mtype 0 系统消息(通知消息.进步消息等) 
-    * 					  1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
     * @param @param msgtype 2:点赞   5:粉丝  
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -58,7 +93,9 @@ public class UserMsgController extends BaseController {
     * @param @param userid  
     * @param @param startNum   endNum
     * @param @param mtype 0 系统消息(通知消息.进步消息等) 
-    * 					  1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
@@ -129,13 +166,43 @@ public class UserMsgController extends BaseController {
 		}
   		return baseResp;
 	}
+
+	/**
+    * @Title: http://ip:port/app_service/userMsg/msgDelOther
+    * @Description: 清空用户类型消息(mtype,msgtype)       暂时未用
+    * @param @param userid  
+    * @param @param mtype 0 系统消息(通知消息.进步消息等) 
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+    * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年2月8日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/msgDelOther")
+    @ResponseBody
+    public BaseResp<Object> msgDelOther(@RequestParam("userid") String userid, String mtype, String msgtype) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, mtype)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = userMsgService.deleteByMtypeAndMsgtype(Long.parseLong(userid), mtype, msgtype);
+		} catch (Exception e) {
+			logger.error("msgDelMtype userid = {}, msg = {}", userid, e);
+		}
+  		return baseResp;
+	}
 	
 	/**
     * @Title: http://ip:port/app_service/userMsg/msgDelMtype
     * @Description: 删除用户类型消息
     * @param @param userid  
     * @param @param mtype 0 系统消息(通知消息.进步消息等) 
-    * 					  1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
@@ -209,10 +276,12 @@ public class UserMsgController extends BaseController {
 	
 	/**
     * @Title: http://ip:port/app_service/userMsg/msgUpdAllIsread
-    * @Description: 修改用户所有消息状态 isread 是否已读 0：未读 1：已读
+    * @Description: 修改用户消息状态 mtype,msgtype
     * @param @param userid  
     * @param @param mtype 0 系统消息(通知消息.进步消息等) 
-    * 					  1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝   等等)
+	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
     * @param @param msgtype 是对话消息时，传值
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc

@@ -77,15 +77,47 @@
     order by createtime desc 
   </select>
   
+  <select id="selectOtherList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_msg
+    where userid = #{userid} 
+    <if test="mtype != null" >
+    	and mtype = #{mtype} 
+    </if> 
+    <if test="msgtype != null" >
+    	and msgtype = #{msgtype}  
+    </if> 
+    order by isread asc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
   <select id="selectCountByType" resultType="int">
   	SELECT count(*) from user_msg 
   	where userid = #{userid} 
-  	and mtype = 1 
-    and msgtype = #{msgtype}
+  	<if test="mtype != null" >
+    	and mtype = #{mtype} 
+    </if> 
+    <if test="msgtype != null" >
+    	and msgtype = #{msgtype}  
+    </if> 
     <if test="isread != null" >
     	and isread = #{isread}
     </if> 
   </select>
+  
+  <delete id="deleteByMtypeAndMsgtype">
+    delete from user_msg 
+    where userid = #{userid} 
+    <if test="mtype != null" >
+    	and mtype = #{mtype} 
+    </if> 
+    <if test="msgtype != null" >
+    	and msgtype = #{msgtype}  
+    </if> 
+  </delete>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_msg
@@ -261,7 +293,9 @@
     update user_msg
       isread = 1 
     where userid = #{userid} 
-    and mtype = #{mtype}
+    <if test="mtype != null" >
+    	and mtype = #{mtype} 
+    </if> 
     <if test="msgtype != null" >
     	and msgtype = #{msgtype}
     </if>

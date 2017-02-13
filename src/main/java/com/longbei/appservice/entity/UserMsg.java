@@ -24,8 +24,11 @@ public class UserMsg {
 
 	private String gtype; // 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
 
-	private String mtype; // 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
-							// 送花 4 送钻石  5:粉丝  等等)
+	private String mtype; // 0 系统消息(通知消息，等级提升消息) 
+						//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)  
+						//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+						//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	
 	private Integer num;  //送花  送钻石   个数
 	
 	private Date createtime;
