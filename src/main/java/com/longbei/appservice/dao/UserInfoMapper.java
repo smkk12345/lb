@@ -45,4 +45,6 @@ public interface UserInfoMapper {
 	 * @return
      */
 	int updateDeviceIndexByUserName(UserInfo userInfo);
+
+	int updatePointByUserid(UserInfo record);
 }

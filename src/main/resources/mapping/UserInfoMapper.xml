@@ -358,6 +358,14 @@
     </set>
     where userid = #{userid,jdbcType=BIGINT}
   </update>
+
+  <update id="updatePointByUserid" parameterType="com.longbei.appservice.entity.UserInfo">
+    update user_info
+    set point = #{point,jdbcType=INTEGER},
+        curpoint = #{curpoint,jdbcType=INTEGER},
+        grade = #{grade,jdbcType=INTEGER}
+    WHERE userid = #{userid,jdbcType=BIGINT}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     set userid = #{userid,jdbcType=BIGINT},

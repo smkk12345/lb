@@ -17,7 +17,7 @@ public class UserPlDetail {
 
     private Date updatetime;
 
-    private Integer scorce;
+    private Integer scorce = 0;
 
     /**
      * 

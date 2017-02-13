@@ -24,7 +24,7 @@
     SELECT
     <include refid="Base_Column" />
     FROM user_pl_detail
-    where userid=#{userid} and ptype=#{ptype} ORDER BY level desc limit 0,1
+    where userid=#{userid} and ptype=#{ptype} ORDER BY leve desc limit 0,1
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

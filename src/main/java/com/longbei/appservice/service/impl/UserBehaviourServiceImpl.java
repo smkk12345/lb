@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.expand.JPush;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserPointDetailMapper;
@@ -80,10 +81,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     private int getHashValueFromCache(String key,String hashKey){
-        Object o = springJedisDao.getHashValue(key,hashKey);
-        if(null != o){
+        String sVaue = springJedisDao.getHashValue(key,hashKey);
+        if(!StringUtils.isBlank(sVaue)){
             try{
-                return (int)o;
+                return Integer.parseInt(sVaue);
             }catch(Exception e){
                 logger.debug("(int)o msg={}",e);
                 return 0;
@@ -153,7 +154,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private void updateToUserInfo(UserInfo userInfo,int iPoint){
         userInfo.setPoint(userInfo.getPoint()+iPoint);
         userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
-        userInfoMapper.updateByUseridSelective(userInfo);
+        userInfoMapper.updatePointByUserid(userInfo);
     }
 
     private BaseResp<Object> subLevelUp(UserInfo userInfo, int iPoint,String pType,String dateStr){
@@ -174,6 +175,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }else{
                 //这里通过10大分类获取用户point分数
                 UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
+                if(null == userPlDetail){
+                    userPlDetail = new UserPlDetail();
+                }
                 int point = userPlDetail.getScorce();
                 int leftPoint = point - iPoint;
                 if(leftPoint > 0){
@@ -245,7 +249,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfo.setGrade(userInfo.getGrade()+1);
             userInfo.setPoint(userInfo.getPoint()+iPoint);
             userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
-            userInfoMapper.updateByUseridSelective(userInfo);
+            userInfoMapper.updatePointByUserid(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
             saveLevelUpInfo(userInfo,"a",0);
             //推送一条信
