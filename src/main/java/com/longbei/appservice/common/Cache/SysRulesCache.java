@@ -28,8 +28,10 @@ public class SysRulesCache {
 
     /**
      * 十全十美每级所需龙分缓存 key--等级 value--龙分  十全十美
+     * 业务发生变化社交升级龙分和别的分类不一致了 所以修改数据结构
+     * key  ptype+&+level  value point
      */
-    public static Map<Integer,Integer> pLevelPointMap = new HashMap<Integer,Integer>();
+    public static Map<String,Integer> pLevelPointMap = new HashMap<String,Integer>();
     /**
      * 龙级没级所需龙分
      */

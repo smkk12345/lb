@@ -7,7 +7,7 @@ public class UserPlDetail {
 
     private Long userid;
 
-    private Integer leve;
+    private Integer leve = 1;
 
     private String ptype;//十全十美类型
 

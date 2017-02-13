@@ -43,7 +43,7 @@ public class InitConfig implements CommandLineRunner {
         //初始化相关
         initSysRuleCheckInCache();
         //十全十美每级所需龙分缓存
-       // initSysRulePLevelPointCache();
+        initSysRulePLevelPointCache();
         //龙级升级每级所需龙分缓存
         initSysRuleLevelPointCache();
     }
@@ -64,13 +64,14 @@ public class InitConfig implements CommandLineRunner {
 
     /**
      *十全十美每级所需龙分缓存
+     * key  ptype+&+level  value point
      */
     private void initSysRulePLevelPointCache(){
-        Map<Integer,Integer> map = new HashMap<>();
+        Map<String,Integer> map = new HashMap<>();
         List<SysRulePerfectTen> list = sysRulePerfectTenMapper.selectAll();
         for (int i = 0; i < list.size(); i++) {
             SysRulePerfectTen sysRule = list.get(i);
-            map.put(sysRule.getPlevel(),sysRule.getMaxscore()-sysRule.getMinscore());
+            map.put(sysRule.getPtype()+"&"+sysRule.getPlevel(),sysRule.getScore());
         }
         SysRulesCache.pLevelPointMap = map;
     }

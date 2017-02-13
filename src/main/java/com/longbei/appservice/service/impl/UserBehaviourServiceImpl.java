@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by smkk on 17/2/7.
@@ -121,7 +123,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT,-iPoint);
                     updateToUserInfo(userInfo,iPoint);
                 }else{//升级
-                    levelUpAsyn(userInfo,iPoint);
+                    levelUpAsyn(userInfo,iPoint,leftPoint);
+                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
                 }
             }else{
                 //通过级别获取升级下以及所需分数  进行缓存
@@ -134,7 +137,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     springJedisDao.expire(key,Constant.CACHE_24X60X60);
                     updateToUserInfo(userInfo,iPoint);
                 }else{//升级
-                    levelUpAsyn(userInfo,iPoint);
+                    levelUpAsyn(userInfo,iPoint,leftPoint);
+                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
                 }
             }
             //userPointDetailMapper.insert();
@@ -162,29 +166,40 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         try{
             String key = getPerKey(userInfo.getUserid());
             boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT+pType);
+            UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
+
+            int level=0;//等级
+            int levelPoint = 0;
+            int curPoint = 0;
+            if(null == userPlDetail){
+                //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
+                level = 1;
+                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1");
+            }else{
+                curPoint = userPlDetail.getScorce();
+                level = userPlDetail.getLeve();
+                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()));
+            }
             if(hasKey){
                 int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT+pType);
                 int leftPoint = point - iPoint;
                 if(point > 0 && leftPoint > 0){//未升级
                     springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
                     //没有升级 更新userPlDetail数据
-                    updateToUserPLDetail(userInfo,iPoint,pType);
+                    updateToUserPLDetail(userInfo,iPoint,pType,level);
                 }else{//升级
-                    saveLevelUpInfo(userInfo,pType,iPoint);
+                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
+                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
             }else{
                 //这里通过10大分类获取用户point分数
-                UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
-                if(null == userPlDetail){
-                    userPlDetail = new UserPlDetail();
-                }
-                int point = userPlDetail.getScorce();
-                int leftPoint = point - iPoint;
+                int leftPoint = levelPoint - curPoint - iPoint;
                 if(leftPoint > 0){
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
-                    updateToUserPLDetail(userInfo,iPoint,pType);
+                    updateToUserPLDetail(userInfo,iPoint,pType,level);
                 }else{//升级
-                    saveLevelUpInfo(userInfo,pType,iPoint);
+                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
+                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
             }
             saveUserPointDetail(userInfo,iPoint,pType);
@@ -194,7 +209,49 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return baseResp;
     }
 
-    public boolean updateToUserPLDetail(UserInfo userInfo,int iPoint,String pType){
+    private Map<String,Integer> getLeftPointAndLevel(UserInfo userInfo,String pType,int iPoint){
+        Map<String,Integer> map = new HashMap<String,Integer>();
+        //这里通过10大分类获取用户point分数
+        UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
+        int point = 0;
+        int levelPoint = 0;
+        if(null == userPlDetail){
+            //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
+            map.put("level",1);
+            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1");
+        }else{
+            point = userPlDetail.getScorce();
+            map.put("level",userPlDetail.getLeve());
+            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()));
+        }
+        //等级所需分数-当前等级分数-操作分数
+        int leftPoint = levelPoint - point - iPoint;
+        map.put("leftPoint",leftPoint);
+
+        return map;
+    }
+
+    /**
+     * 更新当前分数  通过level ptype userid  累加 scorce
+     * @param userInfo
+     * @param iPoint
+     * @param pType
+     * @return
+     */
+    public boolean updateToUserPLDetail(UserInfo userInfo,int iPoint,String pType,int level){
+        UserPlDetail userPlDetail = new UserPlDetail();
+        userPlDetail.setScorce(iPoint);
+        userPlDetail.setUserid(userInfo.getUserid());
+        userPlDetail.setPtype(pType);
+        userPlDetail.setLeve(level);
+        try{
+            int n = userPlDetailMapper.updateScorce(userPlDetail);
+            if (n>0)
+                return true;
+        }catch(Exception e){
+            logger.error("userPlDetailMapper.updateScorce error and msg={}",e);
+        }
+
         return false;
     }
 
@@ -221,11 +278,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return Constant.RP_USER_PERDAY+userid;
     }
 
-    private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint){
+    private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level){
         try{
             UserPlDetail userPlDetail = new UserPlDetail();
             userPlDetail.setCreatetime(new Date());
-            userPlDetail.setLeve(userInfo.getGrade());
+            userPlDetail.setLeve(level);
             if(iPoint == 0){
                 userPlDetail.setScorce(userInfo.getPoint());
             }
@@ -243,15 +300,15 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
 
     //异步线程跑升级
-    private void levelUpAsyn(UserInfo userInfo,int iPoint){
+    private void levelUpAsyn(UserInfo userInfo,int iPoint,int leftpoint){
         try{
             //等级升级  update UserInfo
             userInfo.setGrade(userInfo.getGrade()+1);
             userInfo.setPoint(userInfo.getPoint()+iPoint);
-            userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
+            userInfo.setCurpoint(leftpoint);
             userInfoMapper.updatePointByUserid(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
-            saveLevelUpInfo(userInfo,"a",0);
+            saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
             //推送一条信
             //           JPush.messagePush();
         }catch (Exception e){
