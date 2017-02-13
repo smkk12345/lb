@@ -63,6 +63,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
 	
+	
 	@Override
 	public BaseResp<Object> deleteByid(Integer id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -96,7 +97,25 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 
+	@Override
+	public BaseResp<Object> deleteByMtypeAndMsgtype(long userid, String mtype, String msgtype) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			boolean temp = deleteUseridAndMsgtype(userid, mtype, msgtype);
+			if (temp) {
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("deleteByMtypeAndMsgtype userid = {}, msg = {}", userid, e);
+		}
+		return reseResp;
+	}
 
+	private boolean deleteUseridAndMsgtype(long userid, String mtype, String msgtype){
+		int temp = userMsgMapper.deleteByMtypeAndMsgtype(userid, mtype, msgtype);
+		return temp > 0 ? true : false;
+	}
+	
 	@Override
 	public BaseResp<Object> deleteByLikeUserid(long userid, String msgtype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -229,6 +248,91 @@ public class UserMsgServiceImpl implements UserMsgService {
 
 	/**
 	 * @author yinxc
+	 * 根据mtype,msgtype获取不同mtype类型消息列表信息
+	 * 2017年2月13日
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 */
+	@Override
+	public BaseResp<Object> selectOtherList(long userid, String mtype, String msgtype, int startNum, int endNum) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			List<UserMsg> list = userMsgMapper.selectOtherList(userid, mtype, msgtype, startNum, endNum);
+			if (null != list && list.size()>0) {
+				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
+				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  )
+				for (UserMsg userMsg : list) {
+					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype()) && !"17".equals(userMsg.getMsgtype()) ){
+						initMsgUserInfoByFriendid(userMsg);
+					}else{
+						//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
+						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+						appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+						appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+					}
+				}
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}else{
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+			}
+			reseResp.setData(list);
+		} catch (Exception e) {
+			logger.error("selectOtherList userid = {}, mtype = {}, msg = {}", userid, mtype, e);
+		}
+		return reseResp;
+	}
+	
+	/**
+	 * @author yinxc  <暂时没有用到----扩展方法>
+	 * 消息--@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 *					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 2017年2月13日
+	 * UserMsg
+	 */
+//	private UserMsg selectUserMsgOther(UserMsg userMsg){
+//		if(userMsg.getMsgtype().equals(Constant.MSG_INVITE_TYPE)){
+//			//拼接10:邀请消息字段
+//			userMsg = otherItype(userMsg);
+//		}
+//		return userMsg;
+//	}
+	
+	/**
+	 * @author yinxc
+	 * 拼接---获取榜,圈子,教室@我消息各类型所需要字段     <暂时没有用到----扩展方法>
+	 * gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对@我消息
+	 * 2017年2月13日
+	 */
+//	private UserMsg otherItype(UserMsg userMsg){
+//		if("2".equals(userMsg.getGtype())){
+//			//榜评论图片
+//			Rank rank = rankMapper.selectByPrimaryKey(userMsg.getSnsid());
+//			if(null != rank){
+//				userMsg.setImpPicFilekey(rank.getRankphotos());
+//			}
+//		}
+//		if("3".equals(userMsg.getGtype())){
+//			//圈子评论图片
+//			Circle circle = circleMapper.selectByPrimaryKey(userMsg.getSnsid());
+//			if(null != circle){
+//				userMsg.setImpPicFilekey(circle.getCirclephotos());
+//			}
+//		}
+//		if("4".equals(userMsg.getGtype())){
+//			//教室评论图片
+//			Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getSnsid());
+//			if(null != classroom){
+//				userMsg.setImpPicFilekey(classroom.getClassphotos());
+//			}
+//		}
+//		return userMsg;
+//	}
+
+	/**
+	 * @author yinxc
 	 * 获取消息列表信息(对话消息---除赞消息,粉丝消息)
 	 * 2017年2月8日
 	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
@@ -246,10 +350,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 				expandData.put(userSettingCommon.getKey(), userSettingCommon.getKey());
 			}
 			//获取新粉丝count
-			int fansCount = userMsgMapper.selectCountByType(userid, "1", "5", "0");
+			int fansCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
 			expandData.put("fansCount", fansCount);
 			//获取点赞count
-			int likeCount = userMsgMapper.selectCountByType(userid, "1", "2", "0");
+			int likeCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
 			expandData.put("likeCount", likeCount);
 			
 			if (null != list && list.size()>0) {
