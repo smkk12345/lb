@@ -55,31 +55,31 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		//服务器之间api调用
 		if(url.contains("/api/")){
-			String authorization = request.getHeader("Authorization");
-			if(url.contains("getServiceToken")){
-				arg2.doFilter(request, response);
-				return;
-			}
-			if(StringUtils.isBlank(authorization)){
-				//未发现token
-				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
-				return;
-			}
-			String token = authorization.replaceFirst("Basic", "");
-			logger.debug(authorization);
-			Claims claims = Jwts.parser()
-					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
-					.parseClaimsJws(token).getBody();
-			if(!"commonservice".equals(claims.getSubject())){
-				//错误的token
-				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1001, Constant.RTNINFO_SYS_1001);
-				return;
-			}
-			if(claims.getExpiration().getTime() <= new Date().getTime()){
-				//token失效
-				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1002, Constant.RTNINFO_SYS_1002);
-				return;
-			}
+//			String authorization = request.getHeader("Authorization");
+//			if(url.contains("getServiceToken")){
+//				arg2.doFilter(request, response);
+//				return;
+//			}
+//			if(StringUtils.isBlank(authorization)){
+//				//未发现token
+//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
+//				return;
+//			}
+//			String token = authorization.replaceFirst("Basic", "");
+//			logger.debug(authorization);
+//			Claims claims = Jwts.parser()
+//					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
+//					.parseClaimsJws(token).getBody();
+//			if(!"commonservice".equals(claims.getSubject())){
+//				//错误的token
+//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1001, Constant.RTNINFO_SYS_1001);
+//				return;
+//			}
+//			if(claims.getExpiration().getTime() <= new Date().getTime()){
+//				//token失效
+//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1002, Constant.RTNINFO_SYS_1002);
+//				return;
+//			}
 			arg2.doFilter(request, response);
 			return;
 		}

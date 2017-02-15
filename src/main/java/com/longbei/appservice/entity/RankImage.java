@@ -22,7 +22,7 @@ public class RankImage {
 
     private String rankphotos;//榜单图片
 
-    private BigDecimal rankrate;//榜单中奖率
+    private Double rankrate;//榜单中奖率
 
     private Date starttime;//开始时间
 
@@ -234,11 +234,11 @@ public class RankImage {
         this.rankphotos = rankphotos == null ? null : rankphotos.trim();
     }
 
-    public BigDecimal getRankrate() {
+    public Double getRankrate() {
         return rankrate;
     }
 
-    public void setRankrate(BigDecimal rankrate) {
+    public void setRankrate(Double rankrate) {
         this.rankrate = rankrate;
     }
 

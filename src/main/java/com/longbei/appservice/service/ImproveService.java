@@ -1,5 +1,6 @@
 package com.longbei.appservice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.longbei.appservice.entity.*;
@@ -207,6 +208,13 @@ public interface ImproveService {
     boolean removeGoalImprove(String userid,String goalid,String improveid);
 
 
-
+    /**
+     * 获取我的进步列表
+     * @param userid
+     * @param lastdate
+     * @param pagesize
+     * @return
+     */
+    List<Improve> selectImproveListByUser(String userid, Date lastdate,int pagesize);
 
 }

@@ -1,10 +1,19 @@
 package com.longbei.appservice.common.utils;
 
+import java.security.Key;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.security.MD5;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class TokenUtils {
@@ -81,6 +90,69 @@ public class TokenUtils {
 		sb.append(mobile);
 		sb.append(String.format("%05d", seq.getAndIncrement() % 100000));
 		return sb.toString();
+	}
+
+
+	/**
+	 * 生成token
+	 * @param id 无实际意义可自行定义
+	 * @param issuer  该token的签发着
+	 * @param subject  该token所面向的用户
+	 * @param ttlMillis  什么时候过期
+	 * @return
+	 * @author luye
+	 */
+	private static String createToken(String id, String issuer, String subject, long ttlMillis) {
+
+		//The JWT signature algorithm we will be using to sign the token
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+		long nowMillis = System.currentTimeMillis();
+		Date now = new Date(nowMillis);
+
+		//We will sign our JWT with our ApiKey secret
+		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_USER);
+		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+
+		//Let's set the JWT Claims
+		JwtBuilder builder = Jwts.builder().setId(id)
+				.setIssuedAt(now)
+				.setSubject(subject)
+				.setIssuer(issuer)
+				.signWith(signatureAlgorithm, signingKey);
+
+		//if it has been specified, let's add the expiration
+		if (ttlMillis >= 0) {
+			long expMillis = nowMillis + ttlMillis;
+			Date exp = new Date(expMillis);
+			builder.setExpiration(exp);
+		}
+
+		//Builds the JWT and serializes it to a compact, URL-safe string
+		return builder.compact();
+	}
+
+	/**
+	 * @Title: createAppToken
+	 * @Description: 龙杯app token
+	 * @param @param subject
+	 * @param @param ttlMillis
+	 * @param @return
+	 * @auther smkk
+	 * @currentdate:2017年1月16日
+	 */
+	public static String createAppToken(long subject) {
+		return createToken("longbei","app",subject+"",30*24*60*60);
+	}
+
+	/**
+	 * @Title: createApiToken
+	 * @Description:获取API之间调用的api
+	 * @auther smkk
+	 * @currentdate:2017年1月16日
+	 */
+	public static String createServiceToken(String serviceName,long exp){
+		return createToken("longbei","api",serviceName,exp);
 	}
 	
 }

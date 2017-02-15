@@ -50,6 +50,8 @@ public class ImproveServiceImpl implements ImproveService{
     private CommentMongoService commentMongoService;
     @Autowired
     private UserMongoDao userMongoDao;
+    @Autowired
+    private TimeLineDao timeLineDao;
 
     /**
      *  @author luye
@@ -645,6 +647,25 @@ public class ImproveServiceImpl implements ImproveService{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Improve> selectImproveListByUser(String userid,Date lastdate,int pagesize) {
+
+
+        List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
+                (userid,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
+
+        List<Improve> improves = new ArrayList<>();
+
+        for (int i = 0; i < timeLines.size() ; i++){
+            TimeLine timeLine = timeLines.get(i);
+            TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+            Improve improve = new Improve();
+            improve.setImpid(timeLineDetail.getImproveId());
+
+        }
+        return null;
     }
 
     /**

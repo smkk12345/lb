@@ -8,16 +8,19 @@
 */
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -77,53 +80,29 @@ public class RankApiController {
 
     /**
      * 添加榜单
-     * @param ranktitle 榜单标题
-     * @param rankdetail 榜单简介
-     * @param ranklimite  榜单限制人数
-     * @param rankscope 榜单范围
-     * @param rankphotos 榜单图片
-     * @param rankrate  榜单中奖率
-     * @param starttime 开始时间
-     * @param endtime  结束时间
-     * @param areaname 地域名字
-     * @param createuserid 创建人id
-     * @param ranktype 榜单类型
-     * @param ispublic 是否公开
-     * @param rankcateid 榜单类型
-     * @param likescore 赞的分数
-     * @param flowerscore 花的分数
-     * @param diamondscore 砖石的分数
-     * @param codeword  入榜口令
-     * @param ptype  十全十美类型
-     * @param sourcetype  来源类型
-     * @param companyname  公司名字
-     * @param companyphotos 公司图片
-     * @param companybrief 公司简介
+
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "insert")
-    public BaseResp<Object> insertRank(String rankdetail,String ranktitle,
-                                       String ranklimite, String rankscope,
-                                       String rankphotos, String rankrate,
-                                       String starttime,String endtime,String areaname,
-                                       String createuserid,String ranktype,String ispublic,
-                                       String rankcateid,String likescore,
-                                       String flowerscore,String diamondscore,
-                                       String codeword,String ptype,String sourcetype,
-                                       String companyname,String companyphotos,
-                                       String companybrief){
+    public BaseResp<Object> insertRank(String rankImage){
 
         boolean issuccess = false;
+        if (StringUtils.isEmpty(rankImage)){
+            BaseResp.fail(Constant.RTNINFO_SYS_07);
+        }
         try {
-            issuccess = rankService.insertRank(rankdetail,ranktitle,Integer.parseInt(ranklimite),
-                    rankscope,rankphotos,Double.parseDouble(rankrate),
-                    DateUtils.formatDate(starttime,"yyyy-MM-dd HH:mm:ss"),
-                    DateUtils.formatDate(endtime,"yyyy-MM-dd HH:mm:ss"),
-                    areaname,createuserid,ranktype,ispublic,rankcateid,
-                    Integer.parseInt(likescore),Integer.parseInt(flowerscore),
-                    Integer.parseInt(diamondscore),codeword,ptype,
-                    sourcetype,companyname,companyphotos,companybrief);
+            RankImage rankImage1 = JSON.parseObject(rankImage,RankImage.class);
+            issuccess = rankService.insertRank(rankImage1.getRankdetail(),rankImage1.getRanktitle(),
+                    rankImage1.getRanklimite(),
+                    rankImage1.getRankscope(),rankImage1.getRankphotos(),rankImage1.getRankrate(),
+                    rankImage1.getStarttime(),
+                    rankImage1.getEndtime(),
+                    rankImage1.getAreaname(),String.valueOf(rankImage1.getCreateuserid()),rankImage1.getRanktype(),
+                    rankImage1.getIspublic(),String.valueOf(rankImage1.getRankcateid()),
+                    rankImage1.getLikescore(),rankImage1.getFlowerscore(),
+                    rankImage1.getDiamondscore(),rankImage1.getCodeword(),rankImage1.getPtype(),
+                    rankImage1.getSourcetype(),rankImage1.getCompanyname(),rankImage1.getCompanyphotos(),rankImage1.getCompanybrief());
             if(issuccess){
                 return BaseResp.ok(Constant.RTNINFO_SYS_50);
             }

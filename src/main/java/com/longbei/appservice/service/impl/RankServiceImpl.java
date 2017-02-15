@@ -55,7 +55,7 @@ public class RankServiceImpl implements RankService{
         rankImage.setRankdetail(rankdetail);
         rankImage.setRankphotos(rankphotos);
         rankImage.setRanklimite(ranklimite);
-        rankImage.setRankrate(BigDecimal.valueOf(rankrate));
+        rankImage.setRankrate(Double.valueOf(rankrate));
         rankImage.setRankscope(rankscope);
         rankImage.setStarttime(starttime);
         rankImage.setEndtime(endtime);
@@ -107,7 +107,7 @@ public class RankServiceImpl implements RankService{
         rankImage.setRankdetail(rankdetail);
         rankImage.setRankphotos(rankphotos);
         rankImage.setRanklimite(ranklimite);
-        rankImage.setRankrate(BigDecimal.valueOf(rankrate));
+        rankImage.setRankrate(Double.valueOf(rankrate));
         rankImage.setRankscope(rankscope);
         rankImage.setStarttime(starttime);
         rankImage.setEndtime(endtime);
