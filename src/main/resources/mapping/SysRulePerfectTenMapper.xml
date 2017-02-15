@@ -6,11 +6,13 @@
     <result column="minscore" property="minscore" jdbcType="INTEGER" />
     <result column="maxscore" property="maxscore" jdbcType="INTEGER" />
     <result column="plevel" property="plevel" jdbcType="INTEGER" />
+    <result column="ptype" property="ptype" jdbcType="CHAR"/>
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="score" property="score" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, minscore, maxscore, plevel, createtime, updatetime
+    id, minscore, maxscore, plevel, createtime, updatetime,ptype,score
   </sql>
   <select id="selectAll" resultMap="BaseResultMap"  >
     select 

@@ -11,9 +11,29 @@ public class SysRulePerfectTen {
 
     private Integer plevel;//等级
 
+    private String ptype;//类型
+
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
+
+    private Integer score;
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public String getPtype() {
+        return ptype;
+    }
+
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
+    }
 
     /**
      * 自增主键id

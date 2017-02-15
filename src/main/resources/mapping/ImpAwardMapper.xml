@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.ImpAwardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImpAward" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="improveid" property="improveid" jdbcType="BIGINT" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="logisticscom" property="logisticscom" jdbcType="VARCHAR" />
+    <result column="logremark" property="logremark" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="drawtime" property="drawtime" jdbcType="TIMESTAMP" />
+    <result column="logisticsCode" property="logisticscode" jdbcType="VARCHAR" />
+    <result column="region" property="region" jdbcType="VARCHAR" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="shipdate" property="shipdate" jdbcType="TIMESTAMP" />
+    <result column="awardid" property="awardid" jdbcType="VARCHAR" />
+    <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
+    <result column="awardname" property="awardname" jdbcType="VARCHAR" />
+    <result column="accepttime" property="accepttime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, improveid, userid, logisticscom, logremark, address, drawtime, logisticsCode, 
+    region, receiver, mobile, shipdate, awardid, awardlevel, awardname, accepttime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from imp_award
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from imp_award
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ImpAward" >
+    insert into imp_award (id, improveid, userid, 
+      logisticscom, logremark, address, 
+      drawtime, logisticsCode, region, 
+      receiver, mobile, shipdate, 
+      awardid, awardlevel, awardname, 
+      accepttime)
+    values (#{id,jdbcType=INTEGER}, #{improveid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{logisticscom,jdbcType=VARCHAR}, #{logremark,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{drawtime,jdbcType=TIMESTAMP}, #{logisticscode,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{receiver,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{shipdate,jdbcType=TIMESTAMP}, 
+      #{awardid,jdbcType=VARCHAR}, #{awardlevel,jdbcType=INTEGER}, #{awardname,jdbcType=VARCHAR}, 
+      #{accepttime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpAward" >
+    insert into imp_award
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="improveid != null" >
+        improveid,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="logisticscom != null" >
+        logisticscom,
+      </if>
+      <if test="logremark != null" >
+        logremark,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="drawtime != null" >
+        drawtime,
+      </if>
+      <if test="logisticscode != null" >
+        logisticsCode,
+      </if>
+      <if test="region != null" >
+        region,
+      </if>
+      <if test="receiver != null" >
+        receiver,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="shipdate != null" >
+        shipdate,
+      </if>
+      <if test="awardid != null" >
+        awardid,
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel,
+      </if>
+      <if test="awardname != null" >
+        awardname,
+      </if>
+      <if test="accepttime != null" >
+        accepttime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="improveid != null" >
+        #{improveid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="logisticscom != null" >
+        #{logisticscom,jdbcType=VARCHAR},
+      </if>
+      <if test="logremark != null" >
+        #{logremark,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="drawtime != null" >
+        #{drawtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logisticscode != null" >
+        #{logisticscode,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null" >
+        #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="shipdate != null" >
+        #{shipdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardid != null" >
+        #{awardid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardlevel != null" >
+        #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardname != null" >
+        #{awardname,jdbcType=VARCHAR},
+      </if>
+      <if test="accepttime != null" >
+        #{accepttime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ImpAward" >
+    update imp_award
+    <set >
+      <if test="improveid != null" >
+        improveid = #{improveid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="logisticscom != null" >
+        logisticscom = #{logisticscom,jdbcType=VARCHAR},
+      </if>
+      <if test="logremark != null" >
+        logremark = #{logremark,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="drawtime != null" >
+        drawtime = #{drawtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logisticscode != null" >
+        logisticsCode = #{logisticscode,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null" >
+        receiver = #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="shipdate != null" >
+        shipdate = #{shipdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardid != null" >
+        awardid = #{awardid,jdbcType=VARCHAR},
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel = #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardname != null" >
+        awardname = #{awardname,jdbcType=VARCHAR},
+      </if>
+      <if test="accepttime != null" >
+        accepttime = #{accepttime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpAward" >
+    update imp_award
+    set improveid = #{improveid,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT},
+      logisticscom = #{logisticscom,jdbcType=VARCHAR},
+      logremark = #{logremark,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      drawtime = #{drawtime,jdbcType=TIMESTAMP},
+      logisticsCode = #{logisticscode,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      receiver = #{receiver,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      shipdate = #{shipdate,jdbcType=TIMESTAMP},
+      awardid = #{awardid,jdbcType=VARCHAR},
+      awardlevel = #{awardlevel,jdbcType=INTEGER},
+      awardname = #{awardname,jdbcType=VARCHAR},
+      accepttime = #{accepttime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -9,7 +9,7 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, point, drawdate, perfectid
+    id, userid, point, drawdate, ptype
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -22,19 +22,17 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserPointDetail" >
-    insert into user_point_detail (pid, id, userid, 
-      point, drawdate, perfectid
+    insert into user_point_detail (id, userid,
+      point, drawdate, ptype
       )
-    values (#{pid,jdbcType=INTEGER}, #{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT},
       #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserPointDetail" >
     insert into user_point_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="pid != null" >
-        pid,
-      </if>
+
       <if test="id != null" >
         id,
       </if>
@@ -52,9 +50,7 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="pid != null" >
-        #{pid,jdbcType=INTEGER},
-      </if>
+
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
@@ -88,10 +84,10 @@
         drawdate = #{drawdate,jdbcType=TIMESTAMP},
       </if>
       <if test="ptype != null" >
-        ptype = #{perfectid},
+        ptype = #{ptype},
       </if>
     </set>
-    where pid = #{pid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserPointDetail" >
     update user_point_detail
@@ -100,6 +96,6 @@
       point = #{point,jdbcType=INTEGER},
       drawdate = #{drawdate,jdbcType=TIMESTAMP},
       ptype = #{ptype}
-    where pid = #{pid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -24,7 +24,7 @@
     SELECT
     <include refid="Base_Column" />
     FROM user_pl_detail
-    where userid=#{userid} and ptype=#{ptype} ORDER BY level desc limit 0,1
+    where userid=#{userid} and ptype=#{ptype} ORDER BY leve desc limit 0,1
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -94,6 +94,15 @@
       </if>
     </trim>
   </insert>
+  <update id="updateScorce" parameterType="com.longbei.appservice.entity.UserPlDetail">
+    UPDATE user_pl_detail
+    <set >
+      <if test="scorce != null" >
+        scorce = scorce + #{scorce,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=BIGINT} and ptype=#{ptype,jdbcType=CHAR} and leve=#{leve,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserPlDetail" >
     update user_pl_detail
     <set >

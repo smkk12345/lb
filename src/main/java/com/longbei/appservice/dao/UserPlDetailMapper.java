@@ -18,5 +18,7 @@ public interface UserPlDetailMapper {
 
     int updateByPrimaryKey(UserPlDetail record);
 
+    int updateScorce(UserPlDetail record);
+
 
 }

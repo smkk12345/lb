@@ -210,7 +210,22 @@ public class Constant {
 	
 	/**
 	 * mtype 0 系统消息(通知消息.进步消息等) 
-     * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 
+     * mtype  0 系统消息    1 对话消息    2:@我消息
+	 */
+	public static final String  MSG_SYSTEM_TYPE = "0";     //系统消息
+	public static final String  MSG_DIALOGUE_TYPE = "1";   //对话消息
+	public static final String  MSG_OTHER_TYPE = "2";      //@我消息
+	
+	/**
+	 * mtype 0 系统消息(通知消息.进步消息等) 
+	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 
      * msgtype
 	 */
 	public static final String  MSG_CHAT_TYPE = "0";     //聊天
@@ -220,14 +235,49 @@ public class Constant {
 	public static final String  MSG_DIAMOND_TYPE = "4";  //送钻石
 	public static final String  MSG_FANS_TYPE = "5";     //粉丝
 	
+	public static final String  MSG_INVITE_TYPE = "10";     //邀请
+	public static final String  MSG_APPLY_TYPE = "11";      //申请加入特定圈子
+	public static final String  MSG_GIVE_TYPE = "12";       //老师批复作业
+	public static final String  MSG_REVERT_TYPE = "13";     //老师回复提问 
+	public static final String  MSG_PUBLISH_TYPE = "14";    //发布新公告
+	public static final String  MSG_AWARD_TYPE = "15";      //获奖
+	public static final String  MSG_DELETE_TYPE = "16";     //剔除
+	public static final String  MSG_CHECK_TYPE = "17";      //加入请求审批结果
+	
+	
+	/**
+	 * mtype   2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
+	 * 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 
+     * 消息展示模版
+	 */
+	public static final String  MSG_INVITE_MODEL = "邀请您加入m'n'";       	  			//邀请    m:榜，圈子，教室     n:名称
+	public static final String  MSG_APPLY_MODEL = "申请加入您创建的m'n'";         			//申请加入特定榜，圈子，教室     m:榜，圈子，教室     n:名称   
+	public static final String  MSG_GIVE_MODEL = "批复了您在教室'n'上传的作业";  	  			//老师批复作业
+	public static final String  MSG_REVERT_MODEL = "回答了您在教室'n'中的提问";    			//老师回复提问 
+	public static final String  MSG_PUBLISH_MODEL = "在m'n'中@了您";  		 			//发布新公告          m:榜，圈子，教室     n:名称   
+	public static final String  MSG_AWARD_MODEL = "恭喜您在龙榜'n'中获得了m,快去领奖吧!";  		//获奖         m:奖品     n:榜名称 
+	public static final String  MSG_DELETE_MODEL = "由于您在加入'n'mg";  					//剔除         m:榜，圈子，教室     n:名称    g:投诉理由
+	public static final String  MSG_CHECK_MODEL = "您加入m'n'的申请已被g,快去发第一条进步吧";  	//加入请求审批结果      m:榜，圈子，教室     n:名称   g:结果:通过或拒绝     
+	
+	
+	/*
+	 * 龙杯公司   推送消息
+	 * 
+     * 模版
+	 */
+	public static final String  MSG_LONGBEI_NICKNAME = "龙杯公司";
+	public static final String  MSG_LONGBEI_DIFAULT_AVATAR = "";   //龙杯公司默认URL
+	
+	
 	/*
 	 * mtype 0 系统消息(通知消息.进步消息等) 
      * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
      * 消息展示模版
 	 */
-	public static final String  MSG_FLOWER_MODEL = "给这条微进步献了n朵花"; //进步送花消息模板
-	public static final String  MSG_LIKE_MODEL = "赞了这条微进步"; //进步点赞消息模板
-	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; //进步送钻石消息模板
+	public static final String  MSG_FLOWER_MODEL = "给这条微进步献了n朵花"; 		//进步送花消息模板
+	public static final String  MSG_LIKE_MODEL = "赞了这条微进步"; 				//进步点赞消息模板
+	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
 
 	/**
 	 * activemq
@@ -243,9 +293,14 @@ public class Constant {
 	/**
 	 * redis中缓存的过期时间
 	 */
-	public static final long EXPIRE_USER_RANDOMCODE = 2*60*1000;//用户发送验证码过期时间
+	public static final long EXPIRE_USER_RANDOMCODE = 2*60;//用户发送验证码过期时间
 	public static final long EXPIRE_USER_TOKEN = 0;//用户登录token过期时间
 	public static final long EXPIRE_USER_MAILCODE = 0;//邮箱验证码过期时间
+	/**
+	 * redis 缓存时间 单位秒
+	 */
+	public static final long CACHE_24X60X60 = 24*3600;
+	public static final long CACHE_24X60X60X2 = 24*3600*2;
 
 	/**
 	 * 每日可操作参数    签到   发进步  点赞 ...
@@ -258,14 +313,17 @@ public class Constant {
 	 * 缓存一日数据
 	 */
 	public static final String PERDAY_POINT = "point";
-
+	//-------------各种缓存前缀  improve  rank user 等------------------//
 	/**
 	 * redis中各种请求前缀   redis_prefix
 	 */
 	public static final String RP_USER_PERDAY = "user_perday_";
+
 	/**
-	 * redis 缓存时间 单位秒
+	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
 	 */
-	public static final long CACHE_24X60X60 = 24*3600;
+	public static final String RP_IMPROVE_NDAY = "improve_day_";
+
+
 
 }
