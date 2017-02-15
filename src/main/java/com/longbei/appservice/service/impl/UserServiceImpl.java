@@ -23,7 +23,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.api.FeignApiProxy;
+import com.longbei.appservice.service.api.HttpClient;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> registerbasic(String username, String password,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
 		long userid = idGenerateService.getUniqueIdAsLong();
-		BaseResp<Object> baseResp = FeignApiProxy.userBasicService.add(userid, username, password);
+		BaseResp<Object> baseResp = HttpClient.userBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
 		}
@@ -217,6 +217,9 @@ public class UserServiceImpl implements UserService {
 			}
 			if (mobile.contains("150115")){
 				rtn = AlidayuSmsUtils.sendMsgValidate("15011516059", randomCode, operateName);
+			}
+			if(mobile.contains("1851128")){
+				rtn = AlidayuSmsUtils.sendMsgValidate("18511285918", randomCode, operateName);
 			}
             if (StringUtils.isBlank(rtn)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -290,9 +293,9 @@ public class UserServiceImpl implements UserService {
 		} else {
 			logger.debug("{}  验证码{} 正确", username, randomCode);
 			//修改密码
-			BaseResp<Object> baseResps = FeignApiProxy.userBasicService.updatepwd(username, newpwd, newpwd);
+			BaseResp<Object> baseResps = HttpClient.userBasicService.updatepwd(username, newpwd, newpwd);
 			if(baseResps.getCode() == Constant.STATUS_SYS_00){
-				BaseResp<Object> baseResp1 = FeignApiProxy.userBasicService.gettoken(username, newpwd);
+				BaseResp<Object> baseResp1 = HttpClient.userBasicService.gettoken(username, newpwd);
 				if(baseResp1.getCode() == Constant.STATUS_SYS_00){
 					String token = (String)baseResp1.getData();
 //					baseResp1.getExpandData().put("token", token);
@@ -313,7 +316,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
-		BaseResp<Object> baseResp = FeignApiProxy.userBasicService.gettoken(username, password);
+		BaseResp<Object> baseResp = HttpClient.userBasicService.gettoken(username, password);
 		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){String token = (String)baseResp.getData();
 
@@ -340,7 +343,7 @@ public class UserServiceImpl implements UserService {
 			String utype, String openid,String inviteuserid,String deviceindex,
 			String devicetype,String randomcode,String avatar) {
 		
-		BaseResp<Object> baseResp = FeignApiProxy.userBasicService.gettoken(username, password);
+		BaseResp<Object> baseResp = HttpClient.userBasicService.gettoken(username, password);
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			baseResp = checkSms(username,randomcode);
@@ -354,16 +357,16 @@ public class UserServiceImpl implements UserService {
 			}
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
-			FeignApiProxy.userBasicService.bindingThird(openid, utype, suserid);
+			HttpClient.userBasicService.bindingThird(openid, utype, suserid);
 		}else{//手机号已经注册
-			baseResp = FeignApiProxy.userBasicService.hasbindingThird(openid, utype, username);
+			baseResp = HttpClient.userBasicService.hasbindingThird(openid, utype, username);
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
 				return baseResp;
 			}else{
 				//验证码是否正确
 				baseResp = checkSms(username,randomcode);
 				//密码是否正确
-				BaseResp<Object> baseResp2 = FeignApiProxy.userBasicService.gettoken(username, password);
+				BaseResp<Object> baseResp2 = HttpClient.userBasicService.gettoken(username, password);
 				if(baseResp.getCode()==Constant.STATUS_SYS_00||baseResp2.getCode()==Constant.STATUS_SYS_00){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp.setData(baseResp2.getData());
@@ -383,7 +386,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public BaseResp<Object> thirdlogin(String utype, String openid,String deviceindex) {
-		BaseResp<Object> baseResp = FeignApiProxy.userBasicService.thirdlogin(openid,utype);
+		BaseResp<Object> baseResp = HttpClient.userBasicService.thirdlogin(openid,utype);
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			Object data = baseResp.getData();
 			JSONObject jsonObject = JSONObject.fromObject(data);

@@ -1,10 +1,8 @@
 package com.longbei.appservice.service.impl;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.expand.JPush;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
@@ -49,6 +47,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
         BaseResp<Object> baseResp = new BaseResp<>();
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        if(null == userInfo){
+            userInfo = userInfoMapper.selectByPrimaryKey(userid);
+        }
         try{
             switch (operateType){
                 case Constant.PERDAY_CHECK_IN:

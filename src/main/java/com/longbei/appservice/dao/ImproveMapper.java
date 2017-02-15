@@ -13,7 +13,10 @@ public interface ImproveMapper {
 
     int insertSelective(@Param("improve") Improve improve,@Param("tablename") String tablename);
 
-    Improve selectByPrimaryKey(@Param("impid")Long impid,@Param("tablename")String tablename);
+    Improve selectByPrimaryKey(@Param("impid")Long impid,
+                               @Param("tablename")String tablename,
+                               @Param("isdel")String isdel,
+                               @Param("ispublic")String ispublic);
 
     /**
      * 获取进步列表
@@ -46,5 +49,11 @@ public interface ImproveMapper {
      * @return
      */
     int remove(@Param("userid") String userid,@Param("improveid") String improveid);
+
+    /**
+     *
+     * 获取进步方法
+     * -- 通过主键获取(公开或者私密或者all,删除或者未删除或者all)
+     */
 
 }

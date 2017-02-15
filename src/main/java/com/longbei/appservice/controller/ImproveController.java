@@ -396,6 +396,57 @@ public class ImproveController {
 		baseres.setData(improves);
 		return baseres;
 	}
+	 /**
+	 * 点赞
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "like")
+	public BaseResp like(String userid,
+						 String impid,
+						 String businesstype,
+						 String businessid
+						 ) {
+		if (StringUtils.hasBlankParams(userid, impid,businesstype)) {
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		/**
+		 * 点赞每天限制  --- 每天内次只能点一次
+		 * 进步必须是公开的
+		 * 不能给自己点赞
+		 * 取消或者点赞
+		 * 点赞-----进步赞个数  总赞
+		 * 点赞对积分的影响
+		 * 点完赞之后数据返回
+		 */
+		BaseResp<Object> baseResp = new BaseResp<>();
 
+		try{
+			baseResp = improveService.like(userid,impid,businesstype,businessid);
+		}catch (Exception e){
+			logger.error("improveService.like error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 送花
+	 */
+
+	/**
+	 * 送钻
+	 */
+
+	/**
+	 * 获取点赞列表
+	 */
+
+	/**
+	 * 获取送花列表
+	 */
+
+	/**
+	 * 获取送钻列表
+	 */
 
 }

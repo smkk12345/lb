@@ -5,11 +5,11 @@ import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import feign.Feign;
 import feign.gson.GsonDecoder;
 
-public class FeignApiProxy {
+public class HttpClient {
 	//user_service
 	
 	public static IUserBasicService userBasicService = 
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 			.decoder(new GsonDecoder())
-            .target(IUserBasicService.class, "http://192.168.1.104:8081/user_service");
+            .target(IUserBasicService.class, "http://192.168.1.120:8081/user_service");
 }

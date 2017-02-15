@@ -17,6 +17,7 @@ import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
 import net.sf.json.JSONObject;
+import org.apache.catalina.User;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,19 +300,19 @@ public class ImproveServiceImpl implements ImproveService{
         Improve improve = null;
         try {
             if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,null,null);
             }
             if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,null,null);
             }
             if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,null,null);
             }
             if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,null,null);
             }
             if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL);
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,null,null);
             }
         } catch (Exception e) {
             logger.error("select improve by userid:{}" +
@@ -792,7 +793,42 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setAppUserMongoEntity(appUserMongoEntity);
     }
 
+    /**
+     * 点赞
+     * Long impid,String userid,
+     * String businesstype,String businessid
+     * 点赞每天限制  --- 每天内次只能点一次
+     * 进步必须是公开的
+     * 不能给自己点赞
+     * 取消或者点赞
+     * 点赞-----进步赞个数  总赞
+     * 点赞对积分的影响
+     * 点完赞之后数据返回
+     */
+    @Override
+    public BaseResp<Object> like(String userid,String impid,String businesstype,String businessid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),userid,null,null);
+        AppUserMongoEntity userMongoEntity = userMongoDao.getAppUser(userid);
+        if(null == improve||null == userMongoEntity){
+            return baseResp;
+        }
+        if(improve.getUserid().equals(userid)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
+            return  baseResp;
+        }
+        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
+        try{
+            //判断点赞还是取消点赞
 
+        }catch (Exception e){
+            logger.error("like error and msg={}",e);
+        }
+        return baseResp;
+    }
 
 
 
