@@ -315,7 +315,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	
 	/**
      * 初始化消息中用户信息 ------Friendid
-     * @param improve
+     * @param snsFans
      * @author:luye
      */
     private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
