@@ -21,9 +21,11 @@ import java.util.List;
 @Repository
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
-    public List<TimeLine> selectTimeListByUserAndType(String userid, String timelinetype, Date enddate, int pagesize){
+    public List<TimeLine> selectTimeListByUserAndType(String userid, String timelinetype, Date lastdate, int pagesize){
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-        criteria.and("createdate").lt(enddate);
+        if (null != lastdate) {
+            criteria.and("createdate").lt(lastdate);
+        }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
         query.limit(pagesize);

@@ -692,12 +692,10 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public List<Improve> selectImproveListByUser(String userid,Date lastdate,int pagesize) {
-
+    public List<Improve> selectImproveListByUser(String userid,String ctype,Date lastdate,int pagesize) {
 
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
-                (userid,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
-
+                (userid,ctype,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
 
         for (int i = 0; i < timeLines.size() ; i++){
@@ -705,9 +703,15 @@ public class ImproveServiceImpl implements ImproveService{
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
             Improve improve = new Improve();
             improve.setImpid(timeLineDetail.getImproveId());
-
+            improve.setBrief(timeLineDetail.getBrief());
+            improve.setPickey(timeLineDetail.getPhotos());
+            improve.setFilekey(timeLineDetail.getFileKey());
+            improve.setItype(timeLineDetail.getItype());
+            improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            initImproveAttachInfo(improve);
+            improves.add(improve);
         }
-        return null;
+        return improves;
     }
 
     /**

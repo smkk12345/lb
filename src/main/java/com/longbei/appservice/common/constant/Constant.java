@@ -179,7 +179,7 @@ public class Constant {
 	 * 我的
 	 */
 	public static final String TIMELINE_IMPROVE_SELF = "1";
-	* /**
+	/**
 	 * 好友，关注，熟人
 	 */
 	public static final String TIMELINE_IMPROVE_ALL = "2";
