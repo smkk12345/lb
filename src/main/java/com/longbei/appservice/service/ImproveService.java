@@ -207,7 +207,19 @@ public interface ImproveService {
      */
     boolean removeGoalImprove(String userid,String goalid,String improveid);
 
-
-
+    /**
+     * 点赞
+     * 点赞每天限制  --- 每天内次只能点一次
+     * 进步必须是公开的
+     * 不能给自己点赞
+     * 取消或者点赞
+     * 点赞-----进步赞个数  总赞
+     * 点赞对积分的影响
+     * 点完赞之后数据返回
+     * @param userid
+     * @param impid
+     * @return BaseResp
+     */
+    BaseResp<Object> like(String userid, String impid,String businesstype,String businessid);
 
 }

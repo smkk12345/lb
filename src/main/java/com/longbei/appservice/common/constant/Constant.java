@@ -41,6 +41,7 @@ public class Constant {
 	public static final int STATUS_SYS_10 = -10;
 	public static final int STATUS_SYS_11 = -11;
 	public static final int STATUS_SYS_12 = -12;
+	public static final int STATUS_SYS_13 = -13;
 	
 	public static final int STATUS_SYS_15 = -15;
 	public static final int STATUS_SYS_16 = -16;
@@ -87,6 +88,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_10 = "系统检测到您切换设备登录，请验证";
 	public static final String RTNINFO_SYS_11 = "您已绑定其他帐号";
 	public static final String RTNINFO_SYS_12 = "密码和验证码均错误";
+	public static final String RTNINFO_SYS_13 = "不能给自己点赞";
 	
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";

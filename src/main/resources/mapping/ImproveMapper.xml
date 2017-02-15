@@ -27,12 +27,22 @@
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic, rankid
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
-    select 
+    select
     <include refid="Base_Column_List" />
     from ${tablename}
+
     where impid = #{impid,jdbcType=BIGINT}
+    <if test="isdel != null" >
+      and isdel = #{isdel,jdbcType=CHAR}
+    </if>
+    <if test="ispublic != null">
+      and ispublic = #{ispublic,jdbcType=CHAR}
+    </if>
+
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve
     where impid = #{impid,jdbcType=BIGINT}

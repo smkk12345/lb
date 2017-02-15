@@ -218,6 +218,9 @@ public class UserServiceImpl implements UserService {
 			if (mobile.contains("150115")){
 				rtn = AlidayuSmsUtils.sendMsgValidate("15011516059", randomCode, operateName);
 			}
+			if(mobile.contains("1851128")){
+				rtn = AlidayuSmsUtils.sendMsgValidate("18511285918", randomCode, operateName);
+			}
             if (StringUtils.isBlank(rtn)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             		springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
