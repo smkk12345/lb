@@ -2,13 +2,11 @@ package com.longbei.appservice.service.impl;
 
 import java.util.UUID;
 
-import com.longbei.appservice.common.utils.RequestUtils;
+import com.longbei.appservice.common.expand.RongCloudProxy;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.UserPlDetail;
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.expand.AlidayuSmsUtils;
-import com.longbei.appservice.common.expand.RongCloudProxy;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserInfo;
@@ -69,11 +65,16 @@ public class UserServiceImpl implements UserService {
 		}
 		TokenReslut userToken;
 		try {
-			userToken = RongCloudProxy.rongCloud.user.getToken(userid+"", username, "#");
-			if(null != userToken){
-				JSONObject jsonObject = JSONObject.fromObject(userToken);
-				userInfo.setRytoken(jsonObject.getString("token"));
+			BaseResp<Object> tokenRtn = HttpClient.rongYunService.getRYToken(userid+"", username, "#");
+			if(!ResultUtil.isSuccess(tokenRtn)){
+				return reseResp;
 			}
+			userInfo.setRytoken((String)tokenRtn.getData());
+// userToken = RongCloudProxy.rongCloud.user.getToken(userid+"", username, "#");
+//			if(null != userToken){
+//				JSONObject jsonObject = JSONObject.fromObject(userToken);
+//				userInfo.setRytoken(jsonObject.getString("token"));
+//			}
 		} catch (Exception e) {
 			logger.error("rongCloud getToken error and msg = {}",e);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
@@ -193,7 +194,6 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		String randomCode = StringUtils.getValidateCode();
-        String rtn = "";
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了
@@ -211,17 +211,17 @@ public class UserServiceImpl implements UserService {
 			}else if (operateType.equals("4")){
 				operateName = "安全验证";
 			}
-            rtn = AlidayuSmsUtils.sendMsgValidate(mobile, randomCode, operateName);
+			BaseResp<Object> resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
 			if (mobile.contains("136836")){
-				rtn = AlidayuSmsUtils.sendMsgValidate("13683691417", randomCode, operateName);
+				HttpClient.alidayuService.sendMsg("13683691417", randomCode, operateName);
 			}
 			if (mobile.contains("150115")){
-				rtn = AlidayuSmsUtils.sendMsgValidate("15011516059", randomCode, operateName);
+				HttpClient.alidayuService.sendMsg("15011516059", randomCode, operateName);
 			}
 			if(mobile.contains("1851128")){
-				rtn = AlidayuSmsUtils.sendMsgValidate("18511285918", randomCode, operateName);
+				HttpClient.alidayuService.sendMsg("18511285918", randomCode, operateName);
 			}
-            if (StringUtils.isBlank(rtn)) {
+            if (ResultUtil.isSuccess(resp)) {
             		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             		springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
                 logger.info("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
