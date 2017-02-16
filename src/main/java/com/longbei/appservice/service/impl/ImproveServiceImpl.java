@@ -56,6 +56,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private UserMongoDao userMongoDao;
     @Autowired
+    private TimeLineDao timeLineDao;
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
@@ -689,6 +690,29 @@ public class ImproveServiceImpl implements ImproveService{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Improve> selectImproveListByUser(String userid,String ctype,Date lastdate,int pagesize) {
+
+        List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
+                (userid,ctype,lastdate,pagesize);
+        List<Improve> improves = new ArrayList<>();
+
+        for (int i = 0; i < timeLines.size() ; i++){
+            TimeLine timeLine = timeLines.get(i);
+            TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+            Improve improve = new Improve();
+            improve.setImpid(timeLineDetail.getImproveId());
+            improve.setBrief(timeLineDetail.getBrief());
+            improve.setPickey(timeLineDetail.getPhotos());
+            improve.setFilekey(timeLineDetail.getFileKey());
+            improve.setItype(timeLineDetail.getItype());
+            improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            initImproveAttachInfo(improve);
+            improves.add(improve);
+        }
+        return improves;
     }
 
     /**

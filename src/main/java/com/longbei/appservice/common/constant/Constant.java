@@ -4,6 +4,16 @@ package com.longbei.appservice.common.constant;
  * 全局常量类
  */
 public class Constant {
+
+
+
+	public static final String TOKEN_SIGN_USER = "appservice&token";
+
+	public static final String []OK_SERVICE = new String[]{
+			"adminservice"
+	};
+
+
 	/**
 	 * OSS属性  
 	 */
@@ -159,6 +169,37 @@ public class Constant {
 	public static final String IMPROVE_LIST_FANS = "1";  //关注
 	public static final String IMPROVE_LIST_FRIEND = "2";  //好友
 	public static final String IMPROVE_LIST_ACQUAINTANCE = "3";  //熟人
+
+	/**
+	 * 进步时间线类型
+	 */
+	/**
+	 * 广场
+	 */
+	public static final String TIMELINE_IMPROVE_SQUARE = "0";
+	/**
+	 * 我的
+	 */
+	public static final String TIMELINE_IMPROVE_SELF = "1";
+	/**
+	 * 好友，关注，熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ALL = "2";
+	/**
+	 * 好友
+	 */
+	public static final String TIMELINE_IMPROVE_FRIEND = "3";
+	/**
+	 * 关注
+	 */
+	public static final String TIMELINE_IMPROVE_ATTR = "4";
+	/**
+	 * 熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ACQ = "5";
+
+
+
 	
 	/**
 	 * 评论相关配置    itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论

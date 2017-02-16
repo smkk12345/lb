@@ -2,6 +2,7 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
@@ -365,6 +366,37 @@ public class ImproveController {
 	}
 
 	/**
+	 * url : http://ip:port/app_service/improve/line/list
+	 * @param userid 用户id
+	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+	 * @param lastdate  最后一条日期
+	 * @param pagesize  显示条数
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "line/list", method = RequestMethod.POST)
+	public BaseResp selectImproveLineListByUser
+			(String userid,String ctype,String lastdate,String pagesize){
+		if (StringUtils.hasBlankParams(userid,ctype)){
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		List<Improve> improves = null;
+		try {
+			improves = improveService.selectImproveListByUser(userid,ctype,
+					lastdate == null?null: DateUtils.parseDate(lastdate),
+					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
+		} catch (Exception e) {
+			logger.error("select improve line list is error:{}", e);
+		}
+		if (null == improves) {
+			return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+		}
+		BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+		baseres.setData(improves);
+		return baseres;
+	}
+	 /**
 	 * 点赞
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
