@@ -27,18 +27,18 @@ public class Improve {
 
     protected String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
 
-    protected Integer likes;//点赞数量
+    protected Integer likes = 0;//点赞数量
 
-    protected Integer flowers;//花数量
+    protected Integer flowers = 0;//花数量
 
 
-    protected Integer diamonds;//钻石
+    protected Integer diamonds = 0;//钻石
 
     protected Date createtime;//创建时间
 
     protected Date updatetime;//更新时间
 
-    protected Integer indexnum;//子进步的排序好
+    protected Integer indexnum = 0;//子进步的排序好
 
     protected String isdel;//假删  0 未删除  1 删除
 
@@ -52,7 +52,7 @@ public class Improve {
     
     protected Integer rankid; //榜id
 
-    protected Integer commentnum; //评论数
+    protected Integer commentnum = 0; //评论数
 
     protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
 

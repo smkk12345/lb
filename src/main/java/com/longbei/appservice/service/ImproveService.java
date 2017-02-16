@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.*;
 
@@ -232,5 +233,30 @@ public interface ImproveService {
      * @return BaseResp
      */
     BaseResp<Object> like(String userid, String impid,String businesstype,String businessid);
+
+    /**
+     * 收藏微进步
+     * @param userid impid businesstype
+     */
+    BaseResp<Object> collectImp(String userid,String impid,String businesstype,String businessid);
+
+    /**
+     * 取消微进步收藏
+     * @param userid
+     * @param impid
+     * @param buinesstype
+     * @return
+     */
+    BaseResp<Object> removeCollect(String userid,String impid,String buinesstype);
+
+    /**
+     * 获取用户收藏列表
+     * @param userid
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    BaseResp<Object> selectCollect(String userid,int startNum,int endNum);
+
 
 }

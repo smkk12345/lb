@@ -2,7 +2,6 @@ package com.longbei.appservice.service.impl;
 
 import java.util.UUID;
 
-import com.longbei.appservice.common.expand.RongCloudProxy;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -221,12 +220,13 @@ public class UserServiceImpl implements UserService {
 			if(mobile.contains("1851128")){
 				HttpClient.alidayuService.sendMsg("18511285918", randomCode, operateName);
 			}
+
             if (ResultUtil.isSuccess(resp)) {
-            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-            		springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
+				springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
                 logger.info("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
             } else {
-            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+//            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
                 logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
             }
         } catch (Exception e) {

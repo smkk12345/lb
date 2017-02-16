@@ -15,6 +15,16 @@ public class UserCollect {
 
     private String ctype;//收藏类型  0 微进步 1 其他
 
+    private String businessid;
+
+    public String getBusinessid() {
+        return businessid;
+    }
+
+    public void setBusinessid(String businessid) {
+        this.businessid = businessid;
+    }
+
     /**
      * 
      * @return id 
