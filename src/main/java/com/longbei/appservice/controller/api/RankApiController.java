@@ -96,9 +96,9 @@ public class RankApiController {
                                                String ptype, String sourcetype, String companyname,
                                                String pageno, String pagesize){
 
-        List<RankImage> rankImages = rankService.selectRankImageList
+        Page<RankImage> rankImages = rankService.selectRankImageList
                 (Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        BaseResp<List<RankImage>> ranks = BaseResp.ok();
+        BaseResp<Page<RankImage>> ranks = BaseResp.ok();
         ranks.setData(rankImages);
         return ranks;
     }

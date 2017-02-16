@@ -80,22 +80,7 @@ public abstract class BaseMongoDao<T> {
     public T findOne(Query query) {
         return mongoTemplate.findOne(query, this.getEntityClass());
     }
-    /**
-     * 分页查询
-     */
-    public Page<T> findPage(Page<T> page, Query query) {
-        //如果没有条件 则所有全部
-        query = query == null ? new Query(Criteria.where("_id").exists(true)) : query;
-        long count = this.count(query);
-        // 总数
-        page.setTotalCount((int) count);
-        int currentPage = page.getCurrentPage();
-        int pageSize = page.getPageSize();
-        query.skip((currentPage - 1) * pageSize).limit(pageSize);
-        List<T> rows = this.find(query);
-        page.build(rows);
-        return page;
-    }
+
     /**
      * 根据条件 获得总数
      */

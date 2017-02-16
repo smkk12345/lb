@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.RankImage;
 
 import java.util.Date;
@@ -94,7 +95,7 @@ public interface RankService {
 
 
 
-    List<RankImage> selectRankImageList(int startno,int pagesize);
+    Page<RankImage> selectRankImageList(int startno, int pagesize);
 
 
     boolean deleteRankImage(String rankimageid);

@@ -49,6 +49,25 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectListCount" parameterType="com.longbei.appservice.entity.RankImage" resultType="java.lang.Integer">
+    SELECT
+      COUNT(*)
+    FROM rankimage
+    WHERE 1=1
+    <if test="ranktitle != null" >
+      AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+    </if>
+    <if test="rankbrief != null" >
+      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+    </if>
+    <if test="ptype != null" >
+      AND ptype = #{ptype}
+    </if>
+    <if test="rankscope != null" >
+      AND rankscope = #{rankscope}
+    </if>
+  </select>
+
   <select id="selectByRankImageId">
     SELECT
     <include refid="Base_Column_List" />

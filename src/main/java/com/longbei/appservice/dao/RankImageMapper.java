@@ -26,4 +26,6 @@ public interface RankImageMapper {
     List<RankImage> selectListWithPage(@Param("rankimage") RankImage rankImage,
                                        @Param("startno")int startno,
                                        @Param("pagesize")int pagesize);
+
+    int selectListCount(RankImage rankImage);
 }
