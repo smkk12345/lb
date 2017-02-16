@@ -32,12 +32,15 @@
     <result column="companyphotos" property="companyphotos" jdbcType="VARCHAR" />
     <result column="companybrief" property="companybrief" jdbcType="VARCHAR" />
     <result column="sourcetype" property="sourcetype" jdbcType="CHAR" />
+    <result column="checkstatus" property="checkstatus" jdbcType="VARCHAR" />
+    <result column="isauto" property="isauto" jdbcType="VARCHAR" />
+    <result column="autotime" property="autotime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
-    codeword, ptype,companyname,companyphotos,companybrief,sourcetype
+    codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -45,10 +48,47 @@
     from rankimage
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByRankImageId">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rankimage
+    WHERE rankid = #[rankimageid]
+  </select>
+
+
+  <select id="selectListWithPage" parameterType="com.longbei.appservice.entity.RankImage" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rankimage
+    WHERE 1=1
+    <if test="rankimage.ranktitle != null" >
+      AND ranktitle LIKE concat(concat('%',#{rankimage.ranktitle}),'%')
+    </if>
+    <if test="rankimage.rankbrief != null" >
+      AND rankbrief LIKE concat(concat('%',#{rankimage.rankbrief}),'%')
+    </if>
+    <if test="rankimage.ptype != null" >
+      AND ptype = #{rankimage.ptype}
+    </if>
+    <if test="rankimage.rankscope != null" >
+      AND rankscope = #{rankimage.rankscope}
+    </if>
+    ORDER BY createtime DESC limit #{startno},#{pagesize}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rankimage
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+  <delete id="deleteByRankImageId">
+    DELETE FROM rankimage
+    WHERE rankid = ${rankimageid}
+  </delete>
+
+
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankImage" >
     insert into rankimage (id, ranktitle, rankbrief,
       rankdetail, ranklimite, rankinvolved, 

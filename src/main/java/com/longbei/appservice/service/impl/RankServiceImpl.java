@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.dao.RankImageMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.entity.RankImage;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 榜单操作接口实现类
@@ -134,6 +136,37 @@ public class RankServiceImpl implements RankService{
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
         return res != 0;
+    }
+
+    @Override
+    public BaseResp<RankImage> selectRankImage(String rankimageid) {
+        try {
+            RankImage rankImage = rankImageMapper.selectByRankImageId(rankimageid);
+            BaseResp<RankImage> baseResp = BaseResp.ok();
+            baseResp.setData(rankImage);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("select rank image by rankimageid={} is error:{}",rankimageid,e);
+        }
+        return BaseResp.fail();
+    }
+
+    @Override
+    public List<RankImage> selectRankImageList(int startno, int pagesize) {
+        List<RankImage> rankImages = rankImageMapper.selectListWithPage(new RankImage(),startno,pagesize);
+
+        return rankImages;
+    }
+
+    @Override
+    public boolean deleteRankImage(String rankimageid) {
+        int res = 0;
+        try {
+            res = rankImageMapper.deleteByRankImageId(rankimageid);
+        } catch (Exception e) {
+            logger.error("delete rank image by rankimageid={} is error:{}",rankimageid,e);
+        }
+        return res > 0;
     }
 
 

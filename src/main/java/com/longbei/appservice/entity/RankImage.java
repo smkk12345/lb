@@ -1,9 +1,14 @@
 package com.longbei.appservice.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class RankImage {
+
     private Integer id;
 
     private Long rankid;  //榜单id
@@ -64,6 +69,37 @@ public class RankImage {
     private String companybrief;  //公司简介
 
     private String sourcetype;  //来源类型
+
+    private String checkstatus; //审核状态 0 - 为审核  1 - 审核不通过  2 - 审核通过
+
+    private String isauto;  //是否自动发布 0 - 不自动发布 1 - 自动发布 2 - 定时发布
+
+    private String autotime; //定时发布时间
+
+
+    public String getCheckstatus() {
+        return checkstatus;
+    }
+
+    public void setCheckstatus(String checkstatus) {
+        this.checkstatus = checkstatus;
+    }
+
+    public String getIsauto() {
+        return isauto;
+    }
+
+    public void setIsauto(String isauto) {
+        this.isauto = isauto;
+    }
+
+    public String getAutotime() {
+        return autotime;
+    }
+
+    public void setAutotime(String autotime) {
+        this.autotime = autotime;
+    }
 
     public String getSourcetype() {
         return sourcetype;
@@ -246,12 +282,14 @@ public class RankImage {
      * 开始时间
      * @return starttime 开始时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getStarttime() {
         return starttime;
     }
 
     /**
-     * 开始时间
+     * 开始时间ååååå
      * @param starttime 开始时间
      */
     public void setStarttime(Date starttime) {
@@ -262,6 +300,8 @@ public class RankImage {
      * 结束时间
      * @return endtime 结束时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEndtime() {
         return endtime;
     }

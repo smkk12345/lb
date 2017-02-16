@@ -24,6 +24,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * @author smkk
  *
@@ -68,6 +70,44 @@ public class RankApiController {
     }
 
     /**
+     * 获取草稿榜单
+     * @param rankNum
+     * @param ranktitle
+     * @param rankscope
+     * @param starttimestart
+     * @param starttimeend
+     * @param endtimestart
+     * @param endtimeend
+     * @param rankcateid
+     * @param ispublic
+     * @param ptype
+     * @param sourcetype
+     * @param companyname
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectimagelist")
+    public BaseResp selectRankImageList(String rankNum,String ranktitle, String rankscope,
+                                               String starttimestart, String starttimeend,
+                                               String endtimestart, String endtimeend,
+                                               String rankcateid, String ispublic,
+                                               String ptype, String sourcetype, String companyname,
+                                               String pageno, String pagesize){
+
+        List<RankImage> rankImages = rankService.selectRankImageList
+                (Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        BaseResp<List<RankImage>> ranks = BaseResp.ok();
+        ranks.setData(rankImages);
+        return ranks;
+    }
+
+
+
+
+
+    /**
      * 获取榜单详情
      * @param rankid 榜单id
      * @return
@@ -77,6 +117,22 @@ public class RankApiController {
     public BaseResp<Rank> selectRankDetail(String rankid){
         return null;
     }
+
+
+    /**
+     *
+     * @param rankid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectimagedetail")
+    public BaseResp<RankImage> selectRankImageDetail(String rankid){
+        logger.info("selectRankImageDetail rankid={}",rankid);
+        BaseResp<RankImage>  baseResp = rankService.selectRankImage(rankid);
+        return baseResp;
+    }
+
+
 
     /**
      * 添加榜单
@@ -191,6 +247,22 @@ public class RankApiController {
     @RequestMapping(value = "remove")
     public BaseResp<Object> removeRank(String rankid,String createuserid){
         return null;
+    }
+
+    /**
+     * 删除草稿榜单
+     * @param rankimageid
+     * @param createuserid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "removeimage")
+    public BaseResp<Object> removeRankImage(String rankimageid,String createuserid){
+        boolean flag = rankService.deleteRankImage(rankimageid);
+        if(flag){
+            return BaseResp.ok();
+        }
+        return BaseResp.fail();
     }
 
     /**
