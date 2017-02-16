@@ -1,6 +1,11 @@
 package com.longbei.appservice.service;
 
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
+import com.longbei.appservice.entity.RankImage;
+
 import java.util.Date;
+import java.util.List;
 
 /**
  * 榜单操作接口
@@ -86,11 +91,14 @@ public interface RankService {
                        String companybrief);
 
 
+    BaseResp<RankImage> selectRankImage(String rankimageid);
 
 
 
+    Page<RankImage> selectRankImageList(int startno, int pagesize);
 
 
+    boolean deleteRankImage(String rankimageid);
 
 
 }

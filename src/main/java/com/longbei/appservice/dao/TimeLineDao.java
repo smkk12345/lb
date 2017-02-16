@@ -2,6 +2,7 @@ package com.longbei.appservice.dao;/**
  * Created by luye on 2017/1/23.
  */
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.entity.TimeLine;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,9 @@ import java.util.List;
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
     public List<TimeLine> selectTimeListByUserAndType(String userid, String timelinetype, Date lastdate, int pagesize){
+        if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
+            userid = Constant.SQUARE_USER_ID;
+        }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
         if (null != lastdate) {
             criteria.and("createdate").lt(lastdate);
