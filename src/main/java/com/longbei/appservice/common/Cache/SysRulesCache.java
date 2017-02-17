@@ -54,6 +54,7 @@ public class SysRulesCache {
     }};
 
     public static List<PerfectTen> perfectTenList = new ArrayList<PerfectTen>(){{
+        add(new PerfectTen("-1","全部",-1));
         add(new PerfectTen("0","学习",0));
         add(new PerfectTen("1","运动",1));
         add(new PerfectTen("2","社交",2));
