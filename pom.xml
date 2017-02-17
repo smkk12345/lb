@@ -301,7 +301,7 @@
         <pluginRepository>
             <id>public</id>
             <name>Public Repositories</name>
-            <url>http://210.51.191.181:9081/content/groups/public</url>
+            <url>http://210.51.191.183:9081/content/groups/public</url>
             <snapshots><enabled>true</enabled></snapshots>
         </pluginRepository>
 
