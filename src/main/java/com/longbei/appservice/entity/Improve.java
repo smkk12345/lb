@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -54,7 +55,18 @@ public class Improve {
 
     protected Integer commentnum = 0; //评论数
 
+
     protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
+
+    private ImproveExpandData improveExpandData = new ImproveExpandData();
+
+    public void setImproveExpandData(ImproveExpandData improveExpandData) {
+        this.improveExpandData = improveExpandData;
+    }
+
+    public ImproveExpandData getImproveExpandData() {
+        return improveExpandData;
+    }
 
     public AppUserMongoEntity getAppUserMongoEntity() {
         return appUserMongoEntity;
@@ -407,5 +419,7 @@ public class Improve {
 	public void setRankid(Integer rankid) {
 		this.rankid = rankid;
 	}
+
+
     
 }
