@@ -120,5 +120,13 @@ public interface UserService {
 	 */
 	BaseResp<Object> updateUserInfo(UserInfo userInfo);
 
+	/**
+	 * 修改密码
+	 * @param userid
+	 * @param pwd
+	 * @param newpwd
+     * @return
+     */
+	BaseResp<Object> changePassword(long userid,String pwd,String newpwd);
 
 }

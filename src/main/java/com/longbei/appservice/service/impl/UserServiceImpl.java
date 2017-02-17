@@ -424,6 +424,18 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> changePassword(long userid, String pwd, String newpwd) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			baseResp = HttpClient.userBasicService.updatepwdById(userid,pwd,newpwd);
+		}catch (Exception e){
+			logger.error("changePassword error userid={},pwd={},newpwd={}",userid
+			,pwd,newpwd);
+		}
+		return baseResp;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl) {

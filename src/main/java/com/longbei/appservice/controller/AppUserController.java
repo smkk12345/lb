@@ -156,6 +156,33 @@ public class AppUserController extends BaseController {
     }
 
     /**
+     * @Title:  http://ip:port/app_service/user/changePassword
+     * @param request userid  password  newpassword
+     * @param response
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/changePassword")
+    @ResponseBody
+    public BaseResp<Object> changePassword(HttpServletRequest request, HttpServletResponse response) {
+        String userid = request.getParameter("userid");
+        String password = request.getParameter("password");
+        String newpwd = request.getParameter("newpassword");
+        logger.info("changePassword userid={},password={},newpassword={}", userid, password, newpwd);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid, newpwd, password)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            return userService.changePassword(Long.parseLong(userid),password,newpwd);
+        } catch (Exception e) {
+            logger.error("changePassword error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+
+    /**
     * @Title: http://ip:port/appservice/user/login
     * @Description: 登录
     * @param @param username password
