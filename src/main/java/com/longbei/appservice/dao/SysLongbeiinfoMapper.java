@@ -11,6 +11,8 @@ public interface SysLongbeiinfoMapper {
 
     SysLongbeiinfo selectByPrimaryKey(Integer id);
 
+    SysLongbeiinfo selectDefault();
+
     int updateByPrimaryKeySelective(SysLongbeiinfo record);
 
     int updateByPrimaryKey(SysLongbeiinfo record);

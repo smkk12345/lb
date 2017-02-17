@@ -17,6 +17,12 @@
     from sys_longbeiinfo
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectDefault" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_longbeiinfo
+    where isdefault = '1'
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_longbeiinfo
     where id = #{id,jdbcType=INTEGER}
