@@ -1,9 +1,6 @@
 package com.longbei.appservice.common.Cache;
 
-import com.longbei.appservice.entity.SysRuleCheckin;
-import com.longbei.appservice.entity.SysRuleLp;
-import com.longbei.appservice.entity.SysRules;
-import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,5 +52,23 @@ public class SysRulesCache {
         put(8,"修养");
         put(9,"健康");
     }};
+
+    public static List<PerfectTen> perfectTenList = new ArrayList<PerfectTen>(){{
+        add(new PerfectTen("0","学习",0));
+        add(new PerfectTen("1","运动",1));
+        add(new PerfectTen("2","社交",2));
+        add(new PerfectTen("3","艺术",3));
+        add(new PerfectTen("4","生活",4));
+        add(new PerfectTen("5","公益",5));
+        add(new PerfectTen("6","文字",6));
+        add(new PerfectTen("7","劳动",7));
+        add(new PerfectTen("8","修养",8));
+        add(new PerfectTen("9","健康",9));
+    }};
+
+
+
+
+
 
 }

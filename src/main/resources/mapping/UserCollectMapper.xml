@@ -8,9 +8,10 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ctype" property="ctype" jdbcType="CHAR" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, cid, createtime, updatetime, ctype
+    id, userid, cid, createtime, updatetime, ctype,businessid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -24,10 +25,11 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserCollect" >
     insert into user_collect (id, userid, cid, 
-      createtime, updatetime, ctype
+      createtime, updatetime, ctype,businessid
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{cid,jdbcType=BIGINT}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ctype,jdbcType=CHAR}
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+      #{ctype,jdbcType=CHAR},#{businessid,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserCollect" >
@@ -103,4 +105,10 @@
       ctype = #{ctype,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <delete id="removeCollect">
+    DELETE FROM user_collect
+    WHERE  userid=#{userid} and cid=#{impid} and ctype=#{ctype}
+  </delete>
+
 </mapper>

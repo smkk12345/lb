@@ -220,12 +220,12 @@
         <dependency>
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-core</artifactId>
-            <version>7.5.0</version>
+            <version>8.18.0</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-gson</artifactId>
-            <version>8.15.1</version>
+            <version>8.18.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -301,7 +301,7 @@
         <pluginRepository>
             <id>public</id>
             <name>Public Repositories</name>
-            <url>http://210.51.191.181:9081/content/groups/public</url>
+            <url>http://210.51.191.183:9081/content/groups/public</url>
             <snapshots><enabled>true</enabled></snapshots>
         </pluginRepository>
 

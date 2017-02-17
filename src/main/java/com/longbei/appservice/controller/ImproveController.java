@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import scala.collection.immutable.Stream;
 
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,7 @@ public class ImproveController {
 
 	@Autowired
 	private ImpComplaintsService impComplaintsService;
+
 
 	/**
 	 * @Title: http://ip:port/app_service/improve/addImpComplaints
@@ -448,5 +450,77 @@ public class ImproveController {
 	/**
 	 * 获取送钻列表
 	 */
+
+	/**
+	 * 收藏进步
+	 * @param userid  用户uid
+	 * @param impid 进步id
+	 * @param businesstype 进步类型
+	 * @param businessid 所属id  圈子id  教室id 榜单id
+     * @return
+     */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "collectImp")
+	BaseResp<Object> collectImp(String userid,String impid,String businesstype,String businessid){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,impid,businesstype)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		logger.info("collectImp userid={},impid={}",userid,impid);
+		try{
+			improveService.collectImp(userid,impid,businesstype,businessid);
+		}catch (Exception e){
+			logger.error("collection error userid={},impid={},msg={}",userid,impid,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 取消收藏
+	 * @param userid
+	 * @param impid
+	 * @param buinesstype
+     * @return
+     */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "removeCollect")
+	BaseResp<Object> removeCollect(String userid,String impid,String buinesstype){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,impid,buinesstype)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try{
+			return improveService.removeCollect(userid,impid,buinesstype);
+		}catch (Exception e){
+			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,impid,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * s获取收藏列表  带分页数据
+	 * @param userid
+	 * @param startNum
+	 * @param endNum
+     * @return
+     */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "selectCollect")
+	BaseResp<Object> selectCollect(String userid,int startNum,int endNum){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			return improveService.selectCollect(userid,startNum,endNum);
+		}catch (Exception e){
+			logger.error("selectCollect error userid={},msg={}",userid,e);
+		}
+		return baseResp;
+	}
+
 
 }

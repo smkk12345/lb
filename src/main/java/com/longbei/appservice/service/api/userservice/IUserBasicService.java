@@ -48,8 +48,11 @@ public interface IUserBasicService {
 	 */
 	 @RequestLine("GET /user/updatepwd?username={username}&oldpwd={oldpwd}&newpwd={newpwd}")
 	 BaseResp<Object> updatepwd(@Param("username")String username,@Param("oldpwd")String oldpwd,@Param("newpwd")String newpwd);
-	 
-	 /**
+
+	@RequestLine("GET /user/updatepwdById?userid={userid}&oldpwd={oldpwd}&newpwd={newpwd}")
+	BaseResp<Object> updatepwdById(@Param("userid")long userid,@Param("oldpwd")String oldpwd,@Param("newpwd")String newpwd);
+
+	/**
 	 * @Title: thirdlogin
 	 * @Description: 第三方登录
 	 * @param @param openid

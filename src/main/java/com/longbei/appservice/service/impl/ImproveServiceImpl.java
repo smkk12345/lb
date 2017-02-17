@@ -62,6 +62,8 @@ public class ImproveServiceImpl implements ImproveService{
     private SpringJedisDao springJedisDao;
     @Autowired
     private ImpGoalPerdayMapper impGoalPerdayMapper;
+    @Autowired
+    private UserCollectMapper userCollectMapper;
 
     /**
      *  @author luye
@@ -299,29 +301,62 @@ public class ImproveServiceImpl implements ImproveService{
 
         Improve improve = null;
         try {
-            if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,null,null);
-            }
-            if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,null,null);
-            }
-            if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,null,null);
-            }
-            if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,null,null);
-            }
-            if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,null,null);
-            }
+            improve = selectImprove(impid,userid,businesstype,businessid,null,null);
         } catch (Exception e) {
-            logger.error("select improve by userid:{}" +
-                    "id:{} businesstype:{} businessid:{} is error:{}",
-                    userid,impid,businesstype,businessid,e);
+
         }
 
         return improve;
     }
+
+    /**
+     * 查询公开的 未被删除的进步
+     * @param impid
+     * @param userid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    private Improve selectValidateImprove(Long impid,String userid,
+                                          String businesstype,String businessid){
+        Improve improve = null;
+        try {
+            improve = selectImprove(impid,userid,businesstype,businessid,"1","1");
+        } catch (Exception e) {
+
+        }
+
+        return improve;
+    }
+
+    private Improve selectImprove(Long impid,String userid,
+                    String businesstype,String businessid, String isdel,String ispublic){
+        Improve improve = null;
+        try {
+            if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+            }
+            if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
+            }
+            if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+            }
+            if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
+            }
+            if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
+                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
+            }
+        } catch (Exception e) {
+            logger.error("select improve by userid:{}" +
+                            "id:{} businesstype:{} businessid:{} is error:{}",
+                    userid,impid,businesstype,businessid,e);
+        }
+        return improve;
+    }
+
+
     /**
      *  @author luye
      *  @desp 
@@ -830,8 +865,95 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    /**
+     * 收藏微进步  考虑多次收藏情况  所有插入操作都考虑多次操作
+     *
+     * @param userid
+     * @param impid
+     * @param businesstype
+     * @return
+     */
+    @Override
+    public BaseResp<Object> collectImp(String userid, String impid, String businesstype,String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            Date date = new Date();
+            UserCollect userCollect = new UserCollect();
+            userCollect.setUserid(Long.parseLong(userid));
+            userCollect.setCid(Long.parseLong(impid));
+            userCollect.setCreatetime(date);
+            userCollect.setCtype(businesstype);
+            userCollect.setUpdatetime(date);
+            userCollect.setBusinessid(businessid);
+            int n = userCollectMapper.insert(userCollect);
+            if(n == 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+        }catch (Exception e){
+            logger.error("userCollectMapper.insert error and msg={}",e);
+        }
+        return baseResp;
+    }
 
+    /**
+     * 移除关注
+     * @param userid
+     * @param impid
+     * @param buinesstype
+     * @return
+     */
+    @Override
+    public BaseResp<Object> removeCollect(String userid, String impid, String buinesstype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            int n = userCollectMapper.removeCollect(Long.parseLong(userid),Long.parseLong(impid),buinesstype);
+            if(n == 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+        }catch (Exception e){
+            logger.error("userCollectMapper.remove error and msg={}",e);
+        }
+        return baseResp;
+    }
 
+    /**
+     * 获取收藏进步列表  不包含榜单 圈子 教室等信息
+     * @param userid
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectCollect(String userid, int startNum, int endNum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            List<UserCollect> list  = userCollectMapper.selectCollect(Long.parseLong(userid),startNum,endNum);
+            if(null == list){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+            List<Improve> resultList = new ArrayList<>();
+
+            for (int i = 0; i < list.size(); i++) {
+                UserCollect userCollect = list.get(i);
+                Improve improve = selectImproveByImpid(
+                        userCollect.getCid(),
+                        userCollect.getUserid()+"",
+                        userCollect.getCtype(),
+                        userCollect.getBusinessid());
+                //合法  再做初始化
+                if(improve.getIsdel().equals("1")&&improve.getIspublic().equals("1")){
+                    initImproveAttachInfo(improve);
+                    initImproveUserInfo(improve);
+                }
+                resultList.add(improve);
+            }
+            baseResp.setData(resultList);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch (Exception e){
+            logger.error("selectCollect error and msg={}",e);
+        }
+        return baseResp;
+    }
 
 
 }
