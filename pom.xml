@@ -40,11 +40,11 @@
         <repository>
             <id>longbei-repos</id>
             <name>Longbei Releases</name>
-            <url>http://123.56.28.166:7010/nexus/content/groups/public/</url>
+            <url>http://210.51.191.183:9081/content/groups/public/</url>
         </repository>
         <repository>
             <id>longbei</id>
-            <url>http://123.56.28.166:7010/nexus/content/repositories/thirdparty/</url>
+            <url>http://210.51.191.183:9081/content/repositories/thirdparty/</url>
         </repository>
     </repositories>
 
@@ -194,6 +194,12 @@
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>2.2.1</version>
         </dependency>
+        <!--alidayu-->
+        <dependency>
+            <groupId>sms</groupId>
+            <artifactId>alidayu</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -201,6 +207,11 @@
             <version>3.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>rongyun</artifactId>
+            <version>2.8.5</version>
+        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -290,8 +301,9 @@
         <pluginRepository>
             <id>public</id>
             <name>Public Repositories</name>
-            <url>http://123.56.28.166:7010/nexus/content/groups/public/</url>
+            <url>http://210.51.191.183:9081/content/groups/public</url>
             <snapshots><enabled>true</enabled></snapshots>
+
         </pluginRepository>
 
         <pluginRepository>
