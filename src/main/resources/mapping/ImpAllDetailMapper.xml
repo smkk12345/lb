@@ -71,7 +71,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{gtype,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
-    insert into imp_like_detail
+    insert into imp_all_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -96,6 +96,12 @@
       </if>
       <if test="gtype != null" >
         gtype,
+      </if>
+      <if test="detailtype != null">
+        detailtype,
+      </if>
+      <if test="giftnum">
+        giftnum,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -122,6 +128,12 @@
       </if>
       <if test="gtype != null" >
         #{gtype,jdbcType=CHAR},
+      </if>
+      <if test="detailtype != null" >
+        #{detailtype,jdbcType=CHAR},
+      </if>
+      <if test="giftnum != null" >
+        #{giftnum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

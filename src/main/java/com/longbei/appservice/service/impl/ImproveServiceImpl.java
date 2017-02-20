@@ -789,15 +789,21 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
+    /**
+     * 初始化进步附加信息
+     * @param improves
+     */
     private void initImproveListOtherInfo(List<Improve> improves){
         if(null == improves || 0 == improves.size()){
             return;
         }
         for (Improve improve : improves){
-
+            //初始化赞，花，钻数量
             initImproveAttachInfo(improve);
+            //初始化进步用户信息
             initImproveUserInfo(improve);
-
+            //初始化点赞，送花，送钻简略信息
+            initLikeFlowerDiamondInfo(improve);
         }
     }
 
@@ -868,16 +874,16 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
             return  baseResp;
         }
-        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
-        if(!ResultUtil.isSuccess(baseResp)){
-            return baseResp;
-        }
+//        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+//        if(!ResultUtil.isSuccess(baseResp)){
+//            return baseResp;
+//        }
         try{
             //mysql相关操作
             boolean flag = addLikeToImprove(userid,impid,businessid,businesstype);
             if (flag){
                 //redis
-                addLikeToImproveForRedis(impid,userid);
+                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
                 addLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
             }
@@ -1010,14 +1016,17 @@ public class ImproveServiceImpl implements ImproveService{
 
         //消耗龙币
 
-
         //扣除龙币成功
         try {
-            int res = addImproveAllDetail(userid,impid,businesstype,String.valueOf(flowernum),Constant.IMPROVE_ALL_DETAIL_FLOWER);
+            int res = addImproveAllDetail(userid,impid,businesstype,String.valueOf(flowernum),
+                    Constant.IMPROVE_ALL_DETAIL_FLOWER);
             if (res > 0){
-                res = improveMapper.updateFlower(impid,flowernum,businessid,businesstype);
+                res = improveMapper.updateFlower(impid,flowernum,businessid,
+                        getTableNameByBusinessType(businesstype));
             }
             if (res > 0){
+                //redis
+                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
 
                 //赠送龙分操作
 
@@ -1039,17 +1048,20 @@ public class ImproveServiceImpl implements ImproveService{
         if (!ResultUtil.isSuccess(baseResp)){
             return baseResp;
         }
-
         //消耗龙币
 
 
         //扣除龙币成功
         try {
-            int res = addImproveAllDetail(userid,impid,businesstype,String.valueOf(diamondnum),Constant.IMPROVE_ALL_DETAIL_DIAMOND);
+            int res = addImproveAllDetail(userid,impid,businesstype,String.valueOf(diamondnum),
+                    Constant.IMPROVE_ALL_DETAIL_DIAMOND);
             if (res > 0){
-                res = improveMapper.updateDiamond(impid,diamondnum,businessid,businesstype);
+                res = improveMapper.updateDiamond(impid,diamondnum,businessid,
+                        getTableNameByBusinessType(businesstype));
             }
             if (res > 0){
+                //redis
+                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
 
                 //赠送龙分操作
 
@@ -1060,8 +1072,6 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
             logger.error("add Diamond is error:{}",e);
         }
-
-
 
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_49,Constant.RTNINFO_SYS_49);
     }
@@ -1136,9 +1146,22 @@ public class ImproveServiceImpl implements ImproveService{
      * 将点赞放入redis
      * @return
      */
-    private void addLikeToImproveForRedis(String impid,String userid){
+    private void addLikeOrFlowerOrDiamondToImproveForRedis(String impid,String userid,String opttype){
         Map<String,String> map = new HashMap<>();
-        map.put("like"+impid,userid);
+//        switch (opttype) {
+//            case Constant.IMPROVE_ALL_DETAIL_LIKE:
+//                map.put("like"+userid,userid);
+//                break;
+//            case Constant.IMPROVE_ALL_DETAIL_FLOWER:
+//                map.put("flower"+userid,userid);
+//                break;
+//            case Constant.IMPROVE_ALL_DETAIL_DIAMOND:
+//                map.put("diamond"+userid,userid);
+//                break;
+//            default:
+//                break;
+//        }
+        map.put("lfd"+userid,userid);
         springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
     }
@@ -1251,6 +1274,17 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("remove improve like detail is error:{}",e);
         }
         return res;
+    }
+
+    /**
+     * 初始化进步点赞，送花，送钻简略信息（张三，李四等5人点赞）
+     * @param improve
+     */
+    private void initLikeFlowerDiamondInfo(Improve improve){
+        Long count = improveMongoDao.selectCountImproveLFD(String.valueOf(improve.getImpid()));
+        List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+        improve.setLfdcount(count);
+        improve.setImproveLFDs(improveLFDs);
     }
 
 

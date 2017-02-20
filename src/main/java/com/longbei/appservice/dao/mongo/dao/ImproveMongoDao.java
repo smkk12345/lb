@@ -3,10 +3,13 @@ package com.longbei.appservice.dao.mongo.dao;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 进步mongo操作
@@ -35,6 +38,24 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
                 .and("opttype").is(improveLFD.getOpttype());
         Query query = new Query(criteria);
         mongoTemplate.remove(query,ImproveLFD.class);
+    }
+
+
+    public List<ImproveLFD> selectImproveLfdList(String impid){
+        Criteria criteria = Criteria.where("impid").is(impid);
+        Query query = new Query(criteria);
+        query.with(new Sort(Sort.Direction.DESC, "createtime"));
+        query.limit(5);
+        List<ImproveLFD> improveLFDs = mongoTemplate.find(query,ImproveLFD.class);
+        return improveLFDs;
+    }
+
+
+    public Long selectCountImproveLFD(String impid){
+        Criteria criteria = Criteria.where("impid").is(impid);
+        Query query = new Query(criteria);
+        Long count = mongoTemplate.count(query,ImproveLFD.class);
+        return count;
     }
 
 

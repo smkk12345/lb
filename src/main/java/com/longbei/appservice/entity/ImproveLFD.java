@@ -1,5 +1,7 @@
 package com.longbei.appservice.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -13,9 +15,12 @@ import java.util.Date;
  **/
 @Document(collection = "improvelfd")
 public class ImproveLFD implements Serializable{
-
+    @Id
+    private String id;
     private String impid;
     private String userid;
+    @DBRef
+    private AppUserMongoEntity appUser;
     private String opttype;
     private Date createtime;
 
@@ -33,6 +38,22 @@ public class ImproveLFD implements Serializable{
 
     public void setUserid(String userid) {
         this.userid = userid;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public AppUserMongoEntity getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUserMongoEntity appUser) {
+        this.appUser = appUser;
     }
 
     public String getOpttype() {
