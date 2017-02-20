@@ -21,9 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -71,30 +74,13 @@ public class RankApiController {
 
     /**
      * 获取草稿榜单
-     * @param rankNum
-     * @param ranktitle
-     * @param rankscope
-     * @param starttimestart
-     * @param starttimeend
-     * @param endtimestart
-     * @param endtimeend
-     * @param rankcateid
-     * @param ispublic
-     * @param ptype
-     * @param sourcetype
-     * @param companyname
      * @param pageno
      * @param pagesize
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectimagelist")
-    public BaseResp selectRankImageList(String rankNum,String ranktitle, String rankscope,
-                                               String starttimestart, String starttimeend,
-                                               String endtimestart, String endtimeend,
-                                               String rankcateid, String ispublic,
-                                               String ptype, String sourcetype, String companyname,
-                                               String pageno, String pagesize){
+    public BaseResp selectRankImageList(@RequestBody RankImage rankImage, String pageno, String pagesize, HttpServletRequest request){
 
         Page<RankImage> rankImages = rankService.selectRankImageList
                 (Integer.parseInt(pageno),Integer.parseInt(pagesize));
@@ -141,24 +127,21 @@ public class RankApiController {
      */
     @ResponseBody
     @RequestMapping(value = "insert")
-    public BaseResp<Object> insertRank(String rankImage){
+    public BaseResp<Object> insertRank(@RequestBody RankImage rankImage){
 
         boolean issuccess = false;
-        if (StringUtils.isEmpty(rankImage)){
-            BaseResp.fail(Constant.RTNINFO_SYS_07);
-        }
+
         try {
-            RankImage rankImage1 = JSON.parseObject(rankImage,RankImage.class);
-            issuccess = rankService.insertRank(rankImage1.getRankdetail(),rankImage1.getRanktitle(),
-                    rankImage1.getRanklimite(),
-                    rankImage1.getRankscope(),rankImage1.getRankphotos(),rankImage1.getRankrate(),
-                    rankImage1.getStarttime(),
-                    rankImage1.getEndtime(),
-                    rankImage1.getAreaname(),String.valueOf(rankImage1.getCreateuserid()),rankImage1.getRanktype(),
-                    rankImage1.getIspublic(),String.valueOf(rankImage1.getRankcateid()),
-                    rankImage1.getLikescore(),rankImage1.getFlowerscore(),
-                    rankImage1.getDiamondscore(),rankImage1.getCodeword(),rankImage1.getPtype(),
-                    rankImage1.getSourcetype(),rankImage1.getCompanyname(),rankImage1.getCompanyphotos(),rankImage1.getCompanybrief());
+            issuccess = rankService.insertRank(rankImage.getRankdetail(),rankImage.getRanktitle(),
+                    rankImage.getRanklimite(),
+                    rankImage.getRankscope(),rankImage.getRankphotos(),rankImage.getRankrate(),
+                    rankImage.getStarttime(),
+                    rankImage.getEndtime(),
+                    rankImage.getAreaname(),String.valueOf(rankImage.getCreateuserid()),rankImage.getRanktype(),
+                    rankImage.getIspublic(),String.valueOf(rankImage.getRankcateid()),
+                    rankImage.getLikescore(),rankImage.getFlowerscore(),
+                    rankImage.getDiamondscore(),rankImage.getCodeword(),rankImage.getPtype(),
+                    rankImage.getSourcetype(),rankImage.getCompanyname(),rankImage.getCompanyphotos(),rankImage.getCompanybrief());
             if(issuccess){
                 return BaseResp.ok(Constant.RTNINFO_SYS_50);
             }
@@ -252,15 +235,16 @@ public class RankApiController {
     /**
      * 删除草稿榜单
      * @param rankimageid
-     * @param createuserid
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "removeimage")
-    public BaseResp<Object> removeRankImage(String rankimageid,String createuserid){
+    @RequestMapping(value = "removeimage/{rankimageid}")
+    public BaseResp<Object> removeRankImage(@PathVariable("rankimageid") String rankimageid){
         boolean flag = rankService.deleteRankImage(rankimageid);
         if(flag){
-            return BaseResp.ok();
+            BaseResp baseResp = BaseResp.ok();
+            baseResp.setData(rankimageid);
+            return baseResp;
         }
         return BaseResp.fail();
     }

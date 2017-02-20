@@ -43,6 +43,28 @@ public interface ImproveMapper {
     int updateByPrimaryKey(Improve record);
 
     /**
+     * 更新赞的数量
+     * @param impid
+     * @param opttype 0 -- 点赞  1 -- 取消赞
+     * @param tablename
+     * @return
+     */
+    int updateLikes(@Param("impid") String impid,
+                    @Param("opttype") String opttype,
+                    @Param("businessid") String businessid,
+                    @Param("tablename") String tablename);
+
+    int updateFlower(@Param("impid") String impid,
+                     @Param("flowernum") int flowernum,
+                     @Param("businessid") String businessid,
+                     @Param("tablename") String tablename);
+
+    int updateDiamond(@Param("impid") String impid,
+                      @Param("diamondnum") int diamondnum,
+                      @Param("businessid") String businessid,
+                      @Param("tablename") String tablename);
+
+    /**
      * 假删
      * @param userid 用户id
      * @param improveid  进步id

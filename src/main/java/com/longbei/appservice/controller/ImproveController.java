@@ -374,6 +374,7 @@ public class ImproveController {
 	 * @param lastdate  最后一条日期
 	 * @param pagesize  显示条数
 	 * @return
+	 * @author luye
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
@@ -401,35 +402,35 @@ public class ImproveController {
 	 /**
 	 * 点赞
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@ResponseBody
-	@RequestMapping(value = "like")
-	public BaseResp like(String userid,
-						 String impid,
-						 String businesstype,
-						 String businessid
-						 ) {
-		if (StringUtils.hasBlankParams(userid, impid,businesstype)) {
-			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-		}
-		/**
-		 * 点赞每天限制  --- 每天内次只能点一次
-		 * 进步必须是公开的
-		 * 不能给自己点赞
-		 * 取消或者点赞
-		 * 点赞-----进步赞个数  总赞
-		 * 点赞对积分的影响
-		 * 点完赞之后数据返回
-		 */
-		BaseResp<Object> baseResp = new BaseResp<>();
-
-		try{
-			baseResp = improveService.like(userid,impid,businesstype,businessid);
-		}catch (Exception e){
-			logger.error("improveService.like error and msg={}",e);
-		}
-		return baseResp;
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@ResponseBody
+//	@RequestMapping(value = "like")
+//	public BaseResp like(String userid,
+//						 String impid,
+//						 String businesstype,
+//						 String businessid
+//						 ) {
+//		if (StringUtils.hasBlankParams(userid, impid,businesstype)) {
+//			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+//		}
+//		/**
+//		 * 点赞每天限制  --- 每天内次只能点一次
+//		 * 进步必须是公开的
+//		 * 不能给自己点赞
+//		 * 取消或者点赞
+//		 * 点赞-----进步赞个数  总赞
+//		 * 点赞对积分的影响
+//		 * 点完赞之后数据返回
+//		 */
+//		BaseResp<Object> baseResp = new BaseResp<>();
+//
+//		try{
+//			baseResp = improveService.like(userid,impid,businesstype,businessid);
+//		}catch (Exception e){
+//			logger.error("improveService.like error and msg={}",e);
+//		}
+//		return baseResp;
+//	}
 
 	/**
 	 * 送花
@@ -509,7 +510,7 @@ public class ImproveController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "selectCollect")
-	BaseResp<Object> selectCollect(String userid,int startNum,int endNum){
+	public BaseResp<Object> selectCollect(String userid,int startNum,int endNum){
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -518,6 +519,110 @@ public class ImproveController {
 			return improveService.selectCollect(userid,startNum,endNum);
 		}catch (Exception e){
 			logger.error("selectCollect error userid={},msg={}",userid,e);
+		}
+		return baseResp;
+	}
+
+
+	/**
+	 * 点赞
+	 * @param userid  用户id
+	 * @param improveid 进步id
+	 * @param businesstype 业务类型（榜，圈子等）
+	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "addlike")
+	@ResponseBody
+	public BaseResp<Object> addLikeForImprove(String userid,String improveid,String businesstype,String businessid){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.addlike(userid,improveid,businesstype,businessid);
+		} catch (Exception e) {
+			logger.error("add like is error:{}",e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 取消赞
+	 * @param userid  用户id
+	 * @param improveid  进步id
+	 * @param businesstype 业务类型（榜，圈子等）
+	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "cancellike")
+	@ResponseBody
+	public BaseResp<Object> cancelLikeForImprove(String userid,String improveid,String businesstype,String businessid){
+
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.cancelLike(userid,improveid,businesstype,businessid);
+		} catch (Exception e) {
+			logger.error("cancel like is error:{}",e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 送花
+	 * @param userid  用户id
+	 * @param improveid  进步id
+	 * @param flowernum  鲜花数量
+	 * @param businesstype 业务类型（榜，圈子等）
+	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "addflower")
+	@ResponseBody
+	public BaseResp<Object> addFlowerForImprove(String userid,String improveid,String flowernum,
+												String businesstype,String businessid){
+		logger.info("add flower userid={} improveid={} flowernum={}",userid,improveid,flowernum);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,improveid,flowernum,businesstype,businessid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.addFlower(userid,improveid,Integer.valueOf(flowernum),businesstype,businessid);
+		} catch (Exception e) {
+			logger.error("add flower flowernum={} userid={} improveid={} is error:{}",flowernum,userid,improveid,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 送钻石
+	 * @param userid  用户id
+	 * @param improveid  进步ID
+	 * @param diamondnum   钻石数量
+	 * @param businesstype  业务类型（榜，圈子等）
+	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "adddiamond")
+	@ResponseBody
+	public BaseResp<Object> addDiamondForImprove(String userid,String improveid,
+												 String diamondnum,String businesstype,String businessid){
+		logger.info("add diamond userid={} improveid={} diamondmun={}",userid,improveid,diamondnum);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,improveid,diamondnum,businesstype,businessid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.addDiamond(userid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
+		} catch (Exception e) {
+			logger.error("add diamond userid={} improve={} diamondnum={} is error:{}",userid,improveid,diamondnum,e);
 		}
 		return baseResp;
 	}

@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class RankImage {
 
@@ -76,6 +77,158 @@ public class RankImage {
 
     private String autotime; //定时发布时间
 
+    //-------
+    private String joinlastday; //入榜截止天数
+
+    private String maximprovenum; //每人每日最多可更新微进步
+
+    private String minimprovenum; //每人每日最多可更新微进步
+
+    private String ischeck;  //本榜获奖名单开启人工审核 0 - 不开 1 - 开
+
+    private String isrealname; //本榜须实名认证 0 - 不需要 1 - 需要
+
+    private String islonglevel; //本榜须达到龙级  0 - 不需要 1 - 需要
+
+    private String longlevel; //龙级
+
+    private String isperfectlevel; //本榜须达到单项能级 0 - 不需要 1 - 需要
+
+    private String perfectlevel; //能级
+
+    private String perfectid; //能级id
+
+    private String iswork; //本榜须工作认证 0 - 不需要 1 - 需要
+
+    private String isschool; //本榜须学历认证 0 - 不需要 1 - 需要
+
+    private String isgroup; //本榜同时创建龙群 0 - 不需要 1 - 需要
+
+    private String rankcardid; //榜主名片id
+
+    //--------
+
+    private List<RankAward> rankAwards; //榜单奖品
+
+    public String getJoinlastday() {
+        return joinlastday;
+    }
+
+    public void setJoinlastday(String joinlastday) {
+        this.joinlastday = joinlastday;
+    }
+
+    public String getMaximprovenum() {
+        return maximprovenum;
+    }
+
+    public void setMaximprovenum(String maximprovenum) {
+        this.maximprovenum = maximprovenum;
+    }
+
+    public String getMinimprovenum() {
+        return minimprovenum;
+    }
+
+    public void setMinimprovenum(String minimprovenum) {
+        this.minimprovenum = minimprovenum;
+    }
+
+    public String getIscheck() {
+        return ischeck;
+    }
+
+    public void setIscheck(String ischeck) {
+        this.ischeck = ischeck;
+    }
+
+    public String getIsrealname() {
+        return isrealname;
+    }
+
+    public void setIsrealname(String isrealname) {
+        this.isrealname = isrealname;
+    }
+
+    public String getIslonglevel() {
+        return islonglevel;
+    }
+
+    public void setIslonglevel(String islonglevel) {
+        this.islonglevel = islonglevel;
+    }
+
+    public String getLonglevel() {
+        return longlevel;
+    }
+
+    public void setLonglevel(String longlevel) {
+        this.longlevel = longlevel;
+    }
+
+    public String getIsperfectlevel() {
+        return isperfectlevel;
+    }
+
+    public void setIsperfectlevel(String isperfectlevel) {
+        this.isperfectlevel = isperfectlevel;
+    }
+
+    public String getPerfectlevel() {
+        return perfectlevel;
+    }
+
+    public void setPerfectlevel(String perfectlevel) {
+        this.perfectlevel = perfectlevel;
+    }
+
+    public String getPerfectid() {
+        return perfectid;
+    }
+
+    public void setPerfectid(String perfectid) {
+        this.perfectid = perfectid;
+    }
+
+    public String getIswork() {
+        return iswork;
+    }
+
+    public void setIswork(String iswork) {
+        this.iswork = iswork;
+    }
+
+    public String getIsschool() {
+        return isschool;
+    }
+
+    public void setIsschool(String isschool) {
+        this.isschool = isschool;
+    }
+
+    public String getIsgroup() {
+        return isgroup;
+    }
+
+    public void setIsgroup(String isgroup) {
+        this.isgroup = isgroup;
+    }
+
+    public String getRankcardid() {
+        return rankcardid;
+    }
+
+    public void setRankcardid(String rankcardid) {
+        this.rankcardid = rankcardid;
+    }
+
+    public List<RankAward> getRankAwards() {
+        return rankAwards;
+    }
+
+    public void setRankAwards(List<RankAward> rankAwards) {
+        this.rankAwards = rankAwards;
+    }
 
     public String getCheckstatus() {
         return checkstatus;

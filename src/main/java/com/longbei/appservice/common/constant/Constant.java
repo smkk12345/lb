@@ -7,6 +7,10 @@ public class Constant {
 
 
 
+	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
+	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
+
+
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 
 	public static final String []OK_SERVICE = new String[]{
@@ -73,6 +77,7 @@ public class Constant {
 	public static final int STATUS_SYS_46 = -46;
 	public static final int STATUS_SYS_47 = -47;
 	public static final int STATUS_SYS_48 = -48;
+	public static final int STATUS_SYS_49 = -49;
 
 
 	public static final int STATUS_SYS_1000 = -1000;
@@ -118,6 +123,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_42 = "发布进步失败";
 	public static final String RTNINFO_SYS_43 = "获取进步列表失败";
 	public static final String RTNINFO_SYS_44 = "获取进步列表成功";
+	public static final String RTNINFO_SYS_45 = "你没有为该进步点过赞";
+	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
+	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -170,6 +178,14 @@ public class Constant {
 	public static final String IMPROVE_LIST_FRIEND = "2";  //好友
 	public static final String IMPROVE_LIST_ACQUAINTANCE = "3";  //熟人
 
+	/**
+	 * 进步明细类型（赞，花，钻）
+	 */
+	public static final String IMPROVE_ALL_DETAIL_LIKE = "0";  //赞的明细
+	public static final String IMPROVE_ALL_DETAIL_FLOWER = "1";  //花的明细
+	public static final String IMPROVE_ALL_DETAIL_DIAMOND = "2";  //钻明细
+	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
+	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
 	/**
 	 * 进步时间线类型
 	 */
@@ -328,5 +344,10 @@ public class Constant {
 	public static final String RP_IMPROVE_NDAY = "improve_day_";
 
 
+
+	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
+	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
+	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
+	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
 
 }

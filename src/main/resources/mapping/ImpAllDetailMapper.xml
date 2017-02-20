@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longbei.appservice.dao.ImpLikeDetailMapper" >
-  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImpLikeDetail" >
+<mapper namespace="com.longbei.appservice.dao.ImpAllDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImpAllDetail" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="impid" property="impid" jdbcType="BIGINT" />
@@ -10,21 +10,59 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="gtype" property="gtype" jdbcType="CHAR" />
+    <result column="detailtype" property="detailtype" jdbcType="CHAR" />
+    <result column="giftnum" property="giftnum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, impid, status, times, createtime, updatetime, gtype
+    id, userid, impid, status, times, createtime, updatetime, gtype, detailtype, giftnum
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from imp_like_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}ßßßßßßßßßßßßßß
   </select>
+
+  <select id="selectByImpAllDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from imp_all_detail
+    WHERE userid = #{userid}
+    <if test="impid != null">
+      AND impid=#{impid}
+    </if>
+    <if test="gtype != null">
+      AND gtype=#{gtype}
+    </if>
+    <if test="detailtype != null">
+      AND detailtype=#{detailtype}
+    </if>
+    ORDER BY createtime DESC
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from imp_like_detail
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ImpLikeDetail" >
+
+
+  <delete id="deleteByImpAllDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail">
+    DELETE FROM imp_all_detail
+    WHERE userid = #{userid}
+    <if test="impid != null">
+      AND impid=#{impid}
+    </if>
+    <if test="gtype != null">
+      AND gtype=#{gtype}
+    </if>
+    <if test="detailtype != null">
+      AND detailtype=#{detailtype}
+    </if>
+  </delete>
+
+
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     insert into imp_like_detail (id, userid, impid, 
       status, times, createtime, 
       updatetime, gtype)
@@ -32,7 +70,7 @@
       #{status,jdbcType=CHAR}, #{times,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{gtype,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpLikeDetail" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     insert into imp_like_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -87,7 +125,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ImpLikeDetail" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     update imp_like_detail
     <set >
       <if test="userid != null" >
@@ -114,7 +152,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpLikeDetail" >
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     update imp_like_detail
     set userid = #{userid,jdbcType=BIGINT},
       impid = #{impid,jdbcType=BIGINT},

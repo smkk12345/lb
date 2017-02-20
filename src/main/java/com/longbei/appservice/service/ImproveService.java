@@ -232,7 +232,18 @@ public interface ImproveService {
      * @param impid
      * @return BaseResp
      */
-    BaseResp<Object> like(String userid, String impid,String businesstype,String businessid);
+    BaseResp<Object> addlike(String userid, String impid,String businesstype,String businessid);
+
+
+    /**
+     * 取消赞
+     * @param userid
+     * @param impid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    BaseResp<Object> cancelLike(String userid,String impid,String businesstype,String businessid);
 
     /**
      * 收藏微进步
@@ -244,7 +255,7 @@ public interface ImproveService {
      * 取消微进步收藏
      * @param userid
      * @param impid
-     * @param buinesstype
+     * @param buinesstype 
      * @return
      */
     BaseResp<Object> removeCollect(String userid,String impid,String buinesstype);
@@ -257,6 +268,13 @@ public interface ImproveService {
      * @return
      */
     BaseResp<Object> selectCollect(String userid,int startNum,int endNum);
+
+
+
+    BaseResp<Object> addFlower(String userid,String impid,int flowernum,String businesstype,String businessid);
+
+
+    BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
 
 
 }
