@@ -95,7 +95,7 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			if(null != list && list.size()>0){
 				Map<String, Object> expandData = new HashMap<>();
 				for (UserSettingCommon userSettingCommon : list) {
-					expandData.put(userSettingCommon.getKey(), userSettingCommon.getKey());
+					expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
 				}
 				reseResp.setExpandData(expandData);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

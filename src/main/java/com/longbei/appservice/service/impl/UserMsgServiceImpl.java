@@ -347,7 +347,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			List<UserSettingCommon> setlist = userSettingCommonMapper.selectByUserid(userid+"");
 			Map<String, Object> expandData = new HashMap<>();
 			for (UserSettingCommon userSettingCommon : setlist) {
-				expandData.put(userSettingCommon.getKey(), userSettingCommon.getKey());
+				expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
 			}
 			//获取新粉丝count
 			int fansCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");

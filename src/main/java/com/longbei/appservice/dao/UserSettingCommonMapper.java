@@ -25,7 +25,7 @@ public interface UserSettingCommonMapper {
 	 * 2017年1月19日
 	 * return_type
 	 */
-    UserSettingCommon selectByKey(@Param("userid") String userid, @Param("key") String key);
+    UserSettingCommon selectByKey(@Param("userid") String userid, @Param("ukey") String key);
     
     /**
 	 * @author yinxc
@@ -41,6 +41,6 @@ public interface UserSettingCommonMapper {
 	 * 2017年1月19日
 	 * return_type
 	 */
-    int updateByUseridKey(@Param("userid") String userid, @Param("key") String key, @Param("value") String value);
+    int updateByUseridKey(@Param("userid") String userid, @Param("ukey") String key, @Param("uvalue") String value);
     
 }
