@@ -14,21 +14,21 @@ public class HttpClient {
 	public static IUserBasicService userBasicService =
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 			.decoder(new GsonDecoder())
-            .target(IUserBasicService.class, "http://localhost:8081/user_service");
+            .target(IUserBasicService.class, "http://192.168.1.120:8081/user_service");
 	//外网接口 阿里大鱼
 	public static IAlidayuService alidayuService =
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 					.decoder(new GsonDecoder())
-					.target(IAlidayuService.class, "http://localhost:8085/outernet_service");
+					.target(IAlidayuService.class, "http://192.168.1.120:8085/outernet_service");
 	//融云
 	public static IRongYunService rongYunService=
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 			.decoder(new GsonDecoder())
-			.target(IRongYunService.class,"http://localhost:8085/outernet_service");
+			.target(IRongYunService.class,"http://192.168.1.120:8085/outernet_service");
 	//jpush
 	public static IJPushService jPushService=
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 					.decoder(new GsonDecoder())
-					.target(IJPushService.class,"http://localhost:8085/outernet_service");
+					.target(IJPushService.class,"http://192.168.1.120:8085/outernet_service");
 
 }

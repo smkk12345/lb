@@ -627,5 +627,34 @@ public class ImproveController {
 		return baseResp;
 	}
 
+	/**
+	 * 获取 赞，花，钻 列表
+	 * @param userid 用户id
+	 * @param impid  进步id
+	 * @param opttype  操作类型 0 -- 赞列表 1 -- 送花列表  2--送钻列表
+	 * @param pagesize 获取条数
+	 * @param lastdate 最后一条时间 （初次获取可以为null）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "lfdlist")
+	@ResponseBody
+	public BaseResp<List<ImpAllDetail>> getImproveLFDList(String userid,String impid,
+											  String opttype,String pagesize,String lastdate){
+
+		BaseResp<List<ImpAllDetail>> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,impid,opttype,pagesize)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.selectImproveLFDList(impid,opttype,
+					Integer.parseInt(pagesize),DateUtils.parseDate(lastdate));
+
+		} catch (Exception e) {
+			logger.error("get improve all detail list is error:{}",e);
+		}
+		return baseResp;
+	}
+
 
 }

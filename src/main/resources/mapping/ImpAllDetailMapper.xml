@@ -23,27 +23,19 @@
     where id = #{id,jdbcType=INTEGER}ßßßßßßßßßßßßßß
   </select>
 
-  <select id="selectByImpAllDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail" resultMap="BaseResultMap">
+  <select id="selectList"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from imp_all_detail
-    WHERE 1=1
-    <if test="userid != null">
-      AND userid = #{userid}
-    </if>
-    <if test="impid != null">
-      AND impid=#{impid}
-    </if>
-    <if test="gtype != null">
+    WHERE
+       impid=#{impid}
       AND gtype=#{gtype}
-    </if>
-    <if test="detailtype != null">
       AND detailtype=#{detailtype}
-    </if>
+      <if test="lastdate != null">
+        AND createtime &lt; #[lastdate]
+      </if>
     ORDER BY createtime DESC
-    <if test="startno != null">
-      limit #{startno},#{pagesize}
-    </if>
+      limit #{pagesize}
   </select>
 
   <select id="selectOneDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail" resultType="com.longbei.appservice.entity.ImpAllDetail">
