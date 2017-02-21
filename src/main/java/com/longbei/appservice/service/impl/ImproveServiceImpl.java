@@ -1288,4 +1288,41 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
+    private void initIsOptionForImprove(String userid,Improve improve){
+
+        ImpAllDetail impAllDetail = new ImpAllDetail();
+        impAllDetail.setUserid(Long.parseLong(userid));
+        impAllDetail.setImpid(improve.getImpid());
+        impAllDetail.setGtype(improve.getBusinesstype());
+        impAllDetail.setStartno(0);
+        impAllDetail.setPagesize(1);
+        //是否点赞
+        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
+        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
+        if (null != impAllDetailLikes && impAllDetailLikes.size() > 0) {
+            improve.setHaslike("1");
+        }
+        //是否送花
+        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
+        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
+        if (null != impAllDetailFlowers && impAllDetailFlowers.size() > 0) {
+            improve.setHasflower("1");
+        }
+        //是否送钻
+        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_DIAMOND);
+        List<ImpAllDetail> impAllDetailDiamonds = impAllDetailMapper.selectOneDetail(impAllDetail);
+        if (null != impAllDetailDiamonds && impAllDetailDiamonds.size() > 0) {
+            improve.setHasdiamond("1");
+        }
+        //是否收藏
+        UserCollect userCollect = new UserCollect();
+        userCollect.setUserid(Long.parseLong(userid));
+        userCollect.setCid(improve.getImpid());
+        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
+        if (null != userCollects && userCollects.size() > 0 ){
+            improve.setHascollect("1");
+        }
+    }
+
+
 }

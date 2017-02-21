@@ -17,6 +17,26 @@ public class UserCollect {
 
     private String businessid;
 
+    private Integer startno;
+
+    private Integer pagesize;
+
+    public Integer getPagesize() {
+        return pagesize;
+    }
+
+    public void setPagesize(Integer pagesize) {
+        this.pagesize = pagesize;
+    }
+
+    public Integer getStartno() {
+        return startno;
+    }
+
+    public void setStartno(Integer startno) {
+        this.startno = startno;
+    }
+
     public String getBusinessid() {
         return businessid;
     }
