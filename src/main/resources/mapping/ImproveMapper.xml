@@ -272,6 +272,37 @@
     UPDATE improve SET isdel = '1' WHERE impid=#{improveid} AND userid=#{userid}
   </update>
 
+
+  <update id="updateLikes">
+    UPDATE ${tablename} SET
+    <if test="opttype == 0">
+      likes = likes + 1
+    </if>
+    <if test="opttype == 1">
+      likes = likes - 1
+    </if>
+    WHERE
+    businessid = #{businessid}
+    AND impid=#{impid}
+  </update>
+
+
+  <update id="updateFlower">
+    UPDATE ${tablename}
+    SET flowers = flowers + #{flowernum}
+    WHERE
+    businessid = #{businessid}
+    AND  impid = #{impid}
+  </update>
+
+  <update id="updateDiamond">
+    UPDATE ${tablename}
+    SET diamonds = diamonds + #{diamondnum}
+    WHERE
+    businessid = #{businessid}
+    AND  impid = #{impid}
+  </update>
+
   <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />

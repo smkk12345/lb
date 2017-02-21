@@ -14,6 +14,14 @@ public interface UserCollectMapper {
 
     UserCollect selectByPrimaryKey(Integer id);
 
+    /**
+     * 获取收藏列表
+     * @param userCollect
+     * @return
+     * @author luye
+     */
+    List<UserCollect> selectListByUserCollect(UserCollect userCollect);
+
     int updateByPrimaryKeySelective(UserCollect record);
 
     int updateByPrimaryKey(UserCollect record);

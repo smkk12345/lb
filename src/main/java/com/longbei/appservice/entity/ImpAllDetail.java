@@ -2,8 +2,8 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
-public class ImpLikeDetail {
-    private Integer id;
+public class ImpAllDetail {
+    private Long id;
 
     private Long userid;//用户id
 
@@ -19,11 +19,51 @@ public class ImpLikeDetail {
 
     private String gtype;//0 零散 1 目标中 2 榜中 3 圈中 4教室中
 
+    private String detailtype; //明细类型 0 - 赞  1 - 花  2 - 钻
+
+    private String giftnum;  //礼物数量 如 花，钻
+
+    private Integer startno;
+
+    private Integer pagesize;
+
+    public Integer getStartno() {
+        return startno;
+    }
+
+    public void setStartno(Integer startno) {
+        this.startno = startno;
+    }
+
+    public Integer getPagesize() {
+        return pagesize;
+    }
+
+    public void setPagesize(Integer pagesize) {
+        this.pagesize = pagesize;
+    }
+
+    public String getDetailtype() {
+        return detailtype;
+    }
+
+    public void setDetailtype(String detailtype) {
+        this.detailtype = detailtype;
+    }
+
+    public String getGiftnum() {
+        return giftnum;
+    }
+
+    public void setGiftnum(String giftnum) {
+        this.giftnum = giftnum;
+    }
+
     /**
      * 
      * @return id 
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -31,7 +71,7 @@ public class ImpLikeDetail {
      * 
      * @param id 
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

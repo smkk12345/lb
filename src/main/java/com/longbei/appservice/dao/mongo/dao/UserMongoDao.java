@@ -47,8 +47,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	}
 	
 	public AppUserMongoEntity getAppUser(String userid){
-		Query query = Query.query(Criteria.where("userid").is(userid));
-		query.with(new Sort(Direction.ASC, "contents.$createdate"));
+		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
 			AppUserMongoEntity mongoUser = findOne(query);
 			return  mongoUser;
