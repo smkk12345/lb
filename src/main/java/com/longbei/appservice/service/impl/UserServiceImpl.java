@@ -450,8 +450,11 @@ public class UserServiceImpl implements UserService {
 			if(!StringUtils.isBlank(nickname)){
 				//判断昵称是否存在
 				UserInfo infos = userInfoMapper.getByNickName(nickname);
+
 				if(null != infos){
-					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
+					if(infos.getUserid() != Long.parseLong(userid)) {
+						return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
+					}
 				}
 			}
 			//判断邀请人是否是龙杯用户

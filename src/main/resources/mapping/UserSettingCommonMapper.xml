@@ -4,14 +4,14 @@
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserSettingCommon" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
-    <result column="key" property="key" jdbcType="VARCHAR" />
-    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="ukey" property="ukey" jdbcType="VARCHAR" />
+    <result column="uvalue" property="uvalue" jdbcType="VARCHAR" />
     <result column="displayname" property="displayname" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, key, value, displayname, updatetime, createtime
+    id, userid, ukey, uvalue, displayname, updatetime, createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -24,7 +24,7 @@
     select 
     <include refid="Base_Column_List" />
     from user_setting_common
-    where userid = #{userid} and key = #{key}
+    where userid = #{userid} and ukey = #{ukey}
   </select>
   
   <select id="selectByUserid" resultMap="BaseResultMap">
@@ -39,11 +39,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserSettingCommon" >
-    insert into user_setting_common (id, userid, key, 
-      value, displayname, updatetime, 
+    insert into user_setting_common (id, userid, ukey,
+      uvalue, displayname, updatetime,
       createtime)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{key,jdbcType=VARCHAR}, 
-      #{value,jdbcType=VARCHAR}, #{displayname,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{ukey,jdbcType=VARCHAR},
+      #{uvalue,jdbcType=VARCHAR}, #{displayname,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP},
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserSettingCommon" >
@@ -55,11 +55,11 @@
       <if test="userid != null" >
         userid,
       </if>
-      <if test="key != null" >
-        key,
+      <if test="ukey != null" >
+        ukey,
       </if>
-      <if test="value != null" >
-        value,
+      <if test="uvalue != null" >
+        uvalue,
       </if>
       <if test="displayname != null" >
         displayname,
@@ -78,11 +78,11 @@
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
       </if>
-      <if test="key != null" >
-        #{key,jdbcType=VARCHAR},
+      <if test="ukey != null" >
+        #{ukey,jdbcType=VARCHAR},
       </if>
-      <if test="value != null" >
-        #{value,jdbcType=VARCHAR},
+      <if test="uvalue != null" >
+        #{uvalue,jdbcType=VARCHAR},
       </if>
       <if test="displayname != null" >
         #{displayname,jdbcType=VARCHAR},
@@ -101,11 +101,11 @@
       <if test="userid != null" >
         userid = #{userid,jdbcType=BIGINT},
       </if>
-      <if test="key != null" >
-        key = #{key,jdbcType=VARCHAR},
+      <if test="ukey != null" >
+        ukey = #{ukey,jdbcType=VARCHAR},
       </if>
-      <if test="value != null" >
-        value = #{value,jdbcType=VARCHAR},
+      <if test="uvalue != null" >
+        uvalue = #{uvalue,jdbcType=VARCHAR},
       </if>
       <if test="displayname != null" >
         displayname = #{displayname,jdbcType=VARCHAR},
@@ -122,8 +122,8 @@
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserSettingCommon" >
     update user_setting_common
     set userid = #{userid,jdbcType=BIGINT},
-      key = #{key,jdbcType=VARCHAR},
-      value = #{value,jdbcType=VARCHAR},
+      ukey = #{ukey,jdbcType=VARCHAR},
+      uvalue = #{uvalue,jdbcType=VARCHAR},
       displayname = #{displayname,jdbcType=VARCHAR},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       createtime = #{createtime,jdbcType=TIMESTAMP}
@@ -132,8 +132,8 @@
   
   <update id="updateByUseridKey">
     update user_setting_common
-    set value = #{value} 
-    where userid = #{userid} and key = #{key}
+    set uvalue = #{uvalue}
+    where userid = #{userid} and ukey = #{ukey}
   </update>
   
 </mapper>
