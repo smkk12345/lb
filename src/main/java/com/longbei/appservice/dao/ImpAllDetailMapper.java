@@ -18,6 +18,14 @@ public interface ImpAllDetailMapper {
 
     List<ImpAllDetail> selectByImpAllDetail(ImpAllDetail impAllDetail);
 
+    /**
+     * 用户判断记录是否存在
+     * @param impAllDetail
+     * @return
+     * @author luye
+     */
+    List<ImpAllDetail> selectOneDetail(ImpAllDetail impAllDetail);
+
     int updateByPrimaryKeySelective(ImpAllDetail record);
 
     int updateByPrimaryKey(ImpAllDetail record);

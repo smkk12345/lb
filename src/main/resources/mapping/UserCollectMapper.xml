@@ -19,6 +19,26 @@
     from user_collect
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectListByUserCollect" parameterType="com.longbei.appservice.entity.UserCollect" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    user_collect
+    WHERE
+    userid = #{userid}
+    <if test="cid != null">
+      cid = #{cid}
+    </if>
+    ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_collect
     where id = #{id,jdbcType=INTEGER}

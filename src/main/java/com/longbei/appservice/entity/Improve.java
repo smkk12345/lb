@@ -18,11 +18,9 @@ public class Improve {
 
     protected String pickey;//图片的key
 
-
     protected String filekey;//文件key  视频文件  音频文件 普通文件
 
     protected Long userid;//用户id
-
 
     protected Long businessid;//业务id  榜单id  圈子id 教室id
 
@@ -31,7 +29,6 @@ public class Improve {
     protected Integer likes = 0;//点赞数量
 
     protected Integer flowers = 0;//花数量
-
 
     protected Integer diamonds = 0;//钻石
 
@@ -55,6 +52,7 @@ public class Improve {
 
     protected Integer commentnum = 0; //评论数
 
+
     /**
      * 以下扩展返回信息
      * 进步人信息
@@ -67,9 +65,9 @@ public class Improve {
      */
     protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
 
-    private List<AppUserMongoEntity> appUserList;//点赞送花送钻用户列表 只取前5条
+    private List<ImproveLFD> improveLFDs;//点赞送花送钻用户列表 只取前5条
 
-    private Integer lfdcount = 0;//点赞送花送钻 数量
+    private Long lfdcount = 0L;//点赞送花送钻 数量
 
     private String haslike = "0";//是否点赞
     private String hasflower = "0";//是否送花
@@ -78,19 +76,19 @@ public class Improve {
 
     private SuperTopic superTopic;//超级话题
 
-    public List<AppUserMongoEntity> getAppUserList() {
-        return appUserList;
+    public List<ImproveLFD> getImproveLFDs() {
+        return improveLFDs;
     }
 
-    public void setAppUserList(List<AppUserMongoEntity> appUserList) {
-        this.appUserList = appUserList;
+    public void setImproveLFDs(List<ImproveLFD> improveLFDs) {
+        this.improveLFDs = improveLFDs;
     }
 
-    public Integer getLfdcount() {
+    public Long getLfdcount() {
         return lfdcount;
     }
 
-    public void setLfdcount(Integer lfdcount) {
+    public void setLfdcount(Long lfdcount) {
         this.lfdcount = lfdcount;
     }
 

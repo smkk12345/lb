@@ -27,7 +27,10 @@
     select
     <include refid="Base_Column_List" />
     from imp_all_detail
-    WHERE userid = #{userid}
+    WHERE 1=1
+    <if test="userid != null">
+      AND userid = #{userid}
+    </if>
     <if test="impid != null">
       AND impid=#{impid}
     </if>
@@ -38,6 +41,19 @@
       AND detailtype=#{detailtype}
     </if>
     ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+  <select id="selectOneDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail" resultType="com.longbei.appservice.entity.ImpAllDetail">
+    SELECT userid FROM imp_all_detail
+    WHERE
+    userid = #{userid}
+    AND  impid=#{impid}
+    AND  gtype=#{gtype}
+    AND  detailtype=#{detailtype}
+    limit 0,1
   </select>
 
 
@@ -71,7 +87,7 @@
       #{updatetime,jdbcType=TIMESTAMP}, #{gtype,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
-    insert into imp_like_detail
+    insert into imp_all_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -96,6 +112,12 @@
       </if>
       <if test="gtype != null" >
         gtype,
+      </if>
+      <if test="detailtype != null">
+        detailtype,
+      </if>
+      <if test="giftnum">
+        giftnum,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -122,6 +144,12 @@
       </if>
       <if test="gtype != null" >
         #{gtype,jdbcType=CHAR},
+      </if>
+      <if test="detailtype != null" >
+        #{detailtype,jdbcType=CHAR},
+      </if>
+      <if test="giftnum != null" >
+        #{giftnum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
