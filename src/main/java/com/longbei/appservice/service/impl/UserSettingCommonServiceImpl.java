@@ -95,7 +95,7 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			if(null != list && list.size()>0){
 				Map<String, Object> expandData = new HashMap<>();
 				for (UserSettingCommon userSettingCommon : list) {
-					expandData.put(userSettingCommon.getKey(), userSettingCommon.getKey());
+					expandData.put(userSettingCommon.getKey(), userSettingCommon.getValue());
 				}
 				reseResp.setExpandData(expandData);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -104,6 +104,22 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			logger.error("selectByUserid userid={},msg={}",userid,e);
 		}
 		return reseResp;
+	}
+	
+	@Override
+	public Map<String, String> selectMapByUserid(String userid) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
+			if(null != list && list.size()>0){
+				for (UserSettingCommon userSettingCommon : list) {
+					map.put(userSettingCommon.getKey(), userSettingCommon.getValue());
+				}
+			}
+		} catch (Exception e) {
+			logger.error("selectByUserid userid={},msg={}",userid,e);
+		}
+		return map;
 	}
 
 	@Override
@@ -119,5 +135,34 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 		}
 		return reseResp;
 	}
+
+	@Override
+	public BaseResp<Object> updateByUseridMap(String userid, Map<String, String> key) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			userSettingCommonMapper.updateByUseridKey(userid, "is_new_fans", key.get("is_new_fans"));
+			userSettingCommonMapper.updateByUseridKey(userid, "is_like", key.get("is_like"));
+			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", key.get("is_flower"));
+			userSettingCommonMapper.updateByUseridKey(userid, "is_diamond", key.get("is_diamond"));
+			userSettingCommonMapper.updateByUseridKey(userid, "is_comment", key.get("is_comment"));
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("updateByUseridMap userid = {}, key = {}, msg = {}", userid, key, e);
+		}
+		return reseResp;
+	}
+	
+	//map转换成lisy
+//	@SuppressWarnings("rawtypes")
+//	public static List<UserSettingCommon>  mapTransitionList(Map<String, String> map) {
+//		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
+//		Iterator iter = map.entrySet().iterator();  //获得map的Iterator
+//		while(iter.hasNext()) {
+//			Entry entry = (Entry)iter.next();
+//			UserSettingCommon common = new UserSettingCommon();
+//			
+//		}
+//		return list;
+//	}
 
 }
