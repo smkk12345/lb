@@ -1,7 +1,5 @@
 package com.longbei.appservice.controller;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserSettingCommonService;
+
 
 /**
  * @author yinxc
@@ -99,16 +98,15 @@ public class UserSettingController extends BaseController {
 	
 	/**
     * @Title: http://ip:port/appservice/userSetting/updatekeys
-    * @Description: 消息提醒设置---一键关闭
+    * @Description: 消息提醒设置---一键关闭或一键打开
     * @Description: key 键名称     显示首页工具栏:is_page_tool 新消息提醒    
     * @Description: (新粉丝：is_new_fans
     * @Description: 点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment)
     * @Description: 隐私设置  (允许通过昵称搜到我:is_nick_search   允许通过此手机号搜到我:is_phone_search
     * @Description: 允许熟人看我的微进步:is_acquaintance_look
     * @Description: 评论设置(我同意接收到这些人的评论通知):is_comment_msg)
-    * @Description: value;//值   0:关闭  1：开启   评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
     * @param @param userid
-	* @param @param key---Map<String, String>
+	* @param @param value--- 0:关闭   1:打开
     * @param @param 正确返回 code 0，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年1月19日
@@ -116,18 +114,15 @@ public class UserSettingController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updatekeys")
     @ResponseBody
-    public BaseResp<Object> updatekeys(@RequestParam("userid") String userid, @RequestParam("key") Map<String, String> key) {
+    public BaseResp<Object> updatekeys(@RequestParam("userid") String userid, @RequestParam("value") String value) {
     	BaseResp<Object> baseResp = new BaseResp<>();
-    	if(StringUtils.hasBlankParams(userid)){
-    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-    	}
-    	if(key.isEmpty()){
+    	if(StringUtils.hasBlankParams(userid, value)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     	}
     	try {
-    		baseResp = userSettingCommonService.updateByUseridMap(userid, key);
+    		baseResp = userSettingCommonService.updateByUseridMap(userid, value);
         } catch (Exception e) {
-            logger.error("updatekeys userid={}, key={}, msg={}", userid, key.toString(), e);
+            logger.error("updatekeys userid={}, msg={}", userid, e);
         }
     	return baseResp;
     }

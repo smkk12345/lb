@@ -137,17 +137,17 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	}
 
 	@Override
-	public BaseResp<Object> updateByUseridMap(String userid, Map<String, String> key) {
+	public BaseResp<Object> updateByUseridMap(String userid, String value) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			userSettingCommonMapper.updateByUseridKey(userid, "is_new_fans", key.get("is_new_fans"));
-			userSettingCommonMapper.updateByUseridKey(userid, "is_like", key.get("is_like"));
-			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", key.get("is_flower"));
-			userSettingCommonMapper.updateByUseridKey(userid, "is_diamond", key.get("is_diamond"));
-			userSettingCommonMapper.updateByUseridKey(userid, "is_comment", key.get("is_comment"));
+			userSettingCommonMapper.updateByUseridKey(userid, "is_new_fans", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_like", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_diamond", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_comment", value);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("updateByUseridMap userid = {}, key = {}, msg = {}", userid, key, e);
+			logger.error("updateByUseridMap userid = {}, msg = {}", userid, e);
 		}
 		return reseResp;
 	}
