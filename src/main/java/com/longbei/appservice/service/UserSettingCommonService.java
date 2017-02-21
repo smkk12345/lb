@@ -69,6 +69,6 @@ public interface UserSettingCommonService {
 	 * 2017年1月19日
 	 * return_type
 	 */
-	BaseResp<Object> updateByUseridMap(String userid, Map<String, String> key);
+	BaseResp<Object> updateByUseridMap(String userid, String value);
 
 }
