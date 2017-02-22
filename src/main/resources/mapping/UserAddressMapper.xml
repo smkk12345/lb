@@ -28,7 +28,7 @@
     select 
     <include refid="Base_Column_List" />
     from user_address
-    where userid = #{userid} and isdefault = '0' and isdel = '0'
+    where userid = #{userid} and isdefault = '1' and isdel = '0'
   </select>
   
   <select id="selectUserAddressAll" resultMap="BaseResultMap">
@@ -42,6 +42,7 @@
     <include refid="Base_Column_List" />
     from user_address
     where userid = #{userid} and isdel = '0' 
+    order by isdefault desc 
     <if test="pageSize != 0" >
       LIMIT #{pageNo},#{pageSize}
     </if>
@@ -183,8 +184,8 @@
   
   <update id="updateIsdefaultByUserId">
     update user_address 
-    set isdefault = '1'
-    where userid = #{userid} and isdefault = '0'
+    set isdefault = '0'
+    where userid = #{userid} and isdefault = '1'
   </update>
   
   <update id="removeIsdel">
