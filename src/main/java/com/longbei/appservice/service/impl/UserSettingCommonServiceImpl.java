@@ -107,8 +107,8 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	}
 	
 	@Override
-	public Map<String, String> selectMapByUserid(String userid) {
-		Map<String, String> map = new HashMap<String, String>();
+	public Map<String, Object> selectMapByUserid(String userid) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
 			if(null != list && list.size()>0){
