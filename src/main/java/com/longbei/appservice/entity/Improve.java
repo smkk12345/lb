@@ -54,6 +54,8 @@ public class Improve {
 
     protected Integer commentnum = 0; //评论数
 
+    protected String sourcekey;//原始的文件key
+
 
     /**
      * 以下扩展返回信息
@@ -488,6 +490,11 @@ public class Improve {
 		this.rankid = rankid;
 	}
 
+    public String getSourcekey() {
+        return sourcekey;
+    }
 
-    
+    public void setSourcekey(String sourcekey) {
+        this.sourcekey = sourcekey;
+    }
 }
