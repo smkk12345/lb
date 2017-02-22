@@ -303,6 +303,23 @@
     AND  impid = #{impid}
   </update>
 
+  <update id="updateMedia">
+    UPDATE ${tablename}
+    SET
+    <if test="pickey != null" >
+    pickey = #{pickey},
+    </if>
+    <if test="filekey!= null" >
+      filekey = #{filekey}
+    </if>
+    WHERE
+      filekey = #{key}
+      <if test="businessid != null" >
+        AND
+        businessid = #{businessid}
+      </if>
+  </update>
+
   <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />

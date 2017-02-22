@@ -1325,4 +1325,41 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
+    /**
+     * filekey  type_businessid_name
+     * type 0 独立的进步 1 目标中进步 2 榜中进步 3圈中进步 4 教室中进步
+     * businessid 业务id 单个进步 0 其他为业务id  如 目标id,榜单id,圈子id
+     * name key文件名   workflow 工作流  暂时不用
+     * @param key
+     * @param pickey
+     * @param filekey
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(key,filekey)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        String[] filenameArr = key.split("_");
+        if(filenameArr.length < 2){
+            return baseResp;
+        }
+        String type = filenameArr[0];
+        String businessid = filenameArr[1];
+        if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
+            businessid = null;
+        }
+        try{
+            String tableName = getTableNameByBusinessType(type);
+            int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
+            if(n > 0){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+        }catch (Exception e){
+            logger.error("updateMedia error and key={},pickey={},filekey={},msg={}",key,pickey,filekey,e);
+        }
+        return baseResp;
+    }
+
 }

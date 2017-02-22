@@ -64,6 +64,12 @@ public interface ImproveMapper {
                       @Param("businessid") String businessid,
                       @Param("tablename") String tablename);
 
+    int updateMedia(@Param("key") String key,
+                    @Param("pickey") String pickey,
+                    @Param("filekey") String filekey,
+                    @Param("businessid") String businessid,
+                    @Param("tablename") String table);
+
     /**
      * 假删
      * @param userid 用户id

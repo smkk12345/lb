@@ -276,5 +276,7 @@ public interface ImproveService {
 
     BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
 
+    BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow);
+
 
 }
