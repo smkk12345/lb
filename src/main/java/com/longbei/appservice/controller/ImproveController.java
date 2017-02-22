@@ -530,21 +530,32 @@ public class ImproveController {
 	 * @param improveid 进步id
 	 * @param businesstype 业务类型（榜，圈子等）
 	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @param opttype 1 -- 点赞 0 -- 取消赞
 	 * @return
 	 * @author luye
 	 */
-	@RequestMapping(value = "addlike")
+	@RequestMapping(value = "addorcancellike")
 	@ResponseBody
-	public BaseResp<Object> addLikeForImprove(String userid,String improveid,String businesstype,String businessid){
+	public BaseResp<Object> addLikeForImprove(String userid,String improveid,
+											  String businesstype,String businessid,String opttype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid,opttype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		try {
-			baseResp = improveService.addlike(userid,improveid,businesstype,businessid);
-		} catch (Exception e) {
-			logger.error("add like is error:{}",e);
+		if ("1".equals(opttype)){
+			try {
+				baseResp = improveService.addlike(userid,improveid,businesstype,businessid);
+			} catch (Exception e) {
+				logger.error("add like is error:{}",e);
+			}
+		} else {
+			try {
+				baseResp = improveService.cancelLike(userid,improveid,businesstype,businessid);
+			} catch (Exception e) {
+				logger.error("cancel like is error:{}",e);
+			}
 		}
+
 		return baseResp;
 	}
 
