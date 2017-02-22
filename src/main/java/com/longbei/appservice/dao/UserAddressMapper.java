@@ -21,7 +21,7 @@ public interface UserAddressMapper {
 	 * 2017年1月18日
 	 * return_type
 	 */
-    List<UserAddress> selectByUserId(@Param("userid") String userid, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    List<UserAddress> selectByUserId(@Param("userid") long userid, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
     UserAddress selectByPrimaryKey(Integer id);
     
@@ -31,7 +31,7 @@ public interface UserAddressMapper {
 	 * 2017年1月18日
 	 * return_type
 	 */
-    UserAddress selectDefaultAddressByUserid(@Param("userid") String userid);
+    UserAddress selectDefaultAddressByUserid(@Param("userid") long userid);
 
     int updateByPrimaryKeySelective(UserAddress record);
 
@@ -39,7 +39,7 @@ public interface UserAddressMapper {
     
     /**
 	 * @author yinxc
-	 * 根据id 修改收货地址是否 默认   0 默认  1 非默认
+	 * 根据id 修改收货地址是否 默认   1 默认收货地址  0 非默认
 	 * 2017年1月18日
 	 * return_type
 	 */
@@ -51,7 +51,7 @@ public interface UserAddressMapper {
 	 * 2017年1月19日
 	 * return_type
 	 */
-    int updateIsdefaultByUserId(@Param("userid") String userid);
+    int updateIsdefaultByUserId(@Param("userid") long userid);
     
     /**
 	 * @author yinxc

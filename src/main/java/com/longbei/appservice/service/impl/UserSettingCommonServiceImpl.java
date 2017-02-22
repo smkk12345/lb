@@ -91,15 +91,18 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	public BaseResp<Object> selectByUserid(String userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
-			if(null != list && list.size()>0){
-				Map<String, Object> expandData = new HashMap<>();
-				for (UserSettingCommon userSettingCommon : list) {
-					expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
-				}
-				reseResp.setExpandData(expandData);
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}
+//			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
+//			if(null != list && list.size()>0){
+//				Map<String, Object> expandData = new HashMap<>();
+//				for (UserSettingCommon userSettingCommon : list) {
+//					expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
+//				}
+//				reseResp.setExpandData(expandData);
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//			}
+			Map<String, Object> expandData = selectMapByUserid(userid);
+			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectByUserid userid={},msg={}",userid,e);
 		}

@@ -42,7 +42,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	UserAddress selectDefaultAddressByUserid(@Param("userid") String userid);
+	UserAddress selectDefaultAddressByUserid(@Param("userid") long userid);
 	
 	/**
 	 * @author yinxc
@@ -66,7 +66,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	BaseResp<Object> selectByUserId(String userid, int pageNo, int pageSize);
+	BaseResp<Object> selectByUserId(long userid, int pageNo, int pageSize);
 	
 	/**
 	 * @author yinxc
@@ -74,7 +74,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	BaseResp<Object> updateIsdefaultByAddressId(String id, String userid, String isdefault);
+	BaseResp<Object> updateIsdefaultByAddressId(String id, long userid, String isdefault);
 	
 	/**
 	 * @author yinxc

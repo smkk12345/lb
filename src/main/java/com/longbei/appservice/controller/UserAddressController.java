@@ -2,14 +2,12 @@ package com.longbei.appservice.controller;
 
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.longbei.appservice.common.BaseResp;
@@ -35,33 +33,25 @@ public class UserAddressController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(UserAddressController.class);
 	
 	/**
-	 * @author yinxc
-	 * 收货地址管理
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+    * @Title: http://ip:port/app_service/userAddress/list
+    * @Description: 收货地址管理
+    * @param @param userid
+	* @param @param startNum
+    * @param @param endNum
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年1月16日
+	*/
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "list")
 	@ResponseBody
-	public BaseResp<Object> list(HttpServletRequest request, HttpServletResponse response) {
-		String userid = request.getParameter("userid");
-		String startNumStr = request.getParameter("startNum");
-		String endNumStr = request.getParameter("endNum");
-		int pageNo = 0;
-		if (!StringUtils.isBlank(startNumStr)) {
-			pageNo = Integer.parseInt(startNumStr);
-		}
-		int pageSize = 0;
-		if (!StringUtils.isBlank(endNumStr)) {
-			pageSize = Integer.parseInt(endNumStr);
-		}
+	public BaseResp<Object> list(@RequestParam("userid") String userid, int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = userAddressService.selectByUserId(userid, pageNo, pageSize);
+			baseResp = userAddressService.selectByUserId(Long.parseLong(userid), startNum, endNum);
 		} catch (Exception e) {
 			logger.error("list error and msg = {}", e);
 		}
@@ -69,27 +59,28 @@ public class UserAddressController extends BaseController {
 	}
 	
 	/**
-	 * @author yinxc
-	 * 添加收货地址
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+    * @Title: http://ip:port/app_service/userAddress/add
+    * @Description: 添加收货地址
+    * @param @param userid
+	* @param @param receiver
+	* @param @param mobile
+	* @param @param region
+	* @param @param address
+    * @param @param isdefault  是否 默认   1 默认收货地址  0 非默认
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年1月16日
+	*/
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "add")
 	@ResponseBody
-	public BaseResp<Object> add(HttpServletRequest request, HttpServletResponse response) {
-		String userid = request.getParameter("userid");
-		String receiver = request.getParameter("receiver");
-		String mobile = request.getParameter("mobile");
-		String region = request.getParameter("region");
-		String addr = request.getParameter("address");
-		
+	public BaseResp<Object> add(@RequestParam("userid") String userid, String receiver, String mobile, 
+			String region, String address, String isdefault) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.isBlank(userid)||StringUtils.isBlank(addr)){
+		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		UserAddress record = new UserAddress(Long.parseLong(userid), region, addr, "1", mobile, receiver, "0", new Date(), new Date());
+		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
 		try {
 			baseResp = userAddressService.insertSelective(record);
 		} catch (Exception e) {
@@ -99,28 +90,29 @@ public class UserAddressController extends BaseController {
 	}
 	
 	/**
-	 * @author yinxc
-	 * 修改收货地址
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+    * @Title: http://ip:port/app_service/userAddress/update
+    * @Description: 修改收货地址
+    * @param @param userid
+    * @param @param id
+	* @param @param receiver
+	* @param @param mobile
+	* @param @param region
+	* @param @param address
+    * @param @param isdefault  是否 默认   1 默认收货地址  0 非默认
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年1月16日
+	*/
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "update")
 	@ResponseBody
-	public BaseResp<Object> update(HttpServletRequest request, HttpServletResponse response) {
-		String id = request.getParameter("id");
-		String userid = request.getParameter("userid");
-		String receiver = request.getParameter("receiver");
-		String mobile = request.getParameter("mobile");
-		String region = request.getParameter("region");
-		String addr = request.getParameter("address");
-		
+	public BaseResp<Object> update(@RequestParam("userid") String userid, String id, String receiver, 
+			String mobile, String region, String address, String isdefault) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(id,userid,addr)){
+		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		UserAddress record = new UserAddress(Long.parseLong(userid), region, addr, "1", mobile, receiver, "0", new Date(), new Date());
+		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
 		record.setId(Integer.parseInt(id));
 		try {
 			baseResp = userAddressService.updateByPrimaryKeySelective(record);
@@ -131,26 +123,26 @@ public class UserAddressController extends BaseController {
 	}
 	
 	/**
-	 * @author yinxc
-	 * 修改收货地址默认地址
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+    * @Title: http://ip:port/app_service/userAddress/updateIsdefault
+    * @Description: 修改收货地址默认地址
+    * @param @param userid
+    * @param @param id
+    * @param @param isdefault  是否 默认   1 默认收货地址  0 非默认
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年1月16日
+	*/
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "updateIsdefault")
 	@ResponseBody
-	public BaseResp<Object> updateIsdefault(HttpServletRequest request, HttpServletResponse response) {
-		String id = request.getParameter("id");
-		String userid = request.getParameter("userid");
-		String isdefault = request.getParameter("isdefault");
+	public BaseResp<Object> updateIsdefault(@RequestParam("userid") String userid, String id, String isdefault) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.isBlank(id)||StringUtils.isBlank(isdefault)){
+		if(StringUtils.hasBlankParams(userid, id, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		
 		try {
-			baseResp = userAddressService.updateIsdefaultByAddressId(id, userid, isdefault);
+			baseResp = userAddressService.updateIsdefaultByAddressId(id, Long.parseLong(userid), isdefault);
 		} catch (Exception e) {
 			logger.error("updateIsdefault id = {}, isdefault = {}, msg = {}", id, isdefault, e);
 		}
@@ -158,19 +150,19 @@ public class UserAddressController extends BaseController {
 	}
 	
 	/**
-	 * @author yinxc
-	 * 删除收货地址(假删)
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+    * @Title: http://ip:port/app_service/userAddress/remove
+    * @Description: 删除收货地址(假删)
+    * @param @param id
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年1月16日
+	*/
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "remove")
 	@ResponseBody
-	public BaseResp<Object> remove(HttpServletRequest request, HttpServletResponse response) {
-		String id = request.getParameter("id");
+	public BaseResp<Object> remove(@RequestParam("id") String id) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.isBlank(id)){
+		if(StringUtils.hasBlankParams(id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
