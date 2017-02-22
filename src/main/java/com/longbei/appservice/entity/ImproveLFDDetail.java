@@ -4,25 +4,41 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 进步点赞，送花，送钻(每一个人只有一条记录)
+ * 进步点赞，送花，送钻 简略信息（mongo）
  *
  * @author luye
- * @create 2017-02-20 上午11:13
+ * @create 2017-02-21 上午11:06
  **/
-@Document(collection = "improvelfd")
-public class ImproveLFD implements Serializable{
+@Document(collection = "improveLFDDetail")
+public class ImproveLFDDetail {
+
     @Id
     private String id;
     private String impid;
     private String userid;
-    @DBRef
-    private AppUserMongoEntity appUser;
     private String opttype;
     private Date createtime;
+    @DBRef
+    private AppUserMongoEntity appUser;
+
+    public AppUserMongoEntity getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUserMongoEntity appUser) {
+        this.appUser = appUser;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getImpid() {
         return impid;
@@ -38,22 +54,6 @@ public class ImproveLFD implements Serializable{
 
     public void setUserid(String userid) {
         this.userid = userid;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public AppUserMongoEntity getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUserMongoEntity appUser) {
-        this.appUser = appUser;
     }
 
     public String getOpttype() {

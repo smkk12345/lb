@@ -105,6 +105,22 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 		}
 		return reseResp;
 	}
+	
+	@Override
+	public Map<String, Object> selectMapByUserid(String userid) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
+			if(null != list && list.size()>0){
+				for (UserSettingCommon userSettingCommon : list) {
+					map.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
+				}
+			}
+		} catch (Exception e) {
+			logger.error("selectByUserid userid={},msg={}",userid,e);
+		}
+		return map;
+	}
 
 	@Override
 	public BaseResp<Object> updateByUseridKey(String userid, String key, String value) {
@@ -119,5 +135,34 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 		}
 		return reseResp;
 	}
+
+	@Override
+	public BaseResp<Object> updateByUseridMap(String userid, String value) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			userSettingCommonMapper.updateByUseridKey(userid, "is_new_fans", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_like", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_diamond", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_comment", value);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("updateByUseridMap userid = {}, msg = {}", userid, e);
+		}
+		return reseResp;
+	}
+	
+	//map转换成lisy
+//	@SuppressWarnings("rawtypes")
+//	public static List<UserSettingCommon>  mapTransitionList(Map<String, String> map) {
+//		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
+//		Iterator iter = map.entrySet().iterator();  //获得map的Iterator
+//		while(iter.hasNext()) {
+//			Entry entry = (Entry)iter.next();
+//			UserSettingCommon common = new UserSettingCommon();
+//			
+//		}
+//		return list;
+//	}
 
 }

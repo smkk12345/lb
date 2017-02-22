@@ -39,8 +39,8 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserSettingCommon" >
-    insert into user_setting_common (id, userid, ukey,
-      uvalue, displayname, updatetime,
+    insert into user_setting_common (id, userid, ukey, 
+      uvalue, displayname, updatetime, 
       createtime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{ukey,jdbcType=VARCHAR},
       #{uvalue,jdbcType=VARCHAR}, #{displayname,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP},

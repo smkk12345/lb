@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.*;
+import com.mysql.fabric.xmlrpc.base.Data;
 
 /**
  * 进步业务操作接口
@@ -277,6 +278,9 @@ public interface ImproveService {
     BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
 
     BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow);
+
+
+    BaseResp<List<ImpAllDetail>> selectImproveLFDList(String impid, String listtype,int pagesize, Date lastdate);
 
 
 }

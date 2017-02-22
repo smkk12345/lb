@@ -28,7 +28,7 @@
     WHERE
     userid = #{userid}
     <if test="cid != null">
-      cid = #{cid}
+      AND cid = #{cid}
     </if>
     ORDER BY createtime DESC
     <if test="startno != null">

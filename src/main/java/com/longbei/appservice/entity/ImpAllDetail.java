@@ -23,9 +23,19 @@ public class ImpAllDetail {
 
     private String giftnum;  //礼物数量 如 花，钻
 
+    private AppUserMongoEntity appUser;
+
     private Integer startno;
 
     private Integer pagesize;
+
+    public AppUserMongoEntity getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUserMongoEntity appUser) {
+        this.appUser = appUser;
+    }
 
     public Integer getStartno() {
         return startno;

@@ -7,8 +7,8 @@ public class UserSettingCommon {
 
     private Long userid;
 
-    private String ukey;//键名称     显示首页工具栏:is_page_tool 新消息提醒    (新粉丝：is_new_fans  是否接收私信提醒:is_privat_eletter
-    						//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment)
+    private String ukey;//键名称     显示首页工具栏:is_page_tool 新消息提醒    (新粉丝：is_new_fans 
+    						//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
     						//隐私设置  (允许通过昵称搜到我:is_nick_search   允许通过此手机号搜到我:is_phone_search  
     						//允许熟人看我的微进步:is_acquaintance_look)
 
