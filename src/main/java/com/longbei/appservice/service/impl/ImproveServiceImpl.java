@@ -74,6 +74,8 @@ public class ImproveServiceImpl implements ImproveService{
     private IdGenerateService idGenerateService;
     @Autowired
     private MoneyService moneyService;
+    @Autowired
+    private TimeLineDetailDao timeLineDetailDao;
 
 
     /**
@@ -126,7 +128,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //进步发布完成之后
         if(isok){
-//            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
+            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -754,6 +756,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setBrief(timeLineDetail.getBrief());
             improve.setPickey(timeLineDetail.getPhotos());
             improve.setFilekey(timeLineDetail.getFileKey());
+            improve.setSourcekey(timeLineDetail.getSourcekey());
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
@@ -1391,10 +1394,14 @@ public class ImproveServiceImpl implements ImproveService{
         if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
             businessid = null;
         }
+        if(Constant.WORKFLOW1.equals(workflow)){
+            pickey = "["+pickey+"]";
+        }
         try{
             String tableName = getTableNameByBusinessType(type);
             int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
             if(n > 0){
+                timeLineDetailDao.updateImproveFileKey(key,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
