@@ -109,7 +109,7 @@ public class UserAddressController extends BaseController {
 	public BaseResp<Object> update(@RequestParam("userid") String userid, String id, String receiver, 
 			String mobile, String region, String address, String isdefault) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
+		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault, id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
