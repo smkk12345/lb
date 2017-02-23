@@ -90,5 +90,5 @@ public interface UserAddressService {
 	 * 2017年1月19日
 	 * return_type
 	 */
-	BaseResp<Object> removeIsdel(String id);
+	BaseResp<Object> removeIsdel(long userid, String id);
 }

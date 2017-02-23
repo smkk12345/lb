@@ -5,16 +5,16 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="region" property="region" jdbcType="VARCHAR" />
-    <result column="addresses" property="addresses" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="isdefault" property="isdefault" jdbcType="CHAR" />
     <result column="mobile" property="mobile" jdbcType="VARCHAR" />
-    <result column="reveiver" property="reveiver" jdbcType="VARCHAR" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, region, addresses, isdefault, mobile, reveiver, isdel, createtime, 
+    id, userid, region, address, isdefault, mobile, receiver, isdel, createtime, 
     updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -54,12 +54,12 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserAddress" >
     insert into user_address (id, userid, region, 
-      addresses, isdefault, mobile, 
-      reveiver, isdel, createtime, 
+      address, isdefault, mobile, 
+      receiver, isdel, createtime, 
       updatetime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{region,jdbcType=VARCHAR}, 
-      #{addresses,jdbcType=VARCHAR}, #{isdefault,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, 
-      #{reveiver,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{address,jdbcType=VARCHAR}, #{isdefault,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{receiver,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserAddress" >
@@ -74,8 +74,8 @@
       <if test="region != null" >
         region,
       </if>
-      <if test="addresses != null" >
-        addresses,
+      <if test="address != null" >
+        address,
       </if>
       <if test="isdefault != null" >
         isdefault,
@@ -83,8 +83,8 @@
       <if test="mobile != null" >
         mobile,
       </if>
-      <if test="reveiver != null" >
-        reveiver,
+      <if test="receiver != null" >
+        receiver,
       </if>
       <if test="isdel != null" >
         isdel,
@@ -106,8 +106,8 @@
       <if test="region != null" >
         #{region,jdbcType=VARCHAR},
       </if>
-      <if test="addresses != null" >
-        #{addresses,jdbcType=VARCHAR},
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
       </if>
       <if test="isdefault != null" >
         #{isdefault,jdbcType=CHAR},
@@ -115,8 +115,8 @@
       <if test="mobile != null" >
         #{mobile,jdbcType=VARCHAR},
       </if>
-      <if test="reveiver != null" >
-        #{reveiver,jdbcType=VARCHAR},
+      <if test="receiver != null" >
+        #{receiver,jdbcType=VARCHAR},
       </if>
       <if test="isdel != null" >
         #{isdel,jdbcType=CHAR},
@@ -138,8 +138,8 @@
       <if test="region != null" >
         region = #{region,jdbcType=VARCHAR},
       </if>
-      <if test="addresses != null" >
-        addresses = #{addresses,jdbcType=VARCHAR},
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
       </if>
       <if test="isdefault != null" >
         isdefault = #{isdefault,jdbcType=CHAR},
@@ -147,8 +147,8 @@
       <if test="mobile != null" >
         mobile = #{mobile,jdbcType=VARCHAR},
       </if>
-      <if test="reveiver != null" >
-        reveiver = #{reveiver,jdbcType=VARCHAR},
+      <if test="receiver != null" >
+        receiver = #{receiver,jdbcType=VARCHAR},
       </if>
       <if test="isdel != null" >
         isdel = #{isdel,jdbcType=CHAR},
@@ -166,10 +166,10 @@
     update user_address 
     set userid = #{userid,jdbcType=BIGINT},
       region = #{region,jdbcType=VARCHAR},
-      addresses = #{addresses,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
       isdefault = #{isdefault,jdbcType=CHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
-      reveiver = #{reveiver,jdbcType=VARCHAR},
+      receiver = #{receiver,jdbcType=VARCHAR},
       isdel = #{isdel,jdbcType=CHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
@@ -191,7 +191,7 @@
   <update id="removeIsdel">
     update user_address 
     set isdel = '1' 
-    where id = #{id}
+    where userid = #{userid} and id = #{id}
   </update>
   
 </mapper>

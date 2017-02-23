@@ -59,6 +59,6 @@ public interface UserAddressMapper {
 	 * 2017年1月19日
 	 * return_type
 	 */
-    int removeIsdel(@Param("id") String id);
+    int removeIsdel(@Param("userid") long userid, @Param("id") String id);
     
 }

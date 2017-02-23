@@ -79,16 +79,7 @@ public interface RankService {
      * @param companybrief 公司简介
      * @return
      */
-    boolean updateRank(long rankid,String rankdetail,String ranktitle,
-                       int ranklimite, String rankscope,
-                       String rankphotos, double rankrate,
-                       Date starttime,Date endtime,String areaname,
-                       String createuserid,String ranktype,String ispublic,
-                       String rankcateid,int likescore,
-                       int flowerscore,int diamondscore,
-                       String codeword,String ptype,String sourcetype,
-                       String companyname,String companyphotos,
-                       String companybrief);
+    boolean updateRankImage(RankImage rankImage);
 
 
     BaseResp<RankImage> selectRankImage(String rankimageid);
