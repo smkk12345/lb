@@ -134,9 +134,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 			reseResp.setData(list);
 			if (null != list && list.size() > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
 			}
+//			else {
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
+//			}
 		} catch (Exception e) {
 			logger.error("selectByUserId userid={},pageNo={},pageSize={},msg={}",userid,pageNo,pageSize,e);
 		}
@@ -185,10 +186,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * return_type
 	 */
 	@Override
-	public BaseResp<Object> removeIsdel(String id) {
+	public BaseResp<Object> removeIsdel(long userid, String id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			int temp = userAddressMapper.removeIsdel(id);
+			int temp = userAddressMapper.removeIsdel(userid, id);
 			if (temp>0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
