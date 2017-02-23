@@ -23,7 +23,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Criteria criteria = Criteria.where("sourcekey").is(sourcekey);
         Query query = new Query(criteria);
         Update update = new Update();
-        update.set("fliekey",fliekey).set("photos",pickey);
+        update.set("fileKey",fliekey).set("photos",pickey);
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
     }
 
