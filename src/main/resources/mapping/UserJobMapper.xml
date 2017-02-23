@@ -15,15 +15,21 @@
   <sql id="Base_Column_List" >
     id, userid, companyname, department, location, starttime, endtime, createtime, updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectJobById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from user_job
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <select id="selectJobList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_job
+    where userid = #{userid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteJob" >
     delete from user_job
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserJob" >
     insert into user_job (id, userid, companyname, 
@@ -35,7 +41,7 @@
       #{endtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserJob" >
+  <insert id="insertJob" parameterType="com.longbei.appservice.entity.UserJob" >
     insert into user_job
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -96,7 +102,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserJob" >
+  <update id="updateJob" parameterType="com.longbei.appservice.entity.UserJob" >
     update user_job
     <set >
       <if test="userid != null" >
@@ -116,9 +122,6 @@
       </if>
       <if test="endtime != null" >
         endtime = #{endtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},

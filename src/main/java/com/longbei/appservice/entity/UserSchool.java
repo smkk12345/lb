@@ -17,7 +17,8 @@ public class UserSchool {
 
     private Date creatime;
 
-    private String updatetime;
+	private Date updatetime;
+
 
     /**
      * 
@@ -135,7 +136,7 @@ public class UserSchool {
      * 
      * @return updatetime 
      */
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
@@ -143,7 +144,13 @@ public class UserSchool {
      * 
      * @param updatetime 
      */
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
-    }
+//    public void setUpdatetime(Date updatetime) {
+//        this.updatetime = updatetime == null ? null : updatetime.trim();
+//    }
+    
+    public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
+
 }

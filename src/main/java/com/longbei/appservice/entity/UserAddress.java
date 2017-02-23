@@ -9,13 +9,13 @@ public class UserAddress {
 
     private String region;//区域
 
-    private String addresses;//收获地址
+    private String address;//收获地址
 
-    private String isdefault;//是否 默认   0 默认  1 非默认
+    private String isdefault;//是否 默认   1 默认收货地址  0 非默认
 
     private String mobile;//联系人手机号
 
-    private String reveiver;//收获人
+    private String receiver;//收获人
 
     private String isdel;//0 未删除 1 删除
 
@@ -27,15 +27,15 @@ public class UserAddress {
     	super();
     }
 
-    public UserAddress(long userid, String region, String addresses, String isdefault, String mobile, String reveiver,
+    public UserAddress(long userid, String region, String address, String isdefault, String mobile, String receiver,
     		String isdel, Date createtime, Date updatetime) {
 		super();
 		this.userid = userid;
 		this.region = region;
-		this.addresses = addresses;
+		this.address = address;
 		this.isdefault = isdefault;
 		this.mobile = mobile;
-		this.reveiver = reveiver;
+		this.receiver = receiver;
 		this.isdel = isdel;
 		this.createtime = createtime;
 		this.updatetime = updatetime;
@@ -93,21 +93,21 @@ public class UserAddress {
      * 收获地址
      * @return addresses 收获地址
      */
-    public String getAddresses() {
-        return addresses;
+    public String getAddress() {
+        return address;
     }
 
     /**
      * 收获地址
      * @param addresses 收获地址
      */
-    public void setAddresses(String addresses) {
-        this.addresses = addresses == null ? null : addresses.trim();
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
     }
 
     /**
      * 是否 默认   0 默认  1 非默认
-     * @return isdefault 是否 默认   0 默认  1 非默认
+     * @return isdefault 是否 默认  1 默认收货地址  0 非默认
      */
     public String getIsdefault() {
         return isdefault;
@@ -115,7 +115,7 @@ public class UserAddress {
 
     /**
      * 是否 默认   0 默认  1 非默认
-     * @param isdefault 是否 默认   0 默认  1 非默认
+     * @param isdefault 是否 默认   1 默认收货地址  0 非默认
      */
     public void setIsdefault(String isdefault) {
         this.isdefault = isdefault == null ? null : isdefault.trim();
@@ -141,16 +141,16 @@ public class UserAddress {
      * 收获人
      * @return reveiver 收获人
      */
-    public String getReveiver() {
-        return reveiver;
+    public String getReceiver() {
+        return receiver;
     }
 
     /**
      * 收获人
      * @param reveiver 收获人
      */
-    public void setReveiver(String reveiver) {
-        this.reveiver = reveiver == null ? null : reveiver.trim();
+    public void setReceiver(String receiver) {
+        this.receiver = receiver == null ? null : receiver.trim();
     }
 
     /**

@@ -1,11 +1,10 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_table;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
@@ -22,7 +22,6 @@ import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
-import com.longbei.appservice.dao.UserSettingCommonMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Circle;
@@ -33,8 +32,8 @@ import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.entity.SnsFriends;
 import com.longbei.appservice.entity.UserMsg;
-import com.longbei.appservice.entity.UserSettingCommon;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserSettingCommonService;
 
 @Service("userMsgService")
 public class UserMsgServiceImpl implements UserMsgService {
@@ -59,10 +58,110 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private CommentLowerMongoDao commentLowerMongoDao;
 	
 	@Autowired
-	private UserSettingCommonMapper userSettingCommonMapper;
+	private UserSettingCommonService userSettingCommonService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
 	
+	
+	/**
+	 * @author yinxc
+	 * 获取"我的"页面对话消息---红点是否显示
+	 * 2017年2月8日
+	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * isread 可为null  查全部
+	 * return_type  0:不显示   1：显示
+	 */
+	@Override
+	public int selectShowMyByMtype(long userid) {
+		Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
+		//键名称     新消息提醒    (新粉丝：is_new_fans 
+		//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
+		if(expandData.get("is_new_fans").toString().equals("1")){
+			//粉丝   打开提醒
+			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
+			if(temp > 0){
+				return temp;
+			}
+		}
+		if(expandData.get("is_like").toString().equals("1")){
+			//点赞   打开提醒
+			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
+			if(temp > 0){
+				return temp;
+			}
+		}
+		if(expandData.get("is_flower").toString().equals("1")){
+			//献花   打开提醒
+			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FLOWER_TYPE, "0");
+			if(temp > 0){
+				return temp;
+			}
+		}
+		if(expandData.get("is_diamond").toString().equals("1")){
+			//钻石   打开提醒
+			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
+			if(temp > 0){
+				return temp;
+			}
+		}
+		// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
+		if(expandData.get("is_comment").toString().equals("1")){
+			//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
+			int temp = getShowComment(userid);
+			if(temp > 0){
+				return temp;
+			}
+		}
+		if(expandData.get("is_comment").toString().equals("2")){
+			//评论设置   打开提醒   ---所有人
+			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+			if(temp > 0){
+				return temp;
+			}
+		}
+		return 0;
+	}
+	
+	private int selectPublicList(long userid, String mtype, String msgtype, String isread){
+		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid, mtype, msgtype, isread);
+		if(null != list && list.size()>0){
+			return 1;
+		}
+		return 0;
+	}
+	
+	private int getShowComment(long userid){
+		//获取好友   粉丝ids
+		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
+		List<String> fansList = snsFansMapper.selectListidByUid(userid);
+		List<String> slist = selectListid(userid, friendList, fansList);
+		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
+		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+		if(null != list && list.size()>0){
+			for (UserMsg userMsg : list) {
+				if(slist.contains(userMsg.getFriendid())){
+					//好友   粉丝    评论含有未读消息
+					return 1;
+				}
+			}
+		}
+		return 0;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 读取拼接id List
+	 * 2017年2月6日
+	 * return_type list
+	 */
+	private List<String> selectListid(long userid, List<String> friendList, List<String> fansList){
+		friendList.addAll(fansList);
+		//通过HashSet剔除     删除ArrayList中重复元素
+		HashSet<String> h = new HashSet<String>(friendList);
+		friendList.clear();
+		friendList.addAll(h);
+		return friendList;
+	}
 	
 	@Override
 	public BaseResp<Object> deleteByid(Integer id) {
@@ -344,11 +443,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 		try {
 			List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
-			List<UserSettingCommon> setlist = userSettingCommonMapper.selectByUserid(userid+"");
-			Map<String, Object> expandData = new HashMap<>();
-			for (UserSettingCommon userSettingCommon : setlist) {
-				expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
-			}
+			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
 			//获取新粉丝count
 			int fansCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
 			expandData.put("fansCount", fansCount);
@@ -385,9 +480,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 					initMsgUserInfoByFriendid(userMsg);
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
 			}
+//			else{
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+//			}
 			reseResp.setExpandData(expandData);
 			reseResp.setData(list);
 		} catch (Exception e) {

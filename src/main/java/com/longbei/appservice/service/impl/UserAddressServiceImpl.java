@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserAddressMapper;
@@ -30,7 +31,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByPrimaryKey id={},msg={}",id,e);
+			logger.error("deleteByPrimaryKey id = {}, msg = {}",id,e);
 		}
 		return reseResp;
 	}
@@ -44,17 +45,21 @@ public class UserAddressServiceImpl implements UserAddressService {
 	public BaseResp<Object> insertSelective(UserAddress record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<UserAddress> list = userAddressMapper.selectByUserId(record.getUserid().toString(), 0, 10);
-			if(null == list){
-				//第一次添加收货地址时，设为默认地址
-				record.setIsdefault("0");
+//			List<UserAddress> list = userAddressMapper.selectByUserId(record.getUserid().toString(), 0, 10);
+//			if(null == list){
+//				//第一次添加收货地址时，设为默认地址
+//				record.setIsdefault("0");
+//			}
+			//isdefault  是否 默认   1 默认收货地址  0 非默认
+			if("1".equals(record.getIsdefault())){
+				userAddressMapper.updateIsdefaultByUserId(record.getUserid());
 			}
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record={},msg={}",record,e);
+			logger.error("insertSelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -70,18 +75,18 @@ public class UserAddressServiceImpl implements UserAddressService {
 		try {
 			userAddress = userAddressMapper.selectByPrimaryKey(id);
 		} catch (Exception e) {
-			logger.error("selectByPrimaryKey id={},msg={}",id,e);
+			logger.error("selectByPrimaryKey id = {}, msg = {}",id,e);
 		}
 		return userAddress;
 	}
 
 	@Override
-	public UserAddress selectDefaultAddressByUserid(String userid) {
+	public UserAddress selectDefaultAddressByUserid(long userid) {
 		UserAddress userAddress = null;
 		try {
 			userAddress = userAddressMapper.selectDefaultAddressByUserid(userid);
 		} catch (Exception e) {
-			logger.error("selectDefaultAddressByUserid userid={},msg={}",userid,e);
+			logger.error("selectDefaultAddressByUserid userid = {}, msg = {}", userid, e);
 		}
 		return userAddress;
 	}
@@ -90,12 +95,16 @@ public class UserAddressServiceImpl implements UserAddressService {
 	public BaseResp<Object> updateByPrimaryKeySelective(UserAddress record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//isdefault  是否 默认   1 默认收货地址  0 非默认
+			if("1".equals(record.getIsdefault())){
+				userAddressMapper.updateIsdefaultByUserId(record.getUserid());
+			}
 			int temp = userAddressMapper.updateByPrimaryKeySelective(record);
 			if (temp > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByPrimaryKeySelective record={},msg={}",record,e);
+			logger.error("updateByPrimaryKeySelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -118,16 +127,17 @@ public class UserAddressServiceImpl implements UserAddressService {
 //	}
 
 	@Override
-	public BaseResp<Object> selectByUserId(String userid, int pageNo, int pageSize) {
+	public BaseResp<Object> selectByUserId(long userid, int pageNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserAddress> list = userAddressMapper.selectByUserId(userid, pageNo, pageSize);
 			reseResp.setData(list);
 			if (null != list && list.size() > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
 			}
+//			else {
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
+//			}
 		} catch (Exception e) {
 			logger.error("selectByUserId userid={},pageNo={},pageSize={},msg={}",userid,pageNo,pageSize,e);
 		}
@@ -141,7 +151,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * return_type
 	 */
 	@SuppressWarnings("unchecked")
-	public BaseResp<Object> updateIsdefaultByAddressId(String id, String userid, String isdefault) {
+	public BaseResp<Object> updateIsdefaultByAddressId(String id, long userid, String isdefault) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			boolean result = updateNotdefaultByUserId(userid);
@@ -164,7 +174,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	private boolean updateNotdefaultByUserId(String userid){
+	private boolean updateNotdefaultByUserId(long userid){
 		int temp = userAddressMapper.updateIsdefaultByUserId(userid);
 		return temp > 0 ? true : false;
 	}
@@ -176,10 +186,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * return_type
 	 */
 	@Override
-	public BaseResp<Object> removeIsdel(String id) {
+	public BaseResp<Object> removeIsdel(long userid, String id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			int temp = userAddressMapper.removeIsdel(id);
+			int temp = userAddressMapper.removeIsdel(userid, id);
 			if (temp>0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}

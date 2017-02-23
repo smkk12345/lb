@@ -108,6 +108,22 @@
     </if> 
   </select>
   
+  <select id="selectListByMtypeAndMsgtype" resultMap="BaseResultMap">
+  	SELECT 
+  	<include refid="Base_Column_List" />
+  	 from user_msg 
+  	where userid = #{userid} 
+  	<if test="mtype != null" >
+    	and mtype = #{mtype} 
+    </if> 
+    <if test="msgtype != null" >
+    	and msgtype = #{msgtype}  
+    </if> 
+    <if test="isread != null" >
+    	and isread = #{isread}
+    </if> 
+  </select>
+  
   <delete id="deleteByMtypeAndMsgtype">
     delete from user_msg 
     where userid = #{userid} 

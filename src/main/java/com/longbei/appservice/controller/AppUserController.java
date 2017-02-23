@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller;
 
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserJobService;
+import com.longbei.appservice.service.UserSchoolService;
 import com.longbei.appservice.service.UserService;
 
 /**
@@ -36,6 +40,10 @@ public class AppUserController extends BaseController {
     private UserFeedbackService userFeedbackService;
     @Autowired
     private UserIdcardService userIdcardService;
+    @Autowired
+    private UserSchoolService userSchoolService;
+    @Autowired
+    private UserJobService userJobService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
@@ -425,6 +433,299 @@ public class AppUserController extends BaseController {
     		
     		return baseResp;
     }
+    
+    //--------------------教育经历start-------------------------------  
+    
+    /**
+     * @Title: http://ip:port/app_service/user/insertSchool
+     * @Description: 添加教育经历
+     * @param @param userid schoolname学校名称 Department院系 starttime教育起始时间 endtime教育结束时间
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/insertSchool")
+    @ResponseBody
+    public BaseResp<Object> insertSchool(String userid,String schoolname,String Department,String starttime,String endtime) {
+    	logger.info("insertSchool and userid={},schoolname={},Department={},starttime={},endtime={}", userid,schoolname,Department,starttime,endtime);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.hasBlankParams(userid,schoolname,Department)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("insertSchool error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/deleteSchool
+     * @Description: 删除教育经历
+     * @param @param id userid
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/deleteSchool")
+    @ResponseBody
+    public BaseResp<Object> deleteSchool(String id,String userid) {
+    	logger.info("deleteSchool and id={},userid={}",id,userid);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.hasBlankParams(id,userid)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userSchoolService.deleteSchool(Integer.parseInt(id),Long.parseLong(userid));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("deleteSchool error and msg={}",e);
+		}
+    	return baseResp;
+    }
+   
+    /**
+     * @Title: http://ip:port/app_service/user/selectSchoolById
+     * @Description: 查询教育经历
+     * @param @param id
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */  
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectSchoolById")
+    @ResponseBody
+    public BaseResp<Object> selectSchoolById(String id) {
+    	logger.info("selectSchoolById and id={}",id);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(id)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userSchoolService.selectSchoolById(Integer.parseInt(id));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("selectSchoolById error and msg={}",e);
+		}
+    	return baseResp;
+    }
 
+    
+    /**
+     * @Title: http://ip:port/app_service/user/selectSchoolList
+     * @Description: 查看教育经历列表
+     * @param @param userid 
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */  
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectSchoolList")
+    @ResponseBody
+    public BaseResp<Object> selectSchoolList(String userid) {
+    	logger.info("selectSchoolList and userid={}",userid);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(userid)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("selectSchoolList error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/updateSchool 
+     * @Description: 更改教育经历
+     * @param @param id schoolname学校名称 Department院系 starttime教育起始时间 endtime教育结束时间
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */ 
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/updateSchool")
+    @ResponseBody
+    public BaseResp<Object> updateSchool(String id,String schoolname,String Department,String starttime,String endtime) {
+    	logger.info("updateSchool and id={},schoolname={},Department={},starttime={},endtime={}",id,schoolname,Department,starttime,endtime);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(id)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("updateSchool error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    //--------------------教育经历end--------------------------------- 
+    //--------------------工作经历start-------------------------------
+    
+    /**
+     * @Title: http://ip:port/app_service/user/insertJob
+     * @Description: 添加工作经历
+     * @param @param userid companyname所在公司 department所在部门 location工作所在地  starttime工作起始时间 endtime工作结束时间
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */  
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/insertJob")
+    @ResponseBody
+    public BaseResp<Object> insertJob(String userid,String companyname,String department,String location,String starttime,String endtime) {
+    	logger.info("insertJob and userid={},companyname={},department={},location={},starttime={},endtime={}",userid,companyname,department,location,starttime,endtime);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.hasBlankParams(userid,companyname,department,location)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("insertJob error and msg={}",e);
+		}
+    	return baseResp;
+    }
+       
+    /**
+     * @Title: http://ip:port/app_service/user/deleteJob
+     * @Description: 删除工作经历
+     * @param @param id userid
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */ 
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/deleteJob")
+    @ResponseBody
+    public BaseResp<Object> deleteJob(String id,String userid) {
+    	logger.info("deleteJob and id={},userid={}",id,userid);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.hasBlankParams(id,userid)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userJobService.deleteJob(Integer.parseInt(id),Long.parseLong(userid));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("deleteJob error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/selectJobList
+     * @Description: 查看工作经历列表
+     * @param @param userid 
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */      
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectJobList")
+    @ResponseBody
+    public BaseResp<Object> selectJobList(String userid) {
+    	logger.info("selectJobList and userid={}",userid);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(userid)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userJobService.selectJobList(Long.parseLong(userid));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("selectJobList error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/selectJobById
+     * @Description: 查询工作经历
+     * @param @param id
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */     
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectJobById")
+    @ResponseBody
+    public BaseResp<Object> selectJobById(String id) {
+    	logger.info("selectJobById and id={}",id);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(id)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userJobService.selectJobById(Integer.parseInt(id));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("selectJobById error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/updateJob 
+     * @Description: 更改工作经历
+     * @param @param id companyname所在公司 department所在部门 location工作所在地  starttime工作起始时间 endtime工作结束时间
+     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月22日
+      */ 
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/updateJob")
+    @ResponseBody
+    public BaseResp<Object> updateJob(String id,String companyname,String department,String location,String starttime,String endtime) {
+    	logger.info("updateJob and id={},companyname={},department={},location={},starttime={},endtime={}",id,companyname,department,location,starttime,endtime);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(id)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("updateJob error and msg={}",e);
+		}
+    	return baseResp;
+    }
+    //--------------------工作经历end-------------------------------     
 
 }
