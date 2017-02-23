@@ -53,7 +53,7 @@ public interface UserSettingCommonService {
 	 * 2017年1月19日
 	 * return_type
 	 */
-	Map<String, String> selectMapByUserid(String userid);
+	Map<String, Object> selectMapByUserid(String userid);
 	
 	/**
 	 * @author yinxc

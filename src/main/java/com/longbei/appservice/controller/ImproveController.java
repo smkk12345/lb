@@ -530,21 +530,32 @@ public class ImproveController {
 	 * @param improveid 进步id
 	 * @param businesstype 业务类型（榜，圈子等）
 	 * @param businessid  类型id（榜id，圈子ID等）
+	 * @param opttype 1 -- 点赞 0 -- 取消赞
 	 * @return
 	 * @author luye
 	 */
-	@RequestMapping(value = "addlike")
+	@RequestMapping(value = "addorcancellike")
 	@ResponseBody
-	public BaseResp<Object> addLikeForImprove(String userid,String improveid,String businesstype,String businessid){
+	public BaseResp<Object> addLikeForImprove(String userid,String improveid,
+											  String businesstype,String businessid,String opttype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid,opttype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		try {
-			baseResp = improveService.addlike(userid,improveid,businesstype,businessid);
-		} catch (Exception e) {
-			logger.error("add like is error:{}",e);
+		if ("1".equals(opttype)){
+			try {
+				baseResp = improveService.addlike(userid,improveid,businesstype,businessid);
+			} catch (Exception e) {
+				logger.error("add like is error:{}",e);
+			}
+		} else {
+			try {
+				baseResp = improveService.cancelLike(userid,improveid,businesstype,businessid);
+			} catch (Exception e) {
+				logger.error("cancel like is error:{}",e);
+			}
 		}
+
 		return baseResp;
 	}
 
@@ -623,6 +634,35 @@ public class ImproveController {
 			baseResp = improveService.addDiamond(userid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
 		} catch (Exception e) {
 			logger.error("add diamond userid={} improve={} diamondnum={} is error:{}",userid,improveid,diamondnum,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 获取 赞，花，钻 列表
+	 * @param userid 用户id
+	 * @param impid  进步id
+	 * @param opttype  操作类型 0 -- 赞列表 1 -- 送花列表  2--送钻列表
+	 * @param pagesize 获取条数
+	 * @param lastdate 最后一条时间 （初次获取可以为null）
+	 * @return
+	 * @author luye
+	 */
+	@RequestMapping(value = "lfdlist")
+	@ResponseBody
+	public BaseResp<List<ImpAllDetail>> getImproveLFDList(String userid,String impid,
+											  String opttype,String pagesize,String lastdate){
+
+		BaseResp<List<ImpAllDetail>> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,impid,opttype,pagesize)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = improveService.selectImproveLFDList(impid,opttype,
+					Integer.parseInt(pagesize),DateUtils.parseDate(lastdate));
+
+		} catch (Exception e) {
+			logger.error("get improve all detail list is error:{}",e);
 		}
 		return baseResp;
 	}

@@ -139,6 +139,16 @@ public interface UserMsgService {
 	
 	/**
 	 * @author yinxc
+	 * 获取"我的"页面对话消息---红点是否显示
+	 * 2017年2月8日
+	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * isread 可为null  查全部
+	 * return_type  0:不显示   1：显示
+	 */
+	int selectShowMyByMtype(long userid);
+	
+	/**
+	 * @author yinxc
 	 * 修改消息信息
 	 * 2017年2月7日
 	 * return_type

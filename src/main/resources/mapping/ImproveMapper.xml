@@ -21,11 +21,11 @@
     <result column="ismainimp" property="ismainimp" jdbcType="CHAR" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
-    <result column="rankid" property="rankid" jdbcType="BIGINT" />
+    <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
-    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic, rankid
+    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
@@ -53,7 +53,7 @@
       userid, businessid, businesstype, 
       likes, flowers, diamonds, 
       createtime, updatetime, indexnum, 
-      isdel, ismainimp, ptype, ispublic
+      isdel, ismainimp, ptype, ispublic,sourcekey
       )
     values (#{id,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, #{itype,jdbcType=CHAR}, 
       #{brief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, #{filekey,jdbcType=VARCHAR}, 
@@ -61,7 +61,7 @@
       #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER}, #{diamonds,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{indexnum,jdbcType=INTEGER}, 
       #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
-      )
+      , #{sourcekey,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective"  >
     insert into ${tablename}
@@ -123,6 +123,9 @@
       <if test="improve.ispublic != null" >
         ispublic,
       </if>
+      <if test="improve.sourcekey != null" >
+        sourcekey,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="improve.id != null" >
@@ -181,6 +184,9 @@
       </if>
       <if test="improve.ispublic != null" >
         #{improve.ispublic,jdbcType=CHAR},
+      </if>
+      <if test="improve.sourcekey != null" >
+        #{improve.sourcekey,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -301,6 +307,23 @@
     WHERE
     businessid = #{businessid}
     AND  impid = #{impid}
+  </update>
+
+  <update id="updateMedia">
+    UPDATE ${tablename}
+    SET
+    <if test="pickey != null" >
+    pickey = #{pickey},
+    </if>
+    <if test="filekey!= null" >
+      filekey = #{filekey}
+    </if>
+    WHERE
+      sourcekey = #{key}
+      <if test="businessid != null" >
+        AND
+        businessid = #{businessid}
+      </if>
   </update>
 
   <select id="selectListByBusinessid" parameterType="String" resultMap="BaseResultMap" >

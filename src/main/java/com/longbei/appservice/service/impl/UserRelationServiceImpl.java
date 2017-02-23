@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
@@ -302,14 +303,15 @@ public class UserRelationServiceImpl implements UserRelationService {
 		friendList.addAll(h);
 		//读取拼接ids
 		String ids = "";
-		if(null != friendList && friendList.size()>0){
-			for (String string : friendList) {
-				ids += string + ",";
-			}
-		}
-		if(ids.length()>0){
-			ids = ids.substring(0, ids.length()-1);
-		}
+		ids = StringUtils.joinArr(h.toArray(), ",", 0, h.size());
+//		if(null != friendList && friendList.size()>0){
+//			for (String string : friendList) {
+//				ids += string + ",";
+//			}
+//		}
+//		if(ids.length()>0){
+//			ids = ids.substring(0, ids.length()-1);
+//		}
 		return ids;
 	}
 	

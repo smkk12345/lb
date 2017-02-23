@@ -94,7 +94,8 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setUserid(Long.parseLong(userid));
         improve.setBrief(brief);
         improve.setPickey(pickey);
-        improve.setFilekey(filekey);
+//        improve.setFilekey(filekey);
+        improve.setSourcekey(filekey);
         improve.setBusinesstype(businesstype);
         improve.setPtype(ptype);
         improve.setIspublic(ispublic);
@@ -125,7 +126,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //进步发布完成之后
         if(isok){
-            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
+//            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -754,8 +755,14 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setPickey(timeLineDetail.getPhotos());
             improve.setFilekey(timeLineDetail.getFileKey());
             improve.setItype(timeLineDetail.getItype());
+            improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            //初始化赞，花，钻数量
             initImproveAttachInfo(improve);
+            //初始化点赞，送花，送钻简略信息
+            initLikeFlowerDiamondInfo(improve);
+            //初始化是否 点赞 送花 送钻 收藏
+            initIsOptionForImprove(userid,improve);
             improves.add(improve);
         }
         return improves;
@@ -1079,10 +1086,24 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
+    @Override
+    public BaseResp<List<ImpAllDetail>> selectImproveLFDList(String impid, String listtype,
+                                                             int pagesize, Date lastdate) {
 
-
-
-
+        BaseResp<List<ImpAllDetail>>  baseResp = new BaseResp<>();
+        try {
+            List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
+            for (ImpAllDetail impAllDetail : impAllDetails) {
+                impAllDetail.setAppUser(userMongoDao.findById(String.valueOf(impAllDetail.getUserid())));
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(impAllDetails);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("select improveLFDList is error:{}",e);
+        }
+        return baseResp;
+    }
 
     private String getTableNameByBusinessType(String businesstype){
         String tablename = "";
@@ -1118,7 +1139,7 @@ public class ImproveServiceImpl implements ImproveService{
         impAllDetail.setGtype(businesstype);
         impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
         try {
-            List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectByImpAllDetail(impAllDetail);
+            List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectOneDetail(impAllDetail);
             if (null != impAllDetails && impAllDetails.size() > 0){
                 return BaseResp.ok();
             } else {
@@ -1188,6 +1209,9 @@ public class ImproveServiceImpl implements ImproveService{
         improveLFD.setImpid(impid);
         improveLFD.setUserid(userid);
         improveLFD.setOpttype(opttype);
+        AppUserMongoEntity user = new AppUserMongoEntity();
+        user.setId(userid);
+        improveLFD.setAppUser(user);
         improveLFD.setCreatetime(new Date());
         improveMongoDao.saveImproveLfd(improveLFD);
     }
@@ -1292,12 +1316,12 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initIsOptionForImprove(String userid,Improve improve){
 
-        ImpAllDetail impAllDetail = new ImpAllDetail();
-        impAllDetail.setUserid(Long.parseLong(userid));
-        impAllDetail.setImpid(improve.getImpid());
-        impAllDetail.setGtype(improve.getBusinesstype());
-        impAllDetail.setStartno(0);
-        impAllDetail.setPagesize(1);
+//        ImpAllDetail impAllDetail = new ImpAllDetail();
+//        impAllDetail.setUserid(Long.parseLong(userid));
+//        impAllDetail.setImpid(improve.getImpid());
+//        impAllDetail.setGtype(improve.getBusinesstype());
+//        impAllDetail.setStartno(0);
+//        impAllDetail.setPagesize(1);
         //是否点赞
         boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
@@ -1341,5 +1365,42 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
+
+    /**
+     * filekey  type_businessid_name
+     * type 0 独立的进步 1 目标中进步 2 榜中进步 3圈中进步 4 教室中进步
+     * businessid 业务id 单个进步 0 其他为业务id  如 目标id,榜单id,圈子id
+     * name key文件名   workflow 工作流  暂时不用
+     * @param key
+     * @param pickey
+     * @param filekey
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(key,filekey)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        String[] filenameArr = key.split("_");
+        if(filenameArr.length < 2){
+            return baseResp;
+        }
+        String type = filenameArr[0];
+        String businessid = filenameArr[1];
+        if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
+            businessid = null;
+        }
+        try{
+            String tableName = getTableNameByBusinessType(type);
+            int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
+            if(n > 0){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+        }catch (Exception e){
+            logger.error("updateMedia error and key={},pickey={},filekey={},msg={}",key,pickey,filekey,e);
+        }
+        return baseResp;
+    }
 
 }

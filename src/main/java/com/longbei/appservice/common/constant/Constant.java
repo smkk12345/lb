@@ -186,6 +186,10 @@ public class Constant {
 	public static final String IMPROVE_ALL_DETAIL_DIAMOND = "2";  //钻明细
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
+
+	public static final Integer DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM = 10;
+
+
 	/**
 	 * 进步时间线类型
 	 */

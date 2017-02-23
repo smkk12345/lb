@@ -21,7 +21,16 @@ public class ImproveLFDDetail {
     private String userid;
     private String opttype;
     private Date createtime;
+    @DBRef
+    private AppUserMongoEntity appUser;
 
+    public AppUserMongoEntity getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUserMongoEntity appUser) {
+        this.appUser = appUser;
+    }
 
     public String getId() {
         return id;

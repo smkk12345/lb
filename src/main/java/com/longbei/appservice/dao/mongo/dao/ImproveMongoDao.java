@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao.mongo.dao;
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
@@ -36,6 +37,14 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         improveLFDDetail.setCreatetime(improveLFD.getCreatetime());
         mongoTemplate.save(improveLFDDetail);
         mongoTemplate.upsert(query,update,ImproveLFD.class);
+        Criteria removecriteria = Criteria.where("impid").is(improveLFD.getImpid());
+        Query removequery = new Query(removecriteria);
+        Long count = mongoTemplate.count(removequery,ImproveLFD.class);
+        if (count > Constant.DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM + 5){
+            removequery.with(new Sort(Sort.Direction.DESC, "createtime"));
+            removequery.skip(Constant.DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM + 5);
+            mongoTemplate.remove(removequery,ImproveLFD.class);
+        }
     }
 
 
