@@ -25,7 +25,8 @@ public class Constant {
 	public static final String OSS_IMGSTYLE_300_300 = "?x-oss-process=image/resize,m_fill,w_300,h_300,limit_0/auto-orient,0/quality,q_85/watermark,text_6b6Z5p2v,type_d3F5LXplbmhlaQ,size_12,t_100,color_e7bc5d,g_se,y_10,x_10";//缩略图默认大小  _2o.jpg
 	public static final String OSS_CDN = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";//图片路径 ＋／imgName。png
 	public static final String OSS_MEDIA = "http://longbei3-mp4-out.oss-cn-shanghai.aliyuncs.com/";
-
+	public static final String WORKFLOW1 = "longbei3-mp3";
+	public static final String WORKFLOW2 = "longbei3-mp4";
 
 	public static final String DEFAULT_START_NO = "0";   //默认分页开始条数
 	public static final String DEFAULT_PAGE_SIZE = "15"; //默认分页时每页显示条数
