@@ -78,7 +78,7 @@ public class Improve {
     private String hasdiamond = "0";//时候送钻
     private String hascollect = "0";//是否收藏
 
-    private SuperTopic superTopic;//超级话题
+    private SuperTopic superTopic = null;//超级话题
 
     public List<ImproveLFD> getImproveLFDs() {
         return improveLFDs;

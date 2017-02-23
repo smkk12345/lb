@@ -453,7 +453,7 @@ public class ImproveController {
 	 */
 
 	/**
-	 * 收藏进步
+	 * 收藏进步 improve/collectImp
 	 * @param userid  用户uid
 	 * @param impid 进步id
 	 * @param businesstype 进步类型
@@ -478,7 +478,7 @@ public class ImproveController {
 	}
 
 	/**
-	 * 取消收藏
+	 * 取消收藏  improve/removeCollect
 	 * @param userid
 	 * @param impid
 	 * @param buinesstype
@@ -501,7 +501,7 @@ public class ImproveController {
 	}
 
 	/**
-	 * s获取收藏列表  带分页数据
+	 * s获取收藏列表  带分页数据  improve/selectCollect
 	 * @param userid
 	 * @param startNum
 	 * @param endNum

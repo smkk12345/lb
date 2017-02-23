@@ -128,7 +128,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //进步发布完成之后
         if(isok){
-//            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
+            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
