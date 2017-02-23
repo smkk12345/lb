@@ -18,6 +18,7 @@ public class TimeLineDetail {
 	private String brief;
 	private String photos;
 	private String fileKey;
+	private String sourcekey;
 	private String itype; // 进步类型
 	private int sortnum;
 	private int indexnum = 0;
@@ -29,6 +30,14 @@ public class TimeLineDetail {
 	private String hasAddLike;
 	private String hasGiveFlower;
 	private Date createdate;
+
+	public String getSourcekey() {
+		return sourcekey;
+	}
+
+	public void setSourcekey(String sourcekey) {
+		this.sourcekey = sourcekey;
+	}
 
 	public String getFileKey() {
 		return fileKey;

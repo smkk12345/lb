@@ -74,6 +74,8 @@ public class ImproveServiceImpl implements ImproveService{
     private IdGenerateService idGenerateService;
     @Autowired
     private MoneyService moneyService;
+    @Autowired
+    private TimeLineDetailDao timeLineDetailDao;
 
 
     /**
@@ -1395,6 +1397,7 @@ public class ImproveServiceImpl implements ImproveService{
             String tableName = getTableNameByBusinessType(type);
             int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
             if(n > 0){
+                timeLineDetailDao.updateImproveFileKey(key,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){

@@ -98,6 +98,8 @@ public class AddMessageReceiveService{
         timeLineDetail.setImproveId(Long.parseLong(id));
         timeLineDetail.setBrief(improve.getBrief());
         timeLineDetail.setPhotos(improve.getPickey());
+        timeLineDetail.setFileKey(improve.getFilekey());
+        timeLineDetail.setSourcekey(improve.getSourcekey());
         timeLineDetail.setItype(improve.getItype());
         timeLineDetail.setIspublic(improve.getIspublic());
         timeLineDetail.setCreatedate(date);
