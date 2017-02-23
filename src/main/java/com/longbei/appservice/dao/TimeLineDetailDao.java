@@ -19,11 +19,11 @@ import org.springframework.stereotype.Repository;
 public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
 
 
-    public void updateImproveFileKey(String sourcekey,String fliekey){
+    public void updateImproveFileKey(String sourcekey,String pickey,String fliekey){
         Criteria criteria = Criteria.where("sourcekey").is(sourcekey);
         Query query = new Query(criteria);
         Update update = new Update();
-        update.set("fliekey",fliekey);
+        update.set("fliekey",fliekey).set("photos",pickey);
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
     }
 

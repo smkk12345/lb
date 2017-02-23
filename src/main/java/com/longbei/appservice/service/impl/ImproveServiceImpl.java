@@ -756,6 +756,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setBrief(timeLineDetail.getBrief());
             improve.setPickey(timeLineDetail.getPhotos());
             improve.setFilekey(timeLineDetail.getFileKey());
+            improve.setSourcekey(timeLineDetail.getSourcekey());
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
@@ -1397,7 +1398,7 @@ public class ImproveServiceImpl implements ImproveService{
             String tableName = getTableNameByBusinessType(type);
             int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
             if(n > 0){
-                timeLineDetailDao.updateImproveFileKey(key,filekey);
+                timeLineDetailDao.updateImproveFileKey(key,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
