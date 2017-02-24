@@ -18,6 +18,15 @@
     from user_checkin_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByStarttimeAndUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_checkin_info
+    where userid = #{userid} 
+    and starttime LIKE CONCAT(CONCAT('%', #{starttime}),'%') 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_checkin_info
     where id = #{id,jdbcType=INTEGER}
@@ -103,4 +112,18 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateContinuedaysByid" >
+    update user_checkin_info
+    <set >
+      <if test="continuedays != null" >
+        continuedays = #{continuedays,jdbcType=INTEGER},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
 </mapper>

@@ -109,7 +109,7 @@ public class UserAddressController extends BaseController {
 	public BaseResp<Object> update(@RequestParam("userid") String userid, String id, String receiver, 
 			String mobile, String region, String address, String isdefault) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
+		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault, id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
@@ -153,6 +153,7 @@ public class UserAddressController extends BaseController {
     * @Title: http://ip:port/app_service/userAddress/remove
     * @Description: 删除收货地址(假删)
     * @param @param id
+    * @param @param userid
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年1月16日
@@ -160,13 +161,13 @@ public class UserAddressController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "remove")
 	@ResponseBody
-	public BaseResp<Object> remove(@RequestParam("id") String id) {
+	public BaseResp<Object> remove(@RequestParam("userid") String userid, @RequestParam("id") String id) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = userAddressService.removeIsdel(id);
+			baseResp = userAddressService.removeIsdel(Long.parseLong(userid), id);
 		} catch (Exception e) {
 			logger.error("remove id = {}, msg = {}", id, e);
 		}

@@ -21,17 +21,12 @@ public class Constant {
 	/**
 	 * OSS属性  
 	 */
-//	public static final String OSS_IMG = "http://my-first-oss-bucket-test.img-cn-beijing.aliyuncs.com/";//缩略图  OSS_IMG+OSS_IMGSTYLE
 	public static final String OSS_IMG = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";
-	public static final String OSS_BUCKET = "my-first-oss-bucket-test";//bucket参数
-	public static final String OSS_IMGSTYLE = "@498w_498h_1o";//缩略图默认大小
-//	public static final String OSS_IMGSTYLE_300_300 = "@300w_300h_1o";//缩略图默认大小  _2o.jpg
 	public static final String OSS_IMGSTYLE_300_300 = "?x-oss-process=image/resize,m_fill,w_300,h_300,limit_0/auto-orient,0/quality,q_85/watermark,text_6b6Z5p2v,type_d3F5LXplbmhlaQ,size_12,t_100,color_e7bc5d,g_se,y_10,x_10";//缩略图默认大小  _2o.jpg
 	public static final String OSS_CDN = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";//图片路径 ＋／imgName。png
-//	public static final String OSS_CDN = "https://pic1.longbeidata.com/";//图片路径 ＋／imgName。png
-	public static final String OSS_CDN_HTTP = "http://pic1.longbeidata.com/";
-
-
+	public static final String OSS_MEDIA = "http://longbei3-mp4-out.oss-cn-shanghai.aliyuncs.com/";
+	public static final String WORKFLOW1 = "longbei3-mp3";
+	public static final String WORKFLOW2 = "longbei3-mp4";
 
 	public static final String DEFAULT_START_NO = "0";   //默认分页开始条数
 	public static final String DEFAULT_PAGE_SIZE = "15"; //默认分页时每页显示条数
@@ -67,6 +62,9 @@ public class Constant {
 	public static final int STATUS_SYS_26 = -26;
 	public static final int STATUS_SYS_27 = -27;
 	public static final int STATUS_SYS_28 = -28;
+	public static final int STATUS_SYS_29 = -29;
+	public static final int STATUS_SYS_30 = -30;
+	public static final int STATUS_SYS_31 = -31;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -116,6 +114,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
 	public static final String RTNINFO_SYS_27 = "暂无搜索信息";
 	public static final String RTNINFO_SYS_28 = "暂无消息记录";
+	public static final String RTNINFO_SYS_29 = "暂无签到记录";
+	public static final String RTNINFO_SYS_30 = "用户已签到";
+	public static final String RTNINFO_SYS_31 = "用户签到成功";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -218,6 +219,12 @@ public class Constant {
 	 * 熟人
 	 */
 	public static final String TIMELINE_IMPROVE_ACQ = "5";
+	
+	
+	/**
+	 * 进步币添加来源   0:签到   1:发进步
+	 */
+	public static final String USER_IMP_COIN_CHECK = "0";  //签到
 
 
 
@@ -341,6 +348,14 @@ public class Constant {
 	 * redis中各种请求前缀   redis_prefix
 	 */
 	public static final String RP_USER_PERDAY = "user_perday_";
+	
+	/**
+	 * 签到连续天数     缓存到截止两天
+	 */
+	public static final String RP_USER_CHECK = "user_check_";
+	public static final String RP_USER_CHECK_DATE = "user_check_date_";
+	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
+	
 
 	/**
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天

@@ -220,6 +220,17 @@ public interface ImproveService {
      * @return
      */
     List<Improve> selectImproveListByUser(String userid,String ctype, Date lastdate,int pagesize);
+    
+    /**
+     * 获取我的进步列表(根据lastdate时间获取当天的进步列表)
+     * @param userid  用户id
+     * @param ctype  0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+     * @param lastdate  最后一条时间
+     * @param pagesize  每页显示条数
+     * @return
+     */
+    List<Improve> selectImproveListByUserDate(String userid,String ctype, Date lastdate,int pagesize);
+    
     /**
      * 点赞
      * 点赞每天限制  --- 每天内次只能点一次

@@ -21,13 +21,26 @@ public interface UserBehaviourService {
      * @param userid
      * @return
      */
-    BaseResp<Object> levelUp(long userid,int iPoint,String pType);
+//    BaseResp<Object> levelUp(long userid,int iPoint,String pType);
     /**
      * 是否升级
      * @param userInfo
      * @return
      */
-    BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,String pType);
+//    BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,String pType);
+    /**
+     * 获取龙分接口
+     * @param userid 用户id
+     * @param operateType 操作类型
+     */
+//    int getPointByType(long userid,String operateType);
+
+    /**
+     * userInfo operateType 操作类型(Constant_point)   十全十美类型
+     * return point  impicon  status
+     * @return
+     */
+    BaseResp<Object> pointChange(UserInfo userInfo,String operateType,String pType);
 
 
 }

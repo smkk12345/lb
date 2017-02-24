@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserIdcard {
     private Integer id;
 
@@ -12,6 +15,10 @@ public class UserIdcard {
     private String validateidcard;//是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
 
     private String idcardimage;
+    
+    private String frontidcardimage;//正面
+    
+	private String oppositeidcardimage;//反面
 
     private Long checkuserid;
 
@@ -22,6 +29,8 @@ public class UserIdcard {
     private Long userid;
 
     private Date applydate;
+    
+    private String realname;  //真实姓名
 
     /**
      * 
@@ -43,6 +52,7 @@ public class UserIdcard {
      * 
      * @return idcard 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIdcard() {
         return idcard;
     }
@@ -59,6 +69,7 @@ public class UserIdcard {
      * 
      * @return validateemail 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getValidateemail() {
         return validateemail;
     }
@@ -75,6 +86,7 @@ public class UserIdcard {
      * 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
      * @return validateidcard 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
      */
+    @JsonInclude(Include.ALWAYS)
     public String getValidateidcard() {
         return validateidcard;
     }
@@ -91,6 +103,7 @@ public class UserIdcard {
      * 
      * @return idcardimage 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIdcardimage() {
         return idcardimage;
     }
@@ -182,4 +195,28 @@ public class UserIdcard {
     public void setApplydate(Date applydate) {
         this.applydate = applydate;
     }
+
+	public String getFrontidcardimage() {
+		return frontidcardimage;
+	}
+
+	public void setFrontidcardimage(String frontidcardimage) {
+		this.frontidcardimage = frontidcardimage;
+	}
+
+	public String getOppositeidcardimage() {
+		return oppositeidcardimage;
+	}
+
+	public void setOppositeidcardimage(String oppositeidcardimage) {
+		this.oppositeidcardimage = oppositeidcardimage;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
 }

@@ -15,12 +15,36 @@ import com.longbei.appservice.common.BaseResp;
  *
  */
 public interface UserCheckinDetailService {
+	
+//	BaseResp<Object> insertSelective(UserCheckinDetail record);
+	
+//	UserCheckinDetail selectByPrimaryKey(Integer id);
+	
+//	BaseResp<Object> updateByPrimaryKeySelective(UserCheckinDetail record);
+	
 	/**
-	* @Title: checkIn
-	* @Description: 用户签到
-	* @param @param userid
-	* @auther smkk
-	* @currentdate:2017年1月22日
+	 * @author yinxc
+	 * 获取签到详情记录
+	 * 2017年2月22日
+	 * return_type
 	 */
-	BaseResp<Object> checkIn(long userid);
+	BaseResp<Object> selectDetailList(long userid);
+	
+	/**
+	 * @author yinxc
+	 * 根据年月获取签到详情记录
+	 * 2017年2月22日
+	 * return_type
+	 */
+	BaseResp<Object> selectDetailListByYearmonth(long userid, Integer yearmonth);
+	
+	/**
+	 * @author yinxc
+	 * 判断用户是否签到    未签到:添加redis  判断是否是连续签到(5天以上存库---更新redis,及库)   
+	 * 				已签到：返回
+	 * 2017年2月23日
+	 * return_type
+	 * UserCheckinDetailService
+	 */
+	BaseResp<Object> selectIsCheckIn(long userid);
 }

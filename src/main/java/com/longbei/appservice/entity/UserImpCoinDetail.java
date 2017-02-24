@@ -2,12 +2,15 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserImpCoinDetail {
     private Integer id;
 
     private Long userid;
 
-    private String origin;//来源
+    private String origin;//来源   0:签到   1:发进步
 
     private Integer number;//数量
 
@@ -37,6 +40,7 @@ public class UserImpCoinDetail {
      * 
      * @return userid 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -50,16 +54,17 @@ public class UserImpCoinDetail {
     }
 
     /**
-     * 来源
-     * @return origin 来源
+     * 来源     0:签到   1:发进步
+     * @return origin 来源      0:签到   1:发进步
      */
+    @JsonInclude(Include.ALWAYS)
     public String getOrigin() {
         return origin;
     }
 
     /**
-     * 来源
-     * @param origin 来源
+     * 来源      0:签到   1:发进步
+     * @param origin 来源     0:签到   1:发进步
      */
     public void setOrigin(String origin) {
         this.origin = origin == null ? null : origin.trim();
@@ -69,6 +74,7 @@ public class UserImpCoinDetail {
      * 数量
      * @return number 数量
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getNumber() {
         return number;
     }
@@ -85,6 +91,7 @@ public class UserImpCoinDetail {
      * 业务id
      * @return impid 业务id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getImpid() {
         return impid;
     }

@@ -56,6 +56,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 			}
 			boolean temp = insert(record);
 			if (temp) {
+				reseResp.setData(record);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -101,6 +102,8 @@ public class UserAddressServiceImpl implements UserAddressService {
 			}
 			int temp = userAddressMapper.updateByPrimaryKeySelective(record);
 			if (temp > 0) {
+				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(record.getId());
+				reseResp.setData(userAddress);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -132,11 +135,12 @@ public class UserAddressServiceImpl implements UserAddressService {
 		try {
 			List<UserAddress> list = userAddressMapper.selectByUserId(userid, pageNo, pageSize);
 			reseResp.setData(list);
-			if (null != list && list.size() > 0) {
+//			if (null != list && list.size() > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
-			}
+//			}
+//			else {
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_20, Constant.RTNINFO_SYS_20);
+//			}
 		} catch (Exception e) {
 			logger.error("selectByUserId userid={},pageNo={},pageSize={},msg={}",userid,pageNo,pageSize,e);
 		}
@@ -149,13 +153,12 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	@SuppressWarnings("unchecked")
 	public BaseResp<Object> updateIsdefaultByAddressId(String id, long userid, String isdefault) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			boolean result = updateNotdefaultByUserId(userid);
 			if(!result){
-				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+				return reseResp;
 			}
 			int temp = userAddressMapper.updateIsdefaultByAddressId(id, isdefault);
 			if (temp>0) {
@@ -185,10 +188,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 	 * return_type
 	 */
 	@Override
-	public BaseResp<Object> removeIsdel(String id) {
+	public BaseResp<Object> removeIsdel(long userid, String id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			int temp = userAddressMapper.removeIsdel(id);
+			int temp = userAddressMapper.removeIsdel(userid, id);
 			if (temp>0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}

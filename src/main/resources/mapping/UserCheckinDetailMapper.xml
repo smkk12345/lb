@@ -6,9 +6,10 @@
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="checkindate" property="checkindate" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="yearmonth" property="yearmonth" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, checkindate, createtime
+    id, userid, checkindate, createtime, yearmonth
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -16,15 +17,36 @@
     from user_checkin_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectDetailList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_checkin_detail
+    where userid = #{userid}
+  </select>
+  
+  <select id="selectDetailListByYearmonth" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_checkin_detail
+    where userid = #{userid} 
+    and yearmonth = #{yearmonth} 
+  </select>
+  
+  <select id="selectCountByUserid" resultType="int" >
+    select count(*) from user_checkin_detail
+    where userid = #{userid} 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_checkin_detail
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserCheckinDetail" >
     insert into user_checkin_detail (userid, checkindate, 
-      createtime)
+      createtime, yearmonth)
     values ( #{userid,jdbcType=BIGINT}, #{checkindate,jdbcType=TIMESTAMP}, 
-      #{createtime,jdbcType=TIMESTAMP})
+      #{createtime,jdbcType=TIMESTAMP}, #{yearmonth})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserCheckinDetail" >
     insert into user_checkin_detail
@@ -41,6 +63,9 @@
       <if test="createtime != null" >
         createtime,
       </if>
+      <if test="yearmonth != null" >
+        yearmonth,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -54,6 +79,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yearmonth != null" >
+        #{yearmonth},
       </if>
     </trim>
   </insert>
@@ -69,6 +97,9 @@
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="yearmonth != null" >
+        yearmonth = #{yearmonth}
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -76,7 +107,8 @@
     update user_checkin_detail
     set userid = #{userid,jdbcType=BIGINT},
       checkindate = #{checkindate,jdbcType=TIMESTAMP},
-      createtime = #{createtime,jdbcType=TIMESTAMP}
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      yearmonth = #{yearmonth}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

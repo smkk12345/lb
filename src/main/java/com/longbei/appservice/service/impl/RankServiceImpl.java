@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.dao.RankImageMapper;
 import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import net.sf.json.JSONObject;
@@ -94,41 +95,34 @@ public class RankServiceImpl implements RankService{
      *  @update 2017/1/23 下午6:12
      */
     @Override
-    public boolean updateRank(long rankid, String rankdetail, String ranktitle,
-                              int ranklimite, String rankscope, String rankphotos,
-                              double rankrate, Date starttime, Date endtime,
-                              String areaname, String createuserid, String ranktype,
-                              String ispublic, String rankcateid, int likescore,
-                              int flowerscore, int diamondscore, String codeword,
-                              String ptype, String sourcetype, String companyname,
-                              String companyphotos, String companybrief) {
+    public boolean updateRankImage(RankImage rankImage) {
 
-        RankImage rankImage = new RankImage();
-
-        rankImage.setRankid(rankid);
-        rankImage.setRanktitle(ranktitle);
-        rankImage.setRankdetail(rankdetail);
-        rankImage.setRankphotos(rankphotos);
-        rankImage.setRanklimite(ranklimite);
-        rankImage.setRankrate(Double.valueOf(rankrate));
-        rankImage.setRankscope(rankscope);
-        rankImage.setStarttime(starttime);
-        rankImage.setEndtime(endtime);
-        rankImage.setAreaname(areaname);
-        rankImage.setCreateuserid(Long.parseLong(createuserid));
-        rankImage.setRanktype(ranktype);
-        rankImage.setIspublic(ispublic);
-        rankImage.setRankcateid(Integer.parseInt(rankcateid));
-        rankImage.setLikescore(likescore);
-        rankImage.setFlowerscore(flowerscore);
-        rankImage.setDiamondscore(diamondscore);
-        rankImage.setCodeword(codeword);
-        rankImage.setPtype(ptype);
-        rankImage.setSourcetype(sourcetype);
-        rankImage.setCompanyname(companyname);
-        rankImage.setCompanyphotos(companyphotos);
-        rankImage.setCompanybrief(companybrief);
-        rankImage.setUpdatetime(new Date());
+//        RankImage rankImage = new RankImage();
+//
+//        rankImage.setRankid(rankid);
+//        rankImage.setRanktitle(ranktitle);
+//        rankImage.setRankdetail(rankdetail);
+//        rankImage.setRankphotos(rankphotos);
+//        rankImage.setRanklimite(ranklimite);
+//        rankImage.setRankrate(Double.valueOf(rankrate));
+//        rankImage.setRankscope(rankscope);
+//        rankImage.setStarttime(starttime);
+//        rankImage.setEndtime(endtime);
+//        rankImage.setAreaname(areaname);
+//        rankImage.setCreateuserid(Long.parseLong(createuserid));
+//        rankImage.setRanktype(ranktype);
+//        rankImage.setIspublic(ispublic);
+//        rankImage.setRankcateid(Integer.parseInt(rankcateid));
+//        rankImage.setLikescore(likescore);
+//        rankImage.setFlowerscore(flowerscore);
+//        rankImage.setDiamondscore(diamondscore);
+//        rankImage.setCodeword(codeword);
+//        rankImage.setPtype(ptype);
+//        rankImage.setSourcetype(sourcetype);
+//        rankImage.setCompanyname(companyname);
+//        rankImage.setCompanyphotos(companyphotos);
+//        rankImage.setCompanybrief(companybrief);
+//        rankImage.setUpdatetime(new Date());
 
         int res = 0;
         try {
@@ -153,10 +147,10 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
-    public Page<RankImage> selectRankImageList(int pageno, int pagesize) {
+    public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
         int totalcount = rankImageMapper.selectListCount(new RankImage());
         pageno = Page.setPageNo(pageno,totalcount,pagesize);
-        List<RankImage> rankImages = rankImageMapper.selectListWithPage(new RankImage(),(pageno-1)*pagesize,pagesize);
+        List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
         Page<RankImage> page = new Page<RankImage>(pageno,pagesize,totalcount,rankImages);
         return page;
     }

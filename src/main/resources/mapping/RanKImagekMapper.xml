@@ -35,12 +35,21 @@
     <result column="checkstatus" property="checkstatus" jdbcType="VARCHAR" />
     <result column="isauto" property="isauto" jdbcType="VARCHAR" />
     <result column="autotime" property="autotime" jdbcType="VARCHAR" />
+    <result column="joinlastday" property="joinlastday" jdbcType="INTEGER" />
+    <result column="maximprovenum" property="maximprovenum" jdbcType="INTEGER" />
+    <result column="minimprovenum" property="minimprovenum" jdbcType="INTEGER" />
+    <result column="ischeck" property="ischeck" jdbcType="CHAR" />
+    <result column="isgroup" property="isgroup" jdbcType="CHAR" />
+    <result column="rankcardid" property="rankcardid" jdbcType="VARCHAR" />
   </resultMap>
+
+
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
-    codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime
+    codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -68,11 +77,11 @@
     </if>
   </select>
 
-  <select id="selectByRankImageId">
+  <select id="selectByRankImageId" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
     FROM rankimage
-    WHERE rankid = #[rankimageid]
+    WHERE rankid = #{rankimageid}
   </select>
 
 
@@ -81,17 +90,32 @@
     <include refid="Base_Column_List" />
     FROM rankimage
     WHERE 1=1
-    <if test="rankimage.ranktitle != null" >
+    <if test="rankimage.ranktitle != null and rankimage.ranktitle != ''" >
       AND ranktitle LIKE concat(concat('%',#{rankimage.ranktitle}),'%')
     </if>
-    <if test="rankimage.rankbrief != null" >
+    <if test="rankimage.rankbrief != null and rankimage.rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankimage.rankbrief}),'%')
     </if>
-    <if test="rankimage.ptype != null" >
+    <if test="rankimage.ptype != null and rankimage.ptype != '-1'" >
       AND ptype = #{rankimage.ptype}
+    </if>
+    <if test="rankimage.sstarttime != null" >
+      AND starttime &gt;= #{rankimage.sstarttime}
+    </if>
+    <if test="rankimage.estarttime != null" >
+      AND starttime &lt; #{rankimage.estarttime}
+    </if>
+    <if test="rankimage.checkstatus != null" >
+      AND checkstatus = #{rankimage.checkstatus}
     </if>
     <if test="rankimage.rankscope != null" >
       AND rankscope = #{rankimage.rankscope}
+    </if>
+    <if test="rankimage.isup != null" >
+      AND isup = #{rankimage.isup}
+    </if>
+    <if test="rankimage.isdel != null" >
+      AND isdel = #{rankimage.isdel}
     </if>
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>
@@ -221,6 +245,33 @@
       <if test="sourcetype != null" >
         sourcetype,
       </if>
+      <if test="checkstatus != null" >
+        checkstatus,
+      </if>
+      <if test="isauto != null" >
+        isauto,
+      </if>
+      <if test="autotime != null" >
+        autotime,
+      </if>
+      <if test="joinlastday != null" >
+        joinlastday,
+      </if>
+      <if test="maximprovenum != null" >
+        maximprovenum,
+      </if>
+      <if test="minimprovenum != null" >
+        minimprovenum,
+      </if>
+      <if test="ischeck != null" >
+        ischeck,
+      </if>
+      <if test="isgroup != null" >
+        isgroup,
+      </if>
+      <if test="rankcardid != null" >
+        rankcardid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -313,6 +364,33 @@
       <if test="sourcetype != null" >
         #{sourcetype,jdbcType=CHAR},
       </if>
+      <if test="checkstatus != null" >
+        #{checkstatus},
+      </if>
+      <if test="isauto != null" >
+        #{isauto},
+      </if>
+      <if test="autotime != null" >
+        #{autotime},
+      </if>
+      <if test="joinlastday != null" >
+        #{joinlastday},
+      </if>
+      <if test="maximprovenum != null" >
+        #{maximprovenum},
+      </if>
+      <if test="minimprovenum != null" >
+        #{minimprovenum},
+      </if>
+      <if test="ischeck != null" >
+        #{ischeck},
+      </if>
+      <if test="isgroup != null" >
+        #{isgroup},
+      </if>
+      <if test="rankcardid != null" >
+        #{rankcardid},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
@@ -401,6 +479,33 @@
       </if>
       <if test="sourcetype != null" >
         sourcetype = #{sourcetype,jdbcType=CHAR},
+      </if>
+      <if test="checkstatus != null" >
+        checkstatus = #{checkstatus},
+      </if>
+      <if test="isauto != null" >
+        checkstatus = #{isauto},
+      </if>
+      <if test="autotime != null" >
+        autotime = #{autotime},
+      </if>
+      <if test="joinlastday != null" >
+        joinlastday = #{joinlastday},
+      </if>
+      <if test="maximprovenum != null" >
+        maximprovenum = #{maximprovenum},
+      </if>
+      <if test="minimprovenum != null" >
+        minimprovenum = #{minimprovenum},
+      </if>
+      <if test="ischeck != null" >
+        ischeck = #{ischeck},
+      </if>
+      <if test="isgroup != null" >
+        isgroup = #{isgroup},
+      </if>
+      <if test="rankcardid != null" >
+        rankcardid = #{rankcardid},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}

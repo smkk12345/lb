@@ -23,8 +23,12 @@ import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
+<<<<<<< HEAD
 import com.longbei.appservice.entity.UserInterests;
 import com.longbei.appservice.service.DictAreaService;
+=======
+import com.longbei.appservice.service.UserCheckinDetailService;
+>>>>>>> 7203875b6bd7e20f9a80b0d51ef2bd9054fb1d39
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserIdcardService;
 import com.longbei.appservice.service.UserInterestsService;
@@ -50,14 +54,67 @@ public class AppUserController extends BaseController {
     @Autowired
     private UserJobService userJobService;
     @Autowired
+<<<<<<< HEAD
     private DictAreaService dictAreaService;
     @Autowired
     private UserInterestsService userInterestsService;
+=======
+    private UserCheckinDetailService userCheckinDetailService;
+>>>>>>> 7203875b6bd7e20f9a80b0d51ef2bd9054fb1d39
 
     
     
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
+    
+    /**
+     * @Title: http://ip:port/appservice/user/checkinDate
+     * @Description: 用户每月签到详情及搜索
+     * @param @param userid
+     * @param @param yearmonth  格式为：201702...
+     * @auther yinxc
+     * @currentdate:2017年2月23日
+     */
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "checkinDate")
+     @ResponseBody
+     public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
+  		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, yearmonth)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		try {
+  			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
+         } catch (Exception e) {
+             logger.error("init userid = {}, msg = {}", userid, e);
+         }
+  		return baseResp;
+     }
+    
+    /**
+    * @Title: http://ip:port/appservice/user/init
+    * @Description: 用户初始化(签到等)
+    * @param @param userid
+    * @auther yinxc
+    * @currentdate:2017年2月23日
+    */
+ 	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "init")
+    @ResponseBody
+    public BaseResp<Object> init(@RequestParam("userid") String userid) {
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+ 		if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+ 		//一些其他的逻辑
+ 		
+ 		try {
+ 			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
+        } catch (Exception e) {
+            logger.error("init userid = {}, msg = {}", userid, e);
+        }
+ 		return baseResp;
+    }
     
     /**
     * @Title: http://ip:port/appservice/user/registerbasic
@@ -95,6 +152,8 @@ public class AppUserController extends BaseController {
         }
         return baseResp;
     }
+    
+    
 
     /**
      * http://ip:port/appservice/user/sms
@@ -493,12 +552,11 @@ public class AppUserController extends BaseController {
      * @currentdate:2017年1月19日
      */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/addFeedback", method = RequestMethod.POST)
+    @RequestMapping(value = "/addFeedback")
     @ResponseBody
-    public BaseResp<Object> addFeedback(@RequestParam("userid") String userid, @RequestParam("content") String content,
-    			@RequestParam("photos") String photos) {
+    public BaseResp<Object> addFeedback(@RequestParam("userid") String userid, String content, String photos) {
     	BaseResp<Object> baseResp = new BaseResp<>();
-    	if (StringUtils.hasBlankParams(userid)) {
+    	if (StringUtils.hasBlankParams(userid, content, photos)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
     	try {
@@ -509,6 +567,33 @@ public class AppUserController extends BaseController {
         }
     	return baseResp;
     }
+    
+    /**
+     * @Title: http://ip:port/appservice/user/userSafety
+     * @Description: 帐号与安全(获取身份验证状态)
+     * @Description: validateidcard   是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
+     * @Description: realname  真实姓名
+     * @param @param userid
+     * @param @param code 0
+     * @auther yinxc
+     * @currentdate:2017年2月24日
+      */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/userSafety")
+	@ResponseBody
+	public BaseResp<Object> userSafety(@RequestParam("userid") String userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = userIdcardService.userSafety(Long.parseLong(userid));
+		} catch (Exception e) {
+			logger.error("applyIdCardValidate userid={},msg={}", userid, e);
+		}
+		return baseResp;
+	}
+    
     
     /**
      * @Title: http://ip:port/appservice/user/applyIdCardValidate
@@ -538,6 +623,7 @@ public class AppUserController extends BaseController {
 			UserIdcard record = new UserIdcard();
 			record.setIdcard(idcard);
 			record.setIdcardimage(idcardimage);
+			//是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
@@ -548,21 +634,6 @@ public class AppUserController extends BaseController {
 		}
 		return baseResp;
 	}
-    /**
-    * @Title: checkIn
-    * @Description: 用户签到 每天只可以签到一次 ［签到送龙分（龙分影响龙级） 随机送龙币］
-    * @param @param userid
-    * @auther smkk
-    * @currentdate:2017年1月22日
-     */
-    @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/checkIn", method = RequestMethod.POST)
-    @ResponseBody
-    public BaseResp<Object> checkIn(@RequestParam("userid") Long userid) {
-    		BaseResp<Object> baseResp = new BaseResp<>();
-    		
-    		return baseResp;
-    }
     
     //--------------------教育经历start-------------------------------  
     

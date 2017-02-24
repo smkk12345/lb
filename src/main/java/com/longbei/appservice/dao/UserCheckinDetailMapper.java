@@ -1,5 +1,9 @@
 package com.longbei.appservice.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.longbei.appservice.entity.UserCheckinDetail;
 
 public interface UserCheckinDetailMapper {
@@ -14,4 +18,32 @@ public interface UserCheckinDetailMapper {
     int updateByPrimaryKeySelective(UserCheckinDetail record);
 
     int updateByPrimaryKey(UserCheckinDetail record);
+    
+    /**
+	 * @author yinxc
+	 * 获取签到详情记录
+	 * 2017年2月22日
+	 * return_type
+	 * UserCheckinDetailMapper
+	 */
+    List<UserCheckinDetail> selectDetailList(@Param("userid") long userid);
+    
+    /**
+	 * @author yinxc
+	 * 根据年月获取签到详情记录
+	 * 2017年2月22日
+	 * return_type
+	 * UserCheckinDetailMapper
+	 */
+    List<UserCheckinDetail> selectDetailListByYearmonth(@Param("userid") long userid, @Param("yearmonth") Integer yearmonth);
+    
+    /**
+	 * @author yinxc
+	 * 获取当前用户总共签到多少天
+	 * 2017年2月24日
+	 * return_type
+	 * UserCheckinDetailMapper
+	 */
+    int selectCountByUserid(@Param("userid") long userid);
+    
 }

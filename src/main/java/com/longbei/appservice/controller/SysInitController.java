@@ -27,7 +27,9 @@ public class SysInitController extends BaseController{
         //十全十美菜单
         baseResp.getExpandData().put("perfectmenus",SysRulesCache.perfectTenList);
         //oss路径
-        baseResp.getExpandData().put("osspath",Constant.OSS_IMG);
+        baseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
+        //多媒体前缀
+//        baseResp.getExpandData().put("mediapath",Constant.OSS_MEDIA);
         //初始化操作
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
