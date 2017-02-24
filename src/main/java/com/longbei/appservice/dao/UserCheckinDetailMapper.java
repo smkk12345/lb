@@ -37,4 +37,13 @@ public interface UserCheckinDetailMapper {
 	 */
     List<UserCheckinDetail> selectDetailListByYearmonth(@Param("userid") long userid, @Param("yearmonth") Integer yearmonth);
     
+    /**
+	 * @author yinxc
+	 * 获取当前用户总共签到多少天
+	 * 2017年2月24日
+	 * return_type
+	 * UserCheckinDetailMapper
+	 */
+    int selectCountByUserid(@Param("userid") long userid);
+    
 }

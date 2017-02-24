@@ -52,8 +52,32 @@ public class AppUserController extends BaseController {
     
     
     /**
+     * @Title: http://ip:port/appservice/user/checkinDate
+     * @Description: 用户每月签到详情及搜索
+     * @param @param userid
+     * @param @param 
+     * @auther yinxc
+     * @currentdate:2017年2月23日
+     */
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "checkinDate")
+     @ResponseBody
+     public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
+  		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, yearmonth)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+         }
+  		try {
+  			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
+         } catch (Exception e) {
+             logger.error("init userid = {}, msg = {}", userid, e);
+         }
+  		return baseResp;
+     }
+    
+    /**
     * @Title: http://ip:port/appservice/user/init
-    * @Description: 用户初始化(签到)
+    * @Description: 用户初始化(签到等)
     * @param @param userid
     * @auther yinxc
     * @currentdate:2017年2月23日
@@ -410,6 +434,33 @@ public class AppUserController extends BaseController {
     }
     
     /**
+     * @Title: http://ip:port/appservice/user/userSafety
+     * @Description: 帐号与安全(获取身份验证状态)
+     * @Description: validateidcard   是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
+     * @Description: realname  真实姓名
+     * @param @param userid
+     * @param @param code 0
+     * @auther yinxc
+     * @currentdate:2017年2月24日
+      */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/userSafety")
+	@ResponseBody
+	public BaseResp<Object> userSafety(@RequestParam("userid") String userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = userIdcardService.userSafety(Long.parseLong(userid));
+		} catch (Exception e) {
+			logger.error("applyIdCardValidate userid={},msg={}", userid, e);
+		}
+		return baseResp;
+	}
+    
+    
+    /**
      * @Title: http://ip:port/appservice/user/applyIdCardValidate
      * @Description: 申请身份证验证，移动端保存身份证验证信息到数据库
      * @param @param request  avatar  nickname  userid sex brief
@@ -437,6 +488,7 @@ public class AppUserController extends BaseController {
 			UserIdcard record = new UserIdcard();
 			record.setIdcard(idcard);
 			record.setIdcardimage(idcardimage);
+			//是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
