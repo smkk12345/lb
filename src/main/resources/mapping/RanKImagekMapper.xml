@@ -90,17 +90,32 @@
     <include refid="Base_Column_List" />
     FROM rankimage
     WHERE 1=1
-    <if test="rankimage.ranktitle != null" >
+    <if test="rankimage.ranktitle != null and rankimage.ranktitle != ''" >
       AND ranktitle LIKE concat(concat('%',#{rankimage.ranktitle}),'%')
     </if>
-    <if test="rankimage.rankbrief != null" >
+    <if test="rankimage.rankbrief != null and rankimage.rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankimage.rankbrief}),'%')
     </if>
-    <if test="rankimage.ptype != null" >
+    <if test="rankimage.ptype != null and rankimage.ptype != '-1'" >
       AND ptype = #{rankimage.ptype}
+    </if>
+    <if test="rankimage.sstarttime != null" >
+      AND starttime &gt;= #{rankimage.sstarttime}
+    </if>
+    <if test="rankimage.estarttime != null" >
+      AND starttime &lt; #{rankimage.estarttime}
+    </if>
+    <if test="rankimage.checkstatus != null" >
+      AND checkstatus = #{rankimage.checkstatus}
     </if>
     <if test="rankimage.rankscope != null" >
       AND rankscope = #{rankimage.rankscope}
+    </if>
+    <if test="rankimage.isup != null" >
+      AND isup = #{rankimage.isup}
+    </if>
+    <if test="rankimage.isdel != null" >
+      AND isdel = #{rankimage.isdel}
     </if>
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>

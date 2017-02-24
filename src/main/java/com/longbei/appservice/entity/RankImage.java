@@ -30,9 +30,17 @@ public class RankImage {
 
     private Double rankrate;//榜单中奖率
 
+    private Date sstarttime;
+
     private Date starttime;//开始时间
 
+    private Date estarttime;
+
+    private Date sendtime;
+
     private Date endtime;//结束时间
+
+    private Date eendtime;
 
     private String areaname;//区域名字
 
@@ -106,7 +114,63 @@ public class RankImage {
 
     private String rankcardid; //榜主名片id
 
+    private String isup; // 0 - 未发布  1 - 已发布
+
+    private String isdel; // 0 - 未删除  1 - 已删除
+
     //--------
+
+
+    public String getIsup() {
+        return isup;
+    }
+
+    public void setIsup(String isup) {
+        this.isup = isup;
+    }
+
+    public String getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(String isdel) {
+        this.isdel = isdel;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getSstarttime() {
+        return sstarttime;
+    }
+
+    public void setSstarttime(Date sstarttime) {
+        this.sstarttime = sstarttime;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEstarttime() {
+        return estarttime;
+    }
+
+    public void setEstarttime(Date estarttime) {
+        this.estarttime = estarttime;
+    }
+
+    public Date getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(Date sendtime) {
+        this.sendtime = sendtime;
+    }
+
+    public Date getEendtime() {
+        return eendtime;
+    }
+
+    public void setEendtime(Date eendtime) {
+        this.eendtime = eendtime;
+    }
 
     private List<RankAward> rankAwards; //榜单奖品
 
