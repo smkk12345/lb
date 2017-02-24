@@ -76,6 +76,8 @@ public class ImproveServiceImpl implements ImproveService{
     private MoneyService moneyService;
     @Autowired
     private TimeLineDetailDao timeLineDetailDao;
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
 
     /**
@@ -128,7 +130,8 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //进步发布完成之后
         if(isok){
-            userBehaviourService.levelUp(Long.parseLong(userid), SysRulesCache.sysRules.getAddimprove(),ptype);
+            UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
+            userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

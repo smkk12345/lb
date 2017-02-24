@@ -59,14 +59,15 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	public BaseResp<Object> insertSelective(UserCheckinDetail record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			record.setCheckindate(new Date());
-			record.setCreatetime(new Date());
+			Date date = new Date();
+			record.setCheckindate(date);
+			record.setCreatetime(date);
 			String yearmonth = DateUtils.getYear() + DateUtils.getMonth();
 			record.setYearmonth(Integer.parseInt(yearmonth));
 			boolean temp = insert(record);
 			if (temp) {
 				//签到成功后，+积分---十全十美类型中的社交类型   
-				int checkin = SysRulesCache.sysRules.getCheckin();
+				int checkin = userBehaviourService.getPointByType(record.getUserid(),"DAILY_CHECKIN");
 				//十全十美类型---  2,"社交"
 				String pType = SysRulesCache.perfectTenMap.get(2);
 				userBehaviourService.levelUp(record.getUserid(), checkin, pType);

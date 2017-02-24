@@ -28,7 +28,7 @@ public class Constant_point {
     /**
      * 日常行为
      */
-    public static int DAILY_CHECKIN = 0;//点赞
+    public static int DAILY_CHECKIN = 3;//点赞
     public static int DAILY_SHARE=2;
     public static int DAILY_SHARE_LIMIT = 10;
     public static int DAILY_ADDFRIEND = 2;
@@ -46,6 +46,24 @@ public class Constant_point {
     public static int DAILY_FLOWER_LIMIT = 100;
     public static int DAILY_DIAMOND = 10;
     public static int DAILY_DIAMOND_LIMIT = 100;
+    /**
+     * 进步行为
+     */
+    public static int DAILY_ADDIMP = 5;
+    public static int DAILY_ADDIMP_LIMIT = 50;
+    public static int DAILY_ADDRANK = 7;
+    public static int DAILY_ADDRANK_LIMIT = 35;
+    public static int DAILY_ADDCLASSROOM = 7;
+    public static int DAILY_ADDCLASSROOM_LIMIT = 35;
+    public static int DAILY_ADDCIRCLE = 7;
+    public static int DAILY_ADDCIRCLE_LIMIT = 35;
+    /**
+     * 金融消费
+     */
+    public static int SPONSOR = 1;//赞助
+    public static int APPRECIATE = 1;//appreciate 赞赏
+    public static int LOTTERY = 1;//lottery 抽奖
+
     /**
      * 无限制
      */
