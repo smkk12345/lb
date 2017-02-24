@@ -25,6 +25,9 @@ public class UserInfo {
     private String sex;//性别  0 男  1 女
 
     private String city;//所在城市
+    
+
+	private String area;//所在区域
 
     private String brief;//个人简介
 
@@ -267,7 +270,20 @@ public class UserInfo {
     public void setCity(String city) {
         this.city = city == null ? null : city.trim();
     }
-
+    /**
+     * 所在区域
+     * @param city 所在区域
+     */ 
+    public String getArea() {
+		return area;
+	}
+    /**
+     * 所在区域
+     * @param city 所在区域
+     */ 
+	public void setArea(String area) {
+		this.area = area;
+	}    
     /**
      * 个人简介
      * @return brief 个人简介

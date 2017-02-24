@@ -12,6 +12,7 @@
     <result column="realname" property="realname" jdbcType="VARCHAR" />
     <result column="sex" property="sex" jdbcType="CHAR" />
     <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
     <result column="brief" property="brief" jdbcType="VARCHAR" />
     <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="constellation" property="constellation" jdbcType="VARCHAR" />
@@ -35,7 +36,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
-    sex, city, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
+    sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
@@ -303,6 +304,9 @@
       </if>
       <if test="city != null" >
         city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
       </if>
       <if test="brief != null" >
         brief = #{brief,jdbcType=VARCHAR},

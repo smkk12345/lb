@@ -4,13 +4,13 @@
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserInterests" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="VARCHAR" />
-    <result column="perfectid" property="perfectid" jdbcType="VARCHAR" />
+    <result column="ptype" property="ptype" jdbcType="VARCHAR" />
     <result column="perfectname" property="perfectname" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, perfectid, perfectname, createtime, updatetime
+    id,userid,ptype,perfectname,createtime,updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,10 +23,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserInterests" >
-    insert into user_interests (id, userid, perfectid, 
+    insert into user_interests (id, userid, ptype, 
       perfectname, createtime, updatetime
       )
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{perfectid,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{ptype,jdbcType=VARCHAR}, 
       #{perfectname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -39,8 +39,8 @@
       <if test="userid != null" >
         userid,
       </if>
-      <if test="perfectid != null" >
-        perfectid,
+      <if test="ptype != null" >
+        ptype,
       </if>
       <if test="perfectname != null" >
         perfectname,
@@ -59,8 +59,8 @@
       <if test="userid != null" >
         #{userid,jdbcType=VARCHAR},
       </if>
-      <if test="perfectid != null" >
-        #{perfectid,jdbcType=VARCHAR},
+      <if test="ptype != null" >
+        #{ptype,jdbcType=VARCHAR},
       </if>
       <if test="perfectname != null" >
         #{perfectname,jdbcType=VARCHAR},
@@ -73,14 +73,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserInterests" >
+  <update id="updateInterests" parameterType="com.longbei.appservice.entity.UserInterests" >
     update user_interests
     <set >
       <if test="userid != null" >
         userid = #{userid,jdbcType=VARCHAR},
       </if>
-      <if test="perfectid != null" >
-        perfectid = #{perfectid,jdbcType=VARCHAR},
+      <if test="ptype != null" >
+        ptype = #{ptype,jdbcType=VARCHAR},
       </if>
       <if test="perfectname != null" >
         perfectname = #{perfectname,jdbcType=VARCHAR},
@@ -97,7 +97,7 @@
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInterests" >
     update user_interests
     set userid = #{userid,jdbcType=VARCHAR},
-      perfectid = #{perfectid,jdbcType=VARCHAR},
+      ptype = #{ptype,jdbcType=VARCHAR},
       perfectname = #{perfectname,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}

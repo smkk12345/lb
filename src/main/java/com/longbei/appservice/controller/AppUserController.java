@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,17 +17,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserInterests;
+import com.longbei.appservice.service.DictAreaService;
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserInterestsService;
 import com.longbei.appservice.service.UserJobService;
 import com.longbei.appservice.service.UserSchoolService;
 import com.longbei.appservice.service.UserService;
+
 
 /**
  * @author smkk
@@ -44,7 +49,13 @@ public class AppUserController extends BaseController {
     private UserSchoolService userSchoolService;
     @Autowired
     private UserJobService userJobService;
+    @Autowired
+    private DictAreaService dictAreaService;
+    @Autowired
+    private UserInterestsService userInterestsService;
 
+    
+    
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
     
@@ -217,39 +228,158 @@ public class AppUserController extends BaseController {
         }
         return baseResp;
     }
+    
     /**
     * @Title: http://ip:port/appservice/user/updateUserInfo
     * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
-    * @param @param request  avatar  nickname  userid sex brief
+    * @param @param request userid avatar头像    username手机号    nickname昵称     realname真名   sex性别  
+    * @param @param city所在城市   area所在区域   brief个人简介   birthday生日   constellation星座   blood血型   feeling感情状态
     * @param @param code 0
     * @auther smkk
-    * @currentdate:2017年1月19日
+    * @currentdate:2017年2月23日
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
     @ResponseBody
     public BaseResp<Object> updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        String avatar = request.getParameter("avatar");
-        String nickname = request.getParameter("nickname");
         String userid = request.getParameter("userid");
+        String avatar = request.getParameter("avatar");
+        String username = request.getParameter("username");
+        String nickname = request.getParameter("nickname");
+        String realname = request.getParameter("realname");
         String sex = request.getParameter("sex");
+        String city = request.getParameter("city");
+        String area = request.getParameter("area");
         String brief = request.getParameter("brief");
-        logger.info("updateUserInfo params avatar={},nickname={},userid={},sex={}"
-                , avatar, nickname, userid, sex);
+        String birthday = request.getParameter("birthday");
+        String constellation = request.getParameter("constellation");
+        String blood = request.getParameter("blood");
+        String feeling = request.getParameter("feeling");        
+        
+        logger.info("updateUserInfo params userid={},avatar={},username={},nickname={},realname={},sex={},city={},area={},brief={},birthday={},constellation={},blood={},feeling={}"
+                , userid,avatar,username,nickname,realname,sex,city,area,brief,birthday,constellation,blood,feeling);
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
             UserInfo userInfo = new UserInfo(Long.parseLong(userid), nickname, avatar, sex);
+            userInfo.setUsername(username); 
             userInfo.setHcnickname("1");
-            userInfo.setBrief(brief);
+            userInfo.setRealname(realname); 
+            userInfo.setCity(city); 
+            userInfo.setArea(area); 
+            userInfo.setBrief(brief); 
+            userInfo.setBirthday(DateUtils.parseDate(birthday)); 
+            userInfo.setConstellation(constellation); 
+            userInfo.setBlood(blood);  
+            userInfo.setFeeling(feeling);
+    		Date date = new Date();
+    		userInfo.setUpdatetime(date);
             return userService.updateUserInfo(userInfo);
         } catch (Exception e) {
             logger.error("updateUserInfo error and msg = {}", e);
         }
         return baseResp;
     }
+    
+    
+    /**
+     * @Title: http://ip:port/appservice/user/selectInterests
+     * @Description: 获取用户感兴趣的标签列表
+     * @param userid
+     * @param code 0
+     * @auther smkk
+     * @currentdate:2017年2月23日
+     */
+    @SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "/selectInterests")
+     @ResponseBody
+     public BaseResp<Object> selectInterests(String userid) {
+     	logger.info("selectInterests and userid={}",userid);
+     	BaseResp<Object> baseResp = new BaseResp<>();
+     	if(StringUtils.isBlank(userid)){
+     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+     	}  
+     	try {
+     		baseResp.ok();
+     		baseResp.setData(new ArrayList<UserInterests>(){{
+ 		        add(new UserInterests("-1","全部"));
+ 		        add(new UserInterests("0","学习"));
+ 		        add(new UserInterests("1","运动"));
+ 		        add(new UserInterests("2","社交"));
+ 		        add(new UserInterests("3","艺术"));
+ 		        add(new UserInterests("4","生活"));
+ 		        add(new UserInterests("5","公益"));
+ 		        add(new UserInterests("6","文字"));
+ 		        add(new UserInterests("7","劳动"));
+ 		        add(new UserInterests("8","修养"));
+ 		        add(new UserInterests("9","健康"));
+     		}});
+     		return baseResp;	
+ 		} catch (Exception e) {
+ 			logger.error("selectInterests error and msg={}",e);
+ 		}
+     	return baseResp;
+     }
+    
+    /**
+     * @Title: http://ip:port/appservice/user/updateInterests
+     * @Description: 更改用户的兴趣信息
+     * @param userid
+     * @param code 0
+     * @auther IngaWu
+     * @currentdate:2017年2月23日
+     */   
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/updateInterests")
+    @ResponseBody
+    public BaseResp<Object> updateInterests(String id,String ptype,String perfectname) {
+    	logger.info("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+    	if(StringUtils.isBlank(id)){
+    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+    	}  
+    	try {
+    		baseResp = userInterestsService.updateInterests(Integer.parseInt(id),ptype,perfectname);
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("updateInterests error and msg={}",e);
+		}
+    	return baseResp;
+    }   
+    
+    /**
+     * @Title: http://ip:port/appservice/user/selectCityList
+     * @Description: 查找城市信息 
+     * @param pid 父级城市编号 (通过pid=null可查中国全部省份，通过省份可查其全部市，通过市可查其全部县)
+     * @param code 0
+     * @auther IngaWu
+     * @currentdate:2017年2月23日
+     */     
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectCityList")
+    @ResponseBody
+    public BaseResp<Object> selectCityList(String pid) {
+    	logger.info("selectCityList and pid={}",pid);
+    	BaseResp<Object> baseResp = new BaseResp<>();
+
+    	try {
+    		baseResp = dictAreaService.selectCityList(pid);
+    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    		}
+    		return baseResp;	
+		} catch (Exception e) {
+			logger.error("selectCityList error and msg={}",e);
+		}
+    	return baseResp;
+    }   
+    
     
     
     /**  http://ip:port/appservice/user/updateNickName
@@ -536,11 +666,13 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectSchoolList(String userid) {
     	logger.info("selectSchoolList and userid={}",userid);
     	BaseResp<Object> baseResp = new BaseResp<>();
+        int startNum = 0;
+        int pageSize = 15;
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid));
+    		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),startNum,pageSize);
     		if(baseResp.getCode() == Constant.STATUS_SYS_00){
     			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
     		}
@@ -655,11 +787,13 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectJobList(String userid) {
     	logger.info("selectJobList and userid={}",userid);
     	BaseResp<Object> baseResp = new BaseResp<>();
+        int startNum = 0;
+        int pageSize = 15;
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.selectJobList(Long.parseLong(userid));
+    		baseResp = userJobService.selectJobList(Long.parseLong(userid),startNum,pageSize);
     		if(baseResp.getCode() == Constant.STATUS_SYS_00){
     			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
     		}
@@ -727,5 +861,5 @@ public class AppUserController extends BaseController {
     	return baseResp;
     }
     //--------------------工作经历end-------------------------------     
-
+    
 }

@@ -11,6 +11,6 @@ public interface UserJobMapper {
     int insertJob(UserJob data);
     int deleteJob(@Param("id") int id,@Param("userid") long userid);
     UserJob selectJobById(@Param("id")int id);
-    List<UserJob> selectJobList(@Param("userid")long userid);
+    List<UserJob> selectJobList(@Param("userid")long userid,@Param("startNum") int startNum,@Param("pageSize")int pageSize);
     int updateJob(UserJob data);
 }

@@ -78,10 +78,10 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectSchoolList(long userid) {
+	public BaseResp<Object> selectSchoolList(long userid,int startNum,int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			List<UserSchool> list = userSchoolMapper.selectSchoolList(userid);
+			List<UserSchool> list = userSchoolMapper.selectSchoolList(userid,startNum,pageSize);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);	
 		} catch (Exception e) {
