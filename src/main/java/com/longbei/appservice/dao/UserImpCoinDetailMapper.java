@@ -26,6 +26,7 @@ public interface UserImpCoinDetailMapper {
 	 * return_type
 	 * UserImpCoinDetailMapper
 	 */
-    List<UserImpCoinDetail> selectListByUserid(@Param("userid") long userid, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+    List<UserImpCoinDetail> selectListByUserid(@Param("userid") long userid, @Param("pageNo") int pageNo, 
+    		@Param("pageSize") int pageSize);
     
 }

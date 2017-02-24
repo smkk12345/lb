@@ -33,6 +33,11 @@
     and yearmonth = #{yearmonth} 
   </select>
   
+  <select id="selectCountByUserid" resultType="int" >
+    select count(*) from user_checkin_detail
+    where userid = #{userid} 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_checkin_detail
     where id = #{id,jdbcType=INTEGER}

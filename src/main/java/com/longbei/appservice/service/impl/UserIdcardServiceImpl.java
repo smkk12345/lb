@@ -78,6 +78,9 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 			UserIdcard userIdcard = userIdcardMapper.selectByUserid(userid);
 			if(null != userIdcard){
 				String imgStr = userIdcard.getIdcardimage().replaceAll("&quot;", "");
+				if(imgStr.indexOf("[") != -1){
+					imgStr = imgStr.substring(1, imgStr.length()-1);
+				}
 				String[] imgArr = imgStr.split(",");
 				if (imgArr.length == 2) {
 					userIdcard.setFrontidcardimage(Constant.OSS_CDN + imgArr[0]);

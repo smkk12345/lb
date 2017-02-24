@@ -261,15 +261,31 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	public BaseResp<Object> selectDetailListByYearmonth(long userid, Integer yearmonth) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			int continuousday = 0;
 			List<UserCheckinDetail> list = userCheckinDetailMapper.selectDetailListByYearmonth(userid, yearmonth);
 			if (null != list && list.size() > 0) {
+				//获取redis中的连续签到天数
+				// 判断redis中是否存在 
+				boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
+						Constant.RP_USER_CHECK_VALUE + userid);
+				if(result){
+					//连续签到天数
+					String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
+							Constant.RP_USER_CHECK_VALUE + userid);
+					continuousday = Integer.parseInt(redisvalue);
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			} else {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_29, Constant.RTNINFO_SYS_29);
 			}
+			reseResp.getExpandData().put("continuousday", continuousday);
+			//共签到多少天
+			int count = userCheckinDetailMapper.selectCountByUserid(userid);
+			reseResp.getExpandData().put("allday", count);
+			reseResp.getExpandData().put("sysRuleCheckin", SysRulesCache.sysRuleCheckinMap);
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectDetailList userid = {}, msg = {}", userid, e);
+			logger.error("selectDetailListByYearmonth userid = {}, yearmonth = {}, msg = {}", userid, yearmonth, e);
 		}
 		return reseResp;
 	}
