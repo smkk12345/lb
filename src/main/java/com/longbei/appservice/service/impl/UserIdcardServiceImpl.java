@@ -9,7 +9,9 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserIdcardMapper;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserIdcard;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserIdcardService;
 
 @Service("userIdcardService")
@@ -17,6 +19,8 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 
 	@Autowired
 	private UserIdcardMapper userIdcardMapper;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserIdcardServiceImpl.class);
 	
@@ -56,7 +60,44 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 		if(StringUtils.hasBlankParams(userid)){
 			return null;
 		}
-		return userIdcardMapper.selectByUserid(userid);
+		return userIdcardMapper.selectByUserid(Long.parseLong(userid));
+	}
+	
+	/**
+	 * @author yinxc
+	 * 帐号与安全(获取身份验证状态)
+	 * 2017年2月24日
+	 * return_type
+	 * UserIdcardService
+	 */
+	@Override
+	public BaseResp<Object> userSafety(long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+			UserIdcard userIdcard = userIdcardMapper.selectByUserid(userid);
+			if(null != userIdcard){
+				String imgStr = userIdcard.getIdcardimage().replaceAll("&quot;", "");
+				String[] imgArr = imgStr.split(",");
+				if (imgArr.length == 2) {
+					userIdcard.setFrontidcardimage(Constant.OSS_CDN + imgArr[0]);
+					userIdcard.setOppositeidcardimage(Constant.OSS_CDN + imgArr[1]);
+                } else {
+                	userIdcard.setFrontidcardimage(imgStr);
+                	userIdcard.setOppositeidcardimage(imgStr);
+                }
+			}else{
+				userIdcard = new UserIdcard();
+				userIdcard.setValidateidcard("0");
+			}
+			userIdcard.setRealname(userInfo.getRealname());
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			reseResp.setData(userIdcard);
+			reseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
+		} catch (Exception e) {
+			logger.error("userSafety userid = {}, msg = {}", userid, e);
+		}
+		return reseResp;
 	}
 
 	@Override
