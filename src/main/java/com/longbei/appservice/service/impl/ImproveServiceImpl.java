@@ -1394,8 +1394,8 @@ public class ImproveServiceImpl implements ImproveService{
         if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
             businessid = null;
         }
-        if(Constant.WORKFLOW1.equals(workflow)){
-            pickey = "["+pickey+"]";
+        if(Constant.WORKFLOW2.equals(workflow)){
+            pickey = "[\""+pickey+"\"]";
         }
         try{
             String tableName = getTableNameByBusinessType(type);

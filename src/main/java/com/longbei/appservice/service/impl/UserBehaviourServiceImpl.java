@@ -317,5 +317,14 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
     }
 
+    /**
+     *  进步币发生变化
+     */
+
+
+    /**
+     *  龙币发生变化
+     */
+
 
 }
