@@ -61,7 +61,7 @@ public class AppUserController extends BaseController {
  	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "init")
     @ResponseBody
-    public BaseResp<Object> checkIn(@RequestParam("userid") String userid) {
+    public BaseResp<Object> init(@RequestParam("userid") String userid) {
  		BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

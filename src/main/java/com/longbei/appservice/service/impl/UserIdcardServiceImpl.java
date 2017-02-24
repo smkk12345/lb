@@ -30,12 +30,14 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 				//存在    修改
 				boolean temp = updateUserIdcard(record);
 				if (temp) {
+					reseResp.setData(record);
 					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				}
 			}
 			//添加
 			boolean temp = insertUserIdcard(record);
 			if (temp) {
+				reseResp.setData(record);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
