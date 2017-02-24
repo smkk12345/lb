@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,6 @@ import com.longbei.appservice.dao.UserCheckinDetailMapper;
 import com.longbei.appservice.dao.UserCheckinInfoMapper;
 import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.SysRuleCheckin;
-import com.longbei.appservice.entity.UserCheckinDetail;
-import com.longbei.appservice.entity.UserCheckinInfo;
-import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserCheckinDetailService;
 
@@ -49,7 +47,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserImpCoinDetailMapper userImpCoinDetailMapper;
-
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private SpringJedisDao springJedisDao;
 
@@ -67,10 +66,12 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			boolean temp = insert(record);
 			if (temp) {
 				//签到成功后，+积分---十全十美类型中的社交类型   
-				int checkin = userBehaviourService.getPointByType(record.getUserid(),"DAILY_CHECKIN");
+//				int checkin = userBehaviourService.getPointByType(record.getUserid(),"DAILY_CHECKIN");
 				//十全十美类型---  2,"社交"
 				String pType = SysRulesCache.perfectTenMap.get(2);
-				userBehaviourService.levelUp(record.getUserid(), checkin, pType);
+//				userBehaviourService.levelUp(record.getUserid(), checkin, pType);
+				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(record.getUserid());
+				userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
