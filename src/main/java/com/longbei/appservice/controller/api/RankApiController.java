@@ -83,7 +83,7 @@ public class RankApiController {
     public BaseResp selectRankImageList(@RequestBody RankImage rankImage, String pageno, String pagesize, HttpServletRequest request){
 
         Page<RankImage> rankImages = rankService.selectRankImageList
-                (Integer.parseInt(pageno),Integer.parseInt(pagesize));
+                (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
         BaseResp<Page<RankImage>> ranks = BaseResp.ok();
         ranks.setData(rankImages);
         return ranks;

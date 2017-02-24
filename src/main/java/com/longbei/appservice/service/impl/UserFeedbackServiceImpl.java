@@ -26,8 +26,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 			}
 		} catch (Exception e) {
 			logger.error("insertSelective record={},msg={}",record,e);
