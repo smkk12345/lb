@@ -23,12 +23,9 @@ import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
-<<<<<<< HEAD
 import com.longbei.appservice.entity.UserInterests;
 import com.longbei.appservice.service.DictAreaService;
-=======
 import com.longbei.appservice.service.UserCheckinDetailService;
->>>>>>> 7203875b6bd7e20f9a80b0d51ef2bd9054fb1d39
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserIdcardService;
 import com.longbei.appservice.service.UserInterestsService;
@@ -54,13 +51,11 @@ public class AppUserController extends BaseController {
     @Autowired
     private UserJobService userJobService;
     @Autowired
-<<<<<<< HEAD
     private DictAreaService dictAreaService;
     @Autowired
     private UserInterestsService userInterestsService;
-=======
+    @Autowired
     private UserCheckinDetailService userCheckinDetailService;
->>>>>>> 7203875b6bd7e20f9a80b0d51ef2bd9054fb1d39
 
     
     
