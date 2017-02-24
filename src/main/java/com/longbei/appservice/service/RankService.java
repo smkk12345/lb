@@ -86,7 +86,7 @@ public interface RankService {
 
 
 
-    Page<RankImage> selectRankImageList(int startno, int pagesize);
+    Page<RankImage> selectRankImageList(RankImage rankImage,int startno, int pagesize);
 
 
     boolean deleteRankImage(String rankimageid);

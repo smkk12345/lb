@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.dao.RankImageMapper;
 import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import net.sf.json.JSONObject;
@@ -146,10 +147,10 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
-    public Page<RankImage> selectRankImageList(int pageno, int pagesize) {
+    public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
         int totalcount = rankImageMapper.selectListCount(new RankImage());
         pageno = Page.setPageNo(pageno,totalcount,pagesize);
-        List<RankImage> rankImages = rankImageMapper.selectListWithPage(new RankImage(),(pageno-1)*pagesize,pagesize);
+        List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
         Page<RankImage> page = new Page<RankImage>(pageno,pagesize,totalcount,rankImages);
         return page;
     }
