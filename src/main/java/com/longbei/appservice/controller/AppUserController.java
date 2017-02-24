@@ -55,7 +55,7 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/appservice/user/checkinDate
      * @Description: 用户每月签到详情及搜索
      * @param @param userid
-     * @param @param 
+     * @param @param yearmonth  格式为：201702...
      * @auther yinxc
      * @currentdate:2017年2月23日
      */
@@ -66,7 +66,7 @@ public class AppUserController extends BaseController {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-         }
+        }
   		try {
   			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
          } catch (Exception e) {

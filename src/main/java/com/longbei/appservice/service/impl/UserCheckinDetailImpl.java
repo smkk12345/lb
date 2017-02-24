@@ -55,7 +55,6 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserCheckinDetailImpl.class);
 
-	@Override
 	public BaseResp<Object> insertSelective(UserCheckinDetail record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
@@ -214,13 +213,11 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		return temp > 0 ? true : false;
 	}
 
-	@Override
 	public UserCheckinDetail selectByPrimaryKey(Integer id) {
 		UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectByPrimaryKey(id);
 		return userCheckinDetail;
 	}
 
-	@Override
 	public BaseResp<Object> updateByPrimaryKeySelective(UserCheckinDetail record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {

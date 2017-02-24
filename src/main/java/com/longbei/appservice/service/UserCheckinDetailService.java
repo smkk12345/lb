@@ -9,7 +9,6 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.UserCheckinDetail;
 
 /**
  * @author smkk
@@ -17,11 +16,11 @@ import com.longbei.appservice.entity.UserCheckinDetail;
  */
 public interface UserCheckinDetailService {
 	
-	BaseResp<Object> insertSelective(UserCheckinDetail record);
+//	BaseResp<Object> insertSelective(UserCheckinDetail record);
 	
-	UserCheckinDetail selectByPrimaryKey(Integer id);
+//	UserCheckinDetail selectByPrimaryKey(Integer id);
 	
-	BaseResp<Object> updateByPrimaryKeySelective(UserCheckinDetail record);
+//	BaseResp<Object> updateByPrimaryKeySelective(UserCheckinDetail record);
 	
 	/**
 	 * @author yinxc

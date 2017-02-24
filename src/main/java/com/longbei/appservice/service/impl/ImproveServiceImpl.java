@@ -741,6 +741,42 @@ public class ImproveServiceImpl implements ImproveService{
         return false;
     }
 
+    /**
+     * 获取我的进步列表(根据lastdate时间获取当天的进步列表)
+     * @param userid  用户id
+     * @param ctype  0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+     * @param lastdate  最后一条时间
+     * @param pagesize  每页显示条数
+     * @return
+     */
+	@Override
+	public List<Improve> selectImproveListByUserDate(String userid, String ctype, Date lastdate, int pagesize) {
+		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype,lastdate,pagesize);
+        List<Improve> improves = new ArrayList<>();
+
+        for (int i = 0; i < timeLines.size() ; i++){
+            TimeLine timeLine = timeLines.get(i);
+            TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+            Improve improve = new Improve();
+            improve.setImpid(timeLineDetail.getImproveId());
+            improve.setBrief(timeLineDetail.getBrief());
+            improve.setPickey(timeLineDetail.getPhotos());
+            improve.setFilekey(timeLineDetail.getFileKey());
+            improve.setSourcekey(timeLineDetail.getSourcekey());
+            improve.setItype(timeLineDetail.getItype());
+            improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+            improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            //初始化赞，花，钻数量
+            initImproveAttachInfo(improve);
+            //初始化点赞，送花，送钻简略信息
+            initLikeFlowerDiamondInfo(improve);
+            //初始化是否 点赞 送花 送钻 收藏
+            initIsOptionForImprove(userid,improve);
+            improves.add(improve);
+        }
+        return improves;
+    }
+
     @Override
     public List<Improve> selectImproveListByUser(String userid,String ctype,Date lastdate,int pagesize) {
 
