@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
@@ -150,6 +151,40 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
         return baseResp;
     }
+
+    /**
+     * 通过用户id和操作类型获取龙分
+     * @param userid 用户id
+     * @param operateType 操作类型
+     * @return
+     */
+    @Override
+    public int getPointByType(long userid, String operateType) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        //如果有限制  去redis中去找
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = Constant_point.getStaticProperty(operateType);
+        String limitField = operateType+"_LIMIT";
+        if(Constant_point.hasContain(limitField)){
+            int limitValue = Constant_point.getStaticProperty(limitField);
+            String value = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid,
+                    dateStr+limitField);
+            if(StringUtils.isBlank(value)){
+                return result;
+            }else{
+                int curValue = Integer.parseInt(value);
+                if(curValue+result > limitValue){//就不给了
+                    return 0;
+                }else{
+                    return result;
+                }
+            }
+        }else{
+            return result;
+        }
+    }
+
+
 
     /**
      * 更新用户当前龙分  总龙分

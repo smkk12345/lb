@@ -28,6 +28,12 @@ public interface UserBehaviourService {
      * @return
      */
     BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,String pType);
+    /**
+     * 获取龙分接口
+     * @param userid 用户id
+     * @param operateType 操作类型
+     */
+    int getPointByType(long userid,String operateType);
 
 
 }
