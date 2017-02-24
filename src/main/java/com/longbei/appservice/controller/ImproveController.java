@@ -37,7 +37,41 @@ public class ImproveController {
 
 	@Autowired
 	private ImpComplaintsService impComplaintsService;
-
+	
+	
+	
+	/**
+	 * url : http://ip:port/app_service/improve/line/daylist
+	 * @Description: 获取参数lastdate当天的用户进步列表
+	 * @param userid 用户id
+	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+	 * @param lastdate  当天日期
+	 * @param pagesize  显示条数
+	 * @return
+	 * @author yinxc
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "line/daylist")
+	public BaseResp daylist(String userid, String ctype, String lastdate, String pagesize){
+		if (StringUtils.hasBlankParams(userid, ctype, lastdate)){
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		List<Improve> improves = null;
+		try {
+			improves = improveService.selectImproveListByUserDate(userid, ctype,
+					lastdate == null?null: DateUtils.parseDate(lastdate),
+					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
+		} catch (Exception e) {
+			logger.error("line daylist userid = {}, ctype = {}, lastdate = {}, msg = {}", userid, ctype, lastdate, e);
+		}
+		if (null == improves) {
+			return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+		}
+		BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+		baseres.setData(improves);
+		return baseres;
+	}
 
 	/**
 	 * @Title: http://ip:port/app_service/improve/addImpComplaints
@@ -366,7 +400,7 @@ public class ImproveController {
 		baseres.setData(improves);
 		return baseres;
 	}
-
+	
 	/**
 	 * url : http://ip:port/app_service/improve/line/list
 	 * @param userid 用户id
