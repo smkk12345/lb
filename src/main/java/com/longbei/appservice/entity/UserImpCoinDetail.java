@@ -9,8 +9,12 @@ public class UserImpCoinDetail {
     private Integer id;
 
     private Long userid;
+    
+    private Long friendid;
 
-    private String origin;//来源   0:签到   1:发进步
+    private String origin;//来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物  
+    						//6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
+    						//9：公益抽奖消耗进步币  
 
     private Integer number;//数量
 
@@ -19,6 +23,10 @@ public class UserImpCoinDetail {
     private Date createtime;
 
     private Date updatetime;
+    
+    private AppUserMongoEntity appUserMongoEntityUserid; //用户进步币信息----Userid
+	
+	private AppUserMongoEntity appUserMongoEntityFriendid; //用户进步币信息----Friendid
 
     /**
      * 
@@ -53,7 +61,16 @@ public class UserImpCoinDetail {
         this.userid = userid;
     }
 
-    /**
+    @JsonInclude(Include.ALWAYS)
+    public Long getFriendid() {
+		return friendid;
+	}
+
+	public void setFriendid(Long friendid) {
+		this.friendid = friendid;
+	}
+
+	/**
      * 来源     0:签到   1:发进步
      * @return origin 来源      0:签到   1:发进步
      */
@@ -135,4 +152,20 @@ public class UserImpCoinDetail {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+	public AppUserMongoEntity getAppUserMongoEntityUserid() {
+		return appUserMongoEntityUserid;
+	}
+
+	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
+		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityFriendid() {
+		return appUserMongoEntityFriendid;
+	}
+
+	public void setAppUserMongoEntityFriendid(AppUserMongoEntity appUserMongoEntityFriendid) {
+		this.appUserMongoEntityFriendid = appUserMongoEntityFriendid;
+	}
 }

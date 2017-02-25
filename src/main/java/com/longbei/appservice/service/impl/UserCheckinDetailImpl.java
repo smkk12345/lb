@@ -32,6 +32,7 @@ import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserCheckinDetailService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 
 /**
  * @author yinxc 签到 2017年2月22日 return_type UserCheckinDetailImpl
@@ -51,6 +52,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private SpringJedisDao springJedisDao;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserCheckinDetailImpl.class);
 
@@ -111,7 +114,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					reseResp = insertSelective(userCheckinDetail);
 					//+进步币
 					SysRuleCheckin sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(1);
-					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney());
+					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
 				}else{
 					UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
 					userCheckinDetail.setUserid(userid);
@@ -133,7 +136,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					}else{
 						sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(res);
 					}
-					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney());
+					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
 					
 					if(res >= 5){
 						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6) 
@@ -166,7 +169,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				reseResp = insertSelective(userCheckinDetail);
 				//+进步币
 				SysRuleCheckin sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(1);
-				insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney());
+				insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
 			}
 			
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -178,19 +181,20 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	
 	/**
 	 * @author yinxc
-	 * 添加进步币(签到)
+	 * 添加进步币origin
 	 * 2017年2月23日
 	 * void
 	 * UserCheckinDetailImpl
 	 */
-	private void insertUserImpCoinDetail(long userid, int number){
-		UserImpCoinDetail detail = new UserImpCoinDetail();
-		detail.setCreatetime(new Date());
-		detail.setNumber(number);
-		detail.setOrigin(Constant.USER_IMP_COIN_CHECK);
-		detail.setUpdatetime(new Date());
-		detail.setUserid(userid);
-		userImpCoinDetailMapper.insertSelective(detail);
+	private void insertUserImpCoinDetail(long userid, int number, String origin){
+//		UserImpCoinDetail detail = new UserImpCoinDetail();
+//		detail.setCreatetime(new Date());
+//		detail.setNumber(number);
+//		detail.setOrigin(Constant.USER_IMP_COIN_CHECK);
+//		detail.setUpdatetime(new Date());
+//		detail.setUserid(userid);
+//		userImpCoinDetailMapper.insertSelective(detail);
+		userImpCoinDetailService.insertPublic(userid, origin, number, 0, 0);
 	}
 	
 	/**
