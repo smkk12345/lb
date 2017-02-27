@@ -9,17 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLower;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentLowerMongoService;
+import com.longbei.appservice.service.UserBehaviourService;
 
 import net.sf.json.JSONObject;
 
@@ -34,6 +38,10 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	private CommentMongoDao commentMongoDao;
 	@Autowired
 	private UserMsgMapper userMsgMapper;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentLowerMongoServiceImpl.class);
 	
@@ -46,6 +54,12 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			updateCountSizeInsert(commentLower.getCommentid());
 			//添加评论消息
 			insertMsg(commentLower);
+			
+			//添加子评论---    +积分
+			//获取十全十美类型---社交
+			String pType = SysRulesCache.perfectTenMap.get(2);
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getUserid()));//此处通过id获取用户信息
+			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertCommentLower commentLower={},msg={}",commentLower,e);
