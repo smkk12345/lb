@@ -78,6 +78,8 @@ public class ImproveServiceImpl implements ImproveService{
     private TimeLineDetailDao timeLineDetailDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private ImproveTopicMapper improveTopicMapper;
 
 
     /**
@@ -887,6 +889,17 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
+     * 超级话题
+     * @param improve
+     */
+    private void initTopicInfo(Improve improve){
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        if(null != list){
+            improve.setImproveTopicList(list);
+        }
+    }
+
+    /**
      * 初始化进步中用户信息
      * @param improve
      * @author:luye
@@ -1460,9 +1473,11 @@ public class ImproveServiceImpl implements ImproveService{
                 initLikeFlowerDiamondInfo(improve);
                 //初始化是否 点赞 送花 送钻 收藏
                 initIsOptionForImprove(userid,improve);
+                //初始化超级话题列表
+                initTopicInfo(improve);
                 baseResp.setData(improve);
             }
-            return baseResp.ok();
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }

@@ -8,15 +8,23 @@
     <result column="supertopicid" property="supertopicid" jdbcType="BIGINT" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="topictitle" property="topictitle" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, impid, gtype, supertopicid, createtime, updatetime
+    id, impid, gtype, supertopicid, createtime, updatetime,topictitle
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from improve_topic
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByImpId" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    improve_topic
+    where impid=#{impid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from improve_topic

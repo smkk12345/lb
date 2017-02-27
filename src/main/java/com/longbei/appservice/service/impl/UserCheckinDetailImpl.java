@@ -14,8 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
+import com.sun.corba.se.spi.orbutil.fsm.Guard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,20 +109,11 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				}else if(cha > Integer.parseInt(redisvalue)){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
-					
+					operate(userid);
 					addRedisCheck(userid, day, "1");
-					
-					UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
-					userCheckinDetail.setUserid(userid);
-					reseResp = insertSelective(userCheckinDetail);
-					//+进步币
-					SysRuleCheckin sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(1);
-					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
+
 				}else{
-					UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
-					userCheckinDetail.setUserid(userid);
-					reseResp = insertSelective(userCheckinDetail);
-					
+					operate(userid);
 					//连续签到 +1
 					springJedisDao.increment(Constant.RP_USER_CHECK + userid, 
 							Constant.RP_USER_CHECK_VALUE + userid, 1);
@@ -129,15 +123,6 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 //						int res = Integer.parseInt(day) - Integer.parseInt(addDate);
 					int res = Integer.parseInt(redisvalue) + 1;
 					//+进步币
-					SysRuleCheckin sysRuleCheckin = null;
-					if(res >= 7){
-						//7天以上   奖励规则一样
-						sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(7);
-					}else{
-						sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(res);
-					}
-					insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
-					
 					if(res >= 5){
 						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6) 
 							+ "-" + redisDate.substring(6, redisDate.length());
@@ -161,15 +146,9 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					}
 				}
 			}else{
+				operate(userid);
 				//不存在    添加
 				addRedisCheck(userid, day, "1");
-				
-				UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
-				userCheckinDetail.setUserid(userid);
-				reseResp = insertSelective(userCheckinDetail);
-				//+进步币
-				SysRuleCheckin sysRuleCheckin = SysRulesCache.sysRuleCheckinMap.get(1);
-				insertUserImpCoinDetail(userid, sysRuleCheckin.getAwardmoney(), Constant.USER_IMP_COIN_CHECK);
 			}
 			
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -178,7 +157,26 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		}
 		return reseResp;
 	}
-	
+
+	//
+	private BaseResp<Object> operate(long userid){
+		BaseResp reseResp = new BaseResp();
+		UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
+		userCheckinDetail.setUserid(userid);
+		reseResp = insertSelective(userCheckinDetail);
+		//+进步币
+		if(ResultUtil.isSuccess(reseResp)){
+			String pType = SysRulesCache.perfectTenMap.get(2);
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType);
+			String icon = (String)reseResp.getExpandData().get("impIcon");
+			if(Integer.parseInt(icon) != 0){
+				insertUserImpCoinDetail(userid, Integer.parseInt(icon), Constant.USER_IMP_COIN_CHECK);
+			}
+		}
+		return reseResp;
+	}
+
 	/**
 	 * @author yinxc
 	 * 添加进步币origin

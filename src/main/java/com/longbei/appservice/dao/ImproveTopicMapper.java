@@ -3,6 +3,8 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.ImproveTopic;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface ImproveTopicMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -15,6 +17,8 @@ public interface ImproveTopicMapper {
     int updateByPrimaryKeySelective(ImproveTopic record);
 
     int updateByPrimaryKey(ImproveTopic record);
+
+    List<ImproveTopic> selectByImpId(@Param("impid") long impid);
 
 
 }
