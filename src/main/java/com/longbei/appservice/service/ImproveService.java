@@ -293,5 +293,13 @@ public interface ImproveService {
 
     BaseResp<List<ImpAllDetail>> selectImproveLFDList(String impid, String listtype,int pagesize, Date lastdate);
 
-
+    /**
+     * 获取进步详情
+     * @param userid
+     * @param impid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    public BaseResp select(String userid, String impid, String businesstype,String businessid);
 }
