@@ -80,6 +80,9 @@ alidayu:
         signName: \u9F99\u676F
 logging:
         config: classpath:longbei-logback.xml
+        level.com.longbei.appservice.dao:
+                                          DEBUG
+
 ##        path: ../log
 
 

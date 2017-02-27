@@ -23,6 +23,16 @@ public class Award {
 
     private Date updatetime;//更新时间
 
+    private AwardClassify awardClassify; //奖品分类信息
+
+    public AwardClassify getAwardClassify() {
+        return awardClassify;
+    }
+
+    public void setAwardClassify(AwardClassify awardClassify) {
+        this.awardClassify = awardClassify;
+    }
+
     /**
      * 
      * @return id 

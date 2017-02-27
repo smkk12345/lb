@@ -14,6 +14,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankCheckDetail;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
@@ -177,9 +178,32 @@ public class RankApiController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "publish")
-    public BaseResp<Object> publishRank(String rankid){
-        return null;
+    @RequestMapping(value = "publish/{rankid}")
+    public BaseResp<Object> publishRank(@PathVariable("rankid") String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.publishRankImage(rankid);
+        } catch (Exception e) {
+            logger.error("publish rank rankid={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 审核榜单
+     * @param rankCheckDetail
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "check")
+    public BaseResp<Object> checkRank(@RequestBody RankCheckDetail rankCheckDetail){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.checkRankImage(rankCheckDetail);
+        } catch (Exception e) {
+            logger.error("check rank rankid={} is error:{}",rankCheckDetail.getRankid(),e);
+        }
+        return baseResp;
     }
 
     /**

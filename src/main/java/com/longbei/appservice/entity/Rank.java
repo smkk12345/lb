@@ -1,6 +1,10 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
+import java.util.List;
 
 public class Rank {
     private Integer id;
@@ -21,11 +25,19 @@ public class Rank {
 
     private String rankphotos;//榜单图片
 
-    private Integer rankrate;//榜单中奖率
+    private Double rankrate;//榜单中奖率
+
+    private Date sstarttime;
 
     private Date starttime;//开始时间
 
+    private Date estarttime;
+
+    private Date sendtime;
+
     private Date endtime;//结束时间
+
+    private Date eendtime;
 
     private String areaname;//区域名字
 
@@ -62,12 +74,224 @@ public class Rank {
 
     private String companybrief;  //公司简介
 
-    public Long getRankid() {
-        return rankid;
+    private String sourcetype;  //来源类型  0 - 运营  1 - app 2 - b
+
+
+    //-------
+    private String joinlastday; //入榜截止天数
+
+    private String maximprovenum; //每人每日最多可更新微进步
+
+    private String minimprovenum; //每人每日最多可更新微进步
+
+    private String ischeck;  //本榜获奖名单开启人工审核 0 - 不开 1 - 开
+
+    private String isrealname; //本榜须实名认证 0 - 不需要 1 - 需要
+
+    private String islonglevel; //本榜须达到龙级  0 - 不需要 1 - 需要
+
+    private String longlevel; //龙级
+
+    private String isperfectlevel; //本榜须达到单项能级 0 - 不需要 1 - 需要
+
+    private String perfectlevel; //能级
+
+    private String perfectid; //能级id
+
+    private String iswork; //本榜须工作认证 0 - 不需要 1 - 需要
+
+    private String isschool; //本榜须学历认证 0 - 不需要 1 - 需要
+
+    private String isgroup; //本榜同时创建龙群 0 - 不需要 1 - 需要
+
+    private String rankcardid; //榜主名片id
+
+    private String isup; // 0 - 未发布  1 - 已发布
+
+    private String isdel; // 0 - 未删除  1 - 已删除
+
+    //--------
+
+
+    public String getIsup() {
+        return isup;
     }
 
-    public void setRankid(Long rankid) {
-        this.rankid = rankid;
+    public void setIsup(String isup) {
+        this.isup = isup;
+    }
+
+    public String getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(String isdel) {
+        this.isdel = isdel;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getSstarttime() {
+        return sstarttime;
+    }
+
+    public void setSstarttime(Date sstarttime) {
+        this.sstarttime = sstarttime;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEstarttime() {
+        return estarttime;
+    }
+
+    public void setEstarttime(Date estarttime) {
+        this.estarttime = estarttime;
+    }
+
+    public Date getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(Date sendtime) {
+        this.sendtime = sendtime;
+    }
+
+    public Date getEendtime() {
+        return eendtime;
+    }
+
+    public void setEendtime(Date eendtime) {
+        this.eendtime = eendtime;
+    }
+
+    private List<RankAward> rankAwards; //榜单奖品
+
+    public String getJoinlastday() {
+        return joinlastday;
+    }
+
+    public void setJoinlastday(String joinlastday) {
+        this.joinlastday = joinlastday;
+    }
+
+    public String getMaximprovenum() {
+        return maximprovenum;
+    }
+
+    public void setMaximprovenum(String maximprovenum) {
+        this.maximprovenum = maximprovenum;
+    }
+
+    public String getMinimprovenum() {
+        return minimprovenum;
+    }
+
+    public void setMinimprovenum(String minimprovenum) {
+        this.minimprovenum = minimprovenum;
+    }
+
+    public String getIscheck() {
+        return ischeck;
+    }
+
+    public void setIscheck(String ischeck) {
+        this.ischeck = ischeck;
+    }
+
+    public String getIsrealname() {
+        return isrealname;
+    }
+
+    public void setIsrealname(String isrealname) {
+        this.isrealname = isrealname;
+    }
+
+    public String getIslonglevel() {
+        return islonglevel;
+    }
+
+    public void setIslonglevel(String islonglevel) {
+        this.islonglevel = islonglevel;
+    }
+
+    public String getLonglevel() {
+        return longlevel;
+    }
+
+    public void setLonglevel(String longlevel) {
+        this.longlevel = longlevel;
+    }
+
+    public String getIsperfectlevel() {
+        return isperfectlevel;
+    }
+
+    public void setIsperfectlevel(String isperfectlevel) {
+        this.isperfectlevel = isperfectlevel;
+    }
+
+    public String getPerfectlevel() {
+        return perfectlevel;
+    }
+
+    public void setPerfectlevel(String perfectlevel) {
+        this.perfectlevel = perfectlevel;
+    }
+
+    public String getPerfectid() {
+        return perfectid;
+    }
+
+    public void setPerfectid(String perfectid) {
+        this.perfectid = perfectid;
+    }
+
+    public String getIswork() {
+        return iswork;
+    }
+
+    public void setIswork(String iswork) {
+        this.iswork = iswork;
+    }
+
+    public String getIsschool() {
+        return isschool;
+    }
+
+    public void setIsschool(String isschool) {
+        this.isschool = isschool;
+    }
+
+    public String getIsgroup() {
+        return isgroup;
+    }
+
+    public void setIsgroup(String isgroup) {
+        this.isgroup = isgroup;
+    }
+
+    public String getRankcardid() {
+        return rankcardid;
+    }
+
+    public void setRankcardid(String rankcardid) {
+        this.rankcardid = rankcardid;
+    }
+
+    public List<RankAward> getRankAwards() {
+        return rankAwards;
+    }
+
+    public void setRankAwards(List<RankAward> rankAwards) {
+        this.rankAwards = rankAwards;
+    }
+
+    public String getSourcetype() {
+        return sourcetype;
+    }
+
+    public void setSourcetype(String sourcetype) {
+        this.sourcetype = sourcetype;
     }
 
     public String getCompanyname() {
@@ -94,17 +318,26 @@ public class Rank {
         this.companybrief = companybrief;
     }
 
+
+    public Long getRankid() {
+        return rankid;
+    }
+
+    public void setRankid(Long rankid) {
+        this.rankid = rankid;
+    }
+
     /**
-     * 
-     * @return id 
+     *
+     * @return id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id 
+     *
+     * @param id
      */
     public void setId(Integer id) {
         this.id = id;
@@ -222,19 +455,11 @@ public class Rank {
         this.rankphotos = rankphotos == null ? null : rankphotos.trim();
     }
 
-    /**
-     * 榜单中奖率
-     * @return rankrate 榜单中奖率
-     */
-    public Integer getRankrate() {
+    public Double getRankrate() {
         return rankrate;
     }
 
-    /**
-     * 榜单中奖率
-     * @param rankrate 榜单中奖率
-     */
-    public void setRankrate(Integer rankrate) {
+    public void setRankrate(Double rankrate) {
         this.rankrate = rankrate;
     }
 
@@ -242,12 +467,14 @@ public class Rank {
      * 开始时间
      * @return starttime 开始时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getStarttime() {
         return starttime;
     }
 
     /**
-     * 开始时间
+     * 开始时间ååååå
      * @param starttime 开始时间
      */
     public void setStarttime(Date starttime) {
@@ -258,6 +485,8 @@ public class Rank {
      * 结束时间
      * @return endtime 结束时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEndtime() {
         return endtime;
     }
@@ -463,16 +692,16 @@ public class Rank {
     }
 
     /**
-     * 口令 
-     * @return codeword 口令 
+     * 口令
+     * @return codeword 口令
      */
     public String getCodeword() {
         return codeword;
     }
 
     /**
-     * 口令 
-     * @param codeword 口令 
+     * 口令
+     * @param codeword 口令
      */
     public void setCodeword(String codeword) {
         this.codeword = codeword == null ? null : codeword.trim();

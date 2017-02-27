@@ -60,7 +60,6 @@ public class MyBatisConfig implements TransactionManagementConfigurer {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage("com.longbei.appservice.dao");
-
         //分页插件
         PageHelper pageHelper = new PageHelper();
         Properties properties = new Properties();
