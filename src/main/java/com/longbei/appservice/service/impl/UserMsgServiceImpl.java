@@ -444,11 +444,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 			List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
-			//获取新粉丝count
-			int fansCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
+			//0:关闭  1：开启
+			int fansCount = 0;
+			int likeCount = 0;
+			if("1".equals(expandData.get("is_new_fans").toString())){
+				//获取新粉丝count
+				fansCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
+			}
+			if("1".equals(expandData.get("is_like").toString())){
+				//获取点赞count
+				likeCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
+			}
 			expandData.put("fansCount", fansCount);
-			//获取点赞count
-			int likeCount = userMsgMapper.selectCountByType(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
 			expandData.put("likeCount", likeCount);
 			
 			if (null != list && list.size()>0) {
@@ -752,8 +759,10 @@ public class UserMsgServiceImpl implements UserMsgService {
      * 初始化消息中用户信息 ------Friendid
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
-        userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
+            userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	}
     }
 
     /**

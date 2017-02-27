@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -93,7 +94,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             levelUp(userInfo.getUserid(),point,pType);
         }
         //进步币发生变化
-        int impIcon = 0;
+        int impIcon = getImpIcon(userInfo,operateType);
         baseResp.getExpandData().put("impIcon",impIcon);
         return baseResp;
     }
@@ -374,12 +375,66 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     /**
      *  进步币发生变化
+     *  有些反胃啊
      */
+    private int getImpIcon(UserInfo userInfo, String operateType){
+        String operateTypeRandom = operateType+"_RANDOM";
+        String key = getPerKey(userInfo.getUserid());
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = 0;
+        if(Constant_Imp_Icon.hasContain(operateType)){ //key 直接存在  目前有两种情况 签到  邀请好友注册
+            if(operateType.equals("INVITE_LEVEL1")){
+                result = Constant_Imp_Icon.getStaticProperty(operateType);
+                //
+                return result;
+            }else if(operateType.equals("DAILY_CHECKIN")){
+                String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userInfo.getUserid(),
+                        Constant.RP_USER_CHECK_VALUE + userInfo.getUserid());
+                if(StringUtils.isBlank(redisvalue)){
 
+                    return Constant_Imp_Icon.checkInImpIconMap.get(1);
+                }else{
+                    if(Constant_Imp_Icon.checkInImpIconMap.containsKey(redisvalue)){
+                        return Constant_Imp_Icon.checkInImpIconMap.get(redisvalue);
+                    }else{
+                        return Constant_Imp_Icon.checkInImpIconMap.get(7);
+                    }
+                }
+            }else {
+                return 0;
+            }
+            //随机进步币   次数限制
+        }else if(Constant_Imp_Icon.hasContain(operateTypeRandom)){
+            String operateTypeLimit = operateType+"_LIMIT";
+            //次数有限制
+            if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
+                int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
+                String cacheStr = springJedisDao.getHashValue(key,dateStr+operateTypeLimit);
+                int cacheTime = 0;
+                if(!StringUtils.isBlank(cacheStr)){
+                    cacheTime = Integer.parseInt(cacheStr);
+                }
+                if(limit < cacheTime){//还送
+                    int randomRule = Constant_Imp_Icon.getStaticProperty(operateTypeRandom);
+                    int randomCode = Constant_Imp_Icon.getRandomCode(randomRule);
+                    springJedisDao.put(key,dateStr+operateTypeLimit,(cacheTime+1)+"");
+                    return randomCode;
+                }else{//不送了
+                    return 0;
+                }
+            }else{//没有限制  目前没有这种情况
+                //do nothing
+            }
+        }else{
+            //do nothing
+        }
+        return 0;
+    }
 
     /**
      *  龙币发生变化
      */
+
 
 
 }

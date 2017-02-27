@@ -54,6 +54,7 @@ public class AppUserController extends BaseController {
     private DictAreaService dictAreaService;
     @Autowired
     private UserInterestsService userInterestsService;
+    @Autowired
     private UserCheckinDetailService userCheckinDetailService;
 
     
@@ -62,17 +63,17 @@ public class AppUserController extends BaseController {
     
     
     /**
-     * @Title: http://ip:port/appservice/user/checkinDate
-     * @Description: 用户每月签到详情及搜索
-     * @param @param userid
-     * @param @param yearmonth  格式为：201702...
-     * @auther yinxc
-     * @currentdate:2017年2月23日
-     */
+    * @Title: http://ip:port/appservice/user/checkinDate
+    * @Description: 用户每月签到详情及搜索
+    * @param @param userid
+    * @param @param yearmonth  格式为：201702...
+    * @auther yinxc
+    * @currentdate:2017年2月23日
+    */
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
-     @ResponseBody
-     public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
+    @ResponseBody
+    public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -80,10 +81,10 @@ public class AppUserController extends BaseController {
   		try {
   			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
          } catch (Exception e) {
-             logger.error("init userid = {}, msg = {}", userid, e);
+             logger.error("checkinDate userid = {}, msg = {}", userid, e);
          }
   		return baseResp;
-     }
+    }
     
     /**
     * @Title: http://ip:port/appservice/user/init
@@ -142,7 +143,7 @@ public class AppUserController extends BaseController {
         try {
             return userService.registerbasic(username, password, inviteuserid,deviceindex,devicetype,null);
         } catch (Exception e) {
-            logger.error("register error and msg = {}", e);
+            logger.error("registerbasic error and msg = {}", e);
         }
         return baseResp;
     }
@@ -345,7 +346,7 @@ public class AppUserController extends BaseController {
      * @auther smkk
      * @currentdate:2017年2月23日
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "static-access", "serial" })
  	@RequestMapping(value = "/selectInterests")
      @ResponseBody
      public BaseResp<Object> selectInterests(String userid) {
@@ -413,8 +414,6 @@ public class AppUserController extends BaseController {
      * @auther IngaWu
      * @currentdate:2017年2月23日
      */     
-    
-    @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectCityList")
     @ResponseBody
     public BaseResp<Object> selectCityList(String pid) {
