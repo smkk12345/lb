@@ -41,6 +41,8 @@
     <result column="ischeck" property="ischeck" jdbcType="CHAR" />
     <result column="isgroup" property="isgroup" jdbcType="CHAR" />
     <result column="rankcardid" property="rankcardid" jdbcType="VARCHAR" />
+    <result column="isup" property="isup" jdbcType="CHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
   </resultMap>
 
 
@@ -49,7 +51,7 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -106,7 +108,14 @@
       AND starttime &lt; #{rankimage.estarttime}
     </if>
     <if test="rankimage.checkstatus != null" >
-      AND checkstatus = #{rankimage.checkstatus}
+      <choose>
+      <when test="rankimage.checkstatus=='0'.toString()">
+        AND (checkstatus = '0' OR checkstatus = '2')
+      </when>
+      <otherwise>
+        AND checkstatus = #{rankimage.checkstatus}
+      </otherwise>
+      </choose>
     </if>
     <if test="rankimage.rankscope != null" >
       AND rankscope = #{rankimage.rankscope}
@@ -116,6 +125,12 @@
     </if>
     <if test="rankimage.isdel != null" >
       AND isdel = #{rankimage.isdel}
+    </if>
+    <if test="rankimage.sourcetype != null" >
+      AND sourcetype = #{rankimage.sourcetype}
+    </if>
+    <if test="rankimage.createuserid != null" >
+      AND createuserid = #{rankimage.createuserid}
     </if>
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>
@@ -127,7 +142,8 @@
   </delete>
 
   <delete id="deleteByRankImageId">
-    DELETE FROM rankimage
+    UPDATE  rankimage
+    SET isdel = '1'
     WHERE rankid = ${rankimageid}
   </delete>
 
@@ -272,6 +288,12 @@
       <if test="rankcardid != null" >
         rankcardid,
       </if>
+      <if test="isup != null" >
+        isup,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -391,6 +413,12 @@
       <if test="rankcardid != null" >
         #{rankcardid},
       </if>
+      <if test="isup != null" >
+        #{isup},
+      </if>
+      <if test="isdel != null" >
+        #{isdel},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
@@ -484,7 +512,7 @@
         checkstatus = #{checkstatus},
       </if>
       <if test="isauto != null" >
-        checkstatus = #{isauto},
+        isauto = #{isauto},
       </if>
       <if test="autotime != null" >
         autotime = #{autotime},
@@ -506,6 +534,12 @@
       </if>
       <if test="rankcardid != null" >
         rankcardid = #{rankcardid},
+      </if>
+      <if test="isup != null" >
+        isup = #{isup},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}

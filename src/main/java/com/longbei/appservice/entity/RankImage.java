@@ -77,7 +77,7 @@ public class RankImage {
 
     private String companybrief;  //公司简介
 
-    private String sourcetype;  //来源类型
+    private String sourcetype;  //来源类型  0 - 运营  1 - app 2 - b
 
     private String checkstatus; //审核状态 0 - 为审核  1 - 审核不通过  2 - 审核通过
 
