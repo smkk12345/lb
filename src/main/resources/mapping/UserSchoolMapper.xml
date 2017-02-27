@@ -24,7 +24,7 @@
     select 
     <include refid="Base_Column_List" />
     from user_school
-    where userid = #{userid,jdbcType=BIGINT}
+    where userid = #{userid,jdbcType=BIGINT} limit #{startNum},#{pageSize}
   </select>
   <delete id="deleteSchool" >
     delete from user_school

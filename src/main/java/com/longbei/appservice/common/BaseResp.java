@@ -15,7 +15,7 @@ public class BaseResp<T extends Object> implements Serializable {
     public static int FAIlURE = -1;
     private int code;//状态码
     private T data;//数据
-    private int displayStatus = 0;//展示状态
+    private int displayStatus = 0;// 0 冒泡  1 弹框
     private String rtnInfo;
     private Map<String, Object> expandData = new HashMap<>();
 
@@ -23,7 +23,15 @@ public class BaseResp<T extends Object> implements Serializable {
     		this.code = 	Constant.STATUS_SYS_01;
     		this.rtnInfo = Constant.RTNINFO_SYS_01;
     };
-    
+
+    public int getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(int displayStatus) {
+        this.displayStatus = displayStatus;
+    }
+
     //成功直接返回 BaseResp.ok()
     public static BaseResp ok() {
         return new BaseResp(BaseResp.SUCCESS, "操作成功!");

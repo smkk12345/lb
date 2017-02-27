@@ -1,20 +1,31 @@
 package com.longbei.appservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class UserInterests {
     private Integer id;
 
     private String userid;
-
-    private String perfectid;
+    
+	private String ptype;//十全十美  类型
 
     private String perfectname;//十全十美  名
 
     private Date createtime;
 
     private Date updatetime;
-
+       
+    public UserInterests(){
+    }
+    
+    public UserInterests(String ptype,String perfectname){
+        super();
+        this.ptype = ptype;
+        this.perfectname = perfectname;
+    }
+    
     /**
      * 
      * @return id 
@@ -48,21 +59,19 @@ public class UserInterests {
     }
 
     /**
-     * 
-     * @return perfectid 
+     * 十全十美  类型
+     * @return Ptype 十全十美  类型
      */
-    public String getPerfectid() {
-        return perfectid;
-    }
-
+    public String getPtype() {
+		return ptype;
+	}
     /**
-     * 
-     * @param perfectid 
+     * 十全十美  类型
+     * @return Ptype 十全十美  类型
      */
-    public void setPerfectid(String perfectid) {
-        this.perfectid = perfectid == null ? null : perfectid.trim();
-    }
-
+	public void setPtype(String ptype) {
+		this.ptype = ptype;
+	}
     /**
      * 十全十美  名
      * @return perfectname 十全十美  名

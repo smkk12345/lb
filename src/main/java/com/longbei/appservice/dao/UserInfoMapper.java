@@ -26,7 +26,7 @@ public interface UserInfoMapper {
 	 */
 	UserInfo getByUserName(String username);
 
-	int updateByUseridSelective(UserInfo record);
+	int updateByUseridSelective(UserInfo userInfo);
 
 	int updateByPrimaryKey(UserInfo record);
 

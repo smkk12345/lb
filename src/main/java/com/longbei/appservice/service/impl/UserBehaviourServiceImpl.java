@@ -3,6 +3,8 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
@@ -83,6 +85,20 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType, String pType) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        int point = getPointByType(userInfo.getUserid(),operateType);
+        baseResp.getExpandData().put("point",point);
+        if(point > 0){
+            levelUp(userInfo.getUserid(),point,pType);
+        }
+        //进步币发生变化
+        int impIcon = getImpIcon(userInfo,operateType);
+        baseResp.getExpandData().put("impIcon",impIcon);
+        return baseResp;
+    }
+
     private int getHashValueFromCache(String key,String hashKey){
         String sVaue = springJedisDao.getHashValue(key,hashKey);
         if(!StringUtils.isBlank(sVaue)){
@@ -96,8 +112,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return 0;
     }
 
-    @Override
-    public BaseResp<Object> levelUp(long userid, int iPoint,String pType) {
+    private BaseResp<Object> levelUp(long userid, int iPoint,String pType) {
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);//此处通过id获取用户信息
         return levelUp(userInfo,iPoint,pType);
     }
@@ -110,8 +125,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @param iPoint
      * @return
      */
-    @Override
-    public BaseResp<Object> levelUp(UserInfo userInfo, int iPoint,String pType) {
+    private BaseResp<Object> levelUp(UserInfo userInfo, int iPoint,String pType) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
@@ -150,6 +164,48 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
         return baseResp;
     }
+
+    /**
+     * 通过用户id和操作类型获取龙分
+     * @param userid 用户id
+     * @param operateType 操作类型
+     *
+     *
+     * @return
+     */
+//    @Override
+    public int getPointByType(long userid, String operateType) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        //如果有限制  去redis中去找
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = Constant_point.getStaticProperty(operateType);
+        String limitField = operateType+"_LIMIT";
+        String key = getPerKey(userid);
+        if(Constant_point.hasContain(limitField)){
+            int limitValue = Constant_point.getStaticProperty(limitField);
+            String value = springJedisDao.getHashValue(key, dateStr+limitField);
+            if(StringUtils.isBlank(value)){
+                springJedisDao.put(key, dateStr+limitField,result+"");
+                return result;
+            }else{
+                int curValue = Integer.parseInt(value);
+                if(curValue+result > limitValue){//就不给了
+                    return 0;
+                }else{
+                    springJedisDao.put(key, dateStr+limitField,result+"");
+                    return result;
+                }
+            }
+        }else{
+            //签到的时候把过期时间添加上
+            if(operateType.equals(Constant_point.DAILY_CHECKIN)){
+                springJedisDao.expire(key,Constant.CACHE_24X60X60);
+            }
+            return result;
+        }
+    }
+
+
 
     /**
      * 更新用户当前龙分  总龙分
@@ -319,12 +375,66 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     /**
      *  进步币发生变化
+     *  有些反胃啊
      */
+    private int getImpIcon(UserInfo userInfo, String operateType){
+        String operateTypeRandom = operateType+"_RANDOM";
+        String key = getPerKey(userInfo.getUserid());
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = 0;
+        if(Constant_Imp_Icon.hasContain(operateType)){ //key 直接存在  目前有两种情况 签到  邀请好友注册
+            if(operateType.equals("INVITE_LEVEL1")){
+                result = Constant_Imp_Icon.getStaticProperty(operateType);
+                //
+                return result;
+            }else if(operateType.equals("DAILY_CHECKIN")){
+                String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userInfo.getUserid(),
+                        Constant.RP_USER_CHECK_VALUE + userInfo.getUserid());
+                if(StringUtils.isBlank(redisvalue)){
 
+                    return Constant_Imp_Icon.checkInImpIconMap.get(1);
+                }else{
+                    if(Constant_Imp_Icon.checkInImpIconMap.containsKey(redisvalue)){
+                        return Constant_Imp_Icon.checkInImpIconMap.get(redisvalue);
+                    }else{
+                        return Constant_Imp_Icon.checkInImpIconMap.get(7);
+                    }
+                }
+            }else {
+                return 0;
+            }
+            //随机进步币   次数限制
+        }else if(Constant_Imp_Icon.hasContain(operateTypeRandom)){
+            String operateTypeLimit = operateType+"_LIMIT";
+            //次数有限制
+            if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
+                int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
+                String cacheStr = springJedisDao.getHashValue(key,dateStr+operateTypeLimit);
+                int cacheTime = 0;
+                if(!StringUtils.isBlank(cacheStr)){
+                    cacheTime = Integer.parseInt(cacheStr);
+                }
+                if(limit < cacheTime){//还送
+                    int randomRule = Constant_Imp_Icon.getStaticProperty(operateTypeRandom);
+                    int randomCode = Constant_Imp_Icon.getRandomCode(randomRule);
+                    springJedisDao.put(key,dateStr+operateTypeLimit,(cacheTime+1)+"");
+                    return randomCode;
+                }else{//不送了
+                    return 0;
+                }
+            }else{//没有限制  目前没有这种情况
+                //do nothing
+            }
+        }else{
+            //do nothing
+        }
+        return 0;
+    }
 
     /**
      *  龙币发生变化
      */
+
 
 
 }

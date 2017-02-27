@@ -22,6 +22,6 @@ public interface UserIdcardMapper {
 	 * 查看身份证认证信息
 	 * 2017年1月20日
 	 */
-    UserIdcard selectByUserid(@Param("userid") String userid);
+    UserIdcard selectByUserid(@Param("userid") long userid);
     
 }

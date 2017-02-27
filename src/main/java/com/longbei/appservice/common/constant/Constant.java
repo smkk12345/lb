@@ -368,6 +368,7 @@ public class Constant {
 	 * 缓存一日数据
 	 */
 	public static final String PERDAY_POINT = "point";
+	public static final String DAILY_SHARE_LIMIT = "DAILY_SHARE_LIMIT";
 	//-------------各种缓存前缀  improve  rank user 等------------------//
 	/**
 	 * redis中各种请求前缀   redis_prefix

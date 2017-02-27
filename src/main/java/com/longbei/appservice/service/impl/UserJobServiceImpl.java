@@ -79,10 +79,10 @@ public class UserJobServiceImpl implements UserJobService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectJobList(long userid) {
+	public BaseResp<Object> selectJobList(long userid,int startNum,int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			List<UserJob> list = userJobMapper.selectJobList(userid);
+			List<UserJob> list = userJobMapper.selectJobList(userid,startNum,pageSize);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);	
 		} catch (Exception e) {
