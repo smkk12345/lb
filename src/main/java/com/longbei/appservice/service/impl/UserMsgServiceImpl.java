@@ -759,8 +759,10 @@ public class UserMsgServiceImpl implements UserMsgService {
      * 初始化消息中用户信息 ------Friendid
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
-        userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
+            userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	}
     }
 
     /**

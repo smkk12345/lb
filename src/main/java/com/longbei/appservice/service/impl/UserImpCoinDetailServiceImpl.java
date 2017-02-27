@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -66,7 +67,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 			}
 			boolean temp = insert(record);
 			if (temp) {
-				//修改用户userInfo表进步币总数
+				//修改用户userInfo表---进步币总数
 				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 				int allnum = userInfo.getTotalcoin() + record.getNumber();
 				userInfo.setTotalcoin(allnum);
@@ -188,8 +189,10 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
      * 初始化用户进步币信息 ------Friendid
      */
     private void initMsgUserInfoByFriendid(UserImpCoinDetail userImpCoinDetail){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getFriendid()));
-        userImpCoinDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    	if(!StringUtils.hasBlankParams(userImpCoinDetail.getFriendid().toString())){
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getFriendid()));
+            userImpCoinDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
+		}
     }
 
     /**
