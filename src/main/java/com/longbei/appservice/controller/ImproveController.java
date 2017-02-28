@@ -701,5 +701,30 @@ public class ImproveController {
 		return baseResp;
 	}
 
+	/**
+	 * improve/select
+	 * @param userid
+	 * @param impid
+	 * @param businesstype
+	 * @param businessid
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ResponseBody
+	@RequestMapping(value = "select")
+	public BaseResp select(String userid, String impid, String businesstype,String businessid) {
+
+		if (StringUtils.hasBlankParams(userid, impid)) {
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		logger.info("inprove select userid={},impid={}",userid,impid);
+		try {
+			return improveService.select(userid,impid,businesstype,businessid);
+		}catch (Exception e){
+			logger.error("get improve detail  is error userid={},impid={} ",userid,impid,e);
+		}
+		return null;
+	}
+
 
 }

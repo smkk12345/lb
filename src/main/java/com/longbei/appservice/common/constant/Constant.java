@@ -77,6 +77,12 @@ public class Constant {
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
 
+
+	public static final int STATUS_SYS_60 = -60;
+	public static final int STATUS_SYS_61 = -61;
+	public static final int STATUS_SYS_62 = -62;
+	public static final int STATUS_SYS_63 = -63;
+	public static final int STATUS_SYS_64 = -64;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 
@@ -129,6 +135,12 @@ public class Constant {
 	public static final String RTNINFO_SYS_45 = "你没有为该进步点过赞";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
+
+
+	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
+	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -230,6 +242,19 @@ public class Constant {
 	public static final String USER_IMP_COIN_CHECK = "0";  //签到
 
 
+	/**
+	 * 榜单相关配置
+	 */
+
+
+	/**
+	 * 榜单状态
+	 */
+	public static final String RANKIMAGE_STATUS_0 = "0";  //草稿
+	public static final String RANKIMAGE_STATUS_1 = "1";  //审核中
+	public static final String RANKIMAGE_STATUS_2 = "2";  //审核不通过 可以修改
+	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
+	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
 
 	
 	/**
@@ -373,4 +398,11 @@ public class Constant {
 	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
 	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
 
+    /**
+     * 用户特权  操作
+     * Privilege
+     */
+    public static final String USER_PRIVILEGE_ADD_CIRCLE = "0";//
+    public static final String USER_PRIVILEGE_ADD_RANK = "1";//
+    public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
 }

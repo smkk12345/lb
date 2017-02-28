@@ -104,9 +104,11 @@ public class AppUserController extends BaseController {
  		//一些其他的逻辑
  		
  		try {
+            int n = 5;
+            n = n/0;
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
         } catch (Exception e) {
-            logger.error("init userid = {}, msg = {}", userid, e);
+            logger.error("init userid = {} ", userid, e);
         }
  		return baseResp;
     }
@@ -489,7 +491,7 @@ public class AppUserController extends BaseController {
     		String randomcode = request.getParameter("randomcode");
     		String inviteuserid = request.getParameter("inviteusername");
     		String deviceindex = request.getParameter("deviceindex");
-        String devicetype = request.getParameter("devicetype");
+            String devicetype = request.getParameter("devicetype");
     		//必传参数  类型 openid 密码 手机号  随机码
     		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
     		if(StringUtils.hasBlankParams(utype,openid,password,username,randomcode,deviceindex)){

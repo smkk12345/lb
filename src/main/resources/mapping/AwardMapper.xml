@@ -12,6 +12,10 @@
     <result column="awardtype" property="awardtype" jdbcType="CHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <association property="awardClassify" javaType="com.longbei.appservice.entity.AwardClassify">
+      <id property="id" column="awardcateid"/>
+      <result property="classifynamev" column="classifynamev"/>
+    </association>
   </resultMap>
   <sql id="Base_Column_List" >
     id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype, 
@@ -23,6 +27,18 @@
     from award
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
+    SELECT count(*) FROM award
+  </select>
+
+  <select id="selectAwardList">
+    SELECT
+    <include refid="Base_Column_List"/>,classifynamev
+    FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id ORDER BY a.createtime DESC
+    limit #{startno},#{pagesize}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from award
     where id = #{id,jdbcType=INTEGER}

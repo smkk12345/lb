@@ -78,6 +78,8 @@ public class ImproveServiceImpl implements ImproveService{
     private TimeLineDetailDao timeLineDetailDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private ImproveTopicMapper improveTopicMapper;
 
 
     /**
@@ -887,6 +889,17 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
+     * 超级话题
+     * @param improve
+     */
+    private void initTopicInfo(Improve improve){
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        if(null != list){
+            improve.setImproveTopicList(list);
+        }
+    }
+
+    /**
      * 初始化进步中用户信息
      * @param improve
      * @author:luye
@@ -1300,9 +1313,6 @@ public class ImproveServiceImpl implements ImproveService{
         return false;
     }
 
-
-
-
     /**
      * 添加进步全部明细记录（点赞，送花，送钻）
      * @param userid
@@ -1448,5 +1458,31 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
+
+    @Override
+    public BaseResp select(String userid, String impid, String businesstype,String businessid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            //Long impid,String userid,
+            //String businesstype,String businessid, String isdel,String ispublic
+            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+            if(null != improve){
+                //初始化赞，花，钻数量
+                initImproveAttachInfo(improve);
+                //初始化点赞，送花，送钻简略信息
+                initLikeFlowerDiamondInfo(improve);
+                //初始化是否 点赞 送花 送钻 收藏
+                initIsOptionForImprove(userid,improve);
+                //初始化超级话题列表
+                initTopicInfo(improve);
+                baseResp.setData(improve);
+            }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch (Exception e){
+            logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
+        }
+        return baseResp;
+    }
+
 
 }
