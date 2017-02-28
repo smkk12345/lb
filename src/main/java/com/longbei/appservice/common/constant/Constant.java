@@ -65,6 +65,8 @@ public class Constant {
 	public static final int STATUS_SYS_29 = -29;
 	public static final int STATUS_SYS_30 = -30;
 	public static final int STATUS_SYS_31 = -31;
+	public static final int STATUS_SYS_32 = -32;
+	public static final int STATUS_SYS_33 = -33;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -123,6 +125,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_29 = "暂无签到记录";
 	public static final String RTNINFO_SYS_30 = "用户已签到";
 	public static final String RTNINFO_SYS_31 = "用户签到成功";
+	public static final String RTNINFO_SYS_32 = "暂无成员信息";
+	public static final String RTNINFO_SYS_33 = "暂无教室信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";

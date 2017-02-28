@@ -15,31 +15,68 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
-    classverify, classnotice, createtime, updatetime, ptype
+    classverify, classnotice, createtime, updatetime, ptype, ispublic, userid 
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from classroom
     where classroomid = #{classroomid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  
+  <select id="selectListByUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where userid = #{userid} 
+    <if test="ptype != null" >
+    	and ptype = #{ptype} 
+    </if>
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectListByPtype" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where userid = #{userid} 
+    <if test="ptype != null" >
+    	and ptype = #{ptype} 
+    </if>
+    <if test="keyword != null" >
+    	and (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    	<!--  
+       	or classbrief LIKE CONCAT(CONCAT('%', #{keyword}),'%')
+       	or classnotice LIKE CONCAT(CONCAT('%', #{keyword}),'%') -->
+    </if>
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" >
     delete from classroom
     where classroomid = #{classroomid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
-    insert into classroom (id, classroomid, classtitle, classphotos, 
+    insert into classroom (id, classroomid, userid, classtitle, classphotos, 
       claacateid, classinvoloed, classlimited, 
       classbrief, classverify, classnotice, 
-      createtime, updatetime, ptype
+      createtime, updatetime, ptype, ispublic
       )
-    values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, #{classphotos,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, 
+      #{classphotos,jdbcType=VARCHAR}, 
       #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
       #{classbrief,jdbcType=VARCHAR}, #{classverify,jdbcType=INTEGER}, #{classnotice,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Classroom" >
@@ -50,6 +87,9 @@
       </if>
       <if test="classroomid != null" >
         classroomid,
+      </if>
+      <if test="userid != null" >
+        userid,
       </if>
       <if test="classtitle != null" >
         classtitle,
@@ -84,6 +124,9 @@
       <if test="ptype != null" >
         ptype,
       </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -91,6 +134,9 @@
       </if>
       <if test="classroomid != null" >
         #{classroomid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
       </if>
       <if test="classtitle != null" >
         #{classtitle,jdbcType=VARCHAR},
@@ -124,6 +170,9 @@
       </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -163,8 +212,12 @@
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},
       </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR}
+      </if>
     </set>
-    where classroomid = #{classroomid,jdbcType=INTEGER}
+    where classroomid = #{classroomid,jdbcType=INTEGER} 
+    	and userid = #{userid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Classroom" >
     update classroom
@@ -178,7 +231,9 @@
       classnotice = #{classnotice,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      ptype = #{ptype,jdbcType=CHAR}
-    where classroomid = #{classroomid,jdbcType=INTEGER}
+      ptype = #{ptype,jdbcType=CHAR}, 
+      ispublic = #{ispublic,jdbcType=CHAR} 
+    where classroomid = #{classroomid,jdbcType=INTEGER} 
+    and userid = #{userid,jdbcType=INTEGER}
   </update>
 </mapper>
