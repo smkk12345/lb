@@ -62,7 +62,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("insertCommentLower commentLower={},msg={}",commentLower,e);
+			logger.error("insertCommentLower commentLower = {}",commentLower,e);
 		}
 		return reseResp;
 	}
@@ -94,7 +94,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			userMsgMapper.insertSelective(record);
 		} catch (Exception e) {
-			logger.error("insertMsg record = {}, msg = {}", JSONObject.fromObject(record).toString(), e);
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			list = commentLowerMongoDao.selectCommentLowerListByCommentid(commentid);
 		} catch (Exception e) {
-			logger.error("selectCommentLowerListByCommentid commentid={},msg={}",commentid,e);
+			logger.error("selectCommentLowerListByCommentid commentid = {}",commentid,e);
 		}
 		return list;
 	}
@@ -160,7 +160,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			commentLower = commentLowerMongoDao.selectCommentLowerByid(id);
 		} catch (Exception e) {
-			logger.error("selectCommentLowerByid id={},msg={}",id,e);
+			logger.error("selectCommentLowerByid id = {}", id, e);
 		}
 		return commentLower;
 	}
@@ -172,7 +172,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			deleteByCommentid(commentid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteLowerByCommentid commentid={},msg={}",commentid,e);
+			logger.error("deleteLowerByCommentid commentid = {}", commentid, e);
 		}
 		return reseResp;
 	}
@@ -194,7 +194,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			deleteByid(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLower id={},msg={}",id,e);
+			logger.error("deleteCommentLower id = {}", id, e);
 		}
 		return reseResp;
 	}

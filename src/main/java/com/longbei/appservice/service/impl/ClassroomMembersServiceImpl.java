@@ -36,7 +36,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertClassroomMembers record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("insertClassroomMembers record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -64,7 +64,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_32, Constant.RTNINFO_SYS_32);
 			}
 		} catch (Exception e) {
-			logger.error("selectListByClassroomid classroomid = {}, startNum = {}, endNum = {}, msg = {}", 
+			logger.error("selectListByClassroomid classroomid = {}, startNum = {}, endNum = {}", 
 					classroomid, startNum, endNum, e);
 		}
 		return reseResp;
@@ -81,7 +81,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			}
 			return list;
 		} catch (Exception e) {
-			logger.error("selectInsertByUserid userid = {}, startNum = {}, endNum = {}, msg = {}", 
+			logger.error("selectInsertByUserid userid = {}, startNum = {}, endNum = {}", 
 					userid, startNum, endNum, e);
 		}
 		return null;
@@ -93,7 +93,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectListByClassroomidAndUserid(classroomid, userid, itype);
 			return classroomMembers;
 		} catch (Exception e) {
-			logger.error("selectListByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}, msg = {}", 
+			logger.error("selectListByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
 					classroomid, userid, itype, e);
 		}
 		return null;
@@ -108,7 +108,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}, msg = {}", 
+			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
 					classroomid, userid, itype, e);
 		}
 		return reseResp;

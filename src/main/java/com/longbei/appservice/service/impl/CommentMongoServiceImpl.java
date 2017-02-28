@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
@@ -71,7 +72,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("insertComment comment={},msg={}",comment,e);
+			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);
 		}
 		return reseResp;
 	}
@@ -101,7 +102,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			userMsgMapper.insertSelective(record);
 		} catch (Exception e) {
-			logger.error("insertMsg record = {}, msg = {}", JSONObject.fromObject(record).toString(), e);
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
 		}
 	}
 	
@@ -109,7 +110,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			commentMongoDao.insertComment(comment);
 		} catch (Exception e) {
-			logger.error("insert comment = {}, msg = {}", JSONObject.fromObject(comment).toString(), e);
+			logger.error("insert comment = {}", JSONObject.fromObject(comment).toString(), e);
 		}
 	}
 	
@@ -122,7 +123,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			commentCountMongoDao.insertCommentCount(commentCount);
 		} catch (Exception e) {
-			logger.error("insertCount commentCount = {}, msg = {}", JSONObject.fromObject(commentCount).toString(), e);
+			logger.error("insertCount commentCount = {}", JSONObject.fromObject(commentCount).toString(), e);
 		}
 	}
 
@@ -151,7 +152,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -182,7 +183,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -227,7 +228,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -238,7 +239,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			comment = commentMongoDao.selectCommentByid(id);
 		} catch (Exception e) {
-			logger.error("selectCommentByid id = {}, msg = {}", id, e);
+			logger.error("selectCommentByid id = {}", id, e);
 		}
 		return comment;
 	}
@@ -253,7 +254,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			commentMongoDao.deleteComment(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteComment id = {}, msg = {}", id, e);
+			logger.error("deleteComment id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -281,7 +282,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			reseResp.setData(zong);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectCommentCountSum itypeid = {}, msg = {}", itypeid, e);
+			logger.error("selectCommentCountSum itypeid = {}", itypeid, e);
 		}
 		return reseResp;
 	}
