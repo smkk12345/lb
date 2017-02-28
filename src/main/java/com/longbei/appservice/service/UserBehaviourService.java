@@ -43,8 +43,13 @@ public interface UserBehaviourService {
     BaseResp<Object> pointChange(UserInfo userInfo,String operateType,String pType);
 
     /**
-     * 送花送钻引起的进步币变化接口 直接在接口中写
+     * 用户特权
+     * 通过用户信息判断用户是否拥有该权限
+     * operateType  添加榜
+     *  public static final String USER_PRIVILEGE_ADD_CIRCLE = "0";//
+     *  public static final String USER_PRIVILEGE_ADD_RANK = "1";//
+     *  public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
      */
-//    BaseResp<Object>
+    BaseResp<Object> hasPrivilege(long userid,UserInfo userInfo, String operateType);
 
 }

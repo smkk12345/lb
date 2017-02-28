@@ -100,6 +100,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
+        return BaseResp.ok();
+    }
+
     private int getHashValueFromCache(String key,String hashKey){
         String sVaue = springJedisDao.getHashValue(key,hashKey);
         if(!StringUtils.isBlank(sVaue)){
