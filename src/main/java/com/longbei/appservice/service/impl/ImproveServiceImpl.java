@@ -1070,7 +1070,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> addFlower(String userid, String impid,
+    public BaseResp<Object> addFlower(String userid,String friendid, String impid,
                                       int flowernum,String businesstype,String businessid) {
         //判断龙币是否充足
         BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
@@ -1092,9 +1092,10 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
 
-                //赠送龙分操作
-
-
+                //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
+                //送分  送进步币
+                UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(friendid));
+                //BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,);
 
                 return BaseResp.ok();
             }
@@ -1105,7 +1106,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> addDiamond(String userid, String impid,
+    public BaseResp<Object> addDiamond(String userid,String friendid, String impid,
                                        int diamondnum,String businesstype,String businessid) {
         //判断龙币是否充足
         BaseResp baseResp = moneyService.isEnoughLongMoney(userid,diamondnum*Constant.DIAMOND_PRICE);

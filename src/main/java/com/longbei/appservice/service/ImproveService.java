@@ -283,10 +283,10 @@ public interface ImproveService {
 
 
 
-    BaseResp<Object> addFlower(String userid,String impid,int flowernum,String businesstype,String businessid);
+    BaseResp<Object> addFlower(String userid,String friendid,String impid,int flowernum,String businesstype,String businessid);
 
 
-    BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
+    BaseResp<Object> addDiamond(String userid,String friendid,String impid,int diamondnum,String businesstype,String businessid);
 
     BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow);
 
