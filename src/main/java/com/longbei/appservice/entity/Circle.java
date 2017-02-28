@@ -14,8 +14,6 @@ public class Circle {
 
     private String circlephotos;//兴趣圈图片
 
-    private Integer circlecateid;//兴趣圈类别id
-
     private String circlebrief;//兴趣圈简介
 
     private Integer circleinvoloed;//兴趣圈参与人数
@@ -27,6 +25,14 @@ public class Circle {
     private Date updatetime;//兴趣圈更新时间
 
     private String ptype;//十全十美分类
+
+    private Boolean ispublic;//是否所有人可见
+
+    private Boolean needconfirm;//加圈子是否需要圈住审核
+
+    private Boolean creategoup;//是否同时简历龙信群
+
+    private String notice;//公告
 
     /**
      * 
@@ -74,23 +80,6 @@ public class Circle {
      */
     public void setCirclephotos(String circlephotos) {
         this.circlephotos = circlephotos == null ? null : circlephotos.trim();
-    }
-
-    /**
-     * 兴趣圈类别id
-     * @return circlecateid 兴趣圈类别id
-     */
-    @JsonInclude(Include.ALWAYS)
-    public Integer getCirclecateid() {
-        return circlecateid;
-    }
-
-    /**
-     * 兴趣圈类别id
-     * @param circlecateid 兴趣圈类别id
-     */
-    public void setCirclecateid(Integer circlecateid) {
-        this.circlecateid = circlecateid;
     }
 
     /**
@@ -200,5 +189,68 @@ public class Circle {
 	public void setCircleid(Long circleid) {
 		this.circleid = circleid;
 	}
-    
+
+    /**
+     * 圈子是否所有人可见
+     * @return
+     */
+    public Boolean getIspublic() {
+        return ispublic;
+    }
+
+    /**
+     * 圈子是否所有人可见
+     * @param ispublic
+     */
+    public void setIspublic(Boolean ispublic) {
+        this.ispublic = ispublic;
+    }
+
+    /**
+     * 加圈子是否需要圈主同意
+     * @return
+     */
+    public Boolean getNeedconfirm() {
+        return needconfirm;
+    }
+
+    /**
+     * 加圈子是否需要圈主同意
+     * @return
+     */
+    public void setNeedconfirm(Boolean needconfirm) {
+        this.needconfirm = needconfirm;
+    }
+
+    /**
+     * 是否同时简历龙信群
+     * @return
+     */
+    public Boolean getCreategoup() {
+        return creategoup;
+    }
+
+    /**
+     * 是否同时简历龙信群
+     * @param creategoup
+     */
+    public void setCreategoup(Boolean creategoup) {
+        this.creategoup = creategoup;
+    }
+
+    /**
+     * 获取公告
+     * @return
+     */
+    public String getNotice() {
+        return notice;
+    }
+
+    /**
+     * 设置公告
+     * @param notice
+     */
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
 }

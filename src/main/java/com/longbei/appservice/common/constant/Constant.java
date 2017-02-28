@@ -77,6 +77,8 @@ public class Constant {
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
 
+	//80-89 兴趣圈  wangyongzhi
+	public static final int STATUS_SYS_80 = -80;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -139,7 +141,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_52 = "修改榜单成功";
 	public static final String RTNINFO_SYS_53 = "修改榜单失败";
 
-
+	//80-89 兴趣圈  wangyongzhi
+	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
 
 
 
