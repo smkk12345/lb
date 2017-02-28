@@ -74,10 +74,16 @@ public class Constant_point {
     private static Map<String,Integer> fieldsMap = null;
 
     public static boolean hasContain(String fieldName){
+        initFieldMap();
         return fieldsMap.containsKey(fieldName);
     }
 
     public static Integer getStaticProperty(String fieldName){
+        initFieldMap();
+        return fieldsMap.get(fieldName);
+    }
+
+    private static void initFieldMap(){
         try{
             if(null == fieldsMap){
                 fieldsMap = new HashMap<>();
@@ -91,11 +97,9 @@ public class Constant_point {
                 }
             }
         }catch(Exception e){
-          e.printStackTrace();
+            e.printStackTrace();
         }
-        return fieldsMap.get(fieldName);
     }
-
 
 
 }

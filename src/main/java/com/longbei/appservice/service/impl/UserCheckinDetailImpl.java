@@ -68,13 +68,6 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			record.setYearmonth(Integer.parseInt(yearmonth));
 			boolean temp = insert(record);
 			if (temp) {
-				//签到成功后，+积分---十全十美类型中的社交类型   
-//				int checkin = userBehaviourService.getPointByType(record.getUserid(),"DAILY_CHECKIN");
-				//十全十美类型---  2,"社交"
-				String pType = SysRulesCache.perfectTenMap.get(2);
-//				userBehaviourService.levelUp(record.getUserid(), checkin, pType);
-				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(record.getUserid());
-				userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -164,12 +157,13 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		reseResp = insertSelective(userCheckinDetail);
 		//+进步币
 		if(ResultUtil.isSuccess(reseResp)){
-			String pType = SysRulesCache.perfectTenMap.get(2);
+//			String pType = SysRulesCache.perfectTenMap.get(2);
+			String pType = "2";
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType);
-			String icon = (String)reseResp.getExpandData().get("impIcon");
-			if(Integer.parseInt(icon) != 0){
-				insertUserImpCoinDetail(userid, Integer.parseInt(icon), Constant.USER_IMP_COIN_CHECK);
+			int icon = (int)reseResp.getExpandData().get("impIcon");
+			if(icon != 0){
+				insertUserImpCoinDetail(userid, icon, Constant.USER_IMP_COIN_CHECK);
 			}
 		}
 		return reseResp;

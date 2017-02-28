@@ -66,10 +66,16 @@ public class Constant_Imp_Icon {
     private static Map<String,Integer> fieldsMap = null;
 
     public static boolean hasContain(String fieldName){
+        initFieldMap();
         return fieldsMap.containsKey(fieldName);
     }
 
     public static Integer getStaticProperty(String fieldName){
+        initFieldMap();
+        return fieldsMap.get(fieldName);
+    }
+
+    private static void initFieldMap(){
         try{
             if(null == fieldsMap){
                 fieldsMap = new HashMap<>();
@@ -85,7 +91,6 @@ public class Constant_Imp_Icon {
         }catch(Exception e){
             e.printStackTrace();
         }
-        return fieldsMap.get(fieldName);
     }
 
 }

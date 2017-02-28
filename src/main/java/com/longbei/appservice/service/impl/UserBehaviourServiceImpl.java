@@ -96,6 +96,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         //进步币发生变化
         int impIcon = getImpIcon(userInfo,operateType);
         baseResp.getExpandData().put("impIcon",impIcon);
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
     }
 
@@ -263,7 +264,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }catch (Exception e){
             logger.error("subLevelUp error and msg = {}",e);
         }
-        return baseResp;
+        return baseResp.initCodeAndDesp();
     }
 
     private Map<String,Integer> getLeftPointAndLevel(UserInfo userInfo,String pType,int iPoint){
@@ -375,7 +376,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     /**
      *  进步币发生变化
-     *  有些反胃啊
+     *
      */
     private int getImpIcon(UserInfo userInfo, String operateType){
         String operateTypeRandom = operateType+"_RANDOM";
