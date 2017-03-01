@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
-import com.sun.corba.se.spi.orbutil.fsm.Guard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +69,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -144,14 +142,14 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectIsCheckIn userid = {}, msg = {}", userid, e);
+			logger.error("selectIsCheckIn userid = {}", userid, e);
 		}
 		return reseResp;
 	}
 
 	//
 	private BaseResp<Object> operate(long userid){
-		BaseResp reseResp = new BaseResp();
+		BaseResp<Object> reseResp = new BaseResp<Object>();
 		UserCheckinDetail userCheckinDetail = new UserCheckinDetail();
 		userCheckinDetail.setUserid(userid);
 		reseResp = insertSelective(userCheckinDetail);
@@ -222,7 +220,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByPrimaryKeySelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("updateByPrimaryKeySelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -244,7 +242,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectDetailList userid = {}, msg = {}", userid, e);
+			logger.error("selectDetailList userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -277,7 +275,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			reseResp.getExpandData().put("sysRuleCheckin", SysRulesCache.sysRuleCheckinMap);
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectDetailListByYearmonth userid = {}, yearmonth = {}, msg = {}", userid, yearmonth, e);
+			logger.error("selectDetailListByYearmonth userid = {}, yearmonth = {}", userid, yearmonth, e);
 		}
 		return reseResp;
 	}
