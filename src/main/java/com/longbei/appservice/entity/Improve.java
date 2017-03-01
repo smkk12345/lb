@@ -78,7 +78,7 @@ public class Improve {
     private String hasdiamond = "0";//时候送钻
     private String hascollect = "0";//是否收藏
 
-    private SuperTopic superTopic = null;//超级话题
+    private List<ImproveTopic> improveTopicList = null;//超级话题
 
     public List<ImproveLFD> getImproveLFDs() {
         return improveLFDs;
@@ -126,14 +126,6 @@ public class Improve {
 
     public void setHascollect(String hascollect) {
         this.hascollect = hascollect;
-    }
-
-    public SuperTopic getSuperTopic() {
-        return superTopic;
-    }
-
-    public void setSuperTopic(SuperTopic superTopic) {
-        this.superTopic = superTopic;
     }
 
     public AppUserMongoEntity getAppUserMongoEntity() {
@@ -497,4 +489,13 @@ public class Improve {
     public void setSourcekey(String sourcekey) {
         this.sourcekey = sourcekey;
     }
+
+    public void setImproveTopicList(List<ImproveTopic> improveTopicList) {
+        this.improveTopicList = improveTopicList;
+    }
+
+    public List<ImproveTopic> getImproveTopicList() {
+        return improveTopicList;
+    }
+
 }

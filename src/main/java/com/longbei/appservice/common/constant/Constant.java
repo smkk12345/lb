@@ -65,6 +65,8 @@ public class Constant {
 	public static final int STATUS_SYS_29 = -29;
 	public static final int STATUS_SYS_30 = -30;
 	public static final int STATUS_SYS_31 = -31;
+	public static final int STATUS_SYS_32 = -32;
+	public static final int STATUS_SYS_33 = -33;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -76,6 +78,12 @@ public class Constant {
 	public static final int STATUS_SYS_47 = -47;
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
+
+	public static final int STATUS_SYS_60 = -60;
+	public static final int STATUS_SYS_61 = -61;
+	public static final int STATUS_SYS_62 = -62;
+	public static final int STATUS_SYS_63 = -63;
+	public static final int STATUS_SYS_64 = -64;
 
 
 	public static final int STATUS_SYS_1000 = -1000;
@@ -117,6 +125,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_29 = "暂无签到记录";
 	public static final String RTNINFO_SYS_30 = "用户已签到";
 	public static final String RTNINFO_SYS_31 = "用户签到成功";
+	public static final String RTNINFO_SYS_32 = "暂无成员信息";
+	public static final String RTNINFO_SYS_33 = "暂无教室信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -127,6 +137,12 @@ public class Constant {
 	public static final String RTNINFO_SYS_45 = "你没有为该进步点过赞";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
+
+
+	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
+	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -222,11 +238,30 @@ public class Constant {
 	
 	
 	/**
-	 * 进步币添加来源   0:签到   1:发进步
+	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
 	 */
-	public static final String USER_IMP_COIN_CHECK = "0";  //签到
+	public static final String USER_IMP_COIN_CHECKIN="0";
+	public static final String USER_IMP_COIN_SHARE="1";
+	public static final String USER_IMP_COIN_INVITE = "2";
+	public static final String USER_IMP_COIN_FLOWERD="3";
+	public static final String USER_IMP_COIN_DIAMONDED = "4";
+	public static final String USER_IMP_COIN_ADDIMPROVE = "5";
+	public static final String USER_IMP_COIN_RANKAWARD = "6";
 
 
+	/**
+	 * 榜单相关配置
+	 */
+
+
+	/**
+	 * 榜单状态
+	 */
+	public static final String RANKIMAGE_STATUS_0 = "0";  //草稿
+	public static final String RANKIMAGE_STATUS_1 = "1";  //审核中
+	public static final String RANKIMAGE_STATUS_2 = "2";  //审核不通过 可以修改
+	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
+	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
 
 	
 	/**
@@ -357,6 +392,12 @@ public class Constant {
 	public static final String RP_USER_CHECK_DATE = "user_check_date_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
 	
+	/*
+	 * 用户龙币   进步币   缓存到redis
+	 */
+	public static final String RP_USER_IMP_COIN_VALUE = "user_imp_coin_";  //进步币
+	public static final String RP_USER_MONEY_VALUE = "user_money_";  //龙币
+	
 
 	/**
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
@@ -370,4 +411,11 @@ public class Constant {
 	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
 	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
 
+    /**
+     * 用户特权  操作
+     * Privilege
+     */
+    public static final String USER_PRIVILEGE_ADD_CIRCLE = "0";//
+    public static final String USER_PRIVILEGE_ADD_RANK = "1";//
+    public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
 }

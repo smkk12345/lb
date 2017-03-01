@@ -113,9 +113,11 @@ public class AppUserController extends BaseController {
  		//一些其他的逻辑
  		
  		try {
+            int n = 5;
+            n = n/0;
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
         } catch (Exception e) {
-            logger.error("init userid = {}, msg = {}", userid, e);
+            logger.error("init userid = {} ", userid, e);
         }
  		return baseResp;
     }

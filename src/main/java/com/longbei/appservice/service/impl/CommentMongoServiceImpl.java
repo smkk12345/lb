@@ -3,18 +3,23 @@ package com.longbei.appservice.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -22,8 +27,10 @@ import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLikes;
 import com.longbei.appservice.entity.CommentLower;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentMongoService;
+import com.longbei.appservice.service.UserBehaviourService;
 
 import net.sf.json.JSONObject;
 
@@ -42,6 +49,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	private UserMsgMapper userMsgMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
@@ -55,9 +66,15 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			insertCount(comment);
 			//添加评论消息
 			insertMsg(comment);
+			
+			//添加评论---    +积分
+			//获取十全十美类型---社交
+			String pType = SysRulesCache.perfectTenMap.get(2);
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
+			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType, null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("insertComment comment={},msg={}",comment,e);
+			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);
 		}
 		return reseResp;
 	}
@@ -87,7 +104,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			userMsgMapper.insertSelective(record);
 		} catch (Exception e) {
-			logger.error("insertMsg record = {}, msg = {}", JSONObject.fromObject(record).toString(), e);
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
 		}
 	}
 	
@@ -95,7 +112,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			commentMongoDao.insertComment(comment);
 		} catch (Exception e) {
-			logger.error("insert comment = {}, msg = {}", JSONObject.fromObject(comment).toString(), e);
+			logger.error("insert comment = {}", JSONObject.fromObject(comment).toString(), e);
 		}
 	}
 	
@@ -108,7 +125,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			commentCountMongoDao.insertCommentCount(commentCount);
 		} catch (Exception e) {
-			logger.error("insertCount commentCount = {}, msg = {}", JSONObject.fromObject(commentCount).toString(), e);
+			logger.error("insertCount commentCount = {}", JSONObject.fromObject(commentCount).toString(), e);
 		}
 	}
 
@@ -137,7 +154,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -168,7 +185,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -213,7 +230,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return reseResp;
 	}
@@ -224,7 +241,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		try {
 			comment = commentMongoDao.selectCommentByid(id);
 		} catch (Exception e) {
-			logger.error("selectCommentByid id = {}, msg = {}", id, e);
+			logger.error("selectCommentByid id = {}", id, e);
 		}
 		return comment;
 	}
@@ -239,7 +256,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			commentMongoDao.deleteComment(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteComment id = {}, msg = {}", id, e);
+			logger.error("deleteComment id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -267,7 +284,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			reseResp.setData(zong);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectCommentCountSum itypeid = {}, msg = {}", itypeid, e);
+			logger.error("selectCommentCountSum itypeid = {}", itypeid, e);
 		}
 		return reseResp;
 	}

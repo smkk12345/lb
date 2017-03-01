@@ -16,6 +16,8 @@ import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.UserPointDetail;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserPointDetailMapper userPointDetailMapper;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserImpCoinDetailService userImpCoinDetailService;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -86,7 +90,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     @Override
-    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType, String pType) {
+    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
+                                        String pType,String origin,long impid,long friendid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
@@ -94,9 +99,23 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             levelUp(userInfo.getUserid(),point,pType);
         }
         //进步币发生变化
-        int impIcon = getImpIcon(userInfo,operateType);
-        baseResp.getExpandData().put("impIcon",impIcon);
+        int impIcon = 0 ;
+        if(!StringUtils.isBlank(origin)){
+            impIcon = getImpIcon(userInfo,operateType);
+            if(impIcon>0){
+                //进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
+                //long userid, String origin, int number, long impid, long friendid)
+                userImpCoinDetailService.insertPublic(userInfo.getUserid(),origin,impIcon,impid,friendid);
+            }
+            baseResp.getExpandData().put("impIcon",impIcon);
+        }
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
+        return BaseResp.ok();
     }
 
     private int getHashValueFromCache(String key,String hashKey){
@@ -263,7 +282,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }catch (Exception e){
             logger.error("subLevelUp error and msg = {}",e);
         }
-        return baseResp;
+        return baseResp.initCodeAndDesp();
     }
 
     private Map<String,Integer> getLeftPointAndLevel(UserInfo userInfo,String pType,int iPoint){
@@ -375,7 +394,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     /**
      *  进步币发生变化
-     *  有些反胃啊
+     *
      */
     private int getImpIcon(UserInfo userInfo, String operateType){
         String operateTypeRandom = operateType+"_RANDOM";

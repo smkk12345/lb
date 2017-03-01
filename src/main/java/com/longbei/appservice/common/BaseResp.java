@@ -36,6 +36,7 @@ public class BaseResp<T extends Object> implements Serializable {
     public static BaseResp ok() {
         return new BaseResp(BaseResp.SUCCESS, "操作成功!");
     }
+
     //成功直接返回 BaseResp.ok(msg)
     public static BaseResp ok(String msg) {
         return new BaseResp(BaseResp.SUCCESS, msg);
@@ -85,11 +86,15 @@ public class BaseResp<T extends Object> implements Serializable {
 
     
     public BaseResp initCodeAndDesp(int code,String rtnInfo){
-    		this.code = code;
-    		this.rtnInfo = rtnInfo;
-    		return this;
+        this.code = code;
+        this.rtnInfo = rtnInfo;
+        return this;
     }
-
+    public BaseResp initCodeAndDesp(){
+        this.code = code;
+        this.rtnInfo = rtnInfo;
+        return this;
+    }
 	public Map<String, Object> getExpandData() {
 		return expandData;
 	}

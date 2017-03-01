@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longbei.appservice.dao.RankCheckDetailMapper">
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankCheckDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rankid" jdbcType="BIGINT" property="rankid" />
+    <result column="checkstatus" jdbcType="CHAR" property="checkstatus" />
+    <result column="checkuserid" jdbcType="INTEGER" property="checkuserid" />
+    <result column="checkideadetail" jdbcType="VARCHAR" property="checkideadetail" />
+    <result column="checkidea" jdbcType="VARCHAR" property="checkidea" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rankid, checkstatus, checkuserid, checkideadetail, checkidea, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rankcheckdetail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from rankcheckdetail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankCheckDetail">
+    insert into rankcheckdetail (id, rankid, checkstatus, 
+      checkuserid, checkideadetail, checkidea, 
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{checkstatus,jdbcType=CHAR}, 
+      #{checkuserid,jdbcType=INTEGER}, #{checkideadetail,jdbcType=VARCHAR}, #{checkidea,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankCheckDetail">
+    insert into rankcheckdetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="rankid != null">
+        rankid,
+      </if>
+      <if test="checkstatus != null">
+        checkstatus,
+      </if>
+      <if test="checkuserid != null">
+        checkuserid,
+      </if>
+      <if test="checkideadetail != null">
+        checkideadetail,
+      </if>
+      <if test="checkidea != null">
+        checkidea,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null">
+        #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="checkstatus != null">
+        #{checkstatus,jdbcType=CHAR},
+      </if>
+      <if test="checkuserid != null">
+        #{checkuserid,jdbcType=INTEGER},
+      </if>
+      <if test="checkideadetail != null">
+        #{checkideadetail,jdbcType=VARCHAR},
+      </if>
+      <if test="checkidea != null">
+        #{checkidea,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankCheckDetail">
+    update rankcheckdetail
+    <set>
+      <if test="rankid != null">
+        rankid = #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="checkstatus != null">
+        checkstatus = #{checkstatus,jdbcType=CHAR},
+      </if>
+      <if test="checkuserid != null">
+        checkuserid = #{checkuserid,jdbcType=INTEGER},
+      </if>
+      <if test="checkideadetail != null">
+        checkideadetail = #{checkideadetail,jdbcType=VARCHAR},
+      </if>
+      <if test="checkidea != null">
+        checkidea = #{checkidea,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankCheckDetail">
+    update rankcheckdetail
+    set rankid = #{rankid,jdbcType=BIGINT},
+      checkstatus = #{checkstatus,jdbcType=CHAR},
+      checkuserid = #{checkuserid,jdbcType=INTEGER},
+      checkideadetail = #{checkideadetail,jdbcType=VARCHAR},
+      checkidea = #{checkidea,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

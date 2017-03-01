@@ -31,6 +31,10 @@ public class Classroom {
     private Date updatetime;//更新时间
 
     private String ptype;//十全十美类型
+    
+    private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
+    
+    private long userid;
 
     /**
      * 
@@ -236,5 +240,23 @@ public class Classroom {
 
 	public void setClassroomid(Long classroomid) {
 		this.classroomid = classroomid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIspublic() {
+		return ispublic;
+	}
+
+	public void setIspublic(String ispublic) {
+		this.ispublic = ispublic;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(long userid) {
+		this.userid = userid;
 	}
 }

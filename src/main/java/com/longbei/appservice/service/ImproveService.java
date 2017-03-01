@@ -283,15 +283,23 @@ public interface ImproveService {
 
 
 
-    BaseResp<Object> addFlower(String userid,String impid,int flowernum,String businesstype,String businessid);
+    BaseResp<Object> addFlower(String userid,String friendid,String impid,int flowernum,String businesstype,String businessid);
 
 
-    BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
+    BaseResp<Object> addDiamond(String userid,String friendid,String impid,int diamondnum,String businesstype,String businessid);
 
     BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow);
 
 
     BaseResp<List<ImpAllDetail>> selectImproveLFDList(String impid, String listtype,int pagesize, Date lastdate);
 
-
+    /**
+     * 获取进步详情
+     * @param userid
+     * @param impid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    public BaseResp select(String userid, String impid, String businesstype,String businessid);
 }

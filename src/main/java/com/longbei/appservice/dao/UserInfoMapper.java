@@ -47,4 +47,19 @@ public interface UserInfoMapper {
 	int updateDeviceIndexByUserName(UserInfo userInfo);
 
 	int updatePointByUserid(UserInfo record);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户进步币数量
+	 * 2017年3月1日
+	 */
+	int updateTotalcoinByUserid(@Param("userid") long userid, @Param("totalcoin") Integer totalcoin);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户龙币数量
+	 * 2017年3月1日
+	 */
+	int updateTotalmoneyByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney);
+	
 }
