@@ -223,6 +223,5 @@ public class RankServiceImpl implements RankService{
         if (Constant.RANKIMAGE_STATUS_3.equals(rankCheckDetail.getCheckstatus())){
             deleteRankImage(String.valueOf(rankCheckDetail.getRankid()));
         }
->>>>>>> a2a2a745f3e103d63e7de4ca9295850b1f4e76a4
     }
 }
