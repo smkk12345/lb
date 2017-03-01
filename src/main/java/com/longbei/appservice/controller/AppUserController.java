@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +22,18 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
-import com.longbei.appservice.entity.UserFeedback;
-import com.longbei.appservice.entity.UserIdcard;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserInterests;
 import com.longbei.appservice.service.DictAreaService;
 import com.longbei.appservice.service.UserCheckinDetailService;
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserIdcardService;
 import com.longbei.appservice.service.UserInterestsService;
 import com.longbei.appservice.service.UserJobService;
+import com.longbei.appservice.service.UserSponsorService;
 import com.longbei.appservice.service.UserSchoolService;
+import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.UserCertifyService;
 import com.longbei.appservice.service.UserService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 
 
 /**
@@ -56,7 +58,14 @@ public class AppUserController extends BaseController {
     private UserInterestsService userInterestsService;
     @Autowired
     private UserCheckinDetailService userCheckinDetailService;
-
+    @Autowired
+    private UserCertifyService userCertifyService;
+    @Autowired
+    private UserSponsorService userSponsorService;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private RankService rankService;
     
     
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
@@ -104,9 +113,11 @@ public class AppUserController extends BaseController {
  		//一些其他的逻辑
  		
  		try {
+            int n = 5;
+            n = n/0;
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
         } catch (Exception e) {
-            logger.error("init userid = {}, msg = {}", userid, e);
+            logger.error("init userid = {} ", userid, e);
         }
  		return baseResp;
     }
@@ -147,8 +158,6 @@ public class AppUserController extends BaseController {
         }
         return baseResp;
     }
-    
-    
 
     /**
      * http://ip:port/appservice/user/sms
@@ -254,7 +263,6 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
 
-
     /**
     * @Title: http://ip:port/appservice/user/login
     * @Description: 登录
@@ -283,17 +291,19 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
     
-    /**
-    * @Title: http://ip:port/appservice/user/updateUserInfo
-    * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
-    * @param @param request userid avatar头像    username手机号    nickname昵称     realname真名   sex性别  
-    * @param @param city所在城市   area所在区域   brief个人简介   birthday生日   constellation星座   blood血型   feeling感情状态
-    * @param @param code 0
-    * @auther smkk
-    * @currentdate:2017年2月23日
+     /**
+     * @Title: http://ip:port/appservice/user/updateUserInfo
+     * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
+     * @param @param request userid avatar头像    username手机号
+     * @param @param nickname昵称     realname真名   sex性别
+     * @param @param city所在城市   area所在区域   brief个人简介   birthday生日
+     * @param @param constellation星座   blood血型   feeling感情状态
+     * @param @param code 0
+     * @auther smkk
+     * @currentdate:2017年2月23日
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
     @ResponseBody
     public BaseResp<Object> updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -332,107 +342,12 @@ public class AppUserController extends BaseController {
     		userInfo.setUpdatetime(date);
             return userService.updateUserInfo(userInfo);
         } catch (Exception e) {
-            logger.error("updateUserInfo error and msg = {}", e);
+            logger.error("updateUserInfo params userid={},avatar={},username={},nickname={},realname={},sex={},city={},area={},brief={},birthday={},constellation={},blood={},feeling={}"
+                    , userid,avatar,username,nickname,realname,sex,city,area,brief,birthday,constellation,blood,feeling, e);
         }
         return baseResp;
     }
-    
-    
-    /**
-     * @Title: http://ip:port/appservice/user/selectInterests
-     * @Description: 获取用户感兴趣的标签列表
-     * @param userid
-     * @param code 0
-     * @auther smkk
-     * @currentdate:2017年2月23日
-     */
-    @SuppressWarnings({ "unchecked", "static-access", "serial" })
- 	@RequestMapping(value = "/selectInterests")
-     @ResponseBody
-     public BaseResp<Object> selectInterests(String userid) {
-     	logger.info("selectInterests and userid={}",userid);
-     	BaseResp<Object> baseResp = new BaseResp<>();
-     	if(StringUtils.isBlank(userid)){
-     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-     	}  
-     	try {
-     		BaseResp.ok();
-     		baseResp.setData(new ArrayList<UserInterests>(){{
- 		        add(new UserInterests("-1","全部"));
- 		        add(new UserInterests("0","学习"));
- 		        add(new UserInterests("1","运动"));
- 		        add(new UserInterests("2","社交"));
- 		        add(new UserInterests("3","艺术"));
- 		        add(new UserInterests("4","生活"));
- 		        add(new UserInterests("5","公益"));
- 		        add(new UserInterests("6","文字"));
- 		        add(new UserInterests("7","劳动"));
- 		        add(new UserInterests("8","修养"));
- 		        add(new UserInterests("9","健康"));
-     		}});
-     		return baseResp;	
- 		} catch (Exception e) {
- 			logger.error("selectInterests error and msg={}",e);
- 		}
-     	return baseResp;
-     }
-    
-    /**
-     * @Title: http://ip:port/appservice/user/updateInterests
-     * @Description: 更改用户的兴趣信息
-     * @param userid
-     * @param code 0
-     * @auther IngaWu
-     * @currentdate:2017年2月23日
-     */   
-    @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateInterests")
-    @ResponseBody
-    public BaseResp<Object> updateInterests(String id,String ptype,String perfectname) {
-    	logger.info("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname);
-    	BaseResp<Object> baseResp = new BaseResp<>();
-    	if(StringUtils.isBlank(id)){
-    		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
-    	try {
-    		baseResp = userInterestsService.updateInterests(Integer.parseInt(id),ptype,perfectname);
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
-    		return baseResp;	
-		} catch (Exception e) {
-			logger.error("updateInterests error and msg={}",e);
-		}
-    	return baseResp;
-    }   
-    
-    /**
-     * @Title: http://ip:port/appservice/user/selectCityList
-     * @Description: 查找城市信息 
-     * @param pid 父级城市编号 (通过pid=null可查中国全部省份，通过省份可查其全部市，通过市可查其全部县)
-     * @param code 0
-     * @auther IngaWu
-     * @currentdate:2017年2月23日
-     */     
-	@RequestMapping(value = "/selectCityList")
-    @ResponseBody
-    public BaseResp<Object> selectCityList(String pid) {
-    	logger.info("selectCityList and pid={}",pid);
-    	BaseResp<Object> baseResp = new BaseResp<>();
 
-    	try {
-    		baseResp = dictAreaService.selectCityList(pid);
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
-    		return baseResp;	
-		} catch (Exception e) {
-			logger.error("selectCityList error and msg={}",e);
-		}
-    	return baseResp;
-    }   
-    
-    
     
     /**  http://ip:port/appservice/user/updateNickName
      * @param @param userid
@@ -489,7 +404,7 @@ public class AppUserController extends BaseController {
     		String randomcode = request.getParameter("randomcode");
     		String inviteuserid = request.getParameter("inviteusername");
     		String deviceindex = request.getParameter("deviceindex");
-        String devicetype = request.getParameter("devicetype");
+            String devicetype = request.getParameter("devicetype");
     		//必传参数  类型 openid 密码 手机号  随机码
     		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
     		if(StringUtils.hasBlankParams(utype,openid,password,username,randomcode,deviceindex)){
@@ -587,7 +502,6 @@ public class AppUserController extends BaseController {
 		return baseResp;
 	}
     
-    
     /**
      * @Title: http://ip:port/appservice/user/applyIdCardValidate
      * @Description: 申请身份证验证，移动端保存身份证验证信息到数据库
@@ -628,13 +542,12 @@ public class AppUserController extends BaseController {
 		return baseResp;
 	}
     
-    //--------------------教育经历start-------------------------------  
-    
+    //--------------------教育经历start-------------------------------
     /**
      * @Title: http://ip:port/app_service/user/insertSchool
      * @Description: 添加教育经历
      * @param @param userid schoolname学校名称 Department院系 starttime教育起始时间 endtime教育结束时间
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */
@@ -649,12 +562,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("insertSchool error and msg={}",e);
+			logger.error("insertSchool and userid={},schoolname={},Department={},starttime={},endtime={}", userid,schoolname,Department,starttime,endtime,e);
 		}
     	return baseResp;
     }
@@ -663,7 +573,7 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/app_service/user/deleteSchool
      * @Description: 删除教育经历
      * @param @param id userid
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */    
@@ -678,12 +588,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userSchoolService.deleteSchool(Integer.parseInt(id),Long.parseLong(userid));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("deleteSchool error and msg={}",e);
+			logger.error("deleteSchool and id={},userid={}",id,userid,e);
 		}
     	return baseResp;
     }
@@ -706,43 +613,34 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userSchoolService.selectSchoolById(Integer.parseInt(id));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("selectSchoolById error and msg={}",e);
+			logger.error("selectSchoolById and id={}",id,e);
 		}
     	return baseResp;
     }
 
-    
     /**
      * @Title: http://ip:port/app_service/user/selectSchoolList
      * @Description: 查看教育经历列表
-     * @param @param userid 
+     * @param @param userid  startNum分页起始值 pageSize每页显示条数
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */  
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectSchoolList")
     @ResponseBody
-    public BaseResp<Object> selectSchoolList(String userid) {
-    	logger.info("selectSchoolList and userid={}",userid);
+    public BaseResp<Object> selectSchoolList(String userid,String startNum,String pageSize) {
+    	logger.info("selectSchoolList and userid={},startNum={},pageSize={}",userid,startNum,pageSize);
     	BaseResp<Object> baseResp = new BaseResp<>();
-        int startNum = 0;
-        int pageSize = 15;
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),startNum,pageSize);
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
+    		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("selectSchoolList error and msg={}",e);
+			logger.error("selectSchoolList and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}
     	return baseResp;
     }
@@ -751,11 +649,10 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/app_service/user/updateSchool 
      * @Description: 更改教育经历
      * @param @param id schoolname学校名称 Department院系 starttime教育起始时间 endtime教育结束时间
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
-      */ 
-    
+      */
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateSchool")
     @ResponseBody
@@ -767,12 +664,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("updateSchool error and msg={}",e);
+			logger.error("updateSchool and id={},schoolname={},Department={},starttime={},endtime={}",id,schoolname,Department,starttime,endtime,e);
 		}
     	return baseResp;
     }
@@ -784,7 +678,7 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/app_service/user/insertJob
      * @Description: 添加工作经历
      * @param @param userid companyname所在公司 department所在部门 location工作所在地  starttime工作起始时间 endtime工作结束时间
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */  
@@ -799,12 +693,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("insertJob error and msg={}",e);
+			logger.error("insertJob and userid={},companyname={},department={},location={},starttime={},endtime={}",userid,companyname,department,location,starttime,endtime,e);
 		}
     	return baseResp;
     }
@@ -813,7 +704,7 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/app_service/user/deleteJob
      * @Description: 删除工作经历
      * @param @param id userid
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */ 
@@ -828,12 +719,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userJobService.deleteJob(Integer.parseInt(id),Long.parseLong(userid));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("deleteJob error and msg={}",e);
+			logger.error("deleteJob and id={},userid={}",id,userid,e);
 		}
     	return baseResp;
     }
@@ -841,29 +729,24 @@ public class AppUserController extends BaseController {
     /**
      * @Title: http://ip:port/app_service/user/selectJobList
      * @Description: 查看工作经历列表
-     * @param @param userid 
+     * @param @param userid startNum分页起始值 pageSize每页显示条数
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */      
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectJobList")
     @ResponseBody
-    public BaseResp<Object> selectJobList(String userid) {
-    	logger.info("selectJobList and userid={}",userid);
+    public BaseResp<Object> selectJobList(String userid,String startNum,String pageSize) {
+    	logger.info("selectJobList and userid={},startNum={},pageSize={}",userid,startNum,pageSize);
     	BaseResp<Object> baseResp = new BaseResp<>();
-        int startNum = 0;
-        int pageSize = 15;
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.selectJobList(Long.parseLong(userid),startNum,pageSize);
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
+    		baseResp = userJobService.selectJobList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("selectJobList error and msg={}",e);
+			logger.error("selectJobList and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}
     	return baseResp;
     }
@@ -886,12 +769,9 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userJobService.selectJobById(Integer.parseInt(id));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("selectJobById error and msg={}",e);
+			logger.error("selectJobById and id={}",id,e);
 		}
     	return baseResp;
     }
@@ -900,7 +780,7 @@ public class AppUserController extends BaseController {
      * @Title: http://ip:port/app_service/user/updateJob 
      * @Description: 更改工作经历
      * @param @param id companyname所在公司 department所在部门 location工作所在地  starttime工作起始时间 endtime工作结束时间
-     * @param 正确返回 code 0 错误返回相应code 和 描述
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
      * @auther IngaWu
      * @currentdate:2017年2月22日
       */ 
@@ -915,15 +795,260 @@ public class AppUserController extends BaseController {
     	}  
     	try {
     		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
-    		if(baseResp.getCode() == Constant.STATUS_SYS_00){
-    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-    		}
     		return baseResp;	
 		} catch (Exception e) {
-			logger.error("updateJob error and msg={}",e);
+			logger.error("updateJob and id={},companyname={},department={},location={},starttime={},endtime={}",id,companyname,department,location,starttime,endtime,e);
 		}
     	return baseResp;
     }
-    //--------------------工作经历end-------------------------------     
-    
+    //--------------------工作经历end-------------------------------
+    //--------------------用户兴趣标签start-------------------------------
+    /**
+     * @Title: http://ip:port/appservice/user/selectInterests
+     * @Description: 获取用户感兴趣的标签列表
+     * @param @param userid
+     * @auther smkk
+     * @currentdate:2017年2月23日
+     */
+    @SuppressWarnings({ "unchecked", "static-access", "serial" })
+    @RequestMapping(value = "/selectInterests")
+    @ResponseBody
+    public BaseResp<Object> selectInterests(String userid) {
+        logger.info("selectInterests and userid={}",userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp.ok();
+            baseResp.setData(new ArrayList<UserInterests>(){{
+                add(new UserInterests("-1","全部"));
+                add(new UserInterests("0","学习"));
+                add(new UserInterests("1","运动"));
+                add(new UserInterests("2","社交"));
+                add(new UserInterests("3","艺术"));
+                add(new UserInterests("4","生活"));
+                add(new UserInterests("5","公益"));
+                add(new UserInterests("6","文字"));
+                add(new UserInterests("7","劳动"));
+                add(new UserInterests("8","修养"));
+                add(new UserInterests("9","健康"));
+            }});
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectInterests and userid={}",userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/appservice/user/insertInterests
+     * @Description: 添加兴趣信息
+     * @param @param userid  ptype十全十美类型  perfectname十全十美名
+     * @param @param code 0
+     * @auther IngaWu
+     * @currentdate:2017年2月24日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/insertInterests")
+    @ResponseBody
+    public BaseResp<Object> insertInterests(String userid,String ptype,String perfectname) {
+        logger.info("insertInterests and userid={},ptype={},perfectname={}",userid,ptype,perfectname);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid,ptype,perfectname)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            return userInterestsService.insertInterests(userid,ptype,perfectname);
+        } catch (Exception e) {
+            logger.error("insertInterests and userid={},ptype={},perfectname={}",userid,ptype,perfectname,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/appservice/user/deleteInterests
+     * @Description: 删除兴趣信息
+     * @param  @param id，userid
+     * @param @param code 0
+     * @auther IngaWu
+     * @currentdate:2017年2月24日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/deleteInterests")
+    @ResponseBody
+    public BaseResp<Object> deleteInterests(String id,String userid) {
+        logger.info("deleteInterests and id={},userid={}",id,userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(id,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            return userInterestsService.deleteInterests(Integer.parseInt(id),userid);
+        } catch (Exception e) {
+            logger.error("deleteInterests and id={},userid={}",id,userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/appservice/user/updateInterests
+     * @Description: 更改用户的兴趣信息
+     * @param @param id userid  ptype十全十美类型  perfectname十全十美名
+     * @param @param code 0
+     * @auther IngaWu
+     * @currentdate:2017年2月23日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/updateInterests")
+    @ResponseBody
+    public BaseResp<Object> updateInterests(String id,String ptype,String perfectname) {
+        logger.info("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(id)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userInterestsService.updateInterests(Integer.parseInt(id),ptype,perfectname);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname,e);
+        }
+        return baseResp;
+    }
+    //--------------------用户兴趣标签end-------------------------------
+    /**
+     * @Title: http://ip:port/appservice/user/selectCityList
+     * @Description: 查找城市信息
+     * @param @param pid 父级城市编号 (通过pid=null可查中国全部省份，通过省份可查其全部市，通过市可查其全部县)
+     * @param @param startNum分页起始值，pageSize每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年2月23日
+     */
+    @RequestMapping(value = "/selectCityList")
+    @ResponseBody
+    public BaseResp<Object> selectCityList(String pid,String startNum,String pageSize) {
+        logger.info("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = dictAreaService.selectCityList(pid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize,e);
+        }
+        return baseResp;
+    }
+    //--------------------教育经历和工作经历认证start-------------------------------
+    /**
+     * @Title: http://ip:port/app_service/user/applyCertify
+     * @Description: 申请教育经历和工作经历认证
+     * @param id id为空值时添加认证，有id时修改认证
+     * @param userid
+     * @param @param  ctype认证类型 0学历 1工作经历
+     * @param @param photes图片信息
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/applyCertify")
+    @ResponseBody
+    public BaseResp<Object> applyCertify(String id,String userid,String ctype,String photes) {
+        logger.info("applyCertify and userid={},ctype={},photes={}",userid,ctype,photes);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid,ctype,photes)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            if(!StringUtils.isBlank(id)){
+                return  userCertifyService.updateApplyCertify(Integer.parseInt(id),ctype,photes);
+            }
+            else {
+                return userCertifyService.insertCertify(Long.parseLong(userid),ctype,photes);
+            }
+        } catch (Exception e) {
+            logger.error("applyCertify and userid={},ctype={},photes={}",userid,ctype,photes,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/user/selectCertifyById
+     * @Description: 查询认证
+     * @param @param id
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectCertifyById")
+    @ResponseBody
+    public BaseResp<Object> selectCertifyById(String id) {
+        logger.info("selectCertifyById and id={}", id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(id)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userCertifyService.selectCertifyById(Integer.parseInt(id));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectCertifyById and id={}", id, e);
+        }
+        return baseResp;
+    }
+    //--------------------教育经历和工作经历认证end-------------------------------
+    //--------------------榜单赞助start-------------------------------
+    /**
+     * @Title: http://ip:port/app_service/user/insertSponsor
+     * @Description: 添加赞助
+     * @param @param userid 赞助人 userid为空值时添加一条记录，有userid时追加原有记录赞助的龙币数量
+     * @param @param number 赞助龙币数量, bid榜单id, ptype赞助类型 0龙币 1进步币
+     * @param @param 正确返回 code 0 错误返回相应code 和 描述
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/insertSponsor")
+    @ResponseBody
+    public BaseResp<Object> insertSponsor(String userid,String number,String bid,String ptype) {
+        logger.info("insertSponsor and userid={},number={},bid={},ptype={}",userid,number,bid,ptype);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid,number,bid,ptype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            UserSponsor userSponsor = userSponsorService.selectByUseridAndBid(Long.parseLong(userid),Long.parseLong(bid));
+            if(null != userSponsor){
+                return userSponsorService.updateSponsor(Long.parseLong(userid),Integer.parseInt(number),Long.parseLong(bid),ptype);
+            }else {
+                return userSponsorService.insertSponsor(Long.parseLong(userid), Integer.parseInt(number), Long.parseLong(bid), ptype);
+            }
+        } catch (Exception e) {
+            logger.error("insertSponsor and userid={},number={},bid={},ptype={}",userid,number,bid,ptype,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/user/selectSponsorList
+     * @Description: 查询赞助记录列表
+     * @param @param startNum分页起始值 pageSize每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectSponsorList")
+    @ResponseBody
+    public BaseResp<Object> selectSponsorList(String startNum,String pageSize) {
+        logger.info("selectSponsorList and startNum={},pageSize={}",startNum,pageSize);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = userSponsorService.selectSponsorList(Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectSponsorList and startNum={},pageSize={}，",startNum,pageSize,e);
+        }
+        return baseResp;
+    }
+    //--------------------榜单赞助end-------------------------------
 }

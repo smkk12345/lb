@@ -50,6 +50,16 @@ public interface RankService {
     boolean deleteRankImage(String rankimageid);
 
 
+    /**
+     * @Title: updateSponsornumAndSponsormoney
+     * @Description: 更新赞助的统计人数和统计龙币数量
+     * @param @param userid 赞助人
+     * @param @param bid榜单
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    boolean updateSponsornumAndSponsormoney( );
+
     BaseResp checkRankImage(RankCheckDetail rankCheckDetail);
 
 

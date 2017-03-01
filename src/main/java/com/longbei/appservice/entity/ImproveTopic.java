@@ -15,6 +15,16 @@ public class ImproveTopic {
 
     private Date updatetime;//修改时间
 
+    private String topictitle;//换成一下超级话题的title
+
+    public String getTopictitle() {
+        return topictitle;
+    }
+
+    public void setTopictitle(String topictitle) {
+        this.topictitle = topictitle;
+    }
+
     /**
      * 
      * @return id 

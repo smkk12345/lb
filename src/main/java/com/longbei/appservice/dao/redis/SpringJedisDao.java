@@ -31,7 +31,7 @@ public class SpringJedisDao {
             valueOperations.set(key,value);
             result = true;
         }catch (Exception e){
-            logger.error("redis set error key={},value={},msg={}",key,value,e);
+            logger.error("redis set error key={},value={}",key,value,e);
         }
         return result;
     }
@@ -44,7 +44,7 @@ public class SpringJedisDao {
             valueOperations.set(key,value,timeout,TimeUnit.SECONDS);
             result = true;
         }catch (Exception e){
-            logger.error("redis set error key={},value={},timeout={},msg={}",key,value,timeout,e);
+            logger.error("redis set error key={},value={},timeout={}",key,value,timeout,e);
         }
         return result;
     }
@@ -55,7 +55,7 @@ public class SpringJedisDao {
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             valueOperations.set(key,value,timeout,unit);
         }catch (Exception e){
-            logger.error("redis set error key={},value={},timeout={},unit={},msg={}",key,value,timeout,unit,e);
+            logger.error("redis set error key={},value={},timeout={},unit={}",key,value,timeout,unit,e);
             return false;
         }
         return true;
@@ -67,7 +67,7 @@ public class SpringJedisDao {
             ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
             result = valueOperations.get(key);
         }catch (Exception e){
-            logger.error("redis get error key={},msg={}",key,e);
+            logger.error("redis get error key={}",key,e);
         }
         return result;
     }
@@ -78,9 +78,32 @@ public class SpringJedisDao {
             redisTemplate.delete(key);
             result = true;
         }catch (Exception e){
-            logger.error("redis del error key={},msg={}",key,e);
+            logger.error("redis del error key={}",key,e);
         }
         return result;
+    }
+    
+    //判断key是否存在
+    public boolean hasKey(String key){
+        boolean result = false;
+        try{
+            redisTemplate.hasKey(key);
+            result = true;
+        }catch (Exception e){
+            logger.error("redis hasKey error key = {}",key,e);
+        }
+        return result;
+    }
+    
+    //递增   递减
+    public long increment(String key, long delta){
+        try{
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            return valueOperations.increment(key, delta);
+        }catch (Exception e){
+            logger.error("redis increment error key = {}, delta = {}", key, delta, e);
+        }
+        return 0;
     }
 
     //设置key的过期时间
@@ -90,7 +113,7 @@ public class SpringJedisDao {
             redisTemplate.expire(key,timeout,TimeUnit.SECONDS);
             result = true;
         }catch (Exception e){
-            logger.error("redis expire error key={},msg={}",key,e);
+            logger.error("redis expire error key = {}", key, e);
         }
         return result;
     }
@@ -104,7 +127,7 @@ public class SpringJedisDao {
             options.putAll(key,map);
             result = true;
         }catch (Exception e){
-            logger.error("redis putAll error key={},map={},msg={}",key,map,e);
+            logger.error("redis putAll error key={},map={}",key,map,e);
         }
         return result;
     }
@@ -117,7 +140,7 @@ public class SpringJedisDao {
             redisTemplate.expire(key,timeout,TimeUnit.SECONDS);
             result = true;
         }catch (Exception e){
-            logger.error("redis putAll error key={},map={},msg={}",key,map,e);
+            logger.error("redis putAll error key={},map={}",key,map,e);
         }
         return result;
     }
@@ -129,7 +152,7 @@ public class SpringJedisDao {
             options.put(key,hashKey,hashValue);
             result = true;
         }catch (Exception e){
-            logger.error("redis put error key={},hashKey={},hashValue={},msg={}",key,hashKey,hashValue,e);
+            logger.error("redis put error key={},hashKey={},hashValue={}",key,hashKey,hashValue,e);
         }
         return result;
     }
@@ -139,7 +162,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.hasKey(key,hashKey);
         }catch (Exception e){
-            logger.error("redis hasKey error key={},hashKey={},msg={}",key,hashKey,e);
+            logger.error("redis hasKey error key={},hashKey={}",key,hashKey,e);
         }
         return false;
     }
@@ -149,7 +172,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.get(key,hashKey);
         }catch (Exception e){
-            logger.error("redis get error key={},hashKey={},msg={}",key,hashKey,e);
+            logger.error("redis get error key={},hashKey={}",key,hashKey,e);
         }
         return  null;
     }
@@ -160,7 +183,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.multiGet(key,fields);
         }catch(Exception e){
-            logger.error("redis multiGet error key={},hashKey={},msg={}",key,fields,e);
+            logger.error("redis multiGet error key={},hashKey={}",key,fields,e);
         }
         return null;
     }
@@ -170,7 +193,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.delete(key,hashKeys);
         }catch (Exception e){
-            logger.error("redis delete error key={},hashKeys={},msg={}",key,hashKeys,e);
+            logger.error("redis delete error key={},hashKeys={}",key,hashKeys,e);
         }
         return 0;
     }
@@ -180,7 +203,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.increment(key,hashKey,delta);
         }catch (Exception e){
-            logger.error("redis delete error key={},hashKey={},delta={},msg={}",key,hashKey,delta,e);
+            logger.error("redis delete error key={},hashKey={},delta={}",key,hashKey,delta,e);
         }
         return 0;
     }
@@ -190,7 +213,7 @@ public class SpringJedisDao {
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
             return options.keys(key);
         }catch (Exception e){
-            logger.error("redis keys error key={},msg={}",key,e);
+            logger.error("redis keys error key={}",key,e);
         }
         return null;
     }
@@ -213,7 +236,7 @@ public class SpringJedisDao {
             long n = setOperations.add(key,values);
             return n;
         }catch (Exception e){
-            logger.error("redis set add error and msg={}",e);
+            logger.error("redis set add error ",e);
         }
         return 0;
     }
@@ -227,7 +250,7 @@ public class SpringJedisDao {
             return setOperations.remove(key,hashKeys);
 
         }catch (Exception e){
-            logger.error("redis set sRem error and msg={}",e);
+            logger.error("redis set sRem error",e);
         }
         return 0;
     }
@@ -239,7 +262,7 @@ public class SpringJedisDao {
             long n = setOperations.size(key);
             return n;
         }catch(Exception e){
-            logger.error("redis set sSize error and msg={} ",e);
+            logger.error("redis set sSize error ",e);
         }
         return 0;
     }

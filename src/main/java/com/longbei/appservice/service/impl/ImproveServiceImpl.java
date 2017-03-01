@@ -5,6 +5,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -15,10 +17,7 @@ import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.CommentMongoService;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.MoneyService;
-import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.*;
 import net.sf.json.JSONObject;
 import org.apache.catalina.User;
 import org.apache.commons.beanutils.BeanUtils;
@@ -78,6 +77,10 @@ public class ImproveServiceImpl implements ImproveService{
     private TimeLineDetailDao timeLineDetailDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private ImproveTopicMapper improveTopicMapper;
+    @Autowired
+    private UserImpCoinDetailService userImpCoinDetailService;
 
 
     /**
@@ -131,7 +134,12 @@ public class ImproveServiceImpl implements ImproveService{
         //进步发布完成之后
         if(isok){
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
-            userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype);
+            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype, Constant_Perfect.PERFECT_GAM,improve.getImpid(),0);
+            //发布完成之后redis存储i一天数量信息
+//            springJedisDao.put(Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"",businesstype);
+            String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
+            springJedisDao.increment(key,businesstype,1);
+            springJedisDao.expire(key,Constant.CACHE_24X60X60);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -887,6 +895,17 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
+     * 超级话题
+     * @param improve
+     */
+    private void initTopicInfo(Improve improve){
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        if(null != list){
+            improve.setImproveTopicList(list);
+        }
+    }
+
+    /**
      * 初始化进步中用户信息
      * @param improve
      * @author:luye
@@ -940,7 +959,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
             return BaseResp.ok();
         }catch (Exception e){
-            logger.error("addlike error and msg={}",e);
+            logger.error("addlike error ",e);
         }
         return baseResp;
     }
@@ -1057,7 +1076,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> addFlower(String userid, String impid,
+    public BaseResp<Object> addFlower(String userid,String friendid, String impid,
                                       int flowernum,String businesstype,String businessid) {
         //判断龙币是否充足
         BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
@@ -1079,11 +1098,17 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
 
-                //赠送龙分操作
-
-
-
-                return BaseResp.ok();
+                //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
+                //送分  送进步币
+                UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
+                //用户龙分变化
+                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
+                if(ResultUtil.isSuccess(resp)){
+                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
+                    //进步币明细  进步币总数
+                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
+                }
+                return resp;
             }
         } catch (Exception e) {
             logger.error("add flower is error:{}",e);
@@ -1092,7 +1117,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> addDiamond(String userid, String impid,
+    public BaseResp<Object> addDiamond(String userid,String friendid, String impid,
                                        int diamondnum,String businesstype,String businessid) {
         //判断龙币是否充足
         BaseResp baseResp = moneyService.isEnoughLongMoney(userid,diamondnum*Constant.DIAMOND_PRICE);
@@ -1115,13 +1140,19 @@ public class ImproveServiceImpl implements ImproveService{
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
 
                 //赠送龙分操作
+                UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
+                //用户龙分变化
+                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_DIAMOND", Constant_Perfect.PERFECT_GAM,null,0,0);
+                if(ResultUtil.isSuccess(resp)){
+                    int icon = diamondnum* Constant_Imp_Icon.DAILY_DIAMONDED;
+                    //进步币明细  进步币总数
+                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
+                }
 
-
-
-                return BaseResp.ok();
+                return resp;
             }
         } catch (Exception e) {
-            logger.error("add Diamond is error:{}",e);
+            logger.error("add Diamond is error",e);
         }
 
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_49,Constant.RTNINFO_SYS_49);
@@ -1142,7 +1173,7 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp.setData(impAllDetails);
             return baseResp;
         } catch (Exception e) {
-            logger.error("select improveLFDList is error:{}",e);
+            logger.error("select improveLFDList impid={},listtype={}",impid,listtype,e);
         }
         return baseResp;
     }
@@ -1460,13 +1491,43 @@ public class ImproveServiceImpl implements ImproveService{
                 initLikeFlowerDiamondInfo(improve);
                 //初始化是否 点赞 送花 送钻 收藏
                 initIsOptionForImprove(userid,improve);
+                //初始化超级话题列表
+                initTopicInfo(improve);
                 baseResp.setData(improve);
             }
-            return BaseResp.ok();
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }
         return baseResp;
+    }
+
+    @Override
+    public void initImproveInfo(Improve improve,long userid) {
+        //初始化赞，花，钻数量
+        initImproveAttachInfo(improve);
+        //初始化点赞，送花，送钻简略信息
+        initLikeFlowerDiamondInfo(improve);
+        //初始化是否 点赞 送花 送钻 收藏
+        initIsOptionForImprove(userid+"",improve);
+        //初始化超级话题列表
+        initTopicInfo(improve);
+    }
+
+    @Override
+    public int getPerDayImproveCount(long userid, String businesstype) {
+        int result = 0;
+        try{
+            String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
+            String impCountStr = springJedisDao.getHashValue(key,businesstype);
+            if(StringUtils.isBlank(impCountStr)){
+            }else{
+                result = Integer.parseInt(impCountStr);
+            }
+        }catch (Exception e){
+            logger.error("userid={}",userid,e);
+        }
+        return result;
     }
 
 

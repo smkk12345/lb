@@ -193,6 +193,17 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
+    public boolean updateSponsornumAndSponsormoney( ) {
+        int res = 0;
+        try {
+            res = rankMapper.updateSponsornumAndSponsormoney();
+        } catch (Exception e) {
+            logger.error("updateSponsornumAndSponsormoney error:{}", e);
+        }
+        return res > 0;
+    }
+
+    @Override
     public BaseResp checkRankImage(RankCheckDetail rankCheckDetail) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();

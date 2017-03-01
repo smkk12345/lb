@@ -18,9 +18,9 @@
     from user_interests
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteInterests" >
     delete from user_interests
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserInterests" >
     insert into user_interests (id, userid, ptype, 
@@ -30,12 +30,9 @@
       #{perfectname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserInterests" >
+  <insert id="insertInterests" parameterType="com.longbei.appservice.entity.UserInterests" >
     insert into user_interests
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="userid != null" >
         userid,
       </if>
@@ -53,9 +50,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="userid != null" >
         #{userid,jdbcType=VARCHAR},
       </if>

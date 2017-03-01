@@ -534,4 +534,10 @@
       ptype = #{ptype,jdbcType=CHAR}
     where rankid = #{rankid,jdbcType=INTEGER}
   </update>
+  <update id="updateSponsornumAndSponsormoney" >
+    UPDATE rank
+    set
+    sponsornum = (SELECT COUNT(userid) from user_sponsor),
+    sponsormoney = (SELECT SUM(number) from user_sponsor) WHERE id =1;
+  </update>
 </mapper>

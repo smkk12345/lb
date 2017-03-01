@@ -24,4 +24,6 @@ public interface RankMapper {
                                        @Param("pagesize")int pagesize);
 
     int selectListCount(Rank rank);
+
+    int updateSponsornumAndSponsormoney( );
 }
