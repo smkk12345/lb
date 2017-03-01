@@ -135,6 +135,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(isok){
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
             baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype, Constant_Perfect.PERFECT_GAM,improve.getImpid(),0);
+            //发布完成之后redis存储i一天数量信息
+//            springJedisDao.put(Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"",businesstype);
+            String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
+            springJedisDao.increment(key,businesstype,1);
+            springJedisDao.expire(key,Constant.CACHE_24X60X60);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1168,7 +1173,7 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp.setData(impAllDetails);
             return baseResp;
         } catch (Exception e) {
-            logger.error("select improveLFDList is error:{}",e);
+            logger.error("select improveLFDList impid={},listtype={}",impid,listtype,e);
         }
         return baseResp;
     }
@@ -1495,6 +1500,34 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }
         return baseResp;
+    }
+
+    @Override
+    public void initImproveInfo(Improve improve,long userid) {
+        //初始化赞，花，钻数量
+        initImproveAttachInfo(improve);
+        //初始化点赞，送花，送钻简略信息
+        initLikeFlowerDiamondInfo(improve);
+        //初始化是否 点赞 送花 送钻 收藏
+        initIsOptionForImprove(userid+"",improve);
+        //初始化超级话题列表
+        initTopicInfo(improve);
+    }
+
+    @Override
+    public int getPerDayImproveCount(long userid, String businesstype) {
+        int result = 0;
+        try{
+            String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
+            String impCountStr = springJedisDao.getHashValue(key,businesstype);
+            if(StringUtils.isBlank(impCountStr)){
+            }else{
+                result = Integer.parseInt(impCountStr);
+            }
+        }catch (Exception e){
+            logger.error("userid={}",userid,e);
+        }
+        return result;
     }
 
 

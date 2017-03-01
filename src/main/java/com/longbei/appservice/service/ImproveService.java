@@ -302,4 +302,14 @@ public interface ImproveService {
      * @return
      */
     public BaseResp select(String userid, String impid, String businesstype,String businessid);
+
+    /**
+     * 进步信息初始化
+     * @param improve
+     */
+    public void initImproveInfo(Improve improve,long userid);
+
+    public int getPerDayImproveCount(long userid,String businesstype);
+
+
 }
