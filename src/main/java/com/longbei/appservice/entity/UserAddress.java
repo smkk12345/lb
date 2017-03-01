@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserAddress {
     private Integer id;
 
@@ -61,6 +64,7 @@ public class UserAddress {
      * 
      * @return userid 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -109,6 +113,7 @@ public class UserAddress {
      * 是否 默认   0 默认  1 非默认
      * @return isdefault 是否 默认  1 默认收货地址  0 非默认
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdefault() {
         return isdefault;
     }
@@ -157,6 +162,7 @@ public class UserAddress {
      * 0 未删除 1 删除
      * @return isdel
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
 		return isdel;
 	}
