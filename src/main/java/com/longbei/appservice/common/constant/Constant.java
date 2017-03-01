@@ -238,9 +238,15 @@ public class Constant {
 	
 	
 	/**
-	 * 进步币添加来源   0:签到   1:发进步
+	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
 	 */
-	public static final String USER_IMP_COIN_CHECK = "0";  //签到
+	public static final String USER_IMP_COIN_CHECKIN="0";
+	public static final String USER_IMP_COIN_SHARE="1";
+	public static final String USER_IMP_COIN_INVITE = "2";
+	public static final String USER_IMP_COIN_FLOWERD="3";
+	public static final String USER_IMP_COIN_DIAMONDED = "4";
+	public static final String USER_IMP_COIN_ADDIMPROVE = "5";
+	public static final String USER_IMP_COIN_RANKAWARD = "6";
 
 
 	/**
