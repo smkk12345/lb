@@ -8,6 +8,6 @@ import com.longbei.appservice.entity.DictArea;
 
 public interface DictAreaMapper {
 
-    List<DictArea> selectCityList(@Param("pid") String pid);
+    List<DictArea> selectCityList(@Param("pid") String pid,@Param("startNum") int startNum,@Param("pageSize") int pageSize);
 
 }

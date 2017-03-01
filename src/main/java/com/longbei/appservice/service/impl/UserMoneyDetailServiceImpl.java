@@ -101,7 +101,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}, msg = {}", 
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}",
 					userid, origin, number, friendid, e);
 		}
 		return reseResp;
@@ -142,11 +142,41 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}, msg = {}", userid, pageNo, pageSize, e);
+			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}", userid, pageNo, pageSize, e);
 		}
 		return reseResp;
 	}
-	
+
+	@Override
+	public BaseResp<Object> insertPublic(UserInfo userInfo, String origin, int number, long friendid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			UserMoneyDetail userMoneyDetail = new UserMoneyDetail();
+			userMoneyDetail.setCreatetime(new Date());
+			userMoneyDetail.setUpdatetime(new Date());
+			userMoneyDetail.setFriendid(friendid);
+			userMoneyDetail.setOrigin(origin);
+			userMoneyDetail.setUserid(userInfo.getUserid());
+			if(!"0".equals(origin)){
+				userMoneyDetail.setNumber(0 - number);
+			}else{
+				userMoneyDetail.setNumber(number);
+			}
+			boolean temp = insert(userMoneyDetail);
+			if (temp) {
+				//修改用户userInfo表---龙币总数
+				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
+				userInfo.setTotalmoney(allnum);
+				userInfoMapper.updateByUseridSelective(userInfo);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}",
+					userInfo.getUserid(), origin, number, friendid, e);
+		}
+		return reseResp;
+	}
+
 	//------------------------公用方法，初始化用户龙币信息------------------------------------------
 	/**
      * 初始化用户龙币信息 ------Friendid

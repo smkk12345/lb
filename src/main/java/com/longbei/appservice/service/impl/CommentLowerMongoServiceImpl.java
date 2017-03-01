@@ -59,8 +59,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			//获取十全十美类型---社交
 			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getUserid()));//此处通过id获取用户信息
-			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
-			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType,null,0,0);
 		} catch (Exception e) {
 			logger.error("insertCommentLower commentLower = {}",commentLower,e);
 		}

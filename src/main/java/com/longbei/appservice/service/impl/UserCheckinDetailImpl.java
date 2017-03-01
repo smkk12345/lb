@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
@@ -156,13 +157,11 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		//+进步币
 		if(ResultUtil.isSuccess(reseResp)){
 //			String pType = SysRulesCache.perfectTenMap.get(2);
-			String pType = "2";
+			String pType = Constant_Perfect.PERFECT_GAM;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType);
-			int icon = (int)reseResp.getExpandData().get("impIcon");
-			if(icon != 0){
-				insertUserImpCoinDetail(userid, icon, Constant.USER_IMP_COIN_CHECK);
-			}
+			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType,
+					Constant.USER_IMP_COIN_CHECKIN,0,0);
+
 		}
 		return reseResp;
 	}

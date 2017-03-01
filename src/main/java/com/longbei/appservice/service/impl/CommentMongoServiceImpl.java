@@ -3,6 +3,8 @@ package com.longbei.appservice.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			//获取十全十美类型---社交
 			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
-			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
+			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType, null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);
