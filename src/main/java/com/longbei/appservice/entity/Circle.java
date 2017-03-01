@@ -34,6 +34,8 @@ public class Circle {
 
     private String notice;//公告
 
+    private AppUserMongoEntity appUserMongoEntity;
+
     /**
      * 
      * @return id 
@@ -252,5 +254,21 @@ public class Circle {
      */
     public void setNotice(String notice) {
         this.notice = notice;
+    }
+
+    /**
+     * 设置用户信息
+     * @return
+     */
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    /**
+     * 获取用户信息
+     * @param userInfo
+     */
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
     }
 }

@@ -85,6 +85,13 @@ public class Constant {
 	public static final int STATUS_SYS_64 = -64;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
+	public static final int STATUS_SYS_81 = -81;
+	public static final int STATUS_SYS_82 = -82;
+	public static final int STATUS_SYS_83 = -83;
+	public static final int STATUS_SYS_84 = -84;
+	public static final int STATUS_SYS_85 = -85;
+	public static final int STATUS_SYS_86 = -86;
+	public static final int STATUS_SYS_87 = -87;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -155,9 +162,13 @@ public class Constant {
 
 	//80-89 兴趣圈  wangyongzhi
 	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
-
-
-
+	public static final String RTNINFO_SYS_81 = "抱歉,您无权更新该兴趣圈的信息";
+	public static final String RTNINFO_SYS_82 = "您已经在该兴趣圈中了";
+	public static final String RTNINFO_SYS_83 = "您已经申请了加入该兴趣圈,圈主正在验证中,请稍后~~";
+	public static final String RTNINFO_SYS_84 = "申请加圈子成功,正在等待圈主验证";
+	public static final String RTNINFO_SYS_85 = "该用户还未加入该圈子";
+	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
+	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";

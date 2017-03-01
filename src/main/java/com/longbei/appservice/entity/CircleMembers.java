@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.Map;
 
 public class CircleMembers {
     private Integer id;
@@ -110,4 +111,5 @@ public class CircleMembers {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
 }

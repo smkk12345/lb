@@ -12,16 +12,19 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
+    <result column="notice" property="notice" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, circleid, circletitle, circlephotos, circlebrief, circleinvoloed, createuserid,
-    createtime, updatetime, ptype
+    createtime, updatetime, ptype,ispublic,needconfirm,notice
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from circle
-    where circleid = #{circleid,jdbcType=INTEGER}
+    where id = #{circleid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from circle
@@ -164,4 +167,36 @@
   <select id="findCircleByCircleTitle" parameterType="string" resultType="com.longbei.appservice.entity.Circle">
       select id from circle where circleTitle = #{circleTitle}
   </select>
+
+  <!-- 更改兴趣圈信息 -->
+  <update id="updateCircleInfo" parameterType="map">
+      update
+          circle
+      <set>
+        <if test="circlebrief != null">
+            circlebrief = #{circlebrief},
+        </if>
+        <if test="circlephotos != null">
+            circlephotos = #{circlephotos},
+        </if>
+        <if test="notice != null">
+            notice = #{notice}
+        </if>
+      </set>
+      where createuserid = #{userId}
+        and id = #{circleId}
+  </update>
+
+  <!-- 修改兴趣圈的加圈子人数 -->
+  <update id="updateCircleInvoloed" parameterType="map">
+     update
+        circle
+     set
+        circleinvoloed = circleinvoloed + #{personNum}
+        <if test="updateTime != null">
+            ,updatetime = #{updateTime}
+        </if>
+     where id = #{circleId}
+  </update>
+
 </mapper>

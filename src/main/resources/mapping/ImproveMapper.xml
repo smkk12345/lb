@@ -371,4 +371,13 @@
     <result column="goalid" property="goalid" />
   </resultMap>
 
+  <select id="findCircleMemberImprove" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_circle
+    where
+        userid = #{userId}
+      and circleid = #{circleId}
+    ORDER BY createtime DESC
+  </select>
 </mapper>

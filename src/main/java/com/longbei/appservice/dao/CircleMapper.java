@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Circle;
+import com.longbei.appservice.entity.CircleMembers;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +22,8 @@ public interface CircleMapper {
     List<Circle> findRelevantCircle(Map<String,Object> map);
 
     Circle findCircleByCircleTitle(String circleTitle);
+
+    int updateCircleInfo(Map<String, Object> map);
+
+    int updateCircleInvoloed(Map<String, Object> map);
 }

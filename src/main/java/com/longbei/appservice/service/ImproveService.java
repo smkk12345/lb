@@ -302,4 +302,14 @@ public interface ImproveService {
      * @return
      */
     public BaseResp select(String userid, String impid, String businesstype,String businessid);
+
+    /**
+     * 查询某个用户在兴趣圈中的进步
+     * @param circleId 兴趣圈id
+     * @param userId 用户id
+     * @param startNo 开始下标
+     * @param pageSize 每页条数
+     * @return
+     */
+    List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize);
 }

@@ -844,7 +844,7 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化进步附加信息
      * @param improves
      */
-    private void initImproveListOtherInfo(String userid,List<Improve> improves){
+    public void initImproveListOtherInfo(String userid,List<Improve> improves){
         if(null == improves || 0 == improves.size()){
             return;
         }
@@ -1484,5 +1484,16 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("circleId",circleId);
+        map.put("userId",userId);
+        map.put("startNo",startNo);
+        map.put("pageSize",pageSize);
+        List<Improve> improveCircleList = improveMapper.findCircleMemberImprove(map);
+        initImproveListOtherInfo(currentUserId.toString(),improveCircleList);
+        return improveCircleList;
+    }
 
 }

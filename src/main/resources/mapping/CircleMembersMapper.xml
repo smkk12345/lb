@@ -23,10 +23,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.CircleMembers" >
-    insert into circle_members (id, circleid, userid, 
+    insert into circle_members (circleid, userid,
       itype, createtime, updatetime
       )
-    values (#{id,jdbcType=INTEGER}, #{circleid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+    values (#{circleid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT},
       #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -102,5 +102,29 @@
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectCircleMember" parameterType="map" resultMap="BaseResultMap">
+      select * from circle_members where itype = 0 and circleid = #{circleId} limit #{startNo},#{pageSize}
+  </select>
+
+  <!-- 根据用户id以及兴趣圈id 查询数据 -->
+  <select id="findCircleMember" parameterType="map" resultMap="BaseResultMap">
+      select
+        <include refid="Base_Column_List" />
+      from circle_members
+      where circleid = #{circleId}
+          and userid = #{userId}
+  </select>
+
+  <!-- 退出该群 -->
+  <update id="updateCircleMembers" parameterType="map">
+    update
+        circle_members
+    set
+        itype = #{iType} ,
+        updatetime = #{updateTime}
+    where circleid = #{circleId}
+        and userid = #{userId}
   </update>
 </mapper>

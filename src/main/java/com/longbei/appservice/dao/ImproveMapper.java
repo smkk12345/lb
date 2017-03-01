@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ImproveMapper {
 
@@ -84,4 +85,10 @@ public interface ImproveMapper {
      * -- 通过主键获取(公开或者私密或者all,删除或者未删除或者all)
      */
 
+    /**
+     * 查询兴趣圈中某人的进步
+     * @param map
+     * @return
+     */
+    List<Improve> findCircleMemberImprove(Map<String, Object> map);
 }
