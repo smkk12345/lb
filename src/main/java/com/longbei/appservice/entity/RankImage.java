@@ -118,6 +118,7 @@ public class RankImage {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
+
     //--------
 
 
@@ -647,6 +648,8 @@ public class RankImage {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

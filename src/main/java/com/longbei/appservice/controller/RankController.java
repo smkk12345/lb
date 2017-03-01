@@ -3,6 +3,8 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,26 +61,10 @@ public class RankController {
      */
     @ResponseBody
     @RequestMapping(value = "insert",method = RequestMethod.POST)
-    public BaseResp<Object> insertRank(String rankdetail, String ranktitle,
-                                       String ranklimite, String rankscope,
-                                       String rankphotos, String rankrate,
-                                       String starttime, String endtime, String areaname,
-                                       String createuserid, String ranktype, String ispublic,
-                                       String rankcateid, String likescore,
-                                       String flowerscore, String diamondscore,
-                                       String codeword, String ptype, String sourcetype,
-                                       String companyname, String companyphotos,
-                                       String companybrief){
+    public BaseResp<Object> insertRank(RankImage rankImage){
         boolean issuccess = false;
         try {
-            issuccess = rankService.insertRank(rankdetail,ranktitle,Integer.parseInt(ranklimite),
-                    rankscope,rankphotos,Double.parseDouble(rankrate),
-                    DateUtils.formatDate(starttime,"yyyy-MM-dd HH:mm:ss"),
-                    DateUtils.formatDate(endtime,"yyyy-MM-dd HH:mm:ss"),
-                    areaname,createuserid,ranktype,ispublic,rankcateid,
-                    Integer.parseInt(likescore),Integer.parseInt(flowerscore),
-                    Integer.parseInt(diamondscore),codeword,ptype,
-                    sourcetype,companyname,companyphotos,companybrief);
+            issuccess = rankService.insertRank(rankImage);
             if(issuccess){
                 return BaseResp.ok(Constant.RTNINFO_SYS_50);
             }

@@ -3,14 +3,14 @@
 <mapper namespace="com.longbei.appservice.dao.AwardClassifyMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.AwardClassify" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="classifynamev" property="classifynamev" jdbcType="VARCHAR" />
+    <result column="classifyname" property="classifyname" jdbcType="VARCHAR" />
     <result column="parentid" property="parentid" jdbcType="INTEGER" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classifynamev, parentid, sort, updatetime, createtime
+    id, classifyname, parentid, sort, updatetime, createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -18,6 +18,17 @@
     from awardclassify
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectList">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM awardclassify
+    ORDER BY sort ASC
+  </select>
+
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from awardclassify
     where id = #{id,jdbcType=INTEGER}

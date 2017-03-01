@@ -1462,7 +1462,7 @@ public class ImproveServiceImpl implements ImproveService{
                 initIsOptionForImprove(userid,improve);
                 baseResp.setData(improve);
             }
-            return baseResp.ok();
+            return BaseResp.ok();
         }catch (Exception e){
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }

@@ -54,6 +54,85 @@
     from rank
     where rankid = #{rankid,jdbcType=INTEGER}
   </select>
+
+
+  <select id="selectListCount" parameterType="com.longbei.appservice.entity.Rank" resultType="java.lang.Integer">
+    SELECT
+    COUNT(*)
+    FROM rank
+    WHERE 1=1
+    <if test="ranktitle != null and ranktitle != ''" >
+      AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+    </if>
+    <if test="rankbrief != null and rankbrief != ''" >
+      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+    </if>
+    <if test="ptype != null and ptype != '-1'" >
+      AND ptype = #{ptype}
+    </if>
+    <if test="sstarttime != null" >
+      AND starttime &gt;= #{sstarttime}
+    </if>
+    <if test="estarttime != null" >
+      AND starttime &lt; #{estarttime}
+    </if>
+    <if test="rankscope != null" >
+      AND rankscope = #{rankscope}
+    </if>
+    <if test="isup != null" >
+      AND isup = #{isup}
+    </if>
+    <if test="isdel != null" >
+      AND isdel = #{isdel}
+    </if>
+    <if test="sourcetype != null" >
+      AND sourcetype = #{sourcetype}
+    </if>
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
+    </if>
+  </select>
+
+  <select id="selectListWithPage" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank
+    WHERE 1=1
+    <if test="rank.ranktitle != null and rank.ranktitle != ''" >
+      AND ranktitle LIKE concat(concat('%',#{rank.ranktitle}),'%')
+    </if>
+    <if test="rank.rankbrief != null and rank.rankbrief != ''" >
+      AND rankbrief LIKE concat(concat('%',#{rank.rankbrief}),'%')
+    </if>
+    <if test="rank.ptype != null and rank.ptype != '-1'" >
+      AND ptype = #{rank.ptype}
+    </if>
+    <if test="rank.sstarttime != null" >
+      AND starttime &gt;= #{rank.sstarttime}
+    </if>
+    <if test="rank.estarttime != null" >
+      AND starttime &lt; #{rank.estarttime}
+    </if>
+    <if test="rank.rankscope != null" >
+      AND rankscope = #{rank.rankscope}
+    </if>
+    <if test="rank.isup != null" >
+      AND isup = #{rank.isup}
+    </if>
+    <if test="rank.isdel != null" >
+      AND isdel = #{rank.isdel}
+    </if>
+    <if test="rank.sourcetype != null" >
+      AND sourcetype = #{rank.sourcetype}
+    </if>
+    <if test="rank.createuserid != null" >
+      AND createuserid = #{rank.createuserid}
+    </if>
+    ORDER BY createtime DESC limit #{startno},#{pagesize}
+  </select>
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
     where rankid = #{rankid,jdbcType=INTEGER}
@@ -79,7 +158,7 @@
       #{ptype,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Rank" >
-    insert into rankimage
+    insert into rank
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,

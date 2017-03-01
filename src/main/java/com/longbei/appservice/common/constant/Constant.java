@@ -253,6 +253,10 @@ public class Constant {
 	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
 	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
 
+
+	public static final String RANK_ISAUTO_YES = "0";  //自动发布
+	public static final String RANK_ISAUTO_NO = "1";    //手动发布
+
 	
 	/**
 	 * 评论相关配置    itype  类型    0:进步(零散)评论  1:目标进步评论  2：榜评论    3：圈子评论     4：教室微进步评论
