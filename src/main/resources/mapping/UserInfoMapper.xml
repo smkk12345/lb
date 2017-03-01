@@ -348,7 +348,7 @@
         inviteuserid = #{inviteuserid,jdbcType=BIGINT},
       </if>
       <if test="rytoken != null" >
-        token = #{rytoken,jdbcType=VARCHAR},
+        rytoken = #{rytoken,jdbcType=VARCHAR},
       </if>
       <if test="hcnickname != null">
       	hcnickname = #{hcnickname,jdbcType=CHAR},

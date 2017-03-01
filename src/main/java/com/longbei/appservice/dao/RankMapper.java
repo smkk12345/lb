@@ -14,4 +14,6 @@ public interface RankMapper {
     int updateByPrimaryKeySelective(Rank record);
 
     int updateByPrimaryKey(Rank record);
+
+    int updateSponsornumAndSponsormoney( );
 }

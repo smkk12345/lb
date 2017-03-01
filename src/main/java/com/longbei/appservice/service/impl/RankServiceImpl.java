@@ -166,5 +166,14 @@ public class RankServiceImpl implements RankService{
         return res > 0;
     }
 
-
+    @Override
+    public boolean updateSponsornumAndSponsormoney( ) {
+        int res = 0;
+        try {
+            res = rankMapper.updateSponsornumAndSponsormoney( );
+        } catch (Exception e) {
+            logger.error("updateSponsornumAndSponsormoney error:{}",e);
+        }
+        return res > 0;
+    }
 }
