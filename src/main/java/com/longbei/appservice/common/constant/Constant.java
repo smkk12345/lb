@@ -392,6 +392,12 @@ public class Constant {
 	public static final String RP_USER_CHECK_DATE = "user_check_date_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
 	
+	/*
+	 * 用户龙币   进步币   缓存到redis
+	 */
+	public static final String RP_USER_IMP_COIN_VALUE = "user_imp_coin_";  //进步币
+	public static final String RP_USER_MONEY_VALUE = "user_money_";  //龙币
+	
 
 	/**
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天

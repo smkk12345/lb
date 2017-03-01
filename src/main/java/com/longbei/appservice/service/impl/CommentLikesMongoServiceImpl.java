@@ -37,7 +37,7 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertCommentLikes commentLikes={},msg={}",commentLikes,e);
+			logger.error("insertCommentLikes commentLikes = {}", commentLikes, e);
 		}
 		return reseResp;
 	}
@@ -63,7 +63,7 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 		try {
 			commentLikes = commentLikesMongoDao.selectCommentLikesByCommentid(commentid, friendid);
 		} catch (Exception e) {
-			logger.error("selectCommentLikesByCommentid commentid = {}, friendid = {}, msg = {}", commentid, friendid, e);
+			logger.error("selectCommentLikesByCommentid commentid = {}, friendid = {}", commentid, friendid, e);
 		}
 		return commentLikes;
 	}
@@ -75,7 +75,7 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 			delete(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLikes id = {}, msg = {}", id, e);
+			logger.error("deleteCommentLikes id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -93,7 +93,7 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 			otherDecreaseLikes(commentid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLikesByCommentidAndFriendid commentid = {}, friendid = {}, msg = {}", commentid, friendid, e);
+			logger.error("deleteCommentLikesByCommentidAndFriendid commentid = {}, friendid = {}", commentid, friendid, e);
 		}
 		return reseResp;
 	}
@@ -120,7 +120,7 @@ public class CommentLikesMongoServiceImpl implements CommentLikesMongoService {
 			deleteBycommentid(commentid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLikesByCommentid commentid = {}, msg = {}", commentid, e);
+			logger.error("deleteCommentLikesByCommentid commentid = {}", commentid, e);
 		}
 		return reseResp;
 	}

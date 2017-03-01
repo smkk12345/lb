@@ -36,7 +36,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertClassroom record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("insertClassroom record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -61,7 +61,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByClassroomid record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("updateByClassroomid record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -84,7 +84,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
 			}
 		} catch (Exception e) {
-			logger.error("selectListByUserid ptype = {}, userid = {}, startNum = {}, endNum = {}, msg = {}", 
+			logger.error("selectListByUserid ptype = {}, userid = {}, startNum = {}, endNum = {}", 
 					ptype, userid, startNum, endNum, e);
 		}
 		return reseResp;
@@ -116,7 +116,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			}
 			reseResp.setData(roomlist);
 		} catch (Exception e) {
-			logger.error("selectInsertByUserid userid = {}, startNum = {}, endNum = {}, msg = {}", 
+			logger.error("selectInsertByUserid userid = {}, startNum = {}, endNum = {}", 
 					userid, startNum, endNum, e);
 		}
 		return reseResp;
@@ -135,7 +135,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
 			}
 		} catch (Exception e) {
-			logger.error("selectListByPtype ptype = {}, keyword = {}, startNum = {}, endNum = {}, msg = {}", 
+			logger.error("selectListByPtype ptype = {}, keyword = {}, startNum = {}, endNum = {}", 
 					ptype, keyword, startNum, endNum, e);
 		}
 		return reseResp;
