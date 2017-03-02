@@ -40,22 +40,22 @@
     <result column="rankcardid" property="rankcardid" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="sponsornum" property="sponsornum" jdbcType="INTEGER" />
+    <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype,
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,sponsormoney
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from rank
     where rankid = #{rankid,jdbcType=INTEGER}
   </select>
-
-
   <select id="selectListCount" parameterType="com.longbei.appservice.entity.Rank" resultType="java.lang.Integer">
     SELECT
     COUNT(*)
@@ -130,9 +130,6 @@
     </if>
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>
-
-
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
     where rankid = #{rankid,jdbcType=INTEGER}
@@ -538,6 +535,6 @@
     UPDATE rank
     set
     sponsornum = (SELECT COUNT(userid) from user_sponsor),
-    sponsormoney = (SELECT SUM(number) from user_sponsor) WHERE id =1;
+    sponsormoney = (SELECT SUM(number) from user_sponsor) WHERE rankid = #{rankid,jdbcType=BIGINT}
   </update>
 </mapper>

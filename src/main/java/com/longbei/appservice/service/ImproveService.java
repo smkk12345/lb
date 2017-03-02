@@ -321,5 +321,15 @@ public interface ImproveService {
 
     public int getPerDayImproveCount(long userid,String businesstype);
 
+    /**
+     * 获取超级话题下的进步列表
+     * @param topicid
+     * @param sift
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<Improve> selectSuperTopicImproveList(long userid,String topicid,int pageNo,int pageSize);
+
 
 }

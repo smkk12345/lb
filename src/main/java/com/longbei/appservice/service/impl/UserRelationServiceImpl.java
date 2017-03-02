@@ -225,24 +225,24 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-			List<String> fansList = snsFansMapper.selectListidByUid(userid);
-			//读取拼接ids
-			String ids = selectids(userid, friendList, fansList);
-			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0", startNum, endNum);
-			if(null != list && list.size()>0){
-				for (UserInfo userInfo : list) {
-					if(friendList.contains(userInfo.getUserid())){
-						//是好友
-						userInfo.setIsfriend("1");
-					}
-					if(fansList.contains(userInfo.getUserid())){
-						//已关注
-						userInfo.setIslike("1");
-					}
-				}
-			}
+//			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
+//			List<String> fansList = snsFansMapper.selectListidByUid(userid);
+//			//读取拼接ids
+//			String ids = selectids(userid, friendList, fansList);
+//			//type 0：本地 1：远程
+//			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0", startNum, endNum);
+//			if(null != list && list.size()>0){
+//				for (UserInfo userInfo : list) {
+//					if(friendList.contains(userInfo.getUserid())){
+//						//是好友
+//						userInfo.setIsfriend("1");
+//					}
+//					if(fansList.contains(userInfo.getUserid())){
+//						//已关注
+//						userInfo.setIslike("1");
+//					}
+//				}
+//			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectLocalListByUnameAndNname userid = {}, nickname = {}, msg = {}", userid, nickname, e);
@@ -265,14 +265,14 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1", startNum, endNum);
+			List<AppUserMongoEntity> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
-				for (UserInfo userInfo : list) {
-					if(friendList.contains(userInfo.getUserid())){
+				for (AppUserMongoEntity userInfo : list) {
+					if(friendList.contains(userInfo.getId())){
 						//是好友
 						userInfo.setIsfriend("1");
 					}
-					if(fansList.contains(userInfo.getUserid())){
+					if(fansList.contains(userInfo.getId())){
 						//已关注
 						userInfo.setIslike("1");
 					}
@@ -281,9 +281,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_27, Constant.RTNINFO_SYS_27);
 			}
-			
+			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}, msg = {}", userid, nickname, e);
+			e.printStackTrace();
+			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}", userid, nickname, e);
 		}
 		return reseResp;
 	}

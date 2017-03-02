@@ -1,4 +1,5 @@
 package com.longbei.appservice.common.utils;
+import java.util.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,5 +120,18 @@ public class LotteryUtil {
 			}
 		}
     	return null;
-    } 
+    }
+
+    public static int getRdomNumber(int leftNumber){
+        return new Random().nextInt(leftNumber);
+    }
+
+    public static int getRdomNumber1(int leftNumber,int totalNumber){
+        Random r = new Random(totalNumber);
+        int randomNum = r.nextInt();
+        while (randomNum > leftNumber){
+            randomNum = r.nextInt();
+        }
+        return randomNum;
+    }
 }

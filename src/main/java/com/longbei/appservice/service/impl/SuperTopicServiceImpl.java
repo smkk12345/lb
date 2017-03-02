@@ -10,6 +10,7 @@ import com.longbei.appservice.service.SuperTopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * 超级话题服务
  * Created by lixb on 2017/3/1.
  */
+@Service
 public class SuperTopicServiceImpl implements SuperTopicService {
 
     private static Logger logger = LoggerFactory.getLogger(SuperTopicServiceImpl.class);
@@ -53,10 +55,12 @@ public class SuperTopicServiceImpl implements SuperTopicService {
      * @return
      */
     @Override
-    public BaseResp<Object> selectImprovesByTopicId(long topicId, int startNum, int endNum) {
+    public BaseResp<Object> selectImprovesByTopicId(long userid,long topicId, int startNum, int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-
+            List<Improve> list = improveService.selectSuperTopicImproveList(userid,topicId+"",startNum,endNum);
+            baseResp.initCodeAndDesp();
+            baseResp.setData(list);
         }catch (Exception e){
             logger.error("topicId={},startNum={},endNum={}",topicId,startNum,endNum,e);
         }
