@@ -25,7 +25,7 @@ public interface UserSponsorService {
 	 * @auther IngaWu
 	 * @currentdate:2017年2月27日
 	 */
-	BaseResp<Object> selectSponsorList(int startNum, int pageSize);
+	BaseResp<Object> selectSponsorList(long bid,int startNum, int pageSize);
 	/**
 	 * @Title: updateSponsor
 	 * @Description: 修改赞助，追加数量
@@ -47,5 +47,7 @@ public interface UserSponsorService {
 	 * @currentdate:2017年2月27日
 	 */
 	UserSponsor selectByUseridAndBid(long userid,long bid);
+
+//	BaseResp<Object> sponsorLottery(long userid,long rankid);
 
 }

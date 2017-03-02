@@ -22,7 +22,7 @@
     select
      <include refid="Base_Column_List" />
     from user_sponsor
-    where 1 = 1  ORDER BY number DESC, createtime DESC limit #{startNum},#{pageSize};
+    where bid = #{bid,jdbcType=BIGINT} ORDER BY number DESC, createtime DESC limit #{startNum},#{pageSize};
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_sponsor

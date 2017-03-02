@@ -26,7 +26,7 @@ public interface SuperTopicService {
      * @param endNum
      * @return
      */
-    BaseResp<Object> selectImprovesByTopicId(long topicId,int startNum,int endNum);
+    BaseResp<Object> selectImprovesByTopicId(long userid,long topicId,int startNum,int endNum);
 
 
 }

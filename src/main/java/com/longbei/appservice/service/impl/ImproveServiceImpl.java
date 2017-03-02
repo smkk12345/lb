@@ -1485,14 +1485,7 @@ public class ImproveServiceImpl implements ImproveService{
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
             if(null != improve){
-                //初始化赞，花，钻数量
-                initImproveAttachInfo(improve);
-                //初始化点赞，送花，送钻简略信息
-                initLikeFlowerDiamondInfo(improve);
-                //初始化是否 点赞 送花 送钻 收藏
-                initIsOptionForImprove(userid,improve);
-                //初始化超级话题列表
-                initTopicInfo(improve);
+                initImproveInfo(improve,Long.parseLong(userid));
                 baseResp.setData(improve);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1502,8 +1495,7 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
-    @Override
-    public void initImproveInfo(Improve improve,long userid) {
+    private void initImproveInfo(Improve improve,long userid) {
         //初始化赞，花，钻数量
         initImproveAttachInfo(improve);
         //初始化点赞，送花，送钻简略信息
@@ -1528,6 +1520,26 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("userid={}",userid,e);
         }
         return result;
+    }
+
+
+
+    @Override
+    public List<Improve> selectSuperTopicImproveList(long userid,String topicid, int pageNo, int pageSize) {
+        try{
+            List<Improve> improves = improveMapper.selectListByBusinessid
+                    (topicid, Constant_table.IMPROVE_TOPIC,null,pageNo,pageSize);
+            if(null ==improves){
+                logger.warn("getImproveBytopicid return null");
+            }
+            for (int i = 0; i <improves.size() ; i++) {
+                initImproveInfo(improves.get(i),userid);
+            }
+            return improves;
+        }catch (Exception e){
+            logger.error("userid={},topicid={}",userid,e);
+        }
+        return null;
     }
 
 
