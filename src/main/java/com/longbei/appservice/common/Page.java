@@ -1,5 +1,8 @@
 package com.longbei.appservice.common;
 
+import com.longbei.appservice.common.constant.Constant;
+import org.springframework.util.StringUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -103,6 +106,15 @@ public class Page<T> implements Serializable{
             pageno = 1;
         }
         return pageno;
+    }
+
+    public static void initPageNoAndPageSize(String pageno,String pagesize){
+        if (StringUtils.isEmpty(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isEmpty(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
     }
 
 

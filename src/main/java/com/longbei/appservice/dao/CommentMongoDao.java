@@ -40,7 +40,7 @@ public class CommentMongoDao {
 		try {
 			mongoTemplate1.insert(comment);
 		} catch (Exception e) {
-			logger.error("insertComment comment = {}, msg = {}", comment, e);
+			logger.error("insertComment comment = {}", comment, e);
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class CommentMongoDao {
 		try {
 			comments = mongoTemplate1.find(query, Comment.class);
 		} catch (Exception e) {
-			logger.error("getCommentListByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("getCommentListByItypeid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return comments;
 	}
@@ -87,7 +87,7 @@ public class CommentMongoDao {
 					.and("itype").is(itype));
 			list = mongoTemplate1.find(query,Comment.class);
 		} catch (Exception e) {
-			logger.error("selectCommentByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentByItypeid itypeid = {}, itype = {}", itypeid, itype, e);
 		}
 		return list;
 	}
@@ -105,7 +105,7 @@ public class CommentMongoDao {
 			Query query = Query.query(Criteria.where("_id").is(id));
 			comment = mongoTemplate1.findOne(query,Comment.class);
 		} catch (Exception e) {
-			logger.error("selectCommentByid id = {}, msg = {}", id, e);
+			logger.error("selectCommentByid id = {}", id, e);
 		}
 		return comment;
 	}
@@ -122,7 +122,7 @@ public class CommentMongoDao {
 			Query query = Query.query(Criteria.where("_id").is(id));
 			mongoTemplate1.remove(query, Comment.class);
 		} catch (Exception e) {
-			logger.error("deleteComment id = {}, msg = {}", id, e);
+			logger.error("deleteComment id = {}", id, e);
 		}
 	}
 	

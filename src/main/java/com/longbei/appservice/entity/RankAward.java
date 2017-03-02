@@ -15,7 +15,17 @@ public class RankAward {
 
     private Integer awardcount;
 
+    private String awardnickname;
+
     private Date createtime;
+
+    public String getAwardnickname() {
+        return awardnickname;
+    }
+
+    public void setAwardnickname(String awardnickname) {
+        this.awardnickname = awardnickname;
+    }
 
     /**
      * 

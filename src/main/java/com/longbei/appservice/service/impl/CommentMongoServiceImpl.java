@@ -15,6 +15,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
@@ -137,6 +138,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
+					initCommentUserInfoByUserid(comment);
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
 					comment.setLowerList(lowers);
 //					commentids += comment.getId() + ",";
@@ -296,8 +298,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     private void initCommentLowerUserInfoList(List<CommentLower> lowers){
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
-    			AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(commentLower.getFriendid()));
-    	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    			if(!StringUtils.hasBlankParams(commentLower.getFriendid())){
+    				AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(commentLower.getFriendid()));
+        	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    			}
     	        AppUserMongoEntity appUserMongo = userMongoDao.findById(String.valueOf(commentLower.getUserid()));
     	        commentLower.setAppUserMongoEntityUserid(appUserMongo);
 			}

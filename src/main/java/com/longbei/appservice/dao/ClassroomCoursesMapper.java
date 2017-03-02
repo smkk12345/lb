@@ -1,5 +1,9 @@
 package com.longbei.appservice.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.longbei.appservice.entity.ClassroomCourses;
 
 public interface ClassroomCoursesMapper {
@@ -14,4 +18,51 @@ public interface ClassroomCoursesMapper {
     int updateByPrimaryKeySelective(ClassroomCourses record);
 
     int updateByPrimaryKey(ClassroomCourses record);
+    
+    /**
+	 * @author yinxc
+	 * 获取课程列表(未删除)
+	 * 2017年3月1日
+	 * param classroomid 教室id
+	 */
+    List<ClassroomCourses> selectListByClassroomid(@Param("classroomid") long classroomid, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+	 * @author yinxc
+	 * 获取当前教室的默认课程信息
+	 * 2017年3月1日
+	 * param classroomid 教室id
+	 * isdefault 是否 默认   1 默认封面  0 非默认
+	 */
+    ClassroomCourses selectIsdefaultByClassroomid(@Param("classroomid") long classroomid);
+    
+    /**
+	 * @author yinxc
+	 * 用户课程列表都设为非默认状态
+	 * 2017年3月1日
+	 * param classroomid 教室id
+	 * param createuserid 创建人id
+	 * isdefault 是否 默认   1 默认封面  0 非默认
+	 */
+    int updateIsdefaultByClassroomid(@Param("classroomid") long classroomid);
+    
+    /**
+	 * @author yinxc
+	 * 修改课程的默认状态
+	 * 2017年3月1日
+	 * param id  课程id
+	 * param isdefault 是否 默认   1 默认封面  0 非默认
+	 * ClassroomCoursesMapper
+	 */
+    int updateIsdefaultByid(@Param("id") Integer id, @Param("isdefault") String isdefault);
+    
+    /**
+	 * @author yinxc
+	 * 删除课程信息(假删)
+	 * 2017年3月1日
+	 * param id  课程id
+	 * isdel  0 — 未删除    1 —删除 
+	 */
+    int updateIsdel(@Param("id") Integer id);
 }
