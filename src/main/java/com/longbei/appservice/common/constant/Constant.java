@@ -65,6 +65,10 @@ public class Constant {
 	public static final int STATUS_SYS_29 = -29;
 	public static final int STATUS_SYS_30 = -30;
 	public static final int STATUS_SYS_31 = -31;
+	public static final int STATUS_SYS_32 = -32;
+	public static final int STATUS_SYS_33 = -33;
+	public static final int STATUS_SYS_34 = -34;
+	public static final int STATUS_SYS_35 = -35;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -92,6 +96,7 @@ public class Constant {
 	public static final int STATUS_SYS_85 = -85;
 	public static final int STATUS_SYS_86 = -86;
 	public static final int STATUS_SYS_87 = -87;
+	public static final int STATUS_SYS_88 = -88;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -132,6 +137,10 @@ public class Constant {
 	public static final String RTNINFO_SYS_29 = "暂无签到记录";
 	public static final String RTNINFO_SYS_30 = "用户已签到";
 	public static final String RTNINFO_SYS_31 = "用户签到成功";
+	public static final String RTNINFO_SYS_32 = "暂无成员信息";
+	public static final String RTNINFO_SYS_33 = "暂无教室信息";
+	public static final String RTNINFO_SYS_34 = "暂无课程信息";
+	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -169,6 +178,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_85 = "该用户还未加入该圈子";
 	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
+	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -248,9 +258,15 @@ public class Constant {
 	
 	
 	/**
-	 * 进步币添加来源   0:签到   1:发进步
+	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
 	 */
-	public static final String USER_IMP_COIN_CHECK = "0";  //签到
+	public static final String USER_IMP_COIN_CHECKIN="0";
+	public static final String USER_IMP_COIN_SHARE="1";
+	public static final String USER_IMP_COIN_INVITE = "2";
+	public static final String USER_IMP_COIN_FLOWERD="3";
+	public static final String USER_IMP_COIN_DIAMONDED = "4";
+	public static final String USER_IMP_COIN_ADDIMPROVE = "5";
+	public static final String USER_IMP_COIN_RANKAWARD = "6";
 
 
 	/**
@@ -266,6 +282,10 @@ public class Constant {
 	public static final String RANKIMAGE_STATUS_2 = "2";  //审核不通过 可以修改
 	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
 	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
+
+
+	public static final String RANK_ISAUTO_YES = "0";  //自动发布
+	public static final String RANK_ISAUTO_NO = "1";    //手动发布
 
 	
 	/**
@@ -396,11 +416,22 @@ public class Constant {
 	public static final String RP_USER_CHECK_DATE = "user_check_date_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
 	
+	/*
+	 * 用户龙币   进步币   缓存到redis
+	 */
+	public static final String RP_USER_IMP_COIN_VALUE = "user_imp_coin_";  //进步币
+	public static final String RP_USER_MONEY_VALUE = "user_money_";  //龙币
+	
 
 	/**
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
 	 */
 	public static final String RP_IMPROVE_NDAY = "improve_day_";
+
+	/**
+	 * 圈子中的当天的入圈人数
+	 */
+	public static final String RP_CIRCLE_INSERT_CIRCLEMEMBER="circle_insert_date_";
 
 
 

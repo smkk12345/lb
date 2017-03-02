@@ -630,7 +630,7 @@ public class ImproveController {
 	 */
 	@RequestMapping(value = "addflower")
 	@ResponseBody
-	public BaseResp<Object> addFlowerForImprove(String userid,String improveid,String flowernum,
+	public BaseResp<Object> addFlowerForImprove(String userid,String friendid,String improveid,String flowernum,
 												String businesstype,String businessid){
 		logger.info("add flower userid={} improveid={} flowernum={}",userid,improveid,flowernum);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -638,7 +638,7 @@ public class ImproveController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = improveService.addFlower(userid,improveid,Integer.valueOf(flowernum),businesstype,businessid);
+			baseResp = improveService.addFlower(userid,friendid,improveid,Integer.valueOf(flowernum),businesstype,businessid);
 		} catch (Exception e) {
 			logger.error("add flower flowernum={} userid={} improveid={} is error:{}",flowernum,userid,improveid,e);
 		}
@@ -657,7 +657,7 @@ public class ImproveController {
 	 */
 	@RequestMapping(value = "adddiamond")
 	@ResponseBody
-	public BaseResp<Object> addDiamondForImprove(String userid,String improveid,
+	public BaseResp<Object> addDiamondForImprove(String userid,String friendid,String improveid,
 												 String diamondnum,String businesstype,String businessid){
 		logger.info("add diamond userid={} improveid={} diamondmun={}",userid,improveid,diamondnum);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -665,7 +665,7 @@ public class ImproveController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = improveService.addDiamond(userid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
+			baseResp = improveService.addDiamond(userid,friendid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
 		} catch (Exception e) {
 			logger.error("add diamond userid={} improve={} diamondnum={} is error:{}",userid,improveid,diamondnum,e);
 		}

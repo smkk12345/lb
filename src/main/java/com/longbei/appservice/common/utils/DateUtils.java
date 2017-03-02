@@ -26,7 +26,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	/**
 	 * 得到当前日期字符串格式（yyyy-MM-dd） pattern可以为："yyyy-MM-dd" "HH:mm:ss" "E"
 	 * 
-	 * @param date
+	 * @param
 	 * @return
 	 * 
 	 */
@@ -297,6 +297,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		caled.set(Calendar.SECOND, 0);
 		// 得到两个日期相差的天数
 		return ((int) (caled.getTime().getTime() / 1000) - (int) (calst.getTime().getTime() / 1000)) / 3600 / 24;
+	}
+
+	/**
+	 * 获取当天剩余的时间 从当前时间到24点的时间差
+	 * @return 返回的时间差 单位是秒
+     */
+	public static long getTodaySurplusTime(){
+		Date nowDate = new Date();
+		return (getDateEnd(nowDate).getTime() - nowDate.getTime())/1000;
 	}
 
 	/**

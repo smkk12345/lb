@@ -105,7 +105,15 @@
   </update>
 
   <select id="selectCircleMember" parameterType="map" resultMap="BaseResultMap">
-      select * from circle_members where itype = 0 and circleid = #{circleId} limit #{startNo},#{pageSize}
+      select
+          <include refid="Base_Column_List" />
+      from
+          circle_members
+      where
+          itype = 0
+      and circleid = #{circleId}
+      order by createDate desc
+      limit #{startNo},#{pageSize}
   </select>
 
   <!-- 根据用户id以及兴趣圈id 查询数据 -->

@@ -11,7 +11,7 @@ public class AwardClassify {
     /**
      * 类别名字
      */
-    private String classifynamev;
+    private String classifyname;
 
     /**
      * 父级id
@@ -41,12 +41,12 @@ public class AwardClassify {
         this.id = id;
     }
 
-    public String getClassifynamev() {
-        return classifynamev;
+    public String getClassifyname() {
+        return classifyname;
     }
 
-    public void setClassifynamev(String classifynamev) {
-        this.classifynamev = classifynamev == null ? null : classifynamev.trim();
+    public void setClassifyname(String classifyname) {
+        this.classifyname = classifyname == null ? null : classifyname.trim();
     }
 
     public Integer getParentid() {

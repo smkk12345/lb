@@ -46,31 +46,23 @@ public class RankApiController {
 
     /**
      * 获取榜单列表
-     * @param ranktitle  榜单标题
-     * @param rankscope  榜单范围
-     * @param starttimestart  开始时间（起始）
-     * @param starttimeend  开始时间（结束）
-     * @param endtimestart  结束时间 （起始）
-     * @param endtimeend  结束时间（结束）
-     * @param rankcateid  榜单类型
-     * @param ispublic  是否公开
-     * @param ptype   十全十美类型
-     * @param sourcetype  来源类型
-     * @param companyname  公司名字
      * @param pageno  页码
      * @param pagesize  条数
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectlist")
-    public BaseResp<Page<Rank>> selectRankList(String ranktitle, String rankscope,
-                                              String starttimestart, String starttimeend,
-                                              String endtimestart, String endtimeend,
-                                              String rankcateid, String ispublic,
-                                              String ptype, String sourcetype, String companyname,
-                                              String pageno, String pagesize
-                                         ){
-        return null;
+    public BaseResp<Page<Rank>> selectRankList(@RequestBody Rank rank,String pageno,String pagesize){
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<Rank>> baseResp = new BaseResp<>();
+        try {
+            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return baseResp;
     }
 
     /**
@@ -82,12 +74,17 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectimagelist")
     public BaseResp selectRankImageList(@RequestBody RankImage rankImage, String pageno, String pagesize, HttpServletRequest request){
-
-        Page<RankImage> rankImages = rankService.selectRankImageList
-                (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        BaseResp<Page<RankImage>> ranks = BaseResp.ok();
-        ranks.setData(rankImages);
-        return ranks;
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<RankImage>> baseResp = new BaseResp<>();
+        try {
+            Page<RankImage> rankImages = rankService.selectRankImageList
+                    (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(rankImages);
+        } catch (NumberFormatException e) {
+            logger.error("select rank iamge list for adminservice is error:",e);
+        }
+        return baseResp;
     }
 
 
@@ -133,16 +130,7 @@ public class RankApiController {
         boolean issuccess = false;
 
         try {
-            issuccess = rankService.insertRank(rankImage.getRankdetail(),rankImage.getRanktitle(),
-                    rankImage.getRanklimite(),
-                    rankImage.getRankscope(),rankImage.getRankphotos(),rankImage.getRankrate(),
-                    rankImage.getStarttime(),
-                    rankImage.getEndtime(),
-                    rankImage.getAreaname(),String.valueOf(rankImage.getCreateuserid()),rankImage.getRanktype(),
-                    rankImage.getIspublic(),String.valueOf(rankImage.getRankcateid()),
-                    rankImage.getLikescore(),rankImage.getFlowerscore(),
-                    rankImage.getDiamondscore(),rankImage.getCodeword(),rankImage.getPtype(),
-                    rankImage.getSourcetype(),rankImage.getCompanyname(),rankImage.getCompanyphotos(),rankImage.getCompanybrief());
+            issuccess = rankService.insertRank(rankImage);
             if(issuccess){
                 return BaseResp.ok(Constant.RTNINFO_SYS_50);
             }

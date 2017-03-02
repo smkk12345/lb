@@ -278,9 +278,6 @@
   <update id="updateByUseridSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     <set >
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
       <if test="totalflower != null" >
         totalflower = #{totalflower,jdbcType=INTEGER},
       </if>
@@ -348,7 +345,7 @@
         inviteuserid = #{inviteuserid,jdbcType=BIGINT},
       </if>
       <if test="rytoken != null" >
-        token = #{rytoken,jdbcType=VARCHAR},
+        rytoken = #{rytoken,jdbcType=VARCHAR},
       </if>
       <if test="hcnickname != null">
       	hcnickname = #{hcnickname,jdbcType=CHAR},
@@ -370,6 +367,19 @@
         grade = #{grade,jdbcType=INTEGER}
     WHERE userid = #{userid,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateTotalcoinByUserid">
+    update user_info
+    set totalcoin = #{totalcoin} 
+    WHERE userid = #{userid}
+  </update>
+  
+  <update id="updateTotalmoneyByUserid">
+    update user_info
+    set totalmoney = #{totalmoney} 
+    WHERE userid = #{userid}
+  </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     set userid = #{userid,jdbcType=BIGINT},

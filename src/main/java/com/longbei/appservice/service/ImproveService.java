@@ -283,10 +283,10 @@ public interface ImproveService {
 
 
 
-    BaseResp<Object> addFlower(String userid,String impid,int flowernum,String businesstype,String businessid);
+    BaseResp<Object> addFlower(String userid,String friendid,String impid,int flowernum,String businesstype,String businessid);
 
 
-    BaseResp<Object> addDiamond(String userid,String impid,int diamondnum,String businesstype,String businessid);
+    BaseResp<Object> addDiamond(String userid,String friendid,String impid,int diamondnum,String businesstype,String businessid);
 
     BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow);
 
@@ -312,4 +312,14 @@ public interface ImproveService {
      * @return
      */
     List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize);
+
+    /**
+     * 进步信息初始化
+     * @param improve
+     */
+    public void initImproveInfo(Improve improve,long userid);
+
+    public int getPerDayImproveCount(long userid,String businesstype);
+
+
 }

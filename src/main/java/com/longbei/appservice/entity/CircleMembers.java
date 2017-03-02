@@ -10,11 +10,13 @@ public class CircleMembers {
 
     private Long userid;//用户id
 
-    private Integer itype;//0—入圈 1—退圈
+    private Integer itype;//0—入圈 1—退圈  2-待圈主审核验证
 
     private Date createtime;//入圈时间
 
     private Date updatetime;//退圈时间
+
+    private AppUserMongoEntity appUserMongoEntity;
 
     /**
      * 
@@ -112,4 +114,19 @@ public class CircleMembers {
         this.updatetime = updatetime;
     }
 
+    /**
+     * 获取用户信息
+     * @return
+     */
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    /**
+     * 设置用户信息
+     * @param appUserMongoEntity
+     */
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 }

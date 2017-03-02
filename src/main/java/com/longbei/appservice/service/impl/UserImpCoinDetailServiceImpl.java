@@ -15,6 +15,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.entity.UserInfo;
@@ -29,6 +30,8 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private SpringJedisDao springJedisDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserImpCoinDetailServiceImpl.class);
 	
@@ -68,17 +71,51 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 			boolean temp = insert(record);
 			if (temp) {
 				//修改用户userInfo表---进步币总数
-				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-				int allnum = userInfo.getTotalcoin() + record.getNumber();
-				userInfo.setTotalcoin(allnum);
-				userInfoMapper.updateByUseridSelective(userInfo);
+//				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//				int allnum = userInfo.getTotalcoin() + record.getNumber();
+//				userInfo.setTotalcoin(allnum);
+//				userInfoMapper.updateByUseridSelective(userInfo);
+				//先从redis里面取，如果存在，数据累加，减，之后修改表数据，   不存在存入redis
+				boolean result = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
+				if(result){
+					//存在
+					jedisKey(userid, record.getNumber());
+				}else{
+					//不存在   数据库查找   存入redis
+					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+					//并发时，判断是否已经存在
+					boolean res = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
+					if(!res){
+						//不存在
+						springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
+						//递增
+						springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, record.getNumber());
+						String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
+						//修改数据库数据
+						userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
+					}else{
+						//存在
+						jedisKey(userid, record.getNumber());
+					}
+					
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}, msg = {}", 
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}", 
 					userid, origin, number, impid, friendid, e);
 		}
 		return reseResp;
+	}
+	
+	private void jedisKey(long userid, Integer number){
+		//存在
+		springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, number);
+		//重新设置过期时间---10秒
+		String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
+		springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, value, 10);
+		//修改数据库数据
+		userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
 	}
 
 	/**
@@ -97,7 +134,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 			
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectWallet userid = {}, msg = {}", userid, e);
+			logger.error("selectWallet userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -110,7 +147,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -135,7 +172,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByPrimaryKeySelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("updateByPrimaryKeySelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -160,7 +197,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}, msg = {}", userid, pageNo, pageSize, e);
+			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}", userid, pageNo, pageSize, e);
 		}
 		return reseResp;
 	}
@@ -174,7 +211,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByPrimaryKey id = {}, msg = {}", id, e);
+			logger.error("deleteByPrimaryKey id = {}", id, e);
 		}
 		return reseResp;
 	}

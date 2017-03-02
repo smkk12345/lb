@@ -18,6 +18,12 @@
     from user_sponsor
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectSponsorList" resultMap="BaseResultMap" >
+    select
+     <include refid="Base_Column_List" />
+    from user_sponsor
+    where 1 = 1  ORDER BY number DESC, createtime DESC limit #{startNum},#{pageSize};
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_sponsor
     where id = #{id,jdbcType=INTEGER}
@@ -30,7 +36,7 @@
       #{bid,jdbcType=BIGINT}, #{ptype,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserSponsor" >
+  <insert id="insertSponsor" parameterType="com.longbei.appservice.entity.UserSponsor" >
     insert into user_sponsor
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -73,17 +79,11 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserSponsor" >
+  <update id="updateSponsor" parameterType="com.longbei.appservice.entity.UserSponsor" >
     update user_sponsor
-    <set >
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
+    <set>
       <if test="number != null" >
-        number = #{number,jdbcType=INTEGER},
-      </if>
-      <if test="bid != null" >
-        bid = #{bid,jdbcType=BIGINT},
+        number = number + #{number,jdbcType=INTEGER},
       </if>
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},
@@ -92,8 +92,17 @@
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where userid = #{userid,jdbcType=BIGINT} and bid = #{bid,jdbcType = BIGINT}
   </update>
+
+  <select id="selectByUseridAndBid" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      user_sponsor
+    where userid=#{userid,jdbcType = BIGINT} and bid = #{bid,jdbcType = BIGINT}
+  </select>
+
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserSponsor" >
     update user_sponsor
     set userid = #{userid,jdbcType=BIGINT},

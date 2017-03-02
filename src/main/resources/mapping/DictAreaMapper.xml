@@ -16,6 +16,6 @@
     select 
    <include refid="Base_Column_List" />
     from dict_area
-    where pid = #{pid,jdbcType=VARCHAR}
+    where pid = #{pid,jdbcType=VARCHAR}limit #{startNum},#{pageSize}
   </select> 
 </mapper>

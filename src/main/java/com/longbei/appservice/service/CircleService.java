@@ -46,9 +46,10 @@ public interface CircleService {
      * @param circleId
      * @param startNo
      * @param pageSize
+     * @param flag 是否查询成员在兴趣圈中获得的赞和花的数量
      * @return
      */
-    BaseResp<Object> selectCircleMember(Integer circleId,String username, Integer startNo, Integer pageSize);
+    BaseResp<Object> selectCircleMember(Long circleId,String username, Integer startNo, Integer pageSize,boolean flag);
 
     /**
      * 加入兴趣圈

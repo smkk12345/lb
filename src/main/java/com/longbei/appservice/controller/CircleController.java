@@ -98,7 +98,7 @@ public class CircleController {
         //校验用户是否有该权限
         baseResp = userBehaviourService.hasPrivilege(Long.parseLong(userId),null,USER_PRIVILEGE_ADD_CIRCLE);
         if(baseResp.getCode() != 0){
-            return baseResp;
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_88,Constant.RTNINFO_SYS_88);
         }
         //校验兴趣圈名是否可用
         boolean flag = circleService.checkCircleTitle(circleTitle);
@@ -152,7 +152,7 @@ public class CircleController {
     }
 
     /**
-     * 查询圈子成员
+     * 查询圈子成员 包含成员在兴趣圈中赞,花 等信息
      * @url http://ip:port/app_service/circle/selectCircleMember
      * @param circleId 圈子id
      * @param startNo
@@ -160,7 +160,7 @@ public class CircleController {
      * @return
      */
     @RequestMapping(value="selectCircleMember")
-    public BaseResp<Object> selectCircleMember(Integer circleId,Integer startNo,Integer endNo,String username){
+    public BaseResp<Object> selectCircleMember(Long circleId,Integer startNo,Integer endNo,String username){
         logger.info("select circleMember circleId:{} startNo:{} endNo:{} username:{}",circleId,startNo,endNo,username);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
@@ -173,7 +173,32 @@ public class CircleController {
         if(endNo != null && endNo > startNo){
             pageSize = endNo - startNo;
         }
-        baseResp = circleService.selectCircleMember(circleId,username,startNo,pageSize);
+        baseResp = circleService.selectCircleMember(circleId,username,startNo,pageSize,true);
+
+        return baseResp;
+    }
+
+    /**
+     * 查询圈子中成员的基本信息 不包含赞 花 信息
+     * @param circleId 兴趣圈id
+     * @param startNo 开始下标
+     * @param endNo 结束下标
+     * @return
+     */
+    @RequestMapping(value="selectCircleMemberBaseInfo")
+    public BaseResp<Object> selectCircleMemberBaseInfo(Long circleId,Integer startNo,Integer endNo){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(circleId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(startNo == null || startNo < 0){
+            startNo =Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNo != null && endNo > startNo){
+            pageSize = endNo - startNo;
+        }
+        baseResp = circleService.selectCircleMember(circleId,null,startNo,pageSize,false);
 
         return baseResp;
     }
@@ -326,5 +351,6 @@ public class CircleController {
 
         return baseResp;
     }
+
 
 }
