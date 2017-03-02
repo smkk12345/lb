@@ -34,6 +34,7 @@ import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.UserCertifyService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import com.longbei.appservice.common.utils.LotteryUtil;
 
 
 /**
@@ -293,7 +294,7 @@ public class AppUserController extends BaseController {
     
      /**
      * @Title: http://ip:port/appservice/user/updateUserInfo
-     * @Description: 更新用户信息  头像 昵称 性别 一句话简介  等等信息
+     * @Description: 更新用户信息  头像 昵称(去重) 性别 一句话简介  等等信息
      * @param @param request userid avatar头像    username手机号
      * @param @param nickname昵称     realname真名   sex性别
      * @param @param city所在城市   area所在区域   brief个人简介   birthday生日
@@ -303,7 +304,7 @@ public class AppUserController extends BaseController {
      * @currentdate:2017年2月23日
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
     @ResponseBody
     public BaseResp<Object> updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -1032,23 +1033,48 @@ public class AppUserController extends BaseController {
     /**
      * @Title: http://ip:port/app_service/user/selectSponsorList
      * @Description: 查询赞助记录列表
-     * @param @param startNum分页起始值 pageSize每页显示条数
+     * @param @param bid榜单 startNum分页起始值 pageSize每页显示条数
      * @auther IngaWu
      * @currentdate:2017年2月27日
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/selectSponsorList")
     @ResponseBody
-    public BaseResp<Object> selectSponsorList(String startNum,String pageSize) {
-        logger.info("selectSponsorList and startNum={},pageSize={}",startNum,pageSize);
+    public BaseResp<Object> selectSponsorList(String bid,String startNum,String pageSize) {
+        logger.info("selectSponsorList and bid={},startNum={},pageSize={}",bid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            baseResp = userSponsorService.selectSponsorList(Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            baseResp = userSponsorService.selectSponsorList(Long.parseLong(bid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
         } catch (Exception e) {
-            logger.error("selectSponsorList and startNum={},pageSize={}，",startNum,pageSize,e);
+            logger.error("selectSponsorList and bid={},startNum={},pageSize={}",bid,startNum,pageSize,e);
         }
         return baseResp;
     }
     //--------------------榜单赞助end-------------------------------
+
+    /**
+     * @Title: http://ip:port/app_service/user/updateSponsornumAndSponsormoney
+     * @Description: 更新赞助的榜单人数和龙币数量
+     * @param @param id
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/updateSponsornumAndSponsormoney")
+    @ResponseBody
+    public BaseResp<Object> updateSponsornumAndSponsormoney(String rankid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            boolean n = rankService.updateSponsornumAndSponsormoney(Long.parseLong(rankid));
+            if (n)
+            {
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00 );
+            }
+        } catch (Exception e) {
+            logger.error("updateSponsornumAndSponsormoney",e);
+        }
+        return baseResp;
+    }
+
 }

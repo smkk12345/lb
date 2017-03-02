@@ -19,7 +19,7 @@ public interface UserSponsorMapper {
 
     int updateByPrimaryKey(UserSponsor record);
 
-    List<UserSponsor> selectSponsorList(@Param("startNum") int startNum,@Param("pageSize") int pageSize);
+    List<UserSponsor> selectSponsorList(@Param("bid") long bid,@Param("startNum") int startNum,@Param("pageSize") int pageSize);
 
     UserSponsor selectByUseridAndBid(@Param("userid")long userid,@Param("bid")long bid);
 

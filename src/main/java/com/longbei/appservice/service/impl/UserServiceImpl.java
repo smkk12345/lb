@@ -414,6 +414,12 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> updateUserInfo(UserInfo userInfo) {
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		try {
+			UserInfo infos = userInfoMapper.getByNickName(userInfo.getNickname());
+			if(null != infos){
+				if(infos.getUserid() != (userInfo.getUserid())) {
+					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
+				}
+			}
 			userInfoMapper.updateByUseridSelective(userInfo);
 			//更新信息到mongodb
 			userMongoDao.updateAppUserMongoEntity(userInfo);

@@ -1,4 +1,5 @@
 package com.longbei.appservice.dao;
+import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.Rank;
 
@@ -15,5 +16,7 @@ public interface RankMapper {
 
     int updateByPrimaryKey(Rank record);
 
-    int updateSponsornumAndSponsormoney( );
+    int updateSponsornumAndSponsormoney(@Param("rankid")Long rankid);
+
+    Rank selectRankByRankid(@Param("rankid")Long rankid);
 }

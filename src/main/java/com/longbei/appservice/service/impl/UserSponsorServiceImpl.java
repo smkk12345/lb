@@ -5,6 +5,9 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserSponsorMapper;
 import com.longbei.appservice.dao.UserMoneyDetailMapper;
+import com.longbei.appservice.common.utils.LotteryUtil;
+import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.UserSponsor;
 import com.longbei.appservice.service.UserSponsorService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+
 @Service("serSponsorService")
 public class UserSponsorServiceImpl implements UserSponsorService {
 
@@ -25,15 +29,17 @@ public class UserSponsorServiceImpl implements UserSponsorService {
 	@Autowired
 	private UserMoneyDetailMapper userMoneyDetailMapper;
 	@Autowired
+	private RankMapper rankMapper;
+	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private RankService rankService;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(UserSponsorServiceImpl.class);
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertSponsor(long userid,int number,long bid,String ptype) {
+	public BaseResp<Object> insertSponsor(long userid, int number, long bid, String ptype) {
 		UserSponsor data = new UserSponsor();
 		data.setUserid(userid);
 		data.setNumber(number);
@@ -44,35 +50,35 @@ public class UserSponsorServiceImpl implements UserSponsorService {
 		try {
 			String origin = "4";
 			long friendid = 0;
-			BaseResp baseResp2 = userMoneyDetailService.insertPublic(userid,origin, number,friendid);
+			BaseResp baseResp2 = userMoneyDetailService.insertPublic(userid, origin, number, friendid);
 			int m = userSponsorMapper.insertSponsor(data);
-			boolean n = rankService.updateSponsornumAndSponsormoney( );
-			if(ResultUtil.isSuccess(baseResp2)&&m == 1){
+			boolean n = rankService.updateSponsornumAndSponsormoney(bid);
+			if (ResultUtil.isSuccess(baseResp2) && m == 1) {
 				return baseResp2;
-			 }
+			}
 		} catch (Exception e) {
-			logger.error("insertSponsor error and msg={}",e);
+			logger.error("insertSponsor error and msg={}", e);
 		}
 		return BaseResp.fail();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectSponsorList(int startNum,int pageSize) {
+	public BaseResp<Object> selectSponsorList(long bid,int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			List<UserSponsor> list = userSponsorMapper.selectSponsorList(startNum,pageSize);
+			List<UserSponsor> list = userSponsorMapper.selectSponsorList(bid,startNum, pageSize);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectSponsorList error and msg={}",e);
+			logger.error("selectSponsorList error and msg={}", e);
 		}
 		return baseResp;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateSponsor(long userid,int number,long bid,String ptype) {
+	public BaseResp<Object> updateSponsor(long userid,int number, long bid, String ptype) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserSponsor data = new UserSponsor();
 		data.setUserid(userid);
@@ -84,24 +90,40 @@ public class UserSponsorServiceImpl implements UserSponsorService {
 		try {
 			String origin = "4";
 			long friendid = 0;
-			baseResp = userMoneyDetailService.insertPublic(userid,origin, number,friendid);
+			baseResp = userMoneyDetailService.insertPublic(userid, origin, number, friendid);
 			int m = userSponsorMapper.updateSponsor(data);
-			boolean n = rankService.updateSponsornumAndSponsormoney( );
-			if(ResultUtil.isSuccess(baseResp)&&m == 1){
+			boolean n = rankService.updateSponsornumAndSponsormoney(bid);
+			if (ResultUtil.isSuccess(baseResp) && m == 1) {
 				return baseResp;
 			}
 		} catch (Exception e) {
-			logger.error("updateSponsor error and msg={}",e);
+			logger.error("updateSponsor error and msg={}", e);
 		}
 		return BaseResp.fail();
 	}
 
 	@Override
-	public UserSponsor selectByUseridAndBid(long userid,long bid){
-		UserSponsor userSponsor = userSponsorMapper.selectByUseridAndBid(userid,bid);
+	public UserSponsor selectByUseridAndBid(long userid, long bid) {
+		UserSponsor userSponsor = userSponsorMapper.selectByUseridAndBid(userid, bid);
 		return userSponsor;
 	}
 
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public BaseResp<Object> sponsorLottery(long userid,long rankid) {
+//		BaseResp<Object> baseResp = new BaseResp<Object>();
+//		try {
+//			//赞助的龙币数量Sponsormoney 参榜的人数 sponsornum 生成的随机龙币数量andomNumber
+//			Rank rank = rankMapper.selectRankByRankid(rankid);
+//			String sponsormoney =rank.getSponsormoney();
+//			String sponsornum = rank.getSponsornum();
+//            int randomNumber = LotteryUtil.getRdomNumber1(Integer.parseInt(sponsormoney),Integer.parseInt(sponsornum));
+//		} catch (Exception e) {
+//			logger.error("sponsorLottery error and msg={}", e);
+//		}
+//		return baseResp;
+//	}
 }
+
 
 

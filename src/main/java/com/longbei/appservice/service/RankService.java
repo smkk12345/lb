@@ -79,9 +79,10 @@ public interface RankService {
      * @auther IngaWu
      * @currentdate:2017年2月27日
      */
-    boolean updateSponsornumAndSponsormoney( );
+    boolean updateSponsornumAndSponsormoney(long rankid);
 
     BaseResp checkRankImage(RankCheckDetail rankCheckDetail);
 
+    BaseResp<Object> selectRankByRankid(long rankid);
 
 }

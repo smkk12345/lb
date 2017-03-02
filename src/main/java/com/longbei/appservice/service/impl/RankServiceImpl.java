@@ -173,10 +173,10 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
-    public boolean updateSponsornumAndSponsormoney( ) {
+    public boolean updateSponsornumAndSponsormoney(long rankid ) {
         int res = 0;
         try {
-            res = rankMapper.updateSponsornumAndSponsormoney();
+            res = rankMapper.updateSponsornumAndSponsormoney(rankid);
         } catch (Exception e) {
             logger.error("updateSponsornumAndSponsormoney error:{}", e);
         }
@@ -219,9 +219,24 @@ public class RankServiceImpl implements RankService{
                 }
             }
         }
-        //神格不通过 不可以修改 直接删除
+        //审核不通过 不可以修改 直接删除
         if (Constant.RANKIMAGE_STATUS_3.equals(rankCheckDetail.getCheckstatus())){
             deleteRankImage(String.valueOf(rankCheckDetail.getRankid()));
         }
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public BaseResp<Object> selectRankByRankid(long rankid) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            Rank rank = rankMapper.selectRankByRankid(rankid);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            baseResp.setData(rank);
+        } catch (Exception e) {
+            logger.error("selectRankByRankid error and msg={}",e);
+        }
+        return baseResp;
+    }
+
 }
