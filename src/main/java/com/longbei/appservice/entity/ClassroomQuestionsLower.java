@@ -1,7 +1,5 @@
 package com.longbei.appservice.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -13,70 +11,56 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.longbei.appservice.common.utils.StringUtils;
 
-@Document(collection = "questions")
-public class ClassroomQuestions {
+@Document(collection = "questionslower")
+public class ClassroomQuestionsLower {
+
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
-	private String userid;     //问题创建者id
-	private String content;    //问题内容
-	private String classroomid;    //教室id
-	private String createtime; //创建时间
+	private String userid;     //回复者id---老师
+	private String content;    //回复内容
+	private String friendid;   //问题创建者id
+	private String createtime; //回复时间
+	private String questionsid;  //问题id
 	@Transient
-	private List<ClassroomQuestionsLower> lowerList = new ArrayList<ClassroomQuestionsLower>();
-	@Transient
-	private AppUserMongoEntity appUserMongoEntityUserid; //问题用户信息----Userid
+	private AppUserMongoEntity appUserMongoEntityUserid; //回复者用户信息--老师--Userid
 	
-	
+	public ClassroomQuestionsLower(){
+		super();
+	}
+
 	@JsonInclude(Include.ALWAYS)
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	@JsonInclude(Include.ALWAYS)
 	public String getUserid() {
 		return userid;
 	}
-	
+
 	public void setUserid(String userid) {
 		this.userid = userid;
 	}
-	
+
 	public String getContent() {
 		return content;
 	}
-	
+
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
+
 	@JsonInclude(Include.ALWAYS)
-	public String getClassroomid() {
-		return classroomid;
+	public String getFriendid() {
+		return friendid;
 	}
-	
-	public void setClassroomid(String classroomid) {
-		this.classroomid = classroomid;
-	}
-	
-	@JsonInclude(Include.ALWAYS)
-	public List<ClassroomQuestionsLower> getLowerList() {
-		return lowerList;
-	}
-	
-	public void setLowerList(List<ClassroomQuestionsLower> lowerList) {
-		this.lowerList = lowerList;
-	}
-	
-	public AppUserMongoEntity getAppUserMongoEntityUserid() {
-		return appUserMongoEntityUserid;
-	}
-	
-	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
-		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+
+	public void setFriendid(String friendid) {
+		this.friendid = friendid;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -90,6 +74,23 @@ public class ClassroomQuestions {
 		}else{
 			this.createtime = createtime;
 		}
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getQuestionsid() {
+		return questionsid;
+	}
+
+	public void setQuestionsid(String questionsid) {
+		this.questionsid = questionsid;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntityUserid() {
+		return appUserMongoEntityUserid;
+	}
+
+	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
+		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
 	}
 	
 }

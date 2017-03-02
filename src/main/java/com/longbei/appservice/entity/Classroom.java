@@ -22,8 +22,6 @@ public class Classroom {
 
     private String classbrief;//教室简介
 
-    private Integer classverify;//0 — 不需要。1—需要
-
     private String classnotice;//教室公告
 
     private Date createtime;//创建时间
@@ -35,6 +33,12 @@ public class Classroom {
     private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
     
     private long userid;
+    
+    private Integer charge;  //课程价格
+    
+    private String isfree; //是否免费。0 免费 1 收费
+    
+    private Integer freecoursenum; //免费课程数量
 
     /**
      * 
@@ -151,24 +155,16 @@ public class Classroom {
         this.classbrief = classbrief == null ? null : classbrief.trim();
     }
 
-    /**
-     * 0 — 不需要。1—需要
-     * @return classverify 0 — 不需要。1—需要
-     */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClassverify() {
-        return classverify;
-    }
+    public String getIsfree() {
+		return isfree;
+	}
 
-    /**
-     * 0 — 不需要。1—需要
-     * @param classverify 0 — 不需要。1—需要
-     */
-    public void setClassverify(Integer classverify) {
-        this.classverify = classverify;
-    }
+	public void setIsfree(String isfree) {
+		this.isfree = isfree;
+	}
 
-    /**
+	/**
      * 教室公告
      * @return classnotice 教室公告
      */
@@ -258,5 +254,23 @@ public class Classroom {
 
 	public void setUserid(long userid) {
 		this.userid = userid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCharge() {
+		return charge;
+	}
+
+	public void setCharge(Integer charge) {
+		this.charge = charge;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getFreecoursenum() {
+		return freecoursenum;
+	}
+
+	public void setFreecoursenum(Integer freecoursenum) {
+		this.freecoursenum = freecoursenum;
 	}
 }
