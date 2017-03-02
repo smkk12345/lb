@@ -46,19 +46,29 @@
     where userid = #{userid}
   </select>
   
-  <select id="selectLikeListByUnameAndNname" resultMap="BaseResultMap"  >
-    select 
-    <include refid="Base_Column_List" />
+  <resultMap id="entityMap" type="com.longbei.appservice.entity.AppUserMongoEntity" >
+    <result column="userid" property="id" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectLikeListByUnameAndNname" resultMap="entityMap"  >
+    select userid, avatar, username, nickname 
     from user_info
     where 
+    (nickname LIKE concat(concat('%', #{nickname}),'%') 
+       or username LIKE concat(concat('%', #{nickname}),'%'))
     <if test="type == 0" >
-      userid in #{ids} 
+    	<if test="ids != ''" >
+      		and userid in (#{ids})
+      	</if> 
     </if>
     <if test="type == 1" >
-      userid not in #{ids} 
+    	<if test="ids != ''" >
+      		and userid not in (#{ids})
+      	</if> 
     </if>
-    and (nickname LIKE CONCAT(CONCAT('%', #{nickname}),'%') 
-       or username LIKE CONCAT(CONCAT('%', #{nickname}),'%'))
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

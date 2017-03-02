@@ -2,9 +2,9 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.AwardClassify;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+
 
 public interface AwardClassifyMapper {
     int deleteByPrimaryKey(Integer id);
@@ -19,8 +19,6 @@ public interface AwardClassifyMapper {
 
     int updateByPrimaryKey(AwardClassify record);
 
-    List<Award> selectAwardList(@Param("award") Award award,
-                                @Param("startno") int startno,@Param("pagesize") int pageszie);
+    List<AwardClassify> selectList();
 
-    int selectAwardCount(Award award);
 }

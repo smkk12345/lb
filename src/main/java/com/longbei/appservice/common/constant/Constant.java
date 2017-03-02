@@ -67,6 +67,8 @@ public class Constant {
 	public static final int STATUS_SYS_31 = -31;
 	public static final int STATUS_SYS_32 = -32;
 	public static final int STATUS_SYS_33 = -33;
+	public static final int STATUS_SYS_34 = -34;
+	public static final int STATUS_SYS_35 = -35;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -127,6 +129,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_31 = "用户签到成功";
 	public static final String RTNINFO_SYS_32 = "暂无成员信息";
 	public static final String RTNINFO_SYS_33 = "暂无教室信息";
+	public static final String RTNINFO_SYS_34 = "暂无课程信息";
+	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -262,6 +266,10 @@ public class Constant {
 	public static final String RANKIMAGE_STATUS_2 = "2";  //审核不通过 可以修改
 	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
 	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
+
+
+	public static final String RANK_ISAUTO_YES = "0";  //自动发布
+	public static final String RANK_ISAUTO_NO = "1";    //手动发布
 
 	
 	/**

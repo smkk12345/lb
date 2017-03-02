@@ -110,6 +110,14 @@ public class Rank {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
+
+
+    private String sponsornum;//赞助人数
+
+
+    private String sponsormoney;//赞助龙币数量
+
+
     //--------
 
 
@@ -615,6 +623,8 @@ public class Rank {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -722,4 +732,22 @@ public class Rank {
     public void setPtype(String ptype) {
         this.ptype = ptype == null ? null : ptype.trim();
     }
+
+
+    public String getSponsornum() {
+        return sponsornum;
+    }
+
+    public void setSponsornum(String sponsornum) {
+        this.sponsornum = sponsornum;
+    }
+
+    public String getSponsormoney() {
+        return sponsormoney;
+    }
+
+    public void setSponsormoney(String sponsormoney) {
+        this.sponsormoney = sponsormoney;
+    }
+
 }

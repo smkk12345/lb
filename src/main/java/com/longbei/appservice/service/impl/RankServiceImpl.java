@@ -1,13 +1,16 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.dao.RankAwardMapper;
 import com.longbei.appservice.dao.RankCheckDetailMapper;
 import com.longbei.appservice.dao.RankImageMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankAward;
 import com.longbei.appservice.entity.RankCheckDetail;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
@@ -41,6 +44,10 @@ public class RankServiceImpl implements RankService{
     private RankImageMapper rankImageMapper;
     @Autowired
     private RankCheckDetailMapper rankCheckDetailMapper;
+    @Autowired
+    private IdGenerateService idGenerateService;
+    @Autowired
+    private RankAwardMapper rankAwardMapper;
 
     /**
      *  @author luye
@@ -49,52 +56,33 @@ public class RankServiceImpl implements RankService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean insertRank(String rankdetail, String ranktitle,
-                              int ranklimite, String rankscope,
-                              String rankphotos, double rankrate,
-                              Date starttime, Date endtime,
-                              String areaname, String createuserid,
-                              String ranktype, String ispublic,
-                              String rankcateid, int likescore,
-                              int flowerscore, int diamondscore,
-                              String codeword, String ptype,
-                              String sourcetype, String companyname,
-                              String companyphotos, String companybrief) {
+    public boolean insertRank(RankImage rankImage) {
 
-        RankImage rankImage = new RankImage();
-
-        rankImage.setRankid(new Date().getTime());
-        rankImage.setRanktitle(ranktitle);
-        rankImage.setRankdetail(rankdetail);
-        rankImage.setRankphotos(rankphotos);
-        rankImage.setRanklimite(ranklimite);
-        rankImage.setRankrate(Double.valueOf(rankrate));
-        rankImage.setRankscope(rankscope);
-        rankImage.setStarttime(starttime);
-        rankImage.setEndtime(endtime);
-        rankImage.setAreaname(areaname);
-        rankImage.setCreateuserid(Long.parseLong(createuserid));
-        rankImage.setRanktype(ranktype);
-        rankImage.setIspublic(ispublic);
-        rankImage.setRankcateid(Integer.parseInt(rankcateid));
-        rankImage.setLikescore(likescore);
-        rankImage.setFlowerscore(flowerscore);
-        rankImage.setDiamondscore(diamondscore);
-        rankImage.setCodeword(codeword);
-        rankImage.setPtype(ptype);
-        rankImage.setSourcetype(sourcetype);
-        rankImage.setCompanyname(companyname);
-        rankImage.setCompanyphotos(companyphotos);
-        rankImage.setCompanybrief(companybrief);
+        rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
 
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
+            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
         return res != 0;
+    }
+
+    private boolean insertRankAward(String rankid, List<RankAward> rankAwards){
+        for (RankAward rankAward:rankAwards){
+            rankAward.setRankid(rankid);
+            rankAward.setCreatetime(new Date());
+        }
+        try {
+            int res = rankAwardMapper.insertBatch(rankAwards);
+            return true;
+        } catch (Exception e) {
+            logger.error("insert rank award rankid={} is error:",rankid,e);
+        }
+        return false;
     }
 
     /**
@@ -144,9 +132,20 @@ public class RankServiceImpl implements RankService{
         } catch (Exception e) {
             logger.error("copy rankimage to rank is error:{}",e);
         }
-        int res = rankMapper.insertSelective(rank);
-        if (res > 0){
-            return baseResp.ok();
+        try {
+            Rank rank1 = rankMapper.selectByPrimaryKey(Long.parseLong(rankimageid));
+            int res = 0;
+            if (null != rank1){
+                res = rankMapper.updateByPrimaryKeySelective(rank);
+            } else {
+                res = rankMapper.insertSelective(rank);
+            }
+
+            if (res > 0){
+                return BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("publish rank rankid={} is error:",rankimageid,e);
         }
         return BaseResp.fail();
 
@@ -154,10 +153,31 @@ public class RankServiceImpl implements RankService{
 
     @Override
     public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
-        int totalcount = rankImageMapper.selectListCount(new RankImage());
-        pageno = Page.setPageNo(pageno,totalcount,pagesize);
-        List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
-        Page<RankImage> page = new Page<RankImage>(pageno,pagesize,totalcount,rankImages);
+        Page<RankImage> page = new Page<>(pageno,pagesize);
+        try {
+            int totalcount = rankImageMapper.selectListCount(rankImage);
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(rankImages);
+        } catch (Exception e) {
+            logger.error("select rank image list is error:",e);
+        }
+        return page;
+    }
+
+    @Override
+    public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize) {
+        Page<Rank> page = new Page<>(pageno,pagesize);
+        try {
+            int totalcount = rankMapper.selectListCount(rank);
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(ranks);
+        } catch (Exception e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
         return page;
     }
 
@@ -173,10 +193,10 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
-    public boolean updateSponsornumAndSponsormoney( ) {
+    public boolean updateSponsornumAndSponsormoney(long rankid ) {
         int res = 0;
         try {
-            res = rankMapper.updateSponsornumAndSponsormoney();
+            res = rankMapper.updateSponsornumAndSponsormoney(rankid);
         } catch (Exception e) {
             logger.error("updateSponsornumAndSponsormoney error:{}", e);
         }
@@ -214,14 +234,29 @@ public class RankServiceImpl implements RankService{
             BaseResp<RankImage> baseResp = selectRankImage(String.valueOf(rankCheckDetail.getRankid()));
             if(ResultUtil.isSuccess(baseResp)){
                 RankImage rankImage = baseResp.getData();
-                if ("1".equals(rankImage.getIsauto())){
+                if (Constant.RANK_ISAUTO_YES.equals(rankImage.getIsauto())){
                     publishRankImage(String.valueOf(rankCheckDetail.getRankid()));
                 }
             }
         }
-        //神格不通过 不可以修改 直接删除
+        //审核不通过 不可以修改 直接删除
         if (Constant.RANKIMAGE_STATUS_3.equals(rankCheckDetail.getCheckstatus())){
             deleteRankImage(String.valueOf(rankCheckDetail.getRankid()));
         }
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public BaseResp<Object> selectRankByRankid(long rankid) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            Rank rank = rankMapper.selectRankByRankid(rankid);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            baseResp.setData(rank);
+        } catch (Exception e) {
+            logger.error("selectRankByRankid error and msg={}",e);
+        }
+        return baseResp;
+    }
+
 }
