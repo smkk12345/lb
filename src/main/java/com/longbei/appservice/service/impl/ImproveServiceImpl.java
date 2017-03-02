@@ -1542,5 +1542,27 @@ public class ImproveServiceImpl implements ImproveService{
         return null;
     }
 
+   //领虚拟奖品
+    @Override
+    public BaseResp<Object> acceptBasicAward(long impid, long userid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+//        if(!canAcceptAward(impid,userid)){
+//
+//        }
+
+        return baseResp;
+    }
+
+    //领实物奖品
+    @Override
+    public BaseResp<Object> acceptAward(long impid, long userid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+//        if(!canAcceptAward(impid,userid)){
+//
+//        }
+
+        return baseResp;
+    }
+
 
 }

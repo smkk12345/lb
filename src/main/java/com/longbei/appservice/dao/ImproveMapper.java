@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
@@ -78,10 +79,8 @@ public interface ImproveMapper {
      */
     int remove(@Param("userid") String userid,@Param("improveid") String improveid);
 
-    /**
-     *
-     * 获取进步方法
-     * -- 通过主键获取(公开或者私密或者all,删除或者未删除或者all)
-     */
+
+
+
 
 }

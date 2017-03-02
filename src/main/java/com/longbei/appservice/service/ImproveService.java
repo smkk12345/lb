@@ -316,5 +316,20 @@ public interface ImproveService {
      */
     List<Improve> selectSuperTopicImproveList(long userid,String topicid,int pageNo,int pageSize);
 
+    /**
+     * 领取默认奖品
+     * @param impid
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> acceptBasicAward(long impid, long userid);
+
+    /**
+     * 领取实物奖品
+     * @param impid
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> acceptAward(long impid, long userid);
 
 }

@@ -48,7 +48,7 @@ public class SFSequence {
 	}
 	
 
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		try {
 			System.out.println(getHostIp(InetAddress.getLocalHost()));
 		} catch (UnknownHostException e) {
