@@ -20,7 +20,7 @@
     from super_topic
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectList">
+  <select id="selectList" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
     FROM super_topic

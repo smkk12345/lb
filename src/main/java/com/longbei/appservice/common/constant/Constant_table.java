@@ -64,6 +64,7 @@ public class Constant_table {
 	public static final String IMPROVE_RANK = "improve_rank";
 	public static final String IMPROVE_GOAL = "improve_goal";
 	public static final String IMPROVE_CLASSROOM = "improve_classroom";
+	public static final String IMPROVE_TOPIC = "improve_topic";
 
 	
 	

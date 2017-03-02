@@ -303,13 +303,18 @@ public interface ImproveService {
      */
     public BaseResp select(String userid, String impid, String businesstype,String businessid);
 
-    /**
-     * 进步信息初始化
-     * @param improve
-     */
-    public void initImproveInfo(Improve improve,long userid);
 
     public int getPerDayImproveCount(long userid,String businesstype);
+
+    /**
+     * 获取超级话题下的进步列表
+     * @param topicid
+     * @param sift
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    List<Improve> selectSuperTopicImproveList(long userid,String topicid,int pageNo,int pageSize);
 
 
 }

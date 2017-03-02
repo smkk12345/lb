@@ -2,8 +2,12 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.service.SuperTopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,21 +15,57 @@ import org.springframework.web.bind.annotation.RestController;
  * 超级话题
  */
 @RestController
+@RequestMapping(value = "/topic")
 public class SuperTopicController {
 
     private static Logger logger = LoggerFactory.getLogger(SuperTopicController.class);
 
+    @Autowired
+    private SuperTopicService superTopicService;
+
+    /**
+     * 获取超级话题列表
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value = "/list")
     public BaseResp<Object> list(int startNum,int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         if(endNum == 0){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-
+            baseResp  = superTopicService.selectSuerTopicList(startNum,endNum);
         } catch (Exception e) {
             logger.error("list startNum = {},endNum={} ", startNum,endNum, e);
         }
         return baseResp;
     }
+
+    /**
+     *
+     * @param topicId
+     * @param userid
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value = "/selectImprovesById")
+    public BaseResp<Object> selectImprovesById(String topicId,String userid,int startNum,int endNum){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(topicId,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try{
+            baseResp = superTopicService.selectImprovesByTopicId(Long.parseLong(userid),Long.parseLong(topicId),startNum,endNum);
+        }catch (Exception e){
+            logger.error("selectImprovesById startNum = {},endNum={},topicid={},userid={} ", startNum,endNum,topicId,userid, e);
+        }
+        return baseResp;
+    }
+
+
+
 
 }
