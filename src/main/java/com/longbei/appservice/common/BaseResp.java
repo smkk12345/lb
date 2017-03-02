@@ -91,8 +91,8 @@ public class BaseResp<T extends Object> implements Serializable {
         return this;
     }
     public BaseResp initCodeAndDesp(){
-        this.code = code;
-        this.rtnInfo = rtnInfo;
+        this.code = 	Constant.STATUS_SYS_00;
+        this.rtnInfo = Constant.RTNINFO_SYS_00;
         return this;
     }
 	public Map<String, Object> getExpandData() {

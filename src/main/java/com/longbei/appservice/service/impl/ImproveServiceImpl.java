@@ -330,7 +330,7 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
 
         }
-
+        initImproveInfo(improve,Long.parseLong(userid));
         return improve;
     }
 
@@ -899,7 +899,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,0);
         if(null != list){
             improve.setImproveTopicList(list);
         }

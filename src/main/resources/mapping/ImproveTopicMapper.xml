@@ -9,6 +9,10 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="topictitle" property="topictitle" jdbcType="VARCHAR"/>
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, impid, gtype, supertopicid, createtime, updatetime,topictitle
@@ -25,6 +29,13 @@
     FROM
     improve_topic
     where impid=#{impid,jdbcType=BIGINT}
+  </select>
+  <select id="selectByTopicId" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    improve_topic
+    where supertopicid=#{topicId,jdbcType=BIGINT} and isdel='0' and ispublic = '0'
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from improve_topic
