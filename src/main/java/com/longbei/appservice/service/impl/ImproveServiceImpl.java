@@ -331,7 +331,7 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
 
         }
-
+        initImproveInfo(improve,Long.parseLong(userid));
         return improve;
     }
 
@@ -900,7 +900,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,0);
         if(null != list){
             improve.setImproveTopicList(list);
         }
@@ -1568,6 +1568,28 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("userid={},topicid={}",userid,e);
         }
         return null;
+    }
+
+   //领虚拟奖品
+    @Override
+    public BaseResp<Object> acceptBasicAward(long impid, long userid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+//        if(!canAcceptAward(impid,userid)){
+//
+//        }
+
+        return baseResp;
+    }
+
+    //领实物奖品
+    @Override
+    public BaseResp<Object> acceptAward(long impid, long userid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+//        if(!canAcceptAward(impid,userid)){
+//
+//        }
+
+        return baseResp;
     }
 
 

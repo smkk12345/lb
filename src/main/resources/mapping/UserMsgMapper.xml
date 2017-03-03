@@ -94,7 +94,7 @@
     </if>
   </select>
   
-  <select id="selectCountByType" resultType="int">
+  <select id="selectCountByType" resultType="java.lang.Integer">
   	SELECT count(*) from user_msg 
   	where userid = #{userid} 
   	<if test="mtype != null" >

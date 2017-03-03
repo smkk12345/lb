@@ -2,8 +2,10 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.controller.SuperTopicController;
+import com.longbei.appservice.dao.ImproveTopicMapper;
 import com.longbei.appservice.dao.SuperTopicMapper;
 import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.ImproveTopic;
 import com.longbei.appservice.entity.SuperTopic;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.SuperTopicService;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +30,8 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     private SuperTopicMapper superTopicMapper;
     @Autowired
     private ImproveService improveService;
+    @Autowired
+    private ImproveTopicMapper improveTopicMapper;
 
     /**
      * 获取超级话题列表
@@ -58,7 +63,17 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     public BaseResp<Object> selectImprovesByTopicId(long userid,long topicId, int startNum, int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<Improve> list = improveService.selectSuperTopicImproveList(userid,topicId+"",null,startNum,endNum);
+            List<Improve> list = new ArrayList<>();
+            List<ImproveTopic> improveTopics = improveTopicMapper.selectByTopicId(topicId,startNum,endNum);
+            if(null == improveTopics){
+                return baseResp.initCodeAndDesp();
+            }
+            for (int i = 0; i < improveTopics.size(); i++) {
+                ImproveTopic improveTopic = improveTopics.get(i);
+                //Long impid,String userid,String businesstype,String businessid
+                Improve improve = improveService.selectImproveByImpid(improveTopic.getImpid(),userid+"",improveTopic.getBusinesstype()+"",improveTopic.getBusinessid()+"");
+                list.add(improve);
+            }
             baseResp.initCodeAndDesp();
             baseResp.setData(list);
         }catch (Exception e){

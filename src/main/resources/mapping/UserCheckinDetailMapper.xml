@@ -33,7 +33,7 @@
     and yearmonth = #{yearmonth} 
   </select>
   
-  <select id="selectCountByUserid" resultType="int" >
+  <select id="selectCountByUserid" resultType="java.lang.Integer" >
     select count(*) from user_checkin_detail
     where userid = #{userid} 
   </select>

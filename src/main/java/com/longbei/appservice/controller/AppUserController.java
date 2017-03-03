@@ -304,7 +304,7 @@ public class AppUserController extends BaseController {
      * @currentdate:2017年2月23日
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateUserInfo")
     @ResponseBody
     public BaseResp<Object> updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
         BaseResp<Object> baseResp = new BaseResp<>();

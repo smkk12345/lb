@@ -41,4 +41,15 @@ public interface ClassroomService {
 	 */
 	BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum);
 	
+	/**
+	 * @author yinxc
+	 * 修改教室公告---classnotice
+	 * 2017年3月2日
+	 * param classnotice 公告
+	 * param userid 老师id
+	 * param classroomid 教室业务id
+	 * param ismsg 是否@全体成员   0：否   1：是
+	 */
+	BaseResp<Object> updateClassnoticeByClassroomid(long classroomid, long userid, String classnotice, String ismsg);
+	
 }

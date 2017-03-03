@@ -10,17 +10,20 @@
     <result column="classinvoloed" property="classinvoloed" jdbcType="INTEGER" />
     <result column="classlimited" property="classlimited" jdbcType="INTEGER" />
     <result column="classbrief" property="classbrief" jdbcType="VARCHAR" />
-    <result column="classverify" property="classverify" jdbcType="INTEGER" />
     <result column="classnotice" property="classnotice" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="charge" property="charge" jdbcType="INTEGER" />
+    <result column="isfree" property="isfree" jdbcType="CHAR" />
+    <result column="freecoursenum" property="freecoursenum" jdbcType="INTEGER" />
+    <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
-    classverify, classnotice, createtime, updatetime, ptype, ispublic, userid 
+    classnotice, createtime, updatetime, ptype, ispublic, userid, charge, isfree, freecoursenum 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -69,14 +72,15 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
       claacateid, classinvoloed, classlimited, 
-      classbrief, classverify, classnotice, 
-      createtime, updatetime, ptype, ispublic
+      classbrief, classnotice, 
+      createtime, updatetime, ptype, ispublic, charge, isfree, freecoursenum
       )
     values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, 
       #{classphotos,jdbcType=VARCHAR}, 
       #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
-      #{classbrief,jdbcType=VARCHAR}, #{classverify,jdbcType=INTEGER}, #{classnotice,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}
+      #{classbrief,jdbcType=VARCHAR}, #{classnotice,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
+      #{charge,jdbcType=INTEGER}, #{isfree,jdbcType=CHAR}, #{freecoursenum,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Classroom" >
@@ -109,9 +113,6 @@
       <if test="classbrief != null" >
         classbrief,
       </if>
-      <if test="classverify != null" >
-        classverify,
-      </if>
       <if test="classnotice != null" >
         classnotice,
       </if>
@@ -126,6 +127,15 @@
       </if>
       <if test="ispublic != null" >
         ispublic,
+      </if>
+      <if test="charge != null" >
+        charge,
+      </if>
+      <if test="isfree != null" >
+        isfree,
+      </if>
+      <if test="freecoursenum != null" >
+        freecoursenum,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -156,9 +166,6 @@
       <if test="classbrief != null" >
         #{classbrief,jdbcType=VARCHAR},
       </if>
-      <if test="classverify != null" >
-        #{classverify,jdbcType=INTEGER},
-      </if>
       <if test="classnotice != null" >
         #{classnotice,jdbcType=VARCHAR},
       </if>
@@ -173,6 +180,15 @@
       </if>
       <if test="ispublic != null" >
         #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="charge != null" >
+        #{charge},
+      </if>
+      <if test="isfree != null" >
+        #{isfree},
+      </if>
+      <if test="freecoursenum != null" >
+        #{freecoursenum},
       </if>
     </trim>
   </insert>
@@ -197,9 +213,6 @@
       <if test="classbrief != null" >
         classbrief = #{classbrief,jdbcType=VARCHAR},
       </if>
-      <if test="classverify != null" >
-        classverify = #{classverify,jdbcType=INTEGER},
-      </if>
       <if test="classnotice != null" >
         classnotice = #{classnotice,jdbcType=VARCHAR},
       </if>
@@ -211,6 +224,15 @@
       </if>
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="charge != null" >
+        charge = #{charge},
+      </if>
+      <if test="isfree != null" >
+        isfree = #{isfree},
+      </if>
+      <if test="freecoursenum != null" >
+        freecoursenum = #{freecoursenum},
       </if>
       <if test="ispublic != null" >
         ispublic = #{ispublic,jdbcType=CHAR}
@@ -227,13 +249,24 @@
       classinvoloed = #{classinvoloed,jdbcType=INTEGER},
       classlimited = #{classlimited,jdbcType=INTEGER},
       classbrief = #{classbrief,jdbcType=VARCHAR},
-      classverify = #{classverify,jdbcType=INTEGER},
       classnotice = #{classnotice,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       ptype = #{ptype,jdbcType=CHAR}, 
+      charge = #{charge,jdbcType=INTEGER},
+      isfree = #{isfree,jdbcType=CHAR},
+      freecoursenum = #{freecoursenum,jdbcType=INTEGER},
       ispublic = #{ispublic,jdbcType=CHAR} 
     where classroomid = #{classroomid,jdbcType=INTEGER} 
     and userid = #{userid,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateClassnoticeByClassroomid" >
+    update classroom
+    set 
+      classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and userid = #{userid}
+  </update>
+  
 </mapper>
