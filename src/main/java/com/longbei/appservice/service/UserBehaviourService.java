@@ -16,24 +16,6 @@ public interface UserBehaviourService {
      * @return
      */
     BaseResp<Object> canOperateMore(long userid,UserInfo userInfo, String operateType);
-    /**
-     * 是否升级
-     * @param userid
-     * @return
-     */
-//    BaseResp<Object> levelUp(long userid,int iPoint,String pType);
-    /**
-     * 是否升级
-     * @param userInfo
-     * @return
-     */
-//    BaseResp<Object> levelUp(UserInfo userInfo,int iPoint,String pType);
-    /**
-     * 获取龙分接口
-     * @param userid 用户id
-     * @param operateType 操作类型
-     */
-//    int getPointByType(long userid,String operateType);
 
     /**
      * userInfo operateType 操作类型(Constant_point)   十全十美类型
@@ -51,5 +33,7 @@ public interface UserBehaviourService {
      *  public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
      */
     BaseResp<Object> hasPrivilege(long userid,UserInfo userInfo, String operateType);
+
+    
 
 }

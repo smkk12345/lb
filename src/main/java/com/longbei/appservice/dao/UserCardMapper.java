@@ -1,5 +1,7 @@
 package com.longbei.appservice.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.longbei.appservice.entity.UserCard;
 
 public interface UserCardMapper {
@@ -9,9 +11,10 @@ public interface UserCardMapper {
 
     int insertSelective(UserCard record);
 
-    UserCard selectByPrimaryKey(Integer id);
+    UserCard selectByCardid(@Param("cardid") long cardid);
 
     int updateByPrimaryKeySelective(UserCard record);
 
     int updateByPrimaryKey(UserCard record);
+    
 }

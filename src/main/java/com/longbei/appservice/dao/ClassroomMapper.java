@@ -41,4 +41,12 @@ public interface ClassroomMapper {
     List<Classroom> selectListByPtype(@Param("ptype") String ptype, @Param("keyword") String keyword, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
+    /**
+	 * @author yinxc
+	 * 修改教室公告---classnotice
+	 * 2017年3月2日
+	 */
+    int updateClassnoticeByClassroomid(@Param("classroomid") long classroomid, 
+    		@Param("userid") long userid, @Param("classnotice") String classnotice); 
+    
 }

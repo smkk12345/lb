@@ -19,13 +19,10 @@ import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import net.sf.json.JSONObject;
-import org.apache.catalina.User;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import scala.collection.immutable.Stream;
 
 import java.util.*;
 
@@ -81,6 +78,8 @@ public class ImproveServiceImpl implements ImproveService{
     private ImproveTopicMapper improveTopicMapper;
     @Autowired
     private UserImpCoinDetailService userImpCoinDetailService;
+    @Autowired
+    private ImpAwardMapper impAwardMapper;
 
 
     /**
@@ -330,7 +329,7 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
 
         }
-
+        initImproveInfo(improve,Long.parseLong(userid));
         return improve;
     }
 
@@ -899,7 +898,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid());
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,0);
         if(null != list){
             improve.setImproveTopicList(list);
         }
@@ -1540,6 +1539,38 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("userid={},topicid={}",userid,e);
         }
         return null;
+    }
+
+   //领虚拟奖品
+    @Override
+    public BaseResp<Object> acceptBasicAward(long impid, long userid,String businesstype,String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        //Long impid,String userid,String businesstype,String businessid
+        Improve improve = selectImproveByImpid(impid,userid+"",businesstype,businessid);
+        if(!canAcceptAward(improve)){
+
+        }
+        return baseResp;
+    }
+
+    //领实物奖品
+    @Override
+    public BaseResp<Object> acceptAward(long impid, long userid,String businesstype,String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        Improve improve = selectImproveByImpid(impid,userid+"",businesstype,businessid);
+        if(!canAcceptAward(improve)){
+          // ImpAward impAward = impAwardMapper.selectByImpIdAndUserId(impid,userid);
+        }
+
+        return baseResp;
+    }
+
+    private boolean canAcceptAward(Improve improve){
+        boolean result = false;
+//        if(improve.getIswinning().equals("1")&&improve.getAcceptaward().equals("0")){
+//            result = true;
+//        }
+        return result;
     }
 
 

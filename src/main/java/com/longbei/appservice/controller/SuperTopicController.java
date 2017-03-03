@@ -24,6 +24,7 @@ public class SuperTopicController {
     private SuperTopicService superTopicService;
 
     /**
+     * topic/list
      * 获取超级话题列表
      * @param startNum
      * @param endNum
@@ -44,7 +45,7 @@ public class SuperTopicController {
     }
 
     /**
-     *
+     * topic／selectImprovesById   获取进步列表  通过超级话题id
      * @param topicId
      * @param userid
      * @param startNum

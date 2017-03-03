@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.longbei.appservice.common.persistence.SFSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,15 +81,16 @@ public class IdGenerateService  {
 	}
 
 	public Long getUniqueIdAsLong() {
-		long now = System.currentTimeMillis();
-		StringBuilder sb = new StringBuilder(64);
+//		long now = System.currentTimeMillis();
+//		StringBuilder sb = new StringBuilder(64);
+//
+//		sb.append(SHORT_DATE_TIME_FORMAT.format(now));
+//		sb.append(String.format(MACHINE_ID_FORMAT, machineId));
+//		sb.append(String.format("%03d", seq.getAndIncrement() % 100000));
 
-		sb.append(SHORT_DATE_TIME_FORMAT.format(now));
-		sb.append(String.format(MACHINE_ID_FORMAT, machineId));
-		sb.append(String.format("%03d", seq.getAndIncrement() % 100000));
-
-		return Long.parseLong(sb.toString());
+		return sequ.nextId();
 	}
-	
+
+	private static SFSequence sequ = new SFSequence(machineId%32,0);
 	
 }

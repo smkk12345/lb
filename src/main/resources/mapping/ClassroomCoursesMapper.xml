@@ -34,7 +34,7 @@
     from classroom_courses 
     where classroomid = #{classroomid} 
     and isdel = 0 
-    order by createtime asc 
+    order by coursesort asc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
