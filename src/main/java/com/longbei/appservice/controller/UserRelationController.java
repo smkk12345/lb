@@ -10,9 +10,9 @@ package com.longbei.appservice.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -22,7 +22,7 @@ import com.longbei.appservice.service.UserRelationService;
  * @author smkk
  * 关系控制器，好友  熟人  关注的人
  */
-@Controller
+@RestController
 @RequestMapping(value = "/user")
 public class UserRelationController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(UserRelationController.class);
@@ -42,7 +42,6 @@ public class UserRelationController extends BaseController {
      * @currentdate:2017年2月7日
 	 */
 	 @SuppressWarnings("unchecked")
-	 @ResponseBody
      @RequestMapping(value = "searchLongRange")
 	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int endNum){
 		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
@@ -69,7 +68,6 @@ public class UserRelationController extends BaseController {
      * @currentdate:2017年2月7日
 	 */
 	 @SuppressWarnings("unchecked")
-	 @ResponseBody
      @RequestMapping(value = "searchLocal")
 	 public BaseResp<Object> searchLocal(String userid, String nickname, int startNum, int endNum){
 		 logger.info("searchLocal params userid={},nickname={}",userid,nickname);
@@ -94,8 +92,7 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	*/
 	@SuppressWarnings("unchecked")
-	@ResponseBody
-    @RequestMapping(value = "insert")
+    @RequestMapping(value = "insertFriend")
 	public BaseResp<Object> insertFriend(String userid, String friendid){
 		logger.info("insertfriend params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -118,7 +115,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "selectListByUserId")
 	public BaseResp<Object> selectListByUserId(String userid,int startNum,int endNum){
 		logger.info("selectListByUserId params userid={}",userid);
@@ -143,7 +139,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "delete")
 	public BaseResp<Object> delete(String userid, String friendid){
 		logger.info("delete params userid={},friendid={}",userid,friendid);
@@ -170,7 +165,6 @@ public class UserRelationController extends BaseController {
     * @currentdate:2017年2月7日
     */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "updateRemark")
 	public BaseResp<Object> updateRemark(String userid, String friendid, String remark){
 		logger.info("updateRemark params userid = {}, friendid = {}, remark = {}", userid, friendid, remark);
@@ -198,7 +192,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "insertFans")
 	public BaseResp<Object> insertFans(String userid, String friendid){
 		logger.info("insertFans params userid={},friendid={}",userid,friendid);
@@ -223,7 +216,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "deleteFans")
 	public BaseResp<Object> deleteFans(String userid, String friendid){
 		logger.info("deleteFans params userid={},friendid={}",userid,friendid);
@@ -247,7 +239,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "selectFansListByUserId")
 	public BaseResp<Object> selectFansListByUserId(String userid, int startNum, int endNum){
 		logger.info("selectFansListByUserId params userid={}",userid);

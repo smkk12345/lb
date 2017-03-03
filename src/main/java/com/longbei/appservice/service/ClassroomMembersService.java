@@ -7,6 +7,14 @@ import com.longbei.appservice.entity.ClassroomMembers;
 
 public interface ClassroomMembersService {
 	
+	/**
+    * @Description: 添加教室成员
+    * @param @param classroomid 教室id 
+    * @param @param userid
+    * 成员在加入教室之前，如果该教室收费，需先交费后才可加入
+    * @auther yinxc
+    * @currentdate:2017年2月28日
+	*/
 	BaseResp<Object> insertClassroomMembers(ClassroomMembers record);
 	
 	/**
@@ -41,7 +49,9 @@ public interface ClassroomMembersService {
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 * param userid 成员id
-	 * param itype 0—加入教室 1—退出教室 
+	 * param itype 0—加入教室 1—退出教室
+	 * 
+	 * 教室剔除成员，如果该成员已经交费，老师强制剔除成员时，需要把成员所交费用返回
 	 */
 	BaseResp<Object> updateItypeByClassroomidAndUserid(Integer classroomid, long userid, String itype);
 

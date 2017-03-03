@@ -25,7 +25,7 @@ public interface ClassroomMembersMapper {
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 */
-    List<ClassroomMembers> selectListByClassroomid(@Param("classroomid") Integer classroomid, 
+    List<ClassroomMembers> selectListByClassroomid(@Param("classroomid") long classroomid, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
@@ -45,7 +45,7 @@ public interface ClassroomMembersMapper {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室     为null查全部
 	 */
-    ClassroomMembers selectListByClassroomidAndUserid(@Param("classroomid") Integer classroomid, 
+    ClassroomMembers selectListByClassroomidAndUserid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("itype") String itype);
     
     /**
@@ -56,7 +56,7 @@ public interface ClassroomMembersMapper {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室 
 	 */
-    int updateItypeByClassroomidAndUserid(@Param("classroomid") Integer classroomid, 
+    int updateItypeByClassroomidAndUserid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("itype") String itype);
     
 }
