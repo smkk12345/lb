@@ -7,9 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 
 @SpringBootApplication
 @EnableConfigurationProperties(com.longbei.appservice.config.AppserviceConfig.class)
@@ -17,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ServletComponentScan
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
