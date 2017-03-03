@@ -1567,9 +1567,9 @@ public class ImproveServiceImpl implements ImproveService{
 
     private boolean canAcceptAward(Improve improve){
         boolean result = false;
-        if(improve.getIswinning().equals("1")&&improve.getAcceptaward().equals("0")){
-            result = true;
-        }
+//        if(improve.getIswinning().equals("1")&&improve.getAcceptaward().equals("0")){
+//            result = true;
+//        }
         return result;
     }
 
