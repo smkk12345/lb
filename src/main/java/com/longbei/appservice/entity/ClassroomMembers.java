@@ -29,6 +29,8 @@ public class ClassroomMembers {
     private Integer diamonds = 0; //钻石总数量
     
     private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
+    
+    private Integer allimp; //用户在教室所发的微进步总数
 
     /**
      * 
@@ -188,5 +190,14 @@ public class ClassroomMembers {
 
 	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
 		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getAllimp() {
+		return allimp;
+	}
+
+	public void setAllimp(Integer allimp) {
+		this.allimp = allimp;
 	}
 }

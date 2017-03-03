@@ -260,4 +260,13 @@
     where classroomid = #{classroomid,jdbcType=INTEGER} 
     and userid = #{userid,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateClassnoticeByClassroomid" >
+    update classroom
+    set 
+      classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and userid = #{userid}
+  </update>
+  
 </mapper>

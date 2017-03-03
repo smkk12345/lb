@@ -13,6 +13,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
@@ -28,6 +29,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private ImproveClassroomMapper improveClassroomMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -69,15 +72,16 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 
 	@Override
-	public BaseResp<Object> selectListByClassroomid(Integer classroomid, int startNum, int endNum) {
+	public BaseResp<Object> selectListByClassroomid(long classroomid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
 					initMsgUserInfoByUserid(classroomMembers);
-					//获取赞，花，钻石总数，教室所发的微进步总数
-					
+					//教室所发的微进步总数
+					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, classroomMembers.getUserid());
+					classroomMembers.setAllimp(allimp);
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -110,7 +114,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 
 	@Override
-	public ClassroomMembers selectListByClassroomidAndUserid(Integer classroomid, long userid, String itype) {
+	public ClassroomMembers selectListByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		try {
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectListByClassroomidAndUserid(classroomid, userid, itype);
 			return classroomMembers;
@@ -130,7 +134,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	 * param itype 0—加入教室 1—退出教室
 	 */
 	@Override
-	public BaseResp<Object> updateItypeByClassroomidAndUserid(Integer classroomid, long userid, String itype) {
+	public BaseResp<Object> updateItypeByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			boolean temp = update(classroomid, userid, itype);
@@ -144,7 +148,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		return reseResp;
 	}
 	
-	private boolean update(Integer classroomid, long userid, String itype){
+	private boolean update(long classroomid, long userid, String itype){
 		int temp = classroomMembersMapper.updateItypeByClassroomidAndUserid(classroomid, userid, itype);
 		return temp > 0 ? true : false;
 	}
