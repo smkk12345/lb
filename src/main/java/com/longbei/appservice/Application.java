@@ -15,7 +15,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableConfigurationProperties(com.longbei.appservice.config.AppserviceConfig.class)
 @EnableSwagger2
 @ServletComponentScan
-@EnableTransactionManagement
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
 
