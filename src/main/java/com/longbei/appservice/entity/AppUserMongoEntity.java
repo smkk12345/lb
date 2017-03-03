@@ -18,6 +18,8 @@ public class AppUserMongoEntity {
 
 	private Double[] gispoint;
 	
+	private long userid;
+
 	@JsonInclude(Include.ALWAYS)
 	public Double[] getGispoint() {
 		return gispoint;
@@ -33,6 +35,7 @@ public class AppUserMongoEntity {
 
 	public void setId(String id) {
 		this.id = id;
+		this.userid = Long.parseLong(id);
 	}
 
 	public String getUsername() {
@@ -62,4 +65,11 @@ public class AppUserMongoEntity {
 		this.sex = sex;
 	}
 	
+	public void setUserid(long userid) {
+		this.userid = userid;
+	}
+
+	public long getUserid() {
+		return userid;
+	}
 }

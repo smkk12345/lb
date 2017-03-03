@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.*;
 import com.mysql.fabric.xmlrpc.base.Data;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 进步业务操作接口
@@ -322,7 +323,8 @@ public interface ImproveService {
      * @param userid
      * @return
      */
-    BaseResp<Object> acceptBasicAward(long impid, long userid);
+    @Transactional
+    BaseResp<Object> acceptBasicAward(long impid, long userid,String businesstype,String businessid);
 
     /**
      * 领取实物奖品
@@ -330,6 +332,6 @@ public interface ImproveService {
      * @param userid
      * @return
      */
-    BaseResp<Object> acceptAward(long impid, long userid);
+    BaseResp<Object> acceptAward(long impid, long userid,String businesstype,String businessid);
 
 }
