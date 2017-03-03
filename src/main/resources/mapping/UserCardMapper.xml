@@ -16,11 +16,11 @@
   <sql id="Base_Column_List" >
     id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByCardid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from user_card
-    where id = #{id,jdbcType=INTEGER}
+    where cardid = #{cardid}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_card
