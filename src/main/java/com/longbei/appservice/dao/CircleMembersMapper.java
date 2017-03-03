@@ -24,4 +24,17 @@ public interface CircleMembersMapper {
 
     int updateCircleMembers(Map<String, Object> map);
 
+    /**
+     * 更新用户在圈主中的信息 加赞 加花 加钻石
+     * @param map
+     * @return
+     */
+    int updateCircleMemberInfo(Map<String,Object> map);
+
+    /**
+     * 查询兴趣圈中的所有用户id
+     * @param circleId
+     * @return
+     */
+    List<Long> findCircleMembersId(Integer circleId);
 }

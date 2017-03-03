@@ -27,6 +27,7 @@ public interface ImproveMapper {
     List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
                                          @Param("tablename")String tablename,
                                          @Param("ismainimp")String ismainimp,
+                                         @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
     

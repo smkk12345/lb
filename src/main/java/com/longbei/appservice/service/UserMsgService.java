@@ -174,5 +174,20 @@ public interface UserMsgService {
 	 * UserMsgService
 	 */
 	BaseResp<Object> updateIsreadByUserid(long userid, String mtype, String msgtype);
-	
+
+	/**
+	 * 批量插入用户信息 userMsg中存储指定的信息,只是接收人的用户id不一样
+	 * @param userIdList 接收人的用户Id
+	 * @param userMsg 消息实体
+     * @return
+     */
+	boolean batchInsertUserMsg(List<Long> userIdList,UserMsg userMsg);
+
+	/**
+	 * 查询圈子的验证消息
+	 * @param circleId
+	 * @param userId
+     * @return
+     */
+	UserMsg findCircleNoticeMsg(Long circleId, Long userId);
 }

@@ -82,77 +82,84 @@ public interface ImproveService {
      * @param userid
      * @param rankid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectRankImproveList(String userid,String rankid,String sift,int pageNo,int pageSize);
+    List<Improve> selectRankImproveList(String userid,String rankid,String sift,String orderby,int pageNo,int pageSize);
 
     /**
      *  榜中按时间排序
      * @param userid
      * @param rankid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectRankImproveListByDate(String userid,String rankid,String sift,int pageNo,int pageSize);
+    List<Improve> selectRankImproveListByDate(String userid,String rankid,String sift,String orderby,int pageNo,int pageSize);
 
     /**
      *  圈子中成员动态
       * @param userid
      * @param circleid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectCircleImproveList(String userid,String circleid,String sift,int pageNo,int pageSize);
+    List<Improve> selectCircleImproveList(String userid,String circleid,String sift,String orderby,int pageNo,int pageSize);
 
     /**
      *  圈子中按时间排序
      * @param userid
      * @param circleid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectCircleImproveListByDate(String userid,String circleid,String sift,int pageNo,int pageSize);
+    List<Improve> selectCircleImproveListByDate(String userid,String circleid,String sift,String orderby ,int pageNo,int pageSize);
 
     /**
      *  教室中成员动态
      * @param userid
      * @param classroomid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectClassroomImproveList(String userid,String classroomid,String sift,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveList(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize);
 
     /**
      *  教室中按时间排序
      * @param userid
      * @param classroomid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectClassroomImproveListByDate(String userid,String classroomid,String sift,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveListByDate(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize);
 
 
     /**
      *  获取目标中进步列表
      * @param userid
      * @param goalid
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectGoalImproveList(String userid,String goalid,int pageNo,int pageSize);
+    List<Improve> selectGoalImproveList(String userid,String goalid,String orderby,int pageNo,int pageSize);
     
     /**
      * 删除进步入口
@@ -324,12 +331,12 @@ public interface ImproveService {
     /**
      * 获取超级话题下的进步列表
      * @param topicid
-     * @param sift
+     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
      * @param pageNo
      * @param pageSize
      * @return
      */
-    List<Improve> selectSuperTopicImproveList(long userid,String topicid,int pageNo,int pageSize);
+    List<Improve> selectSuperTopicImproveList(long userid,String topicid,String orderby,int pageNo,int pageSize);
 
 
 }

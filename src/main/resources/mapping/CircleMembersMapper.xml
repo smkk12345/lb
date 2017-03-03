@@ -8,9 +8,12 @@
     <result column="itype" property="itype" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+      <result column="likes" property="likes" jdbcType="INTEGER" />
+      <result column="flowers" property="flowers" jdbcType="INTEGER" />
+      <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, circleid, userid, itype, createtime, updatetime
+    id, circleid, userid, itype, createtime, likes,flowers,diamonds
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -76,21 +79,30 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.CircleMembers" >
     update circle_members
     <set >
-      <if test="circleid != null" >
-        circleid = #{circleid,jdbcType=BIGINT},
-      </if>
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
-      <if test="itype != null" >
-        itype = #{itype,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        <if test="circleid != null" >
+          circleid = #{circleid,jdbcType=BIGINT},
+        </if>
+        <if test="userid != null" >
+          userid = #{userid,jdbcType=BIGINT},
+        </if>
+        <if test="itype != null" >
+          itype = #{itype,jdbcType=INTEGER},
+        </if>
+        <if test="createtime != null" >
+        c reatetime = #{createtime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="updatetime != null" >
+          updatetime = #{updatetime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="likes != null">
+            likes = #{likes}
+        </if>
+        <if test="flowers != null">
+            flowers = #{flowers}
+        </if>
+        <if test="diamonds != null">
+            diamonds = #{diamonds}
+        </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -100,7 +112,10 @@
       userid = #{userid,jdbcType=BIGINT},
       itype = #{itype,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      likes = #{likes,jdbcType=INTEGER},
+      flowers = #{flowers,jdbcType=INTEGER},
+      diamonds = #{diamonds,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -135,4 +150,30 @@
     where circleid = #{circleId}
         and userid = #{userId}
   </update>
+
+  <update id="updateCircleMemberInfo" parameterType="map">
+      update
+          circle_members
+      <set>
+          <if test = "likes != null">
+             likes = likes + #{likes},
+          </if>
+          <if test="flowers != null">
+              flowers = flowers + #{flowers},
+          </if>
+          <if test="diamonds != null">
+              diamonds = diamonds + #{diamonds},
+          </if>
+          <if test="updateTime != null">
+              updatetime = #{updateTime}
+          </if>
+      </set>
+      where userid = #{userId}
+          and circleid = #{circleId}
+  </update>
+
+    <!-- 查询兴趣圈中的所有用户id -->
+    <select id="findCircleMembersId" parameterType="int" resultType="Long">
+        select userid from circle_members where itype = 0 and circleid = #{circleid}
+    </select>
 </mapper>

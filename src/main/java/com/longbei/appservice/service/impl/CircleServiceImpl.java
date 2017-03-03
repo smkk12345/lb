@@ -7,21 +7,17 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.CircleMembersMapper;
+import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Circle;
-import com.longbei.appservice.entity.CircleMembers;
-import com.longbei.appservice.entity.UserMsg;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.CircleService;
 import com.longbei.appservice.service.UserMsgService;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wyz on 17/2/28.
@@ -40,6 +36,9 @@ public class CircleServiceImpl implements CircleService {
 
     @Autowired
     private UserMsgService userMsgService;
+
+    @Autowired
+    private UserMsgMapper userMsgMapper;
 
     @Autowired
     private UserMongoDao userMongoDao;
@@ -62,7 +61,7 @@ public class CircleServiceImpl implements CircleService {
 
     @Override
     public BaseResp<Object> insertCircle(String userId, String circleTitle, String circlephotos, String circlebrief,
-                                         Integer circleinvoloed, String ptype, Boolean ispublic, Boolean needconfirm, Boolean creategoup) {
+                                         String ptype, Boolean ispublic, Boolean needconfirm, Boolean creategoup) {
         Circle circle = new Circle();
         circle.setCreatetime(new Date());
         circle.setUpdatetime(new Date());
@@ -71,7 +70,7 @@ public class CircleServiceImpl implements CircleService {
         circle.setCirclephotos(circlephotos);
         circle.setCirclebrief(circlebrief);
         circle.setCreateuserid(Long.parseLong(userId));
-        circle.setCircleinvoloed(circleinvoloed);
+        circle.setCircleinvoloed(0);
         circle.setPtype(ptype);
         circle.setIspublic(ispublic);
         circle.setNeedconfirm(needconfirm);
@@ -184,10 +183,7 @@ public class CircleServiceImpl implements CircleService {
             int row = circleMembersMapper.updateCircleMembers(map);
             if (row > 0 && circle.getNeedconfirm()) {
                 //发消息通知群主
-                UserMsg userMsg = new UserMsg();
-                userMsg.setCreatetime(new Date());
-
-                userMsgService.insertSelective(userMsg);
+                noticeCircleCreateUserId(circleId,circle.getCreateuserid());
 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_84, Constant.RTNINFO_SYS_84);
             } else if (row > 0) {
@@ -218,12 +214,49 @@ public class CircleServiceImpl implements CircleService {
         int row = circleMembersMapper.insert(newCircleMembers);
         if (row > 0) {
             if (circle.getNeedconfirm()) {//通知群主审核
+                noticeCircleCreateUserId(circleId,circle.getCreateuserid());
 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_84, Constant.RTNINFO_SYS_84);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+    }
+
+    private boolean noticeCircleCreateUserId(Long circleId,Long userId){
+        // 校验是否给圈主发送过验证消息,如果已经发送过验证消息,则判断该消息是否已读,如果目前为已读则update为未读
+        UserMsg tempUserMsg = userMsgService.findCircleNoticeMsg(circleId,userId);
+        if(tempUserMsg != null && "0".equals(tempUserMsg.getIsdel()) && "0".equals(tempUserMsg.getIsread())){
+            return true;
+        }else if(tempUserMsg != null && ("1".equals(tempUserMsg.getIsdel()) || "1".equals(tempUserMsg.getIsread()))){
+            //更改该消息为未删除,且未读
+            UserMsg updateUserMsg = new UserMsg();
+            updateUserMsg.setId(tempUserMsg.getId());
+            updateUserMsg.setIsdel("0");
+            updateUserMsg.setIsread("0");
+            int updateRow = userMsgMapper.updateByPrimaryKeySelective(updateUserMsg);
+            if(updateRow > 0){
+                return true;
+            }
+            return false;
+        }
+        UserMsg userMsg = new UserMsg();
+        userMsg.setCreatetime(new Date());
+        userMsg.setUserid(userId);
+        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+        userMsg.setGtype("3");
+        userMsg.setMsgtype("11");
+        userMsg.setSnsid(circleId);
+        userMsg.setRemark("有新的成员申请加入圈子,快去进行审核吧!");
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setMtype("2");
+        int row = userMsgMapper.insertSelective(userMsg);
+        if(row > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -280,7 +313,7 @@ public class CircleServiceImpl implements CircleService {
 
 
         baseResp.setData(circle);
-        return baseResp;
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
     @Override
@@ -319,5 +352,43 @@ public class CircleServiceImpl implements CircleService {
             circleMappler.updateCircleInvoloed(map);
         }
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+    }
+
+    @Override
+    public List<Long> findCircleMemberId(Integer circleId) {
+        return circleMembersMapper.findCircleMembersId(circleId);
+    }
+
+    @Override
+    public void test() {
+        List<ImproveCircle> list = new ArrayList<ImproveCircle>();
+
+        for(int i=0;i<20000000;i++){
+            ImproveCircle improveCircle = new ImproveCircle();
+            improveCircle.setCreatetime(new Date());
+            improveCircle.setImpid(idGenerateService.getUniqueIdAsLong());
+            improveCircle.setIsdel("0");
+            improveCircle.setItype("0");
+            improveCircle.setBrief("这是第 "+i+" 条测试进步");
+            Integer temp = RandomUtils.nextInt(3000);
+            improveCircle.setUserid(new Long(temp));
+            improveCircle.setBusinessid(new Long(RandomUtils.nextInt(10000)));
+            improveCircle.setBusinesstype("3");
+            improveCircle.setUpdatetime(new Date());
+            improveCircle.setIsmainimp("0");
+            improveCircle.setPtype(RandomUtils.nextInt(10)+"");
+            improveCircle.setIspublic("2");
+            improveCircle.setIndexnum(RandomUtils.nextInt(20));
+            improveCircle.setLikes(RandomUtils.nextInt(30));
+            improveCircle.setFlowers(RandomUtils.nextInt(10));
+            improveCircle.setDiamonds(RandomUtils.nextInt(7));
+            list.add(improveCircle);
+
+            if(list.size() >= 300){
+                circleMappler.test(list);
+                list.clear();
+            }
+        }
+        System.out.print("--------------- 完成 -------------------------------");
     }
 }

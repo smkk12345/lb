@@ -4,16 +4,16 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.service.CircleService;
-import com.longbei.appservice.service.ImproveCircleService;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.entity.UserMsg;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.longbei.appservice.common.constant.Constant.USER_PRIVILEGE_ADD_CIRCLE;
@@ -33,10 +33,13 @@ public class CircleController {
     private ImproveService improveService;
     @Autowired
     private ImproveCircleService improveCircleService;
+    @Autowired
+    private UserMsgService userMsgService;
 
     private static Logger logger = LoggerFactory.getLogger(CircleController.class);
 
     /**
+     * 根据圈子的名称查询类似的圈子
      * @url http://ip:port/app_service/circle/relevantCircle
      * @param circleName 圈子名称
      * @param startNo 开始下标
@@ -64,12 +67,12 @@ public class CircleController {
     }
 
     /**
+     * 新建圈子
      * @url http://ip:port/app_service/circle/insertCircle
      * @param userId 用户Id
      * @param circleTitle 圈子名称
      * @param circlephotos 圈子图片
      * @param circlebrief 圈子简介
-     * @param circleinvoloed 最大圈子人数
      * @param ptype 圈子类型
      * @param ispublic 是否所有人可见
      * @param needconfirm 加圈子是否需要圈主验证
@@ -79,7 +82,7 @@ public class CircleController {
      */
     @RequestMapping(value="insertCircle")
     public BaseResp<Object> insertCircle(String userId,String circleTitle,String circlephotos,String circlebrief,
-                                         Integer circleinvoloed,String ptype,Boolean ispublic,Boolean needconfirm,Boolean creategoup){
+                                         String ptype,Boolean ispublic,Boolean needconfirm,Boolean creategoup){
         logger.info("insert Circle userId:{} circleTitle:{} circlephotos:{} circlebrief:{}",0,circleTitle,circlephotos,circlebrief);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(userId,circleTitle,circlephotos,circlebrief,ptype)){
@@ -103,7 +106,7 @@ public class CircleController {
         //校验兴趣圈名是否可用
         boolean flag = circleService.checkCircleTitle(circleTitle);
         if(flag){
-            baseResp = circleService.insertCircle(userId,circleTitle,circlephotos,circlebrief,circleinvoloed,ptype,ispublic,needconfirm,creategoup);
+            baseResp = circleService.insertCircle(userId,circleTitle,circlephotos,circlebrief,ptype,ispublic,needconfirm,creategoup);
         }else{
             baseResp = baseResp.initCodeAndDesp(Constant.STATUS_SYS_80, Constant.RTNINFO_SYS_80);
         }
@@ -145,8 +148,20 @@ public class CircleController {
         }
         baseResp = circleService.updateCircleInfo(circleId,userId,null,null,circleNotice);
         if(baseResp.getCode() == 0 && isNotice != null && isNotice){
-            //通知所有用户
+            UserMsg userMsg = new UserMsg();
+            userMsg.setCreatetime(new Date());
+            userMsg.setFriendid(Long.parseLong(userId));
+            userMsg.setMsgtype("11");
+            userMsg.setSnsid(new Long(circleId));
+            userMsg.setRemark("圈子系统公告更新了,请及时关注圈子动态哦!");
+            userMsg.setIsdel("0");
+            userMsg.setIsread("0");
+            userMsg.setGtype("3");
+            userMsg.setMtype("2");
 
+            //通知所有用户
+            List<Long> userIdList = circleService.findCircleMemberId(circleId);
+            userMsgService.batchInsertUserMsg(userIdList,userMsg);
         }
         return baseResp;
     }
@@ -295,6 +310,7 @@ public class CircleController {
      * @param circleId 兴趣圈id
      * @return
      */
+    @RequestMapping(value="circleDetail")
     public BaseResp<Object> circleDetail(Long circleId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
@@ -308,13 +324,15 @@ public class CircleController {
     /**
      * 查询圈子的 进步
      * @url http://ip:port/app_service/circle/improveCircleList
-     * @param circleId
+     * @param circleId 圈子id
+     * @param userId 当前登录用户id
+     * @param orderby 0.按时间倒序排列 1.按热度排列
      * @param startNo
      * @param endNo
      * @return
      */
     @RequestMapping(value="improveCircleList")
-    public BaseResp<Object> improveCircleList(String circleId,String userId,Integer startNo,Integer endNo){
+    public BaseResp<Object> improveCircleList(String circleId,String userId,String orderby,Integer startNo,Integer endNo){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(circleId,userId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -326,7 +344,8 @@ public class CircleController {
         if(endNo != null && endNo > startNo){
             pageSize = endNo - startNo;
         }
-        List<Improve> improveList = improveService.selectCircleImproveList(userId,circleId,null,startNo,pageSize);
+        List<Improve> improveList = new ArrayList<Improve>();
+        improveList = improveService.selectCircleImproveList(userId,circleId,null,orderby,startNo,pageSize);
         baseResp.setData(improveList);
 
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -350,6 +369,13 @@ public class CircleController {
         baseResp = circleService.confirmInsertCircleMember(userId,circleMembersId,confirmFlag);
 
         return baseResp;
+    }
+
+    @RequestMapping(value="test")
+    public BaseResp<Object> test(){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        circleService.test();
+        return baseResp.ok();
     }
 
 

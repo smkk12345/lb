@@ -16,6 +16,12 @@ public class CircleMembers {
 
     private Date updatetime;//退圈时间
 
+    private Integer likes;//赞
+
+    private Integer flowers;//花
+
+    private Integer diamonds;//钻石
+
     private AppUserMongoEntity appUserMongoEntity;
 
     /**
@@ -128,5 +134,37 @@ public class CircleMembers {
      */
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    /**
+     * 获取赞
+     * @return
+     */
+    public Integer getLikes() {
+        return likes;
+    }
+
+    /**
+     * 设置赞
+     * @param likes
+     */
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getFlowers() {
+        return flowers;
+    }
+
+    public void setFlowers(Integer flowers) {
+        this.flowers = flowers;
+    }
+
+    public Integer getDiamonds() {
+        return diamonds;
+    }
+
+    public void setDiamonds(Integer diamonds) {
+        this.diamonds = diamonds;
     }
 }

@@ -2,6 +2,8 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 
+import java.util.List;
+
 /**
  * Created by wangyongzhi on 17/2/28.
  */
@@ -22,7 +24,7 @@ public interface CircleService {
      * @return
      */
     BaseResp<Object> insertCircle(String userId,String circleTitle, String circlephotos, String circlebrief,
-                                  Integer circleinvoloed,String ptype,Boolean ispublic,Boolean needconfirm,Boolean creategoup);
+                                  String ptype,Boolean ispublic,Boolean needconfirm,Boolean creategoup);
 
     /**
      * 校验兴趣圈名是否可用
@@ -90,4 +92,13 @@ public interface CircleService {
      * @return
      */
     BaseResp<Object> confirmInsertCircleMember(Long userId, Integer circleMembersId, Boolean confirmFlag);
+
+    /**
+     * 查询兴趣圈中的所有用户id
+     * @param circleId
+     * @return
+     */
+    List<Long> findCircleMemberId(Integer circleId);
+
+    void test();
 }

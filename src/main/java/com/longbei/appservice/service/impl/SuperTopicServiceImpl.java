@@ -58,7 +58,7 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     public BaseResp<Object> selectImprovesByTopicId(long userid,long topicId, int startNum, int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<Improve> list = improveService.selectSuperTopicImproveList(userid,topicId+"",startNum,endNum);
+            List<Improve> list = improveService.selectSuperTopicImproveList(userid,topicId+"",null,startNum,endNum);
             baseResp.initCodeAndDesp();
             baseResp.setData(list);
         }catch (Exception e){
