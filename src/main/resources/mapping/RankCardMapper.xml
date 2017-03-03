@@ -26,7 +26,7 @@
     SELECT
     <include refid="Base_Column_List" />
     FROM rankcard
-    where 1=1
+    where isdel='0'
     <if test="rankcard.adminname != null">
      AND adminname LIKE concat(concat('%',#{rankcard.adminname}),'%')
     </if>
@@ -39,15 +39,14 @@
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankCard" resultType="java.lang.Integer">
     SELECT count(*) FROM  rankcard
     WHERE  1=1
-    <if test="adminame != null">
+    <if test="adminname != null">
       AND adminname LIKE concat(concat('%',#{adminname}),'%')
     </if>
   </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from rankcard
-    where id = #{id,jdbcType=INTEGER}
+    UPDATE rankcard SET isdel='1' WHERE id= #{id}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankCard" >
     insert into rankcard (id, adminname, adminbrief, 
