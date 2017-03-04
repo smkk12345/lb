@@ -9,6 +9,7 @@ public interface ClassroomMembersService {
 	
 	/**
     * @Description: 添加教室成员
+    * 先判断教室参与人数是否已满
     * @param @param classroomid 教室id 
     * @param @param userid
     * 成员在加入教室之前，如果该教室收费，需先交费后才可加入

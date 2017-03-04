@@ -45,7 +45,7 @@ public interface ClassroomMembersMapper {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室     为null查全部
 	 */
-    ClassroomMembers selectListByClassroomidAndUserid(@Param("classroomid") long classroomid, 
+    ClassroomMembers selectByClassroomidAndUserid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("itype") String itype);
     
     /**

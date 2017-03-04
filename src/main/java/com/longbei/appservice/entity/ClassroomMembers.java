@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ClassroomMembers {
     private Integer id;
 
-    private Integer classroomid;//教室id
+    private Long classroomid;//教室id
 
     private Long userid;//用户id
 
@@ -53,7 +53,7 @@ public class ClassroomMembers {
      * @return classroomid 教室id
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClassroomid() {
+    public Long getClassroomid() {
         return classroomid;
     }
 
@@ -61,7 +61,7 @@ public class ClassroomMembers {
      * 教室id
      * @param classroomid 教室id
      */
-    public void setClassroomid(Integer classroomid) {
+    public void setClassroomid(Long classroomid) {
         this.classroomid = classroomid;
     }
 

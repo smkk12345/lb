@@ -69,6 +69,7 @@ public class Constant {
 	public static final int STATUS_SYS_33 = -33;
 	public static final int STATUS_SYS_34 = -34;
 	public static final int STATUS_SYS_35 = -35;
+	public static final int STATUS_SYS_36 = -36;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -131,6 +132,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_33 = "暂无教室信息";
 	public static final String RTNINFO_SYS_34 = "暂无课程信息";
 	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
+	public static final String RTNINFO_SYS_36 = "教室参与人数已达到限额";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
