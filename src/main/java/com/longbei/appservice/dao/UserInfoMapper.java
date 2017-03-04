@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 
 public interface UserInfoMapper {
@@ -38,7 +37,7 @@ public interface UserInfoMapper {
 	 * type 0：本地 1：远程 2017年2月6日 
 	 * 搜索屏蔽当前访问userid
 	 */
-	List<AppUserMongoEntity> selectLikeListByUnameAndNname(@Param("userid") long userid, @Param("nickname") String nickname, @Param("ids") String ids,
+	List<UserInfo> selectLikeListByUnameAndNname(@Param("userid") long userid, @Param("nickname") String nickname, @Param("ids") String ids,
 			@Param("type") String type, @Param("startNum") int startNum, @Param("endNum") int endNum);
 
 	/**

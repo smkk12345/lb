@@ -53,7 +53,7 @@ public class RankAdminApiController {
      * @return
      */
     @RequestMapping(value = "update")
-    public BaseResp updateRankAdmin(RankCard rankCard){
+    public BaseResp updateRankAdmin(@RequestBody  RankCard rankCard){
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankCardService.updateRankAdmin(rankCard);
@@ -109,7 +109,7 @@ public class RankAdminApiController {
      * @return
      */
     @RequestMapping(value = "list/{pageno}/{pagesize}")
-    public BaseResp<Page<RankCard>> selectRankAminListWithPage(RankCard rankCard, @PathVariable("pageno") String pageno,
+    public BaseResp<Page<RankCard>> selectRankAminListWithPage(@RequestBody RankCard rankCard, @PathVariable("pageno") String pageno,
                                                      @PathVariable("pagesize") String pagesize){
         BaseResp<Page<RankCard>> baseResp = new BaseResp();
         if (StringUtils.hasBlankParams(pageno,pagesize)){

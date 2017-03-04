@@ -1,7 +1,6 @@
 package com.longbei.appservice.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,15 +18,8 @@ public class AppUserMongoEntity {
 
 	private Double[] gispoint;
 	
-	@Transient
-	private String islike = "0";//是否关注   0：未关注   1：已关注
-    
-	@Transient
-    private String isfriend = "0"; //是否是好友    0：不是   1：是
-
 	private long userid;
 
-	
 	@JsonInclude(Include.ALWAYS)
 	public Double[] getGispoint() {
 		return gispoint;
@@ -73,22 +65,6 @@ public class AppUserMongoEntity {
 		this.sex = sex;
 	}
 	
-	@JsonInclude(Include.ALWAYS)
-	public String getIslike() {
-		return islike;
-	}
-	public void setIslike(String islike) {
-		this.islike = islike;
-	}
-	
-	@JsonInclude(Include.ALWAYS)
-	public String getIsfriend() {
-		return isfriend;
-	}
-	public void setIsfriend(String isfriend) {
-		this.isfriend = isfriend;
-	}
-
 	public void setUserid(long userid) {
 		this.userid = userid;
 	}

@@ -264,9 +264,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<AppUserMongoEntity> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
-				for (AppUserMongoEntity userInfo : list) {
+				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getId())){
 						//是好友
 						userInfo.setIsfriend("1");
