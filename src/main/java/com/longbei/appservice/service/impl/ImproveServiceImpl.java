@@ -79,7 +79,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
-    private ImpAwardMapper impAwardMapper;
+    private RankMembersMapper rankMembersMapper;
 
 
     /**
@@ -1543,33 +1543,36 @@ public class ImproveServiceImpl implements ImproveService{
 
    //领虚拟奖品
     @Override
-    public BaseResp<Object> acceptBasicAward(long impid, long userid,String businesstype,String businessid) {
+    public BaseResp<Object> acceptBasicAward(long impid, long userid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         //Long impid,String userid,String businesstype,String businessid
-        Improve improve = selectImproveByImpid(impid,userid+"",businesstype,businessid);
-        if(!canAcceptAward(improve)){
-
-        }
+//        Improve improve = selectImproveByImpid(impid,userid+"");
+//        if(!canAcceptAward(improve)){
+//
+//        }
         return baseResp;
     }
 
     //领实物奖品
     @Override
-    public BaseResp<Object> acceptAward(long impid, long userid,String businesstype,String businessid) {
+    public BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        Improve improve = selectImproveByImpid(impid,userid+"",businesstype,businessid);
-        if(!canAcceptAward(improve)){
-          // ImpAward impAward = impAwardMapper.selectByImpIdAndUserId(impid,userid);
-        }
+        try{
+            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+            if(!canAcceptAward(rankMembers)) {
 
+            }
+        }catch (Exception e){
+
+        }
         return baseResp;
     }
 
-    private boolean canAcceptAward(Improve improve){
+    private boolean canAcceptAward(RankMembers rankMembers){
         boolean result = false;
-//        if(improve.getIswinning().equals("1")&&improve.getAcceptaward().equals("0")){
-//            result = true;
-//        }
+        if(rankMembers.getIswinning().equals("1")&&rankMembers.getAcceptaward().equals("0")){
+            result = true;
+        }
         return result;
     }
 

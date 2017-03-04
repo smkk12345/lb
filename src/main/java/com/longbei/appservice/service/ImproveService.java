@@ -319,19 +319,19 @@ public interface ImproveService {
 
     /**
      * 领取默认奖品
-     * @param impid
+     * @param rankid
      * @param userid
      * @return
      */
     @Transactional
-    BaseResp<Object> acceptBasicAward(long impid, long userid,String businesstype,String businessid);
+    BaseResp<Object> acceptBasicAward(long rankid, long userid);
 
     /**
      * 领取实物奖品
-     * @param impid
+     * @param rankid
      * @param userid
      * @return
      */
-    BaseResp<Object> acceptAward(long impid, long userid,String businesstype,String businessid);
+    BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId);
 
 }
