@@ -14,7 +14,7 @@ public class Classroom {
 
     private String classphotos;//教室图片
 
-    private Integer claacateid;//教室类别id
+    private Integer classcateid;//教室类别id
 
     private Integer classinvoloed;//教室参与人数
 
@@ -98,22 +98,22 @@ public class Classroom {
 
     /**
      * 教室类别id
-     * @return claacateid 教室类别id
+     * @return classcateid 教室类别id
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClaacateid() {
-        return claacateid;
-    }
+    public Integer getClasscateid() {
+		return classcateid;
+	}
 
     /**
      * 教室类别id
-     * @param claacateid 教室类别id
+     * @param classcateid 教室类别id
      */
-    public void setClaacateid(Integer claacateid) {
-        this.claacateid = claacateid;
-    }
+    public void setClasscateid(Integer classcateid) {
+		this.classcateid = classcateid;
+	}
 
-    /**
+	/**
      * 教室参与人数
      * @return classinvoloed 教室参与人数
      */

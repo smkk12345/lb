@@ -65,7 +65,7 @@
     delete from classroom_members
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomMembers" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_members (id, classroomid, userid, 
       itype, userstatus, hascharge, likes, flowers, diamonds, createtime, 
       updatetime)
@@ -74,7 +74,7 @@
       #{flowers}, #{diamonds}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_members
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

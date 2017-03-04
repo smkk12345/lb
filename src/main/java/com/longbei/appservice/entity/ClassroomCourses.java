@@ -20,7 +20,7 @@ public class ClassroomCourses {
 
     private String coursecontent;//课程内容
 
-    private Integer classroomid;//所属教室id
+    private long classroomid;//所属教室id
 
     private Long uploaduserid;//上传人id
 
@@ -165,7 +165,7 @@ public class ClassroomCourses {
      * @return classroomid 所属教室id
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClassroomid() {
+    public long getClassroomid() {
         return classroomid;
     }
 
@@ -173,7 +173,7 @@ public class ClassroomCourses {
      * 所属教室id
      * @param classroomid 所属教室id
      */
-    public void setClassroomid(Integer classroomid) {
+    public void setClassroomid(long classroomid) {
         this.classroomid = classroomid;
     }
 

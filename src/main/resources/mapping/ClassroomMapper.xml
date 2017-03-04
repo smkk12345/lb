@@ -6,7 +6,7 @@
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
     <result column="classtitle" property="classtitle" jdbcType="VARCHAR" />
     <result column="classphotos" property="classphotos" jdbcType="VARCHAR" />
-    <result column="claacateid" property="claacateid" jdbcType="INTEGER" />
+    <result column="classcateid" property="classcateid" jdbcType="INTEGER" />
     <result column="classinvoloed" property="classinvoloed" jdbcType="INTEGER" />
     <result column="classlimited" property="classlimited" jdbcType="INTEGER" />
     <result column="classbrief" property="classbrief" jdbcType="VARCHAR" />
@@ -23,7 +23,7 @@
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classroomid, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
+    id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, ispublic, userid, cardid, charge, isfree, freecoursenum 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
@@ -64,15 +64,15 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where userid = #{userid} 
-    <if test="ptype != null" >
-    	and ptype = #{ptype} 
-    </if>
+    where 
     <if test="keyword != null" >
-    	and (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    	(classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  
        	or classbrief LIKE CONCAT(CONCAT('%', #{keyword}),'%')
        	or classnotice LIKE CONCAT(CONCAT('%', #{keyword}),'%') -->
+    </if>
+    <if test="ptype != null" >
+    	and ptype = #{ptype} 
     </if>
     order by createtime desc 
     <if test="endNum != 0" >
@@ -86,13 +86,13 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
-      claacateid, classinvoloed, classlimited, 
+      classcateid, classinvoloed, classlimited, 
       classbrief, classnotice, 
       createtime, updatetime, ptype, ispublic, charge, isfree, freecoursenum
       )
     values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, 
       #{classphotos,jdbcType=VARCHAR}, 
-      #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
+      #{classcateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
       #{classbrief,jdbcType=VARCHAR}, #{classnotice,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
       #{charge,jdbcType=INTEGER}, #{isfree,jdbcType=CHAR}, #{freecoursenum,jdbcType=INTEGER}
@@ -119,8 +119,8 @@
       <if test="classphotos != null" >
         classphotos,
       </if>
-      <if test="claacateid != null" >
-        claacateid,
+      <if test="classcateid != null" >
+        classcateid,
       </if>
       <if test="classinvoloed != null" >
         classinvoloed,
@@ -175,8 +175,8 @@
       <if test="classphotos != null" >
         #{classphotos,jdbcType=VARCHAR},
       </if>
-      <if test="claacateid != null" >
-        #{claacateid,jdbcType=INTEGER},
+      <if test="classcateid != null" >
+        #{classcateid,jdbcType=INTEGER},
       </if>
       <if test="classinvoloed != null" >
         #{classinvoloed,jdbcType=INTEGER},
@@ -222,8 +222,8 @@
       <if test="classphotos != null" >
         classphotos = #{classphotos,jdbcType=VARCHAR},
       </if>
-      <if test="claacateid != null" >
-        claacateid = #{claacateid,jdbcType=INTEGER},
+      <if test="classcateid != null" >
+        classcateid = #{classcateid,jdbcType=INTEGER},
       </if>
       <if test="classinvoloed != null" >
         classinvoloed = #{classinvoloed,jdbcType=INTEGER},
@@ -269,7 +269,7 @@
     update classroom
     set classtitle = #{classtitle,jdbcType=VARCHAR},
       classphotos = #{classphotos,jdbcType=VARCHAR},
-      claacateid = #{claacateid,jdbcType=INTEGER},
+      classcateid = #{classcateid,jdbcType=INTEGER},
       classinvoloed = #{classinvoloed,jdbcType=INTEGER},
       classlimited = #{classlimited,jdbcType=INTEGER},
       classbrief = #{classbrief,jdbcType=VARCHAR},
