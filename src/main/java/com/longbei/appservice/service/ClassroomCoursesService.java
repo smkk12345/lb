@@ -7,7 +7,7 @@ public interface ClassroomCoursesService {
 
 	/**
 	 * @author yinxc
-	 * 获取课程列表(未删除)
+	 * 获取课程列表(未删除,转码成功的)
 	 * 2017年3月1日
 	 * param classroomid 教室id
 	 */

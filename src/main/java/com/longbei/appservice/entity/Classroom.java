@@ -34,11 +34,19 @@ public class Classroom {
     
     private long userid;
     
+    private long cardid; //名片id
+    
     private Integer charge;  //课程价格
     
     private String isfree; //是否免费。0 免费 1 收费
     
     private Integer freecoursenum; //免费课程数量
+    
+    private UserCard userCard; //名片类
+    
+    private String fileurl; //课程默认封面---视频文件url（转码后）
+    
+    private String isadd; //访问用户是否已加入教室  0：未加入  1：加入
 
     /**
      * 
@@ -272,5 +280,38 @@ public class Classroom {
 
 	public void setFreecoursenum(Integer freecoursenum) {
 		this.freecoursenum = freecoursenum;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public long getCardid() {
+		return cardid;
+	}
+
+	public void setCardid(long cardid) {
+		this.cardid = cardid;
+	}
+
+	public UserCard getUserCard() {
+		return userCard;
+	}
+
+	public void setUserCard(UserCard userCard) {
+		this.userCard = userCard;
+	}
+
+	public String getFileurl() {
+		return fileurl;
+	}
+
+	public void setFileurl(String fileurl) {
+		this.fileurl = fileurl;
+	}
+
+	public String getIsadd() {
+		return isadd;
+	}
+
+	public void setIsadd(String isadd) {
+		this.isadd = isadd;
 	}
 }
