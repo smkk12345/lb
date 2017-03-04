@@ -52,7 +52,7 @@
     delete from user_address
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserAddress" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserAddress"  useGeneratedKeys="true" keyProperty="id">
     insert into user_address (id, userid, region, 
       address, isdefault, mobile, 
       receiver, isdel, createtime, 
@@ -62,7 +62,7 @@
       #{receiver,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserAddress" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserAddress"  useGeneratedKeys="true" keyProperty="id">
     insert into user_address
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
