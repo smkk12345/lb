@@ -318,7 +318,7 @@ public class ClassroomController {
         }
   		try {
   			ClassroomMembers record = new ClassroomMembers();
-  			record.setClassroomid(Integer.parseInt(classroomid));
+  			record.setClassroomid(Long.parseLong(classroomid));
   			record.setCreatetime(new Date());
   			record.setFlowers(0);
   			//hascharge 是否已经付费。0 未付费 1 付费
