@@ -98,7 +98,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 		try {
 			//isdefault  是否 默认   1 默认收货地址  0 非默认
 			if("1".equals(record.getIsdefault())){
-				userAddressMapper.updateIsdefaultByUserId(record.getUserid());
+				UserAddress userAddress = userAddressMapper.selectDefaultAddressByUserid(record.getUserid());
+				if(null != userAddress){
+					userAddressMapper.updateIsdefaultByUserId(record.getUserid());
+				}
 			}
 			int temp = userAddressMapper.updateByPrimaryKeySelective(record);
 			if (temp > 0) {
@@ -149,17 +152,21 @@ public class UserAddressServiceImpl implements UserAddressService {
 
 	/**
 	 * @author yinxc
-	 * 根据id 修改收货地址是否 默认   0 默认  1 非默认   并修改已默认的为非默认状态
+	 * 根据id 修改收货地址是否 默认   是否 默认   1 默认收货地址  0 非默认   并修改已默认的为非默认状态
 	 * 2017年1月18日
 	 * return_type
 	 */
 	public BaseResp<Object> updateIsdefaultByAddressId(String id, long userid, String isdefault) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean result = updateNotdefaultByUserId(userid);
-			if(!result){
-				return reseResp;
+			if("1".equals(isdefault)){
+				//修改默认
+				boolean result = updateNotdefaultByUserId(userid);
+				if(!result){
+					return reseResp;
+				}
 			}
+			
 			int temp = userAddressMapper.updateIsdefaultByAddressId(id, isdefault);
 			if (temp>0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

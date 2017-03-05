@@ -185,7 +185,8 @@
   <update id="updateIsdefaultByUserId">
     update user_address 
     set isdefault = '0'
-    where userid = #{userid} and isdefault = '1'
+    where userid = #{userid} and isdefault = '1' 
+    and isdel = '0' 
   </update>
   
   <update id="removeIsdel">

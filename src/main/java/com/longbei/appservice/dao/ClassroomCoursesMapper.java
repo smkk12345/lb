@@ -73,4 +73,6 @@ public interface ClassroomCoursesMapper {
 	 * param classroomid 教室id
 	 */
     int selectCountCourses(@Param("classroomid") long classroomid);
+    
+    
 }

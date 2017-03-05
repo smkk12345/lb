@@ -9,7 +9,7 @@
     <result column="coursebrief" property="coursebrief" jdbcType="VARCHAR" />
     <result column="pickey" property="pickey" jdbcType="VARCHAR" />
     <result column="coursecontent" property="coursecontent" jdbcType="VARCHAR" />
-    <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
+    <result column="classroomid" property="classroomid" />
     <result column="uploaduserid" property="uploaduserid" jdbcType="BIGINT" />
     <result column="createuserid" property="createuserid" jdbcType="BIGINT" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
@@ -62,7 +62,7 @@
     delete from classroom_courses
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_courses (id, coursetitle, coursesort, 
       coursetype, coursebrief, pickey, 
       coursecontent, classroomid, uploaduserid, 
@@ -70,12 +70,12 @@
       udpatetime)
     values (#{id,jdbcType=INTEGER}, #{coursetitle,jdbcType=VARCHAR}, #{coursesort,jdbcType=INTEGER}, 
       #{coursetype,jdbcType=CHAR}, #{coursebrief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, 
-      #{coursecontent,jdbcType=VARCHAR}, #{classroomid,jdbcType=INTEGER}, #{uploaduserid,jdbcType=BIGINT}, 
+      #{coursecontent,jdbcType=VARCHAR}, #{classroomid}, #{uploaduserid,jdbcType=BIGINT}, 
       #{createuserid,jdbcType=BIGINT}, #{isdel,jdbcType=CHAR}, #{isdefault,jdbcType=CHAR}, #{fileurl}, #{sourcekey}, 
       #{createtime,jdbcType=TIMESTAMP}, 
       #{udpatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_courses
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -150,7 +150,7 @@
         #{coursecontent,jdbcType=VARCHAR},
       </if>
       <if test="classroomid != null" >
-        #{classroomid,jdbcType=INTEGER},
+        #{classroomid},
       </if>
       <if test="uploaduserid != null" >
         #{uploaduserid,jdbcType=BIGINT},
@@ -200,7 +200,7 @@
         coursecontent = #{coursecontent,jdbcType=VARCHAR},
       </if>
       <if test="classroomid != null" >
-        classroomid = #{classroomid,jdbcType=INTEGER},
+        classroomid = #{classroomid},
       </if>
       <if test="uploaduserid != null" >
         uploaduserid = #{uploaduserid,jdbcType=BIGINT},
@@ -237,7 +237,7 @@
       coursebrief = #{coursebrief,jdbcType=VARCHAR},
       pickey = #{pickey,jdbcType=VARCHAR},
       coursecontent = #{coursecontent,jdbcType=VARCHAR},
-      classroomid = #{classroomid,jdbcType=INTEGER},
+      classroomid = #{classroomid},
       uploaduserid = #{uploaduserid,jdbcType=BIGINT},
       createuserid = #{createuserid,jdbcType=BIGINT},
       isdel = #{isdel,jdbcType=CHAR},
