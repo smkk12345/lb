@@ -291,7 +291,6 @@
     set 
       classnotice = #{classnotice} 
     where classroomid = #{classroomid} 
-    and userid = #{userid}
   </update>
   
   <update id="updateClassinvoloedByClassroomid" >
@@ -299,7 +298,6 @@
     set 
       classinvoloed = classinvoloed + #{num} 
     where classroomid = #{classroomid} 
-    and userid = #{userid}
   </update>
   
   <update id="updateIsfreeByClassroomid" >
@@ -313,7 +311,6 @@
       </if>
       isfree = #{isfree} 
     where classroomid = #{classroomid} 
-    and userid = #{userid}
   </update>
   
 </mapper>

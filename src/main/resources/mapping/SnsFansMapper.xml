@@ -43,7 +43,7 @@
     select 
     <include refid="Base_Column_List" />
     from sns_fans
-    where userid = #{id} and likeuserid=#{likeuserid} 
+    where userid = #{userid} and likeuserid=#{likeuserid} 
   </select>
   
   <select id="selectFansByUserid" resultMap="BaseResultMap"  >

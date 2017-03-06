@@ -84,7 +84,7 @@ public class UserRelationController extends BaseController {
 	 }
 	 
 	/**
-	* @Title: insertFriend
+	* @Title: http://ip:port/app_service/user/insertFriend
 	* @Description: 添加好友
 	* @param @param userid
 	* @param @param friendid
@@ -107,9 +107,10 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: selectListByUserId
+	* @Title: http://ip:port/app_service/user/selectListByUserId
 	* @Description: 查询好友列表 通过好友id
 	* @param @param userid
+	* @param @param startNum  endNum
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
@@ -125,12 +126,12 @@ public class UserRelationController extends BaseController {
 		try {
 			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum);
 		} catch (Exception e) {
-			logger.error("selectListByUserId error and msg={}",e);
+			logger.error("selectListByUserId userid = {}, startNum = {}, endNum = {}", userid, startNum, endNum, e);
 		}
 		return baseResp;
 	}
 	/**
-	* @Title: delete
+	* @Title: http://ip:port/app_service/user/delete
 	* @Description: 删除好友
 	* @param @param userid
 	* @param @param friendid
@@ -183,7 +184,7 @@ public class UserRelationController extends BaseController {
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_fans－start－－－－－－－－－－－－
 	/**
-	* @Title: insertFans
+	* @Title: http://ip:port/app_service/user/insertFans
 	* @Description: 添加关注
 	* @param @param userid
 	* @param @param friendid
@@ -207,7 +208,7 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: deleteFans
+	* @Title: http://ip:port/app_service/user/deleteFans
 	* @Description: 删除粉丝
 	* @param @param userid
 	* @param @param friendid
@@ -231,10 +232,10 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: selectFansListByUserId
+	* @Title: http://ip:port/app_service/user/selectFansListByUserId
 	* @Description: 查询关注的人员列表  查询被关注的成员列表
 	* @param @param userid
-	* @param @return
+	* @param @param startNum endNum
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */

@@ -159,14 +159,16 @@ public class UserAddressServiceImpl implements UserAddressService {
 	public BaseResp<Object> updateIsdefaultByAddressId(String id, long userid, String isdefault) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//isdefault  是否 默认   1 默认收货地址  0 非默认
 			if("1".equals(isdefault)){
-				//修改默认
-				boolean result = updateNotdefaultByUserId(userid);
-				if(!result){
-					return reseResp;
+				UserAddress userAddress = userAddressMapper.selectDefaultAddressByUserid(userid);
+				if(null != userAddress){
+					boolean result = updateNotdefaultByUserId(userid);
+					if(!result){
+						return reseResp;
+					}
 				}
 			}
-			
 			int temp = userAddressMapper.updateIsdefaultByAddressId(id, isdefault);
 			if (temp>0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

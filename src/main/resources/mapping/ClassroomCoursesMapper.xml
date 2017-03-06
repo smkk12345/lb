@@ -265,6 +265,7 @@
     update classroom_courses
     set isdel = 1 
     where id = #{id} 
+    and classroomid = #{classroomid} 
   </update>
   
 </mapper>

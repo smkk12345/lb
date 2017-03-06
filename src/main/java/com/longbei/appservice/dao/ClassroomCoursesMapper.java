@@ -64,7 +64,7 @@ public interface ClassroomCoursesMapper {
 	 * param id  课程id
 	 * isdel  0 — 未删除    1 —删除 
 	 */
-    int updateIsdel(@Param("id") Integer id);
+    int updateIsdel(@Param("classroomid") long classroomid, @Param("id") Integer id);
     
     /**
 	 * @author yinxc

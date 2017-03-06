@@ -64,8 +64,7 @@ public interface ClassroomMapper {
 	 * 修改教室公告---classnotice
 	 * 2017年3月2日
 	 */
-    int updateClassnoticeByClassroomid(@Param("classroomid") long classroomid, 
-    		@Param("userid") long userid, @Param("classnotice") String classnotice); 
+    int updateClassnoticeByClassroomid(@Param("classroomid") long classroomid, @Param("classnotice") String classnotice); 
     
     /**
 	 * @author yinxc
@@ -75,8 +74,7 @@ public interface ClassroomMapper {
 	 * param num 加入教室为1   剔除教室为-1
 	 * 2017年3月2日
 	 */
-    int updateClassinvoloedByClassroomid(@Param("classroomid") long classroomid, 
-    		@Param("userid") long userid, @Param("num") Integer num); 
+    int updateClassinvoloedByClassroomid(@Param("classroomid") long classroomid, @Param("num") Integer num); 
     
     /**
 	 * @author yinxc
@@ -86,8 +84,7 @@ public interface ClassroomMapper {
 	 * param charge 课程价格
 	 * param freecoursenum 免费课程数量
 	 */
-    int updateIsfreeByClassroomid(@Param("classroomid") long classroomid, 
-    		@Param("userid") long userid, @Param("isfree") String isfree, 
+    int updateIsfreeByClassroomid(@Param("classroomid") long classroomid, @Param("isfree") String isfree, 
     		@Param("charge") String charge, @Param("freecoursenum") String freecoursenum); 
     
     
