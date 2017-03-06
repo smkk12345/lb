@@ -80,6 +80,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
     private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private ImpAwardMapper impAwardMapper;
 
 
     /**
@@ -1541,15 +1543,29 @@ public class ImproveServiceImpl implements ImproveService{
         return null;
     }
 
-   //领虚拟奖品
+
+    /**
+     * 领虚拟奖品
+     * 领奖是用户领奖
+     * @param rankid
+     * @param userid
+     * @return
+     */
     @Override
-    public BaseResp<Object> acceptBasicAward(long impid, long userid) {
+    public BaseResp<Object> acceptBasicAward(long rankid, long userid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        //Long impid,String userid,String businesstype,String businessid
-//        Improve improve = selectImproveByImpid(impid,userid+"");
-//        if(!canAcceptAward(improve)){
-//
-//        }
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+        if(!canAcceptAward(rankMembers)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+        }
+        ImpAward impAward = impAwardMapper.selectByRankIdAndUserId(rankid,userid);
+        int icon = impAward.getAwardprice();
+        //进步币发生变化   龙杯账户减少 用户账户增多  添加事务 写 统一接口
+
+
+
+        baseResp.setData(icon);
+        baseResp.initCodeAndDesp();
         return baseResp;
     }
 
