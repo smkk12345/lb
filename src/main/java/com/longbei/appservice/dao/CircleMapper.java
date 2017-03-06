@@ -28,6 +28,4 @@ public interface CircleMapper {
     int updateCircleInfo(Map<String, Object> map);
 
     int updateCircleInvoloed(Map<String, Object> map);
-
-    int test(@Param("list") List<ImproveCircle> list);
 }

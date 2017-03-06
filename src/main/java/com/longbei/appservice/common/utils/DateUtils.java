@@ -267,6 +267,17 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	}
 
 	/**
+	 * 返回两个时间的误差 单位是秒
+	 * @param before
+	 * @param after
+     * @return
+     */
+	public static Long getTimeDifference(Date before,Date after){
+		return (after.getTime()-before.getTime())/1000;
+
+	}
+
+	/**
 	 * 计算两个日期之间相差的天数
 	 * 
 	 * @param before

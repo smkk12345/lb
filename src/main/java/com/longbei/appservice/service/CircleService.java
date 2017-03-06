@@ -100,5 +100,4 @@ public interface CircleService {
      */
     List<Long> findCircleMemberId(Integer circleId);
 
-    void test();
 }

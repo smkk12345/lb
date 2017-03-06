@@ -98,6 +98,9 @@ public class Constant {
 	public static final int STATUS_SYS_87 = -87;
 	public static final int STATUS_SYS_88 = -88;
 
+	//90-99 好友相关 wangyongzhi
+	public static final int STATUS_SYS_90 = -90;
+
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
@@ -179,6 +182,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
+
+	/** 90-99  好友相关 by wangyongzhi **/
+	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,无需再次添加好友!";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";

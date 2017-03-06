@@ -371,12 +371,4 @@ public class CircleController {
         return baseResp;
     }
 
-    @RequestMapping(value="test")
-    public BaseResp<Object> test(){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
-        circleService.test();
-        return baseResp.ok();
-    }
-
-
 }

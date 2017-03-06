@@ -359,36 +359,4 @@ public class CircleServiceImpl implements CircleService {
         return circleMembersMapper.findCircleMembersId(circleId);
     }
 
-    @Override
-    public void test() {
-        List<ImproveCircle> list = new ArrayList<ImproveCircle>();
-
-        for(int i=0;i<20000000;i++){
-            ImproveCircle improveCircle = new ImproveCircle();
-            improveCircle.setCreatetime(new Date());
-            improveCircle.setImpid(idGenerateService.getUniqueIdAsLong());
-            improveCircle.setIsdel("0");
-            improveCircle.setItype("0");
-            improveCircle.setBrief("这是第 "+i+" 条测试进步");
-            Integer temp = RandomUtils.nextInt(3000);
-            improveCircle.setUserid(new Long(temp));
-            improveCircle.setBusinessid(new Long(RandomUtils.nextInt(10000)));
-            improveCircle.setBusinesstype("3");
-            improveCircle.setUpdatetime(new Date());
-            improveCircle.setIsmainimp("0");
-            improveCircle.setPtype(RandomUtils.nextInt(10)+"");
-            improveCircle.setIspublic("2");
-            improveCircle.setIndexnum(RandomUtils.nextInt(20));
-            improveCircle.setLikes(RandomUtils.nextInt(30));
-            improveCircle.setFlowers(RandomUtils.nextInt(10));
-            improveCircle.setDiamonds(RandomUtils.nextInt(7));
-            list.add(improveCircle);
-
-            if(list.size() >= 300){
-                circleMappler.test(list);
-                list.clear();
-            }
-        }
-        System.out.print("--------------- 完成 -------------------------------");
-    }
 }
