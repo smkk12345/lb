@@ -1084,26 +1084,26 @@ public class AppUserController extends BaseController {
     }
 
     /**
-     * @Title: http://ip:port/app_service/user/selectPerfectInfoById
+     * @Title: http://ip:port/app_service/user/selectPerfectInfoByPtype
      * @Description: 查询单个十全十美类型的信息
-     * @param @param id
+     * @param @param Ptype十全十美类型 0 全部 1学习 等
      * @auther IngaWu
      * @currentdate:2017年3月6日
      */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/selectPerfectInfoById")
+    @RequestMapping(value = "/selectPerfectInfoByPtype")
     @ResponseBody
-    public BaseResp<Object> selectPerfectInfoById(String id) {
-        logger.info("selectPerfectInfoById and id={}",id);
+    public BaseResp<Object> selectPerfectInfoByPtype(String ptype) {
+        logger.info("selectPerfectInfoByPtype and ptype={}",ptype);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(id)){
+        if(StringUtils.isBlank(ptype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = sysPerfectInfoService.selectPerfectInfoById(Integer.parseInt(id));
+            baseResp = sysPerfectInfoService.selectPerfectInfoByPtype(ptype);
             return baseResp;
         } catch (Exception e) {
-            logger.error("selectPerfectInfoById and id={}",id,e);
+            logger.error("selectPerfectInfoByPtype and ptype={}",ptype,e);
         }
         return baseResp;
     }
@@ -1138,7 +1138,7 @@ public class AppUserController extends BaseController {
 
     /**
      * @Title: http://ip:port/app_service/user/selectUserPerfectListByUserId
-     * @Description: 查询用户十全十美的信息列表
+     * @Description: 查询用户十全十美的信息列表（十全十美图片、等级、分数等）
      * @param @param userid  startNum分页起始值 pageSize每页显示条数
      * @auther IngaWu
      * @currentdate:2017年3月6日

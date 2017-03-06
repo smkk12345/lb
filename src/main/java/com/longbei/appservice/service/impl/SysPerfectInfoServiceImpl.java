@@ -22,14 +22,14 @@ public class SysPerfectInfoServiceImpl implements SysPerfectInfoService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectPerfectInfoById(int id) {
+	public BaseResp<Object> selectPerfectInfoByPtype(String ptype) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectInfoById(id);
+			SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectInfoByPtype(ptype);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(sysPerfectInfo);
 		} catch (Exception e) {
-			logger.error("selectPerfectInfoById error and msg={}",e);
+			logger.error("selectPerfectInfoByPtype error and msg={}",e);
 		}
 		return baseResp;
 	}

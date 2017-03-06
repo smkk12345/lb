@@ -14,7 +14,7 @@ public interface SysPerfectInfoMapper {
 
     int insertSelective(SysPerfectInfo record);
 
-    SysPerfectInfo selectPerfectInfoById(Integer id);
+    SysPerfectInfo selectPerfectInfoByPtype(String ptype);
 
     SysPerfectInfo selectPerfectPhotoByPtype(@Param("ptype")String ptype);
 

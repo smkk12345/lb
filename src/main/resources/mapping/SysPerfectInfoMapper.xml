@@ -14,11 +14,11 @@
   <sql id="Base_Column_List" >
     id, name, photos, title, brief, createtime, updatetime, ptype
   </sql>
-  <select id="selectPerfectInfoById" resultMap="BaseResultMap" >
+  <select id="selectPerfectInfoByPtype" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from sys_perfect_info
-    where id = #{id,jdbcType=INTEGER}
+    where ptype = #{ptype,jdbcType=CHAR}
   </select>
   <select id="selectPerfectPhotoByPtype" resultMap="BaseResultMap" >
     select
