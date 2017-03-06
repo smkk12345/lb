@@ -4,12 +4,14 @@ import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.FriendAddAsk;
 import net.sf.json.JSONArray;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -96,9 +98,38 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
      * @return
      */
     public int findUserUnReadAsk(Long userId) {
-        Criteria criteria = Criteria.where("senderUserId").is(userId).and("senderIsRead").is(false);
-        criteria.orOperator(Criteria.where("receiveUserId").is(userId).and("receiveIsRead").is(false));
-        Query query =new Query(criteria);
+        Criteria criteria = new Criteria();
+        Query query = new Query();
+        query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId).and("senderIsRead").is(false),
+                Criteria.where("receiveUserId").is(userId).and("receiveIsRead").is(false)));
         return (int)mongoTemplate.count(query,FriendAddAsk.class);
+    }
+
+    /**
+     * 添加好友列表
+     * @param userId
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    public List<FriendAddAsk> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId),
+                Criteria.where("receiveUserId").is(userId)));
+        query.with(new Sort(Sort.Direction.DESC,"createDate"));
+        query.skip(startNo);
+        query.limit(pageSize);
+        return mongoTemplate.find(query,FriendAddAsk.class);
+    }
+
+    /**
+     * 根据请求好友的id 获取信息
+     * @param id
+     * @return
+     */
+    public FriendAddAsk findByFriendAddAskId(Long id) {
+        Query query = new Query(Criteria.where("id").is(id));
+        return mongoTemplate.findOne(query,FriendAddAsk.class);
     }
 }

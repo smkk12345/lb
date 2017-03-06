@@ -41,4 +41,13 @@ public interface FriendService {
      * @return
      */
     BaseResp<Object> updateFriendAddAskStatus(Long id, Integer status, Long userId);
+
+    /**
+     * 添加好友列表
+     * @param userId 用户id
+     * @param startNo 开始下标
+     * @param pageSize 每页条数
+     * @return
+     */
+    BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize);
 }

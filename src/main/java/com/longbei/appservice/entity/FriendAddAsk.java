@@ -27,6 +27,7 @@ public class FriendAddAsk {
     private Date createDate;//请求时间
     private Integer status;//状态 0.待处理 1.同意 2.拒绝
     private Source source;//加好友的来源 0.兴趣圈 2.搜索
+    private String lastMessage;//最后一条消息
     private JSONArray message;//回复的消息内容
     private boolean senderIsRead;//请求发送者 是否已读
     private boolean receiveIsRead;//被加为好友的用户 消息是否已读
@@ -152,5 +153,21 @@ public class FriendAddAsk {
 
     public void setReceiveIsRead(boolean receiveIsRead) {
         this.receiveIsRead = receiveIsRead;
+    }
+
+    /**
+     * 获取回复中最后一条消息
+     * @return
+     */
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    /**
+     * 设置回复中最后一条消息
+     * @param lastMessage
+     */
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }
