@@ -38,6 +38,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			insert(classroomQuestions);
+			reseResp.setData(classroomQuestions);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertQuestions classroomQuestions = {}", JSONArray.toJSON(classroomQuestions).toString(), e);
@@ -134,6 +135,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			insertLower(classroomQuestionsLower);
+			reseResp.setData(classroomQuestionsLower);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertQuestionsLower classroomQuestionsLower = {}", 

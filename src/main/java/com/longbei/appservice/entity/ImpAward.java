@@ -35,6 +35,17 @@ public class ImpAward {
 
     private Date accepttime;//领奖时间
 
+    private Integer awardprice;
+
+
+    public void setAwardprice(Integer awardprice) {
+        this.awardprice = awardprice;
+    }
+
+    public Integer getAwardprice() {
+        return awardprice;
+    }
+
     /**
      * 
      * @return id 

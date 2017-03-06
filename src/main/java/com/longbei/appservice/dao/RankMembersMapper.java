@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.RankMembers;
+import org.apache.ibatis.annotations.Param;
 
 public interface RankMembersMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,8 @@ public interface RankMembersMapper {
     int updateByPrimaryKeySelective(RankMembers record);
 
     int updateByPrimaryKey(RankMembers record);
+
+    RankMembers selectByRankIdAndUserId(@Param("rankid") long rankid,@Param("userid") long userid);
+
+
 }

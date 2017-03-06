@@ -25,6 +25,8 @@ public class RankMembers {
 
     private Integer flowers;
 
+    private String acceptaward;
+
     /**
      * 
      * @return id 
@@ -200,4 +202,16 @@ public class RankMembers {
     public void setFlowers(Integer flowers) {
         this.flowers = flowers;
     }
+
+
+    public void setAcceptaward(String acceptaward) {
+        this.acceptaward = acceptaward;
+    }
+
+    public String getAcceptaward() {
+        return acceptaward;
+    }
+
+
+
 }

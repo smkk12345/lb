@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.UUID;
 
+import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -165,7 +166,7 @@ public class UserServiceImpl implements UserService {
 		}
 		//Long userid,String username, String nickname,String inviteuserid
 		//获取唯一昵称 
-		String nickname = "lb_"+UUID.randomUUID();
+		String nickname = NickNameUtils.getSingleNickName("LB",username);
 		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		baseResp.getExpandData().put("token", token);

@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class RankCard {
@@ -91,6 +94,8 @@ public class RankCard {
         this.admindetail = admindetail == null ? null : admindetail.trim();
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -99,6 +104,8 @@ public class RankCard {
         this.createtime = createtime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }

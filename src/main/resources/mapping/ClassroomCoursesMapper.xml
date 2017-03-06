@@ -7,19 +7,22 @@
     <result column="coursesort" property="coursesort" jdbcType="INTEGER" />
     <result column="coursetype" property="coursetype" jdbcType="CHAR" />
     <result column="coursebrief" property="coursebrief" jdbcType="VARCHAR" />
-    <result column="coursephotos" property="coursephotos" jdbcType="VARCHAR" />
+    <result column="pickey" property="pickey" jdbcType="VARCHAR" />
     <result column="coursecontent" property="coursecontent" jdbcType="VARCHAR" />
-    <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
+    <result column="classroomid" property="classroomid" />
     <result column="uploaduserid" property="uploaduserid" jdbcType="BIGINT" />
     <result column="createuserid" property="createuserid" jdbcType="BIGINT" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="isdefault" property="isdefault" jdbcType="CHAR" />
+    <result column="fileurl" property="fileurl" jdbcType="VARCHAR" />
+    <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="udpatetime" property="udpatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, coursetitle, coursesort, coursetype, coursebrief, coursephotos, coursecontent, 
-    classroomid, uploaduserid, createuserid, isdel, isdefault, createtime, udpatetime
+    id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
+    classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, 
+    createtime, udpatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -34,6 +37,7 @@
     from classroom_courses 
     where classroomid = #{classroomid} 
     and isdel = 0 
+    and pickey != '' 
     order by coursesort asc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
@@ -48,23 +52,30 @@
     and isdefault = 1 
   </select>
   
+  <select id="selectCountCourses" resultType="java.lang.Integer">
+  	SELECT count(*) from classroom_courses 
+  	where classroomid = #{classroomid} 
+  	and pickey != '' 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_courses
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_courses (id, coursetitle, coursesort, 
-      coursetype, coursebrief, coursephotos, 
+      coursetype, coursebrief, pickey, 
       coursecontent, classroomid, uploaduserid, 
-      createuserid, isdel, isdefault, createtime, 
+      createuserid, isdel, isdefault, fileurl, sourcekey, createtime, 
       udpatetime)
     values (#{id,jdbcType=INTEGER}, #{coursetitle,jdbcType=VARCHAR}, #{coursesort,jdbcType=INTEGER}, 
-      #{coursetype,jdbcType=CHAR}, #{coursebrief,jdbcType=VARCHAR}, #{coursephotos,jdbcType=VARCHAR}, 
-      #{coursecontent,jdbcType=VARCHAR}, #{classroomid,jdbcType=INTEGER}, #{uploaduserid,jdbcType=BIGINT}, 
-      #{createuserid,jdbcType=BIGINT}, #{isdel,jdbcType=CHAR}, #{isdefault,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{coursetype,jdbcType=CHAR}, #{coursebrief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, 
+      #{coursecontent,jdbcType=VARCHAR}, #{classroomid}, #{uploaduserid,jdbcType=BIGINT}, 
+      #{createuserid,jdbcType=BIGINT}, #{isdel,jdbcType=CHAR}, #{isdefault,jdbcType=CHAR}, #{fileurl}, #{sourcekey}, 
+      #{createtime,jdbcType=TIMESTAMP}, 
       #{udpatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_courses
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -82,8 +93,8 @@
       <if test="coursebrief != null" >
         coursebrief,
       </if>
-      <if test="coursephotos != null" >
-        coursephotos,
+      <if test="pickey != null" >
+        pickey,
       </if>
       <if test="coursecontent != null" >
         coursecontent,
@@ -102,6 +113,12 @@
       </if>
       <if test="isdefault != null" >
         isdefault,
+      </if>
+      <if test="fileurl != null" >
+        fileurl,
+      </if>
+      <if test="sourcekey != null" >
+        sourcekey,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -126,14 +143,14 @@
       <if test="coursebrief != null" >
         #{coursebrief,jdbcType=VARCHAR},
       </if>
-      <if test="coursephotos != null" >
-        #{coursephotos,jdbcType=VARCHAR},
+      <if test="pickey != null" >
+        #{pickey,jdbcType=VARCHAR},
       </if>
       <if test="coursecontent != null" >
         #{coursecontent,jdbcType=VARCHAR},
       </if>
       <if test="classroomid != null" >
-        #{classroomid,jdbcType=INTEGER},
+        #{classroomid},
       </if>
       <if test="uploaduserid != null" >
         #{uploaduserid,jdbcType=BIGINT},
@@ -146,6 +163,12 @@
       </if>
       <if test="isdefault != null" >
         #{isdefault,jdbcType=CHAR},
+      </if>
+      <if test="fileurl != null" >
+        #{fileurl},
+      </if>
+      <if test="sourcekey != null" >
+        #{sourcekey},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -170,14 +193,14 @@
       <if test="coursebrief != null" >
         coursebrief = #{coursebrief,jdbcType=VARCHAR},
       </if>
-      <if test="coursephotos != null" >
-        coursephotos = #{coursephotos,jdbcType=VARCHAR},
+      <if test="pickey != null" >
+        pickey = #{pickey,jdbcType=VARCHAR},
       </if>
       <if test="coursecontent != null" >
         coursecontent = #{coursecontent,jdbcType=VARCHAR},
       </if>
       <if test="classroomid != null" >
-        classroomid = #{classroomid,jdbcType=INTEGER},
+        classroomid = #{classroomid},
       </if>
       <if test="uploaduserid != null" >
         uploaduserid = #{uploaduserid,jdbcType=BIGINT},
@@ -190,6 +213,12 @@
       </if>
       <if test="isdefault != null" >
         isdefault = #{isdefault,jdbcType=CHAR},
+      </if>
+      <if test="fileurl != null" >
+        fileurl = #{fileurl},
+      </if>
+      <if test="sourcekey != null" >
+        sourcekey = #{sourcekey},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -206,13 +235,15 @@
       coursesort = #{coursesort,jdbcType=INTEGER},
       coursetype = #{coursetype,jdbcType=CHAR},
       coursebrief = #{coursebrief,jdbcType=VARCHAR},
-      coursephotos = #{coursephotos,jdbcType=VARCHAR},
+      pickey = #{pickey,jdbcType=VARCHAR},
       coursecontent = #{coursecontent,jdbcType=VARCHAR},
-      classroomid = #{classroomid,jdbcType=INTEGER},
+      classroomid = #{classroomid},
       uploaduserid = #{uploaduserid,jdbcType=BIGINT},
       createuserid = #{createuserid,jdbcType=BIGINT},
       isdel = #{isdel,jdbcType=CHAR},
-      isdefault = #{isdefault,jdbcType=CHAR},
+      isdefault = #{isdefault,jdbcType=CHAR}, 
+      fileurl = #{fileurl},
+      sourcekey = #{sourcekey}, 
       createtime = #{createtime,jdbcType=TIMESTAMP},
       udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
@@ -234,6 +265,7 @@
     update classroom_courses
     set isdel = 1 
     where id = #{id} 
+    and classroomid = #{classroomid} 
   </update>
   
 </mapper>

@@ -37,12 +37,14 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	
 	/**
     * @Description: 添加教室成员
+    * 先判断教室参与人数是否已满
     * @param @param classroomid 教室id 
     * @param @param userid
     * 成员在加入教室之前，如果该教室收费，需先交费后才可加入
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertClassroomMembers(ClassroomMembers record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -50,16 +52,34 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			//成员在加入教室之前，如果该教室收费，需先交费后才可加入
 			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
 			//isfree  是否免费。0 免费 1 收费
-			if(null != classroom && "1".equals(classroom.getIsfree())){
-				//需要交费    charge --- 课程价格
-				
-				
-				
+			if(null != classroom){
+				//classinvoloed---教室参与人数     classlimited---教室限制人数
+				if(classroom.getClassinvoloed() == classroom.getClasslimited()){
+					//先判断教室参与人数是否已满
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_36, Constant.RTNINFO_SYS_36);
+				}
+				if("1".equals(classroom.getIsfree())){
+					//需要交费    charge --- 课程价格
+					
+					
+					
+					
+					
+				}
+			}
+			//itype 0—加入教室 1—退出教室     为null查全部
+			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(record.getClassroomid(), record.getUserid(), "0");
+			if(null != members){
+				// 用户已加入教室
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_37, Constant.RTNINFO_SYS_37);
 			}
 			boolean temp = insert(record);
 			if (temp) {
+				//修改教室教室参与人数 classinvoloed
+				classroomMapper.updateClassinvoloedByClassroomid(record.getClassroomid(), 1);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
+			reseResp.setData(record);
 		} catch (Exception e) {
 			logger.error("insertClassroomMembers record = {}", JSONArray.toJSON(record).toString(), e);
 		}
@@ -67,7 +87,16 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 	
 	private boolean insert(ClassroomMembers record){
-		int temp = classroomMembersMapper.insertSelective(record);
+		int temp = 0;
+		//判断当前用户是否退出过教室，若有则修改
+		//itype 0—加入教室 1—退出教室     为null查全部
+		ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(record.getClassroomid(), record.getUserid(), "1");
+		if(null != members){
+			members.setItype(0);
+			temp = classroomMembersMapper.updateByPrimaryKeySelective(members);
+		}else{
+			temp = classroomMembersMapper.insertSelective(record);
+		}
 		return temp > 0 ? true : false;
 	}
 
@@ -116,7 +145,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	@Override
 	public ClassroomMembers selectListByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		try {
-			ClassroomMembers classroomMembers = classroomMembersMapper.selectListByClassroomidAndUserid(classroomid, userid, itype);
+			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, itype);
 			return classroomMembers;
 		} catch (Exception e) {
 			logger.error("selectListByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
@@ -139,6 +168,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		try {
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
+				//修改教室教室参与人数 classinvoloed
+				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

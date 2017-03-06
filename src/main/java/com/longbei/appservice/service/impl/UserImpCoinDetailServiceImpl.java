@@ -139,6 +139,8 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 		return reseResp;
 	}
 
+
+
 	public BaseResp<Object> insertSelective(UserImpCoinDetail record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
@@ -239,5 +241,20 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getUserid()));
         userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
+
+	/**
+	 * 改两条记录  插入两条记录
+	 * @param userid  用户id
+	 * @param icon 进步币数量
+	 * @param origin  进步币变化类型
+	 * @return
+	 */
+
+	@Override
+	public BaseResp<Object> impIconChange(long userid, int icon, String origin) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		return baseResp;
+	}
+
 
 }

@@ -6,7 +6,7 @@
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
     <result column="classtitle" property="classtitle" jdbcType="VARCHAR" />
     <result column="classphotos" property="classphotos" jdbcType="VARCHAR" />
-    <result column="claacateid" property="claacateid" jdbcType="INTEGER" />
+    <result column="classcateid" property="classcateid" jdbcType="INTEGER" />
     <result column="classinvoloed" property="classinvoloed" jdbcType="INTEGER" />
     <result column="classlimited" property="classlimited" jdbcType="INTEGER" />
     <result column="classbrief" property="classbrief" jdbcType="VARCHAR" />
@@ -15,21 +15,35 @@
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
-    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="userid" property="userid" />
+    <result column="cardid" property="cardid" />
     <result column="charge" property="charge" jdbcType="INTEGER" />
     <result column="isfree" property="isfree" jdbcType="CHAR" />
     <result column="freecoursenum" property="freecoursenum" jdbcType="INTEGER" />
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classroomid, classtitle, classphotos, claacateid, classinvoloed, classlimited, classbrief, 
-    classnotice, createtime, updatetime, ptype, ispublic, userid, charge, isfree, freecoursenum 
+    id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
+    classnotice, createtime, updatetime, ptype, ispublic, userid, cardid, charge, isfree, freecoursenum 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from classroom
     where classroomid = #{classroomid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectClassroomListByIspublic" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom 
+    <if test="ispublic != null" >
+    	where ispublic = #{ispublic} 
+    </if>
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
   </select>
   
   <select id="selectListByUserid" resultMap="BaseResultMap" >
@@ -50,16 +64,17 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where userid = #{userid} 
-    <if test="ptype != null" >
-    	and ptype = #{ptype} 
-    </if>
+    where 
     <if test="keyword != null" >
-    	and (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    	(classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  
        	or classbrief LIKE CONCAT(CONCAT('%', #{keyword}),'%')
        	or classnotice LIKE CONCAT(CONCAT('%', #{keyword}),'%') -->
     </if>
+    <if test="ptype != null" >
+    	and ptype = #{ptype} 
+    </if>
+    order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -71,13 +86,13 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
-      claacateid, classinvoloed, classlimited, 
+      classcateid, classinvoloed, classlimited, 
       classbrief, classnotice, 
       createtime, updatetime, ptype, ispublic, charge, isfree, freecoursenum
       )
     values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, 
       #{classphotos,jdbcType=VARCHAR}, 
-      #{claacateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
+      #{classcateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
       #{classbrief,jdbcType=VARCHAR}, #{classnotice,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
       #{charge,jdbcType=INTEGER}, #{isfree,jdbcType=CHAR}, #{freecoursenum,jdbcType=INTEGER}
@@ -95,14 +110,17 @@
       <if test="userid != null" >
         userid,
       </if>
+      <if test="cardid != null" >
+        cardid,
+      </if>
       <if test="classtitle != null" >
         classtitle,
       </if>
       <if test="classphotos != null" >
         classphotos,
       </if>
-      <if test="claacateid != null" >
-        claacateid,
+      <if test="classcateid != null" >
+        classcateid,
       </if>
       <if test="classinvoloed != null" >
         classinvoloed,
@@ -146,7 +164,10 @@
         #{classroomid,jdbcType=INTEGER},
       </if>
       <if test="userid != null" >
-        #{userid,jdbcType=INTEGER},
+        #{userid},
+      </if>
+      <if test="cardid != null" >
+        #{cardid},
       </if>
       <if test="classtitle != null" >
         #{classtitle,jdbcType=VARCHAR},
@@ -154,8 +175,8 @@
       <if test="classphotos != null" >
         #{classphotos,jdbcType=VARCHAR},
       </if>
-      <if test="claacateid != null" >
-        #{claacateid,jdbcType=INTEGER},
+      <if test="classcateid != null" >
+        #{classcateid,jdbcType=INTEGER},
       </if>
       <if test="classinvoloed != null" >
         #{classinvoloed,jdbcType=INTEGER},
@@ -201,8 +222,8 @@
       <if test="classphotos != null" >
         classphotos = #{classphotos,jdbcType=VARCHAR},
       </if>
-      <if test="claacateid != null" >
-        claacateid = #{claacateid,jdbcType=INTEGER},
+      <if test="classcateid != null" >
+        classcateid = #{classcateid,jdbcType=INTEGER},
       </if>
       <if test="classinvoloed != null" >
         classinvoloed = #{classinvoloed,jdbcType=INTEGER},
@@ -234,6 +255,9 @@
       <if test="freecoursenum != null" >
         freecoursenum = #{freecoursenum},
       </if>
+      <if test="cardid != null" >
+        cardid = #{cardid},
+      </if>
       <if test="ispublic != null" >
         ispublic = #{ispublic,jdbcType=CHAR}
       </if>
@@ -245,7 +269,7 @@
     update classroom
     set classtitle = #{classtitle,jdbcType=VARCHAR},
       classphotos = #{classphotos,jdbcType=VARCHAR},
-      claacateid = #{claacateid,jdbcType=INTEGER},
+      classcateid = #{classcateid,jdbcType=INTEGER},
       classinvoloed = #{classinvoloed,jdbcType=INTEGER},
       classlimited = #{classlimited,jdbcType=INTEGER},
       classbrief = #{classbrief,jdbcType=VARCHAR},
@@ -255,6 +279,7 @@
       ptype = #{ptype,jdbcType=CHAR}, 
       charge = #{charge,jdbcType=INTEGER},
       isfree = #{isfree,jdbcType=CHAR},
+      cardid = #{cardid},
       freecoursenum = #{freecoursenum,jdbcType=INTEGER},
       ispublic = #{ispublic,jdbcType=CHAR} 
     where classroomid = #{classroomid,jdbcType=INTEGER} 
@@ -264,9 +289,28 @@
   <update id="updateClassnoticeByClassroomid" >
     update classroom
     set 
-      classroomid = #{classroomid} 
+      classnotice = #{classnotice} 
     where classroomid = #{classroomid} 
-    and userid = #{userid}
+  </update>
+  
+  <update id="updateClassinvoloedByClassroomid" >
+    update classroom
+    set 
+      classinvoloed = classinvoloed + #{num} 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsfreeByClassroomid" >
+    update classroom
+    set 
+      <if test="charge != null" >
+        charge = #{charge},
+      </if>
+      <if test="freecoursenum != null" >
+        freecoursenum = #{freecoursenum},
+      </if>
+      isfree = #{isfree} 
+    where classroomid = #{classroomid} 
   </update>
   
 </mapper>
