@@ -1,9 +1,11 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ImproveMapper {
 
@@ -26,6 +28,7 @@ public interface ImproveMapper {
     List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
                                          @Param("tablename")String tablename,
                                          @Param("ismainimp")String ismainimp,
+                                         @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
     
@@ -78,10 +81,14 @@ public interface ImproveMapper {
      */
     int remove(@Param("userid") String userid,@Param("improveid") String improveid);
 
-    /**
-     *
-     * 获取进步方法
-     * -- 通过主键获取(公开或者私密或者all,删除或者未删除或者all)
-     */
 
+
+
+
+    /**
+     * 查询兴趣圈中某人的进步
+     * @param map
+     * @return
+     */
+    List<Improve> findCircleMemberImprove(Map<String, Object> map);
 }

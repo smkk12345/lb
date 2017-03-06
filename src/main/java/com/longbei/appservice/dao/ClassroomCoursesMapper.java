@@ -21,7 +21,7 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
-	 * 获取课程列表(未删除)
+	 * 获取课程列表(未删除,转码成功的)
 	 * 2017年3月1日
 	 * param classroomid 教室id
 	 */
@@ -64,5 +64,15 @@ public interface ClassroomCoursesMapper {
 	 * param id  课程id
 	 * isdel  0 — 未删除    1 —删除 
 	 */
-    int updateIsdel(@Param("id") Integer id);
+    int updateIsdel(@Param("classroomid") long classroomid, @Param("id") Integer id);
+    
+    /**
+	 * @author yinxc
+	 * 获取当前教室课程总数
+	 * 2017年3月3日
+	 * param classroomid 教室id
+	 */
+    int selectCountCourses(@Param("classroomid") long classroomid);
+    
+    
 }

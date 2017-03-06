@@ -1,7 +1,6 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.ImproveClassroom;
-import com.longbei.appservice.entity.ImproveRank;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,7 +26,15 @@ public interface ImproveClassroomMapper {
      * @return
      */
     List<ImproveClassroom> selectByClassroomId(String classroomid, String ismainimp);
-
+    
+    /**
+	 * @author yinxc
+	 * 根据classroomid，userid获取用户在教室里上传作业的总数
+	 * 2017年3月3日
+	 * @param classroomid 教室id
+	 * @param userid 用户id
+	 */
+    int selectCountByClassroomidAndUserid(@Param("classroomid") long classroomid, @Param("userid") long userid);
 
 
     /**

@@ -25,9 +25,9 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping(value = "api/award")
-public class AwardController {
+public class AwardApiController {
 
-    private static Logger logger = LoggerFactory.getLogger(AwardController.class);
+    private static Logger logger = LoggerFactory.getLogger(AwardApiController.class);
 
     @Autowired
     private AwardService awardService;

@@ -16,11 +16,11 @@ public class ClassroomCourses {
 
     private String coursebrief;//课程简介
 
-    private String coursephotos;//课程图片
+    private String pickey;//截图key
 
     private String coursecontent;//课程内容
 
-    private Integer classroomid;//所属教室id
+    private long classroomid;//所属教室id
 
     private Long uploaduserid;//上传人id
 
@@ -33,6 +33,10 @@ public class ClassroomCourses {
     private Date udpatetime;//更新时间
     
     private String isdefault;//是否 默认   1 默认封面  0 非默认
+    
+    private String fileurl; //视频文件url（转码后）
+    
+    private String sourcekey; //源文件
 
     /**
      * 
@@ -116,23 +120,31 @@ public class ClassroomCourses {
         this.coursebrief = coursebrief == null ? null : coursebrief.trim();
     }
 
-    /**
-     * 课程图片
-     * @return coursephotos 课程图片
-     */
-    public String getCoursephotos() {
-        return coursephotos;
-    }
+    public String getPickey() {
+		return pickey;
+	}
 
-    /**
-     * 课程图片
-     * @param coursephotos 课程图片
-     */
-    public void setCoursephotos(String coursephotos) {
-        this.coursephotos = coursephotos == null ? null : coursephotos.trim();
-    }
+	public void setPickey(String pickey) {
+		this.pickey = pickey;
+	}
 
-    /**
+	public String getFileurl() {
+		return fileurl;
+	}
+
+	public void setFileurl(String fileurl) {
+		this.fileurl = fileurl;
+	}
+
+	public String getSourcekey() {
+		return sourcekey;
+	}
+
+	public void setSourcekey(String sourcekey) {
+		this.sourcekey = sourcekey;
+	}
+
+	/**
      * 课程内容
      * @return coursecontent 课程内容
      */
@@ -153,7 +165,7 @@ public class ClassroomCourses {
      * @return classroomid 所属教室id
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClassroomid() {
+    public long getClassroomid() {
         return classroomid;
     }
 
@@ -161,7 +173,7 @@ public class ClassroomCourses {
      * 所属教室id
      * @param classroomid 所属教室id
      */
-    public void setClassroomid(Integer classroomid) {
+    public void setClassroomid(long classroomid) {
         this.classroomid = classroomid;
     }
 

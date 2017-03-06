@@ -7,7 +7,7 @@ public interface ClassroomCoursesService {
 
 	/**
 	 * @author yinxc
-	 * 获取课程列表(未删除)
+	 * 获取课程列表(未删除,转码成功的)
 	 * 2017年3月1日
 	 * param classroomid 教室id
 	 */
@@ -42,6 +42,6 @@ public interface ClassroomCoursesService {
 	 * param id  课程id
 	 * isdel  0 — 未删除    1 —删除 
 	 */
-	BaseResp<Object> updateIsdel(Integer id);
+	BaseResp<Object> updateIsdel(long classroomid, Integer id);
 	
 }

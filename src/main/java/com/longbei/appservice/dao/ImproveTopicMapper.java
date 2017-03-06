@@ -18,7 +18,15 @@ public interface ImproveTopicMapper {
 
     int updateByPrimaryKey(ImproveTopic record);
 
-    List<ImproveTopic> selectByImpId(@Param("impid") long impid);
+    List<ImproveTopic> selectByImpId(@Param("impid") long impid,
+                                     @Param("startNum")int startNum,
+                                     @Param("endNum")int endNum);
+
+    List<ImproveTopic> selectByTopicId(
+            @Param("topicId") long topicId,
+            @Param("startNum")int startNum,
+            @Param("endNum")int endNum
+    );
 
 
 }

@@ -33,7 +33,8 @@
     select 
     <include refid="Base_Column_List" />
     from sns_friends
-    where userid = #{userid}
+    where userid = #{userid} 
+    group by friendid 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

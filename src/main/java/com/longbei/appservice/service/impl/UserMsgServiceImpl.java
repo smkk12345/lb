@@ -1,9 +1,6 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -336,7 +333,30 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}
 		return reseResp;
 	}
-	
+
+	/**
+	 * 批量插入用户信息
+	 * @param userIdList 接收人的用户Id
+	 * @param userMsg 消息实体
+     * @return
+     */
+	@Override
+	public boolean batchInsertUserMsg(List<Long> userIdList, UserMsg userMsg) {
+		if(userIdList == null || userIdList.size() == 0 || userMsg == null){
+			return false;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("userIdList",userIdList);
+		map.put("userMsg",userMsg);
+		int row = this.userMsgMapper.batchInsertUserMsg(map);
+		return false;
+	}
+
+	@Override
+	public UserMsg findCircleNoticeMsg(Long circleId, Long userId) {
+		return this.userMsgMapper.findCircleNoticeMsg(circleId,userId);
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;

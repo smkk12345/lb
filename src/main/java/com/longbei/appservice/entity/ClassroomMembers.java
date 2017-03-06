@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ClassroomMembers {
     private Integer id;
 
-    private Integer classroomid;//教室id
+    private Long classroomid;//教室id
 
     private Long userid;//用户id
 
@@ -20,7 +20,17 @@ public class ClassroomMembers {
 
     private Date updatetime;//退出教室时间
     
+    private String hascharge;//是否已经付费。0 未付费 1 付费
+    
+    private Integer likes; //赞总数量
+    
+    private Integer flowers; //花总数量
+    
+    private Integer diamonds = 0; //钻石总数量
+    
     private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
+    
+    private Integer allimp; //用户在教室所发的微进步总数
 
     /**
      * 
@@ -43,7 +53,7 @@ public class ClassroomMembers {
      * @return classroomid 教室id
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getClassroomid() {
+    public Long getClassroomid() {
         return classroomid;
     }
 
@@ -51,7 +61,7 @@ public class ClassroomMembers {
      * 教室id
      * @param classroomid 教室id
      */
-    public void setClassroomid(Integer classroomid) {
+    public void setClassroomid(Long classroomid) {
         this.classroomid = classroomid;
     }
 
@@ -106,7 +116,43 @@ public class ClassroomMembers {
         this.userstatus = userstatus == null ? null : userstatus.trim();
     }
 
-    /**
+    @JsonInclude(Include.ALWAYS)
+    public String getHascharge() {
+		return hascharge;
+	}
+
+	public void setHascharge(String hascharge) {
+		this.hascharge = hascharge;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Integer likes) {
+		this.likes = likes;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getFlowers() {
+		return flowers;
+	}
+
+	public void setFlowers(Integer flowers) {
+		this.flowers = flowers;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getDiamonds() {
+		return diamonds;
+	}
+
+	public void setDiamonds(Integer diamonds) {
+		this.diamonds = diamonds;
+	}
+
+	/**
      * 加入教室时间
      * @return createtime 加入教室时间
      */
@@ -144,5 +190,14 @@ public class ClassroomMembers {
 
 	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
 		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getAllimp() {
+		return allimp;
+	}
+
+	public void setAllimp(Integer allimp) {
+		this.allimp = allimp;
 	}
 }

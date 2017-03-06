@@ -254,8 +254,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * @author yinxc
 	 * 通讯录远程搜索(手机号和昵称搜索)
 	 * 2017年2月6日
-	 * return_type
-	 * UserRelationService
+	 * 搜索屏蔽当前访问userid
 	 */
 	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -265,9 +264,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<AppUserMongoEntity> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1", startNum, endNum);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
-				for (AppUserMongoEntity userInfo : list) {
+				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getId())){
 						//是好友
 						userInfo.setIsfriend("1");

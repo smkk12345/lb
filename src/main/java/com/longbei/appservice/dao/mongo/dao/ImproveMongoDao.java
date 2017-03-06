@@ -35,7 +35,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         improveLFDDetail.setImpid(improveLFD.getImpid());
         improveLFDDetail.setOpttype(improveLFD.getOpttype());
         improveLFDDetail.setCreatetime(improveLFD.getCreatetime());
-        mongoTemplate.save(improveLFDDetail);
+            mongoTemplate.save(improveLFDDetail);
         mongoTemplate.upsert(query,update,ImproveLFD.class);
         Criteria removecriteria = Criteria.where("impid").is(improveLFD.getImpid());
         Query removequery = new Query(removecriteria);

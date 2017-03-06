@@ -274,7 +274,11 @@
     ORDER BY createtime DESC
   </select>
 
-
+  <select id="selectCountByClassroomidAndUserid" resultType="java.lang.Integer">
+    select count(*) from improve_classroom
+    where classroomid = #{classroomid} 
+    AND userid = #{userid}
+  </select>
 
 
 </mapper>

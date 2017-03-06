@@ -85,10 +85,10 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	}
 
 	@Override
-	public BaseResp<Object> updateIsdel(Integer id) {
+	public BaseResp<Object> updateIsdel(long classroomid, Integer id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = updatedel(id);
+			boolean temp = updatedel(classroomid, id);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -98,8 +98,8 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		return reseResp;
 	}
 	
-	private boolean updatedel(Integer id){
-		int temp = classroomCoursesMapper.updateIsdel(id);
+	private boolean updatedel(long classroomid, Integer id){
+		int temp = classroomCoursesMapper.updateIsdel(classroomid, id);
 		return temp > 0 ? true : false;
 	}
 

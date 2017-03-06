@@ -94,7 +94,7 @@
     </if>
   </select>
   
-  <select id="selectCountByType" resultType="int">
+  <select id="selectCountByType" resultType="java.lang.Integer">
   	SELECT count(*) from user_msg 
   	where userid = #{userid} 
   	<if test="mtype != null" >
@@ -155,11 +155,11 @@
   
   
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
-    insert into user_msg (id, userid, friendid, 
+    insert into user_msg (userid, friendid,
       msgtype, snsid, remark, 
       isdel, isread, gtype, mtype, num, createtime
       )
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, 
+    values ( #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT},
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
       #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{mtype,jdbcType=CHAR}, 
       #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
@@ -316,5 +316,91 @@
     	and msgtype = #{msgtype}
     </if>
   </update>
-  
+
+  <insert id="batchInsertUserMsg" parameterType="map">
+    insert into user_msg (
+        <trim suffixOverrides=",">
+          userid,
+          <if test="userMsg.friendid != null">
+            friendid,
+          </if>
+          <if test="userMsg.msgtype != null">
+            msgtype,
+          </if>
+          <if test="userMsg.snsid != null">
+            snsid,
+          </if>
+          <if test="userMsg.remark != null">
+            remark,
+          </if>
+          <if test="userMsg.isdel != null">
+            isdel,
+          </if>
+          <if test="userMsg.isread != null">
+            isread,
+          </if>
+          <if test="userMsg.gtype != null">
+            gtype,
+          </if>
+          <if test="userMsg.mtype != null">
+            mtype,
+          </if>
+          <if test="userMsg.num != null">
+            num,
+          </if>
+          <if test="userMsg.createtime != null">
+            createtime,
+          </if>
+        </trim>
+    )values
+        <foreach collection="userIdList" item="item" separator=",">
+          (<trim suffixOverrides=",">
+              #{item},
+              <if test="userMsg.friendid != null">
+                #{userMsg.friendid},
+              </if>
+              <if test="userMsg.msgtype != null">
+                #{userMsg.msgtype},
+              </if>
+              <if test="userMsg.snsid != null">
+                #{userMsg.snsid},
+              </if>
+              <if test="userMsg.remark != null">
+                #{userMsg.remark},
+              </if>
+              <if test="userMsg.isdel != null">
+                #{userMsg.isdel},
+              </if>
+              <if test="userMsg.isread != null">
+                #{userMsg.isread},
+              </if>
+              <if test="userMsg.gtype != null">
+                #{userMsg.gtype},
+              </if>
+              <if test="userMsg.mtype != null">
+                #{userMsg.mtype},
+              </if>
+              <if test="userMsg.num != null">
+                #{userMsg.num},
+              </if>
+              <if test="userMsg.createtime != null">
+                #{userMsg.createtime},
+              </if>
+            </trim>
+          )
+        </foreach>
+  </insert>
+
+  <!-- 查询成员加圈子的圈主验证消息 -->
+  <select id="findCircleNoticeMsg" parameterType="long" resultMap="BaseResultMap">
+      select
+        <include refid="Base_Column_List" />
+      from
+          user_msg
+      where
+            mtype = 2
+          and msgtype = 11
+          and userid = #{userId}
+          and snsid = #{circleId}
+  </select>
 </mapper>

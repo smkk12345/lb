@@ -69,6 +69,8 @@ public class Constant {
 	public static final int STATUS_SYS_33 = -33;
 	public static final int STATUS_SYS_34 = -34;
 	public static final int STATUS_SYS_35 = -35;
+	public static final int STATUS_SYS_36 = -36;
+	public static final int STATUS_SYS_37 = -37;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -81,12 +83,25 @@ public class Constant {
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
 
+
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
 	public static final int STATUS_SYS_62 = -62;
 	public static final int STATUS_SYS_63 = -63;
 	public static final int STATUS_SYS_64 = -64;
+	//80-89 兴趣圈  wangyongzhi
+	public static final int STATUS_SYS_80 = -80;
+	public static final int STATUS_SYS_81 = -81;
+	public static final int STATUS_SYS_82 = -82;
+	public static final int STATUS_SYS_83 = -83;
+	public static final int STATUS_SYS_84 = -84;
+	public static final int STATUS_SYS_85 = -85;
+	public static final int STATUS_SYS_86 = -86;
+	public static final int STATUS_SYS_87 = -87;
+	public static final int STATUS_SYS_88 = -88;
 
+	//90-99 好友相关 wangyongzhi
+	public static final int STATUS_SYS_90 = -90;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -131,6 +146,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_33 = "暂无教室信息";
 	public static final String RTNINFO_SYS_34 = "暂无课程信息";
 	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
+	public static final String RTNINFO_SYS_36 = "教室参与人数已达到限额";
+	public static final String RTNINFO_SYS_37 = "用户已加入教室";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -159,10 +176,19 @@ public class Constant {
 	public static final String RTNINFO_SYS_52 = "修改榜单成功";
 	public static final String RTNINFO_SYS_53 = "修改榜单失败";
 
+	//80-89 兴趣圈  wangyongzhi
+	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
+	public static final String RTNINFO_SYS_81 = "抱歉,您无权更新该兴趣圈的信息";
+	public static final String RTNINFO_SYS_82 = "您已经在该兴趣圈中了";
+	public static final String RTNINFO_SYS_83 = "您已经申请了加入该兴趣圈,圈主正在验证中,请稍后~~";
+	public static final String RTNINFO_SYS_84 = "申请加圈子成功,正在等待圈主验证";
+	public static final String RTNINFO_SYS_85 = "该用户还未加入该圈子";
+	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
+	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
+	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
-
-
-
+	/** 90-99  好友相关 by wangyongzhi **/
+	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,无需再次添加好友!";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -411,6 +437,11 @@ public class Constant {
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
 	 */
 	public static final String RP_IMPROVE_NDAY = "improve_day_";
+
+	/**
+	 * 圈子中的当天的入圈人数
+	 */
+	public static final String RP_CIRCLE_INSERT_CIRCLEMEMBER="circle_insert_date_";
 
 
 
