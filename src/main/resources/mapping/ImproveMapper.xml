@@ -335,7 +335,7 @@
   </sql>
 
   <select id="selectListByBusinessid" resultMap="BaseResultMap" >
-    select
+    select #{orderby} a, 
     <if test="tablename == 'improve_classroom'" >
     	<include refid="Classroom_List" /> 
     </if>
@@ -351,7 +351,12 @@
     <if test="tablename == 'improve_classroom'" >
       AND isresponded = 0 
     </if>
-    ORDER BY createtime DESC
+    <if test="orderby == null or orderby ==0">
+        ORDER BY createtime DESC
+      </if>
+      <if test="orderby != null and orderby == 1">
+        ORDER BY sum(flowers*10+likes) desc
+      </if>
     limit #{startno},#{pagesize}
   </select>
   
@@ -387,4 +392,13 @@
     <result column="goalid" property="goalid" />
   </resultMap>
 
+  <select id="findCircleMemberImprove" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_circle
+    where
+        userid = #{userId}
+      and circleid = #{circleId}
+    ORDER BY createtime DESC
+  </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ImproveMapper {
 
@@ -27,6 +28,7 @@ public interface ImproveMapper {
     List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
                                          @Param("tablename")String tablename,
                                          @Param("ismainimp")String ismainimp,
+                                         @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
     
@@ -83,4 +85,10 @@ public interface ImproveMapper {
 
 
 
+    /**
+     * 查询兴趣圈中某人的进步
+     * @param map
+     * @return
+     */
+    List<Improve> findCircleMemberImprove(Map<String, Object> map);
 }

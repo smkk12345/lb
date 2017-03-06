@@ -242,11 +242,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectRankImproveList(userid, rankid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectRankImproveList(userid, rankid, sift,null, Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectRankImproveListByDate(userid, rankid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectRankImproveListByDate(userid, rankid, sift,null, Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -294,11 +294,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectCircleImproveList(userid, circleid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectCircleImproveList(userid, circleid, sift, null,Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectCircleImproveListByDate(userid, circleid, sift,
+				improves = improveService.selectCircleImproveListByDate(userid, circleid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -346,11 +346,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectClassroomImproveList(userid, classroomid, sift,
+				improves = improveService.selectClassroomImproveList(userid, classroomid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectClassroomImproveListByDate(userid, classroomid, sift,
+				improves = improveService.selectClassroomImproveListByDate(userid, classroomid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -395,7 +395,7 @@ public class ImproveController {
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectGoalImproveList(userid, goalid, Integer.parseInt(startNo),
+			improves = improveService.selectGoalImproveList(userid, goalid,null, Integer.parseInt(startNo),
 					Integer.parseInt(pageSize));
 		} catch (Exception e) {
 			logger.error("select goal improve list is error:{}", e);

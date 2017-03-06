@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -183,5 +184,19 @@ public interface UserMsgMapper {
 	 * UserMsgService
 	 */
     int updateIsreadByUserid(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype);
-    
+
+	/**
+	 * 批量插入用户 消息
+	 * @param map
+	 * @return
+     */
+	int batchInsertUserMsg(Map<String, Object> map);
+
+	/**
+	 * 查询成员加圈子的圈主验证消息
+	 * @param circleId
+	 * @param userId
+     * @return
+     */
+	UserMsg findCircleNoticeMsg(@Param("circleId") Long circleId,@Param("userId") Long userId);
 }
