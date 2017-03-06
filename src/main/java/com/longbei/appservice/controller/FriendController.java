@@ -66,7 +66,8 @@ public class FriendController {
 
     /**
      * 获取添加好友的详细信息
-     * @param id
+     * @param id 消息的id
+     * @param  userId 当前登录用户id
      * @return
      */
     @RequestMapping(value="getFriendAddAskDetail")
@@ -82,8 +83,8 @@ public class FriendController {
     /**
      * 更改添加好友的状态
      * @param id 消息id
-     * @param status 更改的状态
-     * @param userId 用户id
+     * @param status 更改的状态 1.同意 2.拒绝
+     * @param userId 当前登录用户id
      * @return
      */
     @RequestMapping(value="updateFriendAddAskStatus")
@@ -105,8 +106,22 @@ public class FriendController {
      * @param endNo 结束下标
      * @return
      */
+    @RequestMapping(value="friendAddAskList")
     public BaseResp<Object> friendAddAskList(Long userId,Integer startNo,Integer endNo){
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null){
+            return baseResp.fail("参数错误");
+        }
+        if(startNo == null){
+            startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNo != null && endNo > startNo){
+            pageSize = endNo - startNo;
+        }
+
+        baseResp = friendService.friendAddAskList(userId,startNo,pageSize);
+
         return baseResp;
     }
 }

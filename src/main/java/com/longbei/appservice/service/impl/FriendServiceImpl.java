@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wangyongzhi 17/3/6.
@@ -165,11 +166,11 @@ public class FriendServiceImpl implements FriendService {
         if(userId.equals(friendAddAsk.getSenderUserId())){//当前查看信息的是发送者
             friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getReceiveUserId()+""));
             //更改用户消息为已读
-            friendMongoDao.updateFriendAddAsk(id,null,"recive",true,null);
+            friendMongoDao.updateFriendAddAsk(id,null,"sender",true,null);
         }else{
             friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getSenderUserId()+""));
             //更改用户消息为已读
-            friendMongoDao.updateFriendAddAsk(id,null,"sender",true,null);
+            friendMongoDao.updateFriendAddAsk(id,null,"receive",true,null);
         }
         //更改用户新消息提示为没有新消息
         updateUserNewMessageTip(userId,false);
@@ -188,7 +189,7 @@ public class FriendServiceImpl implements FriendService {
      */
     @Override
     public BaseResp<Object> updateFriendAddAskStatus(Long id, Integer status, Long userId) {
-        FriendAddAsk friendAddAsk = friendMongoDao.findById(id+"");
+        FriendAddAsk friendAddAsk = friendMongoDao.findByFriendAddAskId(id);
         if(friendAddAsk == null || !userId.equals(friendAddAsk.getReceiveUserId())){
             return BaseResp.fail("参数错误");
         }
@@ -205,6 +206,35 @@ public class FriendServiceImpl implements FriendService {
         snsFriends.setFriendid(friendAddAsk.getSenderUserId());
         snsFriendsMapper.insertSelective(snsFriends);
         return new BaseResp<Object>().ok();
+    }
+
+    /**
+     * 添加好友列表
+     * @param userId 用户id
+     * @param startNo 开始下标
+     * @param pageSize 每页条数
+     * @return
+     */
+    @Override
+    public BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
+        List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,startNo,pageSize);
+        if(list != null && list.size() > 0){
+            for(FriendAddAsk friendAddAsk:list){
+                if(friendAddAsk.getMessage() != null && friendAddAsk.getMessage().size() > 0){
+                    JSONObject jsonObject = friendAddAsk.getMessage().getJSONObject(friendAddAsk.getMessage().size()-1);
+                    friendAddAsk.setLastMessage(jsonObject.getString("content"));
+                    friendAddAsk.setMessage(null);
+                }
+                if(userId.equals(friendAddAsk.getSenderUserId())){
+                    friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getReceiveUserId()+""));
+                }else{
+                    friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getSenderUserId()+""));
+                }
+            }
+        }
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        baseResp.setData(list);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
     /**
