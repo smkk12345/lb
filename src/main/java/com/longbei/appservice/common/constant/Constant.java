@@ -194,6 +194,7 @@ public class Constant {
 	public static final String  IMPROVE_RANK_TYPE = "2";      //榜
 	public static final String  IMPROVE_CIRCLE_TYPE = "3";    //圈子
 	public static final String  IMPROVE_CLASSROOM_TYPE = "4"; //教室
+	public static final String  IMPROVE_CLASSROOM_REPLY_TYPE = "5"; //教室批复作业
 
 	/**
 	 * 进步列表过滤
@@ -350,11 +351,16 @@ public class Constant {
 	/*
 	 * mtype 0 系统消息(通知消息.进步消息等) 
      * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+     * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
      * 消息展示模版
 	 */
 	public static final String  MSG_FLOWER_MODEL = "给这条微进步献了n朵花"; 		//进步送花消息模板
 	public static final String  MSG_LIKE_MODEL = "赞了这条微进步"; 				//进步点赞消息模板
 	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
+	
+	public static final String  MSG_CLASSROOM_REPLY_MODEL = "批复了你在教室'n'上传的作业"; 	//老师回复提问消息模板
+	
 
 	/**
 	 * activemq

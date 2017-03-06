@@ -127,7 +127,7 @@ public class ImproveController {
 	 * @param filekey
 	 *            文件key 视频文件 音频文件 普通文件
 	 * @param businesstype
-	 *            微进步关联的业务类型 0 未关联 1 目标 2 榜 3 圈子 4教室
+	 *            微进步关联的业务类型 0 未关联 1 目标 2 榜 3 圈子 4教室  5：教室批复作业
 	 * @param businessid 业务id
 	 * @param ptype
 	 *            十全十美类型
@@ -135,13 +135,14 @@ public class ImproveController {
 	 *            可见程度 0 私密 1 好友可见 2 全部可见
 	 * @param itype
 	 *            类型 0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+	 * @param pimpid : 批复父进步 id businesstype为5时传
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ResponseBody
 	@RequestMapping(value = "insert")
 	public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
-			String businesstype, String businessid, String ptype, String ispublic, String itype) {
+			String businesstype, String businessid, String ptype, String ispublic, String itype, String pimpid) {
 		logger.info(
 				"insertImprove brief:{}," + "pickey:{},filekey:{},businesstype:{},ptype:{}," + "ispublic:{},itype:{}",
 				brief, pickey, filekey, businesstype, ptype, ispublic, itype);
@@ -151,10 +152,16 @@ public class ImproveController {
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
 		}
-		boolean flag = false;
+		if("5".equals(businesstype)){
+			//5：教室批复作业
+			if (StringUtils.hasBlankParams(pimpid)) {
+				return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
+		}
+//		boolean flag = false;
 		try {
 			BaseResp<Object> baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
-					ispublic, itype);
+					ispublic, itype, pimpid);
 			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");
 			}
