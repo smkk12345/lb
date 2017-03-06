@@ -42,6 +42,6 @@ public interface ClassroomCoursesService {
 	 * param id  课程id
 	 * isdel  0 — 未删除    1 —删除 
 	 */
-	BaseResp<Object> updateIsdel(Integer id);
+	BaseResp<Object> updateIsdel(long classroomid, Integer id);
 	
 }

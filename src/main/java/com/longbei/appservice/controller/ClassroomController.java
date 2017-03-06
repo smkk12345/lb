@@ -15,6 +15,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
+import com.longbei.appservice.entity.ClassroomQuestionsLower;
 import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
@@ -40,7 +41,7 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/updateClassnotice
     * @Description: 修改教室公告
     * @param @param classroomid  教室业务id
-    * @param @param userid 老师id
+    * @param @param userid 当前用户--老师id
     * @param @param classnotice 公告信息
     * @param @param ismsg 是否@全体成员   0：否   1：是
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -69,7 +70,6 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/delQuestionsLower
     * @Description: 老师删除某个教室提问答疑---自己的回复
     * @param @param lowerid  回复id
-    * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
@@ -93,7 +93,6 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/delQuestions
     * @Description: 老师删除单个教室提问答疑
     * @param @param questionsid  教室提问答疑id
-    * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
@@ -116,30 +115,34 @@ public class ClassroomController {
 	/**
     * @Title: http://ip:port/app_service/classroom/addQuestionsLower
     * @Description: 添加教室提问答疑回复---老师回复
-    * @param @param classroomid  教室id
-    * @param @param userid  问题创建者id
-    * @param @param content 问题内容
+    * @param @param questionsid  提问答疑id
+    * @param @param userid  当前回复者id---老师
+    * @param @param content 老师回复内容
+    * @param @param friendid 问题创建者id
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "addQuestionsLower")
-    public BaseResp<Object> addQuestionsLower(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("userid") String userid, @RequestParam("content") String content) {
+    public BaseResp<Object> addQuestionsLower(@RequestParam("questionsid") String questionsid, 
+    		@RequestParam("userid") String userid, @RequestParam("content") String content, 
+    		@RequestParam("friendid") String friendid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(classroomid, userid, content)) {
+  		if (StringUtils.hasBlankParams(questionsid, userid, content, friendid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			ClassroomQuestions classroomQuestions = new ClassroomQuestions();
-  			classroomQuestions.setClassroomid(classroomid);
-  			classroomQuestions.setContent(content);
-  			classroomQuestions.setCreatetime(DateUtils.formatDateTime1(new Date()));
-  			classroomQuestions.setUserid(userid);
-  			baseResp = classroomQuestionsMongoService.insertQuestions(classroomQuestions);
+  			ClassroomQuestionsLower classroomQuestionsLower = new ClassroomQuestionsLower();
+  			classroomQuestionsLower.setFriendid(friendid);
+  			classroomQuestionsLower.setContent(content);
+  			classroomQuestionsLower.setQuestionsid(questionsid);
+  			classroomQuestionsLower.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			classroomQuestionsLower.setUserid(userid);
+  			baseResp = classroomQuestionsMongoService.insertQuestionsLower(classroomQuestionsLower);
   		} catch (Exception e) {
-  			logger.error("addQuestions classroomid = {}, userid = {}, content = {}", classroomid, userid, content, e);
+  			logger.error("addQuestionsLower questionsid = {}, userid = {}, content = {}, friendid = {}", 
+  					questionsid, userid, content, friendid, e);
   		}
   		return baseResp;
     }
@@ -209,13 +212,14 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateIsdel")
-    public BaseResp<Object> updateIsdel(@RequestParam("coursesid") String coursesid) {
+    public BaseResp<Object> updateIsdel(@RequestParam("classroomid") String classroomid, 
+    		@RequestParam("coursesid") String coursesid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(coursesid)) {
+  		if (StringUtils.hasBlankParams(classroomid, coursesid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomCoursesService.updateIsdel(Integer.parseInt(coursesid));
+  			baseResp = classroomCoursesService.updateIsdel(Long.parseLong(classroomid), Integer.parseInt(coursesid));
   		} catch (Exception e) {
   			logger.error("updateIsdel coursesid = {}", coursesid, e);
   		}
@@ -318,7 +322,7 @@ public class ClassroomController {
         }
   		try {
   			ClassroomMembers record = new ClassroomMembers();
-  			record.setClassroomid(Integer.parseInt(classroomid));
+  			record.setClassroomid(Long.parseLong(classroomid));
   			record.setCreatetime(new Date());
   			record.setFlowers(0);
   			//hascharge 是否已经付费。0 未付费 1 付费
@@ -355,7 +359,7 @@ public class ClassroomController {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomMembersService.selectListByClassroomid(Integer.parseInt(classroomid), startNo, pageSize);
+  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
   		} catch (Exception e) {
   			logger.error("selectRoomMembers classroomid = {}, startNo = {}, pageSize = {}", 
   					classroomid, startNo, pageSize, e);
@@ -442,6 +446,32 @@ public class ClassroomController {
   		} catch (Exception e) {
   			logger.error("selectRoomSearch keyword = {}, ptype = {}, startNo = {}, pageSize = {}", 
   					keyword, ptype, startNo, pageSize, e);
+  		}
+  		return baseResp;
+    }
+	
+	/**
+    * @Title: http://ip:port/app_service/classroom/selectClassroomList
+    * @Description: 获取教室列表(所有人可见)
+    * @param @param userid
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年3月3日
+	*/
+ 	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "selectClassroomList")
+    public BaseResp<Object> selectClassroomList(@RequestParam("userid") String userid, int startNo, int pageSize) {
+  		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		try {
+  			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", startNo, pageSize);
+  		} catch (Exception e) {
+  			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}", 
+  					userid, startNo, pageSize, e);
   		}
   		return baseResp;
     }
