@@ -34,7 +34,9 @@ import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.UserCertifyService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.common.utils.LotteryUtil;
+import com.longbei.appservice.service.SysPerfectInfoService;
+import com.longbei.appservice.service.UserPlDetailService;
+
 
 
 /**
@@ -67,6 +69,10 @@ public class AppUserController extends BaseController {
     private UserMoneyDetailService userMoneyDetailService;
     @Autowired
     private RankService rankService;
+    @Autowired
+    private SysPerfectInfoService sysPerfectInfoService;
+    @Autowired
+    private UserPlDetailService userPlDetailService;
     
     
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
@@ -304,7 +310,7 @@ public class AppUserController extends BaseController {
      * @currentdate:2017年2月23日
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
     @ResponseBody
     public BaseResp<Object> updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -1077,4 +1083,81 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
 
+    /**
+     * @Title: http://ip:port/app_service/user/selectPerfectInfoById
+     * @Description: 查询单个十全十美类型的信息
+     * @param @param id
+     * @auther IngaWu
+     * @currentdate:2017年3月6日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectPerfectInfoById")
+    @ResponseBody
+    public BaseResp<Object> selectPerfectInfoById(String id) {
+        logger.info("selectPerfectInfoById and id={}",id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(id)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = sysPerfectInfoService.selectPerfectInfoById(Integer.parseInt(id));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectPerfectInfoById and id={}",id,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/user/selectNowscoreAndDiffById
+     * @Description: 查询用户现在的分数和距离升级的差分
+     * @param @param id（userPlDetail的id）
+     * @return nowscore现在的分数 diff距离升级的差分
+     * @auther IngaWu
+     * @currentdate:2017年3月6日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectNowscoreAndDiffById")
+    @ResponseBody
+    public BaseResp<Object> selectNowscoreAndDiffById(String id) {
+        logger.info("selectNowscoreAndDiffById and id={}",id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(id)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userPlDetailService
+
+                    .selectNowscoreAndDiffById(Integer.parseInt(id));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectNowscoreAndDiffById and id={}",id,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/user/selectUserPerfectListByUserId
+     * @Description: 查询用户十全十美的信息列表
+     * @param @param userid  startNum分页起始值 pageSize每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年3月6日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectUserPerfectListByUserId")
+    @ResponseBody
+    public BaseResp<Object> selectUserPerfectListByUserId(String userid,String startNum,String pageSize) {
+        logger.info("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
+        }
+        return baseResp;
+    }
 }
