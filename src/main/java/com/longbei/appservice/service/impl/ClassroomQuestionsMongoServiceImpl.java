@@ -32,6 +32,18 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
+	
+
+	@Override
+	public long selectCountQuestions(String classroomid) {
+		try {
+			long totalcount = classroomQuestionsMongoDao.selectCountQuestions(classroomid);
+			return totalcount;
+		} catch (Exception e) {
+			logger.error("selectCountQuestions classroomid = {}", classroomid, e);
+		}
+		return 0;
+	}
 
 	@Override
 	public BaseResp<Object> insertQuestions(ClassroomQuestions classroomQuestions) {
@@ -67,12 +79,13 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 					initQuestionsLowerUserInfoList(lowerlist);
 					classroomQuestions.setLowerList(lowerlist);
 				}
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			reseResp.setData(list);
-			if(startNo == 0 && null == list){
+			if(startNo == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_35, Constant.RTNINFO_SYS_35);
+				return reseResp;
 			}
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectQuestionsListByClassroomid classroomid = {}, startNo = {}, pageSize = {}", 
 					classroomid, startNo, pageSize, e);
