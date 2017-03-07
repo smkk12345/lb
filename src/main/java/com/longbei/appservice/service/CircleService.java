@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by wangyongzhi on 17/2/28.
  */
-public interface CircleService {
+public interface CircleService extends BaseService{
 
     /**
      * 根据圈子名称查询相关圈子
