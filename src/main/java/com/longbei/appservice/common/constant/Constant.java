@@ -1,5 +1,7 @@
 package com.longbei.appservice.common.constant;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  * 全局常量类
  */
@@ -274,6 +276,11 @@ public class Constant {
 
 	public static final String RANK_ISAUTO_YES = "0";  //自动发布
 	public static final String RANK_ISAUTO_NO = "1";    //手动发布
+	public static final String RANK_ISAUTO_TIME = "2";    //定时发布
+
+
+	public static final String RANK_ISUP_YES = "1"; //已发布
+	public static final String RANK_ISUP_NO = "0"; //为发布
 
 	
 	/**

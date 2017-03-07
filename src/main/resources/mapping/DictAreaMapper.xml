@@ -16,6 +16,11 @@
     select 
    <include refid="Base_Column_List" />
     from dict_area
-    where pid = #{pid,jdbcType=VARCHAR}limit #{startNum},#{pageSize}
+    where
+       pid = #{pid,jdbcType=VARCHAR}
+       <if test="startNum != null">
+           limit #{startNum},#{pageSize}
+       </if>
+
   </select> 
 </mapper>

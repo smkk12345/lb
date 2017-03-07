@@ -23,9 +23,10 @@
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
+    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,
+    a.createtime, a.updatetime
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
-    where id = #{id,jdbcType=INTEGER},classifyname
+    where a.id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
     SELECT count(*) FROM award

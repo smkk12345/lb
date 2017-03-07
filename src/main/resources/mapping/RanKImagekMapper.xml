@@ -544,6 +544,33 @@
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>
+  <update id="updateSymbolByRankId" parameterType="com.longbei.appservice.entity.RankImage" >
+    update rankimage
+    <set >
+      <if test="isfinish != null" >
+        isfinish = #{isfinish,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="checkstatus != null" >
+        checkstatus = #{checkstatus},
+      </if>
+      <if test="isauto != null" >
+        isauto = #{isauto},
+      </if>
+      <if test="autotime != null" >
+        autotime = #{autotime},
+      </if>
+      <if test="isup != null" >
+        isup = #{isup},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel},
+      </if>
+    </set>
+    where rankid = #{rankid,jdbcType=BIGINT}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankImage" >
     update rankimage
     set ranktitle = #{ranktitle,jdbcType=VARCHAR},

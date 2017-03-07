@@ -23,6 +23,12 @@ public interface RankService {
      */
     boolean insertRank(RankImage rankImage);
 
+    /**
+     * 更新榜单 审核状态，发布专题，删除等操作
+     * @param rankImage
+     * @return
+     */
+    boolean updateRankSymbol(RankImage rankImage);
 
     /**
      * 编辑榜单
@@ -34,7 +40,7 @@ public interface RankService {
     BaseResp<RankImage> selectRankImage(String rankimageid);
 
 
-    BaseResp publishRankImage(String rankimageid);
+    BaseResp publishRankImage(String  rankImageid);
 
     Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize);
 

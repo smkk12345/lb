@@ -5,7 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-public class RankAward {
+public class RankAwardRelease {
     private Integer id;
 
     private String rankid;

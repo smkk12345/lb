@@ -27,5 +27,7 @@ public interface RankImageMapper {
                                        @Param("startno")int startno,
                                        @Param("pagesize")int pagesize);
 
+    int updateSymbolByRankId(RankImage rankImage);
+
     int selectListCount(RankImage rankImage);
 }
