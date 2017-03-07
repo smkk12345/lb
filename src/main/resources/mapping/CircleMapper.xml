@@ -199,43 +199,4 @@
      where id = #{circleId}
   </update>
 
-  <insert id="test" parameterType="list">
-      insert INTO
-          improve_circle
-        (impid,
-          itype,
-          brief,
-          userid,
-          businessid,
-          businesstype,
-          likes,
-          flowers,
-          diamonds,
-          createtime,
-          updatetime,
-          indexnum,
-          isdel,
-          ismainimp,
-          ptype,
-          ispublic)
-      values
-          <foreach collection="list" separator="," item="item">
-            ( #{item.impid},
-              #{item.itype,jdbcType=CHAR},
-              #{item.brief,jdbcType=VARCHAR},
-              #{item.userid,jdbcType=BIGINT},
-              #{item.businessid,jdbcType=BIGINT},
-              #{item.businesstype,jdbcType=CHAR},
-              #{item.likes,jdbcType=INTEGER},
-              #{item.flowers,jdbcType=INTEGER},
-              #{item.diamonds,jdbcType=INTEGER},
-              #{item.createtime,jdbcType=TIMESTAMP},
-              #{item.updatetime,jdbcType=TIMESTAMP},
-              #{item.indexnum,jdbcType=INTEGER},
-              #{item.isdel,jdbcType=CHAR},
-              #{item.ismainimp,jdbcType=CHAR},
-              #{item.ptype,jdbcType=CHAR},
-              #{item.ispublic,jdbcType=CHAR})
-          </foreach>
-  </insert>
 </mapper>

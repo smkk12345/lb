@@ -16,6 +16,7 @@ import com.longbei.appservice.service.UserMsgService;
 import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -59,6 +60,7 @@ public class CircleServiceImpl implements CircleService {
         return baseResp;
     }
 
+    @Transactional
     @Override
     public BaseResp<Object> insertCircle(String userId, String circleTitle, String circlephotos, String circlebrief,
                                          String ptype, Boolean ispublic, Boolean needconfirm, Boolean creategoup) {
@@ -159,6 +161,7 @@ public class CircleServiceImpl implements CircleService {
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
+    @Transactional
     @Override
     public BaseResp<Object> insertCircleMember(Long circleId, String userId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -213,6 +216,9 @@ public class CircleServiceImpl implements CircleService {
         newCircleMembers.setUpdatetime(new Date());
         int row = circleMembersMapper.insert(newCircleMembers);
         if (row > 0) {
+            //修改circle的加圈子人数
+            map.put("personNum", 1);
+            circleMappler.updateCircleInvoloed(map);
             if (circle.getNeedconfirm()) {//通知群主审核
                 noticeCircleCreateUserId(circleId,circle.getCreateuserid());
 

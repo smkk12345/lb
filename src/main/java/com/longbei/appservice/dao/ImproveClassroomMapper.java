@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveClassroom;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,7 @@ public interface ImproveClassroomMapper {
 
     int insert(ImproveClassroom record);
 
-    int insertSelective(ImproveClassroom record);
+    int insertSelective(Improve record);
 
     ImproveClassroom selectByPrimaryKey(Long impid);
 
@@ -26,6 +27,15 @@ public interface ImproveClassroomMapper {
      * @return
      */
     List<ImproveClassroom> selectByClassroomId(String classroomid, String ismainimp);
+    
+    /**
+	 * @author yinxc
+	 * 获取教室微进步批复作业列表
+	 * 2017年3月6日
+	 * @param businessid 教室id
+	 * @param impid 微进步id
+	 */
+    List<ImproveClassroom> selectListByBusinessid(@Param("businessid") long businessid, @Param("impid") long impid);
     
     /**
 	 * @author yinxc

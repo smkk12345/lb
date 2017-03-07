@@ -52,7 +52,7 @@
     and isdefault = 1 
   </select>
   
-  <select id="selectCountCourses" resultType="java.lang.Integer">
+  <select id="selectCountCourses" >
   	SELECT count(*) from classroom_courses 
   	where classroomid = #{classroomid} 
   	and pickey != '' 
