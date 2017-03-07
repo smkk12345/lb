@@ -897,6 +897,14 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            String businessType = timeLine.getBusinesstype();
+            if(StringUtils.isBlank(businessType)){
+                improve.setBusinesstype("0");
+            }else{
+                improve.setBusinesstype(businessType);
+            }
+            improve.setBusinessid(timeLine.getBusinessid());
+            improve.setPtype(timeLine.getPtype());
             //初始化赞，花，钻数量
             initImproveAttachInfo(improve);
             //初始化点赞，送花，送钻简略信息

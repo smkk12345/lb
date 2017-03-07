@@ -127,6 +127,7 @@ public class AddMessageReceiveService{
         timeLine.setCreatedate(createdate);
         timeLine.setBusinesstype(improve.getBusinesstype());
         timeLine.setPtype(improve.getPtype());
+        timeLine.setBusinessid(improve.getBusinessid());
         //广场
         insertTimeLinePublic(timeLine);
         //我的

@@ -580,7 +580,7 @@ public class ImproveController {
 	public BaseResp<Object> addLikeForImprove(String userid,String improveid,
 											  String businesstype,String businessid,String opttype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid,opttype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,opttype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		if ("1".equals(opttype)){
