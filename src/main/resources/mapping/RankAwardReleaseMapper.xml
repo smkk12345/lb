@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longbei.appservice.dao.RankAwardMapper" >
-  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankAward" >
+<mapper namespace="com.longbei.appservice.dao.RankAwardReleaseMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankAwardRelease" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="rankid" property="rankid" jdbcType="VARCHAR" />
     <result column="awardid" property="awardid" jdbcType="VARCHAR" />
@@ -16,7 +16,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from rank_award
+    from rank_award_release
     where id = #{id,jdbcType=INTEGER}
   </select>
 
@@ -24,24 +24,24 @@
   <select id="selectListByRankid" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
-    FROM rank_award
+    FROM rank_award_release
     WHERE rankid=#{rankid} ORDER BY awardlevel ASC
   </select>
 
 
   <delete id="deleteByRankid">
-    DELETE FROM rank_award
+    DELETE FROM rank_award_release
     WHERE rankid=#{rankid}
   </delete>
 
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from rank_award
+    delete from rank_award_release
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into rank_award (rankid, awardid,
+    insert into rank_award_release (rankid, awardid,
       awardlevel, awardrate,awardnickname,
       createtime)
     values
@@ -50,16 +50,16 @@
       #{award.awardnickname},#{award.createtime})
     </foreach>
   </insert>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.RankAward" >
-    insert into rank_award (id, rankid, awardid, 
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
+    insert into rank_award_release (id, rankid, awardid,
       awardlevel, awardrate, awardcount, 
       createtime)
     values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=VARCHAR}, #{awardid,jdbcType=VARCHAR}, 
       #{awardlevel,jdbcType=INTEGER}, #{awardrate,jdbcType=DOUBLE}, #{awardcount,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankAward" >
-    insert into rank_award
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
+    insert into rank_award_release
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -107,8 +107,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankAward" >
-    update rank_award
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
+    update rank_award_release
     <set >
       <if test="rankid != null" >
         rankid = #{rankid,jdbcType=VARCHAR},
@@ -131,8 +131,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAward" >
-    update rank_award
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
+    update rank_award_release
     set rankid = #{rankid,jdbcType=VARCHAR},
       awardid = #{awardid,jdbcType=VARCHAR},
       awardlevel = #{awardlevel,jdbcType=INTEGER},

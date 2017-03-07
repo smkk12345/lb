@@ -160,6 +160,32 @@ public class RankApiController {
         return BaseResp.fail(Constant.RTNINFO_SYS_53);
     }
 
+
+
+    /**
+     * 编辑榜单状态
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateimagesymbol")
+    public BaseResp<Object> updateRankImageSymbol(@RequestBody RankImage rankImage){
+
+        boolean issuccess = false;
+        try {
+            issuccess = rankService.updateRankSymbol(rankImage);
+            if(issuccess){
+                BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
+                if (null != rankImage.getAutotime()){
+                    baseResp.setData(rankImage.getAutotime());
+                }
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return BaseResp.fail(Constant.RTNINFO_SYS_53);
+    }
+
     /**
      * 发布榜单
      * @param rankid 榜单id

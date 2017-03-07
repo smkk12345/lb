@@ -3,6 +3,8 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.DictArea;
 
+import java.util.List;
+
 public interface DictAreaService {
 
 	/**
@@ -13,6 +15,6 @@ public interface DictAreaService {
 	 * @auther IngaWu
 	 * @currentdate:2017年2月23日
 	 */
-	BaseResp<Object> selectCityList(String pid,int startNum,int pageSize);
+	BaseResp<List<DictArea>> selectCityList(String pid, Integer startNum, Integer pageSize);
 
 }

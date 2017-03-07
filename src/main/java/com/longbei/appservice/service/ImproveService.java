@@ -228,7 +228,7 @@ public interface ImproveService {
      * @param pagesize  每页显示条数
      * @return
      */
-    List<Improve> selectImproveListByUser(String userid,String ctype, Date lastdate,int pagesize);
+    List<Improve> selectImproveListByUser(String userid,String ptype,String ctype, Date lastdate,int pagesize);
     
     /**
      * 获取我的进步列表(根据lastdate时间获取当天的进步列表)
@@ -238,7 +238,7 @@ public interface ImproveService {
      * @param pagesize  每页显示条数
      * @return
      */
-    List<Improve> selectImproveListByUserDate(String userid,String ctype, Date lastdate,int pagesize);
+    List<Improve> selectImproveListByUserDate(String userid,String ptype,String ctype, Date lastdate,int pagesize);
     
     /**
      * 点赞
@@ -253,7 +253,7 @@ public interface ImproveService {
      * @param impid
      * @return BaseResp
      */
-    BaseResp<Object> addlike(String userid, String impid,String businesstype,String businessid);
+    BaseResp<Object> addlike(String userid,String impid,String businesstype,String businessid);
 
 
     /**

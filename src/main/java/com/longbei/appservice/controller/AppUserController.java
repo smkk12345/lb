@@ -2,6 +2,7 @@ package com.longbei.appservice.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -934,9 +935,9 @@ public class AppUserController extends BaseController {
      */
     @RequestMapping(value = "/selectCityList")
     @ResponseBody
-    public BaseResp<Object> selectCityList(String pid,String startNum,String pageSize) {
+    public BaseResp<List<DictArea>> selectCityList(String pid,String startNum,String pageSize) {
         logger.info("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<List<DictArea>> baseResp = new BaseResp<>();
         try {
             baseResp = dictAreaService.selectCityList(pid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;

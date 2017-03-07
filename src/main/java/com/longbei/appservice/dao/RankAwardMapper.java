@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.RankAward;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,8 @@ public interface RankAwardMapper {
     int insertBatch(List<RankAward> rankAwards);
 
     int updateByPrimaryKey(RankAward record);
+
+    List<RankAward> selectListByRankid(@Param("rankid") String rankid);
+
+    int deleteByRankid(@Param("rankid") String rankid);
 }

@@ -25,12 +25,12 @@ public class DictAreaServiceImpl implements DictAreaService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectCityList(String pid,int startNum,int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<Object>();
+	public BaseResp<List<DictArea>> selectCityList(String pid,Integer startNum,Integer pageSize) {
+		BaseResp<List<DictArea>> baseResp = new BaseResp<List<DictArea>>();
 		try {
 			List<DictArea> list = dictAreaMapper.selectCityList(pid,startNum,pageSize);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			baseResp.setData(JSONArray.toJSON(list));	
+			baseResp.setData(list);
 		} catch (Exception e) {
 			logger.error("selectCityList error and msg={}",e);
 		}

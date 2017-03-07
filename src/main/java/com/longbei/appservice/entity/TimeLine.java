@@ -24,7 +24,34 @@ public class TimeLine {
 	private TimeLineDetail timeLineDetail;
 	private String messagetype; // 1 -- improve 2 --- rank 3 --- old award 4 -- new award
 	private String ctype = "1";  //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+	private String ptype; //十全十美
+	private String businesstype;
+	private Long businessid;
 	private Date createdate;
+
+	public void setBusinessid(Long businessid) {
+		this.businessid = businessid;
+	}
+
+	public Long getBusinessid() {
+		return businessid;
+	}
+
+	public String getPtype() {
+		return ptype;
+	}
+
+	public void setPtype(String ptype) {
+		this.ptype = ptype;
+	}
+
+	public String getBusinesstype() {
+		return businesstype;
+	}
+
+	public void setBusinesstype(String businesstype) {
+		this.businesstype = businesstype;
+	}
 
 	public String getMessagetype() {
 		return messagetype;
