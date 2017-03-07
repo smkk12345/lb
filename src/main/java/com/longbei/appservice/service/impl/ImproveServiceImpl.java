@@ -1024,6 +1024,8 @@ public class ImproveServiceImpl implements ImproveService{
         if(isExitsForRedis(impid,userid)){
             return baseResp;
         }
+        springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
+
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         AppUserMongoEntity userMongoEntity = userMongoDao.getAppUser(userid);
         if(null == improve || null == userMongoEntity){
@@ -1362,7 +1364,7 @@ public class ImproveServiceImpl implements ImproveService{
 //                break;
 //        }
         map.put("lfd"+userid,userid);
-        springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
+
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
     }
 
