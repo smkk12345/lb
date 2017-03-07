@@ -851,7 +851,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      */
 	@Override
-	public List<Improve> selectImproveListByUserDate(String userid, String ctype, Date lastdate, int pagesize) {
+	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date lastdate, int pagesize) {
 		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
 
@@ -879,10 +879,10 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public List<Improve> selectImproveListByUser(String userid,String ctype,Date lastdate,int pagesize) {
+    public List<Improve> selectImproveListByUser(String userid,String ptype,String ctype,Date lastdate,int pagesize) {
 
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
-                (userid,ctype,lastdate,pagesize);
+                (userid,ptype,ctype,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
 
         for (int i = 0; i < timeLines.size() ; i++){

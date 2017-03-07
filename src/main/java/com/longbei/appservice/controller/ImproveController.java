@@ -44,6 +44,7 @@ public class ImproveController {
 	 * url : http://ip:port/app_service/improve/line/daylist
 	 * @Description: 获取参数lastdate当天的用户进步列表
 	 * @param userid 用户id
+	 *  @param ptype 十全十美id  不传时查所有
 	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	 * @param lastdate  当天日期
 	 * @param pagesize  显示条数
@@ -53,13 +54,13 @@ public class ImproveController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "line/daylist")
-	public BaseResp daylist(String userid, String ctype, String lastdate, String pagesize){
+	public BaseResp daylist(String userid,String ptype, String ctype, String lastdate, String pagesize){
 		if (StringUtils.hasBlankParams(userid, ctype, lastdate)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectImproveListByUserDate(userid, ctype,
+			improves = improveService.selectImproveListByUserDate(userid, ptype,ctype,
 					lastdate == null?null: DateUtils.parseDate(lastdate),
 					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
 		} catch (Exception e) {
@@ -411,6 +412,7 @@ public class ImproveController {
 	/**
 	 * url : http://ip:port/app_service/improve/line/list
 	 * @param userid 用户id
+	 * @param ptype 十全十美id
 	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	 * @param lastdate  最后一条日期
 	 * @param pagesize  显示条数
@@ -421,13 +423,13 @@ public class ImproveController {
 	@ResponseBody
 	@RequestMapping(value = "line/list", method = RequestMethod.POST)
 	public BaseResp selectImproveLineListByUser
-			(String userid,String ctype,String lastdate,String pagesize){
+			(String userid,String ptype,String ctype,String lastdate,String pagesize){
 		if (StringUtils.hasBlankParams(userid,ctype)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectImproveListByUser(userid,ctype,
+			improves = improveService.selectImproveListByUser(userid,ptype,ctype,
 					lastdate == null?null: DateUtils.parseDate(lastdate),
 					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
 		} catch (Exception e) {
