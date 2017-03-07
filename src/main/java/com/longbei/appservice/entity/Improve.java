@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,15 @@ public class Improve {
     protected Integer commentnum = 0; //评论数
 
     protected String sourcekey;//原始的文件key
+    
+    protected long pimpid; //批复父进步 id
+    
+    protected String isresponded; //0 不是批复。1 是批复
+    
+    //批复列表
+    protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
+    
+    protected String isreply; //是否已批复  0：未批复  1：已批复
 
 
     /**
@@ -497,5 +507,40 @@ public class Improve {
     public List<ImproveTopic> getImproveTopicList() {
         return improveTopicList;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public long getPimpid() {
+		return pimpid;
+	}
+
+	public void setPimpid(long pimpid) {
+		this.pimpid = pimpid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsresponded() {
+		return isresponded;
+	}
+
+	public void setIsresponded(String isresponded) {
+		this.isresponded = isresponded;
+	}
+
+	public List<ImproveClassroom> getReplyList() {
+		return replyList;
+	}
+
+	public void setReplyList(List<ImproveClassroom> replyList) {
+		this.replyList = replyList;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsreply() {
+		return isreply;
+	}
+
+	public void setIsreply(String isreply) {
+		this.isreply = isreply;
+	}
 
 }

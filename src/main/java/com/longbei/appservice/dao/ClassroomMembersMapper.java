@@ -59,4 +59,12 @@ public interface ClassroomMembersMapper {
     int updateItypeByClassroomidAndUserid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("itype") String itype);
     
+    /**
+	 * @author yinxc
+	 * 获取当前教室成员总数
+	 * 2017年3月6日
+	 * param classroomid 教室id
+	 */
+    int selectCountMembers(@Param("classroomid") long classroomid);
+    
 }

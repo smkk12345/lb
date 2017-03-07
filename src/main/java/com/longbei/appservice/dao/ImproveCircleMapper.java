@@ -5,6 +5,7 @@ import com.longbei.appservice.entity.ImproveRank;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ImproveCircleMapper {
     int deleteByPrimaryKey(Long id);
@@ -38,4 +39,5 @@ public interface ImproveCircleMapper {
     int remove(@Param("userid") String userid,
                @Param("circleid") String circleid,
                @Param("improveid") String improveid);
+
 }
