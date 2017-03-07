@@ -26,7 +26,7 @@ public interface ImproveClassroomMapper {
      * @param ismainimp  最新进步 0 普通微进步  1 最新微进步
      * @return
      */
-    List<ImproveClassroom> selectByClassroomId(String classroomid, String ismainimp);
+    List<ImproveClassroom> selectByClassroomId(String businessid, String ismainimp);
     
     /**
 	 * @author yinxc
@@ -44,7 +44,7 @@ public interface ImproveClassroomMapper {
 	 * @param classroomid 教室id
 	 * @param userid 用户id
 	 */
-    int selectCountByClassroomidAndUserid(@Param("classroomid") long classroomid, @Param("userid") long userid);
+    int selectCountByClassroomidAndUserid(@Param("businessid") long businessid, @Param("userid") long userid);
 
 
     /**
@@ -55,6 +55,6 @@ public interface ImproveClassroomMapper {
      * @return
      */
     int remove(@Param("userid") String userid,
-               @Param("classroomid") String classroomid,
+               @Param("businessid") String businessid,
                @Param("improveid") String improveid);
 }

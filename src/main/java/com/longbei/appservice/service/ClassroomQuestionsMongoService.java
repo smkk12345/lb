@@ -5,6 +5,14 @@ import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
 
 public interface ClassroomQuestionsMongoService {
+	
+	/**
+	 * @author yinxc
+	 * 获取当前教室提问答疑总数
+	 * 2017年3月7日
+	 * param classroomid 教室id
+	 */
+	long selectCountQuestions(String classroomid);
 
 	/**
 	 * @author yinxc

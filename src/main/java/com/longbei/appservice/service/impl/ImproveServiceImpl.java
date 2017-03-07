@@ -976,7 +976,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
                         (String.valueOf(improve.getId()),Constant.COMMENT_SINGLE_TYPE);
         if (ResultUtil.isSuccess(baseResp)){
-            improve.setCommentnum((Integer)baseResp.getData());
+            improve.setCommentnum(baseResp.getData());
         } else {
             improve.setCommentnum(0);
         }
