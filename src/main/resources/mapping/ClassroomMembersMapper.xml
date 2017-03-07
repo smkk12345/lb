@@ -61,6 +61,13 @@
     </if>
   </select>
   
+  <select id="selectCountMembers">
+  	SELECT count(*) from classroom_members 
+  	where classroomid = #{classroomid} 
+  	and itype = 0 
+  	and userstatus = 0 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_members
     where id = #{id,jdbcType=INTEGER}
