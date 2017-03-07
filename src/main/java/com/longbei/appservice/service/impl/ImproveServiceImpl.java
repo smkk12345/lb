@@ -897,6 +897,14 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
+            String businessType = timeLine.getBusinesstype();
+            if(StringUtils.isBlank(businessType)){
+                improve.setBusinesstype("0");
+            }else{
+                improve.setBusinesstype(businessType);
+            }
+            improve.setBusinessid(timeLine.getBusinessid());
+            improve.setPtype(timeLine.getPtype());
             //初始化赞，花，钻数量
             initImproveAttachInfo(improve);
             //初始化点赞，送花，送钻简略信息
@@ -1053,7 +1061,9 @@ public class ImproveServiceImpl implements ImproveService{
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
             }
-            return BaseResp.ok();
+            baseResp.getExpandData().put("haslike","1");
+            baseResp.getExpandData().put("likes",improve.getLikes()+1);
+            return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
         }
@@ -1084,7 +1094,8 @@ public class ImproveServiceImpl implements ImproveService{
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
             }
-            return BaseResp.ok();
+            baseResp.getExpandData().put("haslike","0");
+            baseResp.getExpandData().put("likes",improve.getLikes()-1);
         } catch (Exception e) {
             logger.error("cancel like error:{}",e);
         }
