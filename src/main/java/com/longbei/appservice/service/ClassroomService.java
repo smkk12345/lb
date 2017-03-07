@@ -13,6 +13,34 @@ public interface ClassroomService {
 	
 	/**
 	 * @author yinxc
+	 * 获取教室详情信息---教室有关数据(拆分)
+	 * 2017年3月6日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	BaseResp<Object> selectRoomDetail(long classroomid, long userid);
+	
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息---教室课程有关数据(拆分)
+	 * 2017年3月7日
+	 * @param classroomid 教室业务id
+	 */
+	BaseResp<Object> selectCoursesDetail(long classroomid);
+	
+	/**
+	 * @author yinxc
+	 * 教室学员作业列表
+	 * 2017年3月6日
+	 * @param userId 当前登录用户id
+	 * @param classroomid 教室业务id
+	 * @param type 0.学员动态   1.按热度排列    2.按时间倒序排列 
+	 * @param 
+	 */
+//	BaseResp<Object> selectImprove(long classroomid, long userid, String type, int startNum, int endNum);
+	
+	/**
+	 * @author yinxc
 	 * 获取教室信息
 	 * param pageNo   pageSize
 	 * 2017年2月28日

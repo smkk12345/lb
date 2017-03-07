@@ -2,7 +2,9 @@ package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.entity.Classroom;
@@ -23,7 +27,9 @@ import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.entity.UserMsg;
+import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.CommentMongoService;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -38,8 +44,149 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private UserCardMapper userCardMapper;
 	@Autowired
 	private ClassroomCoursesMapper classroomCoursesMapper;
+	@Autowired
+	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
+	@Autowired
+	private CommentMongoService commentMongoService;
+//	@Autowired
+//	private ImproveMapper improveMapper;
+	@Autowired
+	private ImproveClassroomMapper improveClassroomMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
+	
+
+
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息---教室课程有关数据(拆分)
+	 * 2017年3月7日
+	 * @param classroomid 教室业务id
+	 */
+	@Override
+	public BaseResp<Object> selectCoursesDetail(long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<String, Object>();
+		try {
+			//教室课程总数
+			int coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
+			expandData.put("coursesNum", coursesNum);
+			//获取评论总数
+			int commentNum = 0;
+			BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
+					(String.valueOf(classroomid),Constant.COMMENT_CLASSROOM_TYPE);
+			if (ResultUtil.isSuccess(baseResp)){
+				commentNum = baseResp.getData();
+	        }
+			expandData.put("commentNum", commentNum);
+			//获取提问答疑总数
+			long questionsNum = classroomQuestionsMongoService.selectCountQuestions(String.valueOf(classroomid));
+			expandData.put("questionsNum", questionsNum);
+			//获取课程目录
+			List<ClassroomCourses> courseList = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 4);
+			//获取默认封面课程
+			ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroomid);
+			expandData.put("coursesDefault", classroomCourses);
+			reseResp.setData(courseList);
+			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectCoursesDetail classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息---教室有关数据(拆分)
+	 * 2017年3月6日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	@Override
+	public BaseResp<Object> selectRoomDetail(long classroomid, long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> expandData = new HashMap<String, Object>();
+			if(null != classroom){
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				//名片信息
+				classroom.setUserCard(userCard);
+				reseResp.setData(classroom);
+				//获取成员列表
+//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
+//				expandData.put("memberList", memberList);
+				
+				//获取当前用户在教室发作业的总数
+				int impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
+				expandData.put("impNum", impNum);
+				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+				if(null == classroomMembers){
+					classroomMembers = new ClassroomMembers();
+					classroomMembers.setLikes(0);
+					classroomMembers.setFlowers(0);
+					classroomMembers.setDiamonds(0);
+				}
+				expandData.put("classroomMembers", classroomMembers);
+			}
+			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectRoomDetail classroomid = {}, userid = {}", classroomid, userid, e);
+		}
+		return reseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 教室学员作业列表
+	 * 2017年3月6日
+	 * @param userId 当前登录用户id
+	 * @param classroomid 教室业务id
+	 * @param type 0.学员动态   1.按热度排列    2.按时间倒序排列 
+	 * @param 
+	 */
+//	@Override
+//	public BaseResp<Object> selectImprove(long classroomid, long userid, String type, int startNum, int endNum) {
+//		BaseResp<Object> reseResp = new BaseResp<>();
+//		try {
+//			List<Improve> improves = null;
+//			//type 0.学员动态   1.按热度排列    2.按时间倒序排列 
+//			if("0".equals(type)){
+//	            improves = improveMapper.selectListByBusinessid
+//	            		(Long.toString(classroomid), Constant_table.IMPROVE_CLASSROOM, "1", startNum, endNum);
+//	            replyImp(improves);
+////	            initImproveListOtherInfo(userid,improves);
+//			}else if("1".equals(type)){
+//				
+//				
+//				
+//			}else{
+//				//2.按时间倒序排列 
+//				improves = improveMapper.selectListByBusinessid
+//	                    (Long.toString(classroomid), Constant_table.IMPROVE_CLASSROOM, null, startNum, endNum);
+//				replyImp(improves);
+////				initImproveListOtherInfo(userid,improves);
+//			}
+//			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//		} catch (Exception e) {
+//			logger.error("selectImprove classroomid = {}, userid = {}, type = {}, startNum = {}, endNum = {}", 
+//					classroomid, userid, type, startNum, endNum, e);
+//		}
+//		return reseResp;
+//	}
+
+//	//批复信息
+//	private void replyImp(List<Improve> improves){
+//		if(null != improves && improves.size()>0){
+//			for (Improve improve : improves) {
+//				//获取教室微进步批复作业列表
+//				List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
+//				improve.setReplyList(replyList);
+//			}
+//		}
+//	}
 
 	@Override
 	public BaseResp<Object> insertClassroom(Classroom record) {
@@ -96,11 +243,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				return reseResp;
 			}
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(list);
 		} catch (Exception e) {
 			logger.error("selectListByUserid ptype = {}, userid = {}, startNum = {}, endNum = {}", 
@@ -117,12 +265,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				return reseResp;
 			}
 			reseResp.setData(list);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
 					ispublic, startNum, endNum, e);
@@ -149,14 +298,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 					Classroom classroom = classroomMapper.selectByPrimaryKey(classroomMembers.getClassroomid());
 					roomlist.add(classroom);
 				}
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			if(startNum == 0 && roomlist.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				return reseResp;
 			}
 			//操作
 			roomlist = selectList(roomlist);
 			reseResp.setData(roomlist);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectInsertByUserid userid = {}, startNum = {}, endNum = {}", 
 					userid, startNum, endNum, e);
@@ -175,12 +325,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				return reseResp;
 			}
 			reseResp.setData(list);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectListByPtype ptype = {}, keyword = {}, startNum = {}, endNum = {}", 
 					ptype, keyword, startNum, endNum, e);

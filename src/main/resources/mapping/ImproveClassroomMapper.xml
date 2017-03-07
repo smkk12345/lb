@@ -290,7 +290,7 @@
 
 
   <update id="remove" parameterType="String">
-    UPDATE improve_classroom SET isdel = '1' WHERE businessid=#{classroomid} AND  impid=#{improveid} AND userid=#{userid}
+    UPDATE improve_classroom SET isdel = '1' WHERE businessid=#{businessid} AND  impid=#{improveid} AND userid=#{userid}
   </update>
 
 
@@ -299,7 +299,7 @@
     <include refid="Base_Column_List" />
     from improve_classroom
     where
-    businessid = #{classroomid} 
+    businessid = #{businessid} 
     and isresponded = 0 
     <if test="ismainimp != null" >
       AND ismainimp = #{ismainimp}
@@ -312,7 +312,7 @@
     <include refid="Base_Column_List" />
     from improve_classroom
     where
-    businessid = #{classroomid} 
+    businessid = #{businessid} 
     and isresponded = 1 
     AND pimpid = #{impid} 
     ORDER BY createtime DESC
@@ -320,7 +320,7 @@
 
   <select id="selectCountByClassroomidAndUserid" resultType="java.lang.Integer">
     select count(*) from improve_classroom
-    where businessid = #{classroomid} 
+    where businessid = #{businessid} 
     AND userid = #{userid} and isresponded = 0 
   </select>
 
