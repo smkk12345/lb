@@ -347,12 +347,12 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if (circleMembers == null || circleMembers.getItype() != 0) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
-            circleMembers.setAppUserMongoEntity(userMongoDao.findById(userId+"","AppUserMongoEntity"));
+            circleMembers.setAppUserMongoEntity(userMongoDao.findById(userId+""));
             resultMap.put("circleMembers",circleMembers);
             resultMap.put("isFriend",friendService.checkIsFriend(currentUserId,userId));
             resultMap.put("isFans",fansService.checkIsFans(currentUserId,userId));
-
-            return baseResp;
+            baseResp.setData(resultMap);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("see circleMember datail circleId:{} userId:{}",circleId,userId);
             e.printStackTrace();

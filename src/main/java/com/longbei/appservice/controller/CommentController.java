@@ -307,9 +307,9 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/selectCommentCountSum")
  	@ResponseBody
- 	public BaseResp<Object> selectCommentCountSum(@RequestParam("itype") String itype, @RequestParam("itypeid") String itypeid) {
+ 	public BaseResp<Integer> selectCommentCountSum(@RequestParam("itype") String itype, @RequestParam("itypeid") String itypeid) {
  	  	
- 		BaseResp<Object> baseResp = new BaseResp<>();
+ 		BaseResp<Integer> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(itype, itypeid)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
