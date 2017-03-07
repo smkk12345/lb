@@ -1061,7 +1061,9 @@ public class ImproveServiceImpl implements ImproveService{
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
             }
-            return BaseResp.ok();
+            baseResp.getExpandData().put("haslike","1");
+            baseResp.getExpandData().put("likes",improve.getLikes()+1);
+            return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
         }
@@ -1092,7 +1094,8 @@ public class ImproveServiceImpl implements ImproveService{
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
             }
-            return BaseResp.ok();
+            baseResp.getExpandData().put("haslike","0");
+            baseResp.getExpandData().put("likes",improve.getLikes()-1);
         } catch (Exception e) {
             logger.error("cancel like error:{}",e);
         }
