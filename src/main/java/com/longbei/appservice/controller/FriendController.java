@@ -32,7 +32,7 @@ public class FriendController {
      */
     @RequestMapping(value="addFriendAsk")
     public BaseResp<Object> addFriendAsk(Long userId,Long friendId,FriendAddAsk.Source source,String message){
-        logger.info("add FriendAsk userId:{} friendId:{} source:{} message:{}",userId,friendId,source,message);
+        logger.info("add friendAsk userId:{} friendId:{} source:{} message:{}",userId,friendId,source,message);
         BaseResp baseResp = new BaseResp<Object>();
         if(userId == null || friendId == null || userId.equals(friendId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -54,6 +54,7 @@ public class FriendController {
      */
     @RequestMapping(value="replyMessage")
     public BaseResp<Object> replyMessage(Long id,Long userId,String message){
+        logger.info("reply friendAddAsk message id:{} userId:{} message:{}",id,userId,message);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(id == null || userId == null || StringUtils.isEmpty(message)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -72,6 +73,7 @@ public class FriendController {
      */
     @RequestMapping(value="getFriendAddAskDetail")
     public BaseResp<Object> getFriendAddAskDetail(Long id,Long userId){
+        logger.info("see friendAddAsk detail id:{} userId:{}",id,userId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(id == null || userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -108,6 +110,7 @@ public class FriendController {
      */
     @RequestMapping(value="friendAddAskList")
     public BaseResp<Object> friendAddAskList(Long userId,Integer startNo,Integer endNo){
+        logger.info("see friendAddAsk list userId:{} startNo:{} endNo:{}",userId,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userId == null){
             return baseResp.fail("参数错误");
