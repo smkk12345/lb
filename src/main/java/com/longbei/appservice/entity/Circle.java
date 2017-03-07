@@ -32,6 +32,8 @@ public class Circle {
 
     private Boolean creategoup;//是否同时简历龙信群
 
+    private Integer commentCount;//圈子的评论总数
+
     private String notice;//公告
 
     private AppUserMongoEntity appUserMongoEntity;
@@ -270,5 +272,13 @@ public class Circle {
      */
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
     }
 }

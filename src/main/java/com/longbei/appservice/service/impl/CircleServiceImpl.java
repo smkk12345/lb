@@ -8,16 +8,13 @@ import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.CircleMembersMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.CircleService;
-import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
 
@@ -44,10 +41,16 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     private UserMsgMapper userMsgMapper;
 
     @Autowired
+    private FriendService friendService;
+
+    @Autowired
+    private FansService fansService;
+
+    @Autowired
     private UserMongoDao userMongoDao;
 
     @Autowired
-    private SpringJedisDao springJedisDao;
+    private CommentMongoService commentMongoService;
 
     @Override
     public BaseResp<Object> relevantCircle(String circleName, Integer startNo, Integer pageSize) {
@@ -214,9 +217,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
             if (circleMembers != null && circleMembers.getItype() == 1) {
                 if (circle.getNeedconfirm()) {
-                    map.put("iType", 2);
+                    map.put("iType", CircleMembers.pending);
                 } else {
-                    map.put("iType", 0);
+                    map.put("iType", CircleMembers.normal);
                 }
                 map.put("updateTime", new Date());
                 int row = circleMembersMapper.updateCircleMembers(map);
@@ -244,9 +247,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             newCircleMembers.setCircleid(circleId);
             newCircleMembers.setUserid(Long.parseLong(userId));
             if (circle.getNeedconfirm()) {
-                newCircleMembers.setItype(2);
+                newCircleMembers.setItype(CircleMembers.pending);
             } else {
-                newCircleMembers.setItype(0);
+                newCircleMembers.setItype(CircleMembers.normal);
             }
             newCircleMembers.setCreatetime(new Date());
             newCircleMembers.setUpdatetime(new Date());
@@ -332,19 +335,22 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     }
 
     @Override
-    public BaseResp<Object> circleMemberDetail(Long circleId, Long userId) {
+    public BaseResp<Object> circleMemberDetail(Long circleId, Long userId,Long currentUserId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
+            Map<String,Object> resultMap = new HashMap<String,Object>();
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("circleId", circleId);
             map.put("userId", userId);
             //查询该用户是否在该圈子中
             CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
-            if (circleMembers == null) {
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
-            } else if (circleMembers.getItype() != 0) {
+            if (circleMembers == null || circleMembers.getItype() != 0) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
+            circleMembers.setAppUserMongoEntity(userMongoDao.findById(userId+"","AppUserMongoEntity"));
+            resultMap.put("circleMembers",circleMembers);
+            resultMap.put("isFriend",friendService.checkIsFriend(currentUserId,userId));
+            resultMap.put("isFans",fansService.checkIsFans(currentUserId,userId));
 
             return baseResp;
         }catch(Exception e){
@@ -368,10 +374,12 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(circle.getCreateuserid()));
             circle.setAppUserMongoEntity(appUserMongoEntity);
 
-            //获取当日发表的进步数量
-
             //获取圈子的评论数量
-
+            circle.setCommentCount(0);
+            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3");
+            if(result.getCode() == 0){
+                circle.setCommentCount(result.getData());
+            }
 
             baseResp.setData(circle);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

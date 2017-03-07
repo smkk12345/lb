@@ -257,7 +257,7 @@ public class CircleController {
     }
 
     /**
-     * 查看兴趣圈成员详情
+     * 查看兴趣圈某个成员详情
      * @url http://ip:port/app_service/circle/circleMemberDetail
      * @param circleId 兴趣圈ID
      * @param userId 用户Id
@@ -271,7 +271,7 @@ public class CircleController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         logger.info("query circleMember Detail circleId:{} userId:{} currentUserId:{}",circleId,userId,currentUserId);
-        baseResp = circleService.circleMemberDetail(circleId,userId);
+        baseResp = circleService.circleMemberDetail(circleId,userId,currentUserId);
 
         return baseResp;
     }

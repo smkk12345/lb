@@ -75,7 +75,7 @@ public interface CircleService extends BaseService{
      * @param userId
      * @return
      */
-    BaseResp<Object> circleMemberDetail(Long circleId, Long userId);
+    BaseResp<Object> circleMemberDetail(Long circleId, Long userId,Long currentUserId);
 
     /**
      * 查询兴趣圈 详情

@@ -6,7 +6,7 @@ import com.longbei.appservice.entity.FriendAddAsk;
 /**
  * Created by wangyongzhi 17/3/6.
  */
-public interface FriendService {
+public interface FriendService extends BaseService{
 
     /**
      * 请求添加朋友
@@ -50,4 +50,12 @@ public interface FriendService {
      * @return
      */
     BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize);
+
+    /**
+     * 校验两个用户是否是朋友
+     * @param userId 用户id
+     * @param friendId 朋友id
+     * @return
+     */
+    boolean checkIsFriend(Long userId,Long friendId);
 }

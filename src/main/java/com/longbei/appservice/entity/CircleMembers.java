@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 public class CircleMembers {
+    public static final Integer normal = 0;//正常 在兴趣圈中
+    public static final Integer delete = 1;//已退圈
+    public static final Integer pending = 2;//待圈主审核验证
+
     private Integer id;
 
     private Long circleid;//兴趣圈id

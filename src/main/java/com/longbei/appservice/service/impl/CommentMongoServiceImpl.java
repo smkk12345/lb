@@ -271,8 +271,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 
 	@Override
-	public BaseResp<Object> selectCommentCountSum(String itypeid, String itype) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<Integer> selectCommentCountSum(String itypeid, String itype) {
+		BaseResp<Integer> reseResp = new BaseResp<Integer>();
 		try {
 			List<Comment> list = commentMongoDao.selectCommentByItypeid(itypeid, itype);
 			//获取评论总数

@@ -11,6 +11,7 @@ import java.util.Date;
 public class FriendAddAsk {
     //过多长时间后,用户可以再次申请加好友
     public static final Integer EXPIRETIME = 7 * 24 * 3600;
+    public static final Integer MessageContentMaxLength = 100;
     public static final Integer STATUS_PENDING = 0;//请求加为好友 待处理
     public static final Integer STATUS_PASS = 1;//请求加为好友 已同意
     public static final Integer STATUS_FAIL = 2;//请求加为好友 未通过

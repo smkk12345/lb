@@ -34,7 +34,7 @@ public class FriendController {
     public BaseResp<Object> addFriendAsk(Long userId,Long friendId,FriendAddAsk.Source source,String message){
         logger.info("add friendAsk userId:{} friendId:{} source:{} message:{}",userId,friendId,source,message);
         BaseResp baseResp = new BaseResp<Object>();
-        if(userId == null || friendId == null || userId.equals(friendId)){
+        if(userId == null || friendId == null || userId.equals(friendId) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(source == null){
@@ -56,7 +56,7 @@ public class FriendController {
     public BaseResp<Object> replyMessage(Long id,Long userId,String message){
         logger.info("reply friendAddAsk message id:{} userId:{} message:{}",id,userId,message);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(id == null || userId == null || StringUtils.isEmpty(message)){
+        if(id == null || userId == null || StringUtils.isEmpty(message) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = friendService.replyMessage(id,userId,message);
