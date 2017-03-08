@@ -26,13 +26,12 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
-			if(null != list && list.size()>0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}
 			reseResp.setData(list);
-			if(startNum == 0 && null == list){
+			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_34, Constant.RTNINFO_SYS_34);
+				return reseResp;
 			}
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectListByClassroomid classroomid = {}, startNum = {}, endNum = {}", 
 					classroomid, startNum, endNum, e);
