@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;/**
  */
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
+import com.longbei.appservice.entity.ImproveCircle;
 import com.longbei.appservice.entity.TimeLineDetail;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +26,16 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Update update = new Update();
         update.set("fileKey",fliekey).set("photos",pickey);
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
+    }
+
+    public void deleteImprove(Long improveid,String userid){
+        Query query = Query.query(Criteria.where("improveId").is(improveid));
+        TimeLineDetail timeLineDetail = mongoTemplate.findOne(query, TimeLineDetail.class);
+        if(timeLineDetail != null){
+            Query deletequery = Query.query(Criteria.where("timeLineDetail.$id").is(timeLineDetail.getImproveId()));
+            mongoTemplate.remove(deletequery, ImproveCircle.class);
+        }
+        mongoTemplate.remove(query, TimeLineDetail.class);
     }
 
 

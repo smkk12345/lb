@@ -166,6 +166,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_64 = "已经点过赞";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -234,6 +235,12 @@ public class Constant {
 	public static final String IMPROVE_ALL_DETAIL_LIKE = "0";  //赞的明细
 	public static final String IMPROVE_ALL_DETAIL_FLOWER = "1";  //花的明细
 	public static final String IMPROVE_ALL_DETAIL_DIAMOND = "2";  //钻明细
+
+	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
+	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
+	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
+
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
 
@@ -459,11 +466,10 @@ public class Constant {
 	public static final String RP_CIRCLE_INSERT_CIRCLEMEMBER="circle_insert_date_";
 
 
-
+	public static final String REDIS_IMPROVE_LIKE = "improve_like_";  //redis中like相关
+	public static final String REDIS_IMPROVE_FLOWER = "improve_flower_"; //redis中flower
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
-	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
-	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
-	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
 
     /**
      * 用户特权  操作
