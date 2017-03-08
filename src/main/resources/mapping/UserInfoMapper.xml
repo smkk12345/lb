@@ -37,8 +37,21 @@
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
-    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
+    avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
   </sql>
+  
+  <sql id="Info_List" >
+    id, userid, nickname, realname, sex, city, area, brief, birthday, constellation, 
+    blood, feeling, updatetime, createtime, avatar, username
+  </sql>
+  
+  <select id="selectByUserid" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Info_List" />
+    from user_info
+    where userid = #{userid}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />

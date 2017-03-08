@@ -25,6 +25,13 @@ public interface UserInfoMapper {
 	 * @currentdate:2017年1月17日
 	 */
 	UserInfo getByUserName(String username);
+	
+	/**
+	 * @author yinxc
+	 * 获取个人资料    屏蔽无用的字段
+	 * 2017年3月8日
+	 */
+	UserInfo selectByUserid(@Param("userid") long userid);
 
 	int updateByUseridSelective(UserInfo userInfo);
 

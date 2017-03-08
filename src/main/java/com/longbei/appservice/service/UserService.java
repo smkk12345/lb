@@ -9,6 +9,14 @@ import com.longbei.appservice.entity.UserInfo;
  *
  */
 public interface UserService {
+	
+	/**
+	 * @author yinxc
+	 * 获取个人资料    屏蔽无用的字段
+	 * 2017年3月8日
+	 */
+	BaseResp<Object> selectByUserid(long userid);
+	
 	/**
 	 * 注册
 	 * @param username

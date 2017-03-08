@@ -389,6 +389,8 @@ public class Constant {
 	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
 	
 	public static final String  MSG_CLASSROOM_REPLY_MODEL = "批复了你在教室'n'上传的作业"; 	//老师回复提问消息模板
+	public static final String  MSG_USER_LEVEL_MODEL = "你的龙级升级到n级"; 	//等级提升消息模板
+	public static final String  MSG_USER_PL_LEVEL_MODEL = "十全十美能级---m升级到n级"; 	//十全十美类型等级提升消息模板
 	
 
 	/**

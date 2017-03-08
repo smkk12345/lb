@@ -1,5 +1,8 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.longbei.appservice.common.utils.NickNameUtils;
@@ -12,12 +15,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.UserInterestsMapper;
+import com.longbei.appservice.dao.UserJobMapper;
+import com.longbei.appservice.dao.UserSchoolMapper;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserInterests;
+import com.longbei.appservice.entity.UserJob;
+import com.longbei.appservice.entity.UserSchool;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.HttpClient;
 
@@ -41,8 +51,39 @@ public class UserServiceImpl implements UserService {
 	private SpringJedisDao springJedisDao;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private UserJobMapper userJobMapper;
+	@Autowired
+	private UserSchoolMapper userSchoolMapper;
+	@Autowired
+	private UserInterestsMapper userInterestsMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	
+	
+
+	@Override
+	public BaseResp<Object> selectByUserid(long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Map<String, Object> expandData = new HashMap<String, Object>();
+			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
+			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
+			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
+			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
+			reseResp.setData(userInfo);
+			expandData.put("jobList", jobList);
+			expandData.put("schoolList", schoolList);
+			expandData.put("interestList", interestList);
+			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectByUserid userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public BaseResp<Object> register(Long userid,String username, 
@@ -485,7 +526,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
-	
 	
 	
 	
