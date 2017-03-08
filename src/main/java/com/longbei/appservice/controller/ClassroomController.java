@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,12 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.ImproveService;
 
 @RestController
 @RequestMapping(value = "/classroom")
@@ -33,8 +36,12 @@ public class ClassroomController {
 	private ClassroomCoursesService classroomCoursesService;
 	@Autowired
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
+	@Autowired
+	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
+	
+	
 	
 	
 	/**
@@ -292,13 +299,13 @@ public class ClassroomController {
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-  		try {
+//  		try {
   			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid), 
   					Long.parseLong(userid), "1");
-  		} catch (Exception e) {
-  			logger.error("updateMembersItype classroomid = {}, userid = {}", 
-  					classroomid, userid, e);
-  		}
+//  		} catch (Exception e) {
+//  			logger.error("updateMembersItype classroomid = {}, userid = {}", 
+//  					classroomid, userid, e);
+//  		}
   		return baseResp;
     }
 	
@@ -320,7 +327,7 @@ public class ClassroomController {
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-  		try {
+//  		try {
   			ClassroomMembers record = new ClassroomMembers();
   			record.setClassroomid(Long.parseLong(classroomid));
   			record.setCreatetime(new Date());
@@ -335,10 +342,10 @@ public class ClassroomController {
   			//userstatus 用户在教室中的身份。0 — 普通学员 1—助教
   			record.setUserstatus("0");
   			baseResp = classroomMembersService.insertClassroomMembers(record);
-  		} catch (Exception e) {
-  			logger.error("insertMembers classroomid = {}, userid = {}", 
-  					classroomid, userid, e);
-  		}
+//  		} catch (Exception e) {
+//  			logger.error("insertMembers classroomid = {}, userid = {}", 
+//  					classroomid, userid, e);
+//  		}
   		return baseResp;
     }
 	
@@ -475,5 +482,159 @@ public class ClassroomController {
   		}
   		return baseResp;
     }
-	
+ 	
+ 	/**
+     * @Title: http://ip:port/app_service/classroom/classroomMembersList
+     * @Description: 获取教室学员动态列表
+     * @param @param userid 
+     * @param @param classroomid 教室业务id
+     * @param @param sift  筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param @param startNo   pageSize
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomMembersList")
+    public BaseResp<Object> classroomMembersList(@RequestParam("userid") String userid, 
+    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+    		 int startNo, int pageSize) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp.initCodeAndDesp();
+   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, startNo, pageSize);
+   			baseResp.setData(list);
+   		} catch (Exception e) {
+   			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}", 
+   					userid, classroomid, sift, startNo, pageSize, e);
+   		}
+   		return baseResp;
+    }
+  	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/classroomMembersDateList
+     * @Description: 获取教室按时间排序以及热度
+     * @param @param userid 
+     * @param @param classroomid 教室业务id
+     * @param @param sift  筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param @param type 0:按时间排序   1:热度
+     * @param @param startNo   pageSize
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomMembersDateList")
+    public BaseResp<Object> classroomMembersDateList(@RequestParam("userid") String userid, 
+    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+    		 String type, 
+    		 int startNo, int pageSize) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid, sift, type)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp.initCodeAndDesp();
+   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, startNo, pageSize);
+   			baseResp.setData(list);
+   		} catch (Exception e) {
+   			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}", 
+   					userid, classroomid, sift, type, startNo, pageSize, e);
+   		}
+   		return baseResp;
+    }
+  	
+//  	/**
+//     * @Title: http://ip:port/app_service/classroom/classroomMembersDateList
+//     * @Description: 获取教室按热度排序
+//     * @param @param userid 
+//     * @param @param classroomid 教室业务id
+//     * @param @param sift  筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+//     * @param @param startNo   pageSize
+//     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+//     * @auther yinxc
+//     * @currentdate:2017年3月6日
+// 	*/
+//  	@SuppressWarnings("unchecked")
+// 	@RequestMapping(value = "classroomMembersHotList")
+//    public BaseResp<Object> classroomMembersHotList(@RequestParam("userid") String userid, 
+//    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+//    		 int startNo, int pageSize) {
+//   		BaseResp<Object> baseResp = new BaseResp<>();
+//   		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
+//             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+//        }
+//   		try {
+//   			baseResp.initCodeAndDesp();
+//   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, "1", startNo, pageSize);
+//   			baseResp.setData(list);
+//   		} catch (Exception e) {
+//   			logger.error("classroomMembersHotList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}", 
+//   					userid, classroomid, sift, startNo, pageSize, e);
+//   		}
+//   		return baseResp;
+//    }
+  	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/classroomDetail
+     * @Description: 获取教室详情信息---教室有关数据(拆分)
+     * @param @param userid 当前访问id
+     * @param @param classroomid 教室业务id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data:Classroom
+     * 		 Map结果集：     impNum:当前用户在教室发作业的总数
+     * 					classroomMembers:当前用户花赞钻石总数
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomDetail")
+    public BaseResp<Object> classroomDetail(@RequestParam("userid") String userid, 
+    		 @RequestParam("classroomid") String classroomid) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectRoomDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   		} catch (Exception e) {
+   			logger.error("classroomDetail userid = {}, classroomid = {}", 
+   					userid, classroomid, e);
+   		}
+   		return baseResp;
+    }
+  	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/coursesDetail
+     * @Description: 获取教室详情信息---教室课程有关数据(拆分)
+     * @param @param classroomid 教室业务id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data: courseList 
+     * 		 Map结果集：     coursesNum：教室课程总数
+     * 					commentNum:评论总数
+     * 					questionsNum:提问答疑总数
+     * 					coursesDefault:设为默认封面课程   isdefault---1 默认封面  0 非默认
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "coursesDetail")
+    public BaseResp<Object> coursesDetail(@RequestParam("classroomid") String classroomid) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectCoursesDetail(Long.parseLong(classroomid));
+   		} catch (Exception e) {
+   			logger.error("coursesDetail classroomid = {}", classroomid, e);
+   		}
+   		return baseResp;
+    }
+  	
+  	
+  	
 }

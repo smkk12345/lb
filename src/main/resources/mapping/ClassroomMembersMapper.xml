@@ -61,7 +61,7 @@
     </if>
   </select>
   
-  <select id="selectCountMembers">
+  <select id="selectCountMembers" resultType="java.lang.Integer">
   	SELECT count(*) from classroom_members 
   	where classroomid = #{classroomid} 
   	and itype = 0 
