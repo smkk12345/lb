@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class DictArea {
 	
@@ -15,8 +16,18 @@ public class DictArea {
     private Integer sortnum;//排序号
     
     private String pid;//父级地址id
-	
-    public Integer getId() {
+
+	private List<DictArea> childArea;
+
+	public List<DictArea> getChildArea() {
+		return childArea;
+	}
+
+	public void setChildArea(List<DictArea> childArea) {
+		this.childArea = childArea;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
