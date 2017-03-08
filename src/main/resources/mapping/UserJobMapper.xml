@@ -31,7 +31,7 @@
     delete from user_job
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserJob" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserJob" useGeneratedKeys="true" keyProperty="id" >
     insert into user_job (id, userid, companyname, 
       department, location, starttime, 
       endtime, createtime, updatetime
@@ -41,7 +41,7 @@
       #{endtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertJob" parameterType="com.longbei.appservice.entity.UserJob" >
+  <insert id="insertJob" parameterType="com.longbei.appservice.entity.UserJob" useGeneratedKeys="true" keyProperty="id" >
     insert into user_job
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

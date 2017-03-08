@@ -40,6 +40,7 @@ public class UserJobServiceImpl implements UserJobService {
 		try {
 			int m = userJobMapper.insertJob(data);
 			if(m == 1){
+				baseResp.setData(data);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			 }
 		} catch (Exception e) {
@@ -107,6 +108,7 @@ public class UserJobServiceImpl implements UserJobService {
 		try {
 			int n = userJobMapper.updateJob(data);
 			if(n == 1){
+				baseResp.setData(data);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserSchoolMapper;
@@ -23,7 +22,6 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserSchoolServiceImpl.class);
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertSchool(long userid,String schoolname,String Department,Date starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -39,6 +37,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		try {
 			int m = userSchoolMapper.insertSchool(data);
 			if(m == 1){
+				baseResp.setData(data);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			 }
 		} catch (Exception e) {
@@ -46,8 +45,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		}
 		return baseResp;
 	}
-		
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public BaseResp<Object> deleteSchool(int id,long userid) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -62,7 +60,6 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		return baseResp;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> selectSchoolById(int id) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -76,7 +73,6 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		return baseResp;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> selectSchoolList(long userid,int startNum,int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -90,7 +86,6 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		return baseResp;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateSchool(int id,String schoolname,String Department,Date starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -105,6 +100,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		try {
 			int n = userSchoolMapper.updateSchool(data);
 			if(n == 1){
+				baseResp.setData(data);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

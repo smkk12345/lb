@@ -30,7 +30,7 @@
     delete from user_school
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserSchool" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserSchool" useGeneratedKeys="true" keyProperty="id" >
     insert into user_school (id, userid, schoolname, 
       Department, starttime, endtime, 
       creatime, updatetime)
@@ -38,7 +38,7 @@
       #{department,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
       #{creatime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSchool" parameterType="com.longbei.appservice.entity.UserSchool" >
+  <insert id="insertSchool" parameterType="com.longbei.appservice.entity.UserSchool" useGeneratedKeys="true" keyProperty="id" >
     insert into user_school
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
