@@ -13,4 +13,16 @@ public interface IRongYunService {
     BaseResp<Object> getRYToken(@Param("userid") String userid,
                                  @Param("username") String username,
                                  @Param("portraitUri") String portraitUri);
+
+    /**
+     * 新建群组
+     * @param userIds 新建群组的用户id
+     * @param groupId 群组的id
+     * @param groupName 群组名称
+     * @return
+     */
+    @RequestLine("GET /rongyun/createGroup?userIds={userIds}&groupId={groupId}&groupName={groupName}")
+    BaseResp createGroup(@Param("userIds") String[] userIds,
+                         @Param("groupId") Long groupId,
+                         @Param("groupName") String groupName);
 }

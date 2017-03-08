@@ -103,4 +103,21 @@
       updatetime = #{updatetime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 批量插入群组成员 -->
+  <insert id="batchInsertGroupMembers" parameterType="map">
+      insert into sns_group_members(
+        groupid,userid,status,createtime,updatetime,nickName
+      )values
+      <foreach collection="userIds" item="userId" separator=",">
+        (
+          #{snsGroupMembers.groupid},
+          #{userId},
+          #{snsGroupMembers.status},
+          #{snsGroupMembers.createtime},
+          #{snsGroupMembers.updatetime},
+          #{snsGroupMembers.nickName}
+        )
+      </foreach>
+  </insert>
 </mapper>

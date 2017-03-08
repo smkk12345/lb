@@ -2,6 +2,8 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.SnsGroupMembers;
 
+import java.util.Map;
+
 public interface SnsGroupMembersMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,11 @@ public interface SnsGroupMembersMapper {
     int updateByPrimaryKeySelective(SnsGroupMembers record);
 
     int updateByPrimaryKey(SnsGroupMembers record);
+
+    /**
+     * 批量插入群组成员
+     * @param map
+     * @return
+     */
+    int batchInsertGroupMembers(Map<String, Object> map);
 }
