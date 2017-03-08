@@ -22,7 +22,11 @@ import java.util.List;
 @Repository
 public class ImproveMongoDao extends BaseMongoDao<Improve>{
 
-
+    /**
+     * 保存 赞 花 钻 明细
+     * @param improveLFD
+     * @author luye
+     */
     public void saveImproveLfd(ImproveLFD improveLFD){
         Criteria criteria = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid())
@@ -47,7 +51,11 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         }
     }
 
-
+    /**
+     * 删除 赞 花 钻明细
+     * @param improveLFD
+     * @author luye
+     */
     public void removeImproveLfd(ImproveLFD improveLFD){
         Criteria criteria = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid())
@@ -62,6 +70,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * 赞和花简略信息
      * @param impid
      * @return
+     * @author luye
      */
     public List<ImproveLFD> selectImproveLfdList(String impid){
         Criteria criteria = Criteria.where("impid").is(impid);
@@ -76,6 +85,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * 查询 赞，花，钻 总数
      * @param impid
      * @return
+     * @author luye
      */
     public Long selectTotalCountImproveLFD(String impid){
         Criteria criteria = Criteria.where("impid").is(impid);
@@ -88,6 +98,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * @param impid
      * @param optype 0 赞 1 花  2 钻
      * @return
+     * @author luye
      */
     public Long selectCountImproveLF(String impid,String optype){
         Criteria criteria = Criteria.where("impid").is(impid).and("opttype").is(optype);
@@ -102,6 +113,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * @param userid 用户id
      * @param opttype 操作类型  点赞，送花，送钻
      * @return
+     * @author luye
      */
     public boolean exits(String impid,String userid,String opttype){
         Criteria criteria = Criteria.where("impid").is(impid)
