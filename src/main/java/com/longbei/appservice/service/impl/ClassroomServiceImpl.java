@@ -83,7 +83,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			long questionsNum = classroomQuestionsMongoService.selectCountQuestions(String.valueOf(classroomid));
 			expandData.put("questionsNum", questionsNum);
 			//获取课程目录
-			List<ClassroomCourses> courseList = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 4);
+			List<ClassroomCourses> courseList = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 5);
 			//获取默认封面课程
 			ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroomid);
 			expandData.put("coursesDefault", classroomCourses);
