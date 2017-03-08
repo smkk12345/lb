@@ -12,6 +12,7 @@ import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.utils.ValidateUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -724,6 +725,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
             isok = removeGoalImprove(userid,businessid,improveid);
         }
+        if (isok){
+            timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+        }
         return isok;
     }
     /**
@@ -867,12 +871,10 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
-            //初始化赞，花，钻数量
-            initImproveAttachInfo(improve);
-            //初始化点赞，送花，送钻简略信息
-            initLikeFlowerDiamondInfo(improve);
-            //初始化是否 点赞 送花 送钻 收藏
-            initIsOptionForImprove(userid,improve);
+
+            initImproveInfo(improve,Long.parseLong(userid));
+            //初始化 赞 花 数量
+            initImproveLikeAndFlower(improve);
             improves.add(improve);
         }
         return improves;
@@ -905,12 +907,10 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improve.setBusinessid(timeLine.getBusinessid());
             improve.setPtype(timeLine.getPtype());
-            //初始化赞，花，钻数量
-            initImproveAttachInfo(improve);
-            //初始化点赞，送花，送钻简略信息
-            initLikeFlowerDiamondInfo(improve);
-            //初始化是否 点赞 送花 送钻 收藏
-            initIsOptionForImprove(userid,improve);
+
+            initImproveInfo(improve,Long.parseLong(userid));
+            //初始化 赞 花 数量
+            initImproveLikeAndFlower(improve);
             improves.add(improve);
         }
         return improves;
@@ -953,8 +953,8 @@ public class ImproveServiceImpl implements ImproveService{
             return;
         }
         for (Improve improve : improves){
-            //初始化赞，花，钻数量
-            initImproveAttachInfo(improve);
+            //初始化评论数量
+            initImproveCommentInfo(improve);
             //初始化进步用户信息
             initImproveUserInfo(improve);
             //初始化点赞，送花，送钻简略信息
@@ -966,11 +966,11 @@ public class ImproveServiceImpl implements ImproveService{
 
 
     /**
-     * 向improve中的赞，献花，钻石，评论数赋值
+     * 向improve中的评论数赋值
      * @param improve
      * @author:luye
      */
-    private void initImproveAttachInfo(Improve improve){
+    private void initImproveCommentInfo(Improve improve){
 
         //对进步的评论数赋值
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
@@ -980,15 +980,6 @@ public class ImproveServiceImpl implements ImproveService{
         } else {
             improve.setCommentnum(0);
         }
-
-        //对进步的赞数赋值
-
-
-        //对进步的鲜花数赋值
-
-
-        //对进步的钻石数赋值
-
 
     }
 
@@ -1034,15 +1025,20 @@ public class ImproveServiceImpl implements ImproveService{
         }
         springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
 
+        baseResp = isHaseLikeInfo(userid,impid,businesstype);
+        if (ResultUtil.isSuccess(baseResp)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
+        }
+
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         AppUserMongoEntity userMongoEntity = userMongoDao.getAppUser(userid);
         if(null == improve || null == userMongoEntity){
             return baseResp;
         }
-        if(improve.getUserid().equals(userid)){
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
-            return  baseResp;
-        }
+//        if(improve.getUserid() == Long.parseLong(userid)){
+//            baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
+//            return  baseResp;
+//        }
 //        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
 //        if(!ResultUtil.isSuccess(baseResp)){
 //            return baseResp;
@@ -1078,7 +1074,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(improve == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = canCancelLike(userid,impid,businesstype);
+        baseResp = isHaseLikeInfo(userid,impid,businesstype);
         if (!ResultUtil.isSuccess(baseResp)){
             return baseResp;
         }
@@ -1095,7 +1091,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
             baseResp.getExpandData().put("haslike","0");
-            baseResp.getExpandData().put("likes",improve.getLikes()-1);
+            int likes = improve.getLikes()-1;
+            baseResp.getExpandData().put("likes",likes<0?0:likes);
         } catch (Exception e) {
             logger.error("cancel like error:{}",e);
         }
@@ -1179,7 +1176,7 @@ public class ImproveServiceImpl implements ImproveService{
                         userCollect.getBusinessid());
                 //合法  再做初始化
                 if(improve.getIsdel().equals("1")&&improve.getIspublic().equals("1")){
-                    initImproveAttachInfo(improve);
+                    initImproveCommentInfo(improve);
                     initImproveUserInfo(improve);
                 }
                 resultList.add(improve);
@@ -1321,8 +1318,11 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private BaseResp canCancelLike(String userid,String impid,String businesstype){
+    private BaseResp isHaseLikeInfo(String userid,String impid,String businesstype){
         BaseResp baseResp = new BaseResp();
+        if (hasLikeCache(impid,userid)){
+            return BaseResp.ok();
+        }
         ImpAllDetail impAllDetail = new ImpAllDetail();
         impAllDetail.setUserid(Long.parseLong(userid));
         impAllDetail.setImpid(Long.parseLong(impid));
@@ -1356,6 +1356,20 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
+     * 防止重复点赞
+     * @param impid
+     * @param userid
+     * @return
+     */
+    private boolean hasLikeCache(String impid,String userid){
+        String result = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid + userid);
+        if (null == result || !"1".equals(result)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 将点赞放入redis
      * @return
      */
@@ -1375,7 +1389,8 @@ public class ImproveServiceImpl implements ImproveService{
 //                break;
 //        }
         map.put("lfd"+userid,userid);
-
+        //添加临时记录
+        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + impid + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
     }
 
@@ -1386,6 +1401,8 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void removeLikeToImproveForRedis(String impid,String userid){
         springJedisDao.del("improve_like_temp_"+impid+userid);
+        //删除临时记录
+        springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + impid + userid);
         springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + impid,"like"+impid);
     }
 
@@ -1494,7 +1511,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initLikeFlowerDiamondInfo(Improve improve){
-        Long count = improveMongoDao.selectCountImproveLFD(String.valueOf(improve.getImpid()));
+        Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
         List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
         improve.setLfdcount(count);
         improve.setImproveLFDs(improveLFDs);
@@ -1626,14 +1643,23 @@ public class ImproveServiceImpl implements ImproveService{
 
 
     public void initImproveInfo(Improve improve,long userid) {
-        //初始化赞，花，钻数量
-        initImproveAttachInfo(improve);
+        //初始化评论数
+        initImproveCommentInfo(improve);
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
         //初始化是否 点赞 送花 送钻 收藏
         initIsOptionForImprove(userid+"",improve);
         //初始化超级话题列表
         initTopicInfo(improve);
+    }
+
+    public void initImproveLikeAndFlower(Improve improve){
+        Long likecount = improveMongoDao.selectCountImproveLF(String.valueOf(improve.getImpid()),
+                Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        Long flowercount = improveMongoDao.selectCountImproveLF(String.valueOf(improve.getImpid()),
+                Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
+        improve.setLikes(Integer.valueOf(String.valueOf(likecount)));
+        improve.setFlowers(Integer.valueOf(String.valueOf(flowercount)));
     }
 
     @Override

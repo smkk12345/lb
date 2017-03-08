@@ -193,7 +193,10 @@ public class ImproveController {
 	public BaseResp<Object> removeImprove(String userid, String improveid, String businesstype, String businessid) {
 		logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}", userid, improveid,
 				businesstype, businessid);
-		if (StringUtils.hasBlankParams(userid, improveid, businesstype, businessid)) {
+		if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		if (!"0".equals(businesstype) && StringUtils.isBlank(businessid)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		boolean flag = false;
@@ -498,7 +501,7 @@ public class ImproveController {
 	/**
 	 * 收藏进步 improve/collectImp
 	 * @param userid  用户uid
-	 * @param impid 进步id
+	 * @param improveid 进步id
 	 * @param businesstype 进步类型
 	 * @param businessid 所属id  圈子id  教室id 榜单id
      * @return
@@ -506,16 +509,16 @@ public class ImproveController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "collectImp")
-	BaseResp<Object> collectImp(String userid,String impid,String businesstype,String businessid){
+	BaseResp<Object> collectImp(String userid,String improveid,String businesstype,String businessid){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,impid,businesstype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		logger.info("collectImp userid={},impid={}",userid,impid);
+		logger.info("collectImp userid={},impid={}",userid,improveid);
 		try{
-			improveService.collectImp(userid,impid,businesstype,businessid);
+			improveService.collectImp(userid,improveid,businesstype,businessid);
 		}catch (Exception e){
-			logger.error("collection error userid={},impid={},msg={}",userid,impid,e);
+			logger.error("collection error userid={},impid={},msg={}",userid,improveid,e);
 		}
 		return baseResp;
 	}
@@ -523,22 +526,22 @@ public class ImproveController {
 	/**
 	 * 取消收藏  improve/removeCollect
 	 * @param userid
-	 * @param impid
+	 * @param improveid
 	 * @param buinesstype
      * @return
      */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "removeCollect")
-	BaseResp<Object> removeCollect(String userid,String impid,String buinesstype){
+	BaseResp<Object> removeCollect(String userid,String improveid,String buinesstype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,impid,buinesstype)){
+		if(StringUtils.hasBlankParams(userid,improveid,buinesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try{
-			return improveService.removeCollect(userid,impid,buinesstype);
+			return improveService.removeCollect(userid,improveid,buinesstype);
 		}catch (Exception e){
-			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,impid,e);
+			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,improveid,e);
 		}
 		return baseResp;
 	}
