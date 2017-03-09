@@ -35,11 +35,16 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		data.setCreatetime(date);
 		data.setUpdatetime(date);
 		try {
-			int m = userSchoolMapper.insertSchool(data);
-			if(m == 1){
-				baseResp.setData(data);
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			 }
+			int nums = userSchoolMapper.selectCountSchool(userid);
+			if(nums<5){
+				int m = userSchoolMapper.insertSchool(data);
+				if(m == 1){
+					baseResp.setData(data);
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}else{
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_39, Constant.RTNINFO_SYS_39);
+			}
 		} catch (Exception e) {
 			logger.error("insertSchool error and msg={}",e);
 		}

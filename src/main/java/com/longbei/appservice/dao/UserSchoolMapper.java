@@ -12,4 +12,12 @@ public interface UserSchoolMapper {
     UserSchool selectSchoolById(@Param("id")int id);
     List<UserSchool> selectSchoolList(@Param("userid") long userid,@Param("startNum") int startNum,@Param("pageSize") int pageSize);
     int updateSchool(UserSchool data);
+    
+    /**
+	 * @author yinxc
+	 * 获取用户学校Count
+	 * 2017年3月9日
+	 */
+    int selectCountSchool(@Param("userid") long userid);
+    
 }

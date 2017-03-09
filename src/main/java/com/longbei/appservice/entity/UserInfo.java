@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -72,7 +74,15 @@ public class UserInfo {
     private Integer point;//龙分
     private Integer grade;//等级
     private Integer curpoint;//当前龙分
-
+    
+    private List<UserJob> jobList = new ArrayList<UserJob>(); 
+    
+    private List<UserSchool> schoolList = new ArrayList<UserSchool>();
+    
+    private List<UserInterests> interestList = new ArrayList<UserInterests>();
+    
+    private List<UserPlDetail> detailList = new ArrayList<UserPlDetail>();  //用户十全十美的信息列表
+    
     
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
@@ -550,5 +560,29 @@ public class UserInfo {
 	}
 	public void setIsfriend(String isfriend) {
 		this.isfriend = isfriend;
+	}
+	public List<UserJob> getJobList() {
+		return jobList;
+	}
+	public void setJobList(List<UserJob> jobList) {
+		this.jobList = jobList;
+	}
+	public List<UserSchool> getSchoolList() {
+		return schoolList;
+	}
+	public void setSchoolList(List<UserSchool> schoolList) {
+		this.schoolList = schoolList;
+	}
+	public List<UserInterests> getInterestList() {
+		return interestList;
+	}
+	public void setInterestList(List<UserInterests> interestList) {
+		this.interestList = interestList;
+	}
+	public List<UserPlDetail> getDetailList() {
+		return detailList;
+	}
+	public void setDetailList(List<UserPlDetail> detailList) {
+		this.detailList = detailList;
 	}
 }

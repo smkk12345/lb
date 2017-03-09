@@ -27,12 +27,14 @@ import com.longbei.appservice.dao.SysPerfectInfoMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserInterestsMapper;
 import com.longbei.appservice.dao.UserJobMapper;
+import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserSchoolMapper;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserInterests;
 import com.longbei.appservice.entity.UserJob;
+import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.UserSchool;
 import com.longbei.appservice.service.UserMsgService;
@@ -73,6 +75,8 @@ public class UserServiceImpl implements UserService {
 	private SnsFansMapper snsFansMapper;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private UserLevelMapper userLevelMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -95,6 +99,10 @@ public class UserServiceImpl implements UserService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 			}
+			userInfo.setDetailList(detailList);
+			//获取用户星级
+			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+			expandData.put("userStar", userLevel.getStar());
 			//查询粉丝总数
 			int fansCount = snsFansMapper.selectCountFans(userid);
 			//判断对话消息是否显示红点    0:不显示   1：显示
@@ -106,7 +114,7 @@ public class UserServiceImpl implements UserService {
 			
 			
 			reseResp.setData(userInfo);
-			expandData.put("detailList", detailList);
+//			expandData.put("detailList", detailList);
 			expandData.put("fansCount", fansCount);
 			expandData.put("showMsg", showMsg);
 			reseResp.setExpandData(expandData);
@@ -122,16 +130,19 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> selectByUserid(long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			Map<String, Object> expandData = new HashMap<String, Object>();
+//			Map<String, Object> expandData = new HashMap<String, Object>();
 			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
 			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
+			userInfo.setInterestList(interestList);
+			userInfo.setJobList(jobList);
+			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
-			expandData.put("jobList", jobList);
-			expandData.put("schoolList", schoolList);
-			expandData.put("interestList", interestList);
-			reseResp.setExpandData(expandData);
+//			expandData.put("jobList", jobList);
+//			expandData.put("schoolList", schoolList);
+//			expandData.put("interestList", interestList);
+//			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectByUserid userid = {}", userid, e);
