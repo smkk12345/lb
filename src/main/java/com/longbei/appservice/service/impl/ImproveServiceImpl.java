@@ -987,6 +987,9 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化用户关系信息
      */
     private void initUserRelateInfo(long userid,AppUserMongoEntity apuser){
+        if(userid == apuser.getUserid()){
+            return;
+        }
         initFriendInfo(userid,apuser);
         initFanInfo(userid,apuser);
     }
@@ -994,9 +997,9 @@ public class ImproveServiceImpl implements ImproveService{
     private void initFanInfo(long userid,AppUserMongoEntity apuser){
         SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
         if(null != snsFans){
-            apuser.setIsfans("0");
-        }else{
             apuser.setIsfans("1");
+        }else{
+            apuser.setIsfans("0");
         }
     }
 
