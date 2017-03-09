@@ -79,6 +79,33 @@ public class AppUserController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
     
+    
+    
+    /**
+     * @Title: http://ip:port/appservice/user/info
+     * @Description: 个人资料
+     * @param @param userid 当前登录id
+     * @param @param friendid
+     * @auther yinxc
+     * @currentdate:2017年3月8日
+     */
+   	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "info")
+    @ResponseBody
+    public BaseResp<Object> info(@RequestParam("userid") String userid, @RequestParam("friendid") String friendid) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, friendid)) {
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = userService.selectByUserid(Long.parseLong(friendid));
+        } catch (Exception e) {
+        	logger.error("info userid = {}", userid, e);
+        }
+   		return baseResp;
+    }
+    
+    
     /**
     * @Title: http://ip:port/appservice/user/checkinDate
     * @Description: 用户每月签到详情及搜索

@@ -70,8 +70,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 newFriendAddAsk.setReceiveIsRead(false);
                 JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject = new JSONObject();
-                AppUserMongoEntity senderUser = userMongoDao.findById(userId+"");
-                AppUserMongoEntity receiveUser = userMongoDao.findById(friendId+"");
+                AppUserMongoEntity senderUser = userMongoDao.getAppUser(userId+"");
+                AppUserMongoEntity receiveUser = userMongoDao.getAppUser(friendId+"");
                 if(senderUser == null || receiveUser == null){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
                 }
@@ -183,11 +183,11 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             if(userId.equals(friendAddAsk.getSenderUserId())){//当前查看信息的是发送者
-                friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getReceiveUserId()+""));
+                friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+""));
                 //更改用户消息为已读
                 friendMongoDao.updateFriendAddAsk(id,null,"sender",true,null);
             }else{
-                friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getSenderUserId()+""));
+                friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+""));
                 //更改用户消息为已读
                 friendMongoDao.updateFriendAddAsk(id,null,"receive",true,null);
             }
@@ -260,9 +260,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                         friendAddAsk.setMessage(null);
                     }
                     if(userId.equals(friendAddAsk.getSenderUserId())){
-                        friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getReceiveUserId()+""));
+                        friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+""));
                     }else{
-                        friendAddAsk.setAppUserMongoEntity(userMongoDao.findById(friendAddAsk.getSenderUserId()+""));
+                        friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+""));
                     }
                 }
             }

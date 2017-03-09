@@ -1047,7 +1047,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author:luye
      */
     private void initImproveUserInfo(Improve improve,long userid){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(improve.getUserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
         initUserRelateInfo(userid,appUserMongoEntity);
         improve.setAppUserMongoEntity(appUserMongoEntity);
     }
@@ -1352,7 +1352,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
             for (ImpAllDetail impAllDetail : impAllDetails) {
-                impAllDetail.setAppUser(userMongoDao.findById(String.valueOf(impAllDetail.getUserid())));
+                impAllDetail.setAppUser(userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid())));
             }
             baseResp = BaseResp.ok();
             baseResp.setData(impAllDetails);
