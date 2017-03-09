@@ -89,6 +89,10 @@ public class ImproveServiceImpl implements ImproveService{
     private ClassroomMapper classroomMapper;
     @Autowired
     private UserMsgMapper userMsgMapper;
+    @Autowired
+    private SnsFriendsMapper snsFriendsMapper;
+    @Autowired
+    private SnsFansMapper snsFansMapper;
 
     /**
      *  @author luye
@@ -910,7 +914,6 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setSourcekey(timeLineDetail.getSourcekey());
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
-            improve.setAppUserMongoEntity(timeLineDetail.getUser());
             String businessType = timeLine.getBusinesstype();
             if(StringUtils.isBlank(businessType)){
                 improve.setBusinesstype("0");
@@ -919,6 +922,9 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improve.setBusinessid(timeLine.getBusinessid());
             improve.setPtype(timeLine.getPtype());
+            AppUserMongoEntity appUserMongoEntity = timeLineDetail.getUser();
+            initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+            improve.setAppUserMongoEntity(appUserMongoEntity);
 
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
@@ -969,7 +975,7 @@ public class ImproveServiceImpl implements ImproveService{
             //初始化评论数量
             initImproveCommentInfo(improve);
             //初始化进步用户信息
-            initImproveUserInfo(improve);
+            initImproveUserInfo(improve,Long.parseLong(userid));
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
             //初始化是否 点赞 送花 送钻 收藏
@@ -977,6 +983,31 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
+    /**
+     * 初始化用户关系信息
+     */
+    private void initUserRelateInfo(long userid,AppUserMongoEntity apuser){
+        initFriendInfo(userid,apuser);
+        initFanInfo(userid,apuser);
+    }
+
+    private void initFanInfo(long userid,AppUserMongoEntity apuser){
+        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+        if(null != snsFans){
+            apuser.setIsfans("0");
+        }else{
+            apuser.setIsfans("1");
+        }
+    }
+
+    private void initFriendInfo(long userid,AppUserMongoEntity apuser){
+        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
+        if(null == snsFriends){
+            apuser.setIsfriend("0");
+        }else{
+            apuser.setIsfriend("1");
+        }
+    }
 
     /**
      * 向improve中的评论数赋值
@@ -1012,8 +1043,9 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      * @author:luye
      */
-    private void initImproveUserInfo(Improve improve){
+    private void initImproveUserInfo(Improve improve,long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+        initUserRelateInfo(userid,appUserMongoEntity);
         improve.setAppUserMongoEntity(appUserMongoEntity);
     }
 
@@ -1197,7 +1229,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //合法  再做初始化
                 if(improve.getIsdel().equals("1")&&improve.getIspublic().equals("1")){
                     initImproveCommentInfo(improve);
-                    initImproveUserInfo(improve);
+                    initImproveUserInfo(improve,Long.parseLong(userid));
                 }
                 resultList.add(improve);
             }

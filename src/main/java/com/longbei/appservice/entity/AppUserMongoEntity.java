@@ -19,6 +19,24 @@ public class AppUserMongoEntity {
 	private Double[] gispoint;
 	
 	private long userid;
+	private String isfriend;
+	private String isfans;
+
+	public void setIsfriend(String isfriend) {
+		this.isfriend = isfriend;
+	}
+
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
+	}
+
+	public String getIsfriend() {
+		return isfriend;
+	}
+
+	public String getIsfans() {
+		return isfans;
+	}
 
 	@JsonInclude(Include.ALWAYS)
 	public Double[] getGispoint() {
