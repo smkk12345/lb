@@ -26,6 +26,13 @@ public interface SnsFansMapper {
     
     /**
 	 * @author yinxc
+	 * 获取用户粉丝数量Count
+	 * 2017年3月9日
+	 */
+    int selectCountFans(@Param("userid") long userid);
+    
+    /**
+	 * @author yinxc
 	 * 获取当前用户粉丝idList
 	 * 2017年2月9日
 	 * return_type
