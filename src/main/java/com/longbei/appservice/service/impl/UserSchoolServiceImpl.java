@@ -32,7 +32,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 		data.setStarttime(starttime);
 		data.setEndtime(endtime);		
 		Date date = new Date();
-		data.setCreatime(date);
+		data.setCreatetime(date);
 		data.setUpdatetime(date);
 		try {
 			int m = userSchoolMapper.insertSchool(data);

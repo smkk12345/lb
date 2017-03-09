@@ -15,7 +15,7 @@ public class UserSchool {
 
     private Date endtime;
 
-    private Date creatime;
+    private Date createtime;
 
 	private Date updatetime;
 
@@ -120,19 +120,19 @@ public class UserSchool {
      * 
      * @return creatime 
      */
-    public Date getCreatime() {
-        return creatime;
-    }
+    public Date getCreatetime() {
+		return createtime;
+	}
 
     /**
      * 
      * @param creatime 
      */
-    public void setCreatime(Date creatime) {
-        this.creatime = creatime;
-    }
+    public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
 
-    /**
+	/**
      * 
      * @return updatetime 
      */
