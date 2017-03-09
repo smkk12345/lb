@@ -12,6 +12,13 @@ public interface UserService {
 	
 	/**
 	 * @author yinxc
+	 * 个人中心
+	 * 2017年3月9日
+	 */
+	BaseResp<Object> selectInfoMore(long userid);
+	
+	/**
+	 * @author yinxc
 	 * 获取个人资料    屏蔽无用的字段
 	 * 2017年3月8日
 	 */

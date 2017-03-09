@@ -27,6 +27,12 @@
     from user_job
     where userid = #{userid,jdbcType=BIGINT} limit #{startNum},#{pageSize}
   </select>
+  
+  <select id="selectCountJob" resultType="java.lang.Integer">
+  	SELECT count(*) from user_school 
+  	where userid = #{userid} 
+  </select>
+  
   <delete id="deleteJob" >
     delete from user_job
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}

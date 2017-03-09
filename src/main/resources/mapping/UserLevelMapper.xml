@@ -18,6 +18,14 @@
     from user_level
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectByGrade" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_level
+    where grade = #{grade}
+  </select>
+  
   <select id="selectAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -321,7 +321,7 @@ public class UserRelationServiceImpl implements UserRelationService {
      * @author:luye
      */
     private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
         snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
     }
 

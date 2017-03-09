@@ -4,6 +4,8 @@ import com.longbei.appservice.entity.UserLevel;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface UserLevelMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -12,6 +14,15 @@ public interface UserLevelMapper {
     int insertSelective(UserLevel record);
 
     UserLevel selectByPrimaryKey(Long id);
+    
+    /**
+	 * @author yinxc
+	 * 根据等级grade获取信息
+	 * 2017年3月9日
+	 * return_type
+	 * UserLevelMapper
+	 */
+    UserLevel selectByGrade(@Param("grade") Integer grade);
 
     List<UserLevel> selectAll();
 

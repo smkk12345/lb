@@ -28,6 +28,13 @@ public interface UserInfoMapper {
 	
 	/**
 	 * @author yinxc
+	 * 个人中心页面
+	 * 2017年3月9日
+	 */
+	UserInfo selectInfoMore(@Param("userid") long userid);
+	
+	/**
+	 * @author yinxc
 	 * 获取个人资料    屏蔽无用的字段
 	 * 2017年3月8日
 	 */

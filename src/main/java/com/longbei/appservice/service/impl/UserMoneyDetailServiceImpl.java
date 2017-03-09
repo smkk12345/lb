@@ -183,7 +183,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
      */
     private void initMsgUserInfoByFriendid(UserMoneyDetail userMoneyDetail){
     	if(!StringUtils.hasBlankParams(userMoneyDetail.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMoneyDetail.getFriendid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
     		userMoneyDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
 		}
     }
@@ -192,7 +192,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
      * 初始化用户龙币信息 ------Userid
      */
 //    private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail){
-//        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getUserid()));
+//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getUserid()));
 //        userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
 //    }
 
