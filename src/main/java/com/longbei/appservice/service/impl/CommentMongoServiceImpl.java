@@ -298,12 +298,14 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     private void initCommentLowerUserInfoList(List<CommentLower> lowers){
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
-    			if(!StringUtils.hasBlankParams(commentLower.getFriendid())){
-    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getFriendid()));
-        	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+        	        commentLower.setFriendNickname(appUserMongoEntity.getNickname());
     			}
-    	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getUserid()));
-    	        commentLower.setAppUserMongoEntityUserid(appUserMongo);
+				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+					commentLower.setNickname(appUserMongo.getNickname());
+				}
 			}
     	}
         

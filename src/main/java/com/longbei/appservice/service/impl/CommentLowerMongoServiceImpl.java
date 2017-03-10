@@ -58,7 +58,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			//添加子评论---    +积分
 			//获取十全十美类型---社交
 			String pType = SysRulesCache.perfectTenMap.get(2);
-			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getUserid()));//此处通过id获取用户信息
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getFirstuserid()));//此处通过id获取用户信息
 			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType,null,0,0);
 			reseResp.setData(commentLower);
 		} catch (Exception e) {
@@ -74,9 +74,9 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	 */
 	private void insertMsg(CommentLower commentLower){
 		UserMsg record = new UserMsg();
-		record.setUserid(Long.valueOf(commentLower.getFriendid()));
+		record.setUserid(Long.valueOf(commentLower.getSeconduserid()));
 		record.setCreatetime(new Date());
-		record.setFriendid(Long.valueOf(commentLower.getUserid()));
+		record.setFriendid(Long.valueOf(commentLower.getFirstuserid()));
 		//itype 类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论  itypeid
 		Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 		if(null != comment){
