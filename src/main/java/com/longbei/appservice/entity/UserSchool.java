@@ -11,7 +11,7 @@ public class UserSchool {
 
     private String department;//院系
 
-    private Date starttime;
+    private String starttime;
 
     private Date endtime;
 
@@ -88,7 +88,7 @@ public class UserSchool {
      * 
      * @return starttime 
      */
-    public Date getStarttime() {
+    public String getStarttime() {
         return starttime;
     }
 
@@ -96,7 +96,7 @@ public class UserSchool {
      * 
      * @param starttime 
      */
-    public void setStarttime(Date starttime) {
+    public void setStarttime(String starttime) {
         this.starttime = starttime;
     }
 

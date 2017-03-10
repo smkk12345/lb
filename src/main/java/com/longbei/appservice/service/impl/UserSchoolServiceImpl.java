@@ -23,7 +23,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 	private static Logger logger = LoggerFactory.getLogger(UserSchoolServiceImpl.class);
 	
 	@Override
-	public BaseResp<Object> insertSchool(long userid,String schoolname,String Department,Date starttime,Date endtime) {
+	public BaseResp<Object> insertSchool(long userid,String schoolname,String Department,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserSchool data = new UserSchool();
 		data.setUserid(userid);
@@ -92,7 +92,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 	}
 
 	@Override
-	public BaseResp<Object> updateSchool(int id,String schoolname,String Department,Date starttime,Date endtime) {
+	public BaseResp<Object> updateSchool(int id,String schoolname,String Department,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserSchool data = new UserSchool();
 		data.setId(id);
