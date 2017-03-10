@@ -60,6 +60,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getUserid()));//此处通过id获取用户信息
 			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType,null,0,0);
+			reseResp.setData(commentLower);
 		} catch (Exception e) {
 			logger.error("insertCommentLower commentLower = {}",commentLower,e);
 		}
@@ -79,8 +80,8 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		//itype 类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论  itypeid
 		Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 		if(null != comment){
-			record.setGtype(comment.getItype());
-			record.setSnsid(Long.valueOf(comment.getItypeid()));
+			record.setGtype(comment.getBusinesstype());
+			record.setSnsid(Long.valueOf(comment.getBusinessid()));
 		}
 		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
 		record.setMsgtype("1");
