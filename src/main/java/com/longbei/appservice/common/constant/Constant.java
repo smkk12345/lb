@@ -73,6 +73,8 @@ public class Constant {
 	public static final int STATUS_SYS_35 = -35;
 	public static final int STATUS_SYS_36 = -36;
 	public static final int STATUS_SYS_37 = -37;
+	public static final int STATUS_SYS_38 = -38;
+	public static final int STATUS_SYS_39 = -39;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -150,6 +152,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
 	public static final String RTNINFO_SYS_36 = "教室参与人数已达到限额";
 	public static final String RTNINFO_SYS_37 = "用户已加入教室";
+	public static final String RTNINFO_SYS_38 = "工作信息最多可添加5条";
+	public static final String RTNINFO_SYS_39 = "教育信息最多可添加5条";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -166,6 +170,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_64 = "已经点过赞";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -234,6 +239,12 @@ public class Constant {
 	public static final String IMPROVE_ALL_DETAIL_LIKE = "0";  //赞的明细
 	public static final String IMPROVE_ALL_DETAIL_FLOWER = "1";  //花的明细
 	public static final String IMPROVE_ALL_DETAIL_DIAMOND = "2";  //钻明细
+
+	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
+	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
+	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
+
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
 
@@ -389,6 +400,8 @@ public class Constant {
 	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
 	
 	public static final String  MSG_CLASSROOM_REPLY_MODEL = "批复了你在教室'n'上传的作业"; 	//老师回复提问消息模板
+	public static final String  MSG_USER_LEVEL_MODEL = "你的龙级升级到n级"; 	//等级提升消息模板
+	public static final String  MSG_USER_PL_LEVEL_MODEL = "十全十美能级---m升级到n级"; 	//十全十美类型等级提升消息模板
 	
 
 	/**
@@ -457,11 +470,10 @@ public class Constant {
 	public static final String RP_CIRCLE_INSERT_CIRCLEMEMBER="circle_insert_date_";
 
 
-
+	public static final String REDIS_IMPROVE_LIKE = "improve_like_";  //redis中like相关
+	public static final String REDIS_IMPROVE_FLOWER = "improve_flower_"; //redis中flower
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
-	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
-	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
-	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
 
     /**
      * 用户特权  操作

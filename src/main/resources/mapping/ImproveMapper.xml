@@ -290,8 +290,10 @@
       likes = likes - 1
     </if>
     WHERE
-    businessid = #{businessid}
-    AND impid=#{impid}
+    <if test="businessid != null ">
+      businessid = #{businessid} AND
+    </if>
+     impid=#{impid}
   </update>
 
 
@@ -299,15 +301,19 @@
     UPDATE ${tablename}
     SET flowers = flowers + #{flowernum}
     WHERE
-    businessid = #{businessid}
-    AND  impid = #{impid}
+    <if test="businessid != null ">
+      businessid = #{businessid} AND
+    </if>
+    impid = #{impid}
   </update>
 
   <update id="updateDiamond">
     UPDATE ${tablename}
     SET diamonds = diamonds + #{diamondnum}
     WHERE
-    businessid = #{businessid}
+    <if test="businessid != null ">
+      businessid = #{businessid} AND
+    </if>
     AND  impid = #{impid}
   </update>
 

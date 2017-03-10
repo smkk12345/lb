@@ -34,7 +34,7 @@
     from user_msg
     where userid = #{userid} 
     and mtype = 0 
-    order by createtime desc 
+    order by isread asc,createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -60,7 +60,7 @@
     where userid = #{userid} 
     and mtype = 1 
     and msgtype = #{msgtype}  
-    order by createtime desc 
+    order by isread asc,createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -74,7 +74,7 @@
     and mtype = 1 
     and isread = 0 
     and msgtype = #{msgtype}  
-    order by createtime desc 
+    order by isread asc,createtime desc 
   </select>
   
   <select id="selectOtherList" resultMap="BaseResultMap">
@@ -88,7 +88,7 @@
     <if test="msgtype != null" >
     	and msgtype = #{msgtype}  
     </if> 
-    order by isread asc 
+    order by isread asc,createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -120,8 +120,9 @@
     	and msgtype = #{msgtype}  
     </if> 
     <if test="isread != null" >
-    	and isread = #{isread}
+    	and isread = #{isread} 
     </if> 
+    order by isread asc,createtime desc 
   </select>
   
   <delete id="deleteByMtypeAndMsgtype">

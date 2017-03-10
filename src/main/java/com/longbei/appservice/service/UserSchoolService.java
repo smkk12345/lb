@@ -3,7 +3,6 @@ package com.longbei.appservice.service;
 import java.util.Date;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.UserSchool;
 
 public interface UserSchoolService {
 	/**
@@ -18,7 +17,7 @@ public interface UserSchoolService {
 	* @auther IngaWu
 	* @currentdate:2017年2月22日
 	*/
-	BaseResp<Object> insertSchool(long userid,String schoolname,String Department,Date starttime,Date endtime);
+	BaseResp<Object> insertSchool(long userid,String schoolname,String Department,String starttime,Date endtime);
 	/**
 	* @Title: deleteSchool
 	* @Description: 删除教育经历（通过id和userid删除）
@@ -59,5 +58,5 @@ public interface UserSchoolService {
 	* @auther IngaWu
 	* @currentdate:2017年2月22日
 	*/
-	BaseResp<Object> updateSchool(int id,String schoolname,String Department,Date starttime,Date endtime);
+	BaseResp<Object> updateSchool(int id,String schoolname,String Department,String starttime,Date endtime);
 }

@@ -229,7 +229,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
      */
     private void initMsgUserInfoByFriendid(UserImpCoinDetail userImpCoinDetail){
     	if(!StringUtils.hasBlankParams(userImpCoinDetail.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getFriendid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));
             userImpCoinDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
 		}
     }
@@ -238,7 +238,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
      * 初始化用户进步币信息 ------Userid
      */
     private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getUserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getUserid()));
         userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
 

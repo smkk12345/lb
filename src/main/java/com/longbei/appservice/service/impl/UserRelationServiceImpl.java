@@ -81,9 +81,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 				for (SnsFriends snsFriends : list) {
 					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(snsFriends.getFriendid());
 					if(null != userInfo){
-						snsFriends.setFriendNickname(userInfo.getNickname());
+						snsFriends.setNickname(userInfo.getNickname());
 						snsFriends.setUsername(userInfo.getUsername());
-						snsFriends.setFriendAvatar(userInfo.getAvatar());
+						snsFriends.setAvatar(userInfo.getAvatar());
 						//判断该好友是否已关注
 						SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
 						if(null != snsFans){
@@ -321,7 +321,7 @@ public class UserRelationServiceImpl implements UserRelationService {
      * @author:luye
      */
     private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
         snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
     }
 

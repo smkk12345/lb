@@ -186,7 +186,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
             for (CircleMembers circleMembers : circleMembersList) {
-                circleMembers.setAppUserMongoEntity(userMongoDao.findById(String.valueOf(circleMembers.getUserid())));
+                circleMembers.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(circleMembers.getUserid())));
             }
 
             baseResp.setData(circleMembersList);
@@ -347,7 +347,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if (circleMembers == null || circleMembers.getItype() != 0) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
-            circleMembers.setAppUserMongoEntity(userMongoDao.findById(userId+""));
+            circleMembers.setAppUserMongoEntity(userMongoDao.getAppUser(userId+""));
             resultMap.put("circleMembers",circleMembers);
             resultMap.put("isFriend",friendService.checkIsFriend(currentUserId,userId));
             resultMap.put("isFans",fansService.checkIsFans(currentUserId,userId));
@@ -371,7 +371,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
 
             //根据用户id获取用户信息
-            AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(circle.getCreateuserid()));
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(circle.getCreateuserid()));
             circle.setAppUserMongoEntity(appUserMongoEntity);
 
             //获取圈子的评论数量

@@ -2,6 +2,7 @@ package com.longbei.appservice.common.security;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Version;
 import com.longbei.appservice.common.utils.*;
 
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -92,6 +93,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 			String sigin = request.getParameter("signature");
 			String uid = request.getParameter("uid");
 			String param = request.getParameter("param");
+			// 0221 替换掉换行符
+			param = param.replaceAll("%3D", "");
+			param = param.replaceAll("%0A", "");
 			String version = request.getParameter("version");
 			long localTime = new Date().getTime() / 1000;
 			if (Math.abs(localTime - Double.parseDouble(time)) > 10*60) {
@@ -117,6 +121,14 @@ public class SecurityFilter extends OncePerRequestFilter {
 					token = "longbei2017";
 				} else {
 					token = springJedisDao.get("userid&token&"+uid);
+					String vers[] = version.split("_");
+					if (vers.length > 0) {
+						if(!canLogin(version)){
+							returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
+									"请前往应用中心更新版本");
+							return;
+						}
+					}
 				}
 				if (StringUtils.isBlank(token)) {
 					//token过期
@@ -138,6 +150,35 @@ public class SecurityFilter extends OncePerRequestFilter {
 			}
 		}
 		
+	}
+
+	private boolean canLogin(String version){
+		// IOS升级
+		boolean result = true;
+		String vers[] = version.split("_");
+		// 获取当前版本 判断是否是最新版本
+		String newver = vers[2].trim().replaceAll("\\.", "");
+		String oldVersion = Constant_Version.VERSION_000000+"";
+
+		int size = getMinSize(oldVersion,newver);
+		for (int i = 0; i < size; i++) {
+			int newi = newver.charAt(i);
+			int enforceveri = oldVersion.charAt(i);
+			if (enforceveri > newi) {
+				result = false;
+				break;
+			}
+		}
+		logger.info("version = {},oldVersion={},result={}",newver,oldVersion,result);
+		return result;
+	}
+
+	private int getMinSize(String newVersion,String cversion){
+		if(newVersion.length() > cversion.length()){
+			return cversion.length();
+		}else{
+			return newVersion.length();
+		}
 	}
 
 	/**

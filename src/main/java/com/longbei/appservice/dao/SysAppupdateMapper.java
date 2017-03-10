@@ -11,6 +11,8 @@ public interface SysAppupdateMapper {
 
     SysAppupdate selectByPrimaryKey(Integer id);
 
+    SysAppupdate selectRecentByKey(String ttype);
+
     int updateByPrimaryKeySelective(SysAppupdate record);
 
     int updateByPrimaryKey(SysAppupdate record);

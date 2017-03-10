@@ -2,12 +2,12 @@ package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -15,6 +15,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
+	
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 
 	private static Logger logger = LoggerFactory.getLogger(UserMongoDao.class);
 
@@ -50,11 +53,33 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
 			AppUserMongoEntity mongoUser = findOne(query);
-			return  mongoUser;
+			if(null != mongoUser){
+				return mongoUser;
+			}else{
+				UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+				mongoUser = saveUserInfoToMongo(userInfo);
+				return  mongoUser;
+			}
 		} catch (Exception e) {
 			logger.error("findOne error and msg={}",e);
 		}
 		return null;
+	}
+	
+	/**
+	 * 保存用户常用信息到mongouser
+	 * @param userInfo
+	 * @return AppUserMongoEntity
+	 */
+	private AppUserMongoEntity saveUserInfoToMongo(UserInfo userInfo){
+		AppUserMongoEntity userMongoEntity = new AppUserMongoEntity();
+		userMongoEntity.setAvatar(userInfo.getAvatar());
+		userMongoEntity.setId(String.valueOf(userInfo.getUserid()));
+		userMongoEntity.setUsername(userInfo.getUsername());
+		userMongoEntity.setSex(userInfo.getSex());
+		userMongoEntity.setNickname(userInfo.getNickname());
+		saveAppUserMongoEntity(userMongoEntity);
+		return userMongoEntity;
 	}
 	
 	public boolean existsUser(String userid){

@@ -6,13 +6,13 @@
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="schoolname" property="schoolname" jdbcType="VARCHAR" />
     <result column="Department" property="department" jdbcType="VARCHAR" />
-    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="starttime" property="starttime" />
     <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
-    <result column="creatime" property="creatime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, schoolname, Department, starttime, endtime, creatime, updatetime
+    id, userid, schoolname, Department, starttime, endtime, createtime, updatetime
   </sql>
   <select id="selectSchoolById" resultMap="BaseResultMap" >
     select 
@@ -26,19 +26,25 @@
     from user_school
     where userid = #{userid,jdbcType=BIGINT} limit #{startNum},#{pageSize}
   </select>
+  
+  <select id="selectCountSchool" resultType="java.lang.Integer">
+  	SELECT count(*) from user_school 
+  	where userid = #{userid} 
+  </select>
+  
   <delete id="deleteSchool" >
     delete from user_school
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserSchool" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserSchool" useGeneratedKeys="true" keyProperty="id" >
     insert into user_school (id, userid, schoolname, 
       Department, starttime, endtime, 
-      creatime, updatetime)
+      createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{schoolname,jdbcType=VARCHAR}, 
-      #{department,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
-      #{creatime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=VARCHAR})
+      #{department,jdbcType=VARCHAR}, #{starttime}, #{endtime,jdbcType=TIMESTAMP}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSchool" parameterType="com.longbei.appservice.entity.UserSchool" >
+  <insert id="insertSchool" parameterType="com.longbei.appservice.entity.UserSchool" useGeneratedKeys="true" keyProperty="id" >
     insert into user_school
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -59,8 +65,8 @@
       <if test="endtime != null" >
         endtime,
       </if>
-      <if test="creatime != null" >
-        creatime,
+      <if test="createtime != null" >
+        createtime,
       </if>
       <if test="updatetime != null" >
         updatetime,
@@ -80,13 +86,13 @@
         #{department,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        #{starttime,jdbcType=TIMESTAMP},
+        #{starttime},
       </if>
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="creatime != null" >
-        #{creatime,jdbcType=TIMESTAMP},
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=VARCHAR},
@@ -103,7 +109,7 @@
         Department = #{department,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        starttime = #{starttime,jdbcType=TIMESTAMP},
+        starttime = #{starttime},
       </if>
       <if test="endtime != null" >
         endtime = #{endtime,jdbcType=TIMESTAMP},
@@ -119,9 +125,9 @@
     set userid = #{userid,jdbcType=BIGINT},
       schoolname = #{schoolname,jdbcType=VARCHAR},
       Department = #{department,jdbcType=VARCHAR},
-      starttime = #{starttime,jdbcType=TIMESTAMP},
+      starttime = #{starttime},
       endtime = #{endtime,jdbcType=TIMESTAMP},
-      creatime = #{creatime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

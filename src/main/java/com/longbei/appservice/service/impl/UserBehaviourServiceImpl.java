@@ -8,11 +8,13 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserPointDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.UserPointDetail;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -43,6 +45,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserInfoMapper userInfoMapper;
     @Autowired
     private UserImpCoinDetailService userImpCoinDetailService;
+    @Autowired
+    private UserMsgMapper userMsgMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -369,6 +373,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
             userPlDetail.setUserid(userInfo.getUserid());
             userPlDetailMapper.insert(userPlDetail);
+            
+            //推送一条消息
+            String remark = Constant.MSG_USER_PL_LEVEL_MODEL.replace("n", level + "");
+            remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
+            //mtype 0 系统消息      msgtype  19：十全十美升级
+            levelMsg(userInfo.getUserid(), "19", remark);
         }catch (Exception e){
             logger.error("subLevelUpAsyn error and msg = {}",e);
         }
@@ -385,11 +395,30 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfoMapper.updatePointByUserid(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
             saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
-            //推送一条信
-            //           JPush.messagePush();
+            //推送一条消息
+            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade().toString());
+            //mtype 0 系统消息      msgtype  18:升龙级
+            levelMsg(userInfo.getUserid(), "18", remark);
         }catch (Exception e){
             logger.error("levelUpAsyn error and msg = {}",e);
         }
+    }
+    
+    /**
+	 * @author yinxc
+	 * 等级升降级添加消息
+	 * 2017年3月8日
+	 */
+    private void levelMsg(long userid, String msgtype, String remark){
+    	UserMsg userMsg = new UserMsg();
+        userMsg.setUserid(userid);
+        userMsg.setMtype("0");
+        userMsg.setMsgtype(msgtype);
+        userMsg.setRemark(remark);
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setCreatetime(new Date());
+        userMsgMapper.insertSelective(userMsg);
     }
 
     /**

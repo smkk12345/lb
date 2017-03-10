@@ -19,6 +19,15 @@ public class SysAppupdate {
 
     private String updateexplain;//版本更新描述
 
+    private String enforceversion;
+
+    public void setEnforceversion(String enforceversion) {
+        this.enforceversion = enforceversion;
+    }
+
+    public String getEnforceversion() {
+        return enforceversion;
+    }
     /**
      * 
      * @return id 

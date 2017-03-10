@@ -299,10 +299,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getFriendid())){
-    				AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(commentLower.getFriendid()));
+    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getFriendid()));
         	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
     			}
-    	        AppUserMongoEntity appUserMongo = userMongoDao.findById(String.valueOf(commentLower.getUserid()));
+    	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getUserid()));
     	        commentLower.setAppUserMongoEntityUserid(appUserMongo);
 			}
     	}
@@ -313,7 +313,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
      * 初始化消息中用户信息 ------Userid
      */
     private void initCommentUserInfoByUserid(Comment comment){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(comment.getUserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
         comment.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
 

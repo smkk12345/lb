@@ -67,6 +67,7 @@ public class Improve {
     protected String isreply; //是否已批复  0：未批复  1：已批复
 
 
+
     /**
      * 以下扩展返回信息
      * 进步人信息
