@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -45,11 +45,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
-	@Transactional
 	@Override
 	public BaseResp<Object> insertClassroomMembers(ClassroomMembers record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
-//		try {
+		try {
 			//成员在加入教室之前，如果该教室收费，需先交费后才可加入
 			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
 			//isfree  是否免费。0 免费 1 收费
@@ -81,9 +80,9 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			reseResp.setData(record);
-//		} catch (Exception e) {
-//			logger.error("insertClassroomMembers record = {}", JSONArray.toJSON(record).toString(), e);
-//		}
+		} catch (Exception e) {
+			logger.error("insertClassroomMembers record = {}", JSONArray.toJSON(record).toString(), e);
+		}
 		return reseResp;
 	}
 	
@@ -164,21 +163,20 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室
 	 */
-	@Transactional
 	@Override
 	public BaseResp<Object> updateItypeByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
-//		try {
+		try {
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-//		} catch (Exception e) {
-//			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
-//					classroomid, userid, itype, e);
-//		}
+		} catch (Exception e) {
+			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
+					classroomid, userid, itype, e);
+		}
 		return reseResp;
 	}
 	
@@ -194,7 +192,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
      */
     private void initMsgUserInfoByUserid(ClassroomMembers classroomMembers){
     	if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(classroomMembers.getUserid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
     		classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);;
     	}
     }

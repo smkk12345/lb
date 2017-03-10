@@ -195,7 +195,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
     private void initQuestionsLowerUserInfoList(List<ClassroomQuestionsLower> lowerlist){
     	if(null != lowerlist && lowerlist.size()>0){
     		for (ClassroomQuestionsLower classroomQuestionsLower : lowerlist) {
-    	        AppUserMongoEntity appUserMongo = userMongoDao.findById(String.valueOf(classroomQuestionsLower.getUserid()));
+    	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(classroomQuestionsLower.getUserid()));
     	        classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongo);
 			}
     	}
@@ -206,7 +206,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
      * 初始化消息中用户信息 ------Userid
      */
     private void initQuestionsUserInfoByUserid(ClassroomQuestions classroomQuestions){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(classroomQuestions.getUserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomQuestions.getUserid()));
         classroomQuestions.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
 
