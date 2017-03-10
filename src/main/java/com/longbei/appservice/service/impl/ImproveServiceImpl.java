@@ -438,21 +438,27 @@ public class ImproveServiceImpl implements ImproveService{
                     String businesstype,String businessid, String isdel,String ispublic){
         Improve improve = null;
         try {
-            if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+            switch (businesstype){
+                case Constant.IMPROVE_SINGLE_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_RANK_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_CLASSROOM_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_CIRCLE_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_GOAL_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
+                    break;
+                default:
+                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+                    break;
             }
-            if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
-            }
-            if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
-            }
-            if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
-            }
-            if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-                improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
-            }
+
         } catch (Exception e) {
             logger.error("select improve by userid:{}" +
                             "id:{} businesstype:{} businessid:{} is error:{}",
@@ -472,22 +478,28 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectRankImproveList(String userid, String rankid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
 
+                    break;
+                default:
+                    break;
             }
+
+
             improves = improveMapper.selectListByBusinessid
                     (rankid, Constant_table.IMPROVE_RANK,null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
@@ -509,22 +521,28 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectRankImproveListByDate(String userid, String rankid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
 
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
+
+                    break;
+                default:
+                    break;
             }
+
             improves = improveMapper.selectListByBusinessid
                     (rankid, Constant_table.IMPROVE_RANK,"1",orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
@@ -546,21 +564,25 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectCircleImproveList(String userid, String circleid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
 
+                    break;
+                default:
+                    break;
             }
             improves = improveMapper.selectListByBusinessid
                     (circleid, Constant_table.IMPROVE_CIRCLE,null,orderby,pageNo,pageSize);
@@ -580,20 +602,25 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectCircleImproveListByDate(String userid, String circleid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
+
+                    break;
+                default:
+                    break;
             }
             improves = improveMapper.selectListByBusinessid
                     (circleid, Constant_table.IMPROVE_CIRCLE,"1",orderby,pageNo,pageSize);
@@ -613,20 +640,25 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectClassroomImproveList(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
+
+                    break;
+                default:
+                    break;
             }
             improves = improveMapper.selectListByBusinessid
                     (classroomid, Constant_table.IMPROVE_CLASSROOM, null, orderby, pageNo, pageSize);
@@ -648,20 +680,25 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectClassroomImproveListByDate(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
-            //全部
-            if (Constant.IMPROVE_LIST_ALL.equals(sift)) {
-            }
-            //关注
-            if (Constant.IMPROVE_LIST_FANS.equals(sift)){
+            switch (sift){
+                //全部
+                case Constant.IMPROVE_LIST_ALL:
 
-            }
-            //好友
-            if (Constant.IMPROVE_LIST_FRIEND.equals(sift)){
+                    break;
+                //关注
+                case Constant.IMPROVE_LIST_FANS:
 
-            }
-            //熟人
-            if (Constant.IMPROVE_LIST_ACQUAINTANCE.equals(sift)){
+                    break;
+                //好友
+                case Constant.IMPROVE_LIST_FRIEND:
 
+                    break;
+                //熟人
+                case Constant.IMPROVE_LIST_ACQUAINTANCE:
+
+                    break;
+                default:
+                    break;
             }
 
             improves = improveMapper.selectListByBusinessid
@@ -720,20 +757,25 @@ public class ImproveServiceImpl implements ImproveService{
                                  String businesstype,String businessid) {
 
         boolean isok = false;
-        if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            isok = removeSingleImprove(userid,improveid);
-        }
-        if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-            isok = removeRankImprove(userid,businessid,improveid);
-        }
-        if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-            isok = removeClassroomImprove(userid,businessid,improveid);
-        }
-        if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-            isok = removeCircleImprove(userid,businessid,improveid);
-        }
-        if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-            isok = removeGoalImprove(userid,businessid,improveid);
+        switch (businesstype){
+            case Constant.IMPROVE_SINGLE_TYPE:
+                isok = removeSingleImprove(userid,improveid);
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                isok = removeRankImprove(userid,businessid,improveid);
+                break;
+            case Constant.IMPROVE_CLASSROOM_TYPE:
+                isok = removeClassroomImprove(userid,businessid,improveid);
+                break;
+            case Constant.IMPROVE_CIRCLE_TYPE:
+                isok = removeCircleImprove(userid,businessid,improveid);
+                break;
+            case Constant.IMPROVE_GOAL_TYPE:
+                isok = removeGoalImprove(userid,businessid,improveid);
+                break;
+            default:
+                isok = removeSingleImprove(userid,improveid);
+                break;
         }
         if (isok){
             timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
@@ -1035,7 +1077,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,0);
+        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,4);
         if(null != list){
             improve.setImproveTopicList(list);
         }
@@ -1099,7 +1141,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
-                addLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
+                addLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,userMongoEntity.getAvatar())  ;
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
@@ -1498,14 +1540,15 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeToImproveForMongo(String impid,String userid,String opttype){
+    private void addLikeToImproveForMongo(String impid,String userid,String opttype,String avatar){
         ImproveLFD improveLFD = new ImproveLFD();
         improveLFD.setImpid(impid);
         improveLFD.setUserid(userid);
         improveLFD.setOpttype(opttype);
-        AppUserMongoEntity user = new AppUserMongoEntity();
-        user.setId(userid);
-        improveLFD.setAppUser(user);
+        improveLFD.setAvatar(avatar);
+//        AppUserMongoEntity user = new AppUserMongoEntity();
+//        user.setId(userid);
+//        improveLFD.setAppUser(user);
         improveLFD.setCreatetime(new Date());
         improveMongoDao.saveImproveLfd(improveLFD);
     }

@@ -90,13 +90,14 @@ public class AppUserController extends BaseController {
      * 			Map :detailList---用户十全十美的信息列表
      * 				 fansCount---粉丝总数
      * 				 showMsg---消息是否显示红点    0:不显示   1：显示	
+     * 				 userStar---星级
      * @auther yinxc
      * @currentdate:2017年3月9日
      */
    	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "infoMore")
     @ResponseBody
-    public BaseResp<Object> infoMore(@RequestParam("userid") String userid, @RequestParam("friendid") String friendid) {
+    public BaseResp<Object> infoMore(String userid, String friendid) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, friendid)) {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -104,7 +105,7 @@ public class AppUserController extends BaseController {
    		try {
    			baseResp = userService.selectInfoMore(Long.parseLong(friendid));
         } catch (Exception e) {
-        	logger.error("infoMore userid = {}", userid, e);
+        	logger.error("infoMore userid = {}, friendid = {}", userid, friendid, e);
         }
    		return baseResp;
     }
@@ -120,7 +121,7 @@ public class AppUserController extends BaseController {
    	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "info")
     @ResponseBody
-    public BaseResp<Object> info(@RequestParam("userid") String userid, @RequestParam("friendid") String friendid) {
+    public BaseResp<Object> info(String userid, String friendid) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, friendid)) {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -128,7 +129,7 @@ public class AppUserController extends BaseController {
    		try {
    			baseResp = userService.selectByUserid(Long.parseLong(friendid));
         } catch (Exception e) {
-        	logger.error("info userid = {}", userid, e);
+        	logger.error("info userid = {}, friendid = {}", userid, friendid, e);
         }
    		return baseResp;
     }
@@ -145,7 +146,7 @@ public class AppUserController extends BaseController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
-    public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
+    public BaseResp<Object> checkinDate(String userid, String yearmonth) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -157,6 +158,8 @@ public class AppUserController extends BaseController {
          }
   		return baseResp;
     }
+  	
+  	
     
     /**
     * @Title: http://ip:port/appservice/user/init
