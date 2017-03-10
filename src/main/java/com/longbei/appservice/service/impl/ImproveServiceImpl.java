@@ -1141,7 +1141,8 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
-                addLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,userMongoEntity.getAvatar())  ;
+                addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
+                        userMongoEntity.getAvatar())  ;
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
@@ -1540,7 +1541,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeToImproveForMongo(String impid,String userid,String opttype,String avatar){
+    private void addLikeToImproveForMongo(String impid,String businessid,String businesstype,String userid,String opttype,String avatar){
         ImproveLFD improveLFD = new ImproveLFD();
         improveLFD.setImpid(impid);
         improveLFD.setUserid(userid);
@@ -1550,7 +1551,7 @@ public class ImproveServiceImpl implements ImproveService{
 //        user.setId(userid);
 //        improveLFD.setAppUser(user);
         improveLFD.setCreatetime(new Date());
-        improveMongoDao.saveImproveLfd(improveLFD);
+        improveMongoDao.saveImproveLfd(improveLFD,businessid,businesstype);
     }
 
     /**
@@ -1776,6 +1777,10 @@ public class ImproveServiceImpl implements ImproveService{
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
             if(null != improve){
                 initImproveInfo(improve,Long.parseLong(userid));
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(userid);
+                improve.setAppUserMongoEntity(appUserMongoEntity);
+                initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                //初始化目标，榜单，圈子，教室等信息
                 baseResp.setData(improve);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
