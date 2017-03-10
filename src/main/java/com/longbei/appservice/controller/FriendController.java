@@ -104,26 +104,26 @@ public class FriendController {
     /**
      * 查询加好友请求列表
      * @param userId 用户id
-     * @param startNo 开始下标
-     * @param endNo 结束下标
+     * @param startNum 开始下标
+     * @param endNum 结束下标
      * @return
      */
     @RequestMapping(value="friendAddAskList")
-    public BaseResp<Object> friendAddAskList(Long userId,Integer startNo,Integer endNo){
-        logger.info("see friendAddAsk list userId:{} startNo:{} endNo:{}",userId,startNo,endNo);
+    public BaseResp<Object> friendAddAskList(Long userId,Integer startNum,Integer endNum){
+        logger.info("see friendAddAsk list userId:{} startNum:{} endNum:{}",userId,startNum,endNum);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userId == null){
             return baseResp.fail("参数错误");
         }
-        if(startNo == null){
-            startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+        if(startNum == null){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
         Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNo != null && endNo > startNo){
-            pageSize = endNo - startNo;
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
         }
 
-        baseResp = friendService.friendAddAskList(userId,startNo,pageSize);
+        baseResp = friendService.friendAddAskList(userId,startNum,pageSize);
 
         return baseResp;
     }

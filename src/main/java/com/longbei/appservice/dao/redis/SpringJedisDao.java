@@ -241,6 +241,17 @@ public class SpringJedisDao {
         return 0;
     }
 
+    //判断value 是否是 keySet中的元素
+    public boolean sIsMember(String key,String value){
+        try{
+            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+            return setOperations.isMember(key,value);
+        }catch(Exception e){
+            logger.error("redis set sisMember error",e);
+        }
+        return true;
+    }
+
     //redis set 移除
     public long sRem(String key,String... hashKeys){
         try {

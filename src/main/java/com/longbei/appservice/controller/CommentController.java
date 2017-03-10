@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.longbei.appservice.common.BaseResp;
@@ -58,8 +57,7 @@ public class CommentController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/decreaseCommentLikes")
     @ResponseBody
-    public BaseResp<Object> decreaseCommentLikes(@RequestParam("commentid") String commentid, 
-    		@RequestParam("friendid") String friendid) {
+    public BaseResp<Object> decreaseCommentLikes(String commentid, String friendid) {
     	
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(friendid, commentid)) {
@@ -68,7 +66,7 @@ public class CommentController extends BaseController {
   		try {
   			baseResp = commentLikesMongoService.deleteCommentLikesByCommentidAndFriendid(commentid, friendid);
 		} catch (Exception e) {
-			logger.error("decreaseCommentLikes commentid = {}, friendid = {},msg={}", commentid, friendid, e);
+			logger.error("decreaseCommentLikes commentid = {}, friendid = {}", commentid, friendid, e);
 		}
   		return baseResp;
 	}
@@ -86,9 +84,7 @@ public class CommentController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/addCommentLikes")
     @ResponseBody
-    public BaseResp<Object> addCommentLikes(@RequestParam("userid") String userid, 
-    		@RequestParam("commentid") String commentid, 
-    		@RequestParam("friendid") String friendid) {
+    public BaseResp<Object> addCommentLikes(String userid, String commentid, String friendid) {
     	
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, friendid, commentid)) {
@@ -103,7 +99,7 @@ public class CommentController extends BaseController {
   		try {
   			baseResp = commentLikesMongoService.insertCommentLikes(commentLikes);
 		} catch (Exception e) {
-			logger.error("addCommentLikes userid = {}, commentid = {}, friendid = {},msg={}", userid, commentid, friendid, e);
+			logger.error("addCommentLikes userid = {}, commentid = {}, friendid = {}", userid, commentid, friendid, e);
 		}
   		return baseResp;
 	}
@@ -112,8 +108,8 @@ public class CommentController extends BaseController {
     * @Title: http://ip:port/appservice/comment/commentList
     * @Description: 查看最新评论列表
     * @param @param friendid   当前访问者商户id
-	* @param @param itypeid  各类型对应的id
-    * @param @param itype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+	* @param @param businessid  各类型对应的id
+    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
     * @param @param startNo
     * @param @param pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -123,18 +119,16 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/commentList")
     @ResponseBody
-    public BaseResp<Object> commentList(@RequestParam("friendid") String friendid, 
-    		@RequestParam("itypeid") String itypeid, 
-    		@RequestParam("itype") String itype,
+    public BaseResp<Object> commentList(String friendid, String businessid, String businesstype,
     		int startNo, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
+		if (StringUtils.hasBlankParams(friendid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, itypeid, itype, startNo, pageSize);
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, businessid, businesstype, startNo, pageSize);
 		} catch (Exception e) {
-			logger.error("commentList itypeid = {},itype = {},msg={}", itypeid, itype, e);
+			logger.error("commentList businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return baseResp;
 	}
@@ -143,8 +137,8 @@ public class CommentController extends BaseController {
      * @Title: http://ip:port/appservice/comment/commentHotList
      * @Description: 查看热门评论列表(5条)
      * @param @param friendid   当前访问者商户id
- 	 * @param @param itypeid  各类型对应的id
-     * @param @param itype  类型   0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+ 	 * @param @param businessid  各类型对应的id
+     * @param @param businesstype  类型   0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
      * @currentdate:2017年1月22日
@@ -152,17 +146,15 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/commentHotList")
     @ResponseBody
-    public BaseResp<Object> commentHotList(@RequestParam("friendid") String friendid, 
-     	@RequestParam("itypeid") String itypeid, 
-     	@RequestParam("itype") String itype) {
+    public BaseResp<Object> commentHotList(String friendid, String businessid, String businesstype) {
     	BaseResp<Object> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(friendid, itypeid, itype)) {
+ 		if (StringUtils.hasBlankParams(friendid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {
- 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(friendid, itypeid, itype);
+ 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(friendid, businessid, businesstype);
  		} catch (Exception e) {
- 			logger.error("commentHotList itypeid = {},itype = {},msg={}", itypeid, itype, e);
+ 			logger.error("commentHotList businessid = {}, businesstype = {}", businessid, businesstype, e);
  		}
  		return baseResp;
  	}
@@ -172,8 +164,8 @@ public class CommentController extends BaseController {
      * @Description: 添加主评论
      * @param @param userid  评论者id
      * @param @param friendid 被评论商户id
-     * @param @param itype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-     * @param @param itypeid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * @param @param businessid  各类型对应的id
      * @param @param content
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
@@ -182,24 +174,23 @@ public class CommentController extends BaseController {
      @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/addComment")
      @ResponseBody
-     public BaseResp<Object> addComment(@RequestParam("userid") String userid, @RequestParam("friendid") String friendid, 
-    		@RequestParam("itypeid") String itypeid, 
-     		@RequestParam("itype") String itype, @RequestParam("content") String content) {
+     public BaseResp<Object> addComment(String userid, String friendid, 
+    		String businessid, String businesstype, String content) {
  		BaseResp<Object> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(userid, friendid, itypeid, itype)) {
+ 		if (StringUtils.hasBlankParams(userid, friendid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {
  			Comment comment = new Comment();
  			comment.setContent(content);
  			comment.setCreatetime(DateUtils.formatDateTime1(new Date()));
- 			comment.setItype(itype);
- 			comment.setItypeid(itypeid);
+ 			comment.setBusinesstype(businesstype);
+ 			comment.setBusinessid(businessid);
  			comment.setUserid(userid);
  			comment.setFriendid(friendid);
  			baseResp = commentMongoService.insertComment(comment);
  		} catch (Exception e) {
- 			logger.error("addComment userid = {}, itypeid = {},itype = {},msg={}", userid, itypeid, itype, e);
+ 			logger.error("addComment userid = {}, businessid = {}, businesstype = {}", userid, businessid, businesstype, e);
  		}
  		return baseResp;
  	}
@@ -219,9 +210,8 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
   	@RequestMapping(value = "/addCommentLower")
     @ResponseBody
-    public BaseResp<Object> addCommentLower(@RequestParam("userid") String userid, @RequestParam("commentid") String commentid, 
-    		@RequestParam("friendid") String friendid, 
-      		@RequestParam("content") String content, String status) {
+    public BaseResp<Object> addCommentLower(String userid, String commentid, 
+    		String friendid, String content, String status) {
     	
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, friendid, commentid)) {
@@ -240,7 +230,7 @@ public class CommentController extends BaseController {
   			commentLower.setStatus(status);
   			baseResp = commentLowerMongoService.insertCommentLower(commentLower);
   		} catch (Exception e) {
-  			logger.error("addCommentLower userid = {}, commentid = {},friendid = {},msg={}", userid, commentid, friendid, e);
+  			logger.error("addCommentLower userid = {}, commentid = {}, friendid = {}", userid, commentid, friendid, e);
   		}
   		return baseResp;
     }
@@ -256,7 +246,7 @@ public class CommentController extends BaseController {
    @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/deleteCommentLower")
    @ResponseBody
-   public BaseResp<Object> deleteCommentLower(@RequestParam("id") String id) {
+   public BaseResp<Object> deleteCommentLower(String id) {
    	
  		BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(id)) {
@@ -265,7 +255,7 @@ public class CommentController extends BaseController {
  		try {
  			baseResp = commentLowerMongoService.deleteCommentLower(id);
  		} catch (Exception e) {
- 			logger.error("deleteCommentLower id = {},msg={}", id, e);
+ 			logger.error("deleteCommentLower id = {}", id, e);
  		}
  		return baseResp;
    }
@@ -281,7 +271,7 @@ public class CommentController extends BaseController {
    	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/deleteComment")
 	@ResponseBody
-	public BaseResp<Object> deleteComment(@RequestParam("commentid") String commentid) {
+	public BaseResp<Object> deleteComment(String commentid) {
 	  	
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(commentid)) {
@@ -290,7 +280,7 @@ public class CommentController extends BaseController {
 		try {
 			baseResp = commentMongoService.deleteComment(commentid);
 		} catch (Exception e) {
-			logger.error("deleteComment commentid = {},msg={}", commentid, e);
+			logger.error("deleteComment commentid = {}", commentid, e);
 		}
 		return baseResp;
 	}
@@ -298,8 +288,8 @@ public class CommentController extends BaseController {
    	/**
      * @Title: http://ip:port/appservice/comment/selectCommentCountSum
      * @Description: 查看评论总数
-     * @param @param itype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-     * @param @param itypeid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * @param @param businessid  各类型对应的id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
      * @currentdate:2017年1月22日
@@ -307,16 +297,16 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/selectCommentCountSum")
  	@ResponseBody
- 	public BaseResp<Integer> selectCommentCountSum(@RequestParam("itype") String itype, @RequestParam("itypeid") String itypeid) {
+ 	public BaseResp<Integer> selectCommentCountSum(String businesstype, String businessid) {
  	  	
  		BaseResp<Integer> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(itype, itypeid)) {
+ 		if (StringUtils.hasBlankParams(businesstype, businessid)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {
- 			baseResp = commentMongoService.selectCommentCountSum(itypeid, itypeid);
+ 			baseResp = commentMongoService.selectCommentCountSum(businessid, businesstype);
  		} catch (Exception e) {
- 			logger.error("selectCommentCountSum itypeid = {},msg={}", itypeid, e);
+ 			logger.error("selectCommentCountSum businessid = {}, businesstype = {}", businessid, businesstype, e);
  		}
  		return baseResp;
  	}
