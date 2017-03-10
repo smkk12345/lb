@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_table;
@@ -169,7 +170,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByid id={},msg={}",id,e);
+			logger.error("deleteByid id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -188,7 +189,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByUserid userid={},msg={}",userid,e);
+			logger.error("deleteByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -202,7 +203,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByMtypeAndMsgtype userid = {}, msg = {}", userid, e);
+			logger.error("deleteByMtypeAndMsgtype userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -221,7 +222,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByUserid userid={},msg={}",userid,e);
+			logger.error("deleteByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -245,7 +246,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record={},msg={}",record,e);
+			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -266,18 +267,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserMsg> list = userMsgMapper.selectByUserid(userid, startNum, endNum);
-			if (null != list && list.size()>0) {
-//				AppUserMongoEntity mongoEntity = userMongoDao.getAppUser(userid+"");
-//				if(null != mongoEntity){
-//					
-//				}
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else{
+			if (startNum == 0 && list.size() == 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+			}else{
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectByUserid userid={},msg={}",userid,e);
+			logger.error("selectByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -291,7 +288,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByid record={},msg={}",record,e);
+			logger.error("updateByid record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -310,7 +307,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateIsreadByid id={},msg={}",id,e);
+			logger.error("updateIsreadByid id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -329,7 +326,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateIsreadByUserid userid = {}, msg = {}", userid, e);
+			logger.error("updateIsreadByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -399,7 +396,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectOtherList userid = {}, mtype = {}, msg = {}", userid, mtype, e);
+			logger.error("selectOtherList userid = {}, mtype = {}", userid, mtype, e);
 		}
 		return reseResp;
 	}
@@ -514,7 +511,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			reseResp.setExpandData(expandData);
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectExceptList userid = {}, msg = {}", userid, e);
+			logger.error("selectExceptList userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -635,7 +632,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectLikeList userid = {}, msg = {}", userid, e);
+			logger.error("selectLikeList userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -656,7 +653,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 					//含有    未读
 					snsFans.setIsread("0");
 				}
-				AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
 				if(null != appUserMongoEntity){
 					
 				}
@@ -763,10 +760,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 		try {
 			temp = userMsgMapper.selectCountByType(userid, mtype, msgtype, isread);
 		} catch (Exception e) {
-			logger.error("selectCountByType userid = {}, mtype = {}, msg = {}", userid, mtype, e);
+			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);
 		}
 		return temp;
 	}
+	
+	
 
 	@Override
 	public List<String> selectIdByMsgtypeList(long userid, String msgtype) {
@@ -780,7 +779,7 @@ public class UserMsgServiceImpl implements UserMsgService {
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
             userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
     	}
     }
@@ -789,7 +788,7 @@ public class UserMsgServiceImpl implements UserMsgService {
      * 初始化消息中用户信息 ------Userid
      */
 //    private void initMsgUserInfoByUserid(UserMsg userMsg){
-//        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getUserid()));
+//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getUserid()));
 //        userMsg.setAppUserMongoEntityUserid(appUserMongoEntity);
 //    }
 
