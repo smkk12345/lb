@@ -2,6 +2,7 @@ package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
 import com.longbei.appservice.entity.ImproveLFDDetail;
@@ -26,8 +27,10 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * 保存 赞 花 钻 明细
      * @param improveLFD
      * @author luye
+     *  private String businesstype;
+     *  private Long businessid;
      */
-    public void saveImproveLfd(ImproveLFD improveLFD){
+    public void saveImproveLfd(ImproveLFD improveLFD,String businessid,String businesstype){
         Criteria criteria = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid())
                 .and("opttype").is(improveLFD.getOpttype());
@@ -39,6 +42,8 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         improveLFDDetail.setImpid(improveLFD.getImpid());
         improveLFDDetail.setOpttype(improveLFD.getOpttype());
         improveLFDDetail.setCreatetime(improveLFD.getCreatetime());
+        improveLFDDetail.setBusinessid(businessid);
+        improveLFDDetail.setBusinesstype(businesstype);
         mongoTemplate.save(improveLFDDetail);
         mongoTemplate.upsert(query,update,ImproveLFD.class);
         Criteria removecriteria = Criteria.where("impid").is(improveLFD.getImpid());
@@ -93,6 +98,24 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
         return count;
     }
+
+    /**
+     * 统计进步的总花 赞 钻石
+     * @param businessid
+     * @param businesstype
+     * @return
+     */
+    public Long selectTotal(String businessid,String businesstype,String otype){
+        Criteria criteria = Criteria.where("businesstype").is(businesstype);
+        if(!StringUtils.isBlank(businessid)){
+            criteria.and("businessid").is(businessid);
+        }
+        criteria.and("opttype").is(otype);
+        Query query = new Query(criteria);
+        Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
+        return count;
+    }
+
     /**
      * 查询 赞，花，钻 数
      * @param impid

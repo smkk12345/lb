@@ -29,7 +29,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
             userid = Constant.SQUARE_USER_ID;
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-        if (StringUtils.isEmpty(ptype)){
+        if (!StringUtils.isEmpty(ptype)){
             criteria.and("ptype").is(ptype);
         }
         if (null != lastdate) {

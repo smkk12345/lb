@@ -15,6 +15,8 @@ public class SnsGroupMembers {
 
     private String nickname;//群昵称
 
+    private String avatar;//头像
+
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
@@ -125,5 +127,21 @@ public class SnsGroupMembers {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    /**
+     * 获取头像
+     * @return
+     */
+    public String getAvatar() {
+        return avatar;
+    }
+
+    /**
+     * 设置头像
+     * @param avatar
+     */
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

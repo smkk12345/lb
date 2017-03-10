@@ -25,7 +25,7 @@ public class UserJobServiceImpl implements UserJobService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertJob(long userid,String companyname,String department,String location,Date starttime,Date endtime) {
+	public BaseResp<Object> insertJob(long userid,String companyname,String department,String location,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserJob data = new UserJob();
 		data.setUserid(userid);
@@ -38,10 +38,17 @@ public class UserJobServiceImpl implements UserJobService {
 		data.setCreatetime(date);
 		data.setUpdatetime(date);
 		try {
-			int m = userJobMapper.insertJob(data);
-			if(m == 1){
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			 }
+			//先判断是否超过5条
+			int nums = userJobMapper.selectCountJob(userid);
+			if(nums < 5){
+				int m = userJobMapper.insertJob(data);
+				if(m == 1){
+					baseResp.setData(data);
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}else{
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_38, Constant.RTNINFO_SYS_38);
+			}
 		} catch (Exception e) {
 			logger.error("insertJob error and msg={}",e);
 		}
@@ -93,7 +100,7 @@ public class UserJobServiceImpl implements UserJobService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateJob(int id,String companyname,String department,String location,Date starttime,Date endtime) {
+	public BaseResp<Object> updateJob(int id,String companyname,String department,String location,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserJob data = new UserJob();
 		data.setId(id);
@@ -107,6 +114,7 @@ public class UserJobServiceImpl implements UserJobService {
 		try {
 			int n = userJobMapper.updateJob(data);
 			if(n == 1){
+				baseResp.setData(data);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

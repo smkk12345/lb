@@ -21,8 +21,27 @@ public class ImproveLFDDetail {
     private String userid;
     private String opttype;
     private Date createtime;
+    private String businessid;
+    private String businesstype;
+
     @DBRef
     private AppUserMongoEntity appUser;
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public String getBusinesstype() {
+        return businesstype;
+    }
+
+    public String getBusinessid() {
+        return businessid;
+    }
+
+    public void setBusinessid(String businessid) {
+        this.businessid = businessid;
+    }
 
     public AppUserMongoEntity getAppUser() {
         return appUser;

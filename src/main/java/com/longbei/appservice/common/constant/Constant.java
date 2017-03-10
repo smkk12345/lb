@@ -73,6 +73,8 @@ public class Constant {
 	public static final int STATUS_SYS_35 = -35;
 	public static final int STATUS_SYS_36 = -36;
 	public static final int STATUS_SYS_37 = -37;
+	public static final int STATUS_SYS_38 = -38;
+	public static final int STATUS_SYS_39 = -39;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -150,6 +152,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
 	public static final String RTNINFO_SYS_36 = "教室参与人数已达到限额";
 	public static final String RTNINFO_SYS_37 = "用户已加入教室";
+	public static final String RTNINFO_SYS_38 = "工作信息最多可添加5条";
+	public static final String RTNINFO_SYS_39 = "教育信息最多可添加5条";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -396,6 +400,8 @@ public class Constant {
 	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
 	
 	public static final String  MSG_CLASSROOM_REPLY_MODEL = "批复了你在教室'n'上传的作业"; 	//老师回复提问消息模板
+	public static final String  MSG_USER_LEVEL_MODEL = "你的龙级升级到n级"; 	//等级提升消息模板
+	public static final String  MSG_USER_PL_LEVEL_MODEL = "十全十美能级---m升级到n级"; 	//十全十美类型等级提升消息模板
 	
 
 	/**

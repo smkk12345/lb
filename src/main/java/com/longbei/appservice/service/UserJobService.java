@@ -3,7 +3,6 @@ package com.longbei.appservice.service;
 import java.util.Date;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.UserJob;
 
 public interface UserJobService {
 	/**
@@ -19,7 +18,7 @@ public interface UserJobService {
 	* @auther IngaWu
 	* @currentdate:2017年2月22日
 	*/
-	BaseResp<Object> insertJob(long userid,String companyname,String department,String location,Date starttime,Date endtime);
+	BaseResp<Object> insertJob(long userid,String companyname,String department,String location,String starttime,Date endtime);
 	/**
 	* @Title: deleteJob
 	* @Description: 删除工作经历（通过id和userid删除）
@@ -61,5 +60,5 @@ public interface UserJobService {
 	* @auther IngaWu
 	* @currentdate:2017年2月22日
 	*/
-	BaseResp<Object> updateJob(int id,String companyname,String department,String location,Date starttime,Date endtime);
+	BaseResp<Object> updateJob(int id,String companyname,String department,String location,String starttime,Date endtime);
 }

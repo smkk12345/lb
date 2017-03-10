@@ -19,10 +19,36 @@ public class ImproveLFD implements Serializable{
     private String id;
     private String impid;
     private String userid;
-    @DBRef
-    private AppUserMongoEntity appUser;
+    private String avatar="";//0309号同于总确认  头像不改 所以不存储appuser id信息了
     private String opttype;
+    private String businesstype;
+    private Long businessid;
+
     private Date createtime;
+
+    public void setBusinessid(Long businessid) {
+        this.businessid = businessid;
+    }
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public Long getBusinessid() {
+        return businessid;
+    }
+
+    public String getBusinesstype() {
+        return businesstype;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
 
     public String getImpid() {
         return impid;
@@ -46,14 +72,6 @@ public class ImproveLFD implements Serializable{
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public AppUserMongoEntity getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUserMongoEntity appUser) {
-        this.appUser = appUser;
     }
 
     public String getOpttype() {

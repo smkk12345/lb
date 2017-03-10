@@ -79,6 +79,62 @@ public class AppUserController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
     
+    
+    /**
+     * @Title: http://ip:port/app_service/user/infoMore
+     * @Description: 个人中心
+     * @param @param userid 当前登录id
+     * @param @param friendid
+     * @param @param 正确返回 code 0，验证码不对，参数错误，未知错误返回相应状态码
+     * @return  data:userInfo
+     * 			Map :detailList---用户十全十美的信息列表
+     * 				 fansCount---粉丝总数
+     * 				 showMsg---消息是否显示红点    0:不显示   1：显示	
+     * 				 userStar---星级
+     * @auther yinxc
+     * @currentdate:2017年3月9日
+     */
+   	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "infoMore")
+    @ResponseBody
+    public BaseResp<Object> infoMore(String userid, String friendid) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, friendid)) {
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = userService.selectInfoMore(Long.parseLong(friendid));
+        } catch (Exception e) {
+        	logger.error("infoMore userid = {}, friendid = {}", userid, friendid, e);
+        }
+   		return baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/user/info
+     * @Description: 个人资料
+     * @param @param userid 当前登录id
+     * @param @param friendid
+     * @auther yinxc
+     * @currentdate:2017年3月8日
+     */
+   	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "info")
+    @ResponseBody
+    public BaseResp<Object> info(String userid, String friendid) {
+   		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, friendid)) {
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = userService.selectByUserid(Long.parseLong(friendid));
+        } catch (Exception e) {
+        	logger.error("info userid = {}, friendid = {}", userid, friendid, e);
+        }
+   		return baseResp;
+    }
+    
+    
     /**
     * @Title: http://ip:port/appservice/user/checkinDate
     * @Description: 用户每月签到详情及搜索
@@ -90,7 +146,7 @@ public class AppUserController extends BaseController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
-    public BaseResp<Object> checkinDate(@RequestParam("userid") String userid, @RequestParam("yearmonth") String yearmonth) {
+    public BaseResp<Object> checkinDate(String userid, String yearmonth) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -102,6 +158,8 @@ public class AppUserController extends BaseController {
          }
   		return baseResp;
     }
+  	
+  	
     
     /**
     * @Title: http://ip:port/appservice/user/init
@@ -569,7 +627,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("insertSchool and userid={},schoolname={},Department={},starttime={},endtime={}", userid,schoolname,Department,starttime,endtime,e);
@@ -671,7 +729,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("updateSchool and id={},schoolname={},Department={},starttime={},endtime={}",id,schoolname,Department,starttime,endtime,e);
@@ -700,7 +758,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("insertJob and userid={},companyname={},department={},location={},starttime={},endtime={}",userid,companyname,department,location,starttime,endtime,e);
@@ -802,7 +860,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("updateJob and id={},companyname={},department={},location={},starttime={},endtime={}",id,companyname,department,location,starttime,endtime,e);

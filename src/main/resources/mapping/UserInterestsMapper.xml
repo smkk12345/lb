@@ -18,6 +18,14 @@
     from user_interests
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectInterests" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_interests 
+    where userid = #{userid}
+  </select>
+  
   <delete id="deleteInterests" >
     delete from user_interests
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=VARCHAR}

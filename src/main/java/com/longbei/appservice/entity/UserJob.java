@@ -13,7 +13,7 @@ public class UserJob {
 
     private String location;//工作所在地
 
-    private Date starttime;//工作起始时间
+    private String starttime;//工作起始时间到结束时间
 
     private Date endtime;
 
@@ -105,7 +105,7 @@ public class UserJob {
      * 工作起始时间
      * @return starttime 工作起始时间
      */
-    public Date getStarttime() {
+    public String getStarttime() {
         return starttime;
     }
 
@@ -113,7 +113,7 @@ public class UserJob {
      * 工作起始时间
      * @param starttime 工作起始时间
      */
-    public void setStarttime(Date starttime) {
+    public void setStarttime(String starttime) {
         this.starttime = starttime;
     }
 

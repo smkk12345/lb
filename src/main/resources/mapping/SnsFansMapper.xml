@@ -46,6 +46,11 @@
     where userid = #{userid} and likeuserid=#{likeuserid} 
   </select>
   
+  <select id="selectCountFans" resultType="java.lang.Integer">
+  	SELECT count(*) from sns_fans 
+  	where userid = #{userid} 
+  </select>
+  
   <select id="selectFansByUserid" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />

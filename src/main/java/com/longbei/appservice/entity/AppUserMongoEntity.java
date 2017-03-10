@@ -19,6 +19,28 @@ public class AppUserMongoEntity {
 	private Double[] gispoint;
 	
 	private long userid;
+	private String isfriend;
+	private String isfans;
+
+	public long getUserid() {
+		return Long.parseLong(id);
+	}
+
+	public void setIsfriend(String isfriend) {
+		this.isfriend = isfriend;
+	}
+
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
+	}
+
+	public String getIsfriend() {
+		return isfriend;
+	}
+
+	public String getIsfans() {
+		return isfans;
+	}
 
 	@JsonInclude(Include.ALWAYS)
 	public Double[] getGispoint() {
@@ -35,7 +57,6 @@ public class AppUserMongoEntity {
 
 	public void setId(String id) {
 		this.id = id;
-		this.userid = Long.parseLong(id);
 	}
 
 	public String getUsername() {
@@ -64,12 +85,5 @@ public class AppUserMongoEntity {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	
-	public void setUserid(long userid) {
-		this.userid = userid;
-	}
 
-	public long getUserid() {
-		return userid;
-	}
 }

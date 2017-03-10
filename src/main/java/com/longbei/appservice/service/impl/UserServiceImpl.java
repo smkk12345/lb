@@ -1,5 +1,8 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.longbei.appservice.common.utils.NickNameUtils;
@@ -7,17 +10,34 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.longbei.appservice.entity.SysPerfectInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.SnsFansMapper;
+import com.longbei.appservice.dao.SysPerfectInfoMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.UserInterestsMapper;
+import com.longbei.appservice.dao.UserJobMapper;
+import com.longbei.appservice.dao.UserLevelMapper;
+import com.longbei.appservice.dao.UserMsgMapper;
+import com.longbei.appservice.dao.UserPlDetailMapper;
+import com.longbei.appservice.dao.UserSchoolMapper;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserInterests;
+import com.longbei.appservice.entity.UserJob;
+import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.UserPlDetail;
+import com.longbei.appservice.entity.UserSchool;
+import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.HttpClient;
 
@@ -41,8 +61,95 @@ public class UserServiceImpl implements UserService {
 	private SpringJedisDao springJedisDao;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private UserJobMapper userJobMapper;
+	@Autowired
+	private UserSchoolMapper userSchoolMapper;
+	@Autowired
+	private UserInterestsMapper userInterestsMapper;
+	@Autowired
+	private UserPlDetailMapper userPlDetailMapper;
+	@Autowired
+	private SysPerfectInfoMapper sysPerfectInfoMapper;
+	@Autowired
+	private SnsFansMapper snsFansMapper;
+	@Autowired
+	private UserMsgService userMsgService;
+	@Autowired
+	private UserLevelMapper userLevelMapper;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	
+	
+
+	@Override
+	public BaseResp<Object> selectInfoMore(long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Map<String, Object> expandData = new HashMap<String, Object>();
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			//查询用户十全十美的信息列表
+			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
+			for (UserPlDetail userPlDetail : detailList) {
+				String ptype = userPlDetail.getPtype();
+				SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
+				if (null != sysPerfectInfo) {
+					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
+				}
+			}
+			userInfo.setDetailList(detailList);
+			//获取用户星级
+			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+			expandData.put("userStar", userLevel.getStar());
+			//查询粉丝总数
+			int fansCount = snsFansMapper.selectCountFans(userid);
+			//判断对话消息是否显示红点    0:不显示   1：显示
+			int showMsg = userMsgService.selectShowMyByMtype(userid);
+			//查询奖品数量----
+			
+			
+			
+			
+			
+			reseResp.setData(userInfo);
+//			expandData.put("detailList", detailList);
+			expandData.put("fansCount", fansCount);
+			expandData.put("showMsg", showMsg);
+			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectInfoMore userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+	
+
+	@Override
+	public BaseResp<Object> selectByUserid(long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+//			Map<String, Object> expandData = new HashMap<String, Object>();
+			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
+			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
+			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
+			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
+			userInfo.setInterestList(interestList);
+			userInfo.setJobList(jobList);
+			userInfo.setSchoolList(schoolList);
+			reseResp.setData(userInfo);
+//			expandData.put("jobList", jobList);
+//			expandData.put("schoolList", schoolList);
+//			expandData.put("interestList", interestList);
+//			reseResp.setExpandData(expandData);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectByUserid userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public BaseResp<Object> register(Long userid,String username, 
@@ -485,8 +592,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
-	
-	
+
+
 	
 	
 

@@ -20,6 +20,12 @@
     from sys_appupdate
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectRecentByKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/>
+    from sys_appupdate
+    where ttype=#{ttype,jdbcType=VARCHAR}
+    order by id desc limit 1;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_appupdate
     where id = #{id,jdbcType=INTEGER}
