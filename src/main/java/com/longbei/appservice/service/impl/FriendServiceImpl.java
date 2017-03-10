@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangyongzhi 17/3/6.
@@ -250,10 +252,25 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 //更改用户消息为已读
                 friendMongoDao.updateFriendAddAsk(id,null,"receive",true,null,null);
             }
-            //更改用户新消息提示为没有新消息
+            //更改用户新消息提示为没有新消息(会校验是否还有未读消息,如果有未读消息,则不会更新新消息提示的状态)
             updateUserNewMessageTip(userId,false);
 
-            baseResp.setData(friendAddAsk);
+            JSONArray jsonArray = friendAddAsk.getMessage();
+            if(jsonArray.size() > 3){
+                JSONArray newJSONArray = new JSONArray();
+                for(int i=1;i < 4;i++){
+                    newJSONArray.add(newJSONArray.get(jsonArray.size()-i));
+                }
+                friendAddAsk.setMessage(newJSONArray);
+            }
+
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            resultMap.put("message",friendAddAsk.getMessage());
+            resultMap.put("senderUserId",friendAddAsk.getSenderUserId());
+            resultMap.put("status",friendAddAsk.getStatus());
+            resultMap.put("appUserMongoEntity",friendAddAsk.getAppUserMongoEntity());
+
+            baseResp.setData(resultMap);
 
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
