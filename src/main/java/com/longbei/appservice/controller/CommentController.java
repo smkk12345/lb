@@ -107,7 +107,7 @@ public class CommentController extends BaseController {
 	/**
     * @Title: http://ip:port/appservice/comment/commentList
     * @Description: 查看最新评论列表
-    * @param @param friendid   当前访问者商户id
+    * @param @param userid   当前访问者商户id
 	* @param @param businessid  各类型对应的id
     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
     * @param @param startNo
@@ -119,14 +119,14 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/commentList")
     @ResponseBody
-    public BaseResp<Object> commentList(String friendid, String businessid, String businesstype,
+    public BaseResp<Object> commentList(String userid, String businessid, String businesstype,
     		int startNo, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(friendid, businessid, businesstype)) {
+		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(friendid, businessid, businesstype, startNo, pageSize);
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(userid, businessid, businesstype, startNo, pageSize);
 		} catch (Exception e) {
 			logger.error("commentList businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
@@ -198,11 +198,12 @@ public class CommentController extends BaseController {
      /**
       * @Title: http://ip:port/appservice/comment/addCommentLower
       * @Description: 添加子评论
-      * @param @param userid   评论者id
+      * @param @param firstuserid
       * @param @param commentid  主评论id
       * @param @param status  0:不显示回复    1:显示回复
       * @param @param content  评论内容
-      * @param @param friendid   被评论商户id
+      * @param @param seconduserid
+      * 子评论    A回复B   A的id ： firstuserid    B的id：seconduserid
       * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
       * @auther yxc
       * @currentdate:2017年1月22日
@@ -210,11 +211,11 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
   	@RequestMapping(value = "/addCommentLower")
     @ResponseBody
-    public BaseResp<Object> addCommentLower(String userid, String commentid, 
-    		String friendid, String content, String status) {
+    public BaseResp<Object> addCommentLower(String firstuserid, String commentid, 
+    		String seconduserid, String content, String status) {
     	
   		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, friendid, commentid)) {
+  		if (StringUtils.hasBlankParams(firstuserid, seconduserid, commentid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		if(StringUtils.hasBlankParams(status)){
@@ -225,12 +226,12 @@ public class CommentController extends BaseController {
   			commentLower.setContent(content);
   			commentLower.setCreatetime(DateUtils.formatDateTime1(new Date()));
   			commentLower.setCommentid(commentid);
-  			commentLower.setFriendid(friendid);
-  			commentLower.setUserid(userid);
+  			commentLower.setSeconduserid(seconduserid);
+  			commentLower.setFirstuserid(firstuserid);
   			commentLower.setStatus(status);
   			baseResp = commentLowerMongoService.insertCommentLower(commentLower);
   		} catch (Exception e) {
-  			logger.error("addCommentLower userid = {}, commentid = {}, friendid = {}", userid, commentid, friendid, e);
+  			logger.error("addCommentLower firstuserid = {}, commentid = {}, seconduserid = {}", firstuserid, commentid, seconduserid, e);
   		}
   		return baseResp;
     }

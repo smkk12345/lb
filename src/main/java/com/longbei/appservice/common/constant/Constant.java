@@ -482,4 +482,10 @@ public class Constant {
     public static final String USER_PRIVILEGE_ADD_CIRCLE = "0";//
     public static final String USER_PRIVILEGE_ADD_RANK = "1";//
     public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
+
+	/****** JPUSH 消息的tag start ******/
+
+	public static final String JPUSH_TAG_COUNT_1001 = "1001";
+
+	/****** JPUSH 消息的tag end ******/
 }

@@ -1243,7 +1243,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             int n = userCollectMapper.removeCollect(Long.parseLong(userid),Long.parseLong(impid),buinesstype);
-            if(n == 1){
+            if(n > 0){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){

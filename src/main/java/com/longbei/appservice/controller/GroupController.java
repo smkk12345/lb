@@ -20,6 +20,7 @@ public class GroupController {
 
     /**
      * 新建群组
+     * @url http://ip:port/app_service/group/createGroup
      * @param userIds 新建群时,加入的用户id
      * @param mainGroupUserId 群主用户id
      * @param type 群组关联的类型 1.榜 2.兴趣圈 3.教室
@@ -39,6 +40,7 @@ public class GroupController {
 
     /**
      * 更新群组名称
+     * @url http://ip:port/app_service/group/updateGroupName
      * @param userId 当前用户id
      * @param groupId 群组id
      * @param groupName 群组名称
@@ -57,9 +59,10 @@ public class GroupController {
 
     /**
      * 更改成员加入群组 是否需要验证
+     * @url http://ip:port/app_service/group/updateGroupNeedConfirm
      * @param userId 当前登录用户id
      * @param groupId 群组id
-     * @param needConfirm 是否需要验证
+     * @param needConfirm 是否需要验证 true 代表加群需要验证 false代表加群不需要验证
      * @return
      */
     @RequestMapping("updateGroupNeedConfirm")
@@ -75,6 +78,7 @@ public class GroupController {
 
     /**
      * 更改群公告
+     * @url http://ip:port/app_service/group/updateGroupNotice
      * @param userId 用户id
      * @param groupId 群组id
      * @param notice 公告
@@ -91,6 +95,7 @@ public class GroupController {
 
     /**
      * 更改成员 群昵称
+     * @url http://ip:port/app_service/group/updateGroupMemberNickName
      * @param userId
      * @param groupId
      * @param nickName
@@ -109,6 +114,7 @@ public class GroupController {
 
     /**
      * 加群 用户主动加群,成员邀请好友加群,以及群主邀请好友加群 都是调用该接口
+     * @url http://ip:port/app_service/group/insertGroupMember
      * @param userIds 用户id 加群人的id 被邀请人的id
      * @param invitationUserId 邀请人id 如果没有邀请人,则可不传
      * @param groupId 群组id
@@ -127,6 +133,7 @@ public class GroupController {
 
     /**
      * 批量审核群成员的加群申请
+     * @url http://ip:port/app_service/group/batchUpdateGroupMember
      * @param userIds
      * @param groupId 群组id
      * @param currentUserId 当前登录用户id
@@ -145,9 +152,10 @@ public class GroupController {
 
     /**
      * 退群
-     * @param userIds
-     * @param groupId
-     * @param currentUserId
+     * @url http://ip:port/app_service/group/quietGroup
+     * @param userIds 退出群组的用户id
+     * @param groupId 群组id
+     * @param currentUserId 当前登录用户
      * @return
      */
     @RequestMapping(value="quietGroup")
@@ -162,6 +170,7 @@ public class GroupController {
 
     /**
      * 查询群成员
+     * @url http://ip:port/app_service/group/groupMemberList
      * @param groupId 群组id
      * @param userId 用户id
      * @param status 查询群组成员的状态 1.代表查询加群成功的,已经在群中的群成员 0.代表查询待群主审核的群成员(仅限群主查询)
@@ -179,6 +188,7 @@ public class GroupController {
 
     /**
      * 解散群组
+     * @url http://ip:port/app_service/group/dismissGroup
      * @param userId 用户id
      * @param groupId 群组id
      * @return
@@ -195,6 +205,7 @@ public class GroupController {
 
     /**
      * 更新群主
+     * @url http://ip:port/app_service/group/updateGroupMainUser
      * @param userId 新的群主id
      * @param currentUserId 当前登录用户id
      * @param groupId 群id
