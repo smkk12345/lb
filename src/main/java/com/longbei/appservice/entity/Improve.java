@@ -91,6 +91,28 @@ public class Improve {
 
     private List<ImproveTopic> improveTopicList = null;//超级话题
 
+    private BusinessEntity businessEntity = new BusinessEntity();
+
+    public void setBusinessEntity(String ptype,
+                                  String title,
+                                  Integer involved,
+                                  Date startdate,
+                                  Date enddate,
+                                  Integer sortnum,
+                                  Integer days) {
+        this.businessEntity.setDays(days);
+        this.businessEntity.setStartdate(startdate);
+        this.businessEntity.setEnddate(enddate);
+        this.businessEntity.setPtype(ptype);
+        this.businessEntity.setInvolved(involved);
+        this.businessEntity.setTitle(title);
+        this.businessEntity.setSortnum(sortnum);
+    }
+
+    public BusinessEntity getBusinessEntity() {
+        return businessEntity;
+    }
+
     public List<ImproveLFD> getImproveLFDs() {
         return improveLFDs;
     }
@@ -543,5 +565,76 @@ public class Improve {
 	public void setIsreply(String isreply) {
 		this.isreply = isreply;
 	}
+
+    /**
+     * 业务临时实体，微进步详情中用
+     */
+	class BusinessEntity{
+        private String ptype; //十全十美类型
+        private String title; //榜单名称
+        private Integer involved; //参与人数
+        private Date enddate;//时间
+        private Date startdate;//
+        private Integer sortnum;//排名
+        private Integer days;//持续天数
+
+        public void setEnddate(Date enddate) {
+            this.enddate = enddate;
+        }
+
+        public void setStartdate(Date startdate) {
+            this.startdate = startdate;
+        }
+
+        public Date getEnddate() {
+            return enddate;
+        }
+
+        public Date getStartdate() {
+            return startdate;
+        }
+
+        public void setDays(Integer days) {
+            this.days = days;
+        }
+
+        public void setInvolved(Integer involved) {
+            this.involved = involved;
+        }
+
+        public void setPtype(String ptype) {
+            this.ptype = ptype;
+        }
+
+        public void setSortnum(Integer sortnum) {
+            this.sortnum = sortnum;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public Integer getDays() {
+            return days;
+        }
+
+        public Integer getInvolved() {
+            return involved;
+        }
+
+        public Integer getSortnum() {
+            return sortnum;
+        }
+
+        public String getPtype() {
+            return ptype;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+    }
+
 
 }

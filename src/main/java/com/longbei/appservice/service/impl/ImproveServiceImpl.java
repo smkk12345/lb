@@ -93,6 +93,10 @@ public class ImproveServiceImpl implements ImproveService{
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
     private SnsFansMapper snsFansMapper;
+    @Autowired
+    private RankService rankService;
+    @Autowired
+    private UserGoalMapper userGoalMapper;
 
     /**
      *  @author luye
@@ -1781,6 +1785,38 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setAppUserMongoEntity(appUserMongoEntity);
                 initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
+                switch(businesstype){
+                    case Constant.IMPROVE_SINGLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_RANK_TYPE:
+                        {
+                        Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
+                            int sortnum = 0;
+                            improve.setBusinessEntity(rank.getPtype(),
+                                    rank.getRanktitle(),
+                                    rank.getRankinvolved(),
+                                    rank.getSstarttime(),
+                                    rank.getEndtime(),
+                                    sortnum,0);
+                        }
+                        break;
+                    case Constant.IMPROVE_CLASSROOM_TYPE:
+                        break;
+                    case Constant.IMPROVE_CIRCLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_GOAL_TYPE:
+                        UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+                        improve.setBusinessEntity(userGoal.getPtype(),
+                                userGoal.getGoaltag(),
+                                0,
+                                userGoal.getUpdatetime(),
+                                null,
+                                0,
+                                userGoal.getIcount());
+                        break;
+                    default:
+                        break;
+                }
                 baseResp.setData(improve);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

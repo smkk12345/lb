@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.UserGoal;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserGoalMapper {
     int deleteByPrimaryKey(Integer id);
@@ -9,7 +10,7 @@ public interface UserGoalMapper {
 
     int insertSelective(UserGoal record);
 
-    UserGoal selectByPrimaryKey(Integer id);
+    UserGoal selectByGoalId(@Param("goalid") Long goalId);
 
     int updateByPrimaryKeySelective(UserGoal record);
 

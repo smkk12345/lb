@@ -335,4 +335,15 @@ public class RankServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public Rank selectByRankid(long rankid) {
+        try {
+            Rank rank = rankMapper.selectRankByRankid(rankid);
+            return rank;
+        } catch (Exception e) {
+            logger.error("selectRankByRankid error and msg={}",e);
+        }
+        return null;
+    }
+
 }
