@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.longbei.appservice.common.constant.Constant_Perfect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +71,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			//获取十全十美类型---社交
 			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
-			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType, null,0,0);
+			reseResp.setData(comment);
+			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType, null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);
@@ -92,10 +92,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		record.setUserid(Long.valueOf(comment.getFriendid()));
 		record.setCreatetime(new Date());
 		record.setFriendid(Long.valueOf(comment.getUserid()));
-		record.setGtype(comment.getItype());
+		record.setGtype(comment.getBusinesstype());
 		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
 		record.setMsgtype("1");
-		record.setSnsid(Long.valueOf(comment.getItypeid()));
+		record.setSnsid(Long.valueOf(comment.getBusinessid()));
 		record.setRemark(comment.getContent());
 		record.setIsdel("0");
 		record.setIsread("0");
@@ -131,10 +131,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 
 	@Override
-	public BaseResp<Object> selectCommentListByItypeid(String itypeid, String itype, int startNo, int pageSize) {
+	public BaseResp<Object> selectCommentListByItypeid(String businessid, String businesstype, int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(itypeid, itype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -156,17 +156,17 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeid itypeid = {}, itype = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return reseResp;
 	}
 	
 	@Override
-	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype,
+	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype,
 			int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(itypeid, itype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					//初始化用户信息
@@ -187,16 +187,16 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return reseResp;
 	}
 	
 	@Override
-	public BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String itypeid, String itype) {
+	public BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String businessid, String businesstype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentByItypeid(itypeid, itype);
+			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype);
 			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -232,7 +232,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
-			logger.error("selectCommentListByItypeidAndFriendid itypeid = {}, itype = {}", itypeid, itype, e);
+			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return reseResp;
 	}
@@ -271,10 +271,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 
 	@Override
-	public BaseResp<Integer> selectCommentCountSum(String itypeid, String itype) {
+	public BaseResp<Integer> selectCommentCountSum(String businessid, String businesstype) {
 		BaseResp<Integer> reseResp = new BaseResp<Integer>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentByItypeid(itypeid, itype);
+			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype);
 			//获取评论总数
 			int zong = 0;
 			if(null != list && list.size()>0){
@@ -286,7 +286,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			reseResp.setData(zong);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectCommentCountSum itypeid = {}", itypeid, e);
+			logger.error("selectCommentCountSum businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return reseResp;
 	}
@@ -298,12 +298,14 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     private void initCommentLowerUserInfoList(List<CommentLower> lowers){
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
-    			if(!StringUtils.hasBlankParams(commentLower.getFriendid())){
-    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getFriendid()));
-        	        commentLower.setAppUserMongoEntityFriendid(appUserMongoEntity);
+    			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+        	        commentLower.setFriendNickname(appUserMongoEntity.getNickname());
     			}
-    	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getUserid()));
-    	        commentLower.setAppUserMongoEntityUserid(appUserMongo);
+				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+					commentLower.setNickname(appUserMongo.getNickname());
+				}
 			}
     	}
         

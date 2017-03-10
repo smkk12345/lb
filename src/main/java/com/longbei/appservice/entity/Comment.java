@@ -23,8 +23,8 @@ public class Comment {
 	private String friendid;   //被评论商户id
 	private String content;    //评论内容
 	private String createtime; //评论时间
-	private String itype;      //类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-	private String itypeid;    //各类型对应的id
+	private String businesstype;      //类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+	private String businessid;    //各类型对应的id
 	@Transient
 	private List<CommentLower> lowerList = new ArrayList<>();
 	@Transient
@@ -72,19 +72,21 @@ public class Comment {
 	}
 	
 	@JsonInclude(Include.ALWAYS)
-	public String getItype() {
-		return itype;
+	public String getBusinesstype() {
+		return businesstype;
 	}
-	public void setItype(String itype) {
-		this.itype = itype;
+
+	public void setBusinesstype(String businesstype) {
+		this.businesstype = businesstype;
 	}
-	
+
 	@JsonInclude(Include.ALWAYS)
-	public String getItypeid() {
-		return itypeid;
+	public String getBusinessid() {
+		return businessid;
 	}
-	public void setItypeid(String itypeid) {
-		this.itypeid = itypeid;
+
+	public void setBusinessid(String businessid) {
+		this.businessid = businessid;
 	}
 
 	@JsonInclude(Include.ALWAYS)
