@@ -3,6 +3,12 @@ package com.longbei.appservice.entity;
 import java.util.Date;
 
 public class SnsGroup {
+
+    public static final Integer groupIdLength = 7;
+    public static final String groupIdSet = "Sns_Group_Id_Set";
+
+    public static Integer maxNum = 1000;//一个群组中最大的成员数量
+
     private Integer id;
 
     private Long groupid;//群id
@@ -21,7 +27,7 @@ public class SnsGroup {
 
     private String notice;//群公告
 
-    private Long mainuserId;//群主id
+    private Long mainuserid;//群主id
 
     private Integer maxnum;//最大人数
 
@@ -147,7 +153,7 @@ public class SnsGroup {
         this.notice = notice;
     }
 
-    public boolean isNeedconfirm() {
+    public boolean getNeedconfirm() {
         return needconfirm;
     }
 
@@ -163,16 +169,16 @@ public class SnsGroup {
      * 获取群主的用户id
      * @return
      */
-    public Long getMainuserId() {
-        return mainuserId;
+    public Long getMainuserid() {
+        return mainuserid;
     }
 
     /**
      * 设置群主的用户id
-     * @param mainuserId
+     * @param mainuserid
      */
-    public void setMainuserId(Long mainuserId) {
-        this.mainuserId = mainuserId;
+    public void setMainuserid(Long mainuserid) {
+        this.mainuserid = mainuserid;
     }
 
     /**

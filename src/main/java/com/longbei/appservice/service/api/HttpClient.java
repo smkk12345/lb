@@ -14,7 +14,7 @@ public class HttpClient {
 	public static IUserBasicService userBasicService =
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
 			.decoder(new GsonDecoder())
-            .target(IUserBasicService.class, "http://localhost:8080/user_service");
+            .target(IUserBasicService.class, "http://localhost:8081/user_service");
 	//外网接口 阿里大鱼
 	public static IAlidayuService alidayuService =
 			Feign.builder().requestInterceptor(new ApiRequestInterceptor())
