@@ -516,7 +516,7 @@ public class ImproveController {
 		}
 		logger.info("collectImp userid={},impid={}",userid,improveid);
 		try{
-			improveService.collectImp(userid,improveid,businesstype,businessid);
+			baseResp = improveService.collectImp(userid,improveid,businesstype,businessid);
 		}catch (Exception e){
 			logger.error("collection error userid={},impid={},msg={}",userid,improveid,e);
 		}
@@ -527,19 +527,19 @@ public class ImproveController {
 	 * 取消收藏  improve/removeCollect
 	 * @param userid
 	 * @param improveid
-	 * @param buinesstype
+	 * @param businesstype
      * @return
      */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "removeCollect")
-	BaseResp<Object> removeCollect(String userid,String improveid,String buinesstype){
+	BaseResp<Object> removeCollect(String userid,String improveid,String businesstype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,improveid,buinesstype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try{
-			return improveService.removeCollect(userid,improveid,buinesstype);
+			return improveService.removeCollect(userid,improveid,businesstype);
 		}catch (Exception e){
 			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,improveid,e);
 		}

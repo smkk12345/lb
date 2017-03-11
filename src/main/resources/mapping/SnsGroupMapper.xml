@@ -9,9 +9,14 @@
     <result column="relateid" property="relateid" jdbcType="BIGINT" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
+    <result column="notice" property="notice" jdbcType="VARCHAR" />
+    <result column="mainuserid" property="mainuserid" jdbcType="BIGINT" />
+    <result column="maxnum" property="maxnum" jdbcType="INTEGER" />
+    <result column="currentnum" property="currentnum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, groupid, groupname, grouptype, relateid, createtime, updatetime
+    id, groupid, groupname, grouptype, relateid, createtime, updatetime,currentnum,maxnum,mainuserid,notice,needconfirm
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +31,10 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.SnsGroup" >
     insert into sns_group (id, groupid, groupname, 
       grouptype, relateid, createtime, 
-      updatetime)
+      updatetime,currentnum,maxnum,mainuserid,notice,needconfirm)
     values (#{id,jdbcType=INTEGER}, #{groupid,jdbcType=BIGINT}, #{groupname,jdbcType=VARCHAR}, 
       #{grouptype,jdbcType=CHAR}, #{relateid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP})
+      #{updatetime,jdbcType=TIMESTAMP},#{currentnum},#{maxnum},#{mainuserid},#{notice},#{needconfirm})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsGroup" >
     insert into sns_group
@@ -55,6 +60,21 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="needconfirm != null" >
+        needconfirm,
+      </if>
+      <if test="notice != null" >
+        notice,
+      </if>
+      <if test="mainuserid != null" >
+        mainuserid,
+      </if>
+      <if test="maxnum != null" >
+        maxnum,
+      </if>
+      <if test="currentnum != null" >
+        currentnum,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -77,6 +97,21 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="needconfirm != null" >
+        #{needconfirm},
+      </if>
+      <if test="notice != null" >
+        #{notice},
+      </if>
+      <if test="mainuserid != null" >
+        #{mainuserid},
+      </if>
+      <if test="maxnum != null" >
+        #{maxnum},
+      </if>
+      <if test="currentnum != null" >
+        #{currentnum},
       </if>
     </trim>
   </insert>
@@ -101,6 +136,21 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="needconfirm != null" >
+        needconfirm = #{needconfirm},
+      </if>
+      <if test="notice != null" >
+        notice = #{notice},
+      </if>
+      <if test="mainuserid != null" >
+        mainuserid = #{mainuserid},
+      </if>
+      <if test="maxnum != null" >
+        maxnum = #{maxnum},
+      </if>
+      <if test="currentnum != null" >
+        currentnum = #{currentnum},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -111,7 +161,57 @@
       grouptype = #{grouptype,jdbcType=CHAR},
       relateid = #{relateid,jdbcType=BIGINT},
       createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      currentnum = #{currentnum},
+      maxnum = #{maxnum},
+      mainuserid = #{mainuserid},
+      notice = #{notice},
+      needconfirm = #{needconfirm}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 根据群组id和用户id 查询群组 -->
+  <select id="selectByGroupIdAndMainUserId" parameterType="String" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      sns_group
+    where
+      groupid =#{groupId}
+      <if test="userId != null">
+         and mainuserid = #{userId}
+      </if>
+  </select>
+
+  <!--更新群组名称-->
+  <update id="updateGroupInfo" parameterType="String">
+      update sns_group
+      <set>
+        <if test="groupName != null">
+          groupname = #{groupName},
+        </if>
+        <if test="updateDate != null">
+          updatetime = #{updateDate},
+        </if>
+        <if test="needConfirm != null">
+          needconfirm = #{needConfirm}
+        </if>
+      </set>
+      where groupId = #{groupId}
+  </update>
+
+  <!-- 更新群组 新增人数 -->
+  <update id="updateGroupCurrentNum" parameterType="String">
+      update sns_group set currentnum = currentnum + #{addNum} where groupid = #{groupId}
+  </update>
+
+  <!-- 删除群组 -->
+  <delete id="deleteByGroupId" parameterType="String">
+      delete from sns_group where groupid = #{groupid}
+  </delete>
+
+  <!-- 更新群组群主id -->
+  <update id="updateGroupMainUser" parameterType="String">
+      update sns_group set mainuserid=#{userId} where groupid = #{groupId}
   </update>
 </mapper>

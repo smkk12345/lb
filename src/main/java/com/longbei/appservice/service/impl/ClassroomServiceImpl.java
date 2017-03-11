@@ -109,11 +109,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			Map<String, Object> expandData = new HashMap<String, Object>();
+			String isadd = "0";
 			if(null != classroom){
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//名片信息
 				classroom.setUserCard(userCard);
-				reseResp.setData(classroom);
 				//获取成员列表
 //				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
 //				expandData.put("memberList", memberList);
@@ -129,7 +129,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 					classroomMembers.setDiamonds(0);
 				}
 				expandData.put("classroomMembers", classroomMembers);
+				//itype 0—加入教室 1—退出教室     为null查全部
+				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+				if(null != members){
+					isadd = "1";
+				}
+				classroom.setIsadd(isadd);
 			}
+			reseResp.setData(classroom);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -425,7 +432,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		//isdel 消息假删  0 未删 1 假删
 		record.setIsdel("0");
 		//isread 0 未读  1 已读
-		record.setIsdel("0");
+		record.setIsread("0");
 		record.setCreatetime(new Date());
 		// gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
 		record.setGtype("4");

@@ -13,16 +13,16 @@
     <result column="needwarn" property="needwarn" jdbcType="CHAR"/>
     <result column="warntime" property="warntime" jdbcType="VARCHAR"/>
     <result column="week" property="week" jdbcType="VARCHAR"/>
-
+    <result column="icount" property="icount" jdbcType="INT"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByGoalId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from user_goal
-    where id = #{id,jdbcType=INTEGER}
+    where goalid = #{goalid}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_goal

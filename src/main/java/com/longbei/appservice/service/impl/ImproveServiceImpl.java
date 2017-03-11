@@ -93,6 +93,10 @@ public class ImproveServiceImpl implements ImproveService{
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
     private SnsFansMapper snsFansMapper;
+    @Autowired
+    private RankService rankService;
+    @Autowired
+    private UserGoalMapper userGoalMapper;
 
     /**
      *  @author luye
@@ -1141,7 +1145,8 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
-                addLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,userMongoEntity.getAvatar())  ;
+                addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
+                        userMongoEntity.getAvatar())  ;
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
@@ -1238,7 +1243,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             int n = userCollectMapper.removeCollect(Long.parseLong(userid),Long.parseLong(impid),buinesstype);
-            if(n == 1){
+            if(n > 0){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
@@ -1540,7 +1545,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeToImproveForMongo(String impid,String userid,String opttype,String avatar){
+    private void addLikeToImproveForMongo(String impid,String businessid,String businesstype,String userid,String opttype,String avatar){
         ImproveLFD improveLFD = new ImproveLFD();
         improveLFD.setImpid(impid);
         improveLFD.setUserid(userid);
@@ -1550,7 +1555,7 @@ public class ImproveServiceImpl implements ImproveService{
 //        user.setId(userid);
 //        improveLFD.setAppUser(user);
         improveLFD.setCreatetime(new Date());
-        improveMongoDao.saveImproveLfd(improveLFD);
+        improveMongoDao.saveImproveLfd(improveLFD,businessid,businesstype);
     }
 
     /**
@@ -1776,6 +1781,42 @@ public class ImproveServiceImpl implements ImproveService{
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
             if(null != improve){
                 initImproveInfo(improve,Long.parseLong(userid));
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(userid);
+                improve.setAppUserMongoEntity(appUserMongoEntity);
+                initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                //初始化目标，榜单，圈子，教室等信息
+                switch(businesstype){
+                    case Constant.IMPROVE_SINGLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_RANK_TYPE:
+                        {
+                        Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
+                            int sortnum = 0;
+                            improve.setBusinessEntity(rank.getPtype(),
+                                    rank.getRanktitle(),
+                                    rank.getRankinvolved(),
+                                    rank.getSstarttime(),
+                                    rank.getEndtime(),
+                                    sortnum,0);
+                        }
+                        break;
+                    case Constant.IMPROVE_CLASSROOM_TYPE:
+                        break;
+                    case Constant.IMPROVE_CIRCLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_GOAL_TYPE:
+                        UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+                        improve.setBusinessEntity(userGoal.getPtype(),
+                                userGoal.getGoaltag(),
+                                0,
+                                userGoal.getUpdatetime(),
+                                null,
+                                0,
+                                userGoal.getIcount());
+                        break;
+                    default:
+                        break;
+                }
                 baseResp.setData(improve);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1876,10 +1917,10 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> acceptBasicAward(long rankid, long userid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
-        if(!canAcceptAward(rankMembers)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
-        }
+//        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+//        if(!canAcceptAward(rankMembers)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+//        }
         ImpAward impAward = impAwardMapper.selectByRankIdAndUserId(rankid,userid);
         int icon = impAward.getAwardprice();
         //进步币发生变化   龙杯账户减少 用户账户增多  添加事务 写 统一接口
@@ -1896,10 +1937,10 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
-            if(!canAcceptAward(rankMembers)) {
-
-            }
+//            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+//            if(!canAcceptAward(rankMembers)) {
+//
+//            }
         }catch (Exception e){
 
         }

@@ -25,7 +25,11 @@ public class RankMembers {
 
     private Integer flowers;
 
-    private String acceptaward;
+    private String isup;//是否下榜。0-未下榜 1-已下榜
+
+    private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
+
+    private String isfashionman;
 
     /**
      * 
@@ -203,15 +207,51 @@ public class RankMembers {
         this.flowers = flowers;
     }
 
-
-    public void setAcceptaward(String acceptaward) {
-        this.acceptaward = acceptaward;
+    /**
+     * 是否下榜。0-未下榜 1-已下榜
+     * @return isup 是否下榜。0-未下榜 1-已下榜
+     */
+    public String getIsup() {
+        return isup;
     }
 
+    /**
+     * 是否下榜。0-未下榜 1-已下榜
+     * @param isup 是否下榜。0-未下榜 1-已下榜
+     */
+    public void setIsup(String isup) {
+        this.isup = isup == null ? null : isup.trim();
+    }
+
+    /**
+     * 0 未领奖 1 领奖 2 发货 3签收
+     * @return acceptaward 0 未领奖 1 领奖 2 发货 3签收
+     */
     public String getAcceptaward() {
         return acceptaward;
     }
 
+    /**
+     * 0 未领奖 1 领奖 2 发货 3签收
+     * @param acceptaward 0 未领奖 1 领奖 2 发货 3签收
+     */
+    public void setAcceptaward(String acceptaward) {
+        this.acceptaward = acceptaward == null ? null : acceptaward.trim();
+    }
 
+    /**
+     * 
+     * @return isfashionman 
+     */
+    public String getIsfashionman() {
+        return isfashionman;
+    }
 
+    /**
+     * 
+     * @param isfashionman 
+     */
+    public void setIsfashionman(String isfashionman) {
+        this.isfashionman = isfashionman == null ? null : isfashionman.trim();
+    }
 }

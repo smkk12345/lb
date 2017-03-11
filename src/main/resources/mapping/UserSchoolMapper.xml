@@ -6,7 +6,7 @@
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="schoolname" property="schoolname" jdbcType="VARCHAR" />
     <result column="Department" property="department" jdbcType="VARCHAR" />
-    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="starttime" property="starttime" />
     <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
@@ -41,7 +41,7 @@
       Department, starttime, endtime, 
       createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{schoolname,jdbcType=VARCHAR}, 
-      #{department,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
+      #{department,jdbcType=VARCHAR}, #{starttime}, #{endtime,jdbcType=TIMESTAMP}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSchool" parameterType="com.longbei.appservice.entity.UserSchool" useGeneratedKeys="true" keyProperty="id" >
@@ -86,7 +86,7 @@
         #{department,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        #{starttime,jdbcType=TIMESTAMP},
+        #{starttime},
       </if>
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
@@ -109,7 +109,7 @@
         Department = #{department,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        starttime = #{starttime,jdbcType=TIMESTAMP},
+        starttime = #{starttime},
       </if>
       <if test="endtime != null" >
         endtime = #{endtime,jdbcType=TIMESTAMP},
@@ -125,7 +125,7 @@
     set userid = #{userid,jdbcType=BIGINT},
       schoolname = #{schoolname,jdbcType=VARCHAR},
       Department = #{department,jdbcType=VARCHAR},
-      starttime = #{starttime,jdbcType=TIMESTAMP},
+      starttime = #{starttime},
       endtime = #{endtime,jdbcType=TIMESTAMP},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=VARCHAR}

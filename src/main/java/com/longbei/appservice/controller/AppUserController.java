@@ -628,7 +628,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("insertSchool and userid={},schoolname={},Department={},starttime={},endtime={}", userid,schoolname,Department,starttime,endtime,e);
@@ -730,7 +730,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("updateSchool and id={},schoolname={},Department={},starttime={},endtime={}",id,schoolname,Department,starttime,endtime,e);
@@ -759,7 +759,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("insertJob and userid={},companyname={},department={},location={},starttime={},endtime={}",userid,companyname,department,location,starttime,endtime,e);
@@ -861,7 +861,7 @@ public class AppUserController extends BaseController {
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}  
     	try {
-    		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,DateUtils.parseDate(starttime),DateUtils.parseDate(endtime));
+    		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
 		} catch (Exception e) {
 			logger.error("updateJob and id={},companyname={},department={},location={},starttime={},endtime={}",id,companyname,department,location,starttime,endtime,e);

@@ -25,7 +25,7 @@ public class UserJobServiceImpl implements UserJobService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertJob(long userid,String companyname,String department,String location,Date starttime,Date endtime) {
+	public BaseResp<Object> insertJob(long userid,String companyname,String department,String location,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserJob data = new UserJob();
 		data.setUserid(userid);
@@ -100,7 +100,7 @@ public class UserJobServiceImpl implements UserJobService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateJob(int id,String companyname,String department,String location,Date starttime,Date endtime) {
+	public BaseResp<Object> updateJob(int id,String companyname,String department,String location,String starttime,Date endtime) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		UserJob data = new UserJob();
 		data.setId(id);

@@ -21,7 +21,26 @@ public class ImproveLFD implements Serializable{
     private String userid;
     private String avatar="";//0309号同于总确认  头像不改 所以不存储appuser id信息了
     private String opttype;
+    private String businesstype;
+    private Long businessid;
+
     private Date createtime;
+
+    public void setBusinessid(Long businessid) {
+        this.businessid = businessid;
+    }
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public Long getBusinessid() {
+        return businessid;
+    }
+
+    public String getBusinesstype() {
+        return businesstype;
+    }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
