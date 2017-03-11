@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
@@ -57,8 +56,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateClassnotice")
-    public BaseResp<Object> updateClassnotice(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("userid") String userid, String classnotice, String ismsg) {
+    public BaseResp<Object> updateClassnotice(String classroomid, String userid, String classnotice, String ismsg) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid, classnotice, ismsg)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -83,7 +81,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "delQuestionsLower")
-    public BaseResp<Object> delQuestionsLower(@RequestParam("lowerid") String lowerid) {
+    public BaseResp<Object> delQuestionsLower(String lowerid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(lowerid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -106,7 +104,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "delQuestions")
-    public BaseResp<Object> delQuestions(@RequestParam("questionsid") String questionsid) {
+    public BaseResp<Object> delQuestions(String questionsid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(questionsid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -132,9 +130,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "addQuestionsLower")
-    public BaseResp<Object> addQuestionsLower(@RequestParam("questionsid") String questionsid, 
-    		@RequestParam("userid") String userid, @RequestParam("content") String content, 
-    		@RequestParam("friendid") String friendid) {
+    public BaseResp<Object> addQuestionsLower(String questionsid, String userid, String content, String friendid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(questionsid, userid, content, friendid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -166,8 +162,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "addQuestions")
-    public BaseResp<Object> addQuestions(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("userid") String userid, @RequestParam("content") String content) {
+    public BaseResp<Object> addQuestions(String classroomid, String userid, String content) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid, content)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -196,7 +191,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(@RequestParam("classroomid") String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> questionsList(String classroomid, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -219,8 +214,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateIsdel")
-    public BaseResp<Object> updateIsdel(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("coursesid") String coursesid) {
+    public BaseResp<Object> updateIsdel(String classroomid, String coursesid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, coursesid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -244,8 +238,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateIsdefault")
-    public BaseResp<Object> updateIsdefault(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("coursesid") String coursesid) {
+    public BaseResp<Object> updateIsdefault(String classroomid, String coursesid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, coursesid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -270,7 +263,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesList")
-    public BaseResp<Object> coursesList(@RequestParam("classroomid") String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> coursesList(String classroomid, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -294,18 +287,18 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateMembersItype")
-    public BaseResp<Object> updateMembersItype(@RequestParam("classroomid") String classroomid, @RequestParam("userid") String userid) {
+    public BaseResp<Object> updateMembersItype(String classroomid, String userid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-//  		try {
+  		try {
   			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid), 
   					Long.parseLong(userid), "1");
-//  		} catch (Exception e) {
-//  			logger.error("updateMembersItype classroomid = {}, userid = {}", 
-//  					classroomid, userid, e);
-//  		}
+  		} catch (Exception e) {
+  			logger.error("updateMembersItype classroomid = {}, userid = {}", 
+  					classroomid, userid, e);
+  		}
   		return baseResp;
     }
 	
@@ -321,13 +314,12 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "insertMembers")
-    public BaseResp<Object> insertMembers(@RequestParam("classroomid") String classroomid, 
-    		@RequestParam("userid") String userid) {
+    public BaseResp<Object> insertMembers(String classroomid, String userid) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-//  		try {
+  		try {
   			ClassroomMembers record = new ClassroomMembers();
   			record.setClassroomid(Long.parseLong(classroomid));
   			record.setCreatetime(new Date());
@@ -342,10 +334,10 @@ public class ClassroomController {
   			//userstatus 用户在教室中的身份。0 — 普通学员 1—助教
   			record.setUserstatus("0");
   			baseResp = classroomMembersService.insertClassroomMembers(record);
-//  		} catch (Exception e) {
-//  			logger.error("insertMembers classroomid = {}, userid = {}", 
-//  					classroomid, userid, e);
-//  		}
+  		} catch (Exception e) {
+  			logger.error("insertMembers classroomid = {}, userid = {}", 
+  					classroomid, userid, e);
+  		}
   		return baseResp;
     }
 	
@@ -360,7 +352,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomMembers")
-    public BaseResp<Object> selectRoomMembers(@RequestParam("classroomid") String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> selectRoomMembers(String classroomid, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -388,8 +380,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectCreateRoom")
-    public BaseResp<Object> selectCreateRoom(@RequestParam("userid") String userid, 
-    		@RequestParam("ptype") String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectCreateRoom(String userid, String ptype, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -414,7 +405,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectInsertRoom")
-    public BaseResp<Object> selectInsertRoom(@RequestParam("userid") String userid, int startNo, int pageSize) {
+    public BaseResp<Object> selectInsertRoom(String userid, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -442,8 +433,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomSearch")
-    public BaseResp<Object> selectRoomSearch(@RequestParam("keyword") String keyword, 
-    		@RequestParam("ptype") String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(keyword)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -468,7 +458,7 @@ public class ClassroomController {
 	*/
  	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectClassroomList")
-    public BaseResp<Object> selectClassroomList(@RequestParam("userid") String userid, int startNo, int pageSize) {
+    public BaseResp<Object> selectClassroomList(String userid, int startNo, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -496,8 +486,7 @@ public class ClassroomController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersList")
-    public BaseResp<Object> classroomMembersList(@RequestParam("userid") String userid, 
-    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+    public BaseResp<Object> classroomMembersList(String userid, String classroomid, String sift, 
     		 int startNo, int pageSize) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
@@ -528,8 +517,7 @@ public class ClassroomController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
-    public BaseResp<Object> classroomMembersDateList(@RequestParam("userid") String userid, 
-    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+    public BaseResp<Object> classroomMembersDateList(String userid, String classroomid, String sift, 
     		 String type, 
     		 int startNo, int pageSize) {
    		BaseResp<Object> baseResp = new BaseResp<>();
@@ -560,8 +548,7 @@ public class ClassroomController {
 // 	*/
 //  	@SuppressWarnings("unchecked")
 // 	@RequestMapping(value = "classroomMembersHotList")
-//    public BaseResp<Object> classroomMembersHotList(@RequestParam("userid") String userid, 
-//    		 @RequestParam("classroomid") String classroomid, @RequestParam("sift") String sift, 
+//    public BaseResp<Object> classroomMembersHotList(String userid, String classroomid, String sift, 
 //    		 int startNo, int pageSize) {
 //   		BaseResp<Object> baseResp = new BaseResp<>();
 //   		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
@@ -592,8 +579,7 @@ public class ClassroomController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomDetail")
-    public BaseResp<Object> classroomDetail(@RequestParam("userid") String userid, 
-    		 @RequestParam("classroomid") String classroomid) {
+    public BaseResp<Object> classroomDetail(String userid, String classroomid) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -622,7 +608,7 @@ public class ClassroomController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesDetail")
-    public BaseResp<Object> coursesDetail(@RequestParam("classroomid") String classroomid) {
+    public BaseResp<Object> coursesDetail(String classroomid) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

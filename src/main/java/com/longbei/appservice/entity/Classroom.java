@@ -41,6 +41,8 @@ public class Classroom {
     private String isfree; //是否免费。0 免费 1 收费
     
     private Integer freecoursenum; //免费课程数量
+
+    private String isdel; //0 未删除。1 删除
     
     private UserCard userCard; //名片类
     
@@ -121,7 +123,7 @@ public class Classroom {
     public Integer getClassinvoloed() {
         return classinvoloed;
     }
-
+    
     /**
      * 教室参与人数
      * @param classinvoloed 教室参与人数
@@ -295,7 +297,7 @@ public class Classroom {
 		return userCard;
 	}
 
-	public void setUserCard(UserCard userCard) {
+    public void setUserCard(UserCard userCard) {
 		this.userCard = userCard;
 	}
 
@@ -314,4 +316,14 @@ public class Classroom {
 	public void setIsadd(String isadd) {
 		this.isadd = isadd;
 	}
+
+    @JsonInclude(Include.ALWAYS)
+    public String getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(String isdel) {
+        this.isdel = isdel;
+    }
+
 }
