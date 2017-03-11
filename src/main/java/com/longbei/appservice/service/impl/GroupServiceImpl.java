@@ -464,6 +464,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.fail("抱歉,您暂时无法查询群组成员列表");
             }
             List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status);
+
             if(snsGroup.getMainuserid().equals(userId)){
                 resultMap.put("isMainUser",true);
             }else{

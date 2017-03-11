@@ -112,4 +112,11 @@ public interface UserRelationService {
 	 */
 	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
 
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize);
 }

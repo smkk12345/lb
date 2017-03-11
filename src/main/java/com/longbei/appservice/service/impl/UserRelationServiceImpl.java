@@ -287,7 +287,19 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		return reseResp;
 	}
-	
+
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	@Override
+	public BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize) {
+		List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
+		return null;
+	}
+
 	/**
 	 * @author yinxc
 	 * 读取拼接ids

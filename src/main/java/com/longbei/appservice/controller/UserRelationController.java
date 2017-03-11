@@ -254,6 +254,26 @@ public class UserRelationController extends BaseController {
 		}
 		return baseResp;
 	}
+
+	/**
+	 * 加载推荐的达人
+	 * @param startNum 开始页码
+	 * @param endNum 结束页码
+     * @return
+     */
+	@RequestMapping(value = "selectFashionManUser")
+	public BaseResp<Object> selectFashionManUser(Integer startNum,Integer endNum ){
+		if(startNum == null || startNum < 0){
+			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+		}
+		Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(endNum != null && endNum > startNum){
+			pageSize = endNum - startNum;
+		}
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		baseResp = this.userRelationService.selectFashionManUser(startNum,pageSize);
+		return baseResp;
+	}
 	//－－－－－－－－－－－sns_fans－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	
