@@ -1,9 +1,9 @@
 package com.longbei.appservice.controller.api;
 
-import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.DictAreaMapper;
 import com.longbei.appservice.entity.DictArea;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * test
@@ -30,46 +31,24 @@ public class TestApiController {
 
         List<DictArea> dictAreas = dictAreaMapper.selectCityList(null,null,null);
 
-        return JSON.toJSONString(getDictAreaJsonList(dictAreas));
+        return JSONArray.fromObject(getChildArea(null,dictAreas)).toString();
 
     }
 
-
-    private List<DictArea> getDictAreaJsonList(List<DictArea> dictAreas){
-
-        List<DictArea> rootArea = new ArrayList<>();
-
-        for (DictArea dictArea : dictAreas){
-            if (StringUtils.isBlank(dictArea.getPid())){
-                rootArea.add(dictArea);
-            }
-        }
-
-        for (DictArea dictArea : rootArea){
-            dictArea.setChildArea(getChildArea(dictArea.getId(),dictAreas));
-        }
-        return rootArea;
-
-    }
-
-
-    private List<DictArea> getChildArea(int id,List<DictArea> dictAreas){
-
+    private List<DictArea> getChildArea(Integer id,List<DictArea> dictAreas){
         List<DictArea> chillAreas = new ArrayList<>();
-
-        for (DictArea dictArea : dictAreas){
-            if (!StringUtils.isBlank(dictArea.getPid())){
+        for (Iterator it = dictAreas.iterator();it.hasNext();){
+            DictArea dictArea = (DictArea)it.next();
+            if (!StringUtils.isBlank(dictArea.getPid())&&null!=id){
                 if (Integer.parseInt(dictArea.getPid()) == id){
                     chillAreas.add(dictArea);
+                    dictArea.setChildArea(getChildArea(dictArea.getId(),dictAreas));
                 }
+            }else if(null == id){
+                chillAreas.add(dictArea);
+                dictArea.setChildArea(getChildArea(dictArea.getId(),dictAreas));
             }
         }
-
-        for (DictArea dictArea : chillAreas){
-            dictArea.setChildArea(getChildArea(dictArea.getId(),dictAreas));
-        }
         return chillAreas;
-
     }
-
 }

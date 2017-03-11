@@ -2,6 +2,7 @@ package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.entity.SysPerfectInfo;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserLevel;
@@ -23,7 +24,7 @@ import java.util.List;
 @Component
 public class InitConfig implements CommandLineRunner {
 
-    //签到规则
+       //签到规则
     @Autowired
     private SysRuleCheckinMapper sysRuleCheckinMapper;
     //用户特权规则
@@ -37,6 +38,8 @@ public class InitConfig implements CommandLineRunner {
     private SysScoringRuleMapper sysScoringRuleMapper;
     @Autowired
     private UserLevelMapper userLevelMapper;
+    @Autowired
+    private SysPerfectInfoMapper sysPerfectInfoMapper;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -46,6 +49,8 @@ public class InitConfig implements CommandLineRunner {
         initSysRulePLevelPointCache();
         //龙级升级每级所需龙分缓存
         initSysRuleLevelPointCache();
+        //十全十美每级详细说明缓存
+        initSysPerfectInfoCache();
     }
 
     /**
@@ -88,6 +93,19 @@ public class InitConfig implements CommandLineRunner {
             map.put(userLevel.getGrade(),userLevel);
         }
         SysRulesCache.levelPointMap = map;
+    }
+
+    /**
+     * 十全十美每级详细说明 key--ptype十全十美类型 value--SysPerfectInfo实体
+     */
+    private void  initSysPerfectInfoCache() {
+        Map<String,SysPerfectInfo> map = new HashMap<>();
+        List<SysPerfectInfo> list = sysPerfectInfoMapper.selectAll();
+        for (int i = 0; i < list.size(); i++) {
+            SysPerfectInfo sysPerfectInfo = list.get(i);
+            map.put(sysPerfectInfo.getPtype(),sysPerfectInfo);
+        }
+        SysRulesCache.sysPerfectInfoMap = map;
     }
 
 }

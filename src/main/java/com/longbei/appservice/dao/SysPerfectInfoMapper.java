@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 public interface SysPerfectInfoMapper {
 
+    List<SysPerfectInfo> selectAll();
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(SysPerfectInfo record);
@@ -21,4 +23,5 @@ public interface SysPerfectInfoMapper {
     int updateByPrimaryKeySelective(SysPerfectInfo record);
 
     int updateByPrimaryKey(SysPerfectInfo record);
+
 }

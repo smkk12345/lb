@@ -8,8 +8,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableConfigurationProperties(com.longbei.appservice.config.AppserviceConfig.class)
 @EnableSwagger2
 @ServletComponentScan

@@ -67,9 +67,10 @@ public class SysRulesCache {
         add(new PerfectTen("9","健康",9));
     }};
 
-
-
-
+    /**
+     * 十全十美每级详细说明 key--ptype十全十美类型 value--SysPerfectInfo实体
+     */
+    public static Map<String,SysPerfectInfo> sysPerfectInfoMap = new HashMap<>();
 
 
 }
