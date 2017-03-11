@@ -13,7 +13,7 @@
     <result column="needwarn" property="needwarn" jdbcType="CHAR"/>
     <result column="warntime" property="warntime" jdbcType="VARCHAR"/>
     <result column="week" property="week" jdbcType="VARCHAR"/>
-    <result column="icount" property="icount" jdbcType="INT"/>
+    <result column="icount" property="icount" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week
