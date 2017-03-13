@@ -28,10 +28,10 @@ public class CommentLower {
 	private String commentid;  //主评论id
 	private String status;     //0:不显示回复    1:显示回复
 	@Transient
-	private String nickname;  
+	private String firstNickname;
 //	private AppUserMongoEntity appUserMongoEntityUserid; //评论用户信息----Userid
 	@Transient
-	private String friendNickname;
+	private String secondNickname;
 //	private AppUserMongoEntity appUserMongoEntityFriendid; //评论用户信息----Friendid
 
 	public CommentLower(){
@@ -104,20 +104,20 @@ public class CommentLower {
 		this.status = status;
 	}
 
-	public String getNickname() {
-		return nickname;
+	public void setFirstNickname(String firstNickname) {
+		this.firstNickname = firstNickname;
 	}
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setSecondNickname(String secondNickname) {
+		this.secondNickname = secondNickname;
 	}
 
-	public String getFriendNickname() {
-		return friendNickname;
+	public String getFirstNickname() {
+
+		return firstNickname;
 	}
 
-	public void setFriendNickname(String friendNickname) {
-		this.friendNickname = friendNickname;
+	public String getSecondNickname() {
+		return secondNickname;
 	}
-
 }

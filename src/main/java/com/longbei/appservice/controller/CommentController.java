@@ -136,7 +136,7 @@ public class CommentController extends BaseController {
     /**
      * @Title: http://ip:port/appservice/comment/commentHotList
      * @Description: 查看热门评论列表(5条)
-     * @param @param friendid   当前访问者商户id
+     * @param @param userid   当前访问者商户id
  	 * @param @param businessid  各类型对应的id
      * @param @param businesstype  类型   0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
@@ -146,15 +146,15 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/commentHotList")
     @ResponseBody
-    public BaseResp<Object> commentHotList(String friendid, String businessid, String businesstype) {
+    public BaseResp<Object> commentHotList(String userid, String businessid, String businesstype) {
     	BaseResp<Object> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(friendid, businessid, businesstype)) {
+ 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {
- 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(friendid, businessid, businesstype);
+ 			baseResp = commentMongoService.selectCommentHotListByItypeidAndFid(userid, businessid, businesstype);
  		} catch (Exception e) {
- 			logger.error("commentHotList businessid = {}, businesstype = {}", businessid, businesstype, e);
+ 			logger.error("commentHotList businessid = {}, businesstype = {}, userid = {}", businessid, businesstype, userid, e);
  		}
  		return baseResp;
  	}

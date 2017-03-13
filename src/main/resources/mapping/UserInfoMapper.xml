@@ -16,7 +16,7 @@
     <result column="brief" property="brief" jdbcType="VARCHAR" />
     <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="constellation" property="constellation" jdbcType="VARCHAR" />
-    <result column="blood" property="blood" jdbcType="CHAR" />
+    <result column="blood" property="blood" jdbcType="VARCHAR" />
     <result column="feeling" property="feeling" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
@@ -125,7 +125,7 @@
       #{totaldiamond,jdbcType=INTEGER}, #{totalmoney,jdbcType=INTEGER}, #{totalcoin,jdbcType=INTEGER}, 
       #{nickname,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
       #{city,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
-      #{constellation,jdbcType=VARCHAR}, #{blood,jdbcType=CHAR}, #{feeling,jdbcType=VARCHAR}, 
+      #{constellation,jdbcType=VARCHAR}, #{blood,jdbcType=VARCHAR}, #{feeling,jdbcType=VARCHAR},
       #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{payword,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{rcuserid,jdbcType=BIGINT}, 
       #{invitecode,jdbcType=VARCHAR}, #{inviteuserid,jdbcType=BIGINT}, #{rytoken,jdbcType=VARCHAR},#{deviceindex},#{devicetype}
@@ -254,7 +254,7 @@
         #{constellation,jdbcType=VARCHAR},
       </if>
       <if test="blood != null" >
-        #{blood,jdbcType=CHAR},
+        #{blood,jdbcType=VARCHAR},
       </if>
       <if test="feeling != null" >
         #{feeling,jdbcType=VARCHAR},
@@ -345,7 +345,7 @@
         constellation = #{constellation,jdbcType=VARCHAR},
       </if>
       <if test="blood != null" >
-        blood = #{blood,jdbcType=CHAR},
+        blood = #{blood,jdbcType=VARCHAR},
       </if>
       <if test="feeling != null" >
         feeling = #{feeling,jdbcType=VARCHAR},
@@ -424,7 +424,7 @@
       brief = #{brief,jdbcType=VARCHAR},
       birthday = #{birthday,jdbcType=TIMESTAMP},
       constellation = #{constellation,jdbcType=VARCHAR},
-      blood = #{blood,jdbcType=CHAR},
+      blood = #{blood,jdbcType=VARCHAR},
       feeling = #{feeling,jdbcType=VARCHAR},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       createtime = #{createtime,jdbcType=TIMESTAMP},

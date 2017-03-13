@@ -24,6 +24,7 @@ public class FriendController {
 
     /**
      * 添加加为好友申请
+     * @url http://ip:port/app_service/friend/addFriendAsk
      * @param userId 当前登录用户id
      * @param friendId 添加好友的id
      * @param source 来源
@@ -47,6 +48,7 @@ public class FriendController {
 
     /**
      * 回复用户信息
+     * @url http://ip:port/app_service/friend/replyMessage
      * @param id 加为好友的请求id
      * @param userId 发送消息的用户id 当前登录用户id
      * @param message 回复的消息内容
@@ -67,6 +69,7 @@ public class FriendController {
 
     /**
      * 获取添加好友的详细信息
+     * @url http://ip:port/app_service/friend/getFriendAddAskDetail
      * @param id 消息的id
      * @param  userId 当前登录用户id
      * @return
@@ -84,6 +87,7 @@ public class FriendController {
 
     /**
      * 更改添加好友的状态
+     * @url http://ip:port/app_service/friend/updateFriendAddAskStatus
      * @param id 消息id
      * @param status 更改的状态 1.同意 2.拒绝
      * @param userId 当前登录用户id
@@ -103,6 +107,7 @@ public class FriendController {
 
     /**
      * 查询加好友请求列表
+     * @url http://ip:port/app_service/friend/friendAddAskList
      * @param userId 用户id
      * @param startNum 开始下标
      * @param endNum 结束下标

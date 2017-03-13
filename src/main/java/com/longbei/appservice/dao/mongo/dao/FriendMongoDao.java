@@ -51,7 +51,10 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         Criteria  criteria = Criteria.where("userId").is(userId).and("friendId").is(friendId);
         Query query = new Query(criteria);
         Update update = new Update();
-        update.set("createDate",new Date());
+        update.set("status",status);
+        if(updateTimeFlag != null && updateTimeFlag){
+            update.set("createDate",new Date());
+        }
         mongoTemplate.updateFirst(query,update,FriendAddAsk.class);
     }
 
@@ -70,11 +73,11 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
      * 回复信息
      * @param id 加好友的消息id
      * @param jsonArray 消息内容
-     * @param flag 更新发送请求者的已读状态还是被请求者的已读装填 sender / receive
+     * @param flag 更新发送请求者的已读状态还是被请求者的已读状态 sender / receive
      * @param isRead 是否已读
      * @param status 接受的状态 1.通过 2.不通过
      */
-    public void updateFriendAddAsk(Long id, JSONArray jsonArray,String flag,Boolean isRead,Integer status) {
+    public void updateFriendAddAsk(Long id, JSONArray jsonArray,String flag,Boolean isRead,Integer status,Boolean updateCreateDate) {
         Criteria criteria = Criteria.where("id").is(id);
         Query query= new Query(criteria);
         Update update = new Update();
@@ -88,6 +91,9 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         }
         if(status != null && (status == 1 || status == 2)){
             update.set("status",status);
+        }
+        if(updateCreateDate != null && updateCreateDate){
+            update.set("createDate",new Date());
         }
         mongoTemplate.updateFirst(query,update,FriendAddAsk.class);
     }

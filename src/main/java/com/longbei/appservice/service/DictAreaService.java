@@ -17,4 +17,12 @@ public interface DictAreaService {
 	 */
 	BaseResp<List<DictArea>> selectCityList(String pid, Integer startNum, Integer pageSize);
 
+	/**
+	 * @Title: readCityTxt
+	 * @Description: 读取城市信息txt,若没有则新建
+	 * @auther IngaWu
+	 * @currentdate:2017年3月9日
+	 */
+	BaseResp<Object> readCityTxt();
+
 }

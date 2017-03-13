@@ -25,6 +25,7 @@
     <result column="pimpid" property="pimpid" />
     <result column="isresponded" property="isresponded" />
   </resultMap>
+
   <sql id="Base_Column_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey

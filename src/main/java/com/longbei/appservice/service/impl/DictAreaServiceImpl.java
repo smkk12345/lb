@@ -1,8 +1,16 @@
 package com.longbei.appservice.service.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.*;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.controller.api.TestApiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +28,8 @@ public class DictAreaServiceImpl implements DictAreaService {
 
 	@Autowired
 	private DictAreaMapper dictAreaMapper;
+	@Autowired
+	private TestApiController testApiController;
 	
 	private static Logger logger = LoggerFactory.getLogger(DictAreaServiceImpl.class);
 	
@@ -37,5 +47,48 @@ public class DictAreaServiceImpl implements DictAreaService {
 		return baseResp;
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> readCityTxt() {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		File file = new File("src/City.txt");
+		FileWriter fw = null;
+		BufferedReader reader=null;
+			try {
+				if (!file.exists()) {
+					file.createNewFile();
+					fw = new FileWriter(file);
+					String a = testApiController.dictArea();
+					fw.write(a);
+				}
+				reader = new BufferedReader(new FileReader(file));
+				List<String> list = new ArrayList<String>();
+				String tempString;
+				while ((tempString = reader.readLine()) != null) {
+					list.add(tempString);
+				}
+				baseResp.initCodeAndDesp();
+				baseResp.setData(list);
+			}
+			catch (Exception e) {
+				logger.debug("readCityTxt()", e);
+			}
+			finally {
+				if (null != fw) {
+					try {
+						fw.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			}
+				if (null != reader) {
+					try {
+						reader.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			}
+			return baseResp;
+    	}
+	}
 }
