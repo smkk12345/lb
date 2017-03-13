@@ -489,4 +489,23 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1001 = "1001";
 
 	/****** JPUSH 消息的tag end ******/
+
+
+	/**
+	 * money
+	 *   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+	 * 					3：设榜单    4：赞助榜单    5：赞助教室
+	 */
+	public static final String USER_MONEY_BUY = "0";
+	public static final String USER_MONEY_GIFT = "1";
+//	public static final String ;
+
+
+
+
+
+
+
+
+
 }

@@ -40,6 +40,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 		return userMoneyDetail;
 	}
 
+
+
 	/**
 	 * @author yinxc
 	 * 龙币公用添加明细方法

@@ -12,11 +12,9 @@ public class SnsFriends {
 
     private Long friendid;
 
-    private String nickname;  //好友昵称
+    private String nickname;  //好友昵称/好友备注昵称
 
-    private String avatar;   //好友头像
-
-    private String username;
+    private AppUserMongoEntity appUserMongoEntity;//用户基本信息实体
 
     private String remark; //备注
 
@@ -133,13 +131,6 @@ public class SnsFriends {
         this.createtime = createtime;
     }
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
     public String getNickname() {
         return nickname;
     }
@@ -148,13 +139,6 @@ public class SnsFriends {
         this.nickname = nickname;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 	@JsonInclude(Include.ALWAYS)
 	public String getIslike() {
 		return islike;
@@ -163,5 +147,20 @@ public class SnsFriends {
 	public void setIslike(String islike) {
 		this.islike = islike;
 	}
-    
+
+    /**
+     * 获取用户基本信息实体
+     * @return
+     */
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    /**
+     * 设置用户基本信息实体
+     * @param appUserMongoEntity
+     */
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 }

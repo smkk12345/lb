@@ -76,5 +76,12 @@ public interface UserInfoMapper {
 	 * 2017年3月1日
 	 */
 	int updateTotalmoneyByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney);
-	
+
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	List<UserInfo> selectFashionManUser(Integer startNum, Integer pageSize);
 }

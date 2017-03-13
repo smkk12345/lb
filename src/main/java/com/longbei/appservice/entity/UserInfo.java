@@ -75,6 +75,8 @@ public class UserInfo {
     private Integer point;//龙分
     private Integer grade;//等级
     private Integer curpoint;//当前龙分
+
+    private Boolean isFashionMan;//是否是达人
     
     private List<UserJob> jobList = new ArrayList<UserJob>(); 
     

@@ -1,7 +1,11 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.dao.UserMoneyDetailMapper;
+import com.longbei.appservice.entity.UserMoneyDetail;
 import com.longbei.appservice.service.MoneyService;
+import com.longbei.appservice.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,10 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class MoneyServiceImpl implements MoneyService{
 
+    @Autowired
+    private UserMoneyDetailMapper userMoneyDetailMapper;
+    @Autowired
+    private UserService userService;
+
     @Override
     public BaseResp isEnoughLongMoney(String userid, int consumenum) {
         return BaseResp.ok();
     }
+
 
 
 }

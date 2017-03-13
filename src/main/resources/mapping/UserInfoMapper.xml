@@ -439,4 +439,17 @@
       rytoken = #{rytoken,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询系统推荐的达人 -->
+  <select id="selectFashionManUser" parameterType="int" resultType="com.longbei.appservice.entity.UserInfo">
+      select
+          userid,
+          avatar,
+          username,
+          nickname
+      from user_info
+      where
+          isfashionman = 1
+      limit #{startNum},#{pageSize}
+  </select>
 </mapper>
