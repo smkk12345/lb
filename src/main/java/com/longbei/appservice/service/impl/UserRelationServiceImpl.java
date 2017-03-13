@@ -11,6 +11,7 @@ package com.longbei.appservice.service.impl;
 import java.util.HashSet;
 import java.util.List;
 
+import com.longbei.appservice.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private FriendService friendService;
 	
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#insertFriend(long, long)
@@ -79,16 +82,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum);
 			if(null != list && list.size()>0){
 				for (SnsFriends snsFriends : list) {
-					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(snsFriends.getFriendid());
-					if(null != userInfo){
-						snsFriends.setNickname(userInfo.getNickname());
-						snsFriends.setUsername(userInfo.getUsername());
-						snsFriends.setAvatar(userInfo.getAvatar());
-						//判断该好友是否已关注
-						SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
-						if(null != snsFans){
-							snsFriends.setIslike("1");
-						}
+					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.findById(snsFriends.getFriendid()+"");
+					snsFriends.setAppUserMongoEntity(appUserMongoEntit);
+					snsFriends.setNickname(friendService.getNickName(userid,snsFriends.getFriendid()));
+					//判断该好友是否已关注
+					SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
+					if(null != snsFans){
+						snsFriends.setIslike("1");
 					}
 				}
 			}
@@ -127,11 +127,15 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> insertFans(long userid, long likeuserid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
+			//查看该用户是否已经关注此用户
+			SnsFans tempSnsFans = this.snsFansMapper.selectByUidAndLikeid(userid,likeuserid);
+			if(tempSnsFans != null){
+				return baseResp.fail("您已关注了该用户,不用再次关注!");
+			}
+
 			SnsFans snsFans = new SnsFans(userid,likeuserid);
-			SnsFans snsFans1 = new SnsFans(likeuserid,userid);
 			int n = snsFansMapper.insert(snsFans);
-			int n1 = snsFansMapper.insert(snsFans1);
-			if(n == 1 && n1 == 1){
+			if(n > 0){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -149,8 +153,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
 			int n = snsFansMapper.deleteByUidAndLid(userid, likeuserid);
-			int n1 = snsFansMapper.deleteByUidAndLid(likeuserid, userid);
-			if(n == 1&&n1 == 1){
+			if(n > 0){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -182,8 +185,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 //					}
 				}
 			}
-			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectFansByUserid error and msg = {}",e);
 		}
@@ -287,7 +290,19 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		return reseResp;
 	}
-	
+
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	@Override
+	public BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize) {
+		List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
+		return null;
+	}
+
 	/**
 	 * @author yinxc
 	 * 读取拼接ids

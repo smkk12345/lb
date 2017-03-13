@@ -464,6 +464,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.fail("抱歉,您暂时无法查询群组成员列表");
             }
             List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status);
+
             if(snsGroup.getMainuserid().equals(userId)){
                 resultMap.put("isMainUser",true);
             }else{
@@ -549,6 +550,30 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             printException(e);
         }
         return baseResp.fail();
+    }
+
+    /**
+     * 查询用户的群列表
+     * @param userId 用户id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize);
+        List<SnsGroup> snsGroupList = new ArrayList<SnsGroup>();
+        if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+            for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
+                if(snsGroup != null){
+                    snsGroupList.add(snsGroup);
+                }
+            }
+        }
+        baseResp.setData(snsGroupList);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
     /**

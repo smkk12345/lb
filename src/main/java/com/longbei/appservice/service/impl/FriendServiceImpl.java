@@ -6,13 +6,11 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsFriendsMapper;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.NewMessageTipDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.FriendAddAsk;
-import com.longbei.appservice.entity.NewMessageTip;
-import com.longbei.appservice.entity.SnsFriends;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.api.HttpClient;
 import net.sf.json.JSONArray;
@@ -43,6 +41,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private UserMongoDao userMongoDao;
     @Autowired
     private NewMessageTipDao newMessageTipDao;
+    @Autowired
+    private UserInfoMapper userInfoMapper;
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
     /**
@@ -385,6 +385,29 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             return false;
         }
         return true;
+    }
+
+    /**
+     * 获取用户昵称
+     * @param userId 当前登录用户
+     * @param friendId 好友的id
+     * @return
+     */
+    @Override
+    public String getNickName(Long userId, Long friendId) {
+        SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId);
+        if(snsFriends != null && StringUtils.isNotEmpty(snsFriends.getNickname())){
+            return snsFriends.getNickname();
+        }
+        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(friendId+"");
+        if(appUserMongoEntity != null && StringUtils.isNotEmpty(appUserMongoEntity.getNickname())){
+            return appUserMongoEntity.getNickname();
+        }
+        UserInfo userInfo = this.userInfoMapper.selectByUserid(friendId);
+        if(userInfo != null){
+            return StringUtils.isNotEmpty(userInfo.getNickname())?userInfo.getNickname():userInfo.getUsername();
+        }
+        return null;
     }
 
     /**

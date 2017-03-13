@@ -1,6 +1,6 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
+import java.util.*;
 
 public class RankMembers {
     private Integer id;
@@ -29,7 +29,7 @@ public class RankMembers {
 
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 
-    private String isfashionman;
+    private String isfashionman; //是否为达人  0 - 不是 1 - 是
 
     /**
      * 
@@ -254,4 +254,29 @@ public class RankMembers {
     public void setIsfashionman(String isfashionman) {
         this.isfashionman = isfashionman == null ? null : isfashionman.trim();
     }
+
+    public static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
+            "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+            "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z" };
+
+
+
+
+    public static String test(){
+        StringBuffer shortBuffer = new StringBuffer();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        for (int i = 0; i < 8; i++) {
+            String str = uuid.substring(i * 4, i * 4 + 4);
+            int x = Integer.parseInt(str, 16);
+            shortBuffer.append(chars[x % 0x3E]);
+        }
+        return shortBuffer.toString().toUpperCase();
+    }
+
+
+
+
 }

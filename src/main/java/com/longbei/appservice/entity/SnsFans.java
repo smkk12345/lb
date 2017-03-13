@@ -30,6 +30,7 @@ public class SnsFans {
     		super();
     		this.userid =userid;
     		this.likeuserid = likeuserid;
+            this.createtime = new Date();
     };
     /**
      * 
