@@ -248,4 +248,18 @@
         and groupid = #{groupId}
       </where>
   </select>
+
+  <!-- 根据用户查询群成员列表 -->
+  <select id="groupMembersList" parameterType="String" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from sns_group_members
+      where
+          status = 1
+          <if test="userId != null">
+            and userid = #{userId}
+          </if>
+      group by groupid
+      limit #{startNum},#{pageSize}
+  </select>
 </mapper>

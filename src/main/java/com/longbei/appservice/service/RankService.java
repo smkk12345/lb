@@ -70,6 +70,8 @@ public interface RankService {
 
     BaseResp<Object> selectRankByRankid(long rankid);
 
+    Rank selectByRankid(long rankid);
+
 
 
 

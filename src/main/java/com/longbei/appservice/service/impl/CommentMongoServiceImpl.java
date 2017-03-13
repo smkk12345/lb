@@ -300,11 +300,11 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
     				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-        	        commentLower.setFriendNickname(appUserMongoEntity.getNickname());
+        	        commentLower.setSecondNickname(appUserMongoEntity.getNickname());
     			}
 				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
 					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-					commentLower.setNickname(appUserMongo.getNickname());
+					commentLower.setFirstNickname(appUserMongo.getNickname());
 				}
 			}
     	}

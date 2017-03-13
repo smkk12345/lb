@@ -214,4 +214,5 @@
   <update id="updateGroupMainUser" parameterType="String">
       update sns_group set mainuserid=#{userId} where groupid = #{groupId}
   </update>
+
 </mapper>

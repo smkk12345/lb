@@ -74,6 +74,7 @@ public class AppUserController extends BaseController {
     private SysPerfectInfoService sysPerfectInfoService;
     @Autowired
     private UserPlDetailService userPlDetailService;
+
     
     
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
@@ -1185,9 +1186,7 @@ public class AppUserController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userPlDetailService
-
-                    .selectNowscoreAndDiffById(Integer.parseInt(id));
+            baseResp = userPlDetailService.selectNowscoreAndDiffById(Integer.parseInt(id));
             return baseResp;
         } catch (Exception e) {
             logger.error("selectNowscoreAndDiffById and id={}",id,e);
@@ -1219,4 +1218,26 @@ public class AppUserController extends BaseController {
         }
         return baseResp;
     }
+
+    /**
+     * @Title: http://ip:port/app_service/user/readCityTxt
+     * @Description: 读取城市信息txt,若没有则新建
+     * @auther IngaWu
+     * @currentdate:2017年3月9日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/readCityTxt")
+    @ResponseBody
+    public BaseResp<Object> readCityTxt() {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            baseResp = dictAreaService.readCityTxt();
+            baseResp.initCodeAndDesp();
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("readCityTxt error and msg={}",e);
+        }
+        return baseResp;
+    }
+
 }

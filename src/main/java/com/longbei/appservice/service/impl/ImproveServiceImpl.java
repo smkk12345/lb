@@ -93,6 +93,10 @@ public class ImproveServiceImpl implements ImproveService{
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
     private SnsFansMapper snsFansMapper;
+    @Autowired
+    private RankService rankService;
+    @Autowired
+    private UserGoalMapper userGoalMapper;
 
     /**
      *  @author luye
@@ -1781,6 +1785,38 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setAppUserMongoEntity(appUserMongoEntity);
                 initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
+                switch(businesstype){
+                    case Constant.IMPROVE_SINGLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_RANK_TYPE:
+                        {
+                        Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
+                            int sortnum = 0;
+                            improve.setBusinessEntity(rank.getPtype(),
+                                    rank.getRanktitle(),
+                                    rank.getRankinvolved(),
+                                    rank.getSstarttime(),
+                                    rank.getEndtime(),
+                                    sortnum,0);
+                        }
+                        break;
+                    case Constant.IMPROVE_CLASSROOM_TYPE:
+                        break;
+                    case Constant.IMPROVE_CIRCLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_GOAL_TYPE:
+                        UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+                        improve.setBusinessEntity(userGoal.getPtype(),
+                                userGoal.getGoaltag(),
+                                0,
+                                userGoal.getUpdatetime(),
+                                null,
+                                0,
+                                userGoal.getIcount());
+                        break;
+                    default:
+                        break;
+                }
                 baseResp.setData(improve);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1881,10 +1917,10 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> acceptBasicAward(long rankid, long userid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
-        if(!canAcceptAward(rankMembers)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
-        }
+//        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+//        if(!canAcceptAward(rankMembers)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+//        }
         ImpAward impAward = impAwardMapper.selectByRankIdAndUserId(rankid,userid);
         int icon = impAward.getAwardprice();
         //进步币发生变化   龙杯账户减少 用户账户增多  添加事务 写 统一接口
@@ -1901,10 +1937,10 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
-            if(!canAcceptAward(rankMembers)) {
-
-            }
+//            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+//            if(!canAcceptAward(rankMembers)) {
+//
+//            }
         }catch (Exception e){
 
         }

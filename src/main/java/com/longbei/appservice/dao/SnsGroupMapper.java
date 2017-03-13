@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.SnsGroup;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
+import java.util.List;
 
 public interface SnsGroupMapper {
     int deleteByPrimaryKey(Integer id);
@@ -59,4 +60,5 @@ public interface SnsGroupMapper {
      * @return
      */
     int updateGroupMainUser(@Param("userId") String userId,@Param("groupId") String groupId);
+
 }

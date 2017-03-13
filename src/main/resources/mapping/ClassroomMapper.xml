@@ -21,10 +21,11 @@
     <result column="isfree" property="isfree" jdbcType="CHAR" />
     <result column="freecoursenum" property="freecoursenum" jdbcType="INTEGER" />
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
+    <result column="isdel" property="isdel" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
-    classnotice, createtime, updatetime, ptype, ispublic, userid, cardid, charge, isfree, freecoursenum 
+    classnotice, createtime, updatetime, ptype, ispublic, userid, cardid, charge, isfree, freecoursenum, isdel
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -36,9 +37,10 @@
   <select id="selectClassroomListByIspublic" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
-    from classroom 
+    from classroom
+    where isdel = 0
     <if test="ispublic != null" >
-    	where ispublic = #{ispublic} 
+    	and ispublic = #{ispublic}
     </if>
     order by createtime desc 
     <if test="endNum != 0" >
@@ -50,7 +52,8 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where userid = #{userid} 
+    where userid = #{userid}
+    AND isdel = 0
     <if test="ptype != null" >
     	and ptype = #{ptype} 
     </if>
@@ -64,9 +67,9 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where 
+    where isdel = 0
     <if test="keyword != null" >
-    	(classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  
        	or classbrief LIKE CONCAT(CONCAT('%', #{keyword}),'%')
        	or classnotice LIKE CONCAT(CONCAT('%', #{keyword}),'%') -->

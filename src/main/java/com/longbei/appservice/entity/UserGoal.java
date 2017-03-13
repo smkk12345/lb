@@ -25,6 +25,15 @@ public class UserGoal {
 
     private String week;
 
+    private Integer icount;//进步更新条数
+
+    public void setIcount(Integer icount) {
+        this.icount = icount;
+    }
+
+    public Integer getIcount() {
+        return icount;
+    }
 
     public String getPtype() {
         return ptype;

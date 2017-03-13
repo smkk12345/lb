@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.FriendAddAsk;
 import com.longbei.appservice.service.FriendService;
+import com.longbei.appservice.service.UserRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class FriendController {
 
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private UserRelationService userRelationService;
 
     /**
      * 添加加为好友申请
@@ -132,4 +135,31 @@ public class FriendController {
 
         return baseResp;
     }
+
+    /**
+     * 加载用户的好友列表
+     * @url http://ip:port/app_service/friend/friendList
+     * @param userId 当前登录的用户id
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value = "friendList")
+    public BaseResp<Object> friendList(Long userId,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_07);
+        }
+        if(startNum == null || startNum < 1){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.userRelationService.selectListByUserId(userId,startNum,pageSize);
+        return baseResp;
+    }
+
+
 }

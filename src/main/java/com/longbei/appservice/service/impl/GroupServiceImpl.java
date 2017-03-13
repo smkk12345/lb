@@ -553,6 +553,30 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     /**
+     * 查询用户的群列表
+     * @param userId 用户id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize);
+        List<SnsGroup> snsGroupList = new ArrayList<SnsGroup>();
+        if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+            for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
+                if(snsGroup != null){
+                    snsGroupList.add(snsGroup);
+                }
+            }
+        }
+        baseResp.setData(snsGroupList);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
+    /**
      * 将用户加入到群组中,同步到融云
      * @param userIds 用户id
      * @param groupId 群组id

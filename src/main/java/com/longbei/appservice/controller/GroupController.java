@@ -219,4 +219,28 @@ public class GroupController {
         return this.groupService.updateGroupMainUser(userId,currentUserId,groupId);
     }
 
+    /**
+     * 查询用户的群列表
+     * @param userId 当前登录用户id
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="groupList")
+    public BaseResp<Object> groupList(Long userId,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(userId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.groupService.goupListByUser(userId,startNum,pageSize);
+        return baseResp;
+    }
+
 }

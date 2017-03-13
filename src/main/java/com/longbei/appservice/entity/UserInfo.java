@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -318,6 +319,7 @@ public class UserInfo {
      * 生日
      * @return birthday 生日
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date getBirthday() {
         return birthday;
     }
