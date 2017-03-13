@@ -259,7 +259,7 @@ public class Constant {
 	/**
 	 * 广场
 	 */
-	public static final String TIMELINE_IMPROVE_SQUARE = "-1";
+	public static final String TIMELINE_IMPROVE_SQUARE = "0";
 	/**
 	 * 我的
 	 */
