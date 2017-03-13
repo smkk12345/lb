@@ -19,8 +19,8 @@ public class AppUserMongoEntity {
 	private Double[] gispoint;
 	
 	private long userid;
-	private String isfriend;
-	private String isfans;
+	private String isfriend="0";
+	private String isfans="0";
 
 	public long getUserid() {
 		return Long.parseLong(id);

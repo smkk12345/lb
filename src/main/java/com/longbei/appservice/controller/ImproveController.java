@@ -204,7 +204,7 @@ public class ImproveController {
 			flag = improveService.removeImprove(userid, improveid, businesstype, businessid);
 			if (flag) {
 				logger.debug("remove improve success");
-				return BaseResp.ok(Constant.RTNINFO_SYS_41);
+				return BaseResp.ok(Constant.RTNINFO_SYS_46);
 			}
 		} catch (Exception e) {
 			logger.error("remove improve is error:{}", e);

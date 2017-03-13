@@ -886,7 +886,7 @@ public class AppUserController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp.ok();
+            baseResp = BaseResp.ok();
             baseResp.setData(new ArrayList<UserInterests>(){{
                 add(new UserInterests("-1","全部"));
                 add(new UserInterests("0","学习"));
