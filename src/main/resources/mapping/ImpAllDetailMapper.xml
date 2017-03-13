@@ -29,7 +29,7 @@
     from imp_all_detail
     WHERE
        impid=#{impid}
-      AND gtype=#{gtype}
+
       AND detailtype=#{detailtype}
       <if test="lastdate != null">
         AND createtime &lt; #[lastdate]

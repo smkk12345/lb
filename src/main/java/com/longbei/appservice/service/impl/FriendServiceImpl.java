@@ -258,8 +258,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             JSONArray jsonArray = friendAddAsk.getMessage();
             if(jsonArray.size() > 3){
                 JSONArray newJSONArray = new JSONArray();
-                for(int i=1;i < 4;i++){
-                    newJSONArray.add(newJSONArray.get(jsonArray.size()-i));
+                for(int i=3;i > 0;i--){
+                    newJSONArray.add(jsonArray.get(jsonArray.size()-i));
                 }
                 friendAddAsk.setMessage(newJSONArray);
             }

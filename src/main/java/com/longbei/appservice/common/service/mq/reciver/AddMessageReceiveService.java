@@ -150,7 +150,7 @@ public class AddMessageReceiveService{
     private void insertTimeLinePublic(TimeLine timeLine){
         timeLine.setId(MongoUtils.UUID());
         timeLine.setUserid("0");
-        timeLine.setCtype("0");
+        timeLine.setCtype("-1");
         timeLineDao.save(timeLine);
     }
     /**
