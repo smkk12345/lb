@@ -2,6 +2,7 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.ImpAllDetail;
 import com.longbei.appservice.entity.Improve;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,10 @@ public interface ImpAllDetailMapper {
 
     ImpAllDetail selectByPrimaryKey(Integer id);
 
-    List<ImpAllDetail> selectList(String impid, String detailtype, int pagesize, Date lastdate);
+    List<ImpAllDetail> selectList(@Param("impid") String impid,
+                                  @Param("detailtype") String detailtype,
+                                  @Param("pagesize") int pagesize,
+                                  @Param("lastdate") Date lastdate);
 
     /**
      * 用户判断记录是否存在

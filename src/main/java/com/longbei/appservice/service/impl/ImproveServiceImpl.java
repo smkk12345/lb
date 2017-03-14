@@ -97,6 +97,8 @@ public class ImproveServiceImpl implements ImproveService{
     private RankService rankService;
     @Autowired
     private UserGoalMapper userGoalMapper;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
 
     /**
      *  @author luye
@@ -1123,8 +1125,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
 
-        baseResp = isHaseLikeInfo(userid,impid,businesstype);
-        if (ResultUtil.isSuccess(baseResp)){
+        boolean islike = improveMongoDao.exits(String.valueOf(impid),
+                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
+        if (islike) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
@@ -1310,6 +1313,8 @@ public class ImproveServiceImpl implements ImproveService{
         }
 
         //消耗龙币
+        userMoneyDetailService.insertPublic(Long.parseLong(userid),
+                Constant.USER_MONEY_GIFT,flowernum*Constant.FLOWER_PRICE,-1);
 
         //扣除龙币成功
         try {
@@ -1447,6 +1452,7 @@ public class ImproveServiceImpl implements ImproveService{
     /**
      *  @author luye
      *  @desp 是否点过赞
+     *  update by lixb 暂时不用  判断是否点过赞 都通过mongodb
      *  @create 2017/3/8 下午4:00
      *  @update 2017/3/8 下午4:00
      */
@@ -1463,7 +1469,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectOneDetail(impAllDetail);
             if (null != impAllDetails && impAllDetails.size() > 0){
-                return BaseResp.ok();
+                return baseResp.initCodeAndDesp();
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_45,Constant.RTNINFO_SYS_45);
             }

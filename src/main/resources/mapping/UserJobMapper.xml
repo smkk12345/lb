@@ -29,7 +29,7 @@
   </select>
   
   <select id="selectCountJob" resultType="java.lang.Integer">
-  	SELECT count(*) from user_school 
+  	SELECT count(*) from user_job 
   	where userid = #{userid} 
   </select>
   

@@ -85,8 +85,8 @@ public class UserServiceImpl implements UserService {
 	
 
 	@Override
-	public BaseResp<Object> selectInfoMore(long userid) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<UserInfo> selectInfoMore(long userid) {
+		BaseResp<UserInfo> reseResp = new BaseResp<UserInfo>();
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);

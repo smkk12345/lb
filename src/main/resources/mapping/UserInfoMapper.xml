@@ -42,7 +42,7 @@
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
-    sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
+    sex, city, area, brief, birthday, constellation, blood, feeling, 
     avatar, username, curpoint, point, grade
   </sql>
   
