@@ -15,8 +15,6 @@ public interface UserMoneyDetailService {
 	
 	UserMoneyDetail selectByPrimaryKey(Integer id);
 
-
-
 	/**
 	 * @author yinxc
 	 * 龙币公用添加明细方法

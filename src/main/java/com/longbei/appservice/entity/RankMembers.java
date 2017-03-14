@@ -9,8 +9,6 @@ public class RankMembers {
 
     private Long userid;//用户id
 
-    private Integer itype;//0—上榜。1—下榜
-
     private Date createtime;//入榜时间
 
     private Date updatetime;//下榜时间
@@ -25,7 +23,7 @@ public class RankMembers {
 
     private Integer flowers;
 
-    private String isup;//是否下榜。0-未下榜 1-已下榜
+    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜
 
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 
@@ -77,22 +75,6 @@ public class RankMembers {
      */
     public void setUserid(Long userid) {
         this.userid = userid;
-    }
-
-    /**
-     * 0—上榜。1—下榜
-     * @return itype 0—上榜。1—下榜
-     */
-    public Integer getItype() {
-        return itype;
-    }
-
-    /**
-     * 0—上榜。1—下榜
-     * @param itype 0—上榜。1—下榜
-     */
-    public void setItype(Integer itype) {
-        this.itype = itype;
     }
 
     /**
@@ -208,22 +190,6 @@ public class RankMembers {
     }
 
     /**
-     * 是否下榜。0-未下榜 1-已下榜
-     * @return isup 是否下榜。0-未下榜 1-已下榜
-     */
-    public String getIsup() {
-        return isup;
-    }
-
-    /**
-     * 是否下榜。0-未下榜 1-已下榜
-     * @param isup 是否下榜。0-未下榜 1-已下榜
-     */
-    public void setIsup(String isup) {
-        this.isup = isup == null ? null : isup.trim();
-    }
-
-    /**
      * 0 未领奖 1 领奖 2 发货 3签收
      * @return acceptaward 0 未领奖 1 领奖 2 发货 3签收
      */
@@ -276,7 +242,19 @@ public class RankMembers {
         return shortBuffer.toString().toUpperCase();
     }
 
+    /**
+     * 获取入榜状态
+     * @return
+     */
+    public Integer getStatus() {
+        return status;
+    }
 
-
-
+    /**
+     * 获取入榜状态
+     * @param status
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

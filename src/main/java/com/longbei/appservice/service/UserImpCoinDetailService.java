@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * return_type
  * UserImpCoinDetailService
  */
-public interface UserImpCoinDetailService {
+public interface UserImpCoinDetailService extends BaseService{
 	
 	BaseResp<Object> deleteByPrimaryKey(Integer id);
 
@@ -44,7 +44,7 @@ public interface UserImpCoinDetailService {
 	 * 						兑换商品:商品id
 	 * param friendid 
 	 */
-	BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, long friendid);
+	BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, Long friendid);
 	
 	/**
 	 * @author yinxc

@@ -7,6 +7,8 @@
 * @version V1.0   
 */
 package com.longbei.appservice.controller;
+import com.longbei.appservice.entity.UserImpCoinDetail;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class UserRelationController extends BaseController {
 	
 	 @Autowired
 	 private UserRelationService userRelationService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 	
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	 
@@ -279,6 +283,4 @@ public class UserRelationController extends BaseController {
 	
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 
-	
-	
 }
