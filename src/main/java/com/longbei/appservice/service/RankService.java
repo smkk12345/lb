@@ -15,7 +15,7 @@ import java.util.List;
  * @author luye
  * @create 2017-01-20 下午3:25
  **/
-public interface RankService {
+public interface RankService extends BaseService{
 
     /**
      * 添加榜单接口
@@ -72,7 +72,12 @@ public interface RankService {
 
     Rank selectByRankid(long rankid);
 
-
-
-
+    /**
+     * 用户加入榜单
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    BaseResp<Object> insrtRankMember(Long userId, Long rankId, String codeword);
 }

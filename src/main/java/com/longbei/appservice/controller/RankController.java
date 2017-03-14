@@ -9,10 +9,10 @@ import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 榜单操作
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author luye
  * @create 2017-01-21 上午11:44
  **/
-@Controller
+@RestController
 @RequestMapping(value = "rank")
 public class RankController {
 
@@ -29,7 +29,22 @@ public class RankController {
     @Autowired
     private RankService rankService;
 
+    /**
+     * 用户 参榜
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    public BaseResp<Object> insertRankMember(Long userId,Long rankId,String codeword){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.insrtRankMember(userId,rankId,codeword);
 
+        return baseResp;
+    }
 
 //    /**
 //     * url: http://ip:port/app_service/rank/insert

@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
@@ -29,7 +30,7 @@ import java.util.List;
  * @create 2017-01-20 下午3:29
  **/
 @Service("rankService")
-public class RankServiceImpl implements RankService{
+public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private static Logger logger = LoggerFactory.getLogger(RankServiceImpl.class);
 
@@ -47,6 +48,8 @@ public class RankServiceImpl implements RankService{
     private AwardMapper awardMapper;
     @Autowired
     private RankAwardReleaseMapper rankAwardReleaseMapper;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
 
     /**
      *  @author luye
@@ -343,6 +346,37 @@ public class RankServiceImpl implements RankService{
         } catch (Exception e) {
             logger.error("selectRankByRankid error and msg={}",e);
         }
+        return null;
+    }
+
+    /**
+     * 用户加入榜单
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    @Override
+    public BaseResp<Object> insrtRankMember(Long userId, Long rankId, String codeword) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            if("1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "0".equals(rank.getIsup()) || "1".equals(rank.getIsdel())){
+                return baseResp.fail("抱歉,由于龙榜已结束或未设置为开放等原因,您暂时无法进行参榜!");
+            }
+            if(!DateUtils.compare(rank.getEndtime(),new Date())){
+                return baseResp.fail("非常抱歉,该榜单已结束!");
+            }
+            //校验用户是否已经在榜单中
+            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
+        }catch(Exception e){
+
+        }
+
+
         return null;
     }
 
