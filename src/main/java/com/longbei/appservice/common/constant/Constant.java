@@ -481,6 +481,9 @@ public class Constant {
 	public static final String REDIS_IMPROVE_FLOWER = "improve_flower_"; //redis中flower
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
 
+	public static final String REDIS_RANK_SORT = "rank_sort_";//榜单 排名
+
+
 
     /**
      * 用户特权  操作
@@ -496,7 +499,13 @@ public class Constant {
 
 	/****** JPUSH 消息的tag end ******/
 
+	/** 操作类型 **/
+	public enum OperationType{
+		like,//点赞
+		flower,//送花
+		cancleLike,//取消点赞
 
+	}
 	/**
 	 * money
 	 *   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
@@ -505,11 +514,6 @@ public class Constant {
 	public static final String USER_MONEY_BUY = "0";
 	public static final String USER_MONEY_GIFT = "1";
 //	public static final String ;
-
-
-
-
-
 
 
 

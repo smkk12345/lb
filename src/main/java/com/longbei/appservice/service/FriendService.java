@@ -67,4 +67,5 @@ public interface FriendService extends BaseService{
      * @return
      */
     String getNickName(Long userId, Long friendId);
+
 }

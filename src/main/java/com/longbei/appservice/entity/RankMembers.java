@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.*;
 
 public class RankMembers {
@@ -8,8 +11,6 @@ public class RankMembers {
     private Long rankid;//榜单id
 
     private Long userid;//用户id
-
-    private Integer itype;//0—上榜。1—下榜
 
     private Date createtime;//入榜时间
 
@@ -25,11 +26,31 @@ public class RankMembers {
 
     private Integer flowers;
 
-    private String isup;//是否下榜。0-未下榜 1-已下榜
+    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜
 
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 
     private String isfashionman; //是否为达人  0 - 不是 1 - 是
+
+    private AppUserMongoEntity appUserMongoEntity;
+
+    private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
+
+    public List<AppUserMongoEntity> getAppUserMongoEntities() {
+        return appUserMongoEntities;
+    }
+
+    public void setAppUserMongoEntities(List<AppUserMongoEntity> appUserMongoEntities) {
+        this.appUserMongoEntities = appUserMongoEntities;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 
     /**
      * 
@@ -80,25 +101,11 @@ public class RankMembers {
     }
 
     /**
-     * 0—上榜。1—下榜
-     * @return itype 0—上榜。1—下榜
-     */
-    public Integer getItype() {
-        return itype;
-    }
-
-    /**
-     * 0—上榜。1—下榜
-     * @param itype 0—上榜。1—下榜
-     */
-    public void setItype(Integer itype) {
-        this.itype = itype;
-    }
-
-    /**
      * 入榜时间
      * @return createtime 入榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -115,6 +122,8 @@ public class RankMembers {
      * 下榜时间
      * @return updatetime 下榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -208,22 +217,6 @@ public class RankMembers {
     }
 
     /**
-     * 是否下榜。0-未下榜 1-已下榜
-     * @return isup 是否下榜。0-未下榜 1-已下榜
-     */
-    public String getIsup() {
-        return isup;
-    }
-
-    /**
-     * 是否下榜。0-未下榜 1-已下榜
-     * @param isup 是否下榜。0-未下榜 1-已下榜
-     */
-    public void setIsup(String isup) {
-        this.isup = isup == null ? null : isup.trim();
-    }
-
-    /**
      * 0 未领奖 1 领奖 2 发货 3签收
      * @return acceptaward 0 未领奖 1 领奖 2 发货 3签收
      */
@@ -276,7 +269,19 @@ public class RankMembers {
         return shortBuffer.toString().toUpperCase();
     }
 
+    /**
+     * 获取入榜状态
+     * @return
+     */
+    public Integer getStatus() {
+        return status;
+    }
 
-
-
+    /**
+     * 获取入榜状态
+     * @param status
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

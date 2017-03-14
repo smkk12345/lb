@@ -33,4 +33,6 @@ public interface RankMapper {
 
     int updateSponsornumAndSponsormoney( );
 
+    int updateSymbolByRankId(Rank rank);
+
 }

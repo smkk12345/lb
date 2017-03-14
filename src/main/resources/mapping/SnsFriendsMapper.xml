@@ -141,8 +141,8 @@
   
   <update id="updateRemarkByUidAndFid">
     update sns_friends
-    set remark = #{remark} 
+    set remark = #{remark}
     where userid = #{userid} and friendid=#{friendid}
   </update>
-  
+
 </mapper>

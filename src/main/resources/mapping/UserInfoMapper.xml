@@ -452,4 +452,16 @@
           isfashionman = 1
       limit #{startNum},#{pageSize}
   </select>
+
+  <!-- 修改用户进步币 -->
+  <update id="updateUserCoin">
+      update
+          user_info
+      set totalcoin = totalcoin + #{coin}
+      where
+        <if test="coin &lt; 0">
+          totalcoin > ROUND(#{coin}) and
+        </if>
+        userid = #{userid}
+  </update>
 </mapper>

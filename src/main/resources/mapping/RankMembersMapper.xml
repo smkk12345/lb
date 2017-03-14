@@ -27,6 +27,45 @@
     from rank_members
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">
+    select count(*) from rank_members where
+    rankid=#{rankid} AND status = '1'
+    <if test="isfashionman != null">
+      AND isfashionman = #{isfashionman}
+    </if>
+    <if test="appUserMongoEntities != null">
+      AND  userid in
+      <foreach item="item" index="index" collection="appUserMongoEntities" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank_members
+    WHERE
+    rankid=#{rankmember.rankid} AND status = '1'
+    <if test="rankmember.isfashionman != null">
+      AND isfashionman = #{rankmember.isfashionman}
+    </if>
+    <if test="rankmember.appUserMongoEntities != null">
+      AND  userid in
+      <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    ORDER BY sortnum DESC ,likes DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rank_members
     where id = #{id,jdbcType=INTEGER}
