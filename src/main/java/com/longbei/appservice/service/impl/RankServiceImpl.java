@@ -5,7 +5,9 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
 import net.sf.json.JSONObject;
@@ -47,6 +49,10 @@ public class RankServiceImpl implements RankService{
     private AwardMapper awardMapper;
     @Autowired
     private RankAwardReleaseMapper rankAwardReleaseMapper;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private UserMongoDao userMongoDao;
 
     /**
      *  @author luye
@@ -71,7 +77,7 @@ public class RankServiceImpl implements RankService{
     }
 
     @Override
-    public boolean updateRankSymbol(RankImage rankImage) {
+    public boolean updateRankImageSymbol(RankImage rankImage) {
         int res = 0;
         try {
             res = rankImageMapper.updateSymbolByRankId(rankImage);
@@ -82,6 +88,17 @@ public class RankServiceImpl implements RankService{
             }
         } catch (Exception e) {
             logger.error("update rank image symbol is error:",e);
+        }
+        return res>0;
+    }
+
+    @Override
+    public boolean updateRankSymbol(Rank rank) {
+        int res = 0;
+        try {
+            res = rankMapper.updateSymbolByRankId(rank);
+        } catch (Exception e) {
+            logger.error("update rank symbol is error:",e);
         }
         return res>0;
     }
@@ -285,7 +302,7 @@ public class RankServiceImpl implements RankService{
         RankImage rankImage = new RankImage();
         rankImage.setRankid(rankCheckDetail.getRankid());
         rankImage.setCheckstatus(rankCheckDetail.getCheckstatus());
-        boolean flag = updateRankSymbol(rankImage);
+        boolean flag = updateRankImageSymbol(rankImage);
         if (flag) {
             int res = 0;
             try {
@@ -344,6 +361,61 @@ public class RankServiceImpl implements RankService{
             logger.error("selectRankByRankid error and msg={}",e);
         }
         return null;
+    }
+
+    @Override
+    public BaseResp<Rank> selectRankDetailByRankid(String rankid) {
+        BaseResp<Rank> baseResp = new BaseResp();
+        try {
+            Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+            if (null != rank){
+                rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankid)));
+            }
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            baseResp.setData(rank);
+        } catch (Exception e) {
+            logger.error("selectRankByRankid error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, int pageNo, int pageSize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        Page<RankMembers> page = new Page<>(pageNo,pageSize);
+        try {
+            AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
+            List<AppUserMongoEntity> users = null;
+            if (null != user) {
+                users = userMongoDao.getAppUsers(user);
+            }
+            rankMembers.setAppUserMongoEntities(users);
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,pageSize*(pageNo-1),pageSize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+            }
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        for (RankAwardRelease rankAward : rankAwards){
+            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+            rankAward.setAward(award);
+        }
+        return rankAwards;
     }
 
 }

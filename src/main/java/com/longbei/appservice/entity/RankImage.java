@@ -118,9 +118,18 @@ public class RankImage {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
+    private String notice; //榜单公告
 
     //--------
 
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
 
     public String getIsup() {
         return isup;

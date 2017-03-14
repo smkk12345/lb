@@ -537,4 +537,22 @@
     sponsornum = (SELECT COUNT(userid) from user_sponsor),
     sponsormoney = (SELECT SUM(number) from user_sponsor) WHERE rankid = #{rankid,jdbcType=BIGINT}
   </update>
+  <update id="updateSymbolByRankId" parameterType="com.longbei.appservice.entity.Rank" >
+    update rank
+    <set >
+      <if test="isfinish != null" >
+        isfinish = #{isfinish,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel},
+      </if>
+      <if test="notice != null" >
+        notice = #{notice},
+      </if>
+    </set>
+    where rankid = #{rankid,jdbcType=BIGINT}
+  </update>
 </mapper>
