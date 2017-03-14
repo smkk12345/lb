@@ -49,9 +49,11 @@ public class Improve {
 
     protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
     
-    protected Integer goalid;//进步组id
+    protected Long goalid;//进步组id
     
-    protected Integer rankid; //榜id
+    protected Long rankid; //榜id
+
+    private String isbusinessdel;//是否源已经删除  0 未删除 已经删除
 
     protected Integer commentnum = 0; //评论数
 
@@ -65,7 +67,6 @@ public class Improve {
     protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
     
     protected String isreply; //是否已批复  0：未批复  1：已批复
-
 
 
     /**
@@ -498,20 +499,20 @@ public class Improve {
     }
 
     @JsonInclude(Include.ALWAYS)
-	public Integer getGoalid() {
+	public Long getGoalid() {
 		return goalid;
 	}
 
-	public void setGoalid(Integer goalid) {
+	public void setGoalid(Long goalid) {
 		this.goalid = goalid;
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public Integer getRankid() {
+	public Long getRankid() {
 		return rankid;
 	}
 
-	public void setRankid(Integer rankid) {
+	public void setRankid(Long rankid) {
 		this.rankid = rankid;
 	}
 
@@ -565,6 +566,14 @@ public class Improve {
 	public void setIsreply(String isreply) {
 		this.isreply = isreply;
 	}
+
+    public String getIsbusinessdel() {
+        return isbusinessdel;
+    }
+
+    public void setIsbusinessdel(String isbusinessdel) {
+        this.isbusinessdel = isbusinessdel;
+    }
 
     /**
      * 业务临时实体，微进步详情中用

@@ -1961,13 +1961,34 @@ public class ImproveServiceImpl implements ImproveService{
                                                        String businesstype, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
-            List<Improve> improves = improveMapper.selectListByBusinessid(businessid,getTableNameByBusinessType(businesstype),
-                    null,userid,null,startno,pagesize);
+            List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
+                    null, userid, null, startno, pagesize);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
         } catch (Exception e) {
             logger.error("select businessi improve list userid={} businessid={} businesstype={} is error:"
-                    ,userid,businessid,businesstype);
+                    , userid, businessid, businesstype);
+        }
+        return baseResp;
+    }
+    public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int endNum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            List<Improve> list = improveMapper.selectGoalMainImproveList(userid,startNum,endNum);
+            for (Improve improve:list) {
+                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getGoalid());
+                improve.setBusinessEntity(userGoal.getPtype(),
+                        userGoal.getGoaltag(),
+                        0,
+                        userGoal.getUpdatetime(),
+                        null,
+                        0,
+                        userGoal.getIcount());
+            }
+            baseResp.setData(list);
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectGoalMainImproveList userid={},startNum={},endNum={}",userid,startNum,endNum,e);
         }
         return baseResp;
     }

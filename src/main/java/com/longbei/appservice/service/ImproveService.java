@@ -362,4 +362,7 @@ public interface ImproveService {
     BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,
                                                 String businesstype,Integer startno,Integer pagesize);
 
+    
+    BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int endNum);
+
 }

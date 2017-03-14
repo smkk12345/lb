@@ -12,11 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by smkk on 17/2/10.
+ * 关联部分  发进步更新目标中icount条数 更新更新时间
+ * 删除进步更新条数 更新主进步
  */
-@Controller
+@RestController
 @RequestMapping(value = "/goal")
 public class GoalController extends BaseController {
 
@@ -35,7 +38,6 @@ public class GoalController extends BaseController {
      * @param week  提醒周   逗号隔开
      * @return
      */
-    @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp<Object> insertGoal(String userid,
                                        String goaltag,
@@ -60,20 +62,57 @@ public class GoalController extends BaseController {
     }
 
     /**
-     *
-     * @param userid
+     * @url http://ip:port/app_service/goal/list
+     * 获取目标列表
+     * @param userid startNum,endNum
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "list",method = RequestMethod.POST)
+    @RequestMapping(value = "list")
     public BaseResp<Object> list(String userid,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        if(StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
         try{
-
+            baseResp = goalService.list(Long.parseLong(userid),startNum,endNum);
         }catch(Exception e){
             logger.error("goalService.list error and msg={}",e);
         }
         return  baseResp;
+    }
+
+    /**
+     * @url http://ip:port/app_service/goal/updateTtitle
+     * @param goalId
+     * @param goaltag
+     * @return
+     */
+    @RequestMapping(value="updateTtitle")
+    public BaseResp<Object> updateTitle(String goalId,String goaltag){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("updateTtitle goalId={},title={}",goalId,goaltag);
+        if(StringUtils.hasBlankParams(goalId,goaltag)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = goalService.updateTitle(Long.parseLong(goalId),goaltag);
+        return baseResp;
+    }
+
+    /**
+     *
+     * @param goalId
+     * @param userId
+     * @return
+     */
+    public BaseResp<Object> delGoal(String goalId,String userId){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("delGoal goalId={},userId={}",goalId,userId);
+        if(StringUtils.hasBlankParams(goalId,userId)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = goalService.delGoal(Long.parseLong(goalId),Long.parseLong(userId));
+        return baseResp;
     }
 
 
