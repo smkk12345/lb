@@ -408,4 +408,24 @@
       and circleid = #{circleId}
     ORDER BY createtime DESC
   </select>
+
+  <select id="selectGoalMainImproveList">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM improve_goal
+    where userid=#{userid} and ismainimp = '1'
+    ORDER BY createtime DESC
+    <if test="endNum > 0">
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+
+  <update id="delGoalToImprove">
+    UPDATE improve_goal
+    set isbusinessdel = '1'
+    where userid=#{userid}
+    and businessid=#{businessid}
+    and businesstype=#{businesstype}
+  </update>
+
 </mapper>

@@ -15,4 +15,9 @@ public interface UserGoalMapper {
     int updateByPrimaryKeySelective(UserGoal record);
 
     int updateByPrimaryKey(UserGoal record);
+
+    int updateTitle(@Param("goalid")long goalId,@Param("title")String title);
+
+    int delGoal(@Param("goalid")long goalId,@Param("userid")long userid);
+
 }
