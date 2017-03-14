@@ -33,4 +33,21 @@ public interface GoalService {
      * @return
      */
     BaseResp<Object> list(long userid,int startNum,int endNum);
+
+    /**
+     * 更新目标title
+     * @param goalId
+     * @param title
+     * @return
+     */
+    BaseResp<Object> updateTitle(long goalId, String title);
+
+    /**
+     * 删除目标 同时更新目标中所有微进步的状态
+     * @param goalId
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> delGoal(long goalId,long userid);
+
 }

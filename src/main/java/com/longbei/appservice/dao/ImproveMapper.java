@@ -91,4 +91,7 @@ public interface ImproveMapper {
      * @return
      */
     List<Improve> findCircleMemberImprove(Map<String, Object> map);
+
+    List<Improve> selectGoalMainImproveList(@Param("userid") long userid,@Param("startNum") int startNum,@Param("endNum") int endNum);
+
 }

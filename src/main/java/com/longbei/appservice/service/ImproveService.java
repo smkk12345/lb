@@ -357,4 +357,6 @@ public interface ImproveService {
      */
     BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId);
 
+    BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int endNum);
+
 }

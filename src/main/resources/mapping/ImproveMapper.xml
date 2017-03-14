@@ -408,4 +408,16 @@
       and circleid = #{circleId}
     ORDER BY createtime DESC
   </select>
+
+  <select id="selectGoalMainImproveList">
+    SELECT
+    <include refid="Base_Column_list"/>
+    FROM improve_goal
+    where userid=#{userid} and ismainimp = '1'
+    ORDER BY createtime DESC
+    <if test="endNum > 0">
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+
 </mapper>

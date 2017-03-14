@@ -6,10 +6,10 @@ import com.longbei.appservice.dao.ImproveGoalMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.GoalService;
+import com.longbei.appservice.service.ImproveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,8 +22,9 @@ public class GoalServiceImpl implements GoalService {
 
     @Autowired
     private UserGoalMapper userGoalMapper;
+
     @Autowired
-    private ImproveGoalMapper improveGoalMapper;
+    private ImproveService improveService;
 
     private static Logger logger = LoggerFactory.getLogger(GoalServiceImpl.class);
 
@@ -62,10 +63,56 @@ public class GoalServiceImpl implements GoalService {
     public BaseResp<Object> list(long userid, int startNum, int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-           // List<Improve> goalList = improveGoalMapper.selectByUserId(userid,startNum,endNum);
+            baseResp = improveService.selectGoalMainImproveList(userid,startNum,endNum);
         }catch (Exception e){
-            logger.error("list error and msg={}",e);
+            logger.error("list error userid={},startNum={},endNum={}",userid,startNum,endNum,e);
         }
         return baseResp;
     }
+
+    /**
+     * 更新目标title
+     * @param goalId
+     * @param title
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateTitle(long goalId, String title) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            int res = userGoalMapper.updateTitle(goalId,title);
+            if(res == 1){
+                return baseResp.initCodeAndDesp();
+            }
+        }catch (Exception e){
+            logger.info("goalId={},title={}",goalId,title,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 删除目标 修改目标状态
+     *        修改目标进步中的状态
+     * @param goalId
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> delGoal(long goalId, long userid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+//            int res = userGoalMapper.delGoal(goalId, userid);
+//            if(res == 1){
+//                return improveService.delGoal(goalId,userid);
+//            }
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("delGoal goalId={},userid={}",goalId,userid,e);
+        }
+        return baseResp;
+    }
+
+
+
+
 }

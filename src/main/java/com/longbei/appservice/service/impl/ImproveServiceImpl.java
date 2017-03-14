@@ -1956,6 +1956,29 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int endNum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            List<Improve> list = improveMapper.selectGoalMainImproveList(userid,startNum,endNum);
+            for (Improve improve:list) {
+                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getGoalid());
+                improve.setBusinessEntity(userGoal.getPtype(),
+                        userGoal.getGoaltag(),
+                        0,
+                        userGoal.getUpdatetime(),
+                        null,
+                        0,
+                        userGoal.getIcount());
+            }
+            baseResp.setData(list);
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectGoalMainImproveList userid={},startNum={},endNum={}",userid,startNum,endNum,e);
+        }
+        return baseResp;
+    }
+
     private boolean canAcceptAward(RankMembers rankMembers){
         boolean result = false;
         if(rankMembers.getIswinning().equals("1")&&rankMembers.getAcceptaward().equals("0")){
