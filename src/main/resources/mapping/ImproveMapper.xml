@@ -411,7 +411,7 @@
 
   <select id="selectGoalMainImproveList">
     SELECT
-    <include refid="Base_Column_list"/>
+    <include refid="Base_Column_List"/>
     FROM improve_goal
     where userid=#{userid} and ismainimp = '1'
     ORDER BY createtime DESC
