@@ -380,6 +380,7 @@ public class RankServiceImpl implements RankService{
     }
 
 
+
     @Override
     public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, int pageNo, int pageSize) {
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
@@ -405,6 +406,24 @@ public class RankServiceImpl implements RankService{
             baseResp.setData(page);
         } catch (Exception e) {
             logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid, int startNo, int pageSize) {
+        BaseResp<List<RankMembers>> baseResp = new BaseResp<>();
+        RankMembers rankMembers = new RankMembers();
+        try {
+            rankMembers.setRankid(Long.parseLong(rankid));
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,startNo,pageSize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(rankMemberses);
+        } catch (NumberFormatException e) {
+            logger.error("select rankmember list rankid={} is error:",rankid,e);
         }
         return baseResp;
     }

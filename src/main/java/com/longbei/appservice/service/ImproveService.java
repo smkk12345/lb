@@ -357,4 +357,9 @@ public interface ImproveService {
      */
     BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId);
 
+
+
+    BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,
+                                                String businesstype,Integer startno,Integer pagesize);
+
 }
