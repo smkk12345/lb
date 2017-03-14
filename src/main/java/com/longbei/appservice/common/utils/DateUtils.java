@@ -401,6 +401,4 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		sDate2 = sDate2.substring(0, 10);
 		return sDate1.equals(sDate2);
 	}
-	
-	
 }

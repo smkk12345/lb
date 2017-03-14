@@ -235,4 +235,25 @@
       isfashionman = #{isfashionman,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 根据用户id和榜单id查询榜单 -->
+  <select id="selectByRankIdAndUserId" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from
+        rank_members
+    where
+        rankid = #{rankid}
+      and userid = #{userid}
+  </select>
+
+  <!-- 更改榜单中的用户数量 -->
+  <update id="updateRankMemberCount">
+      update
+        rank_members
+      set
+        rankinvolved = rankinvolved + #{count}
+      where rankid = #{rankId}
+  </update>
+
 </mapper>

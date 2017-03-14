@@ -35,4 +35,11 @@ public interface RankMapper {
 
     int updateSymbolByRankId(Rank rank);
 
+    /**
+     * 更新榜单中的用户数量
+     * @param rankId
+     * @param count
+     * @return
+     */
+    int updateRankMemberCount(Long rankId, int count);
 }

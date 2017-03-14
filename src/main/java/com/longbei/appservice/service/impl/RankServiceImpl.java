@@ -5,12 +5,15 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.UserIdcardService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -54,6 +57,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private RankMembersMapper rankMembersMapper;
     @Autowired
     private UserMongoDao userMongoDao;
+    @Autowired
+    private SpringJedisDao springJedisDao;
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserIdcardService userIdcardService;
 
     /**
      *  @author luye
@@ -385,15 +394,87 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (!DateUtils.compare(rank.getEndtime(), new Date())) {
                 return baseResp.fail("非常抱歉,该榜单已结束!");
             }
+            //查看口令是否正确
+            if(StringUtils.isNotEmpty(rank.getCodeword()) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getCodeword()))){
+                return baseResp.fail("口令不正确,请重新输入口令!");
+            }
+            if("1".equals(rank.getIsrealname())){
+                UserIdcard userIdCard = this.userIdcardService.selectByUserid(userId+"");
+                if(!"2".equals(userIdCard.getValidateidcard())){
+                    return baseResp.fail("加入该榜单,需要用户实名认证,您还未实名认证通过");
+                }
+            }
+//            UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
+
             //校验用户是否已经在榜单中
             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
+            if(rankMembers != null && rankMembers.getStatus() == 0 ){
+                return baseResp.fail("您已申请加入了龙榜,正在等待榜主审核!");
+            }else if(rankMembers != null && rankMembers.getStatus() == 1){
+                return baseResp.fail("您已在该龙榜中,无需再申请重新加入!");
+            }else if(rankMembers != null && rankMembers.getStatus() == 3){
+                return baseResp.fail("由于您被群主踢出了该龙榜,因此无法再次申请加入!");
+            }else if(rankMembers != null && rankMembers.getStatus() ==2){
+                //修改状态
+
+
+            }
+
+            RankMembers rankMember = new RankMembers();
+            rankMember.setCreatetime(new Date());
+            rankMember.setFlowers(0);
+            rankMember.setImprovecount(0);
+            rankMember.setUserid(userId);
+            rankMember.setRankid(rankId);
+            rankMember.setUpdatetime(new Date());
+            rankMember.setLikes(0);
+            rankMember.setIsfashionman("0");
+            if(rank.getNeedConfirm() != null && rank.getNeedConfirm()){
+                rankMember.setStatus(0);
+            }else{
+                rankMember.setStatus(1);
+            }
+            int row = rankMembersMapper.insertSelective(rankMember);
+            if(row > 0 && rankMember.getStatus() == 1){
+                //往reids中放入初始化的排名值
+                boolean initRedisFlag = initRedisRankSort(rank,userId);
+                if(initRedisFlag){
+                    return baseResp.ok("申请加入龙榜成功!");
+                }
+                boolean updateRankFlag = updateRankMemberCount(rankId,1);
+            }
         } catch (Exception e) {
-
+            logger.error("insert rankMemeber error rankId:{} userId:{}",rankId,userId);
+            printException(e);
         }
-
-
-        return null;
+        return baseResp;
     }
+
+    /**
+     * 更改榜中的参榜人数
+     * @param rankId 榜id
+     * @param count 新增人数
+     * @return
+     */
+    private boolean updateRankMemberCount(Long rankId, int count) {
+        int updateRow = this.rankMapper.updateRankMemberCount(rankId,count);
+        return updateRow > 0? true:false;
+    }
+
+    /**
+     * 初始化新入榜的用户排名
+     * @param rank 榜单信息
+     * @param userId
+     * @return
+     */
+    private boolean initRedisRankSort(Rank rank, Long userId) {
+        long nowDate = new Date().getTime();
+        double a = nowDate - rank.getCreatetime().getTime();
+        double b = rank.getEndtime().getTime() - rank.getCreatetime().getTime();
+        double ratio = NumberUtil.round(a/b,5);
+        return springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),userId+"",ratio);
+    }
+
 
     @Override
     public BaseResp<Rank> selectRankDetailByRankid(String rankid) {

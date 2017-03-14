@@ -36,13 +36,13 @@ public class RankController {
      * @param codeword 口令
      * @return
      */
+    @RequestMapping(value="insertRankMember")
     public BaseResp<Object> insertRankMember(Long userId,Long rankId,String codeword){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.rankService.insrtRankMember(userId,rankId,codeword);
-
         return baseResp;
     }
 
