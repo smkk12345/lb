@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	
@@ -64,6 +66,34 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 			logger.error("findOne error and msg={}",e);
 		}
 		return null;
+	}
+
+	/**
+	 * 根据用户名，昵称 模糊查询
+	 * @param appUserMongoEntity
+	 * @return
+	 */
+	public List<AppUserMongoEntity> getAppUsers(AppUserMongoEntity appUserMongoEntity){
+
+		Criteria criteria = null;
+		if (null != appUserMongoEntity){
+			if (!StringUtils.isBlank(appUserMongoEntity.getUsername())){
+				criteria = Criteria.where("username").regex(appUserMongoEntity.getUsername());
+			}
+			if (!StringUtils.isBlank(appUserMongoEntity.getNickname())){
+				if (null == criteria){
+					criteria = Criteria.where("nickname").regex(appUserMongoEntity.getNickname());
+				} else {
+					criteria.and("nickname").regex(appUserMongoEntity.getNickname());
+				}
+			}
+		}
+		if (null == criteria){
+			return null;
+		}
+		Query query = new Query(criteria);
+		List<AppUserMongoEntity> appUserMongoEntities = mongoTemplate.find(query,AppUserMongoEntity.class);
+		return appUserMongoEntities;
 	}
 	
 	/**

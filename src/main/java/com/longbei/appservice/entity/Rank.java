@@ -110,16 +110,24 @@ public class Rank {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
-
-
     private String sponsornum;//赞助人数
-
 
     private String sponsormoney;//赞助龙币数量
 
+    private List<RankAwardRelease> rankAwards; //榜单奖品
+
+    private String notice; //公告
 
     //--------
 
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
 
     public String getIsup() {
         return isup;
@@ -155,7 +163,8 @@ public class Rank {
     public void setEstarttime(Date estarttime) {
         this.estarttime = estarttime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getSendtime() {
         return sendtime;
     }
@@ -163,7 +172,8 @@ public class Rank {
     public void setSendtime(Date sendtime) {
         this.sendtime = sendtime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEendtime() {
         return eendtime;
     }
@@ -172,7 +182,7 @@ public class Rank {
         this.eendtime = eendtime;
     }
 
-    private List<RankAward> rankAwards; //榜单奖品
+
 
     public String getJoinlastday() {
         return joinlastday;
@@ -286,11 +296,11 @@ public class Rank {
         this.rankcardid = rankcardid;
     }
 
-    public List<RankAward> getRankAwards() {
+    public List<RankAwardRelease> getRankAwards() {
         return rankAwards;
     }
 
-    public void setRankAwards(List<RankAward> rankAwards) {
+    public void setRankAwards(List<RankAwardRelease> rankAwards) {
         this.rankAwards = rankAwards;
     }
 

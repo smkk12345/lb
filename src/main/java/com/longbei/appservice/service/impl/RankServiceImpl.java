@@ -6,7 +6,9 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
 import net.sf.json.JSONObject;
@@ -50,6 +52,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private RankAwardReleaseMapper rankAwardReleaseMapper;
     @Autowired
     private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private UserMongoDao userMongoDao;
 
     /**
      *  @author luye
@@ -74,7 +78,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public boolean updateRankSymbol(RankImage rankImage) {
+    public boolean updateRankImageSymbol(RankImage rankImage) {
         int res = 0;
         try {
             res = rankImageMapper.updateSymbolByRankId(rankImage);
@@ -85,6 +89,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
         } catch (Exception e) {
             logger.error("update rank image symbol is error:",e);
+        }
+        return res>0;
+    }
+
+    @Override
+    public boolean updateRankSymbol(Rank rank) {
+        int res = 0;
+        try {
+            res = rankMapper.updateSymbolByRankId(rank);
+        } catch (Exception e) {
+            logger.error("update rank symbol is error:",e);
         }
         return res>0;
     }
@@ -288,7 +303,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         RankImage rankImage = new RankImage();
         rankImage.setRankid(rankCheckDetail.getRankid());
         rankImage.setCheckstatus(rankCheckDetail.getCheckstatus());
-        boolean flag = updateRankSymbol(rankImage);
+        boolean flag = updateRankImageSymbol(rankImage);
         if (flag) {
             int res = 0;
             try {
@@ -359,25 +374,80 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Override
     public BaseResp<Object> insrtRankMember(Long userId, Long rankId, String codeword) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        try{
+        try {
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
-            if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            if (rank == null) {
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
-            if("1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "0".equals(rank.getIsup()) || "1".equals(rank.getIsdel())){
+            if ("1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "0".equals(rank.getIsup()) || "1".equals(rank.getIsdel())) {
                 return baseResp.fail("抱歉,由于龙榜已结束或未设置为开放等原因,您暂时无法进行参榜!");
             }
-            if(!DateUtils.compare(rank.getEndtime(),new Date())){
+            if (!DateUtils.compare(rank.getEndtime(), new Date())) {
                 return baseResp.fail("非常抱歉,该榜单已结束!");
             }
             //校验用户是否已经在榜单中
-            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
-        }catch(Exception e){
+            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
+        } catch (Exception e) {
 
         }
 
 
         return null;
+    }
+
+    @Override
+    public BaseResp<Rank> selectRankDetailByRankid(String rankid) {
+        BaseResp<Rank> baseResp = new BaseResp();
+        try {
+            Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+            if (null != rank){
+                rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankid)));
+            }
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            baseResp.setData(rank);
+        } catch (Exception e) {
+            logger.error("selectRankByRankid error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, int pageNo, int pageSize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        Page<RankMembers> page = new Page<>(pageNo,pageSize);
+        try {
+            AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
+            List<AppUserMongoEntity> users = null;
+            if (null != user) {
+                users = userMongoDao.getAppUsers(user);
+            }
+            rankMembers.setAppUserMongoEntities(users);
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,pageSize*(pageNo-1),pageSize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+            }
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        for (RankAwardRelease rankAward : rankAwards){
+            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+            rankAward.setAward(award);
+        }
+        return rankAwards;
     }
 
 }

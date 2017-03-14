@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.*;
 
 public class RankMembers {
@@ -28,6 +31,26 @@ public class RankMembers {
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 
     private String isfashionman; //是否为达人  0 - 不是 1 - 是
+
+    private AppUserMongoEntity appUserMongoEntity;
+
+    private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
+
+    public List<AppUserMongoEntity> getAppUserMongoEntities() {
+        return appUserMongoEntities;
+    }
+
+    public void setAppUserMongoEntities(List<AppUserMongoEntity> appUserMongoEntities) {
+        this.appUserMongoEntities = appUserMongoEntities;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 
     /**
      * 
@@ -81,6 +104,8 @@ public class RankMembers {
      * 入榜时间
      * @return createtime 入榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -97,6 +122,8 @@ public class RankMembers {
      * 下榜时间
      * @return updatetime 下榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }

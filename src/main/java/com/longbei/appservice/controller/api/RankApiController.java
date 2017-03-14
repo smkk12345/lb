@@ -16,6 +16,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankCheckDetail;
 import com.longbei.appservice.entity.RankImage;
+import com.longbei.appservice.entity.RankMembers;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +100,17 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectdetail")
     public BaseResp<Rank> selectRankDetail(String rankid){
-        return null;
+        logger.info("selectRankDetail rankid={}",rankid);
+        BaseResp<Rank> baseResp = new BaseResp();
+        if (com.longbei.appservice.common.utils.StringUtils.isBlank(rankid)){
+            return baseResp;
+        }
+        try {
+            baseResp = rankService.selectRankDetailByRankid(rankid);
+        } catch (NumberFormatException e) {
+            logger.error("select rank info rankid={} is error:",rankid,e);
+        }
+        return baseResp;
     }
 
 
@@ -172,7 +183,7 @@ public class RankApiController {
 
         boolean issuccess = false;
         try {
-            issuccess = rankService.updateRankSymbol(rankImage);
+            issuccess = rankService.updateRankImageSymbol(rankImage);
             if(issuccess){
                 BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
                 if (null != rankImage.getAutotime()){
@@ -185,6 +196,29 @@ public class RankApiController {
         }
         return BaseResp.fail(Constant.RTNINFO_SYS_53);
     }
+
+    /**
+     * 编辑榜单状态 公告等信息 线上
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updatesymbol")
+    public BaseResp<Object> updateRankSymbol(@RequestBody Rank rank){
+
+        boolean issuccess = false;
+        try {
+            issuccess = rankService.updateRankSymbol(rank);
+            if(issuccess){
+                BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return BaseResp.fail(Constant.RTNINFO_SYS_53);
+    }
+
+
 
     /**
      * 发布榜单
@@ -259,7 +293,38 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "ispublic")
     public BaseResp<Object> isPublicRank(String rankid,String createuserid,String ispublic){
+
         return null;
+    }
+
+    /**
+     * 获取榜单成员列表
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "members/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> getRankMembers(@RequestBody RankMembers rankMembers,
+                                                @PathVariable("pageNo") String pageNo,
+                                                @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankMemberList(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
     }
 
 }
