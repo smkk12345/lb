@@ -19,8 +19,7 @@ public interface UserLevelMapper {
 	 * @author yinxc
 	 * 根据等级grade获取信息
 	 * 2017年3月9日
-	 * return_type
-	 * UserLevelMapper
+	 * grade 等级
 	 */
     UserLevel selectByGrade(@Param("grade") Integer grade);
 

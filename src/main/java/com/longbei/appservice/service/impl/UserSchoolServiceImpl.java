@@ -46,7 +46,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_39, Constant.RTNINFO_SYS_39);
 			}
 		} catch (Exception e) {
-			logger.error("insertSchool error and msg={}",e);
+			logger.error("insertSchool userid = {}", userid, e);
 		}
 		return baseResp;
 	}
@@ -60,7 +60,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			 }
 		} catch (Exception e) {
-			logger.error("deleteSchool error and msg={}",e);
+			logger.error("deleteSchool id = {}, userid = {}", id, userid, e);
 		}
 		return baseResp;
 	}
@@ -73,7 +73,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(userSchool);	
 		} catch (Exception e) {
-			logger.error("selectSchoolById error and msg={}",e);
+			logger.error("selectSchoolById id = {}", id ,e);
 		}
 		return baseResp;
 	}
@@ -86,7 +86,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);	
 		} catch (Exception e) {
-			logger.error("selectSchoolList error and msg={}",e);
+			logger.error("selectSchoolList userid = {}", userid, e);
 		}
 		return baseResp;
 	}
@@ -109,7 +109,7 @@ public class UserSchoolServiceImpl implements UserSchoolService {
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateSchool error and msg={}",e);
+			logger.error("updateSchool id = {}", id, e);
 		}
 		return baseResp;
 	}

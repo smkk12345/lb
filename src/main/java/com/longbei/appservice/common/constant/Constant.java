@@ -107,6 +107,9 @@ public class Constant {
 	//90-99 好友相关 wangyongzhi
 	public static final int STATUS_SYS_90 = -90;
 
+	//100-120 商品有关
+	public static final int STATUS_SYS_100 = -100;
+
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
@@ -172,6 +175,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_64 = "已经点过赞";
+
+	//100-120 商品有关
+	public static final String RTNINFO_SYS_100 = "商品已下架";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -475,6 +481,9 @@ public class Constant {
 	public static final String REDIS_IMPROVE_FLOWER = "improve_flower_"; //redis中flower
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
 
+	public static final String REDIS_RANK_SORT = "rank_sort_";//榜单 排名
+
+
 
     /**
      * 用户特权  操作
@@ -490,7 +499,13 @@ public class Constant {
 
 	/****** JPUSH 消息的tag end ******/
 
+	/** 操作类型 **/
+	public enum OperationType{
+		like,//点赞
+		flower,//送花
+		cancleLike,//取消点赞
 
+	}
 	/**
 	 * money
 	 *   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
@@ -499,11 +514,6 @@ public class Constant {
 	public static final String USER_MONEY_BUY = "0";
 	public static final String USER_MONEY_GIFT = "1";
 //	public static final String ;
-
-
-
-
-
 
 
 

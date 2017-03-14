@@ -20,9 +20,10 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("userImpCoinDetailService")
-public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
+public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements UserImpCoinDetailService {
 	
 	@Autowired
 	private UserImpCoinDetailMapper userImpCoinDetailMapper;
@@ -44,7 +45,7 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 	 * param userid 
 	 * param origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
 	 * 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
-	 * 					9：公益抽奖消耗进步币  
+	 * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
 	 * 
 	 * param number 数量 --- 消耗：(7:兑换商品    9：公益抽奖消耗进步币)value值为负---方法里面已做判断
 	 * param impid 业务id  类型：     
@@ -52,60 +53,110 @@ public class UserImpCoinDetailServiceImpl implements UserImpCoinDetailService {
 	 * 						兑换商品:商品id
 	 * param friendid 
 	 */
+	@Transactional
 	@Override
-	public BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, long friendid) {
+	public BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, Long friendid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
-		try {
+		try{
+			if("7".equals(origin) || "9".equals(origin)){
+				number = 0 - number;
+			}
+			boolean flag = true;
 			UserImpCoinDetail record = new UserImpCoinDetail();
 			record.setCreatetime(new Date());
 			record.setUpdatetime(new Date());
-			record.setFriendid(friendid);
 			record.setImpid(impid);
-			record.setOrigin(origin);
-			record.setUserid(userid);
-			if("7".equals(origin) || "9".equals(origin)){
-				record.setNumber(0 - number);
-			}else{
-				record.setNumber(number);
-			}
-			boolean temp = insert(record);
-			if (temp) {
-				//修改用户userInfo表---进步币总数
-//				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-//				int allnum = userInfo.getTotalcoin() + record.getNumber();
-//				userInfo.setTotalcoin(allnum);
-//				userInfoMapper.updateByUseridSelective(userInfo);
-				//先从redis里面取，如果存在，数据累加，减，之后修改表数据，   不存在存入redis
-				boolean result = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
-				if(result){
-					//存在
-					jedisKey(userid, record.getNumber());
+
+			//1.从超级用户中扣除进步币 只有给用户加进步币的时候,才从超级用户中扣除进步币
+			if(number > 0){
+				int updateRow = this.userInfoMapper.updateUserCoin(Long.parseLong(Constant.SQUARE_USER_ID),-number);
+				if(updateRow < 1){
+					flag = false;
 				}else{
-					//不存在   数据库查找   存入redis
-					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-					//并发时，判断是否已经存在
-					boolean res = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
-					if(!res){
-						//不存在
-						springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
-						//递增
-						springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, record.getNumber());
-						String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
-						//修改数据库数据
-						userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
-					}else{
-						//存在
-						jedisKey(userid, record.getNumber());
+					//增加detail
+					record.setOrigin(origin);
+					record.setFriendid(userid);
+					record.setUserid(Long.parseLong(Constant.SQUARE_USER_ID));
+					record.setNumber(-number);
+					boolean temp = insert(record);
+					if(!temp){
+						flag = false;
 					}
-					
 				}
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-		} catch (Exception e) {
-			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}", 
+			if(!flag){
+				return reseResp.fail("系统异常");
+			}
+			//2.给用户增加进步币
+			int updateRow = this.userInfoMapper.updateUserCoin(userid,number);
+			if(updateRow > 0){
+				record.setOrigin(origin);
+				record.setFriendid(friendid);
+				record.setUserid(userid);
+				record.setNumber(number);
+				boolean temp = insert(record);
+				if(!temp){
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+			if(flag){
+				return reseResp.ok();
+			}
+		}catch(Exception e){
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}",
 					userid, origin, number, impid, friendid, e);
+			printExceptionAndRollBackTransaction(e);
 		}
 		return reseResp;
+//
+//		try {
+//			UserImpCoinDetail record = new UserImpCoinDetail();
+//			record.setCreatetime(new Date());
+//			record.setUpdatetime(new Date());
+//			record.setFriendid(friendid);
+//			record.setImpid(impid);
+//			record.setOrigin(origin);
+//			record.setUserid(userid);
+//			if("7".equals(origin) || "9".equals(origin)){
+//				record.setNumber(0 - number);
+//			}else{
+//				record.setNumber(number);
+//			}
+//			boolean temp = insert(record);
+//			if (temp) {
+//				//先从redis里面取，如果存在，数据累加，减，之后修改表数据，   不存在存入redis
+//				boolean result = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
+//				if(result){
+//					//存在
+//					jedisKey(userid, record.getNumber());
+//				}else{
+//					//不存在   数据库查找   存入redis
+//					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//					//并发时，判断是否已经存在
+//					boolean res = springJedisDao.hasKey(Constant.RP_USER_IMP_COIN_VALUE + userid);
+//					if(!res){
+//						//不存在
+//						springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
+//						//递增
+//						springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, record.getNumber());
+//						String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
+//						//修改数据库数据
+//						userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
+//					}else{
+//						//存在
+//						jedisKey(userid, record.getNumber());
+//					}
+//
+//				}
+//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//			}
+//		} catch (Exception e) {
+//			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}",
+//					userid, origin, number, impid, friendid, e);
+//		}
+//		return reseResp;
 	}
 	
 	private void jedisKey(long userid, Integer number){

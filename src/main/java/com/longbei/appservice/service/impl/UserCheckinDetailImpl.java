@@ -181,7 +181,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 //		detail.setUpdatetime(new Date());
 //		detail.setUserid(userid);
 //		userImpCoinDetailMapper.insertSelective(detail);
-		userImpCoinDetailService.insertPublic(userid, origin, number, 0, 0);
+		userImpCoinDetailService.insertPublic(userid, origin, number, 0, null);
 	}
 	
 	/**

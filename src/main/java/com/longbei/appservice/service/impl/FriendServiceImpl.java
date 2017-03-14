@@ -396,8 +396,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public String getNickName(Long userId, Long friendId) {
         SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId);
-        if(snsFriends != null && StringUtils.isNotEmpty(snsFriends.getNickname())){
-            return snsFriends.getNickname();
+        if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
+            return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
         }
         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(friendId+"");
         if(appUserMongoEntity != null && StringUtils.isNotEmpty(appUserMongoEntity.getNickname())){

@@ -18,10 +18,8 @@ public interface ImpAllDetailMapper {
 
     ImpAllDetail selectByPrimaryKey(Integer id);
 
-    List<ImpAllDetail> selectList(@Param("impid") String impid,
-                                  @Param("detailtype") String detailtype,
-                                  @Param("pagesize") int pagesize,
-                                  @Param("lastdate") Date lastdate);
+    List<ImpAllDetail> selectList(@Param("impid") String impid, @Param("detailtype")String detailtype,
+                                  @Param("pagesize")int pagesize,@Param("lastdate") Date lastdate);
 
     /**
      * 用户判断记录是否存在

@@ -221,6 +221,7 @@ public class GroupController {
 
     /**
      * 查询用户的群列表
+     * @url http://ip:port/app_service/group/groupList
      * @param userId 当前登录用户id
      * @param startNum
      * @param endNum
