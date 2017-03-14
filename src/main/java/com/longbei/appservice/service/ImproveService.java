@@ -359,4 +359,12 @@ public interface ImproveService {
 
     BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int endNum);
 
+    /**
+     * 删除目标 修改目标中的进步状态
+     * @param goalId
+     * @param userId
+     * @return
+     */
+    BaseResp<Object> delGoal(long goalId,long userId);
+
 }

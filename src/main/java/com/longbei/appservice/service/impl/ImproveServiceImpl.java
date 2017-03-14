@@ -2,7 +2,6 @@ package com.longbei.appservice.service.impl;
 
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
@@ -12,7 +11,6 @@ import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.common.utils.ValidateUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -1975,6 +1973,20 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("selectGoalMainImproveList userid={},startNum={},endNum={}",userid,startNum,endNum,e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> delGoal(long goalId, long userId) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            int res = improveMapper.delGoalToImprove(goalId,userId,Constant.IMPROVE_GOAL_TYPE);
+            if(res>0){
+                return baseResp.initCodeAndDesp();
+            }
+        }catch (Exception e){
+            logger.error("delGoalToImprove goalid={},userid={}",goalId,userId,e);
         }
         return baseResp;
     }

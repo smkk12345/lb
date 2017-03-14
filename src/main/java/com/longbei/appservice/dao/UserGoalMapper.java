@@ -18,4 +18,6 @@ public interface UserGoalMapper {
 
     int updateTitle(@Param("goalid")long goalId,@Param("title")String title);
 
+    int delGoal(@Param("goalid")long goalId,@Param("userid")long userid);
+
 }

@@ -420,4 +420,12 @@
     </if>
   </select>
 
+  <update id="delGoalToImprove">
+    UPDATE improve_goal
+    set isbusinessdel = '1'
+    where userid=#{userid}
+    and businessid=#{businessid}
+    and businesstype=#{businesstype}
+  </update>
+
 </mapper>
