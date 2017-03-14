@@ -107,6 +107,9 @@ public class Constant {
 	//90-99 好友相关 wangyongzhi
 	public static final int STATUS_SYS_90 = -90;
 
+	//100-120 商品有关
+	public static final int STATUS_SYS_100 = -100;
+
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
@@ -172,6 +175,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_64 = "已经点过赞";
+
+	//100-120 商品有关
+	public static final String RTNINFO_SYS_100 = "商品已下架";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
