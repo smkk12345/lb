@@ -7,6 +7,8 @@
 * @version V1.0   
 */
 package com.longbei.appservice.controller;
+import com.longbei.appservice.entity.UserImpCoinDetail;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class UserRelationController extends BaseController {
 	
 	 @Autowired
 	 private UserRelationService userRelationService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 	
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	 
@@ -254,11 +258,29 @@ public class UserRelationController extends BaseController {
 		}
 		return baseResp;
 	}
+
+	/**
+	 * 加载推荐的达人
+	 * @param startNum 开始页码
+	 * @param endNum 结束页码
+     * @return
+     */
+	@RequestMapping(value = "selectFashionManUser")
+	public BaseResp<Object> selectFashionManUser(Integer startNum,Integer endNum ){
+		if(startNum == null || startNum < 0){
+			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+		}
+		Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(endNum != null && endNum > startNum){
+			pageSize = endNum - startNum;
+		}
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		baseResp = this.userRelationService.selectFashionManUser(startNum,pageSize);
+		return baseResp;
+	}
 	//－－－－－－－－－－－sns_fans－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 
-	
-	
 }

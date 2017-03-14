@@ -86,4 +86,13 @@ public interface GroupService {
      * @return
      */
     BaseResp<Object> updateGroupMainUser(Long userId, Long currentUserId, String groupId);
+
+    /**
+     * 查询用户所在的群列表
+     * @param userId 用户id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize);
 }

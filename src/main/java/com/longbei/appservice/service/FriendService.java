@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.FriendAddAsk;
 
 /**
@@ -58,4 +59,13 @@ public interface FriendService extends BaseService{
      * @return
      */
     boolean checkIsFriend(Long userId,Long friendId);
+
+    /**
+     * 获取用户昵称 如果用户是好友,则返回当前用户设置的好友昵称,如果不是好友,则返回friend User的昵称
+     * @param userId 当前登录用户
+     * @param friendId 好友的id
+     * @return
+     */
+    String getNickName(Long userId, Long friendId);
+
 }

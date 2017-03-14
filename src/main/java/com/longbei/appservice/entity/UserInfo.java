@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -30,7 +29,7 @@ public class UserInfo {
     private String sex;//性别  0 男  1 女
 
     private String city;//所在城市
-    
+
 
 	private String area;//所在区域
 
@@ -61,30 +60,32 @@ public class UserInfo {
     private Long inviteuserid;//邀请人id
 
     private String rytoken;//融云token
-    
+
     private String deviceindex;//手机设备号
-    
+
     private String devicetype;//手机类型
-    
+
     private String hcnickname;//是否修改了用户昵称  0 未修改  1 已经修改
-    
+
     private String islike = "0";//是否关注   0：未关注   1：已关注
-    
+
     private String isfriend = "0"; //是否是好友    0：不是   1：是
 
     private Integer point;//龙分
     private Integer grade;//等级
     private Integer curpoint;//当前龙分
-    
-    private List<UserJob> jobList = new ArrayList<UserJob>(); 
-    
+
+    private Boolean isFashionMan;//是否是达人
+
+    private List<UserJob> jobList = new ArrayList<UserJob>();
+
     private List<UserSchool> schoolList = new ArrayList<UserSchool>();
-    
+
     private List<UserInterests> interestList = new ArrayList<UserInterests>();
-    
+
     private List<UserPlDetail> detailList = new ArrayList<UserPlDetail>();  //用户十全十美的信息列表
-    
-    
+
+
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
     		super();
@@ -119,24 +120,24 @@ public class UserInfo {
     }
 
     /**
-     * 
-     * @return id 
+     *
+     * @return id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id 
+     *
+     * @param id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 用户id 
-     * @return userid 用户id 
+     * 用户id
+     * @return userid 用户id
      */
     @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
@@ -144,8 +145,8 @@ public class UserInfo {
     }
 
     /**
-     * 用户id 
-     * @param userid 用户id 
+     * 用户id
+     * @param userid 用户id
      */
     public void setUserid(Long userid) {
         this.userid = userid;
@@ -286,17 +287,17 @@ public class UserInfo {
     /**
      * 所在区域
      * @param city 所在区域
-     */ 
+     */
     public String getArea() {
 		return area;
 	}
     /**
      * 所在区域
      * @param city 所在区域
-     */ 
+     */
 	public void setArea(String area) {
 		this.area = area;
-	}    
+	}
     /**
      * 个人简介
      * @return brief 个人简介
@@ -317,7 +318,6 @@ public class UserInfo {
      * 生日
      * @return birthday 生日
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date getBirthday() {
         return birthday;
     }

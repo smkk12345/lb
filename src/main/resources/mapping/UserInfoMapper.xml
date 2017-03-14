@@ -42,7 +42,7 @@
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
-    sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
+    sex, city, area, brief, birthday, constellation, blood, feeling, 
     avatar, username, curpoint, point, grade
   </sql>
   
@@ -438,5 +438,30 @@
       inviteuserid = #{inviteuserid,jdbcType=BIGINT},
       rytoken = #{rytoken,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 查询系统推荐的达人 -->
+  <select id="selectFashionManUser" parameterType="int" resultType="com.longbei.appservice.entity.UserInfo">
+      select
+          userid,
+          avatar,
+          username,
+          nickname
+      from user_info
+      where
+          isfashionman = 1
+      limit #{startNum},#{pageSize}
+  </select>
+
+  <!-- 修改用户进步币 -->
+  <update id="updateUserCoin">
+      update
+          user_info
+      set totalcoin = totalcoin + #{coin}
+      where
+        <if test="coin &lt; 0">
+          totalcoin > ROUND(#{coin}) and
+        </if>
+        userid = #{userid}
   </update>
 </mapper>

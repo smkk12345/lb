@@ -98,8 +98,8 @@ public class AppUserController extends BaseController {
    	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "infoMore")
     @ResponseBody
-    public BaseResp<Object> infoMore(String userid, String friendid) {
-   		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<UserInfo> infoMore(String userid, String friendid) {
+   		BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
    		if (StringUtils.hasBlankParams(userid, friendid)) {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
