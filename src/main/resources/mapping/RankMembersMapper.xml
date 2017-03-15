@@ -265,12 +265,7 @@
 
   <update id="updateRankImproveCount">
     UPDATE rank_members
-    <if test="otype == '1'">
-      set icount = icount+1
-    </if>
-    <if test="otype == '0'">
-      set icount = icount-1
-    </if>
+      set icount = icount+#{icount}
     where rankid=#{rankid}
     and userid=#{userid}
   </update>

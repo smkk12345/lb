@@ -334,10 +334,10 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             //没有
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
-            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),"1");
+            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),1);
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
         } catch (Exception e) {
-            logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
+            logger.error("insert rank immprove:{} is error:{}", "",e);
         }
         if(res != 0){
             String message = improve.getImpid() +

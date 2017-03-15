@@ -37,9 +37,9 @@ public interface RankMembersMapper {
     /**
      * @param rankid
      * @param userid
-     * @param otype  0删除进步  1 增加进步
+     * @param icount  0删除进步  1 增加进步
      * @return
      */
-    int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("otype") String otype);
+    int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("icount") int icount);
 
 }
