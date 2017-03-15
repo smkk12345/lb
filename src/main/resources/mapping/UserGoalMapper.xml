@@ -131,5 +131,16 @@
     where goalid=#{goalid}
     and userid=#{userid}
   </update>
+  <update id="updateIcount">
+    UPDATE user_goal
+    <if test="otype == '1'">
+      set icount = icount+1
+    </if>
+    <if test="otype == '0'">
+      set icount = icount-1
+    </if>
+    where goalid=#{goalid}
+    and userid=#{userid}
+  </update>
 
 </mapper>

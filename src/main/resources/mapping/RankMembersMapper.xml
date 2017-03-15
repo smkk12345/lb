@@ -5,20 +5,21 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="rankid" property="rankid" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="itype" property="itype" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="iswinning" property="iswinning" jdbcType="CHAR" />
-    <result column="improvecount" property="improvecount" jdbcType="INTEGER" />
+    <result column="icount" property="icount" jdbcType="INTEGER" />
     <result column="likes" property="likes" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="acceptaward" property="acceptaward" jdbcType="CHAR" />
     <result column="isfashionman" property="isfashionman" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, userid,createtime, updatetime, sortnum, iswinning, improvecount,
-    likes, flowers, status, acceptaward, isfashionman
+    id, rankid, userid, itype, createtime, updatetime, sortnum, iswinning, icount,
+    likes, flowers, isup, acceptaward, isfashionman
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -52,9 +53,6 @@
     <if test="rankmember.isfashionman != null">
       AND isfashionman = #{rankmember.isfashionman}
     </if>
-    <if test="rankmember.userid != null">
-      AND userid = #{rankmember.userid}
-    </if>
     <if test="rankmember.appUserMongoEntities != null">
       AND  userid in
       <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
@@ -80,7 +78,7 @@
       acceptaward, isfashionman)
     values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
       #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{sortnum,jdbcType=INTEGER}, #{iswinning,jdbcType=CHAR}, #{improvecount,jdbcType=INTEGER}, 
+      #{sortnum,jdbcType=INTEGER}, #{iswinning,jdbcType=CHAR}, #{icount,jdbcType=INTEGER},
       #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER}, #{isup,jdbcType=CHAR}, 
       #{acceptaward,jdbcType=CHAR}, #{isfashionman,jdbcType=CHAR})
   </insert>
@@ -111,8 +109,8 @@
       <if test="iswinning != null" >
         iswinning,
       </if>
-      <if test="improvecount != null" >
-        improvecount,
+      <if test="icount != null" >
+        icount,
       </if>
       <if test="likes != null" >
         likes,
@@ -155,8 +153,8 @@
       <if test="iswinning != null" >
         #{iswinning,jdbcType=CHAR},
       </if>
-      <if test="improvecount != null" >
-        #{improvecount,jdbcType=INTEGER},
+      <if test="icount != null" >
+        #{icount,jdbcType=INTEGER},
       </if>
       <if test="likes != null" >
         #{likes,jdbcType=INTEGER},
@@ -199,8 +197,8 @@
       <if test="iswinning != null" >
         iswinning = #{iswinning,jdbcType=CHAR},
       </if>
-      <if test="improvecount != null" >
-        improvecount = #{improvecount,jdbcType=INTEGER},
+      <if test="icount != null" >
+        icount = #{icount,jdbcType=INTEGER},
       </if>
       <if test="likes != null" >
         likes = #{likes,jdbcType=INTEGER},
@@ -229,12 +227,24 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       sortnum = #{sortnum,jdbcType=INTEGER},
       iswinning = #{iswinning,jdbcType=CHAR},
-      improvecount = #{improvecount,jdbcType=INTEGER},
+      icount = #{icount,jdbcType=INTEGER},
       likes = #{likes,jdbcType=INTEGER},
       flowers = #{flowers,jdbcType=INTEGER},
       isup = #{isup,jdbcType=CHAR},
       acceptaward = #{acceptaward,jdbcType=CHAR},
       isfashionman = #{isfashionman,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateRankImproveCount">
+    UPDATE rank_members
+    <if test="otype == '1'">
+      set icount = icount+1
+    </if>
+    <if test="otype == '0'">
+      set icount = icount-1
+    </if>
+    where rankid=#{rankid}
+    and userid=#{userid}
   </update>
 </mapper>

@@ -97,5 +97,13 @@ public interface ImproveMapper {
 
     int delGoalToImprove(@Param("goalid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);
 
+    /**
+     * 更新主进步为非主进步
+     * @param businessid
+     * @param userid
+     * @return
+     */
+    int updateGolaMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 
+    int updateRankMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 }
