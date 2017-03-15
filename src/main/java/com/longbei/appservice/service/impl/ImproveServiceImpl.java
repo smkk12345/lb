@@ -112,56 +112,61 @@ public class ImproveServiceImpl implements ImproveService{
                                  String ispublic, String itype, String pimpid) {
 
         Improve improve = new Improve();
-
-        improve.setImpid(new Date().getTime());
+        improve.setImpid(idGenerateService.getUniqueIdAsLong());
         improve.setUserid(Long.parseLong(userid));
         improve.setBrief(brief);
         improve.setPickey(pickey);
-//        improve.setFilekey(filekey);
         improve.setSourcekey(filekey);
         improve.setBusinesstype(businesstype);
         improve.setPtype(ptype);
         improve.setIspublic(ispublic);
         improve.setItype(itype);
-        improve.setCreatetime(new Date());
-        improve.setUpdatetime(new Date());
+        improve.setIsmainimp("1");
+        Date date = new Date();
+        improve.setCreatetime(date);
+        improve.setUpdatetime(date);
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-//
         }else{
             improve.setBusinessid(Long.parseLong(businessid));
         }
+
         BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
-        if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            isok = insertImproveSingle(improve);
+        switch (businesstype){
+            case Constant.IMPROVE_SINGLE_TYPE:
+                isok = insertImproveSingle(improve);
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                isok = insertImproveForRank(improve);
+                break;
+            case Constant.IMPROVE_CLASSROOM_TYPE:
+                improve.setIsresponded("0");
+                isok = insertImproveForClassroom(improve);
+                break;
+            case Constant.IMPROVE_CIRCLE_TYPE:
+                isok = insertImproveForCircle(improve);
+                break;
+            case Constant.IMPROVE_GOAL_TYPE:
+                isok = insertImproveForGoal(improve);
+                break;
+            case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                {// 5：教室批复作业
+                    improve.setPimpid(Long.parseLong(pimpid));
+                    //0 不是批复。1 是批复
+                    improve.setIsresponded("1");
+                    isok = insertImproveForClassroomReply(improve);
+                    ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
+                    if(null != improveClassroom){
+                        //批复完成后添加消息
+                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
+                    }
+                }
+                break;
+            default:
+                isok = false;
+                break;
         }
-        if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-            isok = insertImproveForRank(improve);
-        }
-        if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-        	//0 不是批复。1 是批复
-        	improve.setIsresponded("0");
-            isok = insertImproveForClassroom(improve);
-        }
-        if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-            isok = insertImproveForCircle(improve);
-        }
-        if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-            isok = insertImproveForGoal(improve);
-        }
-        
-        if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
-        	// 5：教室批复作业
-        	improve.setPimpid(Long.parseLong(pimpid));
-        	//0 不是批复。1 是批复
-        	improve.setIsresponded("1");
-        	isok = insertImproveForClassroomReply(improve);
-        	ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
-        	if(null != improveClassroom){
-        		//批复完成后添加消息
-            	addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
-        	}
-        }
+
         //进步发布完成之后
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
@@ -313,6 +318,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
     /**
      *  @author luye
+     *  @change lixb 插入进步 修改rank_members中的进步数量 修改主进步为非主进步
      *  @desp 
      *  @create 2017/1/23 下午4:54
      *  @update 2017/1/23 下午4:54
@@ -326,6 +332,9 @@ public class ImproveServiceImpl implements ImproveService{
 
         int res = 0;
         try {
+            //没有
+            res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
+            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),"1");
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
         } catch (Exception e) {
             logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
@@ -343,7 +352,8 @@ public class ImproveServiceImpl implements ImproveService{
     }
     /**
      *  @author luye
-     *  @desp 
+     *  @desp  更新目标中进步之后 主进步状态需要更新
+     *         目标中的进步条数需要更新
      *  @create 2017/1/23 下午4:54
      *  @update 2017/1/23 下午4:54
      */
@@ -353,9 +363,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
             return false;
         }
-
         int res = 0;
         try {
+            //更新
+            res = improveMapper.updateGolaMainImprove(improve.getBusinessid(),improve.getUserid());
+            res = userGoalMapper.updateIcount(improve.getBusinessid(),improve.getUserid(),"1");
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_GOAL);
         } catch (Exception e) {
             logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
@@ -505,7 +517,7 @@ public class ImproveServiceImpl implements ImproveService{
 
 
             improves = improveMapper.selectListByBusinessid
-                    (rankid, Constant_table.IMPROVE_RANK,null,orderby,pageNo,pageSize);
+                    (rankid, Constant_table.IMPROVE_RANK,null,null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -548,7 +560,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
             improves = improveMapper.selectListByBusinessid
-                    (rankid, Constant_table.IMPROVE_RANK,"1",orderby,pageNo,pageSize);
+                    (rankid, Constant_table.IMPROVE_RANK,"1",null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -589,7 +601,7 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             improves = improveMapper.selectListByBusinessid
-                    (circleid, Constant_table.IMPROVE_CIRCLE,null,orderby,pageNo,pageSize);
+                    (circleid, Constant_table.IMPROVE_CIRCLE,null,null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
         } catch (Exception e) {
             logger.error("selectCircleImproveList userid:{} circleid:{} is error:{}",userid,circleid,e);
@@ -627,7 +639,7 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             improves = improveMapper.selectListByBusinessid
-                    (circleid, Constant_table.IMPROVE_CIRCLE,"1",orderby,pageNo,pageSize);
+                    (circleid, Constant_table.IMPROVE_CIRCLE,"1",null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
         } catch (Exception e) {
             logger.error("selectCircleImproveListByDate userid:{} circleid:{} is error:{}",userid,circleid,e);
@@ -665,7 +677,7 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             improves = improveMapper.selectListByBusinessid
-                    (classroomid, Constant_table.IMPROVE_CLASSROOM, null, orderby, pageNo, pageSize);
+                    (classroomid, Constant_table.IMPROVE_CLASSROOM,null, null, orderby, pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
             replyImp(improves);
         } catch (Exception e) {
@@ -706,7 +718,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
             improves = improveMapper.selectListByBusinessid
-                    (classroomid, Constant_table.IMPROVE_CLASSROOM, "1", orderby, pageNo, pageSize);
+                    (classroomid, Constant_table.IMPROVE_CLASSROOM, "1",null, orderby, pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
             replyImp(improves);
         } catch (Exception e) {
@@ -743,7 +755,7 @@ public class ImproveServiceImpl implements ImproveService{
         List<Improve> improves = null;
         try {
             improves = improveMapper.selectListByBusinessid
-                    (goalid, Constant_table.IMPROVE_GOAL,null,orderby,pageNo,pageSize);
+                    (goalid, Constant_table.IMPROVE_GOAL,null,null,orderby,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
         } catch (Exception e) {
             logger.error("selectGoalImproveList userid:{} goalid:{} is error:{}",userid,goalid,e);
@@ -892,6 +904,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if(res != 0){
             //删除成功之后
+//            improveGoalMapper.chooseGoalMainImprove(Long.parseLong(goalid),Long.parseLong(userid));
             springJedisDao.sRem(Constant.RP_IMPROVE_NDAY+goalid,improveid+DateUtils.getDate("yyyy-MM-dd"));
             long n = springJedisDao.sCard(Constant.RP_IMPROVE_NDAY+goalid);
 
@@ -1899,7 +1912,7 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectSuperTopicImproveList(long userid,String topicid,String orderby, int pageNo, int pageSize) {
         try{
             List<Improve> improves = improveMapper.selectListByBusinessid
-                    (topicid, Constant_table.IMPROVE_TOPIC,null,orderby,pageNo,pageSize);
+                    (topicid, Constant_table.IMPROVE_TOPIC,null,null,orderby,pageNo,pageSize);
             if(null ==improves){
                 logger.warn("getImproveBytopicid return null");
             }
@@ -1954,7 +1967,35 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+
+    /**
+     * 查询榜中，圈子，教室，目标中的用户所发的进步的列表
+     * @param userid  用户id
+     * @param businessid  榜，圈子，教室，目标 id
+     * @param businesstype 业务类型 榜，圈子，教室，目标
+     * @param startno 分页起始条数
+     * @param pagesize 分页每页条数
+     * @return
+     *
+     * @author luye
+     */
     @Override
+    public BaseResp<List<Improve>> selectBusinessImproveList(String userid, String businessid,
+                                                       String businesstype, Integer startno, Integer pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        try {
+            List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
+                    null, userid, null, startno, pagesize);
+            baseResp = BaseResp.ok();
+            baseResp.setData(improves);
+        } catch (Exception e) {
+            logger.error("select businessi improve list userid={} businessid={} businesstype={} is error:"
+                    , userid, businessid, businesstype);
+        }
+        return baseResp;
+    }
+
+
     public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{

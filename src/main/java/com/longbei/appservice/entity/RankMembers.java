@@ -170,7 +170,7 @@ public class RankMembers {
 
     /**
      * 子进步条数
-     * @return improvecount 子进步条数
+     * @return icount 子进步条数
      */
     public Integer getIcount() {
         return icount;

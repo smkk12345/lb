@@ -28,6 +28,7 @@ public interface ImproveMapper {
     List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
                                          @Param("tablename")String tablename,
                                          @Param("ismainimp")String ismainimp,
+                                         @Param("userid") String userid,
                                          @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
@@ -96,5 +97,13 @@ public interface ImproveMapper {
 
     int delGoalToImprove(@Param("goalid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);
 
+    /**
+     * 更新主进步为非主进步
+     * @param businessid
+     * @param userid
+     * @return
+     */
+    int updateGolaMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 
+    int updateRankMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 }

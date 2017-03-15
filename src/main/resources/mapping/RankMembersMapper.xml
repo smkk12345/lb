@@ -12,13 +12,14 @@
     <result column="icount" property="icount" jdbcType="INTEGER" />
     <result column="likes" property="likes" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="acceptaward" property="acceptaward" jdbcType="CHAR" />
     <result column="isfashionman" property="isfashionman" jdbcType="CHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
-    likes, flowers, acceptaward, isfashionman,status
+      id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
+      likes, flowers, acceptaward, isfashionman,status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -262,4 +263,15 @@
     where userid = #{userId} and rankid = #{rankId}
   </update>
 
+  <update id="updateRankImproveCount">
+    UPDATE rank_members
+    <if test="otype == '1'">
+      set icount = icount+1
+    </if>
+    <if test="otype == '0'">
+      set icount = icount-1
+    </if>
+    where rankid=#{rankid}
+    and userid=#{userid}
+  </update>
 </mapper>

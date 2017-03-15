@@ -132,7 +132,26 @@ public interface RankService extends BaseService{
      */
     BaseResp<Rank> selectRankDetailByRankid(String rankid);
 
-    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,int pageNo,int pageSize);
+    /**
+     * 获取成员列表 pc
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+
+
+    BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
+
+    /**
+     * 获取成员列表 app
+     * @param rankid
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,Integer startNo,Integer pageSize);
 
     /**
      * 退榜

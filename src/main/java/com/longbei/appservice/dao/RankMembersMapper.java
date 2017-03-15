@@ -34,4 +34,12 @@ public interface RankMembersMapper {
      */
     int updateRank(Map<String, Object> updateMap);
 
+    /**
+     * @param rankid
+     * @param userid
+     * @param otype  0删除进步  1 增加进步
+     * @return
+     */
+    int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("otype") String otype);
+
 }
