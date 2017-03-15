@@ -69,10 +69,11 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			
 			//添加评论---    +积分
 			//获取十全十美类型---社交
-			String pType = SysRulesCache.perfectTenMap.get(2);
+//			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
+			initCommentUserInfoByUserid(comment);
 			reseResp.setData(comment);
-			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType, null,0,0);
+			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", "2", null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);

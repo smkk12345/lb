@@ -106,4 +106,53 @@ public interface ImproveMapper {
     int updateGolaMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 
     int updateRankMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
+    //improve.getBusinessid(),improve.getUserid(),tableName,"rankid"
+
+    /**
+     * 选举主进步
+     * @param businessid
+     * @param userid
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int chooseMainImprove(@Param("businessid")long businessid,
+                          @Param("userid")long userid,
+                          @Param("tablename")String tablename,
+                          @Param("field")String field);
+
+    /**
+     * 进步删除之后修改脏数据
+     * @param businessid
+     * @param userid
+     * @param flower
+     * @param like
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int afterDelSubImp(@Param("businessid")long businessid,
+                       @Param("userid")long userid,
+                       @Param("flower")int flower,
+                       @Param("like")int like,
+                       @Param("tablename")String tablename,
+                       @Param("field")String field);
+
+    /**
+     * 更新总的数据
+     * @param businessid
+     * @param userid
+     * @param count
+     * @param otype  0 点赞  1 鲜花 2 送钻
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int updateSourceLike(@Param("businessid")long businessid,
+                         @Param("userid")long userid,
+                         @Param("icount")int count,
+                         @Param("operatetype")String otype,
+                         @Param("tablename")String tablename,
+                         @Param("field")String field);
+
 }

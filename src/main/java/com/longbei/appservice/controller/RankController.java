@@ -9,10 +9,10 @@ import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 榜单操作
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author luye
  * @create 2017-01-21 上午11:44
  **/
-@Controller
+@RestController
 @RequestMapping(value = "rank")
 public class RankController {
 
@@ -28,6 +28,60 @@ public class RankController {
 
     @Autowired
     private RankService rankService;
+
+    /**
+     * 用户 参榜
+     * @url http://ip:port/app_service/rank/insertRankMember
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    @RequestMapping(value="insertRankMember")
+    public BaseResp<Object> insertRankMember(Long userId,Long rankId,String codeword){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.insertRankMember(userId,rankId,codeword);
+        return baseResp;
+    }
+
+    /**
+     * 退榜
+     * @url http://ip:port/app_service/rank/removeRankMember
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @RequestMapping(value="removeRankMember")
+    public BaseResp<Object> removeRankMember(Long userId,Long rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.removeRankMember(userId,rankId);
+
+        return baseResp;
+    }
+
+    /**
+     * 审核用户的参榜申请
+     * @url http://ip:port/app_service/rank/auditRankMember
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 状态 1.同意 2.拒绝
+     * @return
+     */
+    @RequestMapping(value="auditRankMember")
+    public BaseResp<Object> auditRankMember(Long[] userIds,Long rankId,Integer status){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(userIds == null || userIds.length < 1 || rankId == null || status == null || (status != 1 && status != 2)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.auditRankMember(userIds,rankId,status);
+        return baseResp;
+    }
 
 
 

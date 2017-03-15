@@ -16,7 +16,7 @@ import java.util.List;
  * @author luye
  * @create 2017-01-20 下午3:25
  **/
-public interface RankService {
+public interface RankService extends BaseService{
 
     /**
      * 添加榜单接口
@@ -116,6 +116,15 @@ public interface RankService {
     Rank selectByRankid(long rankid);
 
     /**
+     * 用户加入榜单
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword);
+
+    /**
      * 获取榜单详情 线上
      * @param rankid
      * @return
@@ -144,4 +153,20 @@ public interface RankService {
      */
     BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,Integer startNo,Integer pageSize);
 
+    /**
+     * 退榜
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> removeRankMember(Long userId, Long rankId);
+
+    /**
+     * 批量处理用户的参榜申请
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 要处理的结果
+     * @return
+     */
+    BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status);
 }

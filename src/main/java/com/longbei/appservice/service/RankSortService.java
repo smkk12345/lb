@@ -12,7 +12,7 @@ public interface RankSortService extends BaseService{
      * @param rankId 榜id
      * @param userId 用户id
      * @param operationType 操作类型 点赞/送花/取消点赞
-     * @param num 送花的数量,默认是1
+     * @param num 送花的数量,默认是1 如果是赞,或者一朵花 的话,可以不传该参数
      * @return
      */
     boolean updateRankSortScore(Long rankId, Long userId, Constant.OperationType operationType,Integer num);

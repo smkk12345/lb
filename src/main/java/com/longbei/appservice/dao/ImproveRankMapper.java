@@ -39,4 +39,17 @@ public interface ImproveRankMapper {
     int remove(@Param("userid") String userid,
                @Param("rankid") String rankid,
                @Param("improveid") String improveid);
+
+    /**
+     * 更改用户的进步状态
+     * @param userId
+     * @param rankId
+     * @param isDel
+     * @param isBusinessDel
+     * @return
+     */
+    int updateImproveRanStatus(@Param("userId") String userId,
+                               @Param("rankId") String rankId,
+                               @Param("isDel") String isDel,
+                               @Param("isBusinessDel") String isBusinessDel);
 }

@@ -270,6 +270,11 @@
     ORDER BY createtime DESC
   </select>
 
-
+  <update id="chooseGoalMainImprove">
+    UPDATE improve_goal set ismainimp='1'
+    where goalid=#{goalid}
+    and userid=#{userid}
+    order by updatetime desc limit 1
+  </update>
 
 </mapper>
