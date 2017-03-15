@@ -17,6 +17,8 @@ import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLower;
@@ -42,6 +44,8 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentLowerMongoServiceImpl.class);
 	
@@ -57,9 +61,10 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			
 			//添加子评论---    +积分
 			//获取十全十美类型---社交
-			String pType = SysRulesCache.perfectTenMap.get(2);
+//			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getFirstuserid()));//此处通过id获取用户信息
-			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType,null,0,0);
+			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", "2",null,0,0);
+			initCommentLowerUserInfo(commentLower);
 			reseResp.setData(commentLower);
 		} catch (Exception e) {
 			logger.error("insertCommentLower commentLower = {}",commentLower,e);
@@ -210,5 +215,23 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		}
 		return commentLowerMongoDao.selectCountLowerByCommentid(commentid);
 	}
+	
+	//------------------------公用方法，初始化消息中用户信息------------------------------------------
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfo(CommentLower commentLower){
+    	if(null != commentLower){
+			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+    	        commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+			}
+			if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+				AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+				commentLower.setFirstNickname(appUserMongo.getNickname());
+			}
+    	}
+        
+    }
 
 }
