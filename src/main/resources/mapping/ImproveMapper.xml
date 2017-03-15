@@ -428,4 +428,20 @@
     and businesstype=#{businesstype}
   </update>
 
+  <update id="updateGolaMainImprove">
+    UPDATE improve_goal
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and userid=#{userid}
+    and businessid=#{businessid}
+  </update>
+  
+  <update id="updateRankMainImprove">
+    UPDATE improve_rank
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and userid=#{userid}
+    and businessid=#{businessid}
+  </update>
+
 </mapper>

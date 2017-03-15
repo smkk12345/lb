@@ -112,56 +112,61 @@ public class ImproveServiceImpl implements ImproveService{
                                  String ispublic, String itype, String pimpid) {
 
         Improve improve = new Improve();
-
-        improve.setImpid(new Date().getTime());
+        improve.setImpid(idGenerateService.getUniqueIdAsLong());
         improve.setUserid(Long.parseLong(userid));
         improve.setBrief(brief);
         improve.setPickey(pickey);
-//        improve.setFilekey(filekey);
         improve.setSourcekey(filekey);
         improve.setBusinesstype(businesstype);
         improve.setPtype(ptype);
         improve.setIspublic(ispublic);
         improve.setItype(itype);
-        improve.setCreatetime(new Date());
-        improve.setUpdatetime(new Date());
+        improve.setIsmainimp("1");
+        Date date = new Date();
+        improve.setCreatetime(date);
+        improve.setUpdatetime(date);
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-//
         }else{
             improve.setBusinessid(Long.parseLong(businessid));
         }
+
         BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
-        if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            isok = insertImproveSingle(improve);
+        switch (businesstype){
+            case Constant.IMPROVE_SINGLE_TYPE:
+                isok = insertImproveSingle(improve);
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                isok = insertImproveForRank(improve);
+                break;
+            case Constant.IMPROVE_CLASSROOM_TYPE:
+                improve.setIsresponded("0");
+                isok = insertImproveForClassroom(improve);
+                break;
+            case Constant.IMPROVE_CIRCLE_TYPE:
+                isok = insertImproveForCircle(improve);
+                break;
+            case Constant.IMPROVE_GOAL_TYPE:
+                isok = insertImproveForGoal(improve);
+                break;
+            case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                {// 5：教室批复作业
+                    improve.setPimpid(Long.parseLong(pimpid));
+                    //0 不是批复。1 是批复
+                    improve.setIsresponded("1");
+                    isok = insertImproveForClassroomReply(improve);
+                    ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
+                    if(null != improveClassroom){
+                        //批复完成后添加消息
+                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
+                    }
+                }
+                break;
+            default:
+                isok = false;
+                break;
         }
-        if(Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
-            isok = insertImproveForRank(improve);
-        }
-        if(Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
-        	//0 不是批复。1 是批复
-        	improve.setIsresponded("0");
-            isok = insertImproveForClassroom(improve);
-        }
-        if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-            isok = insertImproveForCircle(improve);
-        }
-        if(Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
-            isok = insertImproveForGoal(improve);
-        }
-        
-        if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
-        	// 5：教室批复作业
-        	improve.setPimpid(Long.parseLong(pimpid));
-        	//0 不是批复。1 是批复
-        	improve.setIsresponded("1");
-        	isok = insertImproveForClassroomReply(improve);
-        	ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
-        	if(null != improveClassroom){
-        		//批复完成后添加消息
-            	addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
-        	}
-        }
+
         //进步发布完成之后
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
@@ -313,6 +318,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
     /**
      *  @author luye
+     *  @change lixb 插入进步 修改rank_members中的进步数量 修改主进步为非主进步
      *  @desp 
      *  @create 2017/1/23 下午4:54
      *  @update 2017/1/23 下午4:54
@@ -326,6 +332,9 @@ public class ImproveServiceImpl implements ImproveService{
 
         int res = 0;
         try {
+            //没有
+            res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
+            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),"1");
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
         } catch (Exception e) {
             logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
@@ -343,7 +352,8 @@ public class ImproveServiceImpl implements ImproveService{
     }
     /**
      *  @author luye
-     *  @desp 
+     *  @desp  更新目标中进步之后 主进步状态需要更新
+     *         目标中的进步条数需要更新
      *  @create 2017/1/23 下午4:54
      *  @update 2017/1/23 下午4:54
      */
@@ -353,9 +363,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
             return false;
         }
-
         int res = 0;
         try {
+            //更新
+            res = improveMapper.updateGolaMainImprove(improve.getBusinessid(),improve.getUserid());
+            res = userGoalMapper.updateIcount(improve.getBusinessid(),improve.getUserid(),"1");
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_GOAL);
         } catch (Exception e) {
             logger.error("insert goal immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
@@ -892,6 +904,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if(res != 0){
             //删除成功之后
+//            improveGoalMapper.chooseGoalMainImprove(Long.parseLong(goalid),Long.parseLong(userid));
             springJedisDao.sRem(Constant.RP_IMPROVE_NDAY+goalid,improveid+DateUtils.getDate("yyyy-MM-dd"));
             long n = springJedisDao.sCard(Constant.RP_IMPROVE_NDAY+goalid);
 
