@@ -357,6 +357,20 @@ public interface ImproveService {
      */
     BaseResp<Object> acceptAward(long rankid, long userid, Integer addressId);
 
+
+    /**
+     * 查询榜中，圈子，教室，目标中的用户所发的进步的列表
+     * @param userid  用户id
+     * @param businessid  榜，圈子，教室，目标 id
+     * @param businesstype 业务类型 榜，圈子，教室，目标
+     * @param startno 分页起始条数
+     * @param pagesize 分页每页条数
+     * @return
+     */
+    BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,
+                                                String businesstype,Integer startno,Integer pagesize);
+
+
     BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int endNum);
 
     /**

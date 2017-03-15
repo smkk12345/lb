@@ -380,8 +380,9 @@ public class RankServiceImpl implements RankService{
     }
 
 
+
     @Override
-    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, int pageNo, int pageSize) {
+    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
@@ -405,6 +406,44 @@ public class RankServiceImpl implements RankService{
             baseResp.setData(page);
         } catch (Exception e) {
             logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<RankMembers> selectRankMemberInfo(String rankid, String userid) {
+        BaseResp<RankMembers> baseResp = new BaseResp<>();
+        RankMembers rankMembers = new RankMembers();
+        try {
+            rankMembers.setRankid(Long.parseLong(rankid));
+            rankMembers.setUserid(Long.parseLong(userid));
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+            if (null != rankMemberses && rankMemberses.size() != 0){
+                RankMembers rankMembers1 = rankMemberses.get(0);
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+                baseResp = BaseResp.ok();
+                baseResp.setData(rankMemberses.get(0));
+            }
+        } catch (NumberFormatException e) {
+            logger.error("select rankmember info is error:",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid, Integer startNo, Integer pageSize) {
+        BaseResp<List<RankMembers>> baseResp = new BaseResp<>();
+        RankMembers rankMembers = new RankMembers();
+        try {
+            rankMembers.setRankid(Long.parseLong(rankid));
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,startNo,pageSize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(rankMemberses);
+        } catch (NumberFormatException e) {
+            logger.error("select rankmember list rankid={} is error:",rankid,e);
         }
         return baseResp;
     }

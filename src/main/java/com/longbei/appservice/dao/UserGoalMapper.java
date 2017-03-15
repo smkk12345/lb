@@ -20,4 +20,13 @@ public interface UserGoalMapper {
 
     int delGoal(@Param("goalid")long goalId,@Param("userid")long userid);
 
+    /**
+     *
+     * @param goalId
+     * @param userid
+     * @param otype  0删除进步  1 增加进步
+     * @return
+     */
+    int updateIcount(@Param("goalid")long goalId,@Param("userid")long userid,@Param("otype") String otype);
+
 }

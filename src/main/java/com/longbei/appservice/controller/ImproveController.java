@@ -153,7 +153,7 @@ public class ImproveController {
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
 		}
-		if("5".equals(businesstype)){
+		if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 			//5：教室批复作业
 			if (StringUtils.hasBlankParams(pimpid)) {
 				return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

@@ -123,7 +123,25 @@ public interface RankService {
      */
     BaseResp<Rank> selectRankDetailByRankid(String rankid);
 
+    /**
+     * 获取成员列表 pc
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
 
-    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,int pageNo,int pageSize);
+
+    BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
+
+    /**
+     * 获取成员列表 app
+     * @param rankid
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,Integer startNo,Integer pageSize);
 
 }

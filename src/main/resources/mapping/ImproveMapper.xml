@@ -355,6 +355,9 @@
     <if test="ismainimp != null" >
       AND ismainimp = #{ismainimp}
     </if>
+    <if test="userid != null" >
+      AND userid = #{userid}
+    </if>
     <if test="tablename == 'improve_classroom'" >
       AND isresponded = 0 
     </if>
@@ -426,6 +429,22 @@
     where userid=#{userid}
     and businessid=#{businessid}
     and businesstype=#{businesstype}
+  </update>
+
+  <update id="updateGolaMainImprove">
+    UPDATE improve_goal
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and userid=#{userid}
+    and businessid=#{businessid}
+  </update>
+  
+  <update id="updateRankMainImprove">
+    UPDATE improve_rank
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and userid=#{userid}
+    and businessid=#{businessid}
   </update>
 
 </mapper>
