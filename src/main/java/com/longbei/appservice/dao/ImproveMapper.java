@@ -138,4 +138,21 @@ public interface ImproveMapper {
                        @Param("tablename")String tablename,
                        @Param("field")String field);
 
+    /**
+     * 更新总的数据
+     * @param businessid
+     * @param userid
+     * @param count
+     * @param otype  0 点赞  1 鲜花 2 送钻
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int updateSourceLike(@Param("businessid")long businessid,
+                         @Param("userid")long userid,
+                         @Param("icount")int count,
+                         @Param("operatetype")String otype,
+                         @Param("tablename")String tablename,
+                         @Param("field")String field);
+
 }

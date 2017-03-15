@@ -463,4 +463,16 @@
     and userid=#{userid}
   </update>
 
+  <update id="updateSourceLike">
+    update ${tablename}
+    SET <if test="operatetype == '0'">
+        likes = likes + #{icount}
+        </if>
+        <if test="operatetype == '1'">
+          flowers = flowers + #{icount}
+        </if>
+    where ${field}=#{businessid}
+    and userid=#{userid}
+  </update>
+
 </mapper>
