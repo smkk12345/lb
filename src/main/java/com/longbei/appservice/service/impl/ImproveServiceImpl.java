@@ -830,6 +830,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,rankid,Constant.IMPROVE_RANK_TYPE);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {
@@ -837,12 +838,42 @@ public class ImproveServiceImpl implements ImproveService{
                     rankid,improveid,userid,e);
         }
         if(res != 0){
+            //清除数据
+            clearDirtyData(improve);
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             return true;
         }
         return false;
     }
+
+    //进步删除之后清理脏数据
+    private void clearDirtyData(Improve improve){
+        int flower = improve.getFlowers().intValue();
+        int like = improve.getLikes().intValue();
+        String tableName = getTableNameByBusinessType(improve.getBusinesstype());
+        switch (improve.getBusinesstype()){
+            case Constant.IMPROVE_GOAL_TYPE:
+                if(improve.getIsmainimp().equals("1")){
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"goalid");
+                }
+                //更新赞 花 进步条数
+                improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,tableName,"goalid");
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                if(improve.getIsmainimp().equals("1")){
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"rankid");
+                }
+                //更新赞 花 进步条数
+                improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,tableName,"rankid");
+                //更新redis中排名by lixb
+
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      *  @author luye
      *  @desp 
@@ -896,6 +927,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
@@ -904,7 +936,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if(res != 0){
             //删除成功之后
-//            improveGoalMapper.chooseGoalMainImprove(Long.parseLong(goalid),Long.parseLong(userid));
+            clearDirtyData(improve);
             springJedisDao.sRem(Constant.RP_IMPROVE_NDAY+goalid,improveid+DateUtils.getDate("yyyy-MM-dd"));
             long n = springJedisDao.sCard(Constant.RP_IMPROVE_NDAY+goalid);
 
@@ -1608,6 +1640,7 @@ public class ImproveServiceImpl implements ImproveService{
             return false;
         }
         res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_ADD,businessid,getTableNameByBusinessType(businesstype));
+        
         if (res > 0 ){
             return true;
         }

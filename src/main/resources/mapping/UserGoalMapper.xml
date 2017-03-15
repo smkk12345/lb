@@ -14,9 +14,11 @@
     <result column="warntime" property="warntime" jdbcType="VARCHAR"/>
     <result column="week" property="week" jdbcType="VARCHAR"/>
     <result column="icount" property="icount" jdbcType="INTEGER"/>
+    <result column="likes" property="likes" jdbcType="INTEGER"/>
+    <result column="flowers" property="flowers" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week
+    id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week,likes,flowers
   </sql>
   <select id="selectByGoalId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -142,5 +144,4 @@
     where goalid=#{goalid}
     and userid=#{userid}
   </update>
-
 </mapper>

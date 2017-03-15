@@ -180,9 +180,9 @@ public class AppUserController extends BaseController {
  		//一些其他的逻辑
  		
  		try {
-            int n = 5;
-            n = n/0;
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
+            baseResp.getExpandData().put("hasnewmsg","1");
+            baseResp.getExpandData().put("hasnewaskfriend","1");
         } catch (Exception e) {
             logger.error("init userid = {} ", userid, e);
         }

@@ -444,4 +444,20 @@
     and businessid=#{businessid}
   </update>
 
+  <update id="chooseMainImprove">
+    UPDATE ${tablename} set ismainimp='1'
+    where ${field}=#{businessid}
+    and userid=#{userid}
+    order by updatetime desc limit 1
+  </update>
+
+  <update id="afterDelSubImp">
+    UPDATE ${tablename}
+    set likes=likes-#{like},
+        flowers=flowers-#{flower},
+        icount = icount-1
+    where ${field}=#{businessid}
+    and userid=#{userid}
+  </update>
+
 </mapper>
