@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.RankMembers;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RankMembersMapper {
     int deleteByPrimaryKey(Integer id);
@@ -25,4 +26,12 @@ public interface RankMembersMapper {
     int updateByPrimaryKey(RankMembers record);
 
     RankMembers selectByRankIdAndUserId(@Param("rankid") long rankid, @Param("userid") long userid);
+
+    /**
+     * 更改rankMe
+     * @param updateMap
+     * @return
+     */
+    int updateRank(Map<String, Object> updateMap);
+
 }

@@ -257,9 +257,32 @@
   </update>
 
   <update id="remove" parameterType="String">
-    UPDATE improve_rank SET isdel = '1' WHERE businessid=#{rankid} AND  impid=#{improveid} AND userid=#{userid}
+    UPDATE improve_rank
+    SET isdel = '1',ismainimp = 0
+    WHERE
+          businessid=#{rankid}
+        <if test="improveid != null">
+          AND  impid=#{improveid}
+        </if>
+        AND userid=#{userid}
   </update>
 
+  <!-- 更改用户的进步状态 -->
+  <update id="updateImproveRanStatus" parameterType="String">
+    UPDATE improve_rank
+    <set>
+        <if test="isDel != null">
+            isdel = #{isDel},
+        </if>
+        ismainimp = 0,
+        <if test="isBusinessDel != null">
+            isbusinessdel = #{isBusinessDel},
+        </if>
+    </set>
+    WHERE
+      businessid=#{rankId}
+      AND userid=#{userId}
+  </update>
 
   <select id="selectByRankId" parameterType="String" resultMap="BaseResultMap">
     select

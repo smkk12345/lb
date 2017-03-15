@@ -122,7 +122,7 @@ public interface RankService extends BaseService{
      * @param codeword 口令
      * @return
      */
-    BaseResp<Object> insrtRankMember(Long userId, Long rankId, String codeword);
+    BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword);
 
     /**
      * 获取榜单详情 线上
@@ -134,4 +134,20 @@ public interface RankService extends BaseService{
 
     BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,int pageNo,int pageSize);
 
+    /**
+     * 退榜
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> removeRankMember(Long userId, Long rankId);
+
+    /**
+     * 批量处理用户的参榜申请
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 要处理的结果
+     * @return
+     */
+    BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status);
 }

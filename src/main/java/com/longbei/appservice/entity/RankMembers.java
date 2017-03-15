@@ -20,7 +20,7 @@ public class RankMembers {
 
     private String iswinning;//中奖 0 未中间 1 中奖
 
-    private Integer improvecount;//子进步条数
+    private Integer icount;//子进步条数
 
     private Integer likes;//榜单点赞数
 
@@ -172,16 +172,16 @@ public class RankMembers {
      * 子进步条数
      * @return improvecount 子进步条数
      */
-    public Integer getImprovecount() {
-        return improvecount;
+    public Integer getIcount() {
+        return icount;
     }
 
     /**
      * 子进步条数
-     * @param improvecount 子进步条数
+     * @param icount 子进步条数
      */
-    public void setImprovecount(Integer improvecount) {
-        this.improvecount = improvecount;
+    public void setIcount(Integer icount) {
+        this.icount = icount;
     }
 
     /**

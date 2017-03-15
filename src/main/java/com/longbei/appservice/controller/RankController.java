@@ -31,6 +31,7 @@ public class RankController {
 
     /**
      * 用户 参榜
+     * @url http://ip:port/app_service/rank/insertRankMember
      * @param userId 用户id
      * @param rankId 榜单id
      * @param codeword 口令
@@ -42,9 +43,47 @@ public class RankController {
         if(userId == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.insrtRankMember(userId,rankId,codeword);
+        baseResp = this.rankService.insertRankMember(userId,rankId,codeword);
         return baseResp;
     }
+
+    /**
+     * 退榜
+     * @url http://ip:port/app_service/rank/removeRankMember
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @RequestMapping(value="removeRankMember")
+    public BaseResp<Object> removeRankMember(Long userId,Long rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.removeRankMember(userId,rankId);
+
+        return baseResp;
+    }
+
+    /**
+     * 审核用户的参榜申请
+     * @url http://ip:port/app_service/rank/auditRankMember
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 状态 1.同意 2.拒绝
+     * @return
+     */
+    @RequestMapping(value="auditRankMember")
+    public BaseResp<Object> auditRankMember(Long[] userIds,Long rankId,Integer status){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(userIds == null || userIds.length < 1 || rankId == null || status == null || (status != 1 && status != 2)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.auditRankMember(userIds,rankId,status);
+        return baseResp;
+    }
+
+
 
 //    /**
 //     * url: http://ip:port/app_service/rank/insert

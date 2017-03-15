@@ -24,9 +24,7 @@ import scala.collection.immutable.Stream;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 榜单操作接口实现类
@@ -63,6 +61,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserInfoMapper userInfoMapper;
     @Autowired
     private UserIdcardService userIdcardService;
+    @Autowired
+    private ImproveRankMapper improveRankMapper;
 
     /**
      *  @author luye
@@ -381,9 +381,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> insrtRankMember(Long userId, Long rankId, String codeword) {
+    public BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
+            long rank1=springJedisDao.zRank(Constant.REDIS_RANK_SORT+rankId,userId+"");
+            double a=springJedisDao.zScore(Constant.REDIS_RANK_SORT+rankId,userId+"");
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if (rank == null) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -404,7 +406,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("加入该榜单,需要用户实名认证,您还未实名认证通过");
                 }
             }
-//            UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
+
+            if("1".equals(rank.getIslonglevel())){
+                UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
+                if(rank.getLonglevel() != null && (userInfo.getGrade() < Integer.parseInt(rank.getLonglevel()))){
+                    return baseResp.fail("由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!");
+                }
+            }
+            if((rank.getRankinvolved() + 1) > rank.getRanklimite()){
+                return baseResp.fail("抱歉,参榜人数已达榜最大限制人数!");
+            }
 
             //校验用户是否已经在榜单中
             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
@@ -414,16 +425,37 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.fail("您已在该龙榜中,无需再申请重新加入!");
             }else if(rankMembers != null && rankMembers.getStatus() == 3){
                 return baseResp.fail("由于您被群主踢出了该龙榜,因此无法再次申请加入!");
-            }else if(rankMembers != null && rankMembers.getStatus() ==2){
-                //修改状态
+            }else if(rankMembers != null && rankMembers.getStatus() == 2){
+                //修改数据
+                //1.修改用户的状态为入榜
+                int status = 0;
+                if(rank.getNeedConfirm() != null && !rank.getNeedConfirm()){
+                    status = 1;
+                }
+                boolean initRankMember = true;
+                Map<String,Object> map = new HashMap<>();
+                map.put("userId",userId);
+                map.put("rankId",rankId);
+                map.put("initRankMember",initRankMember);
+                int updateRankMemberRow = this.rankMembersMapper.updateRank(map);
 
+                //2.如果直接入榜 不需要审核的话,则修改入榜人数
+                if(status == 1 && updateRankMemberRow > 0){
+                    boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
+                }
 
+                //初始化redis人数
+                boolean redisInitFlag = initRedisRankSort(rank,userId);
+
+                //TODO 发送消息给榜主
+
+                return baseResp.ok("入榜成功!");
             }
 
             RankMembers rankMember = new RankMembers();
             rankMember.setCreatetime(new Date());
             rankMember.setFlowers(0);
-            rankMember.setImprovecount(0);
+            rankMember.setIcount(0);
             rankMember.setUserid(userId);
             rankMember.setRankid(rankId);
             rankMember.setUpdatetime(new Date());
@@ -438,10 +470,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(row > 0 && rankMember.getStatus() == 1){
                 //往reids中放入初始化的排名值
                 boolean initRedisFlag = initRedisRankSort(rank,userId);
-                if(initRedisFlag){
-                    return baseResp.ok("申请加入龙榜成功!");
-                }
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
+
+                //TODO 发送消息给榜主
             }
         } catch (Exception e) {
             logger.error("insert rankMemeber error rankId:{} userId:{}",rankId,userId);
@@ -449,6 +480,112 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+    /**
+     * 退榜
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> removeRankMember(Long userId, Long rankId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Rank rank = rankMapper.selectRankByRankid(rankId);
+            if(rank == null){
+                return baseResp.fail("参数错误");
+            }
+            if(userId.equals(rank.getCreateuserid())){
+                return baseResp.fail("榜主不可退榜");
+            }
+
+            //1.更改rankMember的状态
+            Map<String,Object> updateMap = new HashMap<String,Object>();
+            updateMap.put("rankId",rankId);
+            updateMap.put("userId",userId);
+            updateMap.put("status","2");
+            int updateRow = this.rankMembersMapper.updateRank(updateMap);
+            if(updateRow < 1){
+                return baseResp.fail("退榜失败");
+            }
+            //2.更改用户在该榜单中发布的进步的状态
+            int removeRow = improveRankMapper.updateImproveRanStatus(userId+"",rankId+"",null,"1");
+
+            //3.更改参榜人数
+            boolean updateRankFlag = updateRankMemberCount(rankId,-1);
+            //4.删除reids中榜单的该用户排名
+            boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userId+"");
+            return baseResp.ok("退榜成功");
+        }catch(Exception e){
+            logger.error("remove RankMember error userId:{} rankId:{}",userId,rankId);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 更改用户的参榜申请
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 要处理的结果
+     * @return
+     */
+    @Override
+    public BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status) {
+        BaseResp<Object> baseResp =new BaseResp<>();
+        try{
+            Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            Map<String,Object> updateMap = new HashMap<String,Object>();
+            updateMap.put("rankId",rankId);
+            updateMap.put("status",status);
+            updateMap.put("initRankMember",false);
+
+            boolean flag = true;
+            //牵扯到是否需要往redis中初始化用户排名,以及批量处理申请时,可能会超过人数限制,所以用了循环
+            for(Long userId:userIds){
+                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
+                if(rankMembers == null || status.equals(rankMembers.getStatus())){
+                    continue;
+                }
+                if(status == 1 && (rank.getRankinvolved()+1) > rank.getRanklimite()){
+                    baseResp.fail("榜单人数已达上限!");
+                    flag = false;
+                    break;
+                }
+                //1.修改rankMember中的状态
+                updateMap.put("userId",userId);
+                int updateRow = this.rankMembersMapper.updateRank(updateMap);
+                if(updateRow < 1){
+                    continue;
+                }
+                //2.参榜人数加1
+                boolean updateRankMemberCountFlag = updateRankMemberCount(rankId,1);
+                if(updateRankMemberCountFlag){
+                    rank.setRankinvolved(rank.getRankinvolved()+1);
+                }
+                //3.初始化redis的用户排名
+                boolean redisFlag = initRedisRankSort(rank,userId);
+            }
+            if(flag){
+                return baseResp.ok();
+            }
+            return baseResp;
+        }catch(Exception e){
+            logger.error("audit rankMemeber error userIds:{} rankId:{} status:{}",userIds,rankId,status);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        for (RankAwardRelease rankAward : rankAwards){
+            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+            rankAward.setAward(award);
+        }
+        return rankAwards;
+    }
+
 
     /**
      * 更改榜中的参榜人数
@@ -520,15 +657,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
         }
         return baseResp;
-    }
-
-    private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
-        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        for (RankAwardRelease rankAward : rankAwards){
-            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award);
-        }
-        return rankAwards;
     }
 
 }
