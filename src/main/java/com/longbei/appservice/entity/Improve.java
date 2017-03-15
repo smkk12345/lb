@@ -68,6 +68,8 @@ public class Improve {
     
     protected String isreply; //是否已批复  0：未批复  1：已批复
 
+    private Integer complaincount; //投诉次数
+
 
     /**
      * 以下扩展返回信息
@@ -93,6 +95,14 @@ public class Improve {
     private List<ImproveTopic> improveTopicList = null;//超级话题
 
     private BusinessEntity businessEntity = new BusinessEntity();
+
+    public Integer getComplaincount() {
+        return complaincount;
+    }
+
+    public void setComplaincount(Integer complaincount) {
+        this.complaincount = complaincount;
+    }
 
     public void setBusinessEntity(String ptype,
                                   String title,
@@ -401,6 +411,8 @@ public class Improve {
      * 更新时间
      * @return updatetime 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
