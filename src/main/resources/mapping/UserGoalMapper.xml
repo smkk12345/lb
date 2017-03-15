@@ -122,6 +122,14 @@
   <update id="updateTitle">
     UPDATE user_goal
     set goaltag=#{title}
+    where goalid=#{goalid}
+  </update>
+
+  <update id="delGoal">
+    UPDATE user_goal
+    set isdel='1'
+    where goalid=#{goalid}
+    and userid=#{userid}
   </update>
 
 </mapper>

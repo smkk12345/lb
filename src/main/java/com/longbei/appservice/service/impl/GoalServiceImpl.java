@@ -101,10 +101,10 @@ public class GoalServiceImpl implements GoalService {
     public BaseResp<Object> delGoal(long goalId, long userid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-//            int res = userGoalMapper.delGoal(goalId, userid);
-//            if(res == 1){
-//                return improveService.delGoal(goalId,userid);
-//            }
+            int res = userGoalMapper.delGoal(goalId, userid);
+            if(res == 1){
+                return improveService.delGoal(goalId,userid);
+            }
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("delGoal goalId={},userid={}",goalId,userid,e);
