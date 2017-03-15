@@ -359,7 +359,7 @@ public class RankApiController {
             BaseResp<RankMembers> rk = rankService.selectRankMemberInfo(rankid,userid);
             int totalcount = 0;
             if (null != rk.getData()){
-                totalcount = rk.getData().getImprovecount();
+                totalcount = rk.getData().getIcount();
             }
             BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,
                     Constant.IMPROVE_RANK_TYPE,Integer.parseInt(pagesize)*(Integer.parseInt(pageno)-1),

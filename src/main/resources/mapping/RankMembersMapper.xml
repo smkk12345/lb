@@ -5,7 +5,6 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="rankid" property="rankid" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
-    <result column="itype" property="itype" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
@@ -13,13 +12,13 @@
     <result column="icount" property="icount" jdbcType="INTEGER" />
     <result column="likes" property="likes" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
-    <result column="isup" property="isup" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="acceptaward" property="acceptaward" jdbcType="CHAR" />
     <result column="isfashionman" property="isfashionman" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, userid, itype, createtime, updatetime, sortnum, iswinning, icount,
-    likes, flowers, isup, acceptaward, isfashionman
+    id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
+    likes, flowers, status, acceptaward, isfashionman
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
