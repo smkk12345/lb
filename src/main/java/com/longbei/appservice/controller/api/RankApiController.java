@@ -13,10 +13,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.RankCheckDetail;
-import com.longbei.appservice.entity.RankImage;
-import com.longbei.appservice.entity.RankMembers;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +41,8 @@ public class RankApiController {
 
     @Autowired
     private  RankService rankService;
+    @Autowired
+    private ImproveService improveService;
 
 
     /**
@@ -323,6 +323,76 @@ public class RankApiController {
             baseResp = rankService.selectRankMemberList(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
         } catch (NumberFormatException e) {
             logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取用户在榜单中所发的进步列表
+     * @param rankid  榜单id
+     * @param userid 用户id
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "memberimproves/{pageNo}/{pageSize}")
+    public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,
+                                                              @PathVariable("pageNo") String pageno,
+                                                              @PathVariable("pageSize") String pagesize){
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+
+        if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isEmpty(pageno)){
+            pageno = "1";
+        }
+        Page<Improve> page = new Page<>(Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        if (StringUtils.isEmpty(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(Long.parseLong(rankid));
+            rankMembers.setUserid(Long.parseLong(userid));
+            BaseResp<RankMembers> rk = rankService.selectRankMemberInfo(rankid,userid);
+            int totalcount = 0;
+            if (null != rk.getData()){
+                totalcount = rk.getData().getImprovecount();
+            }
+            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,
+                    Constant.IMPROVE_RANK_TYPE,Integer.parseInt(pagesize)*(Integer.parseInt(pageno)-1),
+                    Integer.parseInt(pagesize));
+            page.setTotalCount(totalcount);
+            page.setList(listBaseResp.getData());
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select rank improve list by user userid={} is error:",userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取榜中成员详细信息
+     * @param rankid
+     * @param userid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "memberinfo/{rankid}/{userid}")
+    public BaseResp<RankMembers> getRankMemberInfo(@PathVariable("rankid") String rankid,
+                                                   @PathVariable("userid") String userid){
+        BaseResp<RankMembers> baseResp = new BaseResp<>();
+
+        if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.selectRankMemberInfo(rankid,userid);
+        } catch (Exception e) {
+            logger.error("select rankmemberinfo rankid={} userid={} is error:",rankid,userid,e);
         }
         return baseResp;
     }

@@ -130,7 +130,10 @@ public interface RankService {
      * @param pageSize
      * @return
      */
-    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,int pageNo,int pageSize);
+    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+
+
+    BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
 
     /**
      * 获取成员列表 app
@@ -139,6 +142,6 @@ public interface RankService {
      * @param pageSize
      * @return
      */
-    BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,int startNo,int pageSize);
+    BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,Integer startNo,Integer pageSize);
 
 }

@@ -52,6 +52,9 @@
     <if test="rankmember.isfashionman != null">
       AND isfashionman = #{rankmember.isfashionman}
     </if>
+    <if test="rankmember.userid != null">
+      AND userid = #{rankmember.userid}
+    </if>
     <if test="rankmember.appUserMongoEntities != null">
       AND  userid in
       <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
