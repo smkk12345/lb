@@ -6,6 +6,7 @@ import com.longbei.appservice.entity.RankImage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RankMapper {
     int deleteByPrimaryKey(Integer rankid);
@@ -34,5 +35,13 @@ public interface RankMapper {
     int updateSponsornumAndSponsormoney( );
 
     int updateSymbolByRankId(Rank rank);
+
+    /**
+     * 更新榜单中的用户数量
+     * @param rankId 榜单id
+     * @param count 新增的榜单人数
+     * @return
+     */
+    int updateRankMemberCount(@Param("rankId") Long rankId,@Param("count") int count);
 
 }

@@ -49,6 +49,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                 case cancleLike://取消赞
                     score = -1.0;
             }
+            score = score * num;
             double newScore = springJedisDao.zIncrby(Constant.REDIS_RANK_SORT+rankId,userId+"",score);
             if(newScore > score){
                 return true;

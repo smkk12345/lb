@@ -355,6 +355,9 @@
     <if test="ismainimp != null" >
       AND ismainimp = #{ismainimp}
     </if>
+    <if test="userid != null" >
+      AND userid = #{userid}
+    </if>
     <if test="tablename == 'improve_classroom'" >
       AND isresponded = 0 
     </if>

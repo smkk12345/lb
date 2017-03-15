@@ -118,6 +118,8 @@ public class Rank {
 
     private String notice; //公告
 
+    private Boolean needConfirm;//用户加榜单 是否需要榜主验证
+
     //--------
 
 
@@ -760,4 +762,11 @@ public class Rank {
         this.sponsormoney = sponsormoney;
     }
 
+    public Boolean getNeedConfirm() {
+        return needConfirm;
+    }
+
+    public void setNeedConfirm(Boolean needConfirm) {
+        this.needConfirm = needConfirm;
+    }
 }
