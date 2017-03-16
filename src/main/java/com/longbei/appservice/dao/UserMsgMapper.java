@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.longbei.appservice.entity.UserMsg;
 
 public interface UserMsgMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(@Param("id") Integer id, @Param("userid") long userid);
     
     /**
 	 * @author yinxc

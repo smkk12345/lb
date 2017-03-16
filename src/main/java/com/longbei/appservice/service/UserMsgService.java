@@ -14,7 +14,7 @@ public interface UserMsgService {
 	 * return_type
 	 * UserMsgService
 	 */
-	BaseResp<Object> deleteByid(Integer id);
+	BaseResp<Object> deleteByid(Integer id, long userid);
 	
 	/**
 	 * @author yinxc

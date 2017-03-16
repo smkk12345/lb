@@ -162,10 +162,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 	
 	@Override
-	public BaseResp<Object> deleteByid(Integer id) {
+	public BaseResp<Object> deleteByid(Integer id, long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = delete(id);
+			boolean temp = delete(id, userid);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -175,8 +175,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 	
-	private boolean delete(Integer id){
-		int temp = userMsgMapper.deleteByPrimaryKey(id);
+	private boolean delete(Integer id, long userid){
+		int temp = userMsgMapper.deleteByPrimaryKey(id, userid);
 		return temp > 0 ? true : false;
 	}
 

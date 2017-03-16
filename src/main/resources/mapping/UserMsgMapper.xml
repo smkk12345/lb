@@ -136,9 +136,10 @@
     </if> 
   </delete>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" >
     delete from user_msg
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} 
+    and userid = #{userid}
   </delete>
   
   <delete id="deleteByUserid">
