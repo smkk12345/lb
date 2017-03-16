@@ -233,14 +233,7 @@ public class GroupController {
         if(userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if(startNum == null || startNum < 0){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
-        }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
-        }
-        baseResp = this.groupService.goupListByUser(userId,startNum,pageSize);
+        baseResp = this.groupService.goupListByUser(userId,startNum,endNum);
         return baseResp;
     }
 

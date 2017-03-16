@@ -567,9 +567,22 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
             for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
                 SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
-                if(snsGroup != null){
-                    snsGroupList.add(snsGroup);
+                if(snsGroup == null){
+                    continue;
                 }
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("groupId",snsGroup.getGroupid());
+                parameterMap.put("startNum",0);
+                parameterMap.put("pageSize",9);
+                List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+                int maxLength = groupMembersList.size();
+                String[] avatarArray = new String[maxLength];
+                for(int i = 0;i<maxLength;i++){
+                    AppUserMongoEntity appUserMongoEntity= userMongoDao.findById(snsGroupMembersList.get(i).getUserid()+"");
+                    avatarArray[i] = appUserMongoEntity.getAvatar();
+                }
+                snsGroup.setAvatarArray(avatarArray);
+                snsGroupList.add(snsGroup);
             }
         }
         baseResp.setData(snsGroupList);

@@ -58,6 +58,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	}
 
     public static Date formatDate(String date, String format) throws ParseException {
+		if(StringUtils.isEmpty(format)){
+			format = "yyyy-MM-dd HH:mm:ss";
+		}
     	return new SimpleDateFormat(format).parse(date);
     }      
 	

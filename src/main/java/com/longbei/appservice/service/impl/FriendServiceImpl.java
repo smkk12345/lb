@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import scala.collection.immutable.Stream;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -106,12 +107,12 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             if(!FriendAddAsk.STATUS_PENDING.equals(friendAddAsk.getStatus())){
                 //查看上次添加好友的时间是否超过七天
                 if(timeDifference < FriendAddAsk.EXPIRETIME){
-                    return baseResp.fail("抱歉,七天内不能重复添加同一个好友!");
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_91, Constant.RTNINFO_SYS_91);
                 }
                 //校验用户现在是否还是好友
                 SnsFriends tempSnsFriend = snsFriendsMapper.selectByUidAndFid(userId,friendId);
                 if(tempSnsFriend != null){
-                    return baseResp.fail("你们已经是好友了,快去聊天吧");
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
                 }
 
                 friendMongoDao.updateFriendAddAskStatus(userId,friendId,FriendAddAsk.STATUS_PENDING,true);
@@ -155,7 +156,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
         }catch(Exception e){
             logger.error("insert friendAddAsk userId:{} friendId:{}",userId,friendId);
             printException(e);
-            return baseResp.fail();
+            return baseResp.fail("系统异常");
         }
     }
 
@@ -175,7 +176,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             if(FriendAddAsk.STATUS_PASS.equals(friendAddAsk.getStatus())){
-                return baseResp.fail("你们已经是好友了,请直接去聊天框输入信息~~");
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
             }
             String tempFlag = "";
             Long receiveUserId = null;
@@ -294,7 +295,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
         try{
             FriendAddAsk friendAddAsk = friendMongoDao.findByFriendAddAskId(id);
             if(friendAddAsk == null || !userId.equals(friendAddAsk.getReceiveUserId())){
-                return BaseResp.fail("参数错误");
+                return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
             friendMongoDao.updateFriendAddAsk(id,null,null,null,status,null);
             if(status == 2){
@@ -308,12 +309,36 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 HttpClient.jPushService.messagePush(friendAddAsk.getSenderUserId()+"","加好友申请被拒绝","加好友申请被拒绝",pushMessage.toString());
                 return new BaseResp<>().ok();
             }
+            SnsFriends tempSnsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendAddAsk.getSenderUserId());
+            if(tempSnsFriends != null && tempSnsFriends.getIsdel() == 0){
+                return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_90,Constant.RTNINFO_SYS_90);
+            }else if(tempSnsFriends != null){
+                //更改好友状态
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("userId",tempSnsFriends.getUserid());
+                map.put("friendId",tempSnsFriends.getFriendid());
+                map.put("isDel","0");
+                map.put("createtime",new Date());
+                map.put("updatetime",new Date());
+                int row = this.snsFriendsMapper.updateByUidAndFid(map);
+
+                map.put("userId",tempSnsFriends.getFriendid());
+                map.put("friendId",tempSnsFriends.getUserid());
+                int row1 = this.snsFriendsMapper.updateByUidAndFid(map);
+                if(row > 0 && row1 > 0){
+                    return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                }
+            }
+
+
             //往数据库添加数据
             SnsFriends snsFriends = new SnsFriends();
             snsFriends.setCreatetime(new Date());
             snsFriends.setUserid(friendAddAsk.getSenderUserId());
             snsFriends.setFriendid(friendAddAsk.getReceiveUserId());
             snsFriends.setIspublic("1");
+            snsFriends.setIsdel(0);
+            snsFriends.setUpdatetime(new Date());
             snsFriendsMapper.insertSelective(snsFriends);
 
             snsFriends.setUserid(friendAddAsk.getReceiveUserId());

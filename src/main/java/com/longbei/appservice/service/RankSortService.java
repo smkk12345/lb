@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.entity.Rank;
 
 /**
  * Created by wangyongzhi 17/3/14.
@@ -16,5 +17,7 @@ public interface RankSortService extends BaseService{
      * @return
      */
     boolean updateRankSortScore(Long rankId, Long userId, Constant.OperationType operationType,Integer num);
+
+    boolean checkRankEnd(Rank rank);
 
 }

@@ -22,7 +22,7 @@ public interface SnsFansMapper {
     
     int deleteByUidAndLid(@Param("userid") long userid, @Param("likeuserid") long likeuserid);
     
-    List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
+    List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
     
     /**
 	 * @author yinxc

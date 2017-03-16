@@ -20,9 +20,13 @@ public class SnsFriends {
 
     private String ispublic;//是否公开
 
-    private String islike = "0";//是否关注   0：未关注   1：已关注
+    private String isfans = "0";//是否关注   0：未关注   1：已关注
 
     private Date createtime;
+
+    private Integer isdel;//是否删除 0:未删除 1:已删除
+
+    private Date updatetime;
 
     public SnsFriends(){};
 
@@ -140,12 +144,12 @@ public class SnsFriends {
     }
 
 	@JsonInclude(Include.ALWAYS)
-	public String getIslike() {
-		return islike;
+	public String getIsfans() {
+		return isfans;
 	}
 
-	public void setIslike(String islike) {
-		this.islike = islike;
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
 	}
 
     /**
@@ -162,5 +166,21 @@ public class SnsFriends {
      */
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

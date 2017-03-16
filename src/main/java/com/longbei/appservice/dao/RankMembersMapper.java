@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface RankMembersMapper {
     int deleteByPrimaryKey(Integer id);
@@ -49,9 +50,18 @@ public interface RankMembersMapper {
     /**
      * @param rankid
      * @param userid
-     * @param otype  0删除进步  1 增加进步
+     * @param icount  0删除进步  1 增加进步
      * @return
      */
-    int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("otype") String otype);
+    int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("icount") int icount);
 
+    /**
+     * 查询用户排名的集合
+     * @param rankId 榜单id
+     * @param sortType 排序字段
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") String sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 }

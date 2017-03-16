@@ -8,9 +8,19 @@
     <result column="diff" property="diff" jdbcType="INTEGER" />
     <result column="point" property="point" jdbcType="INTEGER" />
     <result column="discount" property="discount" jdbcType="DOUBLE" />
+    <result column="pubrankjoinnum" property="pubrankjoinnum" jdbcType="INTEGER" />
+    <result column="pubranknum" property="pubranknum" jdbcType="INTEGER" />
+    <result column="circlenum" property="circlenum" jdbcType="INTEGER" />
+    <result column="prirankjoinnum" property="prirankjoinnum" jdbcType="INTEGER" />
+    <result column="priranknum" property="priranknum" jdbcType="INTEGER" />
+    <result column="classroomnum" property="classroomnum" jdbcType="INTEGER" />
+    <result column="joinranknum" property="joinranknum" jdbcType="INTEGER" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="likes" property="likes" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, grade, star, diff, point, discount
+    id, grade, star, diff, point, discount,pubrankjoinnum,
+    pubranknum,circlenum,prirankjoinnum,priranknum,classroomnum,joinranknum,likes,updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

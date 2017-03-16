@@ -352,13 +352,24 @@
 
   <update id="updateRankImproveCount">
     UPDATE rank_members
-    <if test="otype == '1'">
-      set icount = icount+1
-    </if>
-    <if test="otype == '0'">
-      set icount = icount-1
-    </if>
+      set icount = icount+#{icount}
     where rankid=#{rankid}
     and userid=#{userid}
   </update>
+
+  <!-- 获取用户在榜单中的排名 -->
+  <select id="selectUserSort" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from
+        rank_members
+      where
+        rankId = #{rankId}
+      <if test="sortType == 'likes'">
+        order by likes desc
+      </if>
+      <if test="sortType == 'flower'">
+        order by flowers desc
+      </if>
+  </select>
 </mapper>

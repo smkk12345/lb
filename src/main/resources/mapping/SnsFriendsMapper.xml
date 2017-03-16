@@ -7,10 +7,12 @@
     <result column="friendid" property="friendid" jdbcType="BIGINT" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="ispublic" property="ispublic" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, friendid, remark, ispublic, createtime
+    id, userid, friendid, remark, ispublic, createtime,isdel,updatetime
   </sql>
   <sql id="Bid_Column_List" >
     friendid
@@ -33,9 +35,15 @@
     select 
     <include refid="Base_Column_List" />
     from sns_friends
-    where userid = #{userid} 
+    where userid = #{userid}
+        <if test="updateTime != null">
+            and updateTime > #{updateTime}
+        </if>
+        <if test="isDel != null">
+            and isDel = #{isDel}
+        </if>
     group by friendid 
-    <if test="endNum != 0" >
+    <if test="startNum != null and endNum != null and endNum &gt; 0" >
       limit #{startNum},#{endNum}
     </if>
   </select>
@@ -52,17 +60,20 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <delete id="deleteByUidAndFid" >
-    delete from sns_friends
-    where userid = #{userid} and friendid=#{friendid}
-  </delete>
+  <update id="deleteByUidAndFid" >
+    update sns_friends
+    set isdel = 1 ,updatetime= now()
+    where userid = #{userid}
+      and friendid=#{friendid}
+  </update>
 
   <insert id="insert" parameterType="com.longbei.appservice.entity.SnsFriends" >
     insert into sns_friends (id, userid, friendid, 
-      remark, ispublic, createtime
+      remark, ispublic, createtime,isdel,updatetime
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, 
-      #{remark,jdbcType=VARCHAR}, #{ispublic,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      #{remark,jdbcType=VARCHAR}, #{ispublic,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP},
+      #{isdel},#{updatetime}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsFriends" >
@@ -86,6 +97,12 @@
       <if test="createtime != null" >
         createtime,
       </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -105,6 +122,12 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR}
       </if>
     </trim>
   </insert>
@@ -126,6 +149,12 @@
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -135,7 +164,9 @@
       friendid = #{friendid,jdbcType=BIGINT},
       remark = #{remark,jdbcType=VARCHAR},
       ispublic = #{ispublic,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP}
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      isdel = #{isdel,jdbcType=CHAR},
     where id = #{id,jdbcType=INTEGER}
   </update>
   
@@ -143,6 +174,27 @@
     update sns_friends
     set remark = #{remark}
     where userid = #{userid} and friendid=#{friendid}
+  </update>
+
+  <!-- 更改好友相关信息 -->
+  <update id="updateByUidAndFid" parameterType="map">
+      update sns_friends
+      <set>
+          <if test="remark != null">
+            remark = #{remark},
+          </if>
+        <if test="isDel != null">
+            isdel = #{isDel},
+        </if>
+        <if test="createtime != null">
+          createtime = #{createtime},
+        </if>
+        <if test="updatetime != null">
+          updatetime = #{updatetime},
+        </if>
+      </set>
+      where userid = #{userId}
+          and friendid=#{friendId}
   </update>
 
 </mapper>
