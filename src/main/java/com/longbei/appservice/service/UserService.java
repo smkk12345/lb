@@ -151,4 +151,14 @@ public interface UserService {
 	 */
 	BaseResp<Object> userlevel(int grade);
 
+	/**
+	 * 更改用户信息
+	 * @param userid
+	 * @param longitude
+	 * @param latitude
+	 * @param dateStr
+	 * @return
+	 */
+	BaseResp<Object> gps(long userid,double longitude,double latitude,String dateStr);
+
 }

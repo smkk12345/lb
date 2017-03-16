@@ -1,5 +1,6 @@
 package com.longbei.appservice.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -12,88 +13,34 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({"classpath:appservice.properties"})
 public class AppserviceConfig {
 
-    public static String oss_cdnurl;
-    public static String page_size;
+    @Value("${service.user}")
+    private String host_user_service;
+    @Value("${service.outernet}")
+    private String host_outernet_service;
+    @Value("${service.product}")
+    private String host_product_service;
 
-    /*
-        alidayu 相关配置
-         */
-    public static String smsType;
-    public static String signName;
-    public static String templateCode;
-    /**
-     * oss 配置
-     */
-    public static String bucketName;
-    public static String ossurl;
-    
-    /**
-     * web_server   路径配置
-     * @return
-     */
-    public static String web_server;
-    
-    public static String getWeb_server() {
-        return web_server;
+    public void setHost_outernet_service(String host_outernet_service) {
+        this.host_outernet_service = host_outernet_service;
     }
 
-    public static void setWeb_server(String web_server) {
-        AppserviceConfig.web_server = web_server;
+    public String getHost_outernet_service() {
+        return host_outernet_service;
     }
 
-    public static String getBucketName() {
-        return bucketName;
+    public String getHost_product_service() {
+        return host_product_service;
     }
 
-    public static void setBucketName(String bucketName) {
-        AppserviceConfig.bucketName = bucketName;
+    public String getHost_user_service() {
+        return host_user_service;
     }
 
-    public static String getSmsType() {
-        return smsType;
+    public void setHost_product_service(String host_product_service) {
+        this.host_product_service = host_product_service;
     }
 
-    public static void setSmsType(String smsType) {
-        AppserviceConfig.smsType = smsType;
-    }
-
-    public static String getSignName() {
-        return signName;
-    }
-
-    public static void setSignName(String signName) {
-        AppserviceConfig.signName = signName;
-    }
-
-    public static String getTemplateCode() {
-        return templateCode;
-    }
-
-    public static void setTemplateCode(String templateCode) {
-        AppserviceConfig.templateCode = templateCode;
-    }
-
-    public static String getOss_cdnurl() {
-        return oss_cdnurl;
-    }
-
-    public static void setOss_cdnurl(String oss_cdnurl) {
-        AppserviceConfig.oss_cdnurl = oss_cdnurl;
-    }
-
-    public static String getPage_size() {
-        return page_size;
-    }
-
-    public static void setPage_size(String page_size) {
-        AppserviceConfig.page_size = page_size;
-    }
-
-    public static String getOssurl() {
-        return ossurl;
-    }
-
-    public static void setOssurl(String ossurl) {
-        AppserviceConfig.ossurl = ossurl;
+    public void setHost_user_service(String host_user_service) {
+        this.host_user_service = host_user_service;
     }
 }

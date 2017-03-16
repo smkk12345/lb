@@ -830,7 +830,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,rankid,Constant.IMPROVE_RANK_TYPE);
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {

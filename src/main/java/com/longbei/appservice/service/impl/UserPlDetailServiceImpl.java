@@ -75,6 +75,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
 			List<UserPlDetail> list = userPlDetailMapper.selectUserPerfectListByUserId(userid,startNum,pageSize);
+			baseResp.initCodeAndDesp();
 			String photos;
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);

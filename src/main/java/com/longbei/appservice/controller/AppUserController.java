@@ -1,8 +1,6 @@
 package com.longbei.appservice.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1211,7 +1209,7 @@ public class AppUserController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
             return baseResp;
         } catch (Exception e) {
             logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
@@ -1258,6 +1256,26 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
 
-
+    /**
+     * 保存用户位置 http://server_ip:port/app_service/user/gps
+     *
+     * @param userid    ：用户id
+     * @param longitude ：位置经度字符串
+     * @param latitude  ：位置纬度字符串
+     * @return ：成功返回{"status":"0", "rtnInfo":""}，失败返回对应代码
+     * @method ：POST
+     */
+    @RequestMapping(value = "/gps")
+    @ResponseBody
+    public BaseResp<Object> gps(String userid,String longitude,String latitude) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("gps Info longitude={}, latitude={}", longitude, latitude);
+        if(StringUtils.hasBlankParams(userid,longitude,latitude)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        String dateStr = DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+        baseResp = userService.gps(Long.parseLong(userid), Double.parseDouble(longitude), Double.parseDouble(latitude), dateStr);
+        return baseResp;
+    }
 
 }

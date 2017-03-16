@@ -1,10 +1,15 @@
 package com.longbei.appservice.dao.mongo.dao;
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
+import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -116,8 +124,39 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		Query query = Query.query(Criteria.where("userid").is(userid));
 		return mongoTemplate.exists(query, AppUserMongoEntity.class);
 	}
-	
 
 
-	
+	public void updateGps(long userid, double longitude, double latitude, String dateStr) {
+		try {
+			Query query = Query.query(Criteria.where("_id").is(String.valueOf(userid)));
+			Update update = new Update();
+			Double[] dArr = {longitude, latitude};
+			update.set("gispoint",dArr);
+			update.set("updatetime",new Date().getTime());
+			AppUserMongoEntity appUserMongoEntity = updateOne(query,update);
+			JSONObject.fromObject(appUserMongoEntity).toString();
+		}catch (Exception e){
+			logger.error("updateGps userid={},longitude={},latitude={}",userid,longitude,latitude);
+		}
+	}
+
+	public List<AppUserMongoEntity> findNear(double longitude, double latitude,
+											 double distance,int count, int limit){
+		BasicDBObject myCmd = new BasicDBObject();
+		myCmd.append("geoNear", "appuser");
+		double[] loc = {longitude,latitude};
+		myCmd.append("near", loc);
+		myCmd.append("spherical", true);
+		myCmd.append("distanceMultiplier", 6378137);
+		myCmd.append("maxDistance", distance / Constant.DISTANCE_CONVERT_2D );
+		if(limit > 0){
+			myCmd.append("limit", limit);
+		}
+		CommandResult myResults = mongoTemplate.getDb().command(myCmd);
+		JSONArray jArray = JSONArray.fromObject(myResults.get("results"));
+		List<AppUserMongoEntity> list = (List) JSONArray.toCollection(jArray, AppUserMongoEntity.class);
+		return list;
+	}
+
+
 }

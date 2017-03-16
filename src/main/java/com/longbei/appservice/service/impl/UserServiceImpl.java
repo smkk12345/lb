@@ -563,6 +563,17 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> gps(long userid, double longitude, double latitude, String dateStr) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			userMongoDao.updateGps(userid,longitude,latitude,dateStr);
+		}catch (Exception e){
+			logger.error("updateGps error userid={},longitude={},latitude={}",userid,longitude,latitude);
+		}
+		return baseResp.initCodeAndDesp();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl) {

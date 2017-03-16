@@ -7,7 +7,7 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Constant {
 
-
+	public static final double DISTANCE_CONVERT_2D = 111.12;
 
 	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
 	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
