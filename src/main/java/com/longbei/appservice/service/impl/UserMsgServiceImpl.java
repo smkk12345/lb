@@ -267,6 +267,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserMsg> list = userMsgMapper.selectByUserid(userid, startNum, endNum);
+			
+			
 			if (startNum == 0 && list.size() == 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
 			}else{
