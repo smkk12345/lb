@@ -88,6 +88,16 @@ public class Constant {
 	public static final int STATUS_SYS_49 = -49;
 
 
+	public static final int STATUS_SYS_50 = -50;
+	public static final int STATUS_SYS_51 = -51;
+	public static final int STATUS_SYS_52 = -52;
+	public static final int STATUS_SYS_53 = -53;
+	public static final int STATUS_SYS_54 = -54;
+	public static final int STATUS_SYS_55 = -55;
+	public static final int STATUS_SYS_56 = -56;
+	public static final int STATUS_SYS_57 = -57;
+
+
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
 	public static final int STATUS_SYS_62 = -62;
@@ -178,6 +188,12 @@ public class Constant {
 	public static final String RTNINFO_SYS_46 = "删除进步成功";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
+
+	public static final String RTNINFO_SYS_54 = "还有内容没有审核";
+	public static final String RTNINFO_SYS_55 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_56 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_57 = "送钻失败，龙币扣除";
+
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";

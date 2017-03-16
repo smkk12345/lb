@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -327,6 +328,71 @@ public class RankApiController {
         return baseResp;
     }
 
+
+
+
+    /**
+     * 获取成员列表 预览
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkmemberspreview/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(@RequestBody RankMembers rankMembers,
+                                                                    @PathVariable("pageNo") String pageNo,
+                                                                    @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.rankMemberCheckResultPreview(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 获取榜单待审核成员列表
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "waitcheckmembers/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> getRankWaitCheckMembers(@RequestBody RankMembers rankMembers,
+                                                               @PathVariable("pageNo") String pageNo,
+                                                               @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankMemberWaitCheckList
+                    (rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select wait check rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
     /**
      * 获取用户在榜单中所发的进步列表
      * @param rankid  榜单id
@@ -396,5 +462,98 @@ public class RankApiController {
         }
         return baseResp;
     }
+
+    /**
+     * 下榜，下榜再不能参加次榜
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "removemember")
+    public BaseResp<Object> removeRankMember(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.removeRankMember(rankMembers);
+        } catch (Exception e) {
+            logger.error("remove rankmember rankid={} userid={} is error:",rankMembers.getRankid(),
+                    rankMembers.getUserid(),e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 设置，取消达人
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "fashionman")
+    public BaseResp<Object> setFashionman(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.setIsfishionman(rankMembers);
+        } catch (Exception e) {
+            logger.error("set rank fashionman is error:",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 成员审核结果
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkmember")
+    public BaseResp<Object> updateRankMemberCheckStatus(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null
+                || rankMembers.getCheckstatus() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            rankMembers.setCheckdate(new Date());
+            baseResp = rankService.updateRankMemberCheckStatus(rankMembers);
+        } catch (Exception e) {
+            logger.error("check rankmember status rankid={} userid={} checkstatus={}" +
+                    " is error:",rankMembers.getRankid(),rankMembers.getUserid(),
+                    rankMembers.getCheckstatus(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 提交榜单审核结果
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "subcheckresult")
+    public BaseResp<Object> subRankMemberCheckResult(String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(rankid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.submitRankMemberCheckResult(rankid);
+        } catch (Exception e) {
+            logger.error("submit rank member check result rankid={} is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
+
 
 }

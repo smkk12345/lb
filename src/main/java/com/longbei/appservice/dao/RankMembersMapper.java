@@ -24,6 +24,11 @@ public interface RankMembersMapper {
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
 
+    List<RankMembers> selectWaitCheckList(@Param("rankmember") RankMembers rankMembers,
+                                          @Param("startno") Integer startno,
+                                          @Param("pagesize") Integer pagesize,
+                                          @Param("totalcount") Integer totalcount);
+
     int updateByPrimaryKey(RankMembers record);
 
     RankMembers selectByRankIdAndUserId(@Param("rankid") long rankid, @Param("userid") long userid);
@@ -34,6 +39,13 @@ public interface RankMembersMapper {
      * @return
      */
     int updateRank(Map<String, Object> updateMap);
+
+    /**
+     * 更新榜单成员各种状态
+     * @param rankMembers
+     * @return
+     */
+    int updateRankMemberState(RankMembers rankMembers);
 
     /**
      * @param rankid
