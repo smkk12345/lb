@@ -279,7 +279,13 @@
         <if test="initRankMember != null and initRankMember">
           icount =0,
           likes =0,
-          flowers =0
+          flowers =0,
+        </if>
+        <if test="sortNum != null">
+            sortnum = #{sortNum},
+        </if>
+        <if test="checkstatus != null">
+            checkstatus = #{checkstatus}
         </if>
     </set>
     where userid = #{userId} and rankid = #{rankId}
