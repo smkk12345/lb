@@ -7,6 +7,7 @@ import com.longbei.appservice.dao.RankMembersMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankMembers;
+import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,8 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
     private RankMapper rankMapper;
     @Autowired
     private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private RankService rankService;
 
     /**
      * 榜中点赞,送花时,更新用户在榜中的排名分值
@@ -108,19 +111,18 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                 map.put("userId",userId);
                 map.put("sortNum",i);
 
-                //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
-                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),Long.parseLong(userId));
-                if(rankMembers.getIcount() < minImproveNum){
-                    map.put("checkstatus",1);
-                }
-                if (rankMembers.getIcount() >= minImproveNum && "0".equals(rank.getIscheck())){//无需人工审核
-                    map.put("checkstatus","3");
-                }
-
                 int row = this.rankMembersMapper.updateRank(map);
                 i++;
             }
+            //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
+            Map<String,Object> updateMap = new HashMap<String,Object>();
+//            updateMap.put("")
+//            int updateRow = this.rankMembersMapper.instanceRankMember(rank.getRankid(),rank.getMinimprovenum());
+
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
+            if("0".equals(rank.getIscheck())){
+                this.rankService.submitRankMemberCheckResult(rank.getRankid()+"");
+            }
 
             //5.更改rank的活动标识为已结束
             Rank updateRank = new Rank();
