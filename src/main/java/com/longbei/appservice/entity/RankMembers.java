@@ -42,6 +42,38 @@ public class RankMembers {
 
     private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
 
+    private String checkuserid; //审核人id
+
+    private Date checkdate; //审核日期
+
+    private RankAward rankAward;
+
+    public RankAward getRankAward() {
+        return rankAward;
+    }
+
+    public void setRankAward(RankAward rankAward) {
+        this.rankAward = rankAward;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getCheckdate() {
+        return checkdate;
+    }
+
+    public void setCheckdate(Date checkdate) {
+        this.checkdate = checkdate;
+    }
+
+    public String getCheckuserid() {
+        return checkuserid;
+    }
+
+    public void setCheckuserid(String checkuserid) {
+        this.checkuserid = checkuserid;
+    }
+
     public String getCheckstatus() {
         return checkstatus;
     }

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 榜单操作
  *
@@ -28,6 +30,14 @@ public class RankController {
 
     @Autowired
     private RankService rankService;
+
+
+
+//    public BaseResp<List<Rank>> selectRankList(){
+//
+//    }
+
+
 
     /**
      * 用户 参榜

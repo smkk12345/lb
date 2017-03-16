@@ -141,7 +141,23 @@ public interface RankService extends BaseService{
      */
     BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
 
+    /**
+     * 获取成员列表 待审核 pc
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
 
+
+
+    /**
+     * 获取榜单成员详细信息
+     * @param rankid
+     * @param userid
+     * @return
+     */
     BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
 
     /**
@@ -161,6 +177,30 @@ public interface RankService extends BaseService{
      */
     BaseResp<Object> removeRankMember(Long userId, Long rankId);
 
+
+    /**
+     * 下榜，下榜再不能参加
+     * @param rankMembers
+     * @return
+     * @author luye
+     */
+    BaseResp<Object> removeRankMember(RankMembers rankMembers);
+
+    /**
+     * 设置，取消达人
+     * @param rankMembers
+     * @return
+     */
+    BaseResp<Object> setIsfishionman(RankMembers rankMembers);
+
+    /**
+     * 更新榜单成员审核状态
+     * @param rankMembers
+     * @return
+     */
+    BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers);
+
+
     /**
      * 批量处理用户的参榜申请
      * @param userIds 用户id 数组
@@ -169,4 +209,22 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status);
+
+
+    /**
+     * 提价榜单成员审核结果
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> submitRankMemberCheckResult(String rankid);
+
+
+    /**
+     * 获取成员列表 预览
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(RankMembers rankMembers,Integer pageNo,Integer pageSize);
 }

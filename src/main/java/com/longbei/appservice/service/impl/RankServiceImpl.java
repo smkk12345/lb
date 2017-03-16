@@ -523,6 +523,65 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> removeRankMember(RankMembers rankMembers) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
+            if(rank == null){
+                return baseResp.fail("参数错误");
+            }
+            if(rankMembers.getUserid().equals(rank.getCreateuserid())){
+                return baseResp.fail("榜主不可退榜");
+            }
+            int updateRow = this.rankMembersMapper.updateRankMemberState(rankMembers);
+            if(updateRow < 1){
+                return baseResp.fail("退榜失败");
+            }
+            //2.更改用户在该榜单中发布的进步的状态
+            int removeRow = improveRankMapper.updateImproveRanStatus(rankMembers.getUserid()+"",
+                    rankMembers.getRankid()+"",null,"1");
+            //3.更改参榜人数
+            boolean updateRankFlag = updateRankMemberCount(rankMembers.getRankid(),-1);
+            //4.删除reids中榜单的该用户排名
+            boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankMembers.getRankid(),
+                    rankMembers.getUserid()+"");
+            return baseResp.ok("退榜成功");
+
+        } catch (Exception e) {
+            logger.error("remove RankMember error userId:{} rankId:{}",rankMembers.getUserid(),rankMembers.getRankid());
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> setIsfishionman(RankMembers rankMembers) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            int res = rankMembersMapper.updateRankMemberState(rankMembers);
+            if (res > 0){
+                return BaseResp.ok();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            int res = rankMembersMapper.updateRankMemberState(rankMembers);
+            if (res > 0){
+                return BaseResp.ok();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baseResp;
+    }
+
     /**
      * 更改用户的参榜申请
      * @param userIds 用户id 数组
@@ -573,6 +632,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }catch(Exception e){
             logger.error("audit rankMemeber error userIds:{} rankId:{} status:{}",userIds,rankId,status);
             printException(e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> submitRankMemberCheckResult(String rankid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (!isSubRankMemberCheckResult(rankid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_54,Constant.RTNINFO_SYS_54);
+        }
+        try {
+            //发布奖品
+            publishRankAward(rankid);
+            return BaseResp.ok();
+        } catch (Exception e) {
+            logger.error("submint rank member checkresult rankid={} is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
+
+        BaseResp baseResp = submitRankMemberCheckResult(String.valueOf(rankMembers.getRankid()));
+        if (ResultUtil.isSuccess(baseResp)){
+            rankMembers.setCheckstatus("-1");
+            BaseResp<Page<RankMembers>> pageBaseResp = selectRankMemberList(rankMembers,pageNo,pageSize);
+            return pageBaseResp;
         }
         return baseResp;
     }
@@ -647,6 +734,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,pageSize*(pageNo-1),pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+                if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
+                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
+                }
             }
             page.setTotalCount(totalcount);
             page.setList(rankMemberses);
@@ -657,6 +747,149 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        Page<RankMembers> page = new Page<>(pageNo,pageSize);
+        try {
+            int totalcount = selectRankMemberWaitCount(rankMembers);
+            AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
+            List<AppUserMongoEntity> users = null;
+            if (null != user) {
+                users = userMongoDao.getAppUsers(user);
+            }
+            rankMembers.setAppUserMongoEntities(users);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectWaitCheckList
+                    (rankMembers,pageSize*(pageNo-1),pageSize,totalcount);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+
+            }
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select wait check rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询榜单待审核成员数
+     * @param rankMembers
+     * @return
+     */
+    private int selectRankMemberWaitCount(RankMembers rankMembers){
+        Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
+        //榜单参与人数
+        int rankmnum = rank.getRankinvolved();
+        //榜单设置奖品数
+        int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
+        //审核通过数
+        rankMembers.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers);
+        //未审核数
+        rankMembers.setCheckstatus("0");
+        int waitcount = rankMembersMapper.selectCount(rankMembers);
+        if (awardcount > rankmnum){
+            awardcount = rankmnum;
+        }
+        if (waitcount <= awardcount - okcount){
+            return waitcount;
+        } else {
+            return (awardcount - okcount)<0?0:(awardcount - okcount);
+        }
+    }
+
+    private boolean isSubRankMemberCheckResult(String rankid){
+        RankMembers rankMembers = new RankMembers();
+        rankMembers.setRankid(Long.parseLong(rankid));
+
+        //榜单设置奖品数
+        int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
+        //审核通过数
+        rankMembers.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers);
+        //未审核数
+        rankMembers.setCheckstatus("0");
+        int waitcount = rankMembersMapper.selectCount(rankMembers);
+
+        //通过数等于奖品数
+        if (okcount == awardcount){
+            return true;
+        } else if (okcount < awardcount){
+            if (waitcount==0){
+                return true;
+            }
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 发布奖品
+     * @param rankid
+     */
+    private void publishRankAward(String rankid){
+        RankMembers rankMembers = new RankMembers();
+        rankMembers.setRankid(Long.parseLong(rankid));
+        //获取榜单全部成员列表
+        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+        //获得榜单奖品
+        List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankid);
+        int awardcount = 0;
+        int tempcount = 0;
+        for(int i=0;i<rankAwards.size();i++){
+            RankAward rankAward = rankAwards.get(i);
+            for (int j = tempcount ; j < rankMemberses.size();j++){
+                if (awardcount > rankAward.getAwardrate()){
+                    break;
+                }
+                RankMembers rkmember = rankMemberses.get(j);
+                if ("3".equals(rkmember.getCheckstatus())){
+                    awardcount++;
+                    tempcount++;
+                    rankMembers.setUserid(rkmember.getUserid());
+                    rankMembers.setIswinning("1");
+                    rankMembersMapper.updateRankMemberState(rankMembers);
+                }
+                if ("1".equals(rkmember.getCheckstatus())
+                        || "2".equals(rkmember.getCheckstatus())){
+                    tempcount++;
+                    rankMembers.setUserid(rkmember.getUserid());
+                    rankMembers.setIswinning("2");
+                    rankMembersMapper.updateRankMemberState(rankMembers);
+                }
+            }
+            awardcount = 0;
+        }
+    }
+
+
+    private int getRankAwardCount(String rankid){
+        int awardcont = 0;
+        try {
+            List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankid);
+            if (null != rankAwards && rankAwards.size() != 0){
+                for (RankAward rankAward : rankAwards){
+                    awardcont += rankAward.getAwardrate();
+                }
+            }
+        } catch (Exception e) {
+            logger.error("get rankaward rankid={} count is error:",rankid,e);
+        }
+        return awardcont;
+    }
+
+
 
     @Override
     public BaseResp<RankMembers> selectRankMemberInfo(String rankid, String userid) {
