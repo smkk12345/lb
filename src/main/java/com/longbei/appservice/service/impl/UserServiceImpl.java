@@ -550,6 +550,19 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> userlevel(int grade) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
+			baseResp.setData(userLevel);
+			return baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("selectByGrade error grade={}",grade,e);
+		}
+		return baseResp;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl) {

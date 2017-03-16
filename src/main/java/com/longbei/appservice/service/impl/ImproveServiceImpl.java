@@ -334,10 +334,10 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             //没有
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
-            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),"1");
+            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),1);
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
         } catch (Exception e) {
-            logger.error("insert rank immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
+            logger.error("insert rank immprove:{} is error:{}", "",e);
         }
         if(res != 0){
             String message = improve.getImpid() +
@@ -830,6 +830,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,rankid,Constant.IMPROVE_RANK_TYPE);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {
@@ -837,12 +838,43 @@ public class ImproveServiceImpl implements ImproveService{
                     rankid,improveid,userid,e);
         }
         if(res != 0){
+            //清除数据
+            clearDirtyData(improve);
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             return true;
         }
         return false;
     }
+
+    //进步删除之后清理脏数据
+    private void clearDirtyData(Improve improve){
+        int flower = improve.getFlowers().intValue();
+        int like = improve.getLikes().intValue();
+        String tableName = getTableNameByBusinessType(improve.getBusinesstype());
+        String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
+        switch (improve.getBusinesstype()){
+            case Constant.IMPROVE_GOAL_TYPE:
+                if(improve.getIsmainimp().equals("1")){
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"goalid");
+                }
+                //更新赞 花
+                improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"goalid");
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                if(improve.getIsmainimp().equals("1")){
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"rankid");
+                }
+                //更新赞 花 进步条数
+                improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
+                //更新redis中排名by lixb
+
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      *  @author luye
      *  @desp 
@@ -896,6 +928,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
@@ -904,7 +937,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if(res != 0){
             //删除成功之后
-//            improveGoalMapper.chooseGoalMainImprove(Long.parseLong(goalid),Long.parseLong(userid));
+            clearDirtyData(improve);
             springJedisDao.sRem(Constant.RP_IMPROVE_NDAY+goalid,improveid+DateUtils.getDate("yyyy-MM-dd"));
             long n = springJedisDao.sCard(Constant.RP_IMPROVE_NDAY+goalid);
 
@@ -1157,7 +1190,7 @@ public class ImproveServiceImpl implements ImproveService{
 //        }
         try{
             //mysql相关操作
-            boolean flag = addLikeToImprove(userid,impid,businessid,businesstype);
+            boolean flag = addLikeToImprove(improve,userid,impid,businessid,businesstype);
             if (flag){
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
@@ -1198,7 +1231,7 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp;
         }
         try {
-            boolean flag = removeLikeToImprove(userid,impid,businessid,businesstype);
+            boolean flag = removeLikeToImprove(improve,userid,impid,businessid,businesstype);
             if (flag){
                 //redis
                 removeLikeToImproveForRedis(impid,userid);
@@ -1460,6 +1493,28 @@ public class ImproveServiceImpl implements ImproveService{
         return tablename;
     }
 
+    private String getSourecTableNameByBusinessType(String businesstype){
+        String tablename;
+        switch (businesstype) {
+            case Constant.IMPROVE_RANK_TYPE:
+                tablename = Constant_table.RANK_MEMBERS;
+                break;
+            case Constant.IMPROVE_CLASSROOM_TYPE:
+                tablename = Constant_table.CIRCLE_MEMBERS;
+                break;
+            case Constant.IMPROVE_CIRCLE_TYPE:
+                tablename = Constant_table.CIRCLE_MEMBERS;
+                break;
+            case Constant.IMPROVE_GOAL_TYPE:
+                tablename = Constant_table.USER_GOAL;
+                break;
+            default:
+                tablename = null;
+                break;
+        }
+        return tablename;
+    }
+
     /**
      *  @author luye
      *  @desp 是否点过赞
@@ -1595,6 +1650,13 @@ public class ImproveServiceImpl implements ImproveService{
 
     /**
      * 点赞mysql操作
+     * 目标中点赞
+         进步中赞个数+1
+         目标中总赞数+1
+     榜单中点赞
+         进步中赞个数+1
+         用户榜单表中的赞总数+1
+         排名数据修改
      * @param userid
      * @param impid
      * @param businessid
@@ -1602,16 +1664,35 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private boolean addLikeToImprove(String userid,String impid,String businessid,String businesstype){
+    private boolean addLikeToImprove(Improve improve,String userid,String impid,String businessid,String businesstype){
         int res = addImproveAllDetail(userid,impid,businesstype,null,Constant.IMPROVE_ALL_DETAIL_LIKE);
         if (res <= 0){
             return false;
         }
-        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_ADD,businessid,getTableNameByBusinessType(businesstype));
+        String tableName = getTableNameByBusinessType(businesstype);
+        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_ADD,businessid,tableName);
+        afterAddOrRemoveLike(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }
         return false;
+    }
+
+    private void afterAddOrRemoveLike(Improve improve,int count,String otype){
+        String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
+        switch (improve.getBusinesstype()){
+            case Constant.IMPROVE_GOAL_TYPE:
+                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                break;
+            case Constant.IMPROVE_RANK_TYPE:
+                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                //修改排名信息
+
+                break;
+            default:
+
+                break;
+        }
     }
 
 
@@ -1621,12 +1702,13 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/3/8 下午4:03
      *  @update 2017/3/8 下午4:03
      */
-    private boolean removeLikeToImprove(String userid,String impid,String businessid,String businesstype){
+    private boolean removeLikeToImprove(Improve improve,String userid,String impid,String businessid,String businesstype){
         int res = removeImproveAllDetail(userid,impid,businesstype,Constant.IMPROVE_ALL_DETAIL_LIKE);
         if (res <= 0){
             return false;
         }
         res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_CANCEL,businessid,getTableNameByBusinessType(businesstype));
+        afterAddOrRemoveLike(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }

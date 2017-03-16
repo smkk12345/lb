@@ -35,4 +35,15 @@ public interface ImproveGoalMapper {
     int remove(@Param("userid") String userid,
                @Param("topicid") String topicid,
                @Param("improveid") String improveid);
+
+    /**
+     * 选择主进步
+     * @param goalid
+     * @param userid
+     * @return
+     */
+    int chooseGoalMainImprove(@Param("goalid")long goalid,
+                              @Param("userid")long userid);
+
+
 }

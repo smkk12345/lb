@@ -25,20 +25,10 @@ public class UserMsgController extends BaseController {
 	
 	
 	/**
-    * @Title: http://ip:port/app_service/userMsg/msgOtherList
+    * @Title: http://ip:port/app_service/userMsg/msgSystemList
     * @Description: 获取系统消息---(分页)
     * @param @param userid  
     * @param @param startNum   endNum
-    * @param @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
-	*										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
-	*										25:订单发货N天后自动确认收货    26：实名认证审核结果   
-	*										27:工作认证审核结果      28：学历认证审核结果   
-	*										29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-	*										32：创建的龙榜/教室/圈子被选中推荐) 
-	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
-	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
-    * @param @param msgtype 可为null 获取@我消息
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
@@ -46,14 +36,14 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgSystemList")
     @ResponseBody
-    public BaseResp<Object> msgSystemList(@RequestParam("userid") String userid, String mtype, String msgtype, 
+    public BaseResp<Object> msgSystemList(@RequestParam("userid") String userid, 
     		int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, mtype)) {
+  		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.selectOtherList(Long.parseLong(userid), mtype, msgtype, startNum, endNum);
+  			baseResp = userMsgService.selectByUserid(Long.parseLong(userid), startNum, endNum);
 		} catch (Exception e) {
 			logger.error("msgSystemList userid = {}", userid, e);
 		}
@@ -176,22 +166,22 @@ public class UserMsgController extends BaseController {
     * @auther yxc
     * @currentdate:2017年2月8日
 	*/
-	@SuppressWarnings("unchecked")
-  	@RequestMapping(value = "/msgList")
-    @ResponseBody
-    public BaseResp<Object> msgList(@RequestParam("userid") String userid, 
-    		int startNum, int endNum) {
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
-  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-  		}
-  		try {
-  			baseResp = userMsgService.selectByUserid(Long.parseLong(userid), startNum, endNum);
-		} catch (Exception e) {
-			logger.error("msgList userid = {}", userid, e);
-		}
-  		return baseResp;
-	}
+//	@SuppressWarnings("unchecked")
+//  	@RequestMapping(value = "/msgList")
+//    @ResponseBody
+//    public BaseResp<Object> msgList(@RequestParam("userid") String userid, 
+//    		int startNum, int endNum) {
+//		BaseResp<Object> baseResp = new BaseResp<>();
+//  		if (StringUtils.hasBlankParams(userid)) {
+//  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+//  		}
+//  		try {
+//  			baseResp = userMsgService.selectByUserid(Long.parseLong(userid), startNum, endNum);
+//		} catch (Exception e) {
+//			logger.error("msgList userid = {}", userid, e);
+//		}
+//  		return baseResp;
+//	}
 	
 	/**
     * @Title: http://ip:port/app_service/userMsg/msgDel

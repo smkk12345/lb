@@ -32,9 +32,39 @@ public class RankMembers {
 
     private String isfashionman; //是否为达人  0 - 不是 1 - 是
 
+    private String checkstatus; //审核结果  0 未审核 1 - 机器审核不通过 2 - 人工不通过 3 - 通过
+
+    private String checkresult; //审核不通过原因
+
+    private Integer complaintotalcount; //投诉次数
+
     private AppUserMongoEntity appUserMongoEntity;
 
     private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
+
+    public String getCheckstatus() {
+        return checkstatus;
+    }
+
+    public void setCheckstatus(String checkstatus) {
+        this.checkstatus = checkstatus;
+    }
+
+    public String getCheckresult() {
+        return checkresult;
+    }
+
+    public void setCheckresult(String checkresult) {
+        this.checkresult = checkresult;
+    }
+
+    public Integer getComplaintotalcount() {
+        return complaintotalcount;
+    }
+
+    public void setComplaintotalcount(Integer complaintotalcount) {
+        this.complaintotalcount = complaintotalcount;
+    }
 
     public List<AppUserMongoEntity> getAppUserMongoEntities() {
         return appUserMongoEntities;

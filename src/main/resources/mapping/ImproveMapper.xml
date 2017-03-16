@@ -14,6 +14,7 @@
     <result column="likes" property="likes" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
     <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="complaincount" property="complaincount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="indexnum" property="indexnum" jdbcType="INTEGER" />
@@ -28,7 +29,7 @@
 
   <sql id="Base_Column_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
-    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey
+    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey,complaincount
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
@@ -392,6 +393,7 @@
     <result column="likes" property="likes" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
     <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="complaincount" property="complaincount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="indexnum" property="indexnum" jdbcType="INTEGER" />
@@ -445,6 +447,34 @@
     where ismainimp = '1'
     and userid=#{userid}
     and businessid=#{businessid}
+  </update>
+
+  <update id="chooseMainImprove">
+    UPDATE ${tablename} set ismainimp='1'
+    where ${field}=#{businessid}
+    and userid=#{userid}
+    order by updatetime desc limit 1
+  </update>
+
+  <update id="afterDelSubImp">
+    UPDATE ${tablename}
+    set likes=likes-#{like},
+        flowers=flowers-#{flower},
+        icount = icount-1
+    where ${field}=#{businessid}
+    and userid=#{userid}
+  </update>
+
+  <update id="updateSourceLike">
+    update ${tablename}
+    SET <if test="operatetype == '0'">
+        likes = likes + #{icount}
+        </if>
+        <if test="operatetype == '1'">
+          flowers = flowers + #{icount}
+        </if>
+    where ${field}=#{businessid}
+    and userid=#{userid}
   </update>
 
 </mapper>

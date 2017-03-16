@@ -144,4 +144,11 @@ public interface UserService {
      */
 	BaseResp<Object> changePassword(long userid,String pwd,String newpwd);
 
+	/**
+	 * 获取用户等级特权
+	 * @param grade
+	 * @return
+	 */
+	BaseResp<Object> userlevel(int grade);
+
 }
