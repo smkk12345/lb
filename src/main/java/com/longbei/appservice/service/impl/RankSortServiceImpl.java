@@ -1,12 +1,24 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.dao.RankMembersMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
+import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankMembers;
+import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by wangyongzhi 17/3/14.
@@ -19,6 +31,12 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
 
     @Autowired
     private SpringJedisDao springJedisDao;
+    @Autowired
+    private RankMapper rankMapper;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private RankService rankService;
 
     /**
      * 榜中点赞,送花时,更新用户在榜中的排名分值
@@ -34,6 +52,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             if(rankId == null || userId == null || operationType == null){
                 return false;
             }
+            Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if(num == null){
                 num = 1;
             }
@@ -41,13 +60,14 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             double score = 0.0;
             switch (operationType){
                 case like:
-                    score = 1.0;
+                    score = 1.0*rank.getLikescore();
                     break;
                 case flower:
-                    score = 1.0 * 10;
+                    score = 1.0 * rank.getFlowerscore();
                     break;
                 case cancleLike://取消赞
-                    score = -1.0;
+                    score = -1.0 * rank.getLikescore();
+                    break;
             }
             score = score * num;
             double newScore = springJedisDao.zIncrby(Constant.REDIS_RANK_SORT+rankId,userId+"",score);
@@ -59,6 +79,67 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             printException(e);
         }
         return false;
+    }
+
+    @Transactional
+    @Override
+    public boolean checkRankEnd(Rank rank) {
+        try{
+            if(rank == null){
+                return false;
+            }
+            //如果时间已经到了,则往redis中放入一个标识 标识已结束,正在计算排名
+            if("1".equals(rank.getIsfinish()) || ("0".equals(rank.getIsfinish()) && rank.getEndtime().getTime() < new Date().getTime())){
+                return true;
+            }
+            //标识活动刚刚结束
+            //1.校验redis中是否有活动结束标识
+            String redisEndFlag = springJedisDao.get(Constant.REDIS_RANK_END+rank.getId());
+            if(StringUtils.isNotEmpty(redisEndFlag)){
+                return true;
+            }
+            springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",5);
+
+            //2.从redis中同步用户的排名
+            Set<String> rankSortSet = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),0,-1);
+            int i = 1;
+            Integer minImproveNum = Integer.parseInt(rank.getMinimprovenum());
+
+            Map<String,Object> map =new HashMap<String,Object>();
+            map.put("rankId",rank.getRankid());
+            for(String userId:rankSortSet){
+                map.put("userId",userId);
+                map.put("sortNum",i);
+
+                int row = this.rankMembersMapper.updateRank(map);
+                i++;
+            }
+            //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
+            Map<String,Object> updateMap = new HashMap<String,Object>();
+//            updateMap.put("")
+//            int updateRow = this.rankMembersMapper.instanceRankMember(rank.getRankid(),rank.getMinimprovenum());
+
+            //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
+            if("0".equals(rank.getIscheck())){
+                this.rankService.submitRankMemberCheckResult(rank.getRankid()+"");
+            }
+
+            //5.更改rank的活动标识为已结束
+            Rank updateRank = new Rank();
+            updateRank.setRankid(rank.getRankid());
+            updateRank.setIsfinish("1");
+            int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);
+
+            //6.从redis中删除该标识 以及从redis中删除该榜单的排名
+            this.springJedisDao.del(Constant.REDIS_RANK_SORT+rank.getRankid());
+            this.springJedisDao.del(Constant.REDIS_RANK_END+ rank.getRankid());
+
+            return true;
+        }catch (Exception e){
+            logger.error("check rank end error rankId:{}",rank.getId());
+            printExceptionAndRollBackTransaction(e);
+        }
+        return true;
     }
 
 

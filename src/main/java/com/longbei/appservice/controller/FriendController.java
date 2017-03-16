@@ -136,29 +136,4 @@ public class FriendController {
         return baseResp;
     }
 
-    /**
-     * 加载用户的好友列表
-     * @url http://ip:port/app_service/friend/friendList
-     * @param userId 当前登录的用户id
-     * @param startNum
-     * @param endNum
-     * @return
-     */
-    @RequestMapping(value = "friendList")
-    public BaseResp<Object> friendList(Long userId,Integer startNum,Integer endNum){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(userId == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_07);
-        }
-        if(startNum == null || startNum < 1){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
-        }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
-        }
-        baseResp = this.userRelationService.selectListByUserId(userId,startNum,pageSize);
-        return baseResp;
-    }
-
 }

@@ -53,13 +53,13 @@
   
   <select id="selectFansByUserid" resultMap="BaseResultMap"  >
     select 
-    <include refid="Base_Column_List" />
+      <include refid="Base_Column_List" />
     from sns_fans
     where userid = #{userid} 
     order by createtime desc 
-    <if test="endNum != 0" >
-      limit #{startNum},#{endNum}
-    </if>
+      <if test="startNum != null and endNum != null and endNum != 0" >
+        limit #{startNum},#{endNum}
+      </if>
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

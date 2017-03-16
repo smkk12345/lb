@@ -88,6 +88,16 @@ public class Constant {
 	public static final int STATUS_SYS_49 = -49;
 
 
+	public static final int STATUS_SYS_50 = -50;
+	public static final int STATUS_SYS_51 = -51;
+	public static final int STATUS_SYS_52 = -52;
+	public static final int STATUS_SYS_53 = -53;
+	public static final int STATUS_SYS_54 = -54;
+	public static final int STATUS_SYS_55 = -55;
+	public static final int STATUS_SYS_56 = -56;
+	public static final int STATUS_SYS_57 = -57;
+
+
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
 	public static final int STATUS_SYS_62 = -62;
@@ -106,6 +116,16 @@ public class Constant {
 
 	//90-99 好友相关 wangyongzhi
 	public static final int STATUS_SYS_90 = -90;
+	public static final int STATUS_SYS_91 = -91;
+	public static final int STATUS_SYS_92 = -92;
+	public static final int STATUS_SYS_93 = -93;
+	public static final int STATUS_SYS_94 = -94;
+	public static final int STATUS_SYS_95 = -95;
+	public static final int STATUS_SYS_96 = -96;
+	public static final int STATUS_SYS_97 = -97;
+	public static final int STATUS_SYS_98 = -98;
+	public static final int STATUS_SYS_99 = -99;
+
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -169,6 +189,12 @@ public class Constant {
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
 
+	public static final String RTNINFO_SYS_54 = "还有内容没有审核";
+	public static final String RTNINFO_SYS_55 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_56 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_57 = "送钻失败，龙币扣除";
+
+
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
 	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
@@ -202,7 +228,17 @@ public class Constant {
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
 	/** 90-99  好友相关 by wangyongzhi **/
-	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,无需再次添加好友!";
+	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";
+	public static final String RTNINFO_SYS_91 = "抱歉,七天内不能重复添加同一个好友!";
+	public static final String RTNINFO_SYS_92 = "";
+	public static final String RTNINFO_SYS_93 = "";
+	public static final String RTNINFO_SYS_94 = "";
+	public static final String RTNINFO_SYS_95 = "";
+	public static final String RTNINFO_SYS_96 = "";
+	public static final String RTNINFO_SYS_97 = "";
+	public static final String RTNINFO_SYS_98 = "";
+	public static final String RTNINFO_SYS_99 = "";
+
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -482,7 +518,7 @@ public class Constant {
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
 
 	public static final String REDIS_RANK_SORT = "rank_sort_";//榜单 排名
-
+	public static final String REDIS_RANK_END = "rank_end_";//榜单结束 标识
 
 
     /**
@@ -505,6 +541,15 @@ public class Constant {
 		flower,//送花
 		cancleLike,//取消点赞
 
+	}
+
+	/**
+	 * 排序类型
+	 */
+	public enum SortType{
+		comprehensive,//综合
+		likes,//赞
+		flower,//花
 	}
 	/**
 	 * money

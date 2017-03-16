@@ -202,6 +202,9 @@
         </if>
         and groupid=#{groupId}
       </where>
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
   </select>
 
   <!-- 批量更新用户在群里的状态 -->
@@ -260,6 +263,8 @@
             and userid = #{userId}
           </if>
       group by groupid
-      limit #{startNum},#{pageSize}
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
   </select>
 </mapper>

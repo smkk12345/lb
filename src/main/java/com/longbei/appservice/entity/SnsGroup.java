@@ -33,6 +33,8 @@ public class SnsGroup {
 
     private Integer currentnum;//当前人数
 
+    private String[] avatarArray;//群组成员的头像数组
+
     /**
      * 
      * @return id 
@@ -211,5 +213,13 @@ public class SnsGroup {
      */
     public void setCurrentnum(Integer currentnum) {
         this.currentnum = currentnum;
+    }
+
+    public String[] getAvatarArray() {
+        return avatarArray;
+    }
+
+    public void setAvatarArray(String[] avatarArray) {
+        this.avatarArray = avatarArray;
     }
 }

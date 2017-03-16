@@ -3,10 +3,8 @@ package com.longbei.appservice.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
@@ -14,7 +12,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserMsgService;
 
-@Controller
+@RestController
 @RequestMapping(value = "/userMsg")
 public class UserMsgController extends BaseController {
 
@@ -35,8 +33,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgSystemList")
-    @ResponseBody
-    public BaseResp<Object> msgSystemList(@RequestParam("userid") String userid, 
+    public BaseResp<Object> msgSystemList(String userid, 
     		int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
@@ -71,8 +68,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgOtherList")
-    @ResponseBody
-    public BaseResp<Object> msgOtherList(@RequestParam("userid") String userid, String mtype, String msgtype, 
+    public BaseResp<Object> msgOtherList(String userid, String mtype, String msgtype, 
     		int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
@@ -107,8 +103,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgLikeList")
-    @ResponseBody
-    public BaseResp<Object> msgLikeList(@RequestParam("userid") String userid, String msgtype, 
+    public BaseResp<Object> msgLikeList(String userid, String msgtype, 
     		int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
@@ -142,8 +137,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDialogueList")
-    @ResponseBody
-    public BaseResp<Object> msgDialogueList(@RequestParam("userid") String userid, 
+    public BaseResp<Object> msgDialogueList(String userid, 
     		int startNum, int endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
@@ -187,20 +181,20 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgDel
     * @Description: 删除消息
     * @param @param id  
+    * @param @param userid 
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDel")
-    @ResponseBody
-    public BaseResp<Object> msgDel(@RequestParam("id") String id) {
+    public BaseResp<Object> msgDel(String id, String userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(id)) {
+  		if (StringUtils.hasBlankParams(id, userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.deleteByid(Integer.parseInt(id));
+  			baseResp = userMsgService.deleteByid(Integer.parseInt(id), Long.parseLong(userid));
 		} catch (Exception e) {
 			logger.error("msgDel id = {}", id, e);
 		}
@@ -226,8 +220,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelOther")
-    @ResponseBody
-    public BaseResp<Object> msgDelOther(@RequestParam("userid") String userid, String mtype, String msgtype) {
+    public BaseResp<Object> msgDelOther(String userid, String mtype, String msgtype) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -259,8 +252,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelMtype")
-    @ResponseBody
-    public BaseResp<Object> msgDelMtype(@RequestParam("userid") String userid, String mtype) {
+    public BaseResp<Object> msgDelMtype(String userid, String mtype) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -286,8 +278,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelLike")
-    @ResponseBody
-    public BaseResp<Object> msgDelLike(@RequestParam("userid") String userid, String msgtype) {
+    public BaseResp<Object> msgDelLike(String userid, String msgtype) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, msgtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -310,8 +301,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgUpdIsread")
-    @ResponseBody
-    public BaseResp<Object> msgUpdIsread(@RequestParam("id") String id) {
+    public BaseResp<Object> msgUpdIsread(String id) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -344,8 +334,7 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgUpdAllIsread")
-    @ResponseBody
-    public BaseResp<Object> msgUpdAllIsread(@RequestParam("userid") String userid, String mtype, String msgtype) {
+    public BaseResp<Object> msgUpdAllIsread(String userid, String mtype, String msgtype) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
