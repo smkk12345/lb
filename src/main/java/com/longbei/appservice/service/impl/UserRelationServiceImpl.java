@@ -8,9 +8,9 @@
 */
 package com.longbei.appservice.service.impl;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,24 +76,59 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectListByUserId(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectListByUserId(long userid, Integer startNum, Integer endNum,Date updateTime) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum);
+			List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+			Integer isDel = null;
+			if(updateTime == null){
+				isDel = 0;
+			}
+
+			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
 			if(null != list && list.size()>0){
 				for (SnsFriends snsFriends : list) {
 					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.findById(snsFriends.getFriendid()+"");
-					snsFriends.setAppUserMongoEntity(appUserMongoEntit);
-					snsFriends.setNickname(friendService.getNickName(userid,snsFriends.getFriendid()));
-					//判断该好友是否已关注
-					SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
-					if(null != snsFans){
-						snsFriends.setIslike("1");
+
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("userid",snsFriends.getFriendid());
+					map.put("nickname",StringUtils.formatMobileOrUsername(appUserMongoEntit.getNickname()));
+					map.put("avatar",appUserMongoEntit.getAvatar());
+					map.put("username",appUserMongoEntit.getUsername());
+
+					if(StringUtils.isNotEmpty(snsFriends.getRemark())){
+						map.put("remark",snsFriends.getRemark());
+					}else{
+						map.put("remark",appUserMongoEntit.getNickname());
 					}
+
+					if(!"1".equals(snsFriends.getIsdel())){
+						//判断该好友是否已关注
+						SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
+						if(null != snsFans){
+							map.put("isfans","1");
+						}else{
+							map.put("isfans","0");
+						}
+					}else{
+						map.put("isfans","0");
+					}
+
+					//判断是怎么操作
+					if(updateTime != null){
+						if("1".equals(snsFriends.getIsdel())){
+							map.put("operationType","delete");
+						}else if(DateUtils.compare(snsFriends.getCreatetime(),updateTime)){
+							map.put("operationType","insert");
+						}else{
+							map.put("operationType","update");
+						}
+					}
+					resultList.add(map);
 				}
 			}
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			baseResp.setData(list);
+			baseResp.setData(resultList);
 		} catch (Exception e) {
 			logger.error("selectListByUserId error and msg = {}",e);
 		}
@@ -167,7 +202,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectFansListByUserId(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectFansListByUserId(long userid, Integer startNum, Integer endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
 			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);

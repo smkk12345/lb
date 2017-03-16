@@ -180,7 +180,7 @@ public class AddMessageReceiveService{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineFriend(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),0,0);
+        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),null,null,null);
         if(baseResp.getCode() != 0){
             return;
         }

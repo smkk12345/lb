@@ -11,6 +11,8 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.SnsFriends;
 
+import java.util.Date;
+
 /**
  * @author smkk
  * 用户关系接口
@@ -30,11 +32,12 @@ public interface UserRelationService {
 	* @Title: selectListByUserId
 	* @Description: 查询好友列表
 	* @param @param userid
+	* @param updateTime 更新时间
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
-	public BaseResp<Object> selectListByUserId(long userid,int startNum,int endNum);
+	public BaseResp<Object> selectListByUserId(long userid,Integer startNum,Integer endNum,Date updateTime);
 	/**
 	* @Title: delete
 	* @Description: 删除好友
@@ -92,7 +95,7 @@ public interface UserRelationService {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
-	public BaseResp<Object> selectFansListByUserId(long userid,int startNum,int endNum);
+	public BaseResp<Object> selectFansListByUserId(long userid,Integer startNum,Integer endNum);
 
 	/**
 	 * @author yinxc

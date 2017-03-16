@@ -2,6 +2,7 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankCheckDetail;
 import com.longbei.appservice.entity.RankImage;
@@ -169,4 +170,22 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status);
+
+    /**
+     * 查询用户在榜单中的排名
+     * @param rankId 榜单id
+     * @param userId 用户id
+     * @return
+     */
+    BaseResp<Object> ownRankSort(Long rankId, Long userId);
+
+    /**
+     * 榜单的排名
+     * @param rankId 榜单id
+     * @param sortType 排序的类型
+     * @param startNum 开始下标
+     * @param pageSize 每页条数
+     * @return
+     */
+    BaseResp<Object> rankMemberSort(Long rankId, Constant.SortType sortType, Integer startNum, Integer pageSize);
 }

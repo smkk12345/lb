@@ -7,8 +7,10 @@
 * @version V1.0   
 */
 package com.longbei.appservice.controller;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import org.assertj.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserRelationService;
+
+import java.util.Date;
+
 /**
  * @author smkk
  * 关系控制器，好友  熟人  关注的人
@@ -115,20 +120,31 @@ public class UserRelationController extends BaseController {
 	* @Description: 查询好友列表 通过好友id
 	* @param @param userid
 	* @param @param startNum  endNum
+	* @param updateTime 上次同步的时间,如果是获取整个好友列表,则不需要传该参数或仅限于传0
+	 *                  如果传入updateTime ,请传入格式为 2017-03-16 10:00:00 的时间格式
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectListByUserId")
-	public BaseResp<Object> selectListByUserId(String userid,int startNum,int endNum){
+	public BaseResp<Object> selectListByUserId(String userid,Integer startNum,Integer endNum,String updateTime){
 		logger.info("selectListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+		Date updateDate = null;
+		if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
+			try{
+				updateDate = DateUtils.formatDate(updateTime,null);
+			}catch (Exception e){
+				logger.error("select friend list by userId userId:{} startNum:{} endNum:{} updateTime;{}",userid,startNum,endNum,updateTime);
+				updateDate = null;
+			}
+		}
 		try {
-			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum);
+			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum,updateDate);
 		} catch (Exception e) {
 			logger.error("selectListByUserId userid = {}, startNum = {}, endNum = {}", userid, startNum, endNum, e);
 		}
