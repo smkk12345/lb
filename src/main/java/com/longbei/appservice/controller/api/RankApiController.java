@@ -536,24 +536,42 @@ public class RankApiController {
     }
 
     /**
-     * 提交榜单审核结果
+     * 提交榜单审核结果 予发布
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "subcheckresult")
-    public BaseResp<Object> subRankMemberCheckResult(String rankid){
+    @RequestMapping(value = "subcheckresultpre")
+    public BaseResp<Object> subRankMemberCheckResultPre(String rankid){
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(rankid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = rankService.submitRankMemberCheckResult(rankid);
+            baseResp = rankService.submitRankMemberCheckResultPreview(rankid);
         } catch (Exception e) {
             logger.error("submit rank member check result rankid={} is error:",rankid,e);
         }
         return baseResp;
     }
 
+    /**
+     * 提交榜单审核结果
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "subcheckresult")
+    public BaseResp<Object> subRankMemberCheckResult(@RequestBody Rank rank){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rank || StringUtils.isEmpty(rank.getRankid())){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.submitRankMemberCheckResult(rank);
+        } catch (Exception e) {
+            logger.error("submit rank member check result rankid={} is error:",rank.getRankid(),e);
+        }
+        return baseResp;
+    }
 
 
 }
