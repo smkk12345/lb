@@ -218,23 +218,18 @@ public class RankController {
         return baseResp;
     }
 
-    @RequestMapping(value="test")
-    public BaseResp<Object> test(Long userId,Integer type){
-        Constant.OperationType opera = null;
-        if(type == 1){
-            opera = Constant.OperationType.like;
-        }
-        if(type == 2){
-            opera = Constant.OperationType.flower;
-        }
-        if(type == 3){
-            opera = Constant.OperationType.cancleLike;
-        }
-        this.rankSortService.updateRankSortScore(Long.parseLong("842621341122236416"),userId,Constant.OperationType.like,1);
-        return new BaseResp<>().ok();
+    /**
+     * 用户领奖
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    @RequestMapping(value="acceptAward")
+    public BaseResp<Object> acceptAward(Long userId,Long rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        return baseResp;
     }
 
-   
 //    /**
 //     * url: http://ip:port/app_service/rank/insert
 //     * method:  POST

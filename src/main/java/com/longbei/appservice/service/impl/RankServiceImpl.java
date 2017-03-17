@@ -723,7 +723,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(userIdList != null && userIdList.size() > 0){
                     int i = 0;
                     for(String userId:userIdList){
-                        System.out.println(this.springJedisDao.zScore(Constant.REDIS_RANK_SORT+rankId,userId) + "|---------------");
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(userId));
                         rankMembers.setSortnum(startNum+i+1);
                         rankMembers.setAppUserMongoEntity(userMongoDao.findById(userId+""));

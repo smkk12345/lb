@@ -54,7 +54,8 @@
     select 
     <include refid="Base_Column_List" />
     from rank
-    where rankid = #{rankid,jdbcType=BIGINT}
+    where isdel = '0'
+        and rankid = #{rankid,jdbcType=BIGINT}
   </select>
   <select id="selectListCount" parameterType="com.longbei.appservice.entity.Rank" resultType="java.lang.Integer">
     SELECT

@@ -125,6 +125,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             if("0".equals(rank.getIscheck())){//不需要人工审核
                 updateMap.put("status","3");
                 updateMap.put("type","greater");
+                updateMap.remove("checkresult");
                 int updateRow1 = this.rankMembersMapper.instanceRankMember(updateMap);
             }
 
