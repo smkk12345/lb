@@ -149,7 +149,7 @@ public interface UserService {
 	 * @param grade
 	 * @return
 	 */
-	BaseResp<Object> userlevel(int grade);
+	BaseResp<Object> userlevel(long userid,int grade);
 
 	/**
 	 * 更改用户信息

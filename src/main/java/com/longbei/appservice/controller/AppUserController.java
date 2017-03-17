@@ -1240,19 +1240,19 @@ public class AppUserController extends BaseController {
 
     /**
      * @Title: http://ip:port/app_service/user/userlevel
-     * @Description: 获取用户龙级信息   grade 用户的龙级
+     * @Description: 获取用户龙级信息   grade 用户的龙级  userid 用户的id
      * @auther lixb
      * @currentdate:2017年3月16日
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/userlevel")
     @ResponseBody
-    public BaseResp<Object> userlevel(String grade) {
+    public BaseResp<Object> userlevel(String userid,String grade) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(StringUtils.hasBlankParams(grade)){
+        if(StringUtils.hasBlankParams(grade,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = userService.userlevel(Integer.parseInt(grade));
+        baseResp = userService.userlevel(Long.parseLong(userid),Integer.parseInt(grade));
         return baseResp;
     }
 

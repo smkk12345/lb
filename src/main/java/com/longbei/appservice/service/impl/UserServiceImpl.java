@@ -1,10 +1,9 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import com.longbei.appservice.common.constant.Constant_point;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -551,16 +550,52 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp<Object> userlevel(int grade) {
+	public BaseResp<Object> userlevel(long userid,int grade) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
 			baseResp.setData(userLevel);
+			List<String> ist = getPointOriginate();
+			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
+			baseResp.getExpandData().put("pointDetail",ist);
+			baseResp.getExpandData().put("todayPoint",point);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
 			logger.error("selectByGrade error grade={}",grade,e);
 		}
 		return baseResp;
+	}
+
+
+//			● 关注他人+XX分，上限+20分/天；
+//			● 点赞鼓励他人++XX分，上限+30分/天；
+//			● 与他人评论互动+XX分，上限+40分/天；
+//			● 发微进步+XX分，上限50分/天；
+//			● 加入龙榜+7分；
+//			● 加入教室+7分；
+//			● 加入圈子+7分；
+//			● 公益抽奖+XX分；
+	private List<String> getPointOriginate(){
+		List<String> list = new ArrayList<>();
+		list.add("注册成功+"+ Constant_point.NEW_REGISTER+"分");
+		list.add("绑定QQ成功+"+Constant_point.NEW_LOGIN_QQ+"分");
+		list.add("绑定微信成功+"+Constant_point.NEW_LOGIN_WX+"分");
+		list.add("绑定微博成功+"+Constant_point.NEW_LOGIN_WB+"分");
+		list.add("完成实名认证+"+Constant_point.NEW_CERTIFY_USERCARD+"分");
+		list.add("完善个人信息+"+Constant_point.NEW_USERINFO+"分");
+		list.add("签到成功+"+Constant_point.DAILY_CHECKIN+"分");
+		list.add("分享+"+Constant_point.DAILY_SHARE+"分"+",上限+"+Constant_point.DAILY_SHARE_LIMIT+"分／天");
+		list.add("邀请好友注册+"+Constant_point.INVITE_LEVEL1+"分"+",上限+1000分／天");
+		list.add("分享+"+Constant_point.DAILY_SHARE+"分"+",上限+"+Constant_point.DAILY_SHARE_LIMIT+"分／天");
+		list.add("添加好友+"+Constant_point.DAILY_ADDFRIEND+"分"+",上限+"+Constant_point.DAILY_ADDFRIEND_LIMIT+"分／天");
+		list.add("关注他人+"+Constant_point.DAILY_FUN+"分"+",上限+"+Constant_point.DAILY_FUN_LIMIT+"分／天");
+		list.add("与他人评论互动+"+Constant_point.DAILY_COMMENT+"分"+",上限+"+Constant_point.DAILY_COMMENT_LIMIT+"分／天");
+		list.add("发微进步+"+Constant_point.DAILY_ADDIMP+"分"+",上限+"+Constant_point.DAILY_ADDIMP_LIMIT+"分／天");
+		list.add("加入龙榜+"+ Constant_point.DAILY_ADDRANK+"分");
+		list.add("加入教室+"+ Constant_point.DAILY_ADDCLASSROOM+"分");
+		list.add("公益抽奖+XX分");
+		return list;
 	}
 
 	@Override
