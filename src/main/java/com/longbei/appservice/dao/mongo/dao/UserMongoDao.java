@@ -154,7 +154,20 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 		CommandResult myResults = mongoTemplate.getDb().command(myCmd);
 		JSONArray jArray = JSONArray.fromObject(myResults.get("results"));
-		List<AppUserMongoEntity> list = (List) JSONArray.toCollection(jArray, AppUserMongoEntity.class);
+		List<AppUserMongoEntity> list = new ArrayList<>();
+		for (int i = 0; i < jArray.size(); i++) {
+			if(i<count){
+				continue;
+			}
+			JSONObject jObject = (JSONObject)jArray.get(i);
+			String sDis = jObject.getString("dis");
+			BigDecimal bd = new BigDecimal(sDis);
+			Double double1 = Double.parseDouble(bd.toPlainString());
+			AppUserMongoEntity nearUser = (AppUserMongoEntity)JSONObject.toBean(jObject.getJSONObject("obj"),AppUserMongoEntity.class);
+			nearUser.setDistance(double1.intValue());
+			list.add(nearUser);
+		}
+
 		return list;
 	}
 

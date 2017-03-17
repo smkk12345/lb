@@ -24,6 +24,16 @@ public class AppUserMongoEntity {
 	private String isfriend="0";
 	private String isfans="0";
 
+	private int distance;
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
 	public AppUserMongoEntity(){}
 
 	public void setUpdatetime(String updatetime) {

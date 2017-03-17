@@ -4,6 +4,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.service.FindService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @Service
 public class FindServiceImpl implements FindService{
 
+    private static Logger logger = LoggerFactory.getLogger(FindServiceImpl.class);
     @Autowired
     private UserMongoDao userMongoDao;
 
@@ -34,7 +37,8 @@ public class FindServiceImpl implements FindService{
             baseResp.setData(list);
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
-
+            logger.error("findNear error longitude={},latitude={}," +
+                    "userid={},startNum={},endNum={}",longitude,latitude,userid,startNum,endNum,e);
         }
         return baseResp;
     }
