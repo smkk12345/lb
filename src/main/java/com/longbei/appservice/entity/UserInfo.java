@@ -22,6 +22,10 @@ public class UserInfo {
 
     private Integer totalcoin;//进步币
 
+    private Integer totalimp;//总进步数
+    private Integer totallikes;//总赞
+    private Integer totalfans;//总粉丝数
+
     private String nickname;//昵称
 
     private String realname;//真名
@@ -125,6 +129,38 @@ public class UserInfo {
      */
     public Integer getId() {
         return id;
+    }
+
+    public void setTotalfans(Integer totalfans) {
+        this.totalfans = totalfans;
+    }
+
+    public void setTotalimp(Integer totalimp) {
+        this.totalimp = totalimp;
+    }
+
+    public void setFashionMan(Boolean fashionMan) {
+        isFashionMan = fashionMan;
+    }
+
+    public void setTotallikes(Integer totallikes) {
+        this.totallikes = totallikes;
+    }
+
+    public Boolean getFashionMan() {
+        return isFashionMan;
+    }
+
+    public Integer getTotalfans() {
+        return totalfans;
+    }
+
+    public Integer getTotalimp() {
+        return totalimp;
+    }
+
+    public Integer getTotallikes() {
+        return totallikes;
     }
 
     /**
