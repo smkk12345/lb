@@ -217,8 +217,14 @@ public interface RankService extends BaseService{
      * @param rankid
      * @return
      */
-    BaseResp<Object> submitRankMemberCheckResult(String rankid);
+    BaseResp<Object> submitRankMemberCheckResultPreview(String rankid);
 
+    /**
+     * 改变榜单isfinish状态
+     * @param rank
+     * @return
+     */
+    BaseResp<Object> submitRankMemberCheckResult(Rank rank);
 
     /**
      * 获取成员列表 预览
