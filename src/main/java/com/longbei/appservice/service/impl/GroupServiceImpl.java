@@ -13,6 +13,7 @@ import com.longbei.appservice.entity.SnsGroup;
 import com.longbei.appservice.entity.SnsGroupMembers;
 import com.longbei.appservice.service.GroupService;
 import com.longbei.appservice.service.api.HttpClient;
+import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,10 +73,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             userIdSet.add(mainGroupUserId);
-            String[] newUserIds = userIdSet.toArray(new String[]{});
+            String userIdString = userIdSet.toString();
+            userIdString = userIdString.substring(1,userIdString.length()-1);
+            String[] newUserIds = userIdString.split(",");
 
             //1.调用融云 创建群组
-            BaseResp rongyunResp = HttpClient.rongYunService.createGroup(newUserIds,groupId,groupName);
+            BaseResp rongyunResp = HttpClient.rongYunService.createGroup(userIdString,groupId,groupName);
             if(rongyunResp.getCode() != 0){
                 return baseResp.fail("系统异常");
             }

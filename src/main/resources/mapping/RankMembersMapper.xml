@@ -34,8 +34,10 @@
 
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">
-    select count(*) from rank_members where
-    rankid=#{rankid} AND status = '1'
+    select
+        count(1)
+    from rank_members
+    where
     <if test="isfashionman != null">
       AND isfashionman = #{isfashionman}
     </if>
@@ -58,6 +60,8 @@
         #{item.id}
       </foreach>
     </if>
+    AND status = '1'
+    and rankid=#{rankid}
   </select>
 
 
@@ -364,18 +368,56 @@
   </update>
 
   <!-- 获取用户在榜单中的排名 -->
-  <select id="selectUserSort" resultMap="BaseResultMap">
+  <select id="selectUserSort">
       select
           <include refid="Base_Column_List" />
       from
         rank_members
-      where
+      <where>
         rankId = #{rankId}
+      </where>
       <if test="sortType == 'likes'">
         order by likes desc
       </if>
       <if test="sortType == 'flower'">
         order by flowers desc
+      </if>
+      <if test="startNum != null">
+          limit #{startNum},#{pageSizee}
+      </if>
+  </select>
+
+  <!-- 审核用户的进步条数 -->
+  <update id="instanceRankMember" parameterType="map">
+      update rank_members
+      <set> checkstatus = #{status}
+        <if test="checkresult != null">
+          ,checkresult = #{checkresult}
+        </if>
+      </set>
+      WHERE
+          <if test="type != null and type == 'less'">
+            icount &lt; #{minImproveNum}
+          </if>
+          <if test="type != null and type == 'greater'">
+            icount >= #{minImproveNum}
+          </if>
+          and ranid = #{rankId}
+  </update>
+
+  <!-- 根据条件查询 rankMembers -->
+  <select id="selectRankMembers" parameterType="map" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      from rank_members
+      <where>
+          <if test="isFashionMan != null">
+              isfashionman = 1 AND
+          </if>
+         rankId = #{rankId}
+      </where>
+      <if test="startNum != null">
+          limit #{startNum},#{pageSize}
       </if>
   </select>
 </mapper>

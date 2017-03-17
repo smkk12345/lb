@@ -18,6 +18,7 @@ public interface RankSortService extends BaseService{
      */
     boolean updateRankSortScore(Long rankId, Long userId, Constant.OperationType operationType,Integer num);
 
+
     boolean checkRankEnd(Rank rank);
 
 }

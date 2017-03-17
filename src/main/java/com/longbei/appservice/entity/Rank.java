@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+import scala.App;
 
 import java.util.Date;
 import java.util.List;
@@ -119,6 +120,8 @@ public class Rank {
     private String notice; //公告
 
     private Boolean needConfirm;//用户加榜单 是否需要榜主验证
+
+    private AppUserMongoEntity appUserMongoEntity;
 
     //--------
 
@@ -768,5 +771,13 @@ public class Rank {
 
     public void setNeedConfirm(Boolean needConfirm) {
         this.needConfirm = needConfirm;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
     }
 }

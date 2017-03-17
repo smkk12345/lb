@@ -64,4 +64,18 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") String sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 审核用户的进步条数
+     * @param updateMap
+     * @return
+     */
+    int instanceRankMember(Map<String, Object> updateMap);
+
+    /**
+     * 根据条件 查询rankMembers
+     * @param parameterMap
+     * @return
+     */
+    List<RankMembers> selectRankMembers(Map<String, Object> parameterMap);
 }

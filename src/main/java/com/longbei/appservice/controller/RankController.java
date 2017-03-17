@@ -1,8 +1,10 @@
 package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
@@ -39,8 +41,6 @@ public class RankController {
 //    public BaseResp<List<Rank>> selectRankList(){
 //
 //    }
-
-
 
     /**
      * 用户 参榜
@@ -140,6 +140,98 @@ public class RankController {
         }
         baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
         return baseResp;
+    }
+
+    /**
+     * 获取龙榜列表
+     * @param rankTitle
+     * @param pType
+     * @param rankscope
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="selectRankList")
+    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+
+        Rank rank = new Rank();
+        if(StringUtils.isEmpty(rankTitle)){
+            rank.setRanktitle(rankTitle);
+        }
+        if(StringUtils.isNotEmpty(pType)){
+            rank.setPtype(pType);
+        }
+        if(StringUtils.isNotEmpty(rankscope)){
+            rank.setRankscope(rankscope);
+        }
+        Page<Rank> pageRank= this.rankService.selectRankList(rank,startNum,endNum);
+        baseResp.setData(pageRank);
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        return baseResp;
+    }
+
+    /**
+     * 获取榜单详情
+     * @param rankId
+     * @return
+     */
+    @RequestMapping(value="rankDetail")
+    public BaseResp<Rank> rankDetail(String rankId){
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
+        if(StringUtils.isEmpty(rankId)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+
+        baseResp = this.rankService.selectRankDetailByRankid(rankId);
+        return baseResp;
+    }
+
+    /**
+     * 查询榜单中的达人
+     * @param rankId 榜单id
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="selectFashionMan")
+    public BaseResp<Object> selectFashionMan(Long rankId,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (startNum == null || startNum < 0){
+            startNum =Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankService.selectFashionMan(rankId,startNum,pageSize);
+        return baseResp;
+    }
+
+    @RequestMapping(value="test")
+    public BaseResp<Object> test(Long userId,Integer type){
+        Constant.OperationType opera = null;
+        if(type == 1){
+            opera = Constant.OperationType.like;
+        }
+        if(type == 2){
+            opera = Constant.OperationType.flower;
+        }
+        if(type == 3){
+            opera = Constant.OperationType.cancleLike;
+        }
+        this.rankSortService.updateRankSortScore(Long.parseLong("842621341122236416"),userId,Constant.OperationType.like,1);
+        return new BaseResp<>().ok();
     }
 
    

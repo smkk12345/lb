@@ -3,6 +3,7 @@ package com.longbei.appservice.service.api.outernetservice;
 import com.longbei.appservice.common.BaseResp;
 import feign.Param;
 import feign.RequestLine;
+import net.sf.json.JSONArray;
 
 /**
  * Created by smkk on 17/2/15.
@@ -21,8 +22,8 @@ public interface IRongYunService {
      * @param groupName 群组名称
      * @return
      */
-    @RequestLine("GET /rongyun/createGroup?userIds={userIds}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> createGroup(@Param("userIds") String[] userIds,
+    @RequestLine("POST /rongyun/createGroup?userIds={userIds}&groupId={groupId}&groupName={groupName}")
+    BaseResp<Object> createGroup(@Param("userIds") String userIds,
                          @Param("groupId") Long groupId,
                          @Param("groupName") String groupName);
 
