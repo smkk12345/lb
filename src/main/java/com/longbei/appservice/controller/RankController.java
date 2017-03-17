@@ -6,6 +6,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.RankSortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class RankController {
 
     @Autowired
     private RankService rankService;
+    @Autowired
+    private RankSortService rankSortService;
 
 
 
@@ -139,6 +142,7 @@ public class RankController {
         return baseResp;
     }
 
+   
 //    /**
 //     * url: http://ip:port/app_service/rank/insert
 //     * method:  POST

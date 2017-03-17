@@ -263,7 +263,7 @@
             and userid = #{userId}
           </if>
       group by groupid
-      <if test="startNum != null and endNum != null">
+      <if test="startNum != null and pageSize != null">
           limit #{startNum},#{pageSize}
       </if>
   </select>
