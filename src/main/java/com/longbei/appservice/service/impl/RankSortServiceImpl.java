@@ -81,6 +81,11 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
         return false;
     }
 
+    /**
+     * 查看榜单是否结束,如果已结束,则做发奖等操作
+     * @param rank
+     * @return
+     */
     @Transactional
     @Override
     public boolean checkRankEnd(Rank rank) {
@@ -131,7 +136,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
 
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
             if("0".equals(rank.getIscheck())){
-                this.rankService.submitRankMemberCheckResult(rank.getRankid()+"");
+                this.rankService.submitRankMemberCheckResult(rank);
             }
 
             //5.更改rank的活动标识为已结束
