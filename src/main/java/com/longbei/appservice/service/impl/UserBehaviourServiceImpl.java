@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.collection.immutable.Stream;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -100,6 +101,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
+            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+            springJedisDao.put(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL",dateStr,String.valueOf(point));
+            springJedisDao.expire(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL", Constant.CACHE_24X60X60);
             levelUp(userInfo.getUserid(),point,pType);
         }
         //进步币发生变化

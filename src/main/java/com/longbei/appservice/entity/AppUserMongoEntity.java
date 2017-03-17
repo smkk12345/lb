@@ -17,10 +17,32 @@ public class AppUserMongoEntity {
 	private String sex;//性别
 
 	private Double[] gispoint;
+
+	private String updatetime;
 	
 	private long userid;
 	private String isfriend="0";
 	private String isfans="0";
+
+	private int distance;
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public AppUserMongoEntity(){}
+
+	public void setUpdatetime(String updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	public String getUpdatetime() {
+		return updatetime;
+	}
 
 	public long getUserid() {
 		return Long.parseLong(id);

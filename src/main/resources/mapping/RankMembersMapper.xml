@@ -20,10 +20,15 @@
     <result column="checkresult" property="checkresult" jdbcType="VARCHAR" />
     <result column="checkuserid" property="checkuserid" jdbcType="VARCHAR" />
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
+    <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
+      <result column="awardid" property="awardid" jdbcType="VARCHAR" />
+      <result column="awardlevel" property="awardlevel" jdbcType="VARCHAR" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List" >
       id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
-    likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,checkresult,checkuserid,checkdate
+    likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
+    checkresult,checkuserid,checkdate,awardid,awardlevel
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -68,7 +73,7 @@
 
   <select id="selectList" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List" />
+      <include refid="Base_Column_List" />
     FROM rank_members
     <where>
         <if test="rankmember.isfashionman != null">
@@ -123,9 +128,6 @@
       limit #{startno},#{pagesize}
     </if>
   </select>
-
-
-
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rank_members
@@ -336,6 +338,14 @@
     <set>
       <if test="iswinning != null">
         iswinning = #{iswinning},
+      </if>
+      <if test="rankAward != null">
+        <if test="rankAward.awardid != null">
+          awardid = #{rankAward.awardid},
+        </if>
+        <if test="rankAward.awardlevel != null">
+          awardlevel = #{rankAward.awardlevel},
+        </if>
       </if>
       <if test="isfashionman != null">
         isfashionman = #{isfashionman},

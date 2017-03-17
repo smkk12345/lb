@@ -97,6 +97,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserGoalMapper userGoalMapper;
     @Autowired
     private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private RankSortService rankSortService;
 
     /**
      *  @author luye
@@ -830,7 +832,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,rankid,Constant.IMPROVE_RANK_TYPE);
+        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {
@@ -868,7 +870,10 @@ public class ImproveServiceImpl implements ImproveService{
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
                 //更新redis中排名by lixb
-
+                rankSortService.updateRankSortScore(improve.getBusinessid(),
+                    improve.getUserid(),Constant.OperationType.like,like);
+                rankSortService.updateRankSortScore(improve.getBusinessid(),
+                        improve.getUserid(),Constant.OperationType.flower,flower);
                 break;
             default:
                 break;
@@ -1686,8 +1691,9 @@ public class ImproveServiceImpl implements ImproveService{
                 break;
             case Constant.IMPROVE_RANK_TYPE:
                 improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
-                //修改排名信息
-
+                //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
+                rankSortService.updateRankSortScore(improve.getBusinessid(),
+                        improve.getUserid(),Constant.OperationType.like,count);
                 break;
             default:
 
