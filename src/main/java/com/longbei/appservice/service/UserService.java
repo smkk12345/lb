@@ -161,4 +161,10 @@ public interface UserService {
 	 */
 	BaseResp<Object> gps(long userid,double longitude,double latitude,String dateStr);
 
+	/**
+	 * 感兴趣的标签
+	 * @return
+	 */
+	BaseResp<Object> selectRandomTagList();
+
 }
