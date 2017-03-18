@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.service.FindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,15 @@ public class FindController extends BaseController {
 
     @Autowired
     private FindService findService;
+    @Autowired
+    private CodeDao codeDao;
+
+    @RequestMapping("test")
+    public String test(){
+        String code = codeDao.getCode(null);
+        return code;
+    }
+
     /**
      * 附近的人
      * http://server_ip:port/app_service/find/near
