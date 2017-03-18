@@ -23,6 +23,8 @@ public class AwardClassify {
      */
     private Integer sort;
 
+    private String classifytype; //0 - 进步币 1 - 红包 3 - 实物
+
     /**
      * 
      */
@@ -32,6 +34,14 @@ public class AwardClassify {
      * 
      */
     private Date createtime;
+
+    public String getClassifytype() {
+        return classifytype;
+    }
+
+    public void setClassifytype(String classifytype) {
+        this.classifytype = classifytype;
+    }
 
     public Integer getId() {
         return id;
