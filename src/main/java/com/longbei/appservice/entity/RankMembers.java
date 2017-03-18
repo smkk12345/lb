@@ -46,7 +46,17 @@ public class RankMembers {
 
     private Date checkdate; //审核日期
 
+    private String receivecode; //领奖口令
+
     private RankAward rankAward;
+
+    public String getReceivecode() {
+        return receivecode;
+    }
+
+    public void setReceivecode(String receivecode) {
+        this.receivecode = receivecode;
+    }
 
     public RankAward getRankAward() {
         return rankAward;

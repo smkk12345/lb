@@ -10,6 +10,7 @@ import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
@@ -67,6 +68,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ImproveRankMapper improveRankMapper;
     @Autowired
     private RankSortService rankSortService;
+    @Autowired
+    private CodeDao codeDao;
 
     /**
      *  @author luye
@@ -199,6 +202,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != rank1){
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
+                    if ("1".equals(rankim.getRanktype())){
+                        rank.setJoincode(codeDao.getCode(null));
+                    }
                     res = rankMapper.insertSelective(rank);
                 }
                 if (res > 0){
@@ -1002,6 +1008,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     tempcount++;
                     rankMembers.setUserid(rkmember.getUserid());
                     rankMembers.setIswinning("1");
+                    rankMembers.setReceivecode(codeDao.getCode(null));
                     RankAward rankAward1 = new RankAward();
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());

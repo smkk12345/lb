@@ -120,8 +120,18 @@ public class RankImage {
 
     private String notice; //榜单公告
 
+    private String joincode; //入榜口令
+
     //--------
 
+
+    public String getJoincode() {
+        return joincode;
+    }
+
+    public void setJoincode(String joincode) {
+        this.joincode = joincode;
+    }
 
     public String getNotice() {
         return notice;
