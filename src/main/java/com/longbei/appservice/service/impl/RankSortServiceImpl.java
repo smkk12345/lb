@@ -81,6 +81,11 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
         return false;
     }
 
+    /**
+     * 查看榜单是否结束,如果已结束,则做发奖等操作
+     * @param rank
+     * @return
+     */
     @Transactional
     @Override
     public boolean checkRankEnd(Rank rank) {
@@ -116,8 +121,18 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             }
             //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
             Map<String,Object> updateMap = new HashMap<String,Object>();
-//            updateMap.put("")
-//            int updateRow = this.rankMembersMapper.instanceRankMember(rank.getRankid(),rank.getMinimprovenum());
+            updateMap.put("rankId",rank.getRankid());
+            updateMap.put("minImproveNum",rank.getMinimprovenum());
+            updateMap.put("status","1");
+            updateMap.put("checkresult","未满足进步条数");
+            updateMap.put("type","less");
+            int updateRow = this.rankMembersMapper.instanceRankMember(updateMap);
+            if("0".equals(rank.getIscheck())){//不需要人工审核
+                updateMap.put("status","3");
+                updateMap.put("type","greater");
+                updateMap.remove("checkresult");
+                int updateRow1 = this.rankMembersMapper.instanceRankMember(updateMap);
+            }
 
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
             if("0".equals(rank.getIscheck())){

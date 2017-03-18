@@ -57,8 +57,8 @@
     from sns_fans
     where userid = #{userid} 
     order by createtime desc 
-      <if test="startNum != null and endNum != null and endNum != 0" >
-        limit #{startNum},#{endNum}
+      <if test="startNum != null and endNum != null" >
+        limit #{startNum,jdbcType=INTEGER},#{endNum,jdbcType=INTEGER}
       </if>
   </select>
   

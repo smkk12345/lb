@@ -251,4 +251,13 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> rankMemberSort(Long rankId, Constant.SortType sortType, Integer startNum, Integer pageSize);
+
+    /**
+     * 获取榜中的达人
+     * @param rankId 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize);
 }

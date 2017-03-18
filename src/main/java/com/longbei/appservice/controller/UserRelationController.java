@@ -261,7 +261,7 @@ public class UserRelationController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<Object> selectFansListByUserId(String userid, int startNum, int endNum){
+	public BaseResp<Object> selectFansListByUserId(String userid, Integer startNum, Integer endNum){
 		logger.info("selectFansListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {

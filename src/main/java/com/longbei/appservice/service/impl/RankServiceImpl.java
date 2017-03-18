@@ -14,6 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.RankSortService;
 import com.longbei.appservice.service.UserIdcardService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
@@ -64,6 +65,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserIdcardService userIdcardService;
     @Autowired
     private ImproveRankMapper improveRankMapper;
+    @Autowired
+    private RankSortService rankSortService;
 
     /**
      *  @author luye
@@ -389,7 +392,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (rank == null) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
-            if ("1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "0".equals(rank.getIsup()) || "1".equals(rank.getIsdel())) {
+            if ("1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "1".equals(rank.getIsdel())) {
                 return baseResp.fail("抱歉,由于龙榜已结束或未设置为开放等原因,您暂时无法进行参榜!");
             }
             if (!DateUtils.compare(rank.getEndtime(), new Date())) {
@@ -473,7 +476,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 //TODO 发送消息给榜主
 
-                baseResp.ok("申请加入榜单成功!");
+                return baseResp.ok();
             }
         } catch (Exception e) {
             logger.error("insert rankMemeber error rankId:{} userId:{}",rankId,userId);
@@ -703,6 +706,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userId+"");
             resultMap.put("sort",sort);
+
+            resultMap.put("likes",rankMembers.getLikes());
+            resultMap.put("flowers",rankMembers.getFlowers());
+            AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(userId+"");
+            resultMap.put("nickName",appUserMongoEntity.getNickname());
+            resultMap.put("avatar",appUserMongoEntity.getAvatar());
+
             baseResp.setData(resultMap);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -732,7 +742,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(userIdList != null && userIdList.size() > 0){
                     int i = 0;
                     for(String userId:userIdList){
-                        System.out.println(this.springJedisDao.zScore(Constant.REDIS_RANK_SORT+rankId,userId) + "|---------------");
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(userId));
                         rankMembers.setSortnum(startNum+i+1);
                         rankMembers.setAppUserMongoEntity(userMongoDao.findById(userId+""));
@@ -756,6 +765,37 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank member sort list error rankId:{} sortType:{} startNum:{} pageSize:{}",rankId,sortType,startNum,pageSize);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取榜中的达人
+     * @param rankId 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Map<String,Object> parameterMap = new HashMap<String,Object>();
+            parameterMap.put("rankId",rankId);
+            parameterMap.put("isFashionMan","1");
+            parameterMap.put("startNum",startNum);
+            parameterMap.put("pageSize",pageSize);
+            List<RankMembers> rankMembersList = this.rankMembersMapper.selectRankMembers(parameterMap);
+            if(rankMembersList != null && rankMembersList.size() > 0){
+                for (RankMembers rankMembers : rankMembersList) {
+                    rankMembers.setAppUserMongoEntity(this.userMongoDao.findById(rankMembers.getUserid()+""));
+                }
+            }
+            baseResp.setData(rankMembersList);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select rank fashionMain error rankId:{} startNum:{} pageSize:{}",rankId,startNum,pageSize);
             printException(e);
         }
         return baseResp;
@@ -802,9 +842,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Rank> selectRankDetailByRankid(String rankid) {
         BaseResp<Rank> baseResp = new BaseResp();
         try {
+
             Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+            rankSortService.checkRankEnd(rank);
             if (null != rank){
                 rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankid)));
+                rank.setAppUserMongoEntity(userMongoDao.findById(rank.getCreateuserid()+""));
+            }else{
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);

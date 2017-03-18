@@ -18,6 +18,11 @@ public interface RankSortService extends BaseService{
      */
     boolean updateRankSortScore(Long rankId, Long userId, Constant.OperationType operationType,Integer num);
 
+    /**
+     * 查看榜单是否结束,如果已结束,则做发奖等操作
+     * @param rank
+     * @return
+     */
     boolean checkRankEnd(Rank rank);
 
 }

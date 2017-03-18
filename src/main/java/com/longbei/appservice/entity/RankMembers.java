@@ -34,7 +34,7 @@ public class RankMembers {
 
     private String checkstatus; //审核结果  0 未审核 1 - 机器审核不通过 2 - 人工不通过 3 - 通过
 
-    private String checkresult; //审核不通过原因
+    private String checkresult; //审s核不通过原因
 
     private Integer complaintotalcount; //投诉次数
 
