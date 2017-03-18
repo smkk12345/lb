@@ -15,6 +15,8 @@
     <association property="awardClassify" javaType="com.longbei.appservice.entity.AwardClassify">
       <id property="id" column="awardcateid"/>
       <result property="classifyname" column="classifyname"/>
+      <result property="classifyname" column="classifyname"/>
+      <result property="classifytype" column="classifytype" jdbcType="INTEGER"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -175,4 +177,22 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询奖品 -->
+  <select id="selectAwardAndAwardClassify" parameterType="INTEGER" resultMap="BaseResultMap">
+      select
+          award.id,
+          award.awardtitle,
+          award.awardprice,
+          award.awardlevel,
+          award.awardphotos,
+          awardclassify.id awardcateid,
+          awardclassify.classifyname classifyname,
+          awardclassify.classifytype classifytype
+      from
+          awardclassify,award
+      where
+          awardclassify.id = award.awardcateid
+          and award.id = #{awardId}
+  </select>
 </mapper>

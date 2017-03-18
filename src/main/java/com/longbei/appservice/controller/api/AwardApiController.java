@@ -40,7 +40,7 @@ public class AwardApiController {
      */
     @RequestMapping(value = "add")
     public BaseResp addAward(@RequestBody Award award){
-        BaseResp<Page<Award>> baseResp = new BaseResp<>();
+        BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.insertAward(award);
             if (flag){
@@ -166,7 +166,7 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/add")
     public BaseResp addAwardClassify(@RequestBody AwardClassify awardClassify){
-        BaseResp<Page<Award>> baseResp = new BaseResp<>();
+        BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.insertAwardClassify(awardClassify);
             if (flag){

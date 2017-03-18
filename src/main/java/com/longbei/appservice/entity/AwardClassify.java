@@ -23,14 +23,10 @@ public class AwardClassify {
      */
     private Integer sort;
 
-    /**
-     * 
-     */
+    private Integer classifytype; //0 - 进步币 1 - 红包 3 - 实物
+
     private Date updatetime;
 
-    /**
-     * 
-     */
     private Date createtime;
 
     public Integer getId() {
@@ -80,4 +76,21 @@ public class AwardClassify {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
+    /**
+     * 设置奖品类别
+     * @return
+     */
+    public void setClassifytype(Integer classifytype) {
+        this.classifytype = classifytype;
+    }
+
+    /**
+     * 获取奖品类别
+     * @param
+     */
+    public Integer getClassifytype() {
+        return classifytype;
+    }
+
 }

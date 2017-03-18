@@ -227,6 +227,10 @@ public class RankController {
     @RequestMapping(value="acceptAward")
     public BaseResp<Object> acceptAward(Long userId,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_00);
+        }
+        baseResp = this.rankService.acceptAward(userId,rankId);
         return baseResp;
     }
 
