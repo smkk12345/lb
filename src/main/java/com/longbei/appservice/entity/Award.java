@@ -26,7 +26,7 @@ public class Award {
 
     private Date updatetime;//更新时间
 
-    private AwardClassify awardClassify; //奖品分类信息
+    private AwardClassify awardClassify; //奖品分类信息 0 - 进步币 1 - 红包 3 - 实物
 
     public AwardClassify getAwardClassify() {
         return awardClassify;

@@ -326,7 +326,10 @@
             sortnum = #{sortNum},
         </if>
         <if test="checkstatus != null">
-            checkstatus = #{checkstatus}
+            checkstatus = #{checkstatus},
+        </if>
+        <if test="acceptaward != null">
+            acceptaward = #{acceptaward},
         </if>
     </set>
     where userid = #{userId} and rankid = #{rankId}

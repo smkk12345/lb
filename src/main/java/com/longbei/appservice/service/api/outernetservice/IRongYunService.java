@@ -22,8 +22,8 @@ public interface IRongYunService {
      * @param groupName 群组名称
      * @return
      */
-    @RequestLine("POST /rongyun/createGroup?userIds={userIds}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> createGroup(@Param("userIds") String userIds,
+    @RequestLine("GET /rongyun/createGroup?userIdss={userIdss}&groupId={groupId}&groupName={groupName}")
+    BaseResp<Object> createGroup(@Param("userIdss") String userIdss,
                          @Param("groupId") Long groupId,
                          @Param("groupName") String groupName);
 

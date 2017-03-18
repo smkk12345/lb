@@ -16,12 +16,14 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import scala.collection.immutable.Stream;
 
 import java.lang.reflect.InvocationTargetException;
@@ -67,6 +69,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ImproveRankMapper improveRankMapper;
     @Autowired
     private RankSortService rankSortService;
+    @Autowired
+    private UserImpCoinDetailService userImpCoinDetailService;
 
     /**
      *  @author luye
@@ -807,22 +811,48 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @param rankId 榜单id
      * @return
      */
+    @Transactional
     @Override
     public BaseResp<Object> acceptAward(Long userId, Long rankId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        Map<String,Object> resultMap = new HashMap<String,Object>();
         try{
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
-            if(rankMember != null && !"1".equals(rankMember.getIswinning())){//判断是否获奖
+            if((rankMember != null && !"1".equals(rankMember.getIswinning())) || (rankMember != null && rankMember.getRankAward().getAwardid() == null)){//判断是否获奖
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_66,Constant.RTNINFO_SYS_66);
-            }else if(rankMember != null && !"0".equals(rankMember.getAcceptaward())){//已经领过奖了
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
             }
-            //查看该用户获得的是什么奖
-            
+//            else if(rankMember != null && !"0".equals(rankMember.getAcceptaward())){//已经领过奖了
+//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
+//            }
+            //查询该用户获得的奖
+            Award award = this.awardMapper.selectAwardAndAwardClassify(Integer.parseInt(rankMember.getRankAward().getAwardid()));
+            if(award == null){
+                logger.error("query award null awardId:{}",rankMember.getAwardid());
+                return baseResp.fail("系统异常");
+            }
+            if("0".equals(rankMember.getAcceptaward()) && award.getAwardClassify().getClassifytype() == 0){//进步币
+                //加进步币
+                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
 
+                if(baseResp1.getCode() == 0){
+                    //更改用户的领奖状态
+                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+                    parameterMap.put("userId",userId);
+                    parameterMap.put("rankId",rankId);
+                    parameterMap.put("acceptaward","1");
+                    int updateRow = this.rankMembersMapper.updateRank(parameterMap);
+                }
+
+            }
+            resultMap.put("award",award);
+            resultMap.put("rankMember",rankMember);
+
+            baseResp.setData(resultMap);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            return baseResp;
         }catch(Exception e){
             logger.error("user accept award error userId:{} rankId:{}",userId,rankId);
-            printException(e);
+            printExceptionAndRollBackTransaction(e);
         }
 
         return baseResp;

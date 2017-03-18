@@ -23,15 +23,11 @@ public class AwardClassify {
      */
     private Integer sort;
 
-    /**
-     * 
-     */
     private Date updatetime;
 
-    /**
-     * 
-     */
     private Date createtime;
+
+    private Integer classifytype;
 
     public Integer getId() {
         return id;
@@ -79,5 +75,21 @@ public class AwardClassify {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    /**
+     * 设置奖品类别
+     * @return
+     */
+    public Integer getClassifytype() {
+        return classifytype;
+    }
+
+    /**
+     * 获取奖品类别
+     * @param classifytype
+     */
+    public void setClassifytype(Integer classifytype) {
+        this.classifytype = classifytype;
     }
 }

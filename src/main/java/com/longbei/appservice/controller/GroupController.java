@@ -29,12 +29,16 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value="createGroup")
-    public BaseResp<Object> createGroup(String[] userIds,String mainGroupUserId,Integer type,Long typeId,String groupName,Boolean needConfirm){
+    public BaseResp<Object> createGroup(String userIds,String mainGroupUserId,Integer type,Long typeId,String groupName,Boolean needConfirm){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(mainGroupUserId == null || StringUtils.isEmpty(groupName) || groupName.length() > 30){
             return baseResp.fail("参数错误");
         }
-        baseResp = groupService.createGroup(userIds,mainGroupUserId,type,typeId,groupName,needConfirm);
+        String[] userIdss = null;
+        if(StringUtils.isNotEmpty(userIds)){
+            userIdss = userIds.split(",");
+        }
+        baseResp = groupService.createGroup(userIdss,mainGroupUserId,type,typeId,groupName,needConfirm);
         return baseResp;
     }
 

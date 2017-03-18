@@ -523,6 +523,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	public static String formatMobileOrUsername(String mobile){
+		if(StringUtils.isEmpty(mobile)){
+			return null;
+		}
 		mobile = mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
 		return mobile;
 	}
