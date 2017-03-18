@@ -19,6 +19,7 @@
     <result column="checkstatus" property="checkstatus" jdbcType="CHAR" />
     <result column="checkresult" property="checkresult" jdbcType="VARCHAR" />
     <result column="checkuserid" property="checkuserid" jdbcType="VARCHAR" />
+    <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
     <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
       <result column="awardid" property="awardid" jdbcType="VARCHAR" />
@@ -28,7 +29,7 @@
   <sql id="Base_Column_List" >
       id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
     likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
-    checkresult,checkuserid,checkdate,awardid,awardlevel
+    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -370,6 +371,9 @@
       </if>
       <if test="status != null">
         status = #{status},
+      </if>
+      <if test="receivecode != null">
+        receivecode = #{receivecode},
       </if>
     </set>
     where rankid = #{rankid} and userid = #{userid}

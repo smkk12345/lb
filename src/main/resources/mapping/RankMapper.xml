@@ -42,12 +42,13 @@
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="sponsornum" property="sponsornum" jdbcType="INTEGER" />
     <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
+    <result column="joincode" property="joincode" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype,
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
-    codeword, ptype,companyname,companyphotos,companybrief,sourcetype,
+    codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,sponsormoney
   </sql>
   <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -272,6 +273,9 @@
       <if test="isdel != null" >
         isdel,
       </if>
+      <if test="joincode != null" >
+        joincode,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -387,6 +391,9 @@
       </if>
       <if test="isdel != null" >
         #{isdel},
+      </if>
+      <if test="joincode != null" >
+        #{joincode},
       </if>
     </trim>
   </insert>
