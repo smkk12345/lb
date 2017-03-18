@@ -260,4 +260,12 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize);
+
+    /**
+     * 用户领奖
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    BaseResp<Object> acceptAward(Long userId, Long rankId);
 }

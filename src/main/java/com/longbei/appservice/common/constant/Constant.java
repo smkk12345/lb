@@ -103,6 +103,8 @@ public class Constant {
 	public static final int STATUS_SYS_62 = -62;
 	public static final int STATUS_SYS_63 = -63;
 	public static final int STATUS_SYS_64 = -64;
+	public static final int STATUS_SYS_65 = -65;
+	public static final int STATUS_SYS_66 = -66;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -201,6 +203,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_64 = "已经点过赞";
+	public static final String RTNINFO_SYS_65 = "您已在该榜单中领过奖了";
+	public static final String RTNINFO_SYS_66 = "非常抱歉,您未在该榜单中获奖!";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";

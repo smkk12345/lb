@@ -801,6 +801,33 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    /**\
+     * 用户领奖
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> acceptAward(Long userId, Long rankId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
+            if(rankMember != null && !"1".equals(rankMember.getIswinning())){//判断是否获奖
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_66,Constant.RTNINFO_SYS_66);
+            }else if(rankMember != null && !"0".equals(rankMember.getAcceptaward())){//已经领过奖了
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
+            }
+            //查看该用户获得的是什么奖
+            
+
+        }catch(Exception e){
+            logger.error("user accept award error userId:{} rankId:{}",userId,rankId);
+            printException(e);
+        }
+
+        return baseResp;
+    }
+
     private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
         for (RankAwardRelease rankAward : rankAwards){
