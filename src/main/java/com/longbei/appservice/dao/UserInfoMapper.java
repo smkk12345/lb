@@ -25,6 +25,20 @@ public interface UserInfoMapper {
 	 * @currentdate:2017年1月17日
 	 */
 	UserInfo getByUserName(String username);
+	
+	/**
+	 * @author yinxc
+	 * 个人中心页面
+	 * 2017年3月9日
+	 */
+	UserInfo selectInfoMore(@Param("userid") long userid);
+	
+	/**
+	 * @author yinxc
+	 * 获取个人资料    屏蔽无用的字段
+	 * 2017年3月8日
+	 */
+	UserInfo selectByUserid(@Param("userid") long userid);
 
 	int updateByUseridSelective(UserInfo userInfo);
 
@@ -33,10 +47,11 @@ public interface UserInfoMapper {
 	UserInfo getByNickName(String nickname);
 
 	/**
-	 * @author yinxc 通讯录本地及远程搜索(手机号和昵称搜索) type 0：本地 1：远程 2017年2月6日 return_type
-	 *         UserRelationService
+	 * @author yinxc 通讯录本地及远程搜索(手机号和昵称搜索) 
+	 * type 0：本地 1：远程 2017年2月6日 
+	 * 搜索屏蔽当前访问userid
 	 */
-	List<UserInfo> selectLikeListByUnameAndNname(@Param("nickname") String nickname, @Param("ids") String ids,
+	List<UserInfo> selectLikeListByUnameAndNname(@Param("userid") long userid, @Param("nickname") String nickname, @Param("ids") String ids,
 			@Param("type") String type, @Param("startNum") int startNum, @Param("endNum") int endNum);
 
 	/**
@@ -47,4 +62,34 @@ public interface UserInfoMapper {
 	int updateDeviceIndexByUserName(UserInfo userInfo);
 
 	int updatePointByUserid(UserInfo record);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户进步币数量
+	 * 2017年3月1日
+	 */
+	int updateTotalcoinByUserid(@Param("userid") long userid, @Param("totalcoin") Integer totalcoin);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户龙币数量
+	 * 2017年3月1日
+	 */
+	int updateTotalmoneyByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney);
+
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	List<UserInfo> selectFashionManUser(Integer startNum, Integer pageSize);
+
+	/**
+	 * 更改用户的进步币 在用户的数据基础上直接进行加减
+	 * @param userid 用户id
+	 * @param coin 进步币
+	 * @return
+	 */
+	int updateUserCoin(@Param("userid") long userid,@Param("coin") int coin);
 }

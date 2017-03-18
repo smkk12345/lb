@@ -1,7 +1,7 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveClassroom;
-import com.longbei.appservice.entity.ImproveRank;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public interface ImproveClassroomMapper {
 
     int insert(ImproveClassroom record);
 
-    int insertSelective(ImproveClassroom record);
+    int insertSelective(Improve record);
 
     ImproveClassroom selectByPrimaryKey(Long impid);
 
@@ -26,8 +26,25 @@ public interface ImproveClassroomMapper {
      * @param ismainimp  最新进步 0 普通微进步  1 最新微进步
      * @return
      */
-    List<ImproveClassroom> selectByClassroomId(String classroomid, String ismainimp);
-
+    List<ImproveClassroom> selectByClassroomId(String businessid, String ismainimp);
+    
+    /**
+	 * @author yinxc
+	 * 获取教室微进步批复作业列表
+	 * 2017年3月6日
+	 * @param businessid 教室id
+	 * @param impid 微进步id
+	 */
+    List<ImproveClassroom> selectListByBusinessid(@Param("businessid") long businessid, @Param("impid") long impid);
+    
+    /**
+	 * @author yinxc
+	 * 根据classroomid，userid获取用户在教室里上传作业的总数
+	 * 2017年3月3日
+	 * @param classroomid 教室id
+	 * @param userid 用户id
+	 */
+    int selectCountByClassroomidAndUserid(@Param("businessid") long businessid, @Param("userid") long userid);
 
 
     /**
@@ -38,6 +55,6 @@ public interface ImproveClassroomMapper {
      * @return
      */
     int remove(@Param("userid") String userid,
-               @Param("classroomid") String classroomid,
+               @Param("businessid") String businessid,
                @Param("improveid") String improveid);
 }

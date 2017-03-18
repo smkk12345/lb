@@ -20,6 +20,13 @@
     from super_topic
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM super_topic
+     limit #{startNum},#{endNum}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from super_topic
     where id = #{id,jdbcType=INTEGER}

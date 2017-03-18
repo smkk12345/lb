@@ -74,6 +74,6 @@ public interface CommentMongoService {
      * @param itypeid  各类型对应的id
 	 * CommentMongoDao
 	 */
-	BaseResp<Object> selectCommentCountSum(String itypeid, String itype);
+	BaseResp<Integer> selectCommentCountSum(String itypeid, String itype);
 	
 }

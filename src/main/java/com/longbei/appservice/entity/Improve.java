@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,13 +49,26 @@ public class Improve {
 
     protected String ispublic;//可见程度  0 私密 1 好友可见 2 全部可见
     
-    protected Integer goalid;//进步组id
+    protected Long goalid;//进步组id
     
-    protected Integer rankid; //榜id
+    protected Long rankid; //榜id
+
+    private String isbusinessdel;//是否源已经删除  0 未删除 已经删除
 
     protected Integer commentnum = 0; //评论数
 
     protected String sourcekey;//原始的文件key
+    
+    protected long pimpid; //批复父进步 id
+    
+    protected String isresponded; //0 不是批复。1 是批复
+    
+    //批复列表
+    protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
+    
+    protected String isreply; //是否已批复  0：未批复  1：已批复
+
+    private Integer complaincount; //投诉次数
 
 
     /**
@@ -79,6 +93,36 @@ public class Improve {
     private String hascollect = "0";//是否收藏
 
     private List<ImproveTopic> improveTopicList = null;//超级话题
+
+    private BusinessEntity businessEntity = new BusinessEntity();
+
+    public Integer getComplaincount() {
+        return complaincount;
+    }
+
+    public void setComplaincount(Integer complaincount) {
+        this.complaincount = complaincount;
+    }
+
+    public void setBusinessEntity(String ptype,
+                                  String title,
+                                  Integer involved,
+                                  Date startdate,
+                                  Date enddate,
+                                  Integer sortnum,
+                                  Integer days) {
+        this.businessEntity.setDays(days);
+        this.businessEntity.setStartdate(startdate);
+        this.businessEntity.setEnddate(enddate);
+        this.businessEntity.setPtype(ptype);
+        this.businessEntity.setInvolved(involved);
+        this.businessEntity.setTitle(title);
+        this.businessEntity.setSortnum(sortnum);
+    }
+
+    public BusinessEntity getBusinessEntity() {
+        return businessEntity;
+    }
 
     public List<ImproveLFD> getImproveLFDs() {
         return improveLFDs;
@@ -367,6 +411,8 @@ public class Improve {
      * 更新时间
      * @return updatetime 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -465,20 +511,20 @@ public class Improve {
     }
 
     @JsonInclude(Include.ALWAYS)
-	public Integer getGoalid() {
+	public Long getGoalid() {
 		return goalid;
 	}
 
-	public void setGoalid(Integer goalid) {
+	public void setGoalid(Long goalid) {
 		this.goalid = goalid;
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public Integer getRankid() {
+	public Long getRankid() {
 		return rankid;
 	}
 
-	public void setRankid(Integer rankid) {
+	public void setRankid(Long rankid) {
 		this.rankid = rankid;
 	}
 
@@ -497,5 +543,119 @@ public class Improve {
     public List<ImproveTopic> getImproveTopicList() {
         return improveTopicList;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public long getPimpid() {
+		return pimpid;
+	}
+
+	public void setPimpid(long pimpid) {
+		this.pimpid = pimpid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsresponded() {
+		return isresponded;
+	}
+
+	public void setIsresponded(String isresponded) {
+		this.isresponded = isresponded;
+	}
+
+	public List<ImproveClassroom> getReplyList() {
+		return replyList;
+	}
+
+	public void setReplyList(List<ImproveClassroom> replyList) {
+		this.replyList = replyList;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsreply() {
+		return isreply;
+	}
+
+	public void setIsreply(String isreply) {
+		this.isreply = isreply;
+	}
+
+    public String getIsbusinessdel() {
+        return isbusinessdel;
+    }
+
+    public void setIsbusinessdel(String isbusinessdel) {
+        this.isbusinessdel = isbusinessdel;
+    }
+
+    /**
+     * 业务临时实体，微进步详情中用
+     */
+	class BusinessEntity{
+        private String ptype; //十全十美类型
+        private String title; //榜单名称
+        private Integer involved; //参与人数
+        private Date enddate;//时间
+        private Date startdate;//
+        private Integer sortnum;//排名
+        private Integer days;//持续天数
+
+        public void setEnddate(Date enddate) {
+            this.enddate = enddate;
+        }
+
+        public void setStartdate(Date startdate) {
+            this.startdate = startdate;
+        }
+
+        public Date getEnddate() {
+            return enddate;
+        }
+
+        public Date getStartdate() {
+            return startdate;
+        }
+
+        public void setDays(Integer days) {
+            this.days = days;
+        }
+
+        public void setInvolved(Integer involved) {
+            this.involved = involved;
+        }
+
+        public void setPtype(String ptype) {
+            this.ptype = ptype;
+        }
+
+        public void setSortnum(Integer sortnum) {
+            this.sortnum = sortnum;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public Integer getDays() {
+            return days;
+        }
+
+        public Integer getInvolved() {
+            return involved;
+        }
+
+        public Integer getSortnum() {
+            return sortnum;
+        }
+
+        public String getPtype() {
+            return ptype;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+    }
+
 
 }

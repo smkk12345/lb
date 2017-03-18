@@ -19,6 +19,17 @@ public class UserPlDetail {
 
     private Integer scorce = 0;
 
+    //前端扩展字段
+    private String photo;
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
     /**
      * 
      * @return id 

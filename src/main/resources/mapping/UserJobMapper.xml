@@ -7,7 +7,7 @@
     <result column="companyname" property="companyname" jdbcType="VARCHAR" />
     <result column="department" property="department" jdbcType="VARCHAR" />
     <result column="location" property="location" jdbcType="VARCHAR" />
-    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="starttime" property="starttime" />
     <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
@@ -27,21 +27,27 @@
     from user_job
     where userid = #{userid,jdbcType=BIGINT} limit #{startNum},#{pageSize}
   </select>
+  
+  <select id="selectCountJob" resultType="java.lang.Integer">
+  	SELECT count(*) from user_job 
+  	where userid = #{userid} 
+  </select>
+  
   <delete id="deleteJob" >
     delete from user_job
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserJob" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserJob" useGeneratedKeys="true" keyProperty="id" >
     insert into user_job (id, userid, companyname, 
       department, location, starttime, 
       endtime, createtime, updatetime
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{companyname,jdbcType=VARCHAR}, 
-      #{department,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, 
+      #{department,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{starttime}, 
       #{endtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertJob" parameterType="com.longbei.appservice.entity.UserJob" >
+  <insert id="insertJob" parameterType="com.longbei.appservice.entity.UserJob" useGeneratedKeys="true" keyProperty="id" >
     insert into user_job
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -89,7 +95,7 @@
         #{location,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        #{starttime,jdbcType=TIMESTAMP},
+        #{starttime},
       </if>
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
@@ -118,7 +124,7 @@
         location = #{location,jdbcType=VARCHAR},
       </if>
       <if test="starttime != null" >
-        starttime = #{starttime,jdbcType=TIMESTAMP},
+        starttime = #{starttime},
       </if>
       <if test="endtime != null" >
         endtime = #{endtime,jdbcType=TIMESTAMP},
@@ -137,7 +143,7 @@
       location = #{location,jdbcType=VARCHAR},
       starttime = #{starttime,jdbcType=TIMESTAMP},
       endtime = #{endtime,jdbcType=TIMESTAMP},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>

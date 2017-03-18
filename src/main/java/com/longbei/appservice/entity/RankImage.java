@@ -118,8 +118,28 @@ public class RankImage {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
+    private String notice; //榜单公告
+
+    private String joincode; //入榜口令
+
     //--------
 
+
+    public String getJoincode() {
+        return joincode;
+    }
+
+    public void setJoincode(String joincode) {
+        this.joincode = joincode;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
 
     public String getIsup() {
         return isup;
@@ -647,6 +667,8 @@ public class RankImage {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

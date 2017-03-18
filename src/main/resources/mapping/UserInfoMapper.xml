@@ -16,7 +16,7 @@
     <result column="brief" property="brief" jdbcType="VARCHAR" />
     <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
     <result column="constellation" property="constellation" jdbcType="VARCHAR" />
-    <result column="blood" property="blood" jdbcType="CHAR" />
+    <result column="blood" property="blood" jdbcType="VARCHAR" />
     <result column="feeling" property="feeling" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
@@ -37,8 +37,34 @@
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
-    payword, avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
+    avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
   </sql>
+  
+  <sql id="InfoMore_List" >
+    id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
+    sex, city, area, brief, birthday, constellation, blood, feeling, 
+    avatar, username, curpoint, point, grade
+  </sql>
+  
+  <select id="selectInfoMore" resultMap="BaseResultMap"  >
+    select 
+    <include refid="InfoMore_List" />
+    from user_info
+    where userid = #{userid}
+  </select>
+  
+  <sql id="Info_List" >
+    id, userid, nickname, realname, sex, city, area, brief, birthday, constellation, 
+    blood, feeling, updatetime, createtime, avatar, username
+  </sql>
+  
+  <select id="selectByUserid" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Info_List" />
+    from user_info
+    where userid = #{userid}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
@@ -47,18 +73,22 @@
   </select>
   
   <select id="selectLikeListByUnameAndNname" resultMap="BaseResultMap"  >
-    select 
-    <include refid="Base_Column_List" />
+    select userid, avatar, username, nickname 
     from user_info
-    where 
+    where userid != #{userid} 
+    and 
+    (nickname LIKE concat(concat('%', #{nickname}),'%') 
+       or username LIKE concat(concat('%', #{nickname}),'%'))
     <if test="type == 0" >
-      userid in #{ids} 
+    	<if test="ids != ''" >
+      		and userid in (#{ids})
+      	</if> 
     </if>
     <if test="type == 1" >
-      userid not in #{ids} 
+    	<if test="ids != ''" >
+      		and userid not in (#{ids})
+      	</if> 
     </if>
-    and (nickname LIKE CONCAT(CONCAT('%', #{nickname}),'%') 
-       or username LIKE CONCAT(CONCAT('%', #{nickname}),'%'))
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -95,7 +125,7 @@
       #{totaldiamond,jdbcType=INTEGER}, #{totalmoney,jdbcType=INTEGER}, #{totalcoin,jdbcType=INTEGER}, 
       #{nickname,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
       #{city,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
-      #{constellation,jdbcType=VARCHAR}, #{blood,jdbcType=CHAR}, #{feeling,jdbcType=VARCHAR}, 
+      #{constellation,jdbcType=VARCHAR}, #{blood,jdbcType=VARCHAR}, #{feeling,jdbcType=VARCHAR},
       #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{payword,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{rcuserid,jdbcType=BIGINT}, 
       #{invitecode,jdbcType=VARCHAR}, #{inviteuserid,jdbcType=BIGINT}, #{rytoken,jdbcType=VARCHAR},#{deviceindex},#{devicetype}
@@ -224,7 +254,7 @@
         #{constellation,jdbcType=VARCHAR},
       </if>
       <if test="blood != null" >
-        #{blood,jdbcType=CHAR},
+        #{blood,jdbcType=VARCHAR},
       </if>
       <if test="feeling != null" >
         #{feeling,jdbcType=VARCHAR},
@@ -278,9 +308,6 @@
   <update id="updateByUseridSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     <set >
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
       <if test="totalflower != null" >
         totalflower = #{totalflower,jdbcType=INTEGER},
       </if>
@@ -318,7 +345,7 @@
         constellation = #{constellation,jdbcType=VARCHAR},
       </if>
       <if test="blood != null" >
-        blood = #{blood,jdbcType=CHAR},
+        blood = #{blood,jdbcType=VARCHAR},
       </if>
       <if test="feeling != null" >
         feeling = #{feeling,jdbcType=VARCHAR},
@@ -348,7 +375,7 @@
         inviteuserid = #{inviteuserid,jdbcType=BIGINT},
       </if>
       <if test="rytoken != null" >
-        token = #{rytoken,jdbcType=VARCHAR},
+        rytoken = #{rytoken,jdbcType=VARCHAR},
       </if>
       <if test="hcnickname != null">
       	hcnickname = #{hcnickname,jdbcType=CHAR},
@@ -370,6 +397,19 @@
         grade = #{grade,jdbcType=INTEGER}
     WHERE userid = #{userid,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateTotalcoinByUserid">
+    update user_info
+    set totalcoin = #{totalcoin} 
+    WHERE userid = #{userid}
+  </update>
+  
+  <update id="updateTotalmoneyByUserid">
+    update user_info
+    set totalmoney = #{totalmoney} 
+    WHERE userid = #{userid}
+  </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     set userid = #{userid,jdbcType=BIGINT},
@@ -384,7 +424,7 @@
       brief = #{brief,jdbcType=VARCHAR},
       birthday = #{birthday,jdbcType=TIMESTAMP},
       constellation = #{constellation,jdbcType=VARCHAR},
-      blood = #{blood,jdbcType=CHAR},
+      blood = #{blood,jdbcType=VARCHAR},
       feeling = #{feeling,jdbcType=VARCHAR},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -398,5 +438,30 @@
       inviteuserid = #{inviteuserid,jdbcType=BIGINT},
       rytoken = #{rytoken,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 查询系统推荐的达人 -->
+  <select id="selectFashionManUser" parameterType="int" resultType="com.longbei.appservice.entity.UserInfo">
+      select
+          userid,
+          avatar,
+          username,
+          nickname
+      from user_info
+      where
+          isfashionman = 1
+      limit #{startNum},#{pageSize}
+  </select>
+
+  <!-- 修改用户进步币 -->
+  <update id="updateUserCoin">
+      update
+          user_info
+      set totalcoin = totalcoin + #{coin}
+      where
+        <if test="coin &lt; 0">
+          totalcoin > ROUND(#{coin}) and
+        </if>
+        userid = #{userid}
   </update>
 </mapper>

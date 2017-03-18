@@ -17,6 +17,26 @@ public class ImproveTopic {
 
     private String topictitle;//换成一下超级话题的title
 
+    private long businessid;
+
+    private long businesstype;
+
+    public void setBusinessid(long businessid) {
+        this.businessid = businessid;
+    }
+
+    public void setBusinesstype(long businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public long getBusinessid() {
+        return businessid;
+    }
+
+    public long getBusinesstype() {
+        return businesstype;
+    }
+
     public String getTopictitle() {
         return topictitle;
     }

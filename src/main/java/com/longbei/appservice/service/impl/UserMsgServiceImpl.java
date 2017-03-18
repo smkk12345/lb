@@ -1,15 +1,13 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_table;
@@ -164,21 +162,21 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 	
 	@Override
-	public BaseResp<Object> deleteByid(Integer id) {
+	public BaseResp<Object> deleteByid(Integer id, long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = delete(id);
+			boolean temp = delete(id, userid);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByid id={},msg={}",id,e);
+			logger.error("deleteByid id = {}", id, e);
 		}
 		return reseResp;
 	}
 	
-	private boolean delete(Integer id){
-		int temp = userMsgMapper.deleteByPrimaryKey(id);
+	private boolean delete(Integer id, long userid){
+		int temp = userMsgMapper.deleteByPrimaryKey(id, userid);
 		return temp > 0 ? true : false;
 	}
 
@@ -191,7 +189,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByUserid userid={},msg={}",userid,e);
+			logger.error("deleteByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -205,7 +203,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByMtypeAndMsgtype userid = {}, msg = {}", userid, e);
+			logger.error("deleteByMtypeAndMsgtype userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -224,7 +222,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("deleteByUserid userid={},msg={}",userid,e);
+			logger.error("deleteByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -248,7 +246,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record={},msg={}",record,e);
+			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -269,18 +267,16 @@ public class UserMsgServiceImpl implements UserMsgService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserMsg> list = userMsgMapper.selectByUserid(userid, startNum, endNum);
-			if (null != list && list.size()>0) {
-//				AppUserMongoEntity mongoEntity = userMongoDao.getAppUser(userid+"");
-//				if(null != mongoEntity){
-//					
-//				}
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}else{
+			
+			
+			if (startNum == 0 && list.size() == 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+			}else{
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectByUserid userid={},msg={}",userid,e);
+			logger.error("selectByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -294,7 +290,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByid record={},msg={}",record,e);
+			logger.error("updateByid record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
@@ -313,7 +309,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateIsreadByid id={},msg={}",id,e);
+			logger.error("updateIsreadByid id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -332,11 +328,34 @@ public class UserMsgServiceImpl implements UserMsgService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateIsreadByUserid userid = {}, msg = {}", userid, e);
+			logger.error("updateIsreadByUserid userid = {}", userid, e);
 		}
 		return reseResp;
 	}
-	
+
+	/**
+	 * 批量插入用户信息
+	 * @param userIdList 接收人的用户Id
+	 * @param userMsg 消息实体
+     * @return
+     */
+	@Override
+	public boolean batchInsertUserMsg(List<Long> userIdList, UserMsg userMsg) {
+		if(userIdList == null || userIdList.size() == 0 || userMsg == null){
+			return false;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("userIdList",userIdList);
+		map.put("userMsg",userMsg);
+		int row = this.userMsgMapper.batchInsertUserMsg(map);
+		return false;
+	}
+
+	@Override
+	public UserMsg findCircleNoticeMsg(Long circleId, Long userId) {
+		return this.userMsgMapper.findCircleNoticeMsg(circleId,userId);
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;
@@ -379,7 +398,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectOtherList userid = {}, mtype = {}, msg = {}", userid, mtype, e);
+			logger.error("selectOtherList userid = {}, mtype = {}", userid, mtype, e);
 		}
 		return reseResp;
 	}
@@ -494,7 +513,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			reseResp.setExpandData(expandData);
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectExceptList userid = {}, msg = {}", userid, e);
+			logger.error("selectExceptList userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -615,7 +634,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectLikeList userid = {}, msg = {}", userid, e);
+			logger.error("selectLikeList userid = {}", userid, e);
 		}
 		return reseResp;
 	}
@@ -636,7 +655,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 					//含有    未读
 					snsFans.setIsread("0");
 				}
-				AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
 				if(null != appUserMongoEntity){
 					
 				}
@@ -743,10 +762,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 		try {
 			temp = userMsgMapper.selectCountByType(userid, mtype, msgtype, isread);
 		} catch (Exception e) {
-			logger.error("selectCountByType userid = {}, mtype = {}, msg = {}", userid, mtype, e);
+			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);
 		}
 		return temp;
 	}
+	
+	
 
 	@Override
 	public List<String> selectIdByMsgtypeList(long userid, String msgtype) {
@@ -760,7 +781,7 @@ public class UserMsgServiceImpl implements UserMsgService {
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getFriendid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
             userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
     	}
     }
@@ -769,7 +790,7 @@ public class UserMsgServiceImpl implements UserMsgService {
      * 初始化消息中用户信息 ------Userid
      */
 //    private void initMsgUserInfoByUserid(UserMsg userMsg){
-//        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMsg.getUserid()));
+//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getUserid()));
 //        userMsg.setAppUserMongoEntityUserid(appUserMongoEntity);
 //    }
 

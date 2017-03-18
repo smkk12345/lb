@@ -14,6 +14,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMoneyDetailMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMoneyDetail;
@@ -28,6 +29,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private SpringJedisDao springJedisDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMoneyDetailServiceImpl.class);
 
@@ -66,17 +69,52 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			boolean temp = insert(userMoneyDetail);
 			if (temp) {
 				//修改用户userInfo表---龙币总数
-				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
-				userInfo.setTotalmoney(allnum);
-				userInfoMapper.updateByUseridSelective(userInfo);
+//				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
+//				userInfo.setTotalmoney(allnum);
+//				userInfoMapper.updateByUseridSelective(userInfo);
+				
+				//先从redis里面取，如果存在，数据累加，减，之后修改表数据，   不存在存入redis
+				boolean result = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
+				if(result){
+					//存在
+					jedisKey(userid, userMoneyDetail.getNumber());
+				}else{
+					//不存在   数据库查找   存入redis
+					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+					//并发时，判断是否已经存在
+					boolean res = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
+					if(!res){
+						//不存在
+						springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
+						//递增
+						springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, userMoneyDetail.getNumber());
+						String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
+						//修改数据库数据
+						userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
+					}else{
+						//存在
+						jedisKey(userid, userMoneyDetail.getNumber());
+					}
+					
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}, msg = {}", 
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}",
 					userid, origin, number, friendid, e);
 		}
 		return reseResp;
+	}
+	
+	private void jedisKey(long userid, Integer number){
+		//存在
+		springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, number);
+		//重新设置过期时间---10秒
+		String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
+		springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, value, 10);
+		//修改数据库数据
+		userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
 	}
 	
 	private boolean insert(UserMoneyDetail record){
@@ -104,18 +142,48 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}, msg = {}", userid, pageNo, pageSize, e);
+			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}", userid, pageNo, pageSize, e);
 		}
 		return reseResp;
 	}
-	
+
+	@Override
+	public BaseResp<Object> insertPublic(UserInfo userInfo, String origin, int number, long friendid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			UserMoneyDetail userMoneyDetail = new UserMoneyDetail();
+			userMoneyDetail.setCreatetime(new Date());
+			userMoneyDetail.setUpdatetime(new Date());
+			userMoneyDetail.setFriendid(friendid);
+			userMoneyDetail.setOrigin(origin);
+			userMoneyDetail.setUserid(userInfo.getUserid());
+			if(!"0".equals(origin)){
+				userMoneyDetail.setNumber(0 - number);
+			}else{
+				userMoneyDetail.setNumber(number);
+			}
+			boolean temp = insert(userMoneyDetail);
+			if (temp) {
+				//修改用户userInfo表---龙币总数
+				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
+				userInfo.setTotalmoney(allnum);
+				userInfoMapper.updateByUseridSelective(userInfo);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("insertPublic userid = {}, origin = {}, number = {}, friendid = {}",
+					userInfo.getUserid(), origin, number, friendid, e);
+		}
+		return reseResp;
+	}
+
 	//------------------------公用方法，初始化用户龙币信息------------------------------------------
 	/**
      * 初始化用户龙币信息 ------Friendid
      */
     private void initMsgUserInfoByFriendid(UserMoneyDetail userMoneyDetail){
     	if(!StringUtils.hasBlankParams(userMoneyDetail.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userMoneyDetail.getFriendid()));
+    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
     		userMoneyDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
 		}
     }
@@ -124,7 +192,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
      * 初始化用户龙币信息 ------Userid
      */
 //    private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail){
-//        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(userImpCoinDetail.getUserid()));
+//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getUserid()));
 //        userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
 //    }
 

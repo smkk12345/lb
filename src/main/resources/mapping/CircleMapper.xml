@@ -6,37 +6,39 @@
     <result column="circleid" property="circleid" jdbcType="BIGINT" />
     <result column="circletitle" property="circletitle" jdbcType="VARCHAR" />
     <result column="circlephotos" property="circlephotos" jdbcType="VARCHAR" />
-    <result column="circlecateid" property="circlecateid" jdbcType="INTEGER" />
     <result column="circlebrief" property="circlebrief" jdbcType="VARCHAR" />
     <result column="circleinvoloed" property="circleinvoloed" jdbcType="INTEGER" />
     <result column="createuserid" property="createuserid" jdbcType="BIGINT" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
+    <result column="notice" property="notice" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, circleid, circletitle, circlephotos, circlecateid, circlebrief, circleinvoloed, createuserid, 
-    createtime, updatetime, ptype
+    id, circleid, circletitle, circlephotos, circlebrief, circleinvoloed, createuserid,
+    createtime, updatetime, ptype,ispublic,needconfirm,notice
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from circle
-    where circleid = #{circleid,jdbcType=INTEGER}
+    where id = #{circleid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from circle
     where circleid = #{circleid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.Circle" >
-    insert into circle (id, circleid, circletitle, circlephotos, 
-      circlecateid, circlebrief, circleinvoloed, 
+  <insert id="insert" parameterType="com.longbei.appservice.entity.Circle" keyProperty="id" useGeneratedKeys="true">
+    insert into circle (circleid, circletitle, circlephotos,
+      circlebrief, circleinvoloed,
       createuserid, createtime, updatetime, 
-      ptype)
-    values (#{id,jdbcType=INTEGER}, #{circleid,jdbcType=INTEGER}, #{circletitle,jdbcType=VARCHAR}, #{circlephotos,jdbcType=VARCHAR}, 
-      #{circlecateid,jdbcType=INTEGER}, #{circlebrief,jdbcType=VARCHAR}, #{circleinvoloed,jdbcType=INTEGER}, 
+      ptype,ispublic,needconfirm,creategoup)
+    values ( #{circleid,jdbcType=INTEGER}, #{circletitle,jdbcType=VARCHAR}, #{circlephotos,jdbcType=VARCHAR},
+      #{circlebrief,jdbcType=VARCHAR}, #{circleinvoloed,jdbcType=INTEGER},
       #{createuserid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{ptype,jdbcType=CHAR})
+      #{ptype,jdbcType=CHAR},#{ispublic,jdbcType=CHAR},#{needconfirm,jdbcType=CHAR},#{creategoup,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Circle" >
     insert into circle
@@ -52,9 +54,6 @@
       </if>
       <if test="circlephotos != null" >
         circlephotos,
-      </if>
-      <if test="circlecateid != null" >
-        circlecateid,
       </if>
       <if test="circlebrief != null" >
         circlebrief,
@@ -88,9 +87,6 @@
       <if test="circlephotos != null" >
         #{circlephotos,jdbcType=VARCHAR},
       </if>
-      <if test="circlecateid != null" >
-        #{circlecateid,jdbcType=INTEGER},
-      </if>
       <if test="circlebrief != null" >
         #{circlebrief,jdbcType=VARCHAR},
       </if>
@@ -120,9 +116,6 @@
       <if test="circlephotos != null" >
         circlephotos = #{circlephotos,jdbcType=VARCHAR},
       </if>
-      <if test="circlecateid != null" >
-        circlecateid = #{circlecateid,jdbcType=INTEGER},
-      </if>
       <if test="circlebrief != null" >
         circlebrief = #{circlebrief,jdbcType=VARCHAR},
       </if>
@@ -148,7 +141,6 @@
     update circle
     set circletitle = #{circletitle,jdbcType=VARCHAR},
       circlephotos = #{circlephotos,jdbcType=VARCHAR},
-      circlecateid = #{circlecateid,jdbcType=INTEGER},
       circlebrief = #{circlebrief,jdbcType=VARCHAR},
       circleinvoloed = #{circleinvoloed,jdbcType=INTEGER},
       createuserid = #{createuserid,jdbcType=BIGINT},
@@ -157,4 +149,54 @@
       ptype = #{ptype,jdbcType=CHAR}
     where circleid = #{circleid,jdbcType=INTEGER}
   </update>
+
+  <select id="findRelevantCircle" parameterType="map" resultMap="BaseResultMap">
+     select
+        id,
+        circlephotos,
+        circletitle,
+        circlebrief,
+        circleinvoloed,
+        createuserid
+    from circle
+    where circletitle like concat('%',#{circleName},'%')
+    limit #{startNo},#{pageSize}
+  </select>
+
+  <!-- 根据兴趣圈名称查询兴趣圈 -->
+  <select id="findCircleByCircleTitle" parameterType="string" resultType="com.longbei.appservice.entity.Circle">
+      select id from circle where circleTitle = #{circleTitle}
+  </select>
+
+  <!-- 更改兴趣圈信息 -->
+  <update id="updateCircleInfo" parameterType="map">
+      update
+          circle
+      <set>
+        <if test="circlebrief != null">
+            circlebrief = #{circlebrief},
+        </if>
+        <if test="circlephotos != null">
+            circlephotos = #{circlephotos},
+        </if>
+        <if test="notice != null">
+            notice = #{notice}
+        </if>
+      </set>
+      where createuserid = #{userId}
+        and id = #{circleId}
+  </update>
+
+  <!-- 修改兴趣圈的加圈子人数 -->
+  <update id="updateCircleInvoloed" parameterType="map">
+     update
+        circle
+     set
+        circleinvoloed = circleinvoloed + #{personNum}
+        <if test="updateTime != null">
+            ,updatetime = #{updateTime}
+        </if>
+     where id = #{circleId}
+  </update>
+
 </mapper>

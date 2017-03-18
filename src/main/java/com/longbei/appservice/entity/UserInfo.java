@@ -1,10 +1,14 @@
 package com.longbei.appservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserInfo {
     private Integer id;
 
@@ -18,6 +22,10 @@ public class UserInfo {
 
     private Integer totalcoin;//进步币
 
+    private Integer totalimp;//总进步数
+    private Integer totallikes;//总赞
+    private Integer totalfans;//总粉丝数
+
     private String nickname;//昵称
 
     private String realname;//真名
@@ -25,7 +33,7 @@ public class UserInfo {
     private String sex;//性别  0 男  1 女
 
     private String city;//所在城市
-    
+
 
 	private String area;//所在区域
 
@@ -56,22 +64,32 @@ public class UserInfo {
     private Long inviteuserid;//邀请人id
 
     private String rytoken;//融云token
-    
+
     private String deviceindex;//手机设备号
-    
+
     private String devicetype;//手机类型
-    
+
     private String hcnickname;//是否修改了用户昵称  0 未修改  1 已经修改
-    
+
     private String islike = "0";//是否关注   0：未关注   1：已关注
-    
+
     private String isfriend = "0"; //是否是好友    0：不是   1：是
 
     private Integer point;//龙分
     private Integer grade;//等级
     private Integer curpoint;//当前龙分
 
-    
+    private Boolean isFashionMan;//是否是达人
+
+    private List<UserJob> jobList = new ArrayList<UserJob>();
+
+    private List<UserSchool> schoolList = new ArrayList<UserSchool>();
+
+    private List<UserInterests> interestList = new ArrayList<UserInterests>();
+
+    private List<UserPlDetail> detailList = new ArrayList<UserPlDetail>();  //用户十全十美的信息列表
+
+
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
     		super();
@@ -106,24 +124,56 @@ public class UserInfo {
     }
 
     /**
-     * 
-     * @return id 
+     *
+     * @return id
      */
     public Integer getId() {
         return id;
     }
 
+    public void setTotalfans(Integer totalfans) {
+        this.totalfans = totalfans;
+    }
+
+    public void setTotalimp(Integer totalimp) {
+        this.totalimp = totalimp;
+    }
+
+    public void setFashionMan(Boolean fashionMan) {
+        isFashionMan = fashionMan;
+    }
+
+    public void setTotallikes(Integer totallikes) {
+        this.totallikes = totallikes;
+    }
+
+    public Boolean getFashionMan() {
+        return isFashionMan;
+    }
+
+    public Integer getTotalfans() {
+        return totalfans;
+    }
+
+    public Integer getTotalimp() {
+        return totalimp;
+    }
+
+    public Integer getTotallikes() {
+        return totallikes;
+    }
+
     /**
-     * 
-     * @param id 
+     *
+     * @param id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 用户id 
-     * @return userid 用户id 
+     * 用户id
+     * @return userid 用户id
      */
     @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
@@ -131,8 +181,8 @@ public class UserInfo {
     }
 
     /**
-     * 用户id 
-     * @param userid 用户id 
+     * 用户id
+     * @param userid 用户id
      */
     public void setUserid(Long userid) {
         this.userid = userid;
@@ -273,17 +323,17 @@ public class UserInfo {
     /**
      * 所在区域
      * @param city 所在区域
-     */ 
+     */
     public String getArea() {
 		return area;
 	}
     /**
      * 所在区域
      * @param city 所在区域
-     */ 
+     */
 	public void setArea(String area) {
 		this.area = area;
-	}    
+	}
     /**
      * 个人简介
      * @return brief 个人简介
@@ -548,5 +598,29 @@ public class UserInfo {
 	}
 	public void setIsfriend(String isfriend) {
 		this.isfriend = isfriend;
+	}
+	public List<UserJob> getJobList() {
+		return jobList;
+	}
+	public void setJobList(List<UserJob> jobList) {
+		this.jobList = jobList;
+	}
+	public List<UserSchool> getSchoolList() {
+		return schoolList;
+	}
+	public void setSchoolList(List<UserSchool> schoolList) {
+		this.schoolList = schoolList;
+	}
+	public List<UserInterests> getInterestList() {
+		return interestList;
+	}
+	public void setInterestList(List<UserInterests> interestList) {
+		this.interestList = interestList;
+	}
+	public List<UserPlDetail> getDetailList() {
+		return detailList;
+	}
+	public void setDetailList(List<UserPlDetail> detailList) {
+		this.detailList = detailList;
 	}
 }

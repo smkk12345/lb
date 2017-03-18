@@ -14,7 +14,7 @@
   <sql id="Base_Column" >
     id, userid, leve, ptype, perfectname, createtime, updatetime, scorce
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectUserPlDetailById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column" />
     from user_pl_detail
@@ -26,7 +26,12 @@
     FROM user_pl_detail
     where userid=#{userid} and ptype=#{ptype} ORDER BY leve desc limit 0,1
   </select>
-
+  <select id="selectUserPerfectListByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column" />
+    FROM user_pl_detail
+    where userid=#{userid} and toplevel=1 GROUP BY ptype limit #{startNum},#{pageSize}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail
     where id = #{id,jdbcType=INTEGER}

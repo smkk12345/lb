@@ -6,12 +6,17 @@
     <result column="classroomid" property="classroomid" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="itype" property="itype" jdbcType="INTEGER" />
-    <result column="usetstatus" property="usetstatus" jdbcType="CHAR" />
+    <result column="userstatus" property="userstatus" jdbcType="CHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="hascharge" property="hascharge" jdbcType="CHAR" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classroomid, userid, itype, usetstatus, createtime, updatetime
+    id, classroomid, userid, itype, userstatus, hascharge, 
+    likes, flowers, diamonds, createtime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -19,19 +24,64 @@
     from classroom_members
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectListByClassroomid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_members
+    where classroomid = #{classroomid} 
+    and itype = 0 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectInsertByUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_members
+    where userid = #{userid} 
+    and itype = 0 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  
+  <select id="selectByClassroomidAndUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_members
+    where classroomid = #{classroomid} 
+    and userid = #{userid} 
+    <if test="itype != null" >
+    	and itype = #{itype} 
+    </if>
+  </select>
+  
+  <select id="selectCountMembers" resultType="java.lang.Integer">
+  	SELECT count(*) from classroom_members 
+  	where classroomid = #{classroomid} 
+  	and itype = 0 
+  	and userstatus = 0 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_members
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomMembers" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_members (id, classroomid, userid, 
-      itype, usetstatus, createtime, 
+      itype, userstatus, hascharge, likes, flowers, diamonds, createtime, 
       updatetime)
     values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
-      #{itype,jdbcType=INTEGER}, #{usetstatus,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{itype,jdbcType=INTEGER}, #{userstatus,jdbcType=CHAR}, #{hascharge,jdbcType=CHAR}, #{likes}, 
+      #{flowers}, #{diamonds}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_members
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -46,8 +96,20 @@
       <if test="itype != null" >
         itype,
       </if>
-      <if test="usetstatus != null" >
-        usetstatus,
+      <if test="userstatus != null" >
+        userstatus,
+      </if>
+      <if test="hascharge != null" >
+        hascharge,
+      </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+      <if test="flowers != null" >
+        flowers,
+      </if>
+      <if test="diamonds != null" >
+        diamonds,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -69,8 +131,20 @@
       <if test="itype != null" >
         #{itype,jdbcType=INTEGER},
       </if>
-      <if test="usetstatus != null" >
-        #{usetstatus,jdbcType=CHAR},
+      <if test="userstatus != null" >
+        #{userstatus,jdbcType=CHAR},
+      </if>
+      <if test="hascharge != null" >
+        #{hascharge,jdbcType=CHAR},
+      </if>
+      <if test="likes != null" >
+        #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="diamonds != null" >
+        #{diamonds,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -92,8 +166,20 @@
       <if test="itype != null" >
         itype = #{itype,jdbcType=INTEGER},
       </if>
-      <if test="usetstatus != null" >
-        usetstatus = #{usetstatus,jdbcType=CHAR},
+      <if test="userstatus != null" >
+        userstatus = #{userstatus,jdbcType=CHAR},
+      </if>
+      <if test="hascharge != null" >
+        hascharge = #{hascharge,jdbcType=CHAR},
+      </if>
+      <if test="likes != null" >
+        likes = #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="flowers != null" >
+        flowers = #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="diamonds != null" >
+        diamonds = #{diamonds,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -109,9 +195,21 @@
     set classroomid = #{classroomid,jdbcType=INTEGER},
       userid = #{userid,jdbcType=BIGINT},
       itype = #{itype,jdbcType=INTEGER},
-      usetstatus = #{usetstatus,jdbcType=CHAR},
+      userstatus = #{userstatus,jdbcType=CHAR},
+      hascharge = #{hascharge,jdbcType=CHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      flowers = #{flowers,jdbcType=INTEGER},
+      diamonds = #{diamonds,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateItypeByClassroomidAndUserid" >
+    update classroom_members
+    set itype = #{itype} 
+    where classroomid = #{classroomid} 
+    and userid = #{userid} 
+  </update>
+  
 </mapper>

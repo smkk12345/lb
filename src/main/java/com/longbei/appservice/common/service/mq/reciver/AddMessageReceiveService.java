@@ -106,7 +106,7 @@ public class AddMessageReceiveService{
         //保存详情
         timeLineDetailDao.save(timeLineDetail);
         //保存时间线
-        insertTimeLine(userid,timeLineDetail,"",date);
+        insertTimeLine(userid,timeLineDetail,improve,"",date);
 
     }
 
@@ -119,13 +119,15 @@ public class AddMessageReceiveService{
      * @param remark 备注
      * @param createdate 创建日期
      */
-    private void insertTimeLine(String userid,TimeLineDetail timeLineDetail, String remark,Date createdate){
+    private void insertTimeLine(String userid,TimeLineDetail timeLineDetail,Improve improve,String remark,Date createdate){
 
         TimeLine timeLine = new TimeLine();
         timeLine.setTimeLineDetail(timeLineDetail);
         timeLine.setRemark(remark);
         timeLine.setCreatedate(createdate);
-
+        timeLine.setBusinesstype(improve.getBusinesstype());
+        timeLine.setPtype(improve.getPtype());
+        timeLine.setBusinessid(improve.getBusinessid());
         //广场
         insertTimeLinePublic(timeLine);
         //我的
@@ -178,7 +180,7 @@ public class AddMessageReceiveService{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineFriend(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),0,0);
+        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),null,null,null);
         if(baseResp.getCode() != 0){
             return;
         }

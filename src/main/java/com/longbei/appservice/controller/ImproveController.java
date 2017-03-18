@@ -44,6 +44,7 @@ public class ImproveController {
 	 * url : http://ip:port/app_service/improve/line/daylist
 	 * @Description: 获取参数lastdate当天的用户进步列表
 	 * @param userid 用户id
+	 *  @param ptype 十全十美id  不传时查所有
 	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	 * @param lastdate  当天日期
 	 * @param pagesize  显示条数
@@ -53,13 +54,13 @@ public class ImproveController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "line/daylist")
-	public BaseResp daylist(String userid, String ctype, String lastdate, String pagesize){
+	public BaseResp daylist(String userid,String ptype, String ctype, String lastdate, String pagesize){
 		if (StringUtils.hasBlankParams(userid, ctype, lastdate)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectImproveListByUserDate(userid, ctype,
+			improves = improveService.selectImproveListByUserDate(userid, ptype,ctype,
 					lastdate == null?null: DateUtils.parseDate(lastdate),
 					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
 		} catch (Exception e) {
@@ -127,7 +128,7 @@ public class ImproveController {
 	 * @param filekey
 	 *            文件key 视频文件 音频文件 普通文件
 	 * @param businesstype
-	 *            微进步关联的业务类型 0 未关联 1 目标 2 榜 3 圈子 4教室
+	 *            微进步关联的业务类型 0 未关联 1 目标 2 榜 3 圈子 4教室  5：教室批复作业
 	 * @param businessid 业务id
 	 * @param ptype
 	 *            十全十美类型
@@ -135,13 +136,14 @@ public class ImproveController {
 	 *            可见程度 0 私密 1 好友可见 2 全部可见
 	 * @param itype
 	 *            类型 0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+	 * @param pimpid : 批复父进步 id businesstype为5时传
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ResponseBody
 	@RequestMapping(value = "insert")
 	public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
-			String businesstype, String businessid, String ptype, String ispublic, String itype) {
+			String businesstype, String businessid, String ptype, String ispublic, String itype, String pimpid) {
 		logger.info(
 				"insertImprove brief:{}," + "pickey:{},filekey:{},businesstype:{},ptype:{}," + "ispublic:{},itype:{}",
 				brief, pickey, filekey, businesstype, ptype, ispublic, itype);
@@ -151,10 +153,16 @@ public class ImproveController {
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
 		}
-		boolean flag = false;
+		if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
+			//5：教室批复作业
+			if (StringUtils.hasBlankParams(pimpid)) {
+				return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
+		}
+//		boolean flag = false;
 		try {
 			BaseResp<Object> baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
-					ispublic, itype);
+					ispublic, itype, pimpid);
 			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");
 			}
@@ -185,7 +193,10 @@ public class ImproveController {
 	public BaseResp<Object> removeImprove(String userid, String improveid, String businesstype, String businessid) {
 		logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}", userid, improveid,
 				businesstype, businessid);
-		if (StringUtils.hasBlankParams(userid, improveid, businesstype, businessid)) {
+		if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
+			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		if (!"0".equals(businesstype) && StringUtils.isBlank(businessid)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		boolean flag = false;
@@ -193,7 +204,7 @@ public class ImproveController {
 			flag = improveService.removeImprove(userid, improveid, businesstype, businessid);
 			if (flag) {
 				logger.debug("remove improve success");
-				return BaseResp.ok(Constant.RTNINFO_SYS_41);
+				return BaseResp.ok(Constant.RTNINFO_SYS_46);
 			}
 		} catch (Exception e) {
 			logger.error("remove improve is error:{}", e);
@@ -235,11 +246,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectRankImproveList(userid, rankid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectRankImproveList(userid, rankid, sift,null, Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectRankImproveListByDate(userid, rankid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectRankImproveListByDate(userid, rankid, sift,null, Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -287,11 +298,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectCircleImproveList(userid, circleid, sift, Integer.parseInt(startNo),
+				improves = improveService.selectCircleImproveList(userid, circleid, sift, null,Integer.parseInt(startNo),
 						Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectCircleImproveListByDate(userid, circleid, sift,
+				improves = improveService.selectCircleImproveListByDate(userid, circleid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -339,11 +350,11 @@ public class ImproveController {
 		List<Improve> improves = null;
 		try {
 			if ("1".equals(sorttype)) {
-				improves = improveService.selectClassroomImproveList(userid, classroomid, sift,
+				improves = improveService.selectClassroomImproveList(userid, classroomid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 
 			} else {
-				improves = improveService.selectClassroomImproveListByDate(userid, classroomid, sift,
+				improves = improveService.selectClassroomImproveListByDate(userid, classroomid, sift,null,
 						Integer.parseInt(startNo), Integer.parseInt(pageSize));
 			}
 		} catch (Exception e) {
@@ -388,7 +399,7 @@ public class ImproveController {
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectGoalImproveList(userid, goalid, Integer.parseInt(startNo),
+			improves = improveService.selectGoalImproveList(userid, goalid,null, Integer.parseInt(startNo),
 					Integer.parseInt(pageSize));
 		} catch (Exception e) {
 			logger.error("select goal improve list is error:{}", e);
@@ -404,6 +415,7 @@ public class ImproveController {
 	/**
 	 * url : http://ip:port/app_service/improve/line/list
 	 * @param userid 用户id
+	 * @param ptype 十全十美id
 	 * @param ctype 0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	 * @param lastdate  最后一条日期
 	 * @param pagesize  显示条数
@@ -414,13 +426,13 @@ public class ImproveController {
 	@ResponseBody
 	@RequestMapping(value = "line/list", method = RequestMethod.POST)
 	public BaseResp selectImproveLineListByUser
-			(String userid,String ctype,String lastdate,String pagesize){
+			(String userid,String ptype,String ctype,String lastdate,String pagesize){
 		if (StringUtils.hasBlankParams(userid,ctype)){
 			return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		List<Improve> improves = null;
 		try {
-			improves = improveService.selectImproveListByUser(userid,ctype,
+			improves = improveService.selectImproveListByUser(userid,ptype,ctype,
 					lastdate == null?null: DateUtils.parseDate(lastdate),
 					Integer.parseInt(pagesize == null?Constant.DEFAULT_PAGE_SIZE:pagesize));
 		} catch (Exception e) {
@@ -489,7 +501,7 @@ public class ImproveController {
 	/**
 	 * 收藏进步 improve/collectImp
 	 * @param userid  用户uid
-	 * @param impid 进步id
+	 * @param improveid 进步id
 	 * @param businesstype 进步类型
 	 * @param businessid 所属id  圈子id  教室id 榜单id
      * @return
@@ -497,16 +509,16 @@ public class ImproveController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "collectImp")
-	BaseResp<Object> collectImp(String userid,String impid,String businesstype,String businessid){
+	BaseResp<Object> collectImp(String userid,String improveid,String businesstype,String businessid){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,impid,businesstype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		logger.info("collectImp userid={},impid={}",userid,impid);
+		logger.info("collectImp userid={},impid={}",userid,improveid);
 		try{
-			improveService.collectImp(userid,impid,businesstype,businessid);
+			baseResp = improveService.collectImp(userid,improveid,businesstype,businessid);
 		}catch (Exception e){
-			logger.error("collection error userid={},impid={},msg={}",userid,impid,e);
+			logger.error("collection error userid={},impid={},msg={}",userid,improveid,e);
 		}
 		return baseResp;
 	}
@@ -514,22 +526,22 @@ public class ImproveController {
 	/**
 	 * 取消收藏  improve/removeCollect
 	 * @param userid
-	 * @param impid
-	 * @param buinesstype
+	 * @param improveid
+	 * @param businesstype
      * @return
      */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping(value = "removeCollect")
-	BaseResp<Object> removeCollect(String userid,String impid,String buinesstype){
+	BaseResp<Object> removeCollect(String userid,String improveid,String businesstype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,impid,buinesstype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try{
-			return improveService.removeCollect(userid,impid,buinesstype);
+			return improveService.removeCollect(userid,improveid,businesstype);
 		}catch (Exception e){
-			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,impid,e);
+			logger.error("removeCollect error userid={},impid={} and msg = {}",userid,improveid,e);
 		}
 		return baseResp;
 	}
@@ -573,7 +585,7 @@ public class ImproveController {
 	public BaseResp<Object> addLikeForImprove(String userid,String improveid,
 											  String businesstype,String businessid,String opttype){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid,improveid,businesstype,businessid,opttype)){
+		if(StringUtils.hasBlankParams(userid,improveid,businesstype,opttype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		if ("1".equals(opttype)){
@@ -630,7 +642,7 @@ public class ImproveController {
 	 */
 	@RequestMapping(value = "addflower")
 	@ResponseBody
-	public BaseResp<Object> addFlowerForImprove(String userid,String improveid,String flowernum,
+	public BaseResp<Object> addFlowerForImprove(String userid,String friendid,String improveid,String flowernum,
 												String businesstype,String businessid){
 		logger.info("add flower userid={} improveid={} flowernum={}",userid,improveid,flowernum);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -638,7 +650,7 @@ public class ImproveController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = improveService.addFlower(userid,improveid,Integer.valueOf(flowernum),businesstype,businessid);
+			baseResp = improveService.addFlower(userid,friendid,improveid,Integer.valueOf(flowernum),businesstype,businessid);
 		} catch (Exception e) {
 			logger.error("add flower flowernum={} userid={} improveid={} is error:{}",flowernum,userid,improveid,e);
 		}
@@ -657,7 +669,7 @@ public class ImproveController {
 	 */
 	@RequestMapping(value = "adddiamond")
 	@ResponseBody
-	public BaseResp<Object> addDiamondForImprove(String userid,String improveid,
+	public BaseResp<Object> addDiamondForImprove(String userid,String friendid,String improveid,
 												 String diamondnum,String businesstype,String businessid){
 		logger.info("add diamond userid={} improveid={} diamondmun={}",userid,improveid,diamondnum);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -665,7 +677,7 @@ public class ImproveController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = improveService.addDiamond(userid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
+			baseResp = improveService.addDiamond(userid,friendid,improveid,Integer.valueOf(diamondnum),businesstype,businessid);
 		} catch (Exception e) {
 			logger.error("add diamond userid={} improve={} diamondnum={} is error:{}",userid,improveid,diamondnum,e);
 		}

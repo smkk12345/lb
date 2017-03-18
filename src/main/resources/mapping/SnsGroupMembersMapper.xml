@@ -8,9 +8,12 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, groupid, userid, remark, createtime, updatetime
+    id, groupid, userid, remark, createtime, updatetime,nickname,status,avatar
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -24,10 +27,11 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.SnsGroupMembers" >
     insert into sns_group_members (id, groupid, userid, 
-      remark, createtime, updatetime
+        remark, createtime, updatetime,nickname,status,avatar
       )
     values (#{id,jdbcType=INTEGER}, #{groupid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+      #{remark,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR},
+      #{nickname},#{status},#{avatar}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsGroupMembers" >
@@ -51,6 +55,15 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="nickname != null" >
+        nickname,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="avatar != null">
+         avatar,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -70,6 +83,15 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="avatar != null">
+        #{avatar},
       </if>
     </trim>
   </insert>
@@ -91,6 +113,15 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=VARCHAR},
       </if>
+      <if test="nickname != null" >
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status},
+      </if>
+      <if test="avatar != null">
+         avatar = #{avatar}
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -100,7 +131,140 @@
       userid = #{userid,jdbcType=BIGINT},
       remark = #{remark,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=VARCHAR},
-      updatetime = #{updatetime,jdbcType=VARCHAR}
+      updatetime = #{updatetime,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      status = #{status},
+      avatar = #{avatar}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 批量插入群组成员 -->
+  <insert id="batchInsertGroupMembers" parameterType="map">
+      insert into sns_group_members(
+        groupid,userid,status,createtime,updatetime,nickname,avatar
+      )values
+      <foreach collection="userList" item="user" separator=",">
+        (
+          #{snsGroupMembers.groupid},
+          #{user.id},
+          <if test="user.id == mainUserId">
+            1,
+          </if>
+          <if test="user.id != mainUserId">
+            #{snsGroupMembers.status},
+          </if>
+          #{snsGroupMembers.createtime},
+          #{snsGroupMembers.updatetime},
+          #{user.nickname},
+          #{user.avatar}
+        )
+      </foreach>
+  </insert>
+
+  <!-- 根据群组id和用户id查询群组成员 -->
+  <select id="findByUserIdAndGroupId" parameterType="String" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      from sns_group_members
+      where groupid=#{groupId}
+        <if test="userId != null">
+          and userid = #{userId}
+        </if>
+  </select>
+
+  <!-- 修改群组成员信息 -->
+  <update id="updateSnsGroupMemberInfo" parameterType="String">
+      update sns_group_members
+      <set>
+        <if test="nickName != null">
+            nickName = #{nickName},
+        </if>
+        <if test="status != null">
+            status = #{status}
+        </if>
+      </set>
+      where userid = #{userId}
+        and groupid = #{groupId}
+  </update>
+
+  <!-- 根据用户id和群组id查询数据 -->
+  <select id="selectSnsGroupMembersList" parameterType="map" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from sns_group_members
+      <where>
+        <if test="userIds != null">
+           userid in (
+           <foreach collection="userIds" item="userId" separator=",">
+             #{userId}
+           </foreach>
+          )
+        </if>
+        and groupid=#{groupId}
+      </where>
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
+  </select>
+
+  <!-- 批量更新用户在群里的状态 -->
+  <update id="batchUpdateSnsGroupMemberStatus" parameterType="map">
+      update
+          sns_group_members
+      set status = #{status}
+      <where>
+        <if test="updateUserIds != null">
+          userid in (
+          <foreach collection="updateUserIds" item="userId" separator=",">
+            #{userId}
+          </foreach>
+          )
+        </if>
+        and groupid=#{groupId}
+      </where>
+  </update>
+
+  <!-- 批量删除群成员 -->
+  <delete id="batchDeleteGroupMember" parameterType="map">
+      delete from sns_group_members
+    <where>
+      <if test="userIds != null">
+        userid in (
+        <foreach collection="userIds" item="userId" separator=",">
+          #{userId}
+        </foreach>
+        )
+      </if>
+      and groupid=#{groupId}
+    </where>
+  </delete>
+
+  <!-- 查询群组成员信息列表 -->
+  <select id="groupMemberList" parameterType="String" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from sns_group_members
+      <where>
+          <if test="status != null">
+            status = #{status}
+          </if>
+        and groupid = #{groupId}
+      </where>
+  </select>
+
+  <!-- 根据用户查询群成员列表 -->
+  <select id="groupMembersList" parameterType="String" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from sns_group_members
+      where
+          status = 1
+          <if test="userId != null">
+            and userid = #{userId}
+          </if>
+      group by groupid
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
+  </select>
 </mapper>

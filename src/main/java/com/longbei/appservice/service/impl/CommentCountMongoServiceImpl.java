@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.CommentCountMongoDao;
@@ -26,7 +27,7 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 			insert(commentCount);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("insertCommentCount commentCount={},msg={}",commentCount,e);
+			logger.error("insertCommentCount commentCount = {}", JSONArray.toJSON(commentCount).toString(), e);
 		}
 		return reseResp;
 	}
@@ -41,7 +42,7 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 		try {
 			commentCount = commentCountMongoDao.selectCommentCountByCommentid(commentid);
 		} catch (Exception e) {
-			logger.error("selectCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
+			logger.error("selectCommentCountByCommentid commentid = {}", commentid, e);
 		}
 		return commentCount;
 	}
@@ -53,7 +54,7 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 			delete(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentCount id = {}, msg = {}", id, e);
+			logger.error("deleteCommentCount id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -72,7 +73,7 @@ public class CommentCountMongoServiceImpl implements CommentCountMongoService {
 		try {
 			commentCountMongoDao.deleteCommentCountByCommentid(commentid);
 		} catch (Exception e) {
-			logger.error("deleteCommentCountByCommentid commentid = {}, msg = {}", commentid, e);
+			logger.error("deleteCommentCountByCommentid commentid = {}", commentid, e);
 		}
 	}
 

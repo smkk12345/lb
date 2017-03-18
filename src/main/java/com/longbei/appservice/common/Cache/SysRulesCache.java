@@ -54,7 +54,7 @@ public class SysRulesCache {
     }};
 
     public static List<PerfectTen> perfectTenList = new ArrayList<PerfectTen>(){{
-        add(new PerfectTen("-1","全部",-1));
+//        add(new PerfectTen("-1","全部",-1));
         add(new PerfectTen("0","学习",0));
         add(new PerfectTen("1","运动",1));
         add(new PerfectTen("2","社交",2));
@@ -67,9 +67,10 @@ public class SysRulesCache {
         add(new PerfectTen("9","健康",9));
     }};
 
-
-
-
+    /**
+     * 十全十美每级详细说明 key--ptype十全十美类型 value--SysPerfectInfo实体
+     */
+    public static Map<String,SysPerfectInfo> sysPerfectInfoMap = new HashMap<>();
 
 
 }

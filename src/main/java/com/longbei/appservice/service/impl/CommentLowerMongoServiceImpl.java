@@ -17,6 +17,8 @@ import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLower;
@@ -42,6 +44,8 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentLowerMongoServiceImpl.class);
 	
@@ -57,12 +61,13 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			
 			//添加子评论---    +积分
 			//获取十全十美类型---社交
-			String pType = SysRulesCache.perfectTenMap.get(2);
-			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getUserid()));//此处通过id获取用户信息
-			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", pType);
-			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//			String pType = SysRulesCache.perfectTenMap.get(2);
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(commentLower.getFirstuserid()));//此处通过id获取用户信息
+			reseResp = userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", "2",null,0,0);
+			initCommentLowerUserInfo(commentLower);
+			reseResp.setData(commentLower);
 		} catch (Exception e) {
-			logger.error("insertCommentLower commentLower={},msg={}",commentLower,e);
+			logger.error("insertCommentLower commentLower = {}",commentLower,e);
 		}
 		return reseResp;
 	}
@@ -74,14 +79,14 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	 */
 	private void insertMsg(CommentLower commentLower){
 		UserMsg record = new UserMsg();
-		record.setUserid(Long.valueOf(commentLower.getFriendid()));
+		record.setUserid(Long.valueOf(commentLower.getSeconduserid()));
 		record.setCreatetime(new Date());
-		record.setFriendid(Long.valueOf(commentLower.getUserid()));
+		record.setFriendid(Long.valueOf(commentLower.getFirstuserid()));
 		//itype 类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论  itypeid
 		Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 		if(null != comment){
-			record.setGtype(comment.getItype());
-			record.setSnsid(Long.valueOf(comment.getItypeid()));
+			record.setGtype(comment.getBusinesstype());
+			record.setSnsid(Long.valueOf(comment.getBusinessid()));
 		}
 		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
 		record.setMsgtype("1");
@@ -94,7 +99,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			userMsgMapper.insertSelective(record);
 		} catch (Exception e) {
-			logger.error("insertMsg record = {}, msg = {}", JSONObject.fromObject(record).toString(), e);
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
 		}
 	}
 	
@@ -149,7 +154,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			list = commentLowerMongoDao.selectCommentLowerListByCommentid(commentid);
 		} catch (Exception e) {
-			logger.error("selectCommentLowerListByCommentid commentid={},msg={}",commentid,e);
+			logger.error("selectCommentLowerListByCommentid commentid = {}",commentid,e);
 		}
 		return list;
 	}
@@ -160,7 +165,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			commentLower = commentLowerMongoDao.selectCommentLowerByid(id);
 		} catch (Exception e) {
-			logger.error("selectCommentLowerByid id={},msg={}",id,e);
+			logger.error("selectCommentLowerByid id = {}", id, e);
 		}
 		return commentLower;
 	}
@@ -172,7 +177,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			deleteByCommentid(commentid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteLowerByCommentid commentid={},msg={}",commentid,e);
+			logger.error("deleteLowerByCommentid commentid = {}", commentid, e);
 		}
 		return reseResp;
 	}
@@ -194,7 +199,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			deleteByid(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("deleteCommentLower id={},msg={}",id,e);
+			logger.error("deleteCommentLower id = {}", id, e);
 		}
 		return reseResp;
 	}
@@ -210,5 +215,23 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		}
 		return commentLowerMongoDao.selectCountLowerByCommentid(commentid);
 	}
+	
+	//------------------------公用方法，初始化消息中用户信息------------------------------------------
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfo(CommentLower commentLower){
+    	if(null != commentLower){
+			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+    	        commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+			}
+			if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+				AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+				commentLower.setFirstNickname(appUserMongo.getNickname());
+			}
+    	}
+        
+    }
 
 }

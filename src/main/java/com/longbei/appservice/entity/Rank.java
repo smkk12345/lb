@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+import scala.App;
 
 import java.util.Date;
 import java.util.List;
@@ -110,8 +111,38 @@ public class Rank {
 
     private String isdel; // 0 - 未删除  1 - 已删除
 
+    private String sponsornum;//赞助人数
+
+    private String sponsormoney;//赞助龙币数量
+
+    private List<RankAwardRelease> rankAwards; //榜单奖品
+
+    private String notice; //公告
+
+    private Boolean needConfirm;//用户加榜单 是否需要榜主验证
+
+    private AppUserMongoEntity appUserMongoEntity;
+
+    private String joincode; //入榜口令
+
     //--------
 
+
+    public String getJoincode() {
+        return joincode;
+    }
+
+    public void setJoincode(String joincode) {
+        this.joincode = joincode;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
 
     public String getIsup() {
         return isup;
@@ -147,7 +178,8 @@ public class Rank {
     public void setEstarttime(Date estarttime) {
         this.estarttime = estarttime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getSendtime() {
         return sendtime;
     }
@@ -155,7 +187,8 @@ public class Rank {
     public void setSendtime(Date sendtime) {
         this.sendtime = sendtime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEendtime() {
         return eendtime;
     }
@@ -164,7 +197,7 @@ public class Rank {
         this.eendtime = eendtime;
     }
 
-    private List<RankAward> rankAwards; //榜单奖品
+
 
     public String getJoinlastday() {
         return joinlastday;
@@ -278,11 +311,11 @@ public class Rank {
         this.rankcardid = rankcardid;
     }
 
-    public List<RankAward> getRankAwards() {
+    public List<RankAwardRelease> getRankAwards() {
         return rankAwards;
     }
 
-    public void setRankAwards(List<RankAward> rankAwards) {
+    public void setRankAwards(List<RankAwardRelease> rankAwards) {
         this.rankAwards = rankAwards;
     }
 
@@ -615,6 +648,8 @@ public class Rank {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -721,5 +756,38 @@ public class Rank {
      */
     public void setPtype(String ptype) {
         this.ptype = ptype == null ? null : ptype.trim();
+    }
+
+
+    public String getSponsornum() {
+        return sponsornum;
+    }
+
+    public void setSponsornum(String sponsornum) {
+        this.sponsornum = sponsornum;
+    }
+
+    public String getSponsormoney() {
+        return sponsormoney;
+    }
+
+    public void setSponsormoney(String sponsormoney) {
+        this.sponsormoney = sponsormoney;
+    }
+
+    public Boolean getNeedConfirm() {
+        return needConfirm;
+    }
+
+    public void setNeedConfirm(Boolean needConfirm) {
+        this.needConfirm = needConfirm;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
     }
 }

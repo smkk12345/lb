@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class RankAward {
@@ -15,7 +18,27 @@ public class RankAward {
 
     private Integer awardcount;
 
+    private String awardnickname;
+
     private Date createtime;
+
+    private Award award;
+
+    public Award getAward() {
+        return award;
+    }
+
+    public void setAward(Award award) {
+        this.award = award;
+    }
+
+    public String getAwardnickname() {
+        return awardnickname;
+    }
+
+    public void setAwardnickname(String awardnickname) {
+        this.awardnickname = awardnickname;
+    }
 
     /**
      * 
@@ -117,6 +140,8 @@ public class RankAward {
      * 
      * @return createtime 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

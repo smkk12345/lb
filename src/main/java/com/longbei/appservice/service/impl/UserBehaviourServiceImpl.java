@@ -8,18 +8,23 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserPointDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.UserPointDetail;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.collection.immutable.Stream;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +44,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserPointDetailMapper userPointDetailMapper;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserImpCoinDetailService userImpCoinDetailService;
+    @Autowired
+    private UserMsgMapper userMsgMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -86,18 +95,35 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     @Override
-    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType, String pType) {
+    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
+                                        String pType,String origin,long impid,long friendid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
+            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+            springJedisDao.put(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL",dateStr,String.valueOf(point));
+            springJedisDao.expire(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL", Constant.CACHE_24X60X60);
             levelUp(userInfo.getUserid(),point,pType);
         }
         //进步币发生变化
-        int impIcon = getImpIcon(userInfo,operateType);
-        baseResp.getExpandData().put("impIcon",impIcon);
+        int impIcon = 0 ;
+        if(!StringUtils.isBlank(origin)){
+            impIcon = getImpIcon(userInfo,operateType);
+            if(impIcon>0){
+                //进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
+                //long userid, String origin, int number, long impid, long friendid)
+                userImpCoinDetailService.insertPublic(userInfo.getUserid(),origin,impIcon,impid,friendid);
+            }
+            baseResp.getExpandData().put("impIcon",impIcon);
+        }
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
+        return BaseResp.ok();
     }
 
     private int getHashValueFromCache(String key,String hashKey){
@@ -351,6 +377,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
             userPlDetail.setUserid(userInfo.getUserid());
             userPlDetailMapper.insert(userPlDetail);
+            
+            //推送一条消息
+            String remark = Constant.MSG_USER_PL_LEVEL_MODEL.replace("n", level + "");
+            remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
+            //mtype 0 系统消息      msgtype  19：十全十美升级
+            levelMsg(userInfo.getUserid(), "19", remark);
         }catch (Exception e){
             logger.error("subLevelUpAsyn error and msg = {}",e);
         }
@@ -367,11 +399,30 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfoMapper.updatePointByUserid(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
             saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
-            //推送一条信
-            //           JPush.messagePush();
+            //推送一条消息
+            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade().toString());
+            //mtype 0 系统消息      msgtype  18:升龙级
+            levelMsg(userInfo.getUserid(), "18", remark);
         }catch (Exception e){
             logger.error("levelUpAsyn error and msg = {}",e);
         }
+    }
+    
+    /**
+	 * @author yinxc
+	 * 等级升降级添加消息
+	 * 2017年3月8日
+	 */
+    private void levelMsg(long userid, String msgtype, String remark){
+    	UserMsg userMsg = new UserMsg();
+        userMsg.setUserid(userid);
+        userMsg.setMtype("0");
+        userMsg.setMsgtype(msgtype);
+        userMsg.setRemark(remark);
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setCreatetime(new Date());
+        userMsgMapper.insertSelective(userMsg);
     }
 
     /**

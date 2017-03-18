@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.RankCardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankCard" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="adminname" property="adminname" jdbcType="VARCHAR" />
+    <result column="adminbrief" property="adminbrief" jdbcType="VARCHAR" />
+    <result column="createuserid" property="createuserid" jdbcType="INTEGER" />
+    <result column="adminpic" property="adminpic" jdbcType="VARCHAR" />
+    <result column="admindetail" property="admindetail" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, adminname, adminbrief, createuserid, adminpic, admindetail, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rankcard
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rankcard
+    where isdel='0'
+    <if test="rankcard.adminname != null">
+     AND adminname LIKE concat(concat('%',#{rankcard.adminname}),'%')
+    </if>
+    ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.RankCard" resultType="java.lang.Integer">
+    SELECT count(*) FROM  rankcard
+    WHERE  1=1
+    <if test="adminname != null">
+      AND adminname LIKE concat(concat('%',#{adminname}),'%')
+    </if>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    UPDATE rankcard SET isdel='1' WHERE id= #{id}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankCard" >
+    insert into rankcard (id, adminname, adminbrief, 
+      createuserid, adminpic, admindetail, 
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{adminname,jdbcType=VARCHAR}, #{adminbrief,jdbcType=VARCHAR}, 
+      #{createuserid,jdbcType=INTEGER}, #{adminpic,jdbcType=VARCHAR}, #{admindetail,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankCard" >
+    insert into rankcard
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="adminname != null" >
+        adminname,
+      </if>
+      <if test="adminbrief != null" >
+        adminbrief,
+      </if>
+      <if test="createuserid != null" >
+        createuserid,
+      </if>
+      <if test="adminpic != null" >
+        adminpic,
+      </if>
+      <if test="admindetail != null" >
+        admindetail,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="adminname != null" >
+        #{adminname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminbrief != null" >
+        #{adminbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="createuserid != null" >
+        #{createuserid,jdbcType=INTEGER},
+      </if>
+      <if test="adminpic != null" >
+        #{adminpic,jdbcType=VARCHAR},
+      </if>
+      <if test="admindetail != null" >
+        #{admindetail,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankCard" >
+    update rankcard
+    <set >
+      <if test="adminname != null" >
+        adminname = #{adminname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminbrief != null" >
+        adminbrief = #{adminbrief,jdbcType=VARCHAR},
+      </if>
+      <if test="createuserid != null" >
+        createuserid = #{createuserid,jdbcType=INTEGER},
+      </if>
+      <if test="adminpic != null" >
+        adminpic = #{adminpic,jdbcType=VARCHAR},
+      </if>
+      <if test="admindetail != null" >
+        admindetail = #{admindetail,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankCard" >
+    update rankcard
+    set adminname = #{adminname,jdbcType=VARCHAR},
+      adminbrief = #{adminbrief,jdbcType=VARCHAR},
+      createuserid = #{createuserid,jdbcType=INTEGER},
+      adminpic = #{adminpic,jdbcType=VARCHAR},
+      admindetail = #{admindetail,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

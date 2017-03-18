@@ -3,7 +3,8 @@ package com.longbei.appservice.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Document(collection = "appuser")
 public class AppUserMongoEntity {
@@ -16,7 +17,54 @@ public class AppUserMongoEntity {
 	private String sex;//性别
 
 	private Double[] gispoint;
+
+	private String updatetime;
 	
+	private long userid;
+	private String isfriend="0";
+	private String isfans="0";
+
+	private int distance;
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public AppUserMongoEntity(){}
+
+	public void setUpdatetime(String updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	public String getUpdatetime() {
+		return updatetime;
+	}
+
+	public long getUserid() {
+		return Long.parseLong(id);
+	}
+
+	public void setIsfriend(String isfriend) {
+		this.isfriend = isfriend;
+	}
+
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
+	}
+
+	public String getIsfriend() {
+		return isfriend;
+	}
+
+	public String getIsfans() {
+		return isfans;
+	}
+
+	@JsonInclude(Include.ALWAYS)
 	public Double[] getGispoint() {
 		return gispoint;
 	}
@@ -24,6 +72,7 @@ public class AppUserMongoEntity {
 		this.gispoint = gispoint;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public String getId() {
 		return id;
 	}

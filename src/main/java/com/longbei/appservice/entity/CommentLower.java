@@ -16,16 +16,23 @@ public class CommentLower {
 
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
-	private String userid;     //商户id
+	/**
+	 * @author yinxc
+	 * 子评论    A回复B   A的id ： firstuserid    B的id：seconduserid
+	 * 2017年3月10日
+	 */
+	private String firstuserid;     //商户id
 	private String content;    //评论内容
-	private String friendid;   //被评论商户id
+	private String seconduserid;   //被评论商户id
 	private String createtime; //评论时间
 	private String commentid;  //主评论id
 	private String status;     //0:不显示回复    1:显示回复
 	@Transient
-	private AppUserMongoEntity appUserMongoEntityUserid; //评论用户信息----Userid
+	private String firstNickname;
+//	private AppUserMongoEntity appUserMongoEntityUserid; //评论用户信息----Userid
 	@Transient
-	private AppUserMongoEntity appUserMongoEntityFriendid; //评论用户信息----Friendid
+	private String secondNickname;
+//	private AppUserMongoEntity appUserMongoEntityFriendid; //评论用户信息----Friendid
 
 	public CommentLower(){
 		super();
@@ -40,30 +47,30 @@ public class CommentLower {
 		this.id = id;
 	}
 
-	@JsonInclude(Include.ALWAYS)
-	public String getUserid() {
-		return userid;
-	}
-
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
-
 	public String getContent() {
 		return content;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	@JsonInclude(Include.ALWAYS)
+	public String getFirstuserid() {
+		return firstuserid;
+	}
+
+	public void setFirstuserid(String firstuserid) {
+		this.firstuserid = firstuserid;
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public String getFriendid() {
-		return friendid;
+	public String getSeconduserid() {
+		return seconduserid;
 	}
 
-	public void setFriendid(String friendid) {
-		this.friendid = friendid;
+	public void setSeconduserid(String seconduserid) {
+		this.seconduserid = seconduserid;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -97,20 +104,20 @@ public class CommentLower {
 		this.status = status;
 	}
 
-	public AppUserMongoEntity getAppUserMongoEntityUserid() {
-		return appUserMongoEntityUserid;
+	public void setFirstNickname(String firstNickname) {
+		this.firstNickname = firstNickname;
 	}
 
-	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
-		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	public void setSecondNickname(String secondNickname) {
+		this.secondNickname = secondNickname;
 	}
 
-	public AppUserMongoEntity getAppUserMongoEntityFriendid() {
-		return appUserMongoEntityFriendid;
+	public String getFirstNickname() {
+
+		return firstNickname;
 	}
 
-	public void setAppUserMongoEntityFriendid(AppUserMongoEntity appUserMongoEntityFriendid) {
-		this.appUserMongoEntityFriendid = appUserMongoEntityFriendid;
+	public String getSecondNickname() {
+		return secondNickname;
 	}
-
 }

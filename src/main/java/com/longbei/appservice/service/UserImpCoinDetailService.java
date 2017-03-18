@@ -2,6 +2,7 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.UserImpCoinDetail;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author yinxc
@@ -10,7 +11,7 @@ import com.longbei.appservice.entity.UserImpCoinDetail;
  * return_type
  * UserImpCoinDetailService
  */
-public interface UserImpCoinDetailService {
+public interface UserImpCoinDetailService extends BaseService{
 	
 	BaseResp<Object> deleteByPrimaryKey(Integer id);
 
@@ -43,7 +44,7 @@ public interface UserImpCoinDetailService {
 	 * 						兑换商品:商品id
 	 * param friendid 
 	 */
-	BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, long friendid);
+	BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, Long friendid);
 	
 	/**
 	 * @author yinxc
@@ -52,5 +53,16 @@ public interface UserImpCoinDetailService {
 	 * param userid 
 	 */
 	BaseResp<Object> selectWallet(long userid);
+
+	/**
+	 * 进步币发生变化之后
+	 * @param userid  用户id
+	 * @param icon 进步币数量
+	 * @param origin  进步币变化类型
+	 * @return
+	 */
+	@Transactional
+	BaseResp<Object> impIconChange(long userid,int icon,String origin);
+
     
 }

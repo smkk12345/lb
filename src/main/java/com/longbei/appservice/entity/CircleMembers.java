@@ -1,19 +1,32 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.Map;
 
 public class CircleMembers {
+    public static final Integer normal = 0;//正常 在兴趣圈中
+    public static final Integer delete = 1;//已退圈
+    public static final Integer pending = 2;//待圈主审核验证
+
     private Integer id;
 
     private Long circleid;//兴趣圈id
 
     private Long userid;//用户id
 
-    private Integer itype;//0—入圈 1—退圈
+    private Integer itype;//0—入圈 1—退圈  2-待圈主审核验证
 
     private Date createtime;//入圈时间
 
     private Date updatetime;//退圈时间
+
+    private Integer likes;//赞
+
+    private Integer flowers;//花
+
+    private Integer diamonds;//钻石
+
+    private AppUserMongoEntity appUserMongoEntity;
 
     /**
      * 
@@ -109,5 +122,53 @@ public class CircleMembers {
      */
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    /**
+     * 设置用户信息
+     * @param appUserMongoEntity
+     */
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    /**
+     * 获取赞
+     * @return
+     */
+    public Integer getLikes() {
+        return likes;
+    }
+
+    /**
+     * 设置赞
+     * @param likes
+     */
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getFlowers() {
+        return flowers;
+    }
+
+    public void setFlowers(Integer flowers) {
+        this.flowers = flowers;
+    }
+
+    public Integer getDiamonds() {
+        return diamonds;
+    }
+
+    public void setDiamonds(Integer diamonds) {
+        this.diamonds = diamonds;
     }
 }

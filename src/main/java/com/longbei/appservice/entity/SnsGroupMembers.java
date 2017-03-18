@@ -1,5 +1,7 @@
 package com.longbei.appservice.entity;
 
+import java.util.Date;
+
 public class SnsGroupMembers {
     private Integer id;
 
@@ -9,9 +11,15 @@ public class SnsGroupMembers {
 
     private String remark;//备注
 
-    private String createtime;//创建时间
+    private int status;//状态 0.待处理 1.已入群 2.拒绝入群
 
-    private String updatetime;//更新时间
+    private String nickname;//群昵称
+
+    private String avatar;//头像
+
+    private Date createtime;//创建时间
+
+    private Date updatetime;//更新时间
 
     /**
      * 
@@ -77,35 +85,63 @@ public class SnsGroupMembers {
         this.remark = remark == null ? null : remark.trim();
     }
 
+    public int getStatus() {
+        return status;
+    }
+
     /**
-     * 创建时间
-     * @return createtime 创建时间
+     * 设置成员在群中的状态
+     * @param status
      */
-    public String getCreatetime() {
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    /**
+     * 获取群成员昵称
+     * @return
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    /**
+     * 设置群成员昵称
+     * @param nickname
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Date getCreatetime() {
         return createtime;
     }
 
-    /**
-     * 创建时间
-     * @param createtime 创建时间
-     */
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    /**
-     * 更新时间
-     * @return updatetime 更新时间
-     */
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
     /**
-     * 更新时间
-     * @param updatetime 更新时间
+     * 获取头像
+     * @return
      */
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public String getAvatar() {
+        return avatar;
+    }
+
+    /**
+     * 设置头像
+     * @param avatar
+     */
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserCardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserCard" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="ctype" property="ctype" jdbcType="CHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="displayname" property="displayname" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="cardid" property="cardid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid
+  </sql>
+  <select id="selectByCardid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_card
+    where cardid = #{cardid}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_card
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserCard" >
+    insert into user_card (id, userid, ctype, 
+      avatar, displayname, brief, 
+      content, createtime, updatetime, 
+      cardid)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{ctype,jdbcType=CHAR}, 
+      #{avatar,jdbcType=VARCHAR}, #{displayname,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{cardid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserCard" >
+    insert into user_card
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="ctype != null" >
+        ctype,
+      </if>
+      <if test="avatar != null" >
+        avatar,
+      </if>
+      <if test="displayname != null" >
+        displayname,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="cardid != null" >
+        cardid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="ctype != null" >
+        #{ctype,jdbcType=CHAR},
+      </if>
+      <if test="avatar != null" >
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="displayname != null" >
+        #{displayname,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardid != null" >
+        #{cardid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserCard" >
+    update user_card
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="ctype != null" >
+        ctype = #{ctype,jdbcType=CHAR},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="displayname != null" >
+        displayname = #{displayname,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardid != null" >
+        cardid = #{cardid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserCard" >
+    update user_card
+    set userid = #{userid,jdbcType=BIGINT},
+      ctype = #{ctype,jdbcType=CHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      displayname = #{displayname,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      cardid = #{cardid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

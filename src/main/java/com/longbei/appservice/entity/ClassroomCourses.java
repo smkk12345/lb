@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class ClassroomCourses {
     private Integer id;
 
@@ -13,11 +16,11 @@ public class ClassroomCourses {
 
     private String coursebrief;//课程简介
 
-    private String coursephotos;//课程图片
+    private String pickey;//截图key
 
     private String coursecontent;//课程内容
 
-    private Integer classroomid;//所属教室id
+    private long classroomid;//所属教室id
 
     private Long uploaduserid;//上传人id
 
@@ -28,6 +31,12 @@ public class ClassroomCourses {
     private Date createtime;//创建时间
 
     private Date udpatetime;//更新时间
+    
+    private String isdefault;//是否 默认   1 默认封面  0 非默认
+    
+    private String fileurl; //视频文件url（转码后）
+    
+    private String sourcekey; //源文件
 
     /**
      * 
@@ -65,6 +74,7 @@ public class ClassroomCourses {
      * 课程序号
      * @return coursesort 课程序号
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getCoursesort() {
         return coursesort;
     }
@@ -81,6 +91,7 @@ public class ClassroomCourses {
      * 课程类型
      * @return coursetype 课程类型
      */
+    @JsonInclude(Include.ALWAYS)
     public String getCoursetype() {
         return coursetype;
     }
@@ -109,23 +120,31 @@ public class ClassroomCourses {
         this.coursebrief = coursebrief == null ? null : coursebrief.trim();
     }
 
-    /**
-     * 课程图片
-     * @return coursephotos 课程图片
-     */
-    public String getCoursephotos() {
-        return coursephotos;
-    }
+    public String getPickey() {
+		return pickey;
+	}
 
-    /**
-     * 课程图片
-     * @param coursephotos 课程图片
-     */
-    public void setCoursephotos(String coursephotos) {
-        this.coursephotos = coursephotos == null ? null : coursephotos.trim();
-    }
+	public void setPickey(String pickey) {
+		this.pickey = pickey;
+	}
 
-    /**
+	public String getFileurl() {
+		return fileurl;
+	}
+
+	public void setFileurl(String fileurl) {
+		this.fileurl = fileurl;
+	}
+
+	public String getSourcekey() {
+		return sourcekey;
+	}
+
+	public void setSourcekey(String sourcekey) {
+		this.sourcekey = sourcekey;
+	}
+
+	/**
      * 课程内容
      * @return coursecontent 课程内容
      */
@@ -145,7 +164,8 @@ public class ClassroomCourses {
      * 所属教室id
      * @return classroomid 所属教室id
      */
-    public Integer getClassroomid() {
+    @JsonInclude(Include.ALWAYS)
+    public long getClassroomid() {
         return classroomid;
     }
 
@@ -153,7 +173,7 @@ public class ClassroomCourses {
      * 所属教室id
      * @param classroomid 所属教室id
      */
-    public void setClassroomid(Integer classroomid) {
+    public void setClassroomid(long classroomid) {
         this.classroomid = classroomid;
     }
 
@@ -161,6 +181,7 @@ public class ClassroomCourses {
      * 上传人id
      * @return uploaduserid 上传人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUploaduserid() {
         return uploaduserid;
     }
@@ -177,6 +198,7 @@ public class ClassroomCourses {
      * 创建人id
      * @return createuserid 创建人id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getCreateuserid() {
         return createuserid;
     }
@@ -193,6 +215,7 @@ public class ClassroomCourses {
      * 0 — 未删除。1 —删除
      * @return isdel 0 — 未删除。1 —删除
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
         return isdel;
     }
@@ -236,4 +259,13 @@ public class ClassroomCourses {
     public void setUdpatetime(Date udpatetime) {
         this.udpatetime = udpatetime;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getIsdefault() {
+		return isdefault;
+	}
+
+	public void setIsdefault(String isdefault) {
+		this.isdefault = isdefault;
+	}
 }

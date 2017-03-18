@@ -1,6 +1,9 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.*;
 
 public class RankMembers {
     private Integer id;
@@ -8,8 +11,6 @@ public class RankMembers {
     private Long rankid;//榜单id
 
     private Long userid;//用户id
-
-    private Integer itype;//0—上榜。1—下榜
 
     private Date createtime;//入榜时间
 
@@ -19,11 +20,109 @@ public class RankMembers {
 
     private String iswinning;//中奖 0 未中间 1 中奖
 
-    private Integer improvecount;//子进步条数
+    private Integer icount;//子进步条数
 
     private Integer likes;//榜单点赞数
 
     private Integer flowers;
+
+    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜
+
+    private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
+
+    private String isfashionman; //是否为达人  0 - 不是 1 - 是
+
+    private String checkstatus; //审核结果  0 未审核 1 - 机器审核不通过 2 - 人工不通过 3 - 通过
+
+    private String checkresult; //审s核不通过原因
+
+    private Integer complaintotalcount; //投诉次数
+
+    private AppUserMongoEntity appUserMongoEntity;
+
+    private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
+
+    private String checkuserid; //审核人id
+
+    private Date checkdate; //审核日期
+
+    private String receivecode; //领奖口令
+
+    private RankAward rankAward;
+
+    public String getReceivecode() {
+        return receivecode;
+    }
+
+    public void setReceivecode(String receivecode) {
+        this.receivecode = receivecode;
+    }
+
+    public RankAward getRankAward() {
+        return rankAward;
+    }
+
+    public void setRankAward(RankAward rankAward) {
+        this.rankAward = rankAward;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getCheckdate() {
+        return checkdate;
+    }
+
+    public void setCheckdate(Date checkdate) {
+        this.checkdate = checkdate;
+    }
+
+    public String getCheckuserid() {
+        return checkuserid;
+    }
+
+    public void setCheckuserid(String checkuserid) {
+        this.checkuserid = checkuserid;
+    }
+
+    public String getCheckstatus() {
+        return checkstatus;
+    }
+
+    public void setCheckstatus(String checkstatus) {
+        this.checkstatus = checkstatus;
+    }
+
+    public String getCheckresult() {
+        return checkresult;
+    }
+
+    public void setCheckresult(String checkresult) {
+        this.checkresult = checkresult;
+    }
+
+    public Integer getComplaintotalcount() {
+        return complaintotalcount;
+    }
+
+    public void setComplaintotalcount(Integer complaintotalcount) {
+        this.complaintotalcount = complaintotalcount;
+    }
+
+    public List<AppUserMongoEntity> getAppUserMongoEntities() {
+        return appUserMongoEntities;
+    }
+
+    public void setAppUserMongoEntities(List<AppUserMongoEntity> appUserMongoEntities) {
+        this.appUserMongoEntities = appUserMongoEntities;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 
     /**
      * 
@@ -74,25 +173,11 @@ public class RankMembers {
     }
 
     /**
-     * 0—上榜。1—下榜
-     * @return itype 0—上榜。1—下榜
-     */
-    public Integer getItype() {
-        return itype;
-    }
-
-    /**
-     * 0—上榜。1—下榜
-     * @param itype 0—上榜。1—下榜
-     */
-    public void setItype(Integer itype) {
-        this.itype = itype;
-    }
-
-    /**
      * 入榜时间
      * @return createtime 入榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -109,6 +194,8 @@ public class RankMembers {
      * 下榜时间
      * @return updatetime 下榜时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -155,18 +242,18 @@ public class RankMembers {
 
     /**
      * 子进步条数
-     * @return improvecount 子进步条数
+     * @return icount 子进步条数
      */
-    public Integer getImprovecount() {
-        return improvecount;
+    public Integer getIcount() {
+        return icount;
     }
 
     /**
      * 子进步条数
-     * @param improvecount 子进步条数
+     * @param icount 子进步条数
      */
-    public void setImprovecount(Integer improvecount) {
-        this.improvecount = improvecount;
+    public void setIcount(Integer icount) {
+        this.icount = icount;
     }
 
     /**
@@ -199,5 +286,74 @@ public class RankMembers {
      */
     public void setFlowers(Integer flowers) {
         this.flowers = flowers;
+    }
+
+    /**
+     * 0 未领奖 1 领奖 2 发货 3签收
+     * @return acceptaward 0 未领奖 1 领奖 2 发货 3签收
+     */
+    public String getAcceptaward() {
+        return acceptaward;
+    }
+
+    /**
+     * 0 未领奖 1 领奖 2 发货 3签收
+     * @param acceptaward 0 未领奖 1 领奖 2 发货 3签收
+     */
+    public void setAcceptaward(String acceptaward) {
+        this.acceptaward = acceptaward == null ? null : acceptaward.trim();
+    }
+
+    /**
+     * 
+     * @return isfashionman 
+     */
+    public String getIsfashionman() {
+        return isfashionman;
+    }
+
+    /**
+     * 
+     * @param isfashionman 
+     */
+    public void setIsfashionman(String isfashionman) {
+        this.isfashionman = isfashionman == null ? null : isfashionman.trim();
+    }
+
+    public static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
+            "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+            "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z" };
+
+
+
+
+    public static String test(){
+        StringBuffer shortBuffer = new StringBuffer();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        for (int i = 0; i < 8; i++) {
+            String str = uuid.substring(i * 4, i * 4 + 4);
+            int x = Integer.parseInt(str, 16);
+            shortBuffer.append(chars[x % 0x3E]);
+        }
+        return shortBuffer.toString().toUpperCase();
+    }
+
+    /**
+     * 获取入榜状态
+     * @return
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * 获取入榜状态
+     * @param status
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

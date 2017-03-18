@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMoneyDetail;
 
 /**
@@ -34,5 +35,15 @@ public interface UserMoneyDetailService {
 	 * return_type
 	 */
 	BaseResp<Object> selectListByUserid(long userid, int pageNo, int pageSize);
+
+	/**
+	 *
+	 * @param userInfo
+	 * @param origin
+	 * @param number
+	 * @param friendid
+	 * @return
+	 */
+	BaseResp<Object> insertPublic(UserInfo userInfo, String origin, int number, long friendid);
 	
 }

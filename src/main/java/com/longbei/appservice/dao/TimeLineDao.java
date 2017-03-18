@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -23,11 +24,14 @@ import java.util.List;
 @Repository
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
-    public List<TimeLine> selectTimeListByUserAndType(String userid, String timelinetype, Date lastdate, int pagesize){
+    public List<TimeLine> selectTimeListByUserAndType(String userid,String ptype, String timelinetype, Date lastdate, int pagesize){
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
+        if (!StringUtils.isEmpty(ptype)){
+            criteria.and("ptype").is(ptype);
+        }
         if (null != lastdate) {
             criteria.and("createdate").lt(lastdate);
         }

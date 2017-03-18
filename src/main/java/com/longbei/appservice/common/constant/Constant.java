@@ -1,11 +1,13 @@
 package com.longbei.appservice.common.constant;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  * 全局常量类
  */
 public class Constant {
 
-
+	public static final double DISTANCE_CONVERT_2D = 111.12;
 
 	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
 	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
@@ -65,6 +67,14 @@ public class Constant {
 	public static final int STATUS_SYS_29 = -29;
 	public static final int STATUS_SYS_30 = -30;
 	public static final int STATUS_SYS_31 = -31;
+	public static final int STATUS_SYS_32 = -32;
+	public static final int STATUS_SYS_33 = -33;
+	public static final int STATUS_SYS_34 = -34;
+	public static final int STATUS_SYS_35 = -35;
+	public static final int STATUS_SYS_36 = -36;
+	public static final int STATUS_SYS_37 = -37;
+	public static final int STATUS_SYS_38 = -38;
+	public static final int STATUS_SYS_39 = -39;
 
 	public static final int STATUS_SYS_40 = -40;
 	public static final int STATUS_SYS_41 = -41;
@@ -77,12 +87,48 @@ public class Constant {
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
 
+
+	public static final int STATUS_SYS_50 = -50;
+	public static final int STATUS_SYS_51 = -51;
+	public static final int STATUS_SYS_52 = -52;
+	public static final int STATUS_SYS_53 = -53;
+	public static final int STATUS_SYS_54 = -54;
+	public static final int STATUS_SYS_55 = -55;
+	public static final int STATUS_SYS_56 = -56;
+	public static final int STATUS_SYS_57 = -57;
+
+
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
 	public static final int STATUS_SYS_62 = -62;
 	public static final int STATUS_SYS_63 = -63;
 	public static final int STATUS_SYS_64 = -64;
+	//80-89 兴趣圈  wangyongzhi
+	public static final int STATUS_SYS_80 = -80;
+	public static final int STATUS_SYS_81 = -81;
+	public static final int STATUS_SYS_82 = -82;
+	public static final int STATUS_SYS_83 = -83;
+	public static final int STATUS_SYS_84 = -84;
+	public static final int STATUS_SYS_85 = -85;
+	public static final int STATUS_SYS_86 = -86;
+	public static final int STATUS_SYS_87 = -87;
+	public static final int STATUS_SYS_88 = -88;
 
+	//90-99 好友相关 wangyongzhi
+	public static final int STATUS_SYS_90 = -90;
+	public static final int STATUS_SYS_91 = -91;
+	public static final int STATUS_SYS_92 = -92;
+	public static final int STATUS_SYS_93 = -93;
+	public static final int STATUS_SYS_94 = -94;
+	public static final int STATUS_SYS_95 = -95;
+	public static final int STATUS_SYS_96 = -96;
+	public static final int STATUS_SYS_97 = -97;
+	public static final int STATUS_SYS_98 = -98;
+	public static final int STATUS_SYS_99 = -99;
+
+
+	//100-120 商品有关
+	public static final int STATUS_SYS_100 = -100;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -123,6 +169,14 @@ public class Constant {
 	public static final String RTNINFO_SYS_29 = "暂无签到记录";
 	public static final String RTNINFO_SYS_30 = "用户已签到";
 	public static final String RTNINFO_SYS_31 = "用户签到成功";
+	public static final String RTNINFO_SYS_32 = "暂无成员信息";
+	public static final String RTNINFO_SYS_33 = "暂无教室信息";
+	public static final String RTNINFO_SYS_34 = "暂无课程信息";
+	public static final String RTNINFO_SYS_35 = "暂无教室提问疑答信息";
+	public static final String RTNINFO_SYS_36 = "教室参与人数已达到限额";
+	public static final String RTNINFO_SYS_37 = "用户已加入教室";
+	public static final String RTNINFO_SYS_38 = "工作信息最多可添加5条";
+	public static final String RTNINFO_SYS_39 = "教育信息最多可添加5条";
 
 	//40-60 luy
 	public static final String RTNINFO_SYS_40 = "请填写进步内容";
@@ -131,14 +185,25 @@ public class Constant {
 	public static final String RTNINFO_SYS_43 = "获取进步列表失败";
 	public static final String RTNINFO_SYS_44 = "获取进步列表成功";
 	public static final String RTNINFO_SYS_45 = "你没有为该进步点过赞";
+	public static final String RTNINFO_SYS_46 = "删除进步成功";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
+
+	public static final String RTNINFO_SYS_54 = "还有内容没有审核";
+	public static final String RTNINFO_SYS_55 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_56 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_57 = "送钻失败，龙币扣除";
+
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
 	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_64 = "已经点过赞";
+
+	//100-120 商品有关
+	public static final String RTNINFO_SYS_100 = "商品已下架";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -151,9 +216,28 @@ public class Constant {
 	public static final String RTNINFO_SYS_52 = "修改榜单成功";
 	public static final String RTNINFO_SYS_53 = "修改榜单失败";
 
+	//80-89 兴趣圈  wangyongzhi
+	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
+	public static final String RTNINFO_SYS_81 = "抱歉,您无权更新该兴趣圈的信息";
+	public static final String RTNINFO_SYS_82 = "您已经在该兴趣圈中了";
+	public static final String RTNINFO_SYS_83 = "您已经申请了加入该兴趣圈,圈主正在验证中,请稍后~~";
+	public static final String RTNINFO_SYS_84 = "申请加圈子成功,正在等待圈主验证";
+	public static final String RTNINFO_SYS_85 = "该用户还未加入该圈子";
+	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
+	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
+	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
-
-
+	/** 90-99  好友相关 by wangyongzhi **/
+	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";
+	public static final String RTNINFO_SYS_91 = "抱歉,七天内不能重复添加同一个好友!";
+	public static final String RTNINFO_SYS_92 = "";
+	public static final String RTNINFO_SYS_93 = "";
+	public static final String RTNINFO_SYS_94 = "";
+	public static final String RTNINFO_SYS_95 = "";
+	public static final String RTNINFO_SYS_96 = "";
+	public static final String RTNINFO_SYS_97 = "";
+	public static final String RTNINFO_SYS_98 = "";
+	public static final String RTNINFO_SYS_99 = "";
 
 
 	//新浪提供的短连接
@@ -182,6 +266,7 @@ public class Constant {
 	public static final String  IMPROVE_RANK_TYPE = "2";      //榜
 	public static final String  IMPROVE_CIRCLE_TYPE = "3";    //圈子
 	public static final String  IMPROVE_CLASSROOM_TYPE = "4"; //教室
+	public static final String  IMPROVE_CLASSROOM_REPLY_TYPE = "5"; //教室批复作业
 
 	/**
 	 * 进步列表过滤
@@ -197,6 +282,12 @@ public class Constant {
 	public static final String IMPROVE_ALL_DETAIL_LIKE = "0";  //赞的明细
 	public static final String IMPROVE_ALL_DETAIL_FLOWER = "1";  //花的明细
 	public static final String IMPROVE_ALL_DETAIL_DIAMOND = "2";  //钻明细
+
+	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
+	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
+	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
+
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
 
@@ -234,9 +325,15 @@ public class Constant {
 	
 	
 	/**
-	 * 进步币添加来源   0:签到   1:发进步
+	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
 	 */
-	public static final String USER_IMP_COIN_CHECK = "0";  //签到
+	public static final String USER_IMP_COIN_CHECKIN="0";
+	public static final String USER_IMP_COIN_SHARE="1";
+	public static final String USER_IMP_COIN_INVITE = "2";
+	public static final String USER_IMP_COIN_FLOWERD="3";
+	public static final String USER_IMP_COIN_DIAMONDED = "4";
+	public static final String USER_IMP_COIN_ADDIMPROVE = "5";
+	public static final String USER_IMP_COIN_RANKAWARD = "6";
 
 
 	/**
@@ -252,6 +349,15 @@ public class Constant {
 	public static final String RANKIMAGE_STATUS_2 = "2";  //审核不通过 可以修改
 	public static final String RANKIMAGE_STATUS_3 = "3";  //神格不通过 不可以修改
 	public static final String RANKIMAGE_STATUS_4 = "4";  //审核通过
+
+
+	public static final String RANK_ISAUTO_YES = "0";  //自动发布
+	public static final String RANK_ISAUTO_NO = "1";    //手动发布
+	public static final String RANK_ISAUTO_TIME = "2";    //定时发布
+
+
+	public static final String RANK_ISUP_YES = "1"; //已发布
+	public static final String RANK_ISUP_NO = "0"; //为发布
 
 	
 	/**
@@ -328,11 +434,18 @@ public class Constant {
 	/*
 	 * mtype 0 系统消息(通知消息.进步消息等) 
      * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石  5:粉丝  等等)
+     * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
      * 消息展示模版
 	 */
 	public static final String  MSG_FLOWER_MODEL = "给这条微进步献了n朵花"; 		//进步送花消息模板
 	public static final String  MSG_LIKE_MODEL = "赞了这条微进步"; 				//进步点赞消息模板
 	public static final String  MSG_DIAMOND_MODEL = "给这条微进步赞赏了n颗砖石"; 	//进步送钻石消息模板
+	
+	public static final String  MSG_CLASSROOM_REPLY_MODEL = "批复了你在教室'n'上传的作业"; 	//老师回复提问消息模板
+	public static final String  MSG_USER_LEVEL_MODEL = "你的龙级升级到n级"; 	//等级提升消息模板
+	public static final String  MSG_USER_PL_LEVEL_MODEL = "十全十美能级---m升级到n级"; 	//十全十美类型等级提升消息模板
+	
 
 	/**
 	 * activemq
@@ -382,17 +495,72 @@ public class Constant {
 	public static final String RP_USER_CHECK_DATE = "user_check_date_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
 	
+	/*
+	 * 用户龙币   进步币   缓存到redis
+	 */
+	public static final String RP_USER_IMP_COIN_VALUE = "user_imp_coin_";  //进步币
+	public static final String RP_USER_MONEY_VALUE = "user_money_";  //龙币
+	
 
 	/**
 	 * 目标中每日进步 缓存到截止两天  榜单中进步  缓存一天
 	 */
 	public static final String RP_IMPROVE_NDAY = "improve_day_";
 
+	/**
+	 * 圈子中的当天的入圈人数
+	 */
+	public static final String RP_CIRCLE_INSERT_CIRCLEMEMBER="circle_insert_date_";
 
 
+	public static final String REDIS_IMPROVE_LIKE = "improve_like_";  //redis中like相关
+	public static final String REDIS_IMPROVE_FLOWER = "improve_flower_"; //redis中flower
 	public static final String REDIS_IMPROVE_LFD = "improve_lfd_"; //进步的 赞，花，钻石
-	public static final String MONGO_IMPROVE_LFD_OPT_LIKE = "0";   //点赞
-	public static final String MONGO_IMPROVE_LFD_OPT_FLOWER = "1";  //送花
-	public static final String MONGO_IMPROVE_LFD_OPT_DIAMOND = "2";  //送钻
+
+	public static final String REDIS_RANK_SORT = "rank_sort_";//榜单 排名
+	public static final String REDIS_RANK_END = "rank_end_";//榜单结束 标识
+
+
+    /**
+     * 用户特权  操作
+     * Privilege
+     */
+    public static final String USER_PRIVILEGE_ADD_CIRCLE = "0";//
+    public static final String USER_PRIVILEGE_ADD_RANK = "1";//
+    public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
+
+	/****** JPUSH 消息的tag start ******/
+
+	public static final String JPUSH_TAG_COUNT_1001 = "1001";
+
+	/****** JPUSH 消息的tag end ******/
+
+	/** 操作类型 **/
+	public enum OperationType{
+		like,//点赞
+		flower,//送花
+		cancleLike,//取消点赞
+
+	}
+
+	/**
+	 * 排序类型
+	 */
+	public enum SortType{
+		comprehensive,//综合
+		likes,//赞
+		flower,//花
+	}
+	/**
+	 * money
+	 *   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+	 * 					3：设榜单    4：赞助榜单    5：赞助教室
+	 */
+	public static final String USER_MONEY_BUY = "0";
+	public static final String USER_MONEY_GIFT = "1";
+//	public static final String ;
+
+
+
 
 }

@@ -13,16 +13,18 @@
     <result column="needwarn" property="needwarn" jdbcType="CHAR"/>
     <result column="warntime" property="warntime" jdbcType="VARCHAR"/>
     <result column="week" property="week" jdbcType="VARCHAR"/>
-
+    <result column="icount" property="icount" jdbcType="INTEGER"/>
+    <result column="likes" property="likes" jdbcType="INTEGER"/>
+    <result column="flowers" property="flowers" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week
+    id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week,likes,flowers
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByGoalId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from user_goal
-    where id = #{id,jdbcType=INTEGER}
+    where goalid = #{goalid}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_goal
@@ -117,5 +119,29 @@
       isdel = #{isdel,jdbcType=CHAR},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateTitle">
+    UPDATE user_goal
+    set goaltag=#{title}
+    where goalid=#{goalid}
+  </update>
+
+  <update id="delGoal">
+    UPDATE user_goal
+    set isdel='1'
+    where goalid=#{goalid}
+    and userid=#{userid}
+  </update>
+  <update id="updateIcount">
+    UPDATE user_goal
+    <if test="otype == '1'">
+      set icount = icount+1
+    </if>
+    <if test="otype == '0'">
+      set icount = icount-1
+    </if>
+    where goalid=#{goalid}
+    and userid=#{userid}
   </update>
 </mapper>

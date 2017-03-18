@@ -1,6 +1,8 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.entity.SnsFriends;
 import org.apache.ibatis.annotations.Param;
@@ -32,9 +34,14 @@ public interface SnsFriendsMapper {
 	int updateRemarkByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid,
 			@Param("remark") String remark);
 
-	List<SnsFriends> selectListByUsrid(@Param("userid") long userid, @Param("startNum") int startNum,
-			@Param("endNum") long endNum);
+	List<SnsFriends> selectListByUsrid(@Param("userid") long userid, @Param("startNum") Integer startNum,
+			@Param("endNum") Integer endNum,@Param("updateTime") Date updateTime,@Param("isDel") Integer isDel);
 
 	int deleteByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid);
 
+	/**
+	 * 更改好友的信息
+     * @return
+     */
+	int updateByUidAndFid(Map<String,Object> map);
 }

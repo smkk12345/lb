@@ -8,9 +8,10 @@
 */
 package com.longbei.appservice.service.impl;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private FriendService friendService;
 	
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#insertFriend(long, long)
@@ -73,27 +76,59 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectListByUserId(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectListByUserId(long userid, Integer startNum, Integer endNum,Date updateTime) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum);
+			List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+			Integer isDel = null;
+			if(updateTime == null){
+				isDel = 0;
+			}
+
+			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
 			if(null != list && list.size()>0){
 				for (SnsFriends snsFriends : list) {
-					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(snsFriends.getFriendid());
-					if(null != userInfo){
-						snsFriends.setFriendNickname(userInfo.getNickname());
-						snsFriends.setUsername(userInfo.getUsername());
-						snsFriends.setFriendAvatar(userInfo.getAvatar());
+					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.findById(snsFriends.getFriendid()+"");
+
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("userid",snsFriends.getFriendid());
+					map.put("nickname",StringUtils.formatMobileOrUsername(appUserMongoEntit.getNickname()));
+					map.put("avatar",appUserMongoEntit.getAvatar());
+					map.put("username",appUserMongoEntit.getUsername());
+
+					if(StringUtils.isNotEmpty(snsFriends.getRemark())){
+						map.put("remark",snsFriends.getRemark());
+					}else{
+						map.put("remark",appUserMongoEntit.getNickname());
+					}
+
+					if(!"1".equals(snsFriends.getIsdel())){
 						//判断该好友是否已关注
 						SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
 						if(null != snsFans){
-							snsFriends.setIslike("1");
+							map.put("isfans","1");
+						}else{
+							map.put("isfans","0");
+						}
+					}else{
+						map.put("isfans","0");
+					}
+
+					//判断是怎么操作
+					if(updateTime != null){
+						if("1".equals(snsFriends.getIsdel())){
+							map.put("operationType","delete");
+						}else if(DateUtils.compare(snsFriends.getCreatetime(),updateTime)){
+							map.put("operationType","insert");
+						}else{
+							map.put("operationType","update");
 						}
 					}
+					resultList.add(map);
 				}
 			}
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			baseResp.setData(list);
+			baseResp.setData(resultList);
 		} catch (Exception e) {
 			logger.error("selectListByUserId error and msg = {}",e);
 		}
@@ -127,11 +162,15 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> insertFans(long userid, long likeuserid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
+			//查看该用户是否已经关注此用户
+			SnsFans tempSnsFans = this.snsFansMapper.selectByUidAndLikeid(userid,likeuserid);
+			if(tempSnsFans != null){
+				return baseResp.fail("您已关注了该用户,不用再次关注!");
+			}
+
 			SnsFans snsFans = new SnsFans(userid,likeuserid);
-			SnsFans snsFans1 = new SnsFans(likeuserid,userid);
 			int n = snsFansMapper.insert(snsFans);
-			int n1 = snsFansMapper.insert(snsFans1);
-			if(n == 1 && n1 == 1){
+			if(n > 0){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -149,8 +188,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
 			int n = snsFansMapper.deleteByUidAndLid(userid, likeuserid);
-			int n1 = snsFansMapper.deleteByUidAndLid(likeuserid, userid);
-			if(n == 1&&n1 == 1){
+			if(n > 0){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -164,7 +202,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectFansListByUserId(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectFansListByUserId(long userid, Integer startNum, Integer endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
 			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
@@ -182,8 +220,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 //					}
 				}
 			}
-			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectFansByUserid error and msg = {}",e);
 		}
@@ -225,24 +263,24 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-			List<String> fansList = snsFansMapper.selectListidByUid(userid);
-			//读取拼接ids
-			String ids = selectids(userid, friendList, fansList);
-			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0", startNum, endNum);
-			if(null != list && list.size()>0){
-				for (UserInfo userInfo : list) {
-					if(friendList.contains(userInfo.getUserid())){
-						//是好友
-						userInfo.setIsfriend("1");
-					}
-					if(fansList.contains(userInfo.getUserid())){
-						//已关注
-						userInfo.setIslike("1");
-					}
-				}
-			}
+//			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
+//			List<String> fansList = snsFansMapper.selectListidByUid(userid);
+//			//读取拼接ids
+//			String ids = selectids(userid, friendList, fansList);
+//			//type 0：本地 1：远程
+//			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "0", startNum, endNum);
+//			if(null != list && list.size()>0){
+//				for (UserInfo userInfo : list) {
+//					if(friendList.contains(userInfo.getUserid())){
+//						//是好友
+//						userInfo.setIsfriend("1");
+//					}
+//					if(fansList.contains(userInfo.getUserid())){
+//						//已关注
+//						userInfo.setIslike("1");
+//					}
+//				}
+//			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectLocalListByUnameAndNname userid = {}, nickname = {}, msg = {}", userid, nickname, e);
@@ -254,8 +292,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * @author yinxc
 	 * 通讯录远程搜索(手机号和昵称搜索)
 	 * 2017年2月6日
-	 * return_type
-	 * UserRelationService
+	 * 搜索屏蔽当前访问userid
 	 */
 	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -265,14 +302,14 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(userid, friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(nickname, ids, "1", startNum, endNum);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
-					if(friendList.contains(userInfo.getUserid())){
+					if(friendList.contains(userInfo.getId())){
 						//是好友
 						userInfo.setIsfriend("1");
 					}
-					if(fansList.contains(userInfo.getUserid())){
+					if(fansList.contains(userInfo.getId())){
 						//已关注
 						userInfo.setIslike("1");
 					}
@@ -281,13 +318,26 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_27, Constant.RTNINFO_SYS_27);
 			}
-			
+			reseResp.setData(list);
 		} catch (Exception e) {
-			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}, msg = {}", userid, nickname, e);
+			e.printStackTrace();
+			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}", userid, nickname, e);
 		}
 		return reseResp;
 	}
-	
+
+	/**
+	 * 查询系统推荐的达人
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	@Override
+	public BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize) {
+		List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
+		return null;
+	}
+
 	/**
 	 * @author yinxc
 	 * 读取拼接ids
@@ -321,7 +371,7 @@ public class UserRelationServiceImpl implements UserRelationService {
      * @author:luye
      */
     private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(String.valueOf(snsFans.getLikeuserid()));
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
         snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
     }
 

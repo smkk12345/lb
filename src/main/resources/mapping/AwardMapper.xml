@@ -14,7 +14,7 @@
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <association property="awardClassify" javaType="com.longbei.appservice.entity.AwardClassify">
       <id property="id" column="awardcateid"/>
-      <result property="classifynamev" column="classifynamev"/>
+      <result property="classifyname" column="classifyname"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -23,19 +23,28 @@
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
-    from award
-    where id = #{id,jdbcType=INTEGER}
+    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,
+    a.createtime, a.updatetime
+    FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
+    where a.id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
     SELECT count(*) FROM award
   </select>
 
-  <select id="selectAwardList">
+  <select id="selectAwardList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.Award">
     SELECT
-    <include refid="Base_Column_List"/>,classifynamev
-    FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id ORDER BY a.createtime DESC
-    limit #{startno},#{pagesize}
+    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,
+    a.createtime, a.updatetime,classifyname
+    FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
+    WHERE 1=1
+    <if test="award.awardtitle != null">
+      AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
+    </if>
+    ORDER BY a.createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
   </select>
 
 

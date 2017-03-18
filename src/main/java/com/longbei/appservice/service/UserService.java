@@ -9,6 +9,21 @@ import com.longbei.appservice.entity.UserInfo;
  *
  */
 public interface UserService {
+	
+	/**
+	 * @author yinxc
+	 * 个人中心
+	 * 2017年3月9日
+	 */
+	BaseResp<UserInfo> selectInfoMore(long userid);
+	
+	/**
+	 * @author yinxc
+	 * 获取个人资料    屏蔽无用的字段
+	 * 2017年3月8日
+	 */
+	BaseResp<Object> selectByUserid(long userid);
+	
 	/**
 	 * 注册
 	 * @param username
@@ -128,5 +143,22 @@ public interface UserService {
      * @return
      */
 	BaseResp<Object> changePassword(long userid,String pwd,String newpwd);
+
+	/**
+	 * 获取用户等级特权
+	 * @param grade
+	 * @return
+	 */
+	BaseResp<Object> userlevel(long userid,int grade);
+
+	/**
+	 * 更改用户信息
+	 * @param userid
+	 * @param longitude
+	 * @param latitude
+	 * @param dateStr
+	 * @return
+	 */
+	BaseResp<Object> gps(long userid,double longitude,double latitude,String dateStr);
 
 }

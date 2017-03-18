@@ -1,9 +1,11 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ImproveMapper {
 
@@ -26,6 +28,8 @@ public interface ImproveMapper {
     List<Improve> selectListByBusinessid(@Param("businessid")String businessid,
                                          @Param("tablename")String tablename,
                                          @Param("ismainimp")String ismainimp,
+                                         @Param("userid") String userid,
+                                         @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
     
@@ -78,10 +82,77 @@ public interface ImproveMapper {
      */
     int remove(@Param("userid") String userid,@Param("improveid") String improveid);
 
+
+
+
+
     /**
-     *
-     * 获取进步方法
-     * -- 通过主键获取(公开或者私密或者all,删除或者未删除或者all)
+     * 查询兴趣圈中某人的进步
+     * @param map
+     * @return
      */
+    List<Improve> findCircleMemberImprove(Map<String, Object> map);
+
+    List<Improve> selectGoalMainImproveList(@Param("userid") long userid,@Param("startNum") int startNum,@Param("endNum") int endNum);
+
+    int delGoalToImprove(@Param("goalid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);
+
+    /**
+     * 更新主进步为非主进步
+     * @param businessid
+     * @param userid
+     * @return
+     */
+    int updateGolaMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
+
+    int updateRankMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
+    //improve.getBusinessid(),improve.getUserid(),tableName,"rankid"
+
+    /**
+     * 选举主进步
+     * @param businessid
+     * @param userid
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int chooseMainImprove(@Param("businessid")long businessid,
+                          @Param("userid")long userid,
+                          @Param("tablename")String tablename,
+                          @Param("field")String field);
+
+    /**
+     * 进步删除之后修改脏数据
+     * @param businessid
+     * @param userid
+     * @param flower
+     * @param like
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int afterDelSubImp(@Param("businessid")long businessid,
+                       @Param("userid")long userid,
+                       @Param("flower")int flower,
+                       @Param("like")int like,
+                       @Param("tablename")String tablename,
+                       @Param("field")String field);
+
+    /**
+     * 更新总的数据
+     * @param businessid
+     * @param userid
+     * @param count
+     * @param otype  0 点赞  1 鲜花 2 送钻
+     * @param tablename
+     * @param field
+     * @return
+     */
+    int updateSourceLike(@Param("businessid")long businessid,
+                         @Param("userid")long userid,
+                         @Param("icount")int count,
+                         @Param("operatetype")String otype,
+                         @Param("tablename")String tablename,
+                         @Param("field")String field);
 
 }

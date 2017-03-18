@@ -7,9 +7,12 @@ import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.longbei.appservice.common.persistence.SFSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,15 +82,41 @@ public class IdGenerateService  {
 	}
 
 	public Long getUniqueIdAsLong() {
-		long now = System.currentTimeMillis();
-		StringBuilder sb = new StringBuilder(64);
+//		long now = System.currentTimeMillis();
+//		StringBuilder sb = new StringBuilder(64);
+//
+//		sb.append(SHORT_DATE_TIME_FORMAT.format(now));
+//		sb.append(String.format(MACHINE_ID_FORMAT, machineId));
+//		sb.append(String.format("%03d", seq.getAndIncrement() % 100000));
 
-		sb.append(SHORT_DATE_TIME_FORMAT.format(now));
-		sb.append(String.format(MACHINE_ID_FORMAT, machineId));
-		sb.append(String.format("%03d", seq.getAndIncrement() % 100000));
-
-		return Long.parseLong(sb.toString());
+		return sequ.nextId();
 	}
-	
-	
+
+	private static SFSequence sequ = new SFSequence(machineId%32,0);
+
+	/**
+	 * 随机字符串
+	 * @param isNum 是否是数字,如果是数字,则首位字符串不会生成0
+	 * @param length 长度
+     * @return
+     */
+	public static String getRandomString(boolean isNum,int length){
+		String[] base = new String[]{"1","2","3","4","5","6","7","8","9","0","a","b","c","d","e","f","g","h"
+							,"i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+		Random random = new Random();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			int number = 0;
+			if(isNum && i > 0){
+				number = random.nextInt(10);
+			}else if(isNum && i == 0){
+				number = random.nextInt(9);
+			}else{
+				number = random.nextInt(base.length);
+			}
+			sb.append(base[number]);
+		}
+		return sb.toString();
+	}
+
 }

@@ -1,9 +1,9 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.Date;
 
 public class SnsFriends {
     private Integer id;
@@ -12,47 +12,49 @@ public class SnsFriends {
 
     private Long friendid;
 
-    private String friendNickname;  //好友昵称
-    
-    private String friendAvatar;   //好友头像
-    
-    private String username;
-    
+    private String nickname;  //好友昵称/好友备注昵称
+
+    private AppUserMongoEntity appUserMongoEntity;//用户基本信息实体
+
     private String remark; //备注
 
     private String ispublic;//是否公开
-    
-    private String islike = "0";//是否关注   0：未关注   1：已关注
+
+    private String isfans = "0";//是否关注   0：未关注   1：已关注
 
     private Date createtime;
 
+    private Integer isdel;//是否删除 0:未删除 1:已删除
+
+    private Date updatetime;
+
     public SnsFriends(){};
-    
+
     public SnsFriends(long userid,long friendid){
     		super();
     		this.userid = userid;
     		this.friendid = friendid;
     };
-    
+
     /**
-     * 
-     * @return id 
+     *
+     * @return id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id 
+     *
+     * @param id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return userid 
+     *
+     * @return userid
      */
     @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
@@ -60,16 +62,16 @@ public class SnsFriends {
     }
 
     /**
-     * 
-     * @param userid 
+     *
+     * @param userid
      */
     public void setUserid(Long userid) {
         this.userid = userid;
     }
 
     /**
-     * 
-     * @return friendid 
+     *
+     * @return friendid
      */
     @JsonInclude(Include.ALWAYS)
     public Long getFriendid() {
@@ -77,8 +79,8 @@ public class SnsFriends {
     }
 
     /**
-     * 
-     * @param friendid 
+     *
+     * @param friendid
      */
     public void setFriendid(Long friendid) {
         this.friendid = friendid;
@@ -118,52 +120,67 @@ public class SnsFriends {
     }
 
     /**
-     * 
-     * @return createtime 
+     *
+     * @return createtime
      */
     public Date getCreatetime() {
         return createtime;
     }
 
     /**
-     * 
-     * @param createtime 
+     *
+     * @param createtime
      */
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
-	public String getFriendNickname() {
-		return friendNickname;
-	}
+    public String getNickname() {
+        return nickname;
+    }
 
-	public void setFriendNickname(String friendNickname) {
-		this.friendNickname = friendNickname;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getFriendAvatar() {
-		return friendAvatar;
-	}
-
-	public void setFriendAvatar(String friendAvatar) {
-		this.friendAvatar = friendAvatar;
-	}
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
 	@JsonInclude(Include.ALWAYS)
-	public String getIslike() {
-		return islike;
+	public String getIsfans() {
+		return isfans;
 	}
 
-	public void setIslike(String islike) {
-		this.islike = islike;
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
 	}
-    
+
+    /**
+     * 获取用户基本信息实体
+     * @return
+     */
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    /**
+     * 设置用户基本信息实体
+     * @param appUserMongoEntity
+     */
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
 }

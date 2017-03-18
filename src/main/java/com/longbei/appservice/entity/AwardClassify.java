@@ -11,7 +11,7 @@ public class AwardClassify {
     /**
      * 类别名字
      */
-    private String classifynamev;
+    private String classifyname;
 
     /**
      * 父级id
@@ -23,6 +23,8 @@ public class AwardClassify {
      */
     private Integer sort;
 
+    private String classifytype; //0 - 进步币 1 - 红包 3 - 实物
+
     /**
      * 
      */
@@ -33,6 +35,14 @@ public class AwardClassify {
      */
     private Date createtime;
 
+    public String getClassifytype() {
+        return classifytype;
+    }
+
+    public void setClassifytype(String classifytype) {
+        this.classifytype = classifytype;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -41,12 +51,12 @@ public class AwardClassify {
         this.id = id;
     }
 
-    public String getClassifynamev() {
-        return classifynamev;
+    public String getClassifyname() {
+        return classifyname;
     }
 
-    public void setClassifynamev(String classifynamev) {
-        this.classifynamev = classifynamev == null ? null : classifynamev.trim();
+    public void setClassifyname(String classifyname) {
+        this.classifyname = classifyname == null ? null : classifyname.trim();
     }
 
     public Integer getParentid() {

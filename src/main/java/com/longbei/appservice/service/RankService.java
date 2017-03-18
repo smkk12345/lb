@@ -2,8 +2,11 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankCheckDetail;
 import com.longbei.appservice.entity.RankImage;
+import com.longbei.appservice.entity.RankMembers;
 
 import java.util.Date;
 import java.util.List;
@@ -14,44 +17,31 @@ import java.util.List;
  * @author luye
  * @create 2017-01-20 下午3:25
  **/
-public interface RankService {
+public interface RankService extends BaseService{
 
     /**
      * 添加榜单接口
-     * @param ranktitle 榜单标题
-     * @param rankdetail 榜单简介
-     * @param ranklimite  榜单限制人数
-     * @param rankscope 榜单范围
-     * @param rankphotos 榜单图片
-     * @param rankrate  榜单中奖率
-     * @param starttime 开始时间
-     * @param endtime  结束时间
-     * @param areaname 地域名字
-     * @param createuserid 创建人id
-     * @param ranktype 榜单类型
-     * @param ispublic 是否公开
-     * @param rankcateid 榜单类型
-     * @param likescore 赞的分数
-     * @param flowerscore 花的分数
-     * @param diamondscore 钻石的分数
-     * @param codeword  入榜口令
-     * @param ptype  十全十美类型
-     * @param sourcetype  来源类型
-     * @param companyname  公司名字
-     * @param companyphotos 公司图片
-     * @param companybrief 公司简介
      * @return
+     * @author luye
      */
-    boolean insertRank(String rankdetail, String ranktitle,
-                       int ranklimite, String rankscope,
-                       String rankphotos, double rankrate,
-                       Date starttime, Date endtime, String areaname,
-                       String createuserid, String ranktype, String ispublic,
-                       String rankcateid, int likescore,
-                       int flowerscore, int diamondscore,
-                       String codeword, String ptype, String sourcetype,
-                       String companyname, String companyphotos,
-                       String companybrief);
+    boolean insertRank(RankImage rankImage);
+
+    /**
+     * 更新榜单 审核状态，发布专题，删除等操作
+     * @param rankImage
+     * @return
+     * @author luye
+     */
+    boolean updateRankImageSymbol(RankImage rankImage);
+
+    /**
+     * 更新榜单 结束 关闭
+     * @param rank
+     * @return
+     * @author luye
+     */
+    boolean updateRankSymbol(Rank rank);
+
 
     /**
      * 编辑榜单
@@ -59,19 +49,215 @@ public interface RankService {
      */
     boolean updateRankImage(RankImage rankImage);
 
-
+    /**
+     * 获取榜单详情 非线上
+     * @param rankimageid
+     * @return
+     * @author luye
+     */
     BaseResp<RankImage> selectRankImage(String rankimageid);
 
+    /**
+     * 发布榜单
+     * @param rankImageid
+     * @return
+     * @author luye
+     */
+    BaseResp publishRankImage(String  rankImageid);
 
-    BaseResp publishRankImage(String rankimageid);
+    /**
+     * 获取非线上榜单列表
+     * @param rankImage
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author luye
+     */
+    Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize);
 
-    Page<RankImage> selectRankImageList(RankImage rankImage,int startno, int pagesize);
+    /**
+     * 获取榜单列表 正式的
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author luye
+     */
+    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize);
 
-
+    /**
+     * 删除榜单 非线上
+     * @param rankimageid
+     * @return
+     * @author luye
+     */
     boolean deleteRankImage(String rankimageid);
 
 
+    /**
+     * @Title: updateSponsornumAndSponsormoney
+     * @Description: 更新赞助的统计人数和统计龙币数量
+     * @param @param userid 赞助人
+     * @param @param bid榜单
+     * @auther IngaWu
+     * @currentdate:2017年2月27日
+     */
+    boolean updateSponsornumAndSponsormoney(long rankid);
+
+    /**
+     * 审核榜单
+     * @param rankCheckDetail
+     * @return
+     * @author luye
+     */
     BaseResp checkRankImage(RankCheckDetail rankCheckDetail);
 
+    BaseResp<Object> selectRankByRankid(long rankid);
 
+    Rank selectByRankid(long rankid);
+
+    /**
+     * 用户加入榜单
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param codeword 口令
+     * @return
+     */
+    BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword);
+
+    /**
+     * 获取榜单详情 线上
+     * @param rankid
+     * @return
+     * @author luye
+     */
+    BaseResp<Rank> selectRankDetailByRankid(String rankid);
+
+    /**
+     * 获取成员列表 pc
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+
+    /**
+     * 获取成员列表 待审核 pc
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+
+
+
+    /**
+     * 获取榜单成员详细信息
+     * @param rankid
+     * @param userid
+     * @return
+     */
+    BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
+
+    /**
+     * 获取成员列表 app
+     * @param rankid
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<List<RankMembers>> selectRankMemberListForApp(String rankid,Integer startNo,Integer pageSize);
+
+    /**
+     * 退榜
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> removeRankMember(Long userId, Long rankId);
+
+
+    /**
+     * 下榜，下榜再不能参加
+     * @param rankMembers
+     * @return
+     * @author luye
+     */
+    BaseResp<Object> removeRankMember(RankMembers rankMembers);
+
+    /**
+     * 设置，取消达人
+     * @param rankMembers
+     * @return
+     */
+    BaseResp<Object> setIsfishionman(RankMembers rankMembers);
+
+    /**
+     * 更新榜单成员审核状态
+     * @param rankMembers
+     * @return
+     */
+    BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers);
+
+
+    /**
+     * 批量处理用户的参榜申请
+     * @param userIds 用户id 数组
+     * @param rankId 榜单id
+     * @param status 要处理的结果
+     * @return
+     */
+    BaseResp<Object> auditRankMember(Long[] userIds, Long rankId, Integer status);
+
+
+    /**
+     * 提价榜单成员审核结果
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> submitRankMemberCheckResultPreview(String rankid);
+
+    /**
+     * 改变榜单isfinish状态
+     * @param rank
+     * @return
+     */
+    BaseResp<Object> submitRankMemberCheckResult(Rank rank);
+
+    /**
+     * 获取成员列表 预览
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+    /**
+     * 查询用户在榜单中的排名
+     * @param rankId 榜单id
+     * @param userId 用户id
+     * @return
+     */
+    BaseResp<Object> ownRankSort(Long rankId, Long userId);
+
+    /**
+     * 榜单的排名
+     * @param rankId 榜单id
+     * @param sortType 排序的类型
+     * @param startNum 开始下标
+     * @param pageSize 每页条数
+     * @return
+     */
+    BaseResp<Object> rankMemberSort(Long rankId, Constant.SortType sortType, Integer startNum, Integer pageSize);
+
+    /**
+     * 获取榜中的达人
+     * @param rankId 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize);
 }

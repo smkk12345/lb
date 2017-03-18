@@ -40,7 +40,7 @@ public class CommentMongoDao {
 		try {
 			mongoTemplate1.insert(comment);
 		} catch (Exception e) {
-			logger.error("insertComment comment = {}, msg = {}", comment, e);
+			logger.error("insertComment comment = {}", comment, e);
 		}
 	}
 	
@@ -51,11 +51,11 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public List<Comment> selectCommentListByItypeid(String itypeid, String itype, int startNo,
+	public List<Comment> selectCommentListByItypeid(String businessid, String businesstype, int startNo,
 			int pageSize){
-		Criteria criteria  = Criteria.where("itype").is(itype);
-		if (!StringUtils.isBlank(itypeid)) {
-			criteria = criteria.and("itypeid").is(itypeid);
+		Criteria criteria  = Criteria.where("businesstype").is(businesstype);
+		if (!StringUtils.isBlank(businessid)) {
+			criteria = criteria.and("businessid").is(businessid);
 		}
 //		if (date != null) {
 //			criteria = criteria.and("createdate").lte(date); 
@@ -68,7 +68,7 @@ public class CommentMongoDao {
 		try {
 			comments = mongoTemplate1.find(query, Comment.class);
 		} catch (Exception e) {
-			logger.error("getCommentListByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("getCommentListByItypeid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return comments;
 	}
@@ -80,14 +80,14 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public List<Comment> selectCommentByItypeid(String itypeid, String itype){
+	public List<Comment> selectCommentByItypeid(String businessid, String businesstype){
 		List<Comment> list = null;
 		try {
-			Query query = Query.query(Criteria.where("itypeid").is(itypeid)
-					.and("itype").is(itype));
+			Query query = Query.query(Criteria.where("businessid").is(businessid)
+					.and("businesstype").is(businesstype));
 			list = mongoTemplate1.find(query,Comment.class);
 		} catch (Exception e) {
-			logger.error("selectCommentByItypeid itypeid = {}, itype = {}, msg = {}", itypeid, itype, e);
+			logger.error("selectCommentByItypeid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return list;
 	}
@@ -105,7 +105,7 @@ public class CommentMongoDao {
 			Query query = Query.query(Criteria.where("_id").is(id));
 			comment = mongoTemplate1.findOne(query,Comment.class);
 		} catch (Exception e) {
-			logger.error("selectCommentByid id = {}, msg = {}", id, e);
+			logger.error("selectCommentByid id = {}", id, e);
 		}
 		return comment;
 	}
@@ -122,7 +122,7 @@ public class CommentMongoDao {
 			Query query = Query.query(Criteria.where("_id").is(id));
 			mongoTemplate1.remove(query, Comment.class);
 		} catch (Exception e) {
-			logger.error("deleteComment id = {}, msg = {}", id, e);
+			logger.error("deleteComment id = {}", id, e);
 		}
 	}
 	

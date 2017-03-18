@@ -5,18 +5,31 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="rankid" property="rankid" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
-    <result column="itype" property="itype" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="iswinning" property="iswinning" jdbcType="CHAR" />
-    <result column="improvecount" property="improvecount" jdbcType="INTEGER" />
+    <result column="icount" property="icount" jdbcType="INTEGER" />
     <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="complaintotalcount" property="complaintotalcount" jdbcType="INTEGER" />
     <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="acceptaward" property="acceptaward" jdbcType="CHAR" />
+    <result column="isfashionman" property="isfashionman" jdbcType="CHAR" />
+    <result column="checkstatus" property="checkstatus" jdbcType="CHAR" />
+    <result column="checkresult" property="checkresult" jdbcType="VARCHAR" />
+    <result column="checkuserid" property="checkuserid" jdbcType="VARCHAR" />
+    <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
+    <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
+    <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
+      <result column="awardid" property="awardid" jdbcType="VARCHAR" />
+      <result column="awardlevel" property="awardlevel" jdbcType="VARCHAR" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, userid, itype, createtime, updatetime, sortnum, iswinning, improvecount, 
-    likes, flowers
+      id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
+    likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
+    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -24,19 +37,114 @@
     from rank_members
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">
+    select
+        count(1)
+    from rank_members
+    <where>
+        <if test="isfashionman != null">
+          isfashionman = #{isfashionman}
+        </if>
+        <if test="checkstatus != null">
+          <choose>
+            <when test="checkstatus == '2'.toString()">
+              AND (checkstatus = '2' OR checkstatus = '3')
+            </when>
+            <when test="checkstatus == '-1'.toString()">
+              AND (checkstatus != '0')
+            </when>
+            <otherwise>
+              AND checkstatus = #{checkstatus}
+            </otherwise>
+          </choose>
+        </if>
+        <if test="appUserMongoEntities != null">
+          AND  userid in
+          <foreach item="item" index="index" collection="appUserMongoEntities" open="(" separator="," close=")">
+            #{item.id}
+          </foreach>
+        </if>
+        AND status = '1'
+        and rankid=#{rankid}
+    </where>
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM rank_members
+    <where>
+        <if test="rankmember.isfashionman != null">
+          AND isfashionman = #{rankmember.isfashionman}
+        </if>
+        <if test="rankmember.checkstatus != null">
+          <choose>
+            <when test="rankmember.checkstatus == '2'.toString()">
+              AND (checkstatus = '2' OR checkstatus = '3')
+            </when>
+            <when test="checkstatus == '-1'.toString()">
+              AND (checkstatus != '0')
+            </when>
+            <otherwise>
+              AND checkstatus = #{rankmember.checkstatus}
+            </otherwise>
+          </choose>
+        </if>
+        <if test="rankmember.appUserMongoEntities != null">
+          AND  userid in
+          <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
+            #{item.id}
+          </foreach>
+        </if>
+        AND status = '1'
+        and rankid=#{rankmember.rankid}
+    </where>
+    ORDER BY sortnum DESC ,likes DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+
+  <select id="selectWaitCheckList" resultMap="BaseResultMap">
+    SELECT *
+      FROM
+    (SELECT <include refid="Base_Column_List" /> FROM rank_members
+    WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' limit #{totalcount}) temp
+    WHERE 1=1
+    <if test="rankmember.isfashionman != null">
+      AND temp.isfashionman = #{rankmember.isfashionman}
+    </if>
+    <if test="rankmember.appUserMongoEntities != null">
+      AND  temp.userid in
+      <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    ORDER BY temp.sortnum DESC ,temp.likes DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rank_members
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankMembers" >
     insert into rank_members (id, rankid, userid, 
-      itype, createtime, updatetime, 
-      sortnum, iswinning, improvecount, 
-      likes, flowers)
+      createtime, updatetime,
+      sortnum, iswinning, icount,
+      likes, flowers,status,
+      acceptaward, isfashionman)
     values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
-      #{sortnum,jdbcType=INTEGER}, #{iswinning,jdbcType=CHAR}, #{improvecount,jdbcType=INTEGER}, 
-      #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER})
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+      #{sortnum,jdbcType=INTEGER}, #{iswinning,jdbcType=CHAR}, #{icount,jdbcType=INTEGER},
+      #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER},#{status,jdbcType=INTEGER},
+      #{acceptaward,jdbcType=CHAR}, #{isfashionman,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankMembers" >
     insert into rank_members
@@ -50,9 +158,6 @@
       <if test="userid != null" >
         userid,
       </if>
-      <if test="itype != null" >
-        itype,
-      </if>
       <if test="createtime != null" >
         createtime,
       </if>
@@ -65,14 +170,23 @@
       <if test="iswinning != null" >
         iswinning,
       </if>
-      <if test="improvecount != null" >
-        improvecount,
+      <if test="icount != null" >
+        icount,
       </if>
       <if test="likes != null" >
         likes,
       </if>
       <if test="flowers != null" >
         flowers,
+      </if>
+      <if test="acceptaward != null" >
+        acceptaward,
+      </if>
+      <if test="isfashionman != null" >
+        isfashionman,
+      </if>
+      <if test="status != null" >
+        status,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -84,9 +198,6 @@
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
-      </if>
-      <if test="itype != null" >
-        #{itype,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -100,14 +211,23 @@
       <if test="iswinning != null" >
         #{iswinning,jdbcType=CHAR},
       </if>
-      <if test="improvecount != null" >
-        #{improvecount,jdbcType=INTEGER},
+      <if test="icount != null" >
+        #{icount,jdbcType=INTEGER},
       </if>
       <if test="likes != null" >
         #{likes,jdbcType=INTEGER},
       </if>
       <if test="flowers != null" >
         #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="acceptaward != null" >
+        #{acceptaward,jdbcType=CHAR},
+      </if>
+      <if test="isfashionman != null" >
+        #{isfashionman,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        #{status},
       </if>
     </trim>
   </insert>
@@ -119,9 +239,6 @@
       </if>
       <if test="userid != null" >
         userid = #{userid,jdbcType=BIGINT},
-      </if>
-      <if test="itype != null" >
-        itype = #{itype,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -135,14 +252,23 @@
       <if test="iswinning != null" >
         iswinning = #{iswinning,jdbcType=CHAR},
       </if>
-      <if test="improvecount != null" >
-        improvecount = #{improvecount,jdbcType=INTEGER},
+      <if test="icount != null" >
+        icount = #{icount,jdbcType=INTEGER},
       </if>
       <if test="likes != null" >
         likes = #{likes,jdbcType=INTEGER},
       </if>
       <if test="flowers != null" >
         flowers = #{flowers,jdbcType=INTEGER},
+      </if>
+      <if test="acceptaward != null" >
+        acceptaward = #{acceptaward,jdbcType=CHAR},
+      </if>
+      <if test="isfashionman != null" >
+        isfashionman = #{isfashionman,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -151,14 +277,164 @@
     update rank_members
     set rankid = #{rankid,jdbcType=BIGINT},
       userid = #{userid,jdbcType=BIGINT},
-      itype = #{itype,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       sortnum = #{sortnum,jdbcType=INTEGER},
       iswinning = #{iswinning,jdbcType=CHAR},
-      improvecount = #{improvecount,jdbcType=INTEGER},
+      icount = #{icount,jdbcType=INTEGER},
       likes = #{likes,jdbcType=INTEGER},
-      flowers = #{flowers,jdbcType=INTEGER}
+      flowers = #{flowers,jdbcType=INTEGER},
+      acceptaward = #{acceptaward,jdbcType=CHAR},
+      isfashionman = #{isfashionman,jdbcType=CHAR},
+      status =#{status}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 根据用户id和榜单id查询榜单 -->
+  <select id="selectByRankIdAndUserId" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from
+        rank_members
+    where
+        rankid = #{rankid}
+      and userid = #{userid}
+  </select>
+
+  <!-- 更改榜单中的用户数量 -->
+  <update id="updateRankMemberCount">
+      update
+        rank_members
+      set
+        rankinvolved = rankinvolved + #{count}
+      where rankid = #{rankId}
+  </update>
+
+  <!-- 更新rank -->
+  <update id="updateRank" parameterType="map">
+    update
+        rank_members
+    <set>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="initRankMember != null and initRankMember">
+          icount =0,
+          likes =0,
+          flowers =0,
+        </if>
+        <if test="sortNum != null">
+            sortnum = #{sortNum},
+        </if>
+        <if test="checkstatus != null">
+            checkstatus = #{checkstatus}
+        </if>
+    </set>
+    where userid = #{userId} and rankid = #{rankId}
+  </update>
+
+  <update id="updateRankMemberState" parameterType="com.longbei.appservice.entity.RankMembers">
+    UPDATE
+      rank_members
+    <set>
+      <if test="iswinning != null">
+        iswinning = #{iswinning},
+      </if>
+      <if test="rankAward != null">
+        <if test="rankAward.awardid != null">
+          awardid = #{rankAward.awardid},
+        </if>
+        <if test="rankAward.awardlevel != null">
+          awardlevel = #{rankAward.awardlevel},
+        </if>
+      </if>
+      <if test="isfashionman != null">
+        isfashionman = #{isfashionman},
+      </if>
+      <if test="checkstatus != null">
+        checkstatus = #{checkstatus},
+      </if>
+      <if test="checkuserid != null">
+        checkuserid = #{checkuserid},
+      </if>
+      <if test="checkdate != null">
+        checkdate = #{checkdate},
+      </if>
+      <if test="isfashionman != null">
+        isfashionman = #{isfashionman},
+      </if>
+      <if test="checkresult != null">
+        checkresult = #{checkresult},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      <if test="receivecode != null">
+        receivecode = #{receivecode},
+      </if>
+    </set>
+    where rankid = #{rankid} and userid = #{userid}
+  </update>
+
+
+  <update id="updateRankImproveCount">
+    UPDATE rank_members
+      set icount = icount+#{icount}
+    where rankid=#{rankid}
+    and userid=#{userid}
+  </update>
+
+  <!-- 获取用户在榜单中的排名 -->
+  <select id="selectUserSort">
+      select
+          <include refid="Base_Column_List" />
+      from
+        rank_members
+      <where>
+        rankId = #{rankId}
+      </where>
+      <if test="sortType == 'likes'">
+        order by likes desc
+      </if>
+      <if test="sortType == 'flower'">
+        order by flowers desc
+      </if>
+      <if test="startNum != null">
+          limit #{startNum},#{pageSizee}
+      </if>
+  </select>
+
+  <!-- 审核用户的进步条数 -->
+  <update id="instanceRankMember" parameterType="map">
+      update rank_members
+      <set> checkstatus = #{status}
+        <if test="checkresult != null">
+          ,checkresult = #{checkresult}
+        </if>
+      </set>
+      WHERE
+          <if test="type != null and type == 'less'">
+            icount &lt; #{minImproveNum}
+          </if>
+          <if test="type != null and type == 'greater'">
+            icount >= #{minImproveNum}
+          </if>
+          and rankid = #{rankId}
+  </update>
+
+  <!-- 根据条件查询 rankMembers -->
+  <select id="selectRankMembers" parameterType="map" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      from rank_members
+      <where>
+          <if test="isFashionMan != null">
+              isfashionman = 1 AND
+          </if>
+         rankId = #{rankId}
+      </where>
+      <if test="startNum != null">
+          limit #{startNum},#{pageSize}
+      </if>
+  </select>
 </mapper>

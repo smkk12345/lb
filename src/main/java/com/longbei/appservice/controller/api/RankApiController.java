@@ -13,9 +13,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.RankCheckDetail;
-import com.longbei.appservice.entity.RankImage;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,35 +42,29 @@ public class RankApiController {
 
     @Autowired
     private  RankService rankService;
+    @Autowired
+    private ImproveService improveService;
 
 
     /**
      * 获取榜单列表
-     * @param ranktitle  榜单标题
-     * @param rankscope  榜单范围
-     * @param starttimestart  开始时间（起始）
-     * @param starttimeend  开始时间（结束）
-     * @param endtimestart  结束时间 （起始）
-     * @param endtimeend  结束时间（结束）
-     * @param rankcateid  榜单类型
-     * @param ispublic  是否公开
-     * @param ptype   十全十美类型
-     * @param sourcetype  来源类型
-     * @param companyname  公司名字
      * @param pageno  页码
      * @param pagesize  条数
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectlist")
-    public BaseResp<Page<Rank>> selectRankList(String ranktitle, String rankscope,
-                                              String starttimestart, String starttimeend,
-                                              String endtimestart, String endtimeend,
-                                              String rankcateid, String ispublic,
-                                              String ptype, String sourcetype, String companyname,
-                                              String pageno, String pagesize
-                                         ){
-        return null;
+    public BaseResp<Page<Rank>> selectRankList(@RequestBody Rank rank,String pageno,String pagesize){
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<Rank>> baseResp = new BaseResp<>();
+        try {
+            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return baseResp;
     }
 
     /**
@@ -82,12 +76,17 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectimagelist")
     public BaseResp selectRankImageList(@RequestBody RankImage rankImage, String pageno, String pagesize, HttpServletRequest request){
-
-        Page<RankImage> rankImages = rankService.selectRankImageList
-                (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        BaseResp<Page<RankImage>> ranks = BaseResp.ok();
-        ranks.setData(rankImages);
-        return ranks;
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<RankImage>> baseResp = new BaseResp<>();
+        try {
+            Page<RankImage> rankImages = rankService.selectRankImageList
+                    (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(rankImages);
+        } catch (NumberFormatException e) {
+            logger.error("select rank iamge list for adminservice is error:",e);
+        }
+        return baseResp;
     }
 
 
@@ -102,7 +101,17 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectdetail")
     public BaseResp<Rank> selectRankDetail(String rankid){
-        return null;
+        logger.info("selectRankDetail rankid={}",rankid);
+        BaseResp<Rank> baseResp = new BaseResp();
+        if (com.longbei.appservice.common.utils.StringUtils.isBlank(rankid)){
+            return baseResp;
+        }
+        try {
+            baseResp = rankService.selectRankDetailByRankid(rankid);
+        } catch (NumberFormatException e) {
+            logger.error("select rank info rankid={} is error:",rankid,e);
+        }
+        return baseResp;
     }
 
 
@@ -133,16 +142,7 @@ public class RankApiController {
         boolean issuccess = false;
 
         try {
-            issuccess = rankService.insertRank(rankImage.getRankdetail(),rankImage.getRanktitle(),
-                    rankImage.getRanklimite(),
-                    rankImage.getRankscope(),rankImage.getRankphotos(),rankImage.getRankrate(),
-                    rankImage.getStarttime(),
-                    rankImage.getEndtime(),
-                    rankImage.getAreaname(),String.valueOf(rankImage.getCreateuserid()),rankImage.getRanktype(),
-                    rankImage.getIspublic(),String.valueOf(rankImage.getRankcateid()),
-                    rankImage.getLikescore(),rankImage.getFlowerscore(),
-                    rankImage.getDiamondscore(),rankImage.getCodeword(),rankImage.getPtype(),
-                    rankImage.getSourcetype(),rankImage.getCompanyname(),rankImage.getCompanyphotos(),rankImage.getCompanybrief());
+            issuccess = rankService.insertRank(rankImage);
             if(issuccess){
                 return BaseResp.ok(Constant.RTNINFO_SYS_50);
             }
@@ -171,6 +171,55 @@ public class RankApiController {
         }
         return BaseResp.fail(Constant.RTNINFO_SYS_53);
     }
+
+
+
+    /**
+     * 编辑榜单状态
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateimagesymbol")
+    public BaseResp<Object> updateRankImageSymbol(@RequestBody RankImage rankImage){
+
+        boolean issuccess = false;
+        try {
+            issuccess = rankService.updateRankImageSymbol(rankImage);
+            if(issuccess){
+                BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
+                if (null != rankImage.getAutotime()){
+                    baseResp.setData(rankImage.getAutotime());
+                }
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return BaseResp.fail(Constant.RTNINFO_SYS_53);
+    }
+
+    /**
+     * 编辑榜单状态 公告等信息 线上
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updatesymbol")
+    public BaseResp<Object> updateRankSymbol(@RequestBody Rank rank){
+
+        boolean issuccess = false;
+        try {
+            issuccess = rankService.updateRankSymbol(rank);
+            if(issuccess){
+                BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return BaseResp.fail(Constant.RTNINFO_SYS_53);
+    }
+
+
 
     /**
      * 发布榜单
@@ -245,7 +294,284 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "ispublic")
     public BaseResp<Object> isPublicRank(String rankid,String createuserid,String ispublic){
+
         return null;
     }
+
+    /**
+     * 获取榜单成员列表
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "members/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> getRankMembers(@RequestBody RankMembers rankMembers,
+                                                @PathVariable("pageNo") String pageNo,
+                                                @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankMemberList(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+
+
+
+    /**
+     * 获取成员列表 预览
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkmemberspreview/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(@RequestBody RankMembers rankMembers,
+                                                                    @PathVariable("pageNo") String pageNo,
+                                                                    @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.rankMemberCheckResultPreview(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 获取榜单待审核成员列表
+     * @param rankMembers
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "waitcheckmembers/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> getRankWaitCheckMembers(@RequestBody RankMembers rankMembers,
+                                                               @PathVariable("pageNo") String pageNo,
+                                                               @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers || null == rankMembers.getRankid()){
+            return baseResp;
+        }
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankMemberWaitCheckList
+                    (rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select wait check rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取用户在榜单中所发的进步列表
+     * @param rankid  榜单id
+     * @param userid 用户id
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "memberimproves/{pageNo}/{pageSize}")
+    public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,
+                                                              @PathVariable("pageNo") String pageno,
+                                                              @PathVariable("pageSize") String pagesize){
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+
+        if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isEmpty(pageno)){
+            pageno = "1";
+        }
+        Page<Improve> page = new Page<>(Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        if (StringUtils.isEmpty(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(Long.parseLong(rankid));
+            rankMembers.setUserid(Long.parseLong(userid));
+            BaseResp<RankMembers> rk = rankService.selectRankMemberInfo(rankid,userid);
+            int totalcount = 0;
+            if (null != rk.getData()){
+                totalcount = rk.getData().getIcount();
+            }
+            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,
+                    Constant.IMPROVE_RANK_TYPE,Integer.parseInt(pagesize)*(Integer.parseInt(pageno)-1),
+                    Integer.parseInt(pagesize));
+            page.setTotalCount(totalcount);
+            page.setList(listBaseResp.getData());
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select rank improve list by user userid={} is error:",userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取榜中成员详细信息
+     * @param rankid
+     * @param userid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "memberinfo/{rankid}/{userid}")
+    public BaseResp<RankMembers> getRankMemberInfo(@PathVariable("rankid") String rankid,
+                                                   @PathVariable("userid") String userid){
+        BaseResp<RankMembers> baseResp = new BaseResp<>();
+
+        if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.selectRankMemberInfo(rankid,userid);
+        } catch (Exception e) {
+            logger.error("select rankmemberinfo rankid={} userid={} is error:",rankid,userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 下榜，下榜再不能参加次榜
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "removemember")
+    public BaseResp<Object> removeRankMember(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.removeRankMember(rankMembers);
+        } catch (Exception e) {
+            logger.error("remove rankmember rankid={} userid={} is error:",rankMembers.getRankid(),
+                    rankMembers.getUserid(),e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 设置，取消达人
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "fashionman")
+    public BaseResp<Object> setFashionman(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.setIsfishionman(rankMembers);
+        } catch (Exception e) {
+            logger.error("set rank fashionman is error:",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 成员审核结果
+     * @param rankMembers
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkmember")
+    public BaseResp<Object> updateRankMemberCheckStatus(@RequestBody RankMembers rankMembers){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rankMembers
+                || rankMembers.getRankid()==null
+                || rankMembers.getUserid() == null
+                || rankMembers.getCheckstatus() == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            rankMembers.setCheckdate(new Date());
+            baseResp = rankService.updateRankMemberCheckStatus(rankMembers);
+        } catch (Exception e) {
+            logger.error("check rankmember status rankid={} userid={} checkstatus={}" +
+                    " is error:",rankMembers.getRankid(),rankMembers.getUserid(),
+                    rankMembers.getCheckstatus(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 提交榜单审核结果 予发布
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "subcheckresultpre")
+    public BaseResp<Object> subRankMemberCheckResultPre(String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(rankid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.submitRankMemberCheckResultPreview(rankid);
+        } catch (Exception e) {
+            logger.error("submit rank member check result rankid={} is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 提交榜单审核结果
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "subcheckresult")
+    public BaseResp<Object> subRankMemberCheckResult(@RequestBody Rank rank){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == rank || StringUtils.isEmpty(rank.getRankid())){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.submitRankMemberCheckResult(rank);
+        } catch (Exception e) {
+            logger.error("submit rank member check result rankid={} is error:",rank.getRankid(),e);
+        }
+        return baseResp;
+    }
+
 
 }

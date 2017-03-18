@@ -7,28 +7,37 @@
 * @version V1.0   
 */
 package com.longbei.appservice.controller;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.UserImpCoinDetail;
+import com.longbei.appservice.service.UserImpCoinDetailService;
+import org.assertj.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserRelationService;
+
+import java.util.Date;
+
 /**
  * @author smkk
  * 关系控制器，好友  熟人  关注的人
  */
-@Controller
+@RestController
 @RequestMapping(value = "/user")
 public class UserRelationController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(UserRelationController.class);
 	
 	 @Autowired
 	 private UserRelationService userRelationService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 	
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	 
@@ -42,7 +51,6 @@ public class UserRelationController extends BaseController {
      * @currentdate:2017年2月7日
 	 */
 	 @SuppressWarnings("unchecked")
-	 @ResponseBody
      @RequestMapping(value = "searchLongRange")
 	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int endNum){
 		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
@@ -69,7 +77,6 @@ public class UserRelationController extends BaseController {
      * @currentdate:2017年2月7日
 	 */
 	 @SuppressWarnings("unchecked")
-	 @ResponseBody
      @RequestMapping(value = "searchLocal")
 	 public BaseResp<Object> searchLocal(String userid, String nickname, int startNum, int endNum){
 		 logger.info("searchLocal params userid={},nickname={}",userid,nickname);
@@ -86,7 +93,7 @@ public class UserRelationController extends BaseController {
 	 }
 	 
 	/**
-	* @Title: insertFriend
+	* @Title: http://ip:port/app_service/user/insertFriend
 	* @Description: 添加好友
 	* @param @param userid
 	* @param @param friendid
@@ -94,8 +101,7 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	*/
 	@SuppressWarnings("unchecked")
-	@ResponseBody
-    @RequestMapping(value = "insert")
+    @RequestMapping(value = "insertFriend")
 	public BaseResp<Object> insertFriend(String userid, String friendid){
 		logger.info("insertfriend params userid={},friendid={}",userid,friendid);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -110,31 +116,42 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: selectListByUserId
+	* @Title: http://ip:port/app_service/user/selectListByUserId
 	* @Description: 查询好友列表 通过好友id
 	* @param @param userid
+	* @param @param startNum  endNum
+	* @param updateTime 上次同步的时间,如果是获取整个好友列表,则不需要传该参数或仅限于传0
+	 *                  如果传入updateTime ,请传入格式为 2017-03-16 10:00:00 的时间格式
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "selectListByUserId")
-	public BaseResp<Object> selectListByUserId(String userid,int startNum,int endNum){
+	public BaseResp<Object> selectListByUserId(String userid,Integer startNum,Integer endNum,String updateTime){
 		logger.info("selectListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+		Date updateDate = null;
+		if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
+			try{
+				updateDate = DateUtils.formatDate(updateTime,null);
+			}catch (Exception e){
+				logger.error("select friend list by userId userId:{} startNum:{} endNum:{} updateTime;{}",userid,startNum,endNum,updateTime);
+				updateDate = null;
+			}
+		}
 		try {
-			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum);
+			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum,updateDate);
 		} catch (Exception e) {
-			logger.error("selectListByUserId error and msg={}",e);
+			logger.error("selectListByUserId userid = {}, startNum = {}, endNum = {}", userid, startNum, endNum, e);
 		}
 		return baseResp;
 	}
 	/**
-	* @Title: delete
+	* @Title: http://ip:port/app_service/user/delete
 	* @Description: 删除好友
 	* @param @param userid
 	* @param @param friendid
@@ -143,7 +160,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "delete")
 	public BaseResp<Object> delete(String userid, String friendid){
 		logger.info("delete params userid={},friendid={}",userid,friendid);
@@ -170,7 +186,6 @@ public class UserRelationController extends BaseController {
     * @currentdate:2017年2月7日
     */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "updateRemark")
 	public BaseResp<Object> updateRemark(String userid, String friendid, String remark){
 		logger.info("updateRemark params userid = {}, friendid = {}, remark = {}", userid, friendid, remark);
@@ -189,7 +204,7 @@ public class UserRelationController extends BaseController {
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_fans－start－－－－－－－－－－－－
 	/**
-	* @Title: insertFans
+	* @Title: http://ip:port/app_service/user/insertFans
 	* @Description: 添加关注
 	* @param @param userid
 	* @param @param friendid
@@ -198,7 +213,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "insertFans")
 	public BaseResp<Object> insertFans(String userid, String friendid){
 		logger.info("insertFans params userid={},friendid={}",userid,friendid);
@@ -214,7 +228,7 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: deleteFans
+	* @Title: http://ip:port/app_service/user/deleteFans
 	* @Description: 删除粉丝
 	* @param @param userid
 	* @param @param friendid
@@ -223,7 +237,6 @@ public class UserRelationController extends BaseController {
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "deleteFans")
 	public BaseResp<Object> deleteFans(String userid, String friendid){
 		logger.info("deleteFans params userid={},friendid={}",userid,friendid);
@@ -239,17 +252,16 @@ public class UserRelationController extends BaseController {
 		return baseResp;
 	}
 	/**
-	* @Title: selectFansListByUserId
+	* @Title: http://ip:port/app_service/user/selectFansListByUserId
 	* @Description: 查询关注的人员列表  查询被关注的成员列表
 	* @param @param userid
-	* @param @return
+	* @param @param startNum endNum
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
-	@ResponseBody
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<Object> selectFansListByUserId(String userid, int startNum, int endNum){
+	public BaseResp<Object> selectFansListByUserId(String userid, Integer startNum, Integer endNum){
 		logger.info("selectFansListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
@@ -262,11 +274,29 @@ public class UserRelationController extends BaseController {
 		}
 		return baseResp;
 	}
+
+	/**
+	 * 加载推荐的达人
+	 * @param startNum 开始页码
+	 * @param endNum 结束页码
+     * @return
+     */
+	@RequestMapping(value = "selectFashionManUser")
+	public BaseResp<Object> selectFashionManUser(Integer startNum,Integer endNum ){
+		if(startNum == null || startNum < 0){
+			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+		}
+		Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(endNum != null && endNum > startNum){
+			pageSize = endNum - startNum;
+		}
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		baseResp = this.userRelationService.selectFashionManUser(startNum,pageSize);
+		return baseResp;
+	}
 	//－－－－－－－－－－－sns_fans－end－－－－－－－－－－－－－-
 	//－－－－－－－－－－－sns_frined－start－－－－－－－－－－－－
 	
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 
-	
-	
 }

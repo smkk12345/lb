@@ -8,4 +8,13 @@ import com.longbei.appservice.entity.SysLongbeiinfo;
  */
 public interface SysSettingService {
     BaseResp<Object> selectCompanyInfo();
+
+    /**
+     * app 版本更新
+     * @param ttype
+     * @param version
+     * @return
+     */
+    BaseResp<Object> upGrade(String ttype,String version);
+
 }
