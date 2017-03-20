@@ -1,5 +1,7 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.entity.RankMembers;
 import org.apache.ibatis.annotations.Param;
 
@@ -80,9 +82,16 @@ public interface RankMembersMapper {
     List<RankMembers> selectRankMembers(Map<String, Object> parameterMap);
 
     /**
-     * 查看已结束的榜单的获奖情况
+     * 查看已结束的榜单的获奖情况 带分组,按照中奖等级分组
      * @param rankId
      * @return
      */
-    List<RankMembers> selectAwardMemberList(Integer rankId);
+    List<RankAwardRelease> selectAwardMemberList(Long rankId);
+
+    /**
+     * 查询榜单的所有中奖用户 不分组,按照中奖等级排序
+     * @param rankid
+     * @return
+     */
+    List<RankAwardRelease> rankMemberAwardList(Long rankid);
 }

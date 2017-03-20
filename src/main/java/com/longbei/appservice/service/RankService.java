@@ -276,4 +276,22 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize);
+
+    /**
+     * 获取榜单获奖详情
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> rankAwardDetail(Long rankid);
+
+    /**
+     * 通过各种条件 查询榜 列表
+     * @param rankTitle
+     * @param pType
+     * @param rankscope
+     * @param lastRankId
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope, Long lastRankId, Integer pageSize,Boolean showAward);
 }

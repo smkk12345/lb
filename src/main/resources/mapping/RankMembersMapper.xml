@@ -24,6 +24,9 @@
     <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
       <result column="awardid" property="awardid" jdbcType="VARCHAR" />
       <result column="awardlevel" property="awardlevel" jdbcType="VARCHAR" />
+      <result column="awardprice" property="awardprice" jdbcType="DOUBLE" />
+      <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
+      <result column="awardtype" property="awardtype" jdbcType="VARCHAR" />
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -442,24 +445,37 @@
   </select>
 
   <!-- 查看已结束的榜单的获奖情况 -->
-  <select id="selectAwardMemberList" parameterType="INTEGER" resultMap="com.longbei.appservice.dao.AwardMapper.BaseResultMap">
+  <select id="selectAwardMemberList" parameterType="LONG" resultMap="com.longbei.appservice.dao.RankAwardReleaseMapper.BaseResultMap">
     select
         userid ,
-        award.id,
-        award.awardtitle,
-        award.awardbrief,
+        award.id awardid,
+        award.awardtitle awardnickname,
         rank_members.awardlevel,
-        award.awardphotos,
-        award.awardphotos,
-        award.awardtype,
-        count(1)
+        count(1) awardrate
     from
         rank_members,
         award
     where award.id= rank_members.awardid
       and iswinning = 1
-      and rankid = 842621341122236416
+      and rankid = #{rankid}
     group by awardlevel
     order by awardlevel
+  </select>
+
+  <select id="rankMemberAwardList" parameterType="LONG" resultMap = "com.longbei.appservice.dao.RankAwardReleaseMapper.BaseResultMap">
+      select
+        rank_members.userid,
+        rank_members.awardlevel,
+        rank_members.awardid,
+        award.awardprice,
+        award.awardphotos,
+        award.awardtitle awardnickname
+    from
+        rank_members,
+        award
+    where
+        rank_members.awardid = award.id
+      and rank_members.rankid =#{rankid}
+    order by rank_members.awardlevel
   </select>
 </mapper>

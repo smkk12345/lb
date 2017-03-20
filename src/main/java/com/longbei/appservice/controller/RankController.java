@@ -39,35 +39,35 @@ public class RankController {
     /**
      * 用户 参榜
      * @url http://ip:port/app_service/rank/insertRankMember
-     * @param userId 用户id
+     * @param userid 用户id
      * @param rankId 榜单id
      * @param codeword 口令
      * @return
      */
     @RequestMapping(value="insertRankMember")
-    public BaseResp<Object> insertRankMember(Long userId,Long rankId,String codeword){
+    public BaseResp<Object> insertRankMember(Long userid,Long rankId,String codeword){
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(userId == null || rankId == null){
+        if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.insertRankMember(userId,rankId,codeword);
+        baseResp = this.rankService.insertRankMember(userid,rankId,codeword);
         return baseResp;
     }
 
     /**
      * 退榜
      * @url http://ip:port/app_service/rank/removeRankMember
-     * @param userId 用户id
+     * @param userid 用户id
      * @param rankId 榜单id
      * @return
      */
     @RequestMapping(value="removeRankMember")
-    public BaseResp<Object> removeRankMember(Long userId,Long rankId){
+    public BaseResp<Object> removeRankMember(Long userid,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(userId == null || rankId == null){
+        if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.removeRankMember(userId,rankId);
+        baseResp = this.rankService.removeRankMember(userid,rankId);
 
         return baseResp;
     }
@@ -94,16 +94,16 @@ public class RankController {
      * 查询自己在榜单中的排名
      * @url http://ip:port/app_service/rank/ownRankSort
      * @param rankId
-     * @param userId
+     * @param userid
      * @return
      */
     @RequestMapping(value="ownRankSort")
-    public BaseResp<Object> ownRankSort(Long rankId,Long userId){
+    public BaseResp<Object> ownRankSort(Long rankId,Long userid){
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(rankId == null || userId == null){
+        if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.ownRankSort(rankId,userId);
+        baseResp = this.rankService.ownRankSort(rankId,userid);
 
         return baseResp;
     }
@@ -143,19 +143,15 @@ public class RankController {
      * @param rankTitle 榜单名称
      * @param pType 十全十美分类
      * @param rankscope 地区
-     * @param startNum
-     * @param endNum
+     * @param lastRankId 最后一个榜单id
+     * @param pageSize
      * @return
      */
     @RequestMapping(value="selectRankList")
-    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer startNum,Integer endNum){
+    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Long lastRankId,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(startNum == null || startNum < 0){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
-        }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(pageSize == null || pageSize < 0){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
 
         Rank rank = new Rank();
@@ -168,8 +164,7 @@ public class RankController {
         if(rankscope != null && StringUtils.isNotEmpty(rankscope)){
             rank.setRankscope(rankscope);
         }
-        Page<Rank> pageRank= this.rankService.selectRankList(rank,startNum,pageSize,true);
-        baseResp.setData(pageRank);
+        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,lastRankId,pageSize,true);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
     }
@@ -219,26 +214,28 @@ public class RankController {
     /**
      * 用户领奖
      * @url http://ip:port/app_service/rank/acceptAward
-     * @param userId 用户id
+     * @param userid 用户id
      * @param rankId 榜单id
      * @return
      */
     @RequestMapping(value="acceptAward")
-    public BaseResp<Object> acceptAward(Long userId,Long rankId){
+    public BaseResp<Object> acceptAward(Long userid,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(userId == null || rankId == null){
+        if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_00);
         }
-        baseResp = this.rankService.acceptAward(userId,rankId);
+        baseResp = this.rankService.acceptAward(userid,rankId);
         return baseResp;
     }
 
     /**
      * 查询获奖公示
+     * @url http://ip:port/app_service/rank/rankAwardList
      * @param startNum 开始下标
      * @param endNum 结束下标
      * @return
      */
+    @RequestMapping(value="rankAwardList")
     public BaseResp<Object> rankAwardList(Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(startNum == null || startNum < 0){
@@ -249,6 +246,22 @@ public class RankController {
             pageSize = endNum - startNum;
         }
         baseResp = this.rankService.rankAwardList(startNum,pageSize);
+        return baseResp;
+    }
+
+    /**
+     * 查看榜单获奖详情
+     * @url http://ip:port/app_service/rank/rankAwardDetail
+     * @param rankid
+     * @return
+     */
+    @RequestMapping(value="rankAwardDetail")
+    public BaseResp<Object> rankAwardDetail(Long rankid){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.rankAwardDetail(rankid);
         return baseResp;
     }
 
