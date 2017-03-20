@@ -6,10 +6,10 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.SysPerfectInfo;
+import com.longbei.appservice.entity.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +21,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.SnsFansMapper;
-import com.longbei.appservice.dao.SysPerfectInfoMapper;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserInterestsMapper;
-import com.longbei.appservice.dao.UserJobMapper;
-import com.longbei.appservice.dao.UserLevelMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
-import com.longbei.appservice.dao.UserPlDetailMapper;
-import com.longbei.appservice.dao.UserSchoolMapper;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserInterests;
-import com.longbei.appservice.entity.UserJob;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserPlDetail;
-import com.longbei.appservice.entity.UserSchool;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -76,6 +61,8 @@ public class UserServiceImpl implements UserService {
 	private UserMsgService userMsgService;
 	@Autowired
 	private UserLevelMapper userLevelMapper;
+	@Autowired
+	private SysPerfectTagMapper sysPerfectTagMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -607,6 +594,19 @@ public class UserServiceImpl implements UserService {
 			logger.error("updateGps error userid={},longitude={},latitude={}",userid,longitude,latitude);
 		}
 		return baseResp.initCodeAndDesp();
+	}
+
+	@Override
+	public BaseResp<Object> selectRandomTagList() {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList();
+			baseResp.setData(list);
+			return baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("selectRandomTagList error ",e);
+		}
+		return baseResp;
 	}
 
 	@SuppressWarnings("unchecked")
