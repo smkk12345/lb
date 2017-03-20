@@ -16,6 +16,8 @@ public class Rank {
 
     private String rankbrief;//榜单简介
 
+    private String rankrule; //榜单规则，入榜提示
+
     private String rankdetail;//榜单详情
 
     private Integer ranklimite;//限制人数
@@ -127,6 +129,14 @@ public class Rank {
 
     //--------
 
+
+    public String getRankrule() {
+        return rankrule;
+    }
+
+    public void setRankrule(String rankrule) {
+        this.rankrule = rankrule;
+    }
 
     public String getJoincode() {
         return joincode;

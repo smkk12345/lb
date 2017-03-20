@@ -9,6 +9,7 @@
     <result column="awardrate" property="awardrate" jdbcType="DOUBLE" />
     <result column="awardcount" property="awardcount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, rankid, awardid, awardlevel, awardrate, awardcount,awardnickname, createtime
@@ -141,4 +142,5 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
 </mapper>

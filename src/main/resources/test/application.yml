@@ -25,7 +25,7 @@ spring:
       data:
             mongodb:
                   uri: mongodb://longbei:LongXiao@015@172.22.1.7:27017/longbei
-                  host: 192.168.1.45
+                  host: 172.22.1.7
                   port: 27017
                   database: longbei
                   username: longbei
@@ -49,7 +49,7 @@ spring:
 #                                          enable: true
 #                                          required: true
       activemq:
-                broker-url: tcp://172.23.1.4:61616
+                broker-url: tcp://172.23.1.4:8161
                 in-memory: true
 #                password:
 #                user:
@@ -63,8 +63,8 @@ spring:
                       max-connections: 100
                 queue:
                        name:
-                             add: improvecircle.add.dev.ly
-                             update: improvecircle.update.dev.ly
+                             add: improvecircle.add.test
+                             update: improvecircle.update.test
                 topic:
                        name:
                              common: common.dev.luye
