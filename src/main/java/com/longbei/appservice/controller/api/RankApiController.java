@@ -573,5 +573,21 @@ public class RankApiController {
         return baseResp;
     }
 
+    /**
+     * 获取榜单详情
+     * @param rankId
+     * @return
+     */
+    @RequestMapping(value="rankDetail")
+    public BaseResp<Rank> rankDetail(String rankId){
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
+        if(com.longbei.appservice.common.utils.StringUtils.isEmpty(rankId)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+
+        baseResp = this.rankService.selectRankDetailByRankid(rankId);
+        return baseResp;
+    }
+
 
 }
