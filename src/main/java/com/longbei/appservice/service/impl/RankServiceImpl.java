@@ -1,6 +1,5 @@
 package com.longbei.appservice.service.impl;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import scala.collection.immutable.Stream;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;

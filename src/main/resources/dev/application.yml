@@ -78,10 +78,10 @@ alidayu:
         appSecret: d55b04747b89790eb39646fcebc8bfc4
         aliUrl: http://gw.api.taobao.com/router/rest
         signName: \u9F99\u676F
-logging:
-        config: classpath:longbei-logback.xml
-        level.com.longbei.appservice.dao:
-                                          DEBUG
+#logging:
+#        config: classpath:longbei-logback.xml
+#        level.com.longbei.appservice.dao:
+#                                          DEBUG
 
 ##        path: ../log
 
