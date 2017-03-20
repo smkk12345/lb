@@ -292,9 +292,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
             if(showAward != null && showAward && ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
-                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank1.getRankid());
+                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
                     if(awardList != null && awardList.size() > 0){
-                        rank1.setRankAwards(awardList);
+                        rank.setRankAwards(awardList);
                     }
                 }
             }
@@ -304,6 +304,51 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("select rank list for adminservice is error:",e);
         }
         return page;
+    }
+
+    /**
+     * 初始化榜单的奖品列表
+     * @param rank
+     * @return
+     */
+    public Rank initRankAward(Rank rank){
+        List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
+        if(awardList != null && awardList.size() > 0){
+            rank.setRankAwards(awardList);
+        }
+        return rank;
+    }
+
+    @Override
+    public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope, Long lastRankId, Integer pageSize,Boolean showAward) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            Map<String,Object> map = new HashMap<String,Object>();
+            if(StringUtils.isNotEmpty(rankTitle)){
+                map.put("ranktitle",rankTitle);
+            }
+            if(StringUtils.isNotEmpty(pType)){
+                map.put("ptype",pType);
+            }
+            if(StringUtils.isNotEmpty(rankscope)){
+                map.put("rankscope",rankscope);
+            }
+            map.put("ispublic","0");
+            map.put("isdel","0");
+            map.put("lastRankId",lastRankId);
+            map.put("pageSize",pageSize);
+            List<Rank> ranks = rankMapper.selectRankList(map);
+            if(showAward != null && showAward && ranks != null && ranks.size() > 0){
+                for(Rank rank1:ranks){
+                    initRankAward(rank1);
+                }
+            }
+            baseResp.setData(ranks);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        } catch (Exception e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return baseResp;
     }
 
     @Override
@@ -881,23 +926,128 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     @Override
     public BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize) {
-        //获取当前结束的榜单
-        Map<String,Object> parameterMap = new HashMap<String,Object>();
-        parameterMap.put("isfinish","1");
-        parameterMap.put("isdel","0");
-        parameterMap.put("startNum",startNum);
-        parameterMap.put("pageSize",pageSize);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+        try{
+            //获取当前结束的榜单
+            Map<String,Object> parameterMap = new HashMap<String,Object>();
+            parameterMap.put("isfinish","1");
+            parameterMap.put("isdel","0");
+            parameterMap.put("startNum",startNum);
+            parameterMap.put("pageSize",pageSize);
 
-        List<Rank> finishRankList = this.rankMapper.selectRankList(parameterMap);
+            List<Rank> finishRankList = this.rankMapper.selectRankList(parameterMap);
 
-        //查看结束的榜单的获奖情况
-        if(finishRankList != null && finishRankList.size() > 0){
-            for(Rank rank:finishRankList){
-                List<RankMembers> rankMembers = this.rankMembersMapper.selectAwardMemberList(rank.getId());
+            //查看结束的榜单的获奖情况
+            if(finishRankList != null && finishRankList.size() > 0){
+                for(Rank rank:finishRankList){
+                    Map<String,Object> resultMap = new HashMap<String,Object>();
+                    resultMap.put("rankid",rank.getRankid());
+                    resultMap.put("ranktitle",rank.getRanktitle());
+                    resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
+                    resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
+
+                    List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rank.getRankid());
+
+                    if(rankAwardList != null && rankAwardList.size() > 0){
+                        List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();
+                        int rankAwardCount = 0;//整个榜单的获奖总数
+                        for(RankAwardRelease rankAwardRelease:rankAwardList){
+                            Map<String,Object> awardMap = new HashMap<String,Object>();
+                            AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(rankAwardRelease.getUserid()+"");
+                            if(appUserMongoEntity != null){
+                                awardMap.put("nickname",appUserMongoEntity.getNickname());
+                            }
+                            awardMap.put("awardtitle",rankAwardRelease.getAwardnickname());
+                            awardMap.put("awardlevel",rankAwardRelease.getAwardlevel());
+                            awardMap.put("awardcount",rankAwardRelease.getAwardrate());
+                            awardList.add(awardMap);
+                            rankAwardCount += rankAwardRelease.getAwardrate();
+                        }
+                        resultMap.put("rankawardcount",rankAwardCount);
+                        resultMap.put("rankawardList",awardList);
+                    }
+                    resultList.add(resultMap);
+                }
+                baseResp.setData(resultList);
             }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("rank award list error startNum:{} pageSize:{}",startNum,pageSize);
+            printException(e);
         }
+        return baseResp;
+    }
 
-        return null;
+    /**
+     * 获取榜单获奖详情
+     * @param rankid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> rankAwardDetail(Long rankid) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            Rank rank = this.rankMapper.selectRankByRankid(rankid);
+            if(rank == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }else if("0".equals(rank.getIsfinish())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_67,Constant.RTNINFO_SYS_67);
+            }
+            resultMap.put("rankid",rank.getRankid());
+            resultMap.put("ranktitle",rank.getRanktitle());
+            resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
+            resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
+
+            List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();//用于存放一等奖 二等奖
+            //查询所有的中奖用户 按照中奖等级排列
+            List<RankAwardRelease> rankAwardList = this.rankMembersMapper.rankMemberAwardList(rankid);
+            if(rankAwardList != null && rankAwardList.size() > 0){
+                Integer awardLevel = -1;
+                Integer awardCount = 0;
+                Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
+                List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
+                for(RankAwardRelease rankAwardRelease:rankAwardList){
+                    if(awardLevel != rankAwardRelease.getAwardlevel()){
+                        if(awards.size() > 0){
+                            awardMap.put("awardcount",awardCount);
+                            awardMap.put("awardMembers",awards);
+                            awardList.add(awardMap);
+                            awardMap = new HashMap<String,Object>();
+                            awards = new ArrayList<Map<String,Object>>();
+                            awardCount = 0;
+                            awardLevel = rankAwardRelease.getAwardlevel();
+                        }
+                        awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
+                        awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
+                        awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
+                    }
+                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(rankAwardRelease.getUserid()+"");
+                    RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankid,rankAwardRelease.getUserid());
+
+                    Map<String,Object> userDetail = new HashMap<String,Object>();
+                    if(appUserMongoEntity != null){
+                        userDetail.put("usernickname",appUserMongoEntity.getNickname());//用户昵称
+                        userDetail.put("avatar",appUserMongoEntity.getAvatar());
+                    }
+                    userDetail.put("likes",rankMembers.getLikes());//赞的数量
+                    userDetail.put("flowers",rankMembers.getFlowers());//花的数量
+                    awards.add(userDetail);
+                    awardCount ++;
+                }
+                awardMap.put("awardcount",awardCount);
+                awardMap.put("awardMembers",awards);
+                awardList.add(awardMap);
+            }
+            resultMap.put("awardList",awardList);
+            baseResp.setData(resultMap);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("rank award detail error rankId:{}",rankid);
+            printException(e);
+        }
+        return baseResp;
     }
 
     private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){

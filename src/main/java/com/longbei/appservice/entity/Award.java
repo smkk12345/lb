@@ -28,10 +28,6 @@ public class Award {
 
     private AwardClassify awardClassify; //奖品分类信息 0 - 进步币 1 - 红包 3 - 实物
 
-    private Integer awardcount;//有多少人获奖
-
-    private Long userid;
-
     public AwardClassify getAwardClassify() {
         return awardClassify;
     }

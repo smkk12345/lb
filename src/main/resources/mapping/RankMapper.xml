@@ -583,8 +583,11 @@
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
         </if>
+        <if test="lastRankId != null">
+            and id > #{lastRankId}
+        </if>
         <if test="ptype != null and ptype != '-1'" >
-          AND ptype = #{rank.ptype}
+          AND ptype = #{ptype}
         </if>
         <if test="starttime != null" >
           AND starttime &gt;= #{starttime}
@@ -601,6 +604,9 @@
         <if test="isdel != null" >
           AND isdel = #{isdel}
         </if>
+        <if test="ispublic != null" >
+          AND ispublic = #{ispublic}
+        </if>
         <if test="sourcetype != null" >
           AND sourcetype = #{sourcetype}
         </if>
@@ -616,6 +622,11 @@
       <if test="orderByType == null or orderByType == ''">
           order by id desc
       </if>
-      limit #{startNum},#{pageSize}
+      <if test="startNum != null">
+        limit #{startNum},#{pageSize}
+      </if>
+      <if test="startNum == null and pageSize != null">
+          limit 0,#{pageSize}
+      </if>
   </select>
 </mapper>
