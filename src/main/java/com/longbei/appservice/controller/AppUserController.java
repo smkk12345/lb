@@ -700,8 +700,14 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
-    	try {
+    	}
+        if (StringUtils.isBlank(startNum)) {
+             startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+             pageSize = "15";
+        }
+        try {
     		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
 		} catch (Exception e) {
@@ -806,7 +812,13 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
     	try {
     		baseResp = userJobService.selectJobList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
@@ -982,6 +994,12 @@ public class AppUserController extends BaseController {
     public BaseResp<List<DictArea>> selectCityList(String pid,String startNum,String pageSize) {
         logger.info("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize);
         BaseResp<List<DictArea>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
         try {
             baseResp = dictAreaService.selectCityList(pid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
@@ -1094,6 +1112,12 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectSponsorList(String bid,String startNum,String pageSize) {
         logger.info("selectSponsorList and bid={},startNum={},pageSize={}",bid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
         try {
             baseResp = userSponsorService.selectSponsorList(Long.parseLong(bid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
@@ -1194,6 +1218,12 @@ public class AppUserController extends BaseController {
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
         }
         try {
             baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
