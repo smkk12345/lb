@@ -60,7 +60,7 @@
             </otherwise>
           </choose>
         </if>
-        <if test="appUserMongoEntities != null">
+        <if test="appUserMongoEntities != null and appUserMongoEntities.size() > 0">
           AND  userid in
           <foreach item="item" index="index" collection="appUserMongoEntities" open="(" separator="," close=")">
             #{item.id}
@@ -85,7 +85,7 @@
             <when test="rankmember.checkstatus == '2'.toString()">
               AND (checkstatus = '2' OR checkstatus = '3')
             </when>
-            <when test="checkstatus == '-1'.toString()">
+            <when test="rankmember.checkstatus == '-1'.toString()">
               AND (checkstatus != '0')
             </when>
             <otherwise>
@@ -93,7 +93,7 @@
             </otherwise>
           </choose>
         </if>
-        <if test="rankmember.appUserMongoEntities != null">
+        <if test="rankmember.appUserMongoEntities != null and rankmember.appUserMongoEntities.size() > 0">
           AND  userid in
           <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
             #{item.id}
