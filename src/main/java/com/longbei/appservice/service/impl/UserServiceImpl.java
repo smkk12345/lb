@@ -11,9 +11,11 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.nativejdbc.OracleJdbc4NativeJdbcExtractor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -541,12 +543,14 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
-			baseResp.setData(userLevel);
+			Map<String,Object> map = new HashedMap();
+			map.put("userLevel",userLevel);
 			List<String> ist = getPointOriginate();
 			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
-			baseResp.getExpandData().put("pointDetail",ist);
-			baseResp.getExpandData().put("todayPoint",point);
+			map.put("pointDetail",ist);
+			map.put("todayPoint",point);
+			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
 			logger.error("selectByGrade error grade={}",grade,e);
