@@ -200,7 +200,7 @@ public class AwardApiController {
             return baseResp;
         }
         try {
-            boolean flag = awardService.deleteAward(Integer.parseInt(classifyid));
+            boolean flag = awardService.deleteAwardClassify(Integer.parseInt(classifyid));
             if (flag){
                 baseResp = BaseResp.ok();
             }
