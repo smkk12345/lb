@@ -327,7 +327,10 @@
             sortnum = #{sortNum},
         </if>
         <if test="checkstatus != null">
-            checkstatus = #{checkstatus}
+            checkstatus = #{checkstatus},
+        </if>
+        <if test="acceptaward != null">
+            acceptaward = #{acceptaward},
         </if>
     </set>
     where userid = #{userId} and rankid = #{rankId}
@@ -436,5 +439,27 @@
       <if test="startNum != null">
           limit #{startNum},#{pageSize}
       </if>
+  </select>
+
+  <!-- 查看已结束的榜单的获奖情况 -->
+  <select id="selectAwardMemberList" parameterType="INTEGER" resultMap="com.longbei.appservice.dao.AwardMapper.BaseResultMap">
+    select
+        userid ,
+        award.id,
+        award.awardtitle,
+        award.awardbrief,
+        rank_members.awardlevel,
+        award.awardphotos,
+        award.awardphotos,
+        award.awardtype,
+        count(1)
+    from
+        rank_members,
+        award
+    where award.id= rank_members.awardid
+      and iswinning = 1
+      and rankid = 842621341122236416
+    group by awardlevel
+    order by awardlevel
   </select>
 </mapper>

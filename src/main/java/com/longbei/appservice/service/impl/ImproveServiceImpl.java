@@ -1692,8 +1692,14 @@ public class ImproveServiceImpl implements ImproveService{
             case Constant.IMPROVE_RANK_TYPE:
                 improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
                 //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                rankSortService.updateRankSortScore(improve.getBusinessid(),
-                        improve.getUserid(),Constant.OperationType.like,count);
+                if(count>0){
+                    rankSortService.updateRankSortScore(improve.getBusinessid(),
+                            improve.getUserid(),Constant.OperationType.like,count);
+                }else{
+                    rankSortService.updateRankSortScore(improve.getBusinessid(),
+                            improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                }
+
                 break;
             default:
 

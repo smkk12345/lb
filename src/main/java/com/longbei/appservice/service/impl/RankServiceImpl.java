@@ -17,12 +17,14 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import scala.collection.immutable.Stream;
 
 import java.lang.reflect.InvocationTargetException;
@@ -68,6 +70,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ImproveRankMapper improveRankMapper;
     @Autowired
     private RankSortService rankSortService;
+    @Autowired
+    private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
     private CodeDao codeDao;
 
@@ -280,12 +284,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize) {
+    public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward) {
         Page<Rank> page = new Page<>(pageno,pagesize);
         try {
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
+            if(showAward != null && showAward && ranks != null && ranks.size() > 0){
+                for(Rank rank1:ranks){
+                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank1.getRankid());
+                    if(awardList != null && awardList.size() > 0){
+                        rank1.setRankAwards(awardList);
+                    }
+                }
+            }
             page.setTotalCount(totalcount);
             page.setList(ranks);
         } catch (Exception e) {
@@ -805,6 +817,87 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
         return baseResp;
+    }
+
+    /**\
+     * 用户领奖
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @Transactional
+    @Override
+    public BaseResp<Object> acceptAward(Long userId, Long rankId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        try{
+            RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
+            if((rankMember != null && !"1".equals(rankMember.getIswinning())) || (rankMember != null && rankMember.getRankAward().getAwardid() == null)){//判断是否获奖
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_66,Constant.RTNINFO_SYS_66);
+            }
+//            else if(rankMember != null && !"0".equals(rankMember.getAcceptaward())){//已经领过奖了
+//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
+//            }
+            //查询该用户获得的奖
+            Award award = this.awardMapper.selectAwardAndAwardClassify(Integer.parseInt(rankMember.getRankAward().getAwardid()));
+            if(award == null){
+                logger.error("query award null awardId:{}",rankMember.getAwardid());
+                return baseResp.fail("系统异常");
+            }
+            if("0".equals(rankMember.getAcceptaward()) && award.getAwardClassify().getClassifytype() == 0){//进步币
+                //加进步币
+                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
+
+                if(baseResp1.getCode() == 0){
+                    //更改用户的领奖状态
+                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+                    parameterMap.put("userId",userId);
+                    parameterMap.put("rankId",rankId);
+                    parameterMap.put("acceptaward","1");
+                    int updateRow = this.rankMembersMapper.updateRank(parameterMap);
+                    rankMember.setAcceptaward("1");
+                }
+
+            }
+            resultMap.put("award",award);
+            resultMap.put("rankMember",rankMember);
+
+            baseResp.setData(resultMap);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            return baseResp;
+        }catch(Exception e){
+            logger.error("user accept award error userId:{} rankId:{}",userId,rankId);
+            printExceptionAndRollBackTransaction(e);
+        }
+
+        return baseResp;
+    }
+
+    /**
+     * 获取榜单的获奖公示
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize) {
+        //获取当前结束的榜单
+        Map<String,Object> parameterMap = new HashMap<String,Object>();
+        parameterMap.put("isfinish","1");
+        parameterMap.put("isdel","0");
+        parameterMap.put("startNum",startNum);
+        parameterMap.put("pageSize",pageSize);
+
+        List<Rank> finishRankList = this.rankMapper.selectRankList(parameterMap);
+
+        //查看结束的榜单的获奖情况
+        if(finishRankList != null && finishRankList.size() > 0){
+            for(Rank rank:finishRankList){
+                List<RankMembers> rankMembers = this.rankMembersMapper.selectAwardMemberList(rank.getId());
+            }
+        }
+
+        return null;
     }
 
     private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){

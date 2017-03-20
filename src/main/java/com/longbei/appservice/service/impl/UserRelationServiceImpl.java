@@ -78,6 +78,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Override
 	public BaseResp<Object> selectListByUserId(long userid, Integer startNum, Integer endNum,Date updateTime) {
 		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String,Object> resultMap = new HashMap<String,Object>();
 		try {
 			List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
 			Integer isDel = null;
@@ -90,6 +91,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 				for (SnsFriends snsFriends : list) {
 					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.findById(snsFriends.getFriendid()+"");
 
+					if(appUserMongoEntit == null){
+						continue;
+					}
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("userid",snsFriends.getFriendid());
 					map.put("nickname",StringUtils.formatMobileOrUsername(appUserMongoEntit.getNickname()));
@@ -128,7 +132,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 				}
 			}
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			baseResp.setData(resultList);
+			resultMap.put("friendList",resultList);
+			resultMap.put("updateTime",DateUtils.getDateTime());
+			baseResp.setData(resultMap);
 		} catch (Exception e) {
 			logger.error("selectListByUserId error and msg = {}",e);
 		}

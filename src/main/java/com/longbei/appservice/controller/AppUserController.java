@@ -881,25 +881,12 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectInterests(String userid) {
         logger.info("selectInterests and userid={}",userid);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(userid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
+//        if(StringUtils.isBlank(userid)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//        }
         try {
-            baseResp = BaseResp.ok();
-            baseResp.setData(new ArrayList<UserInterests>(){{
-                add(new UserInterests("-1","全部"));
-                add(new UserInterests("0","学习"));
-                add(new UserInterests("1","运动"));
-                add(new UserInterests("2","社交"));
-                add(new UserInterests("3","艺术"));
-                add(new UserInterests("4","生活"));
-                add(new UserInterests("5","公益"));
-                add(new UserInterests("6","文字"));
-                add(new UserInterests("7","劳动"));
-                add(new UserInterests("8","修养"));
-                add(new UserInterests("9","健康"));
-            }});
-            return baseResp;
+            baseResp = userService.selectRandomTagList();
+            return baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("selectInterests and userid={}",userid,e);
         }

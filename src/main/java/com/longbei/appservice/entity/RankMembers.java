@@ -38,6 +38,10 @@ public class RankMembers {
 
     private Integer complaintotalcount; //投诉次数
 
+    private Integer awardid;//奖品id
+
+    private Integer awardlevel;//奖品等级
+
     private AppUserMongoEntity appUserMongoEntity;
 
     private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
@@ -355,5 +359,37 @@ public class RankMembers {
      */
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    /**
+     * 获取奖品id
+     * @return
+     */
+    public Integer getAwardid() {
+        return awardid;
+    }
+
+    /**
+     * 设置奖品id
+     * @param awardid
+     */
+    public void setAwardid(Integer awardid) {
+        this.awardid = awardid;
+    }
+
+    /**
+     * 获取奖品等级
+     * @return
+     */
+    public Integer getAwardlevel() {
+        return awardlevel;
+    }
+
+    /**
+     * 设置奖品等级
+     * @param awardlevel
+     */
+    public void setAwardlevel(Integer awardlevel) {
+        this.awardlevel = awardlevel;
     }
 }

@@ -36,12 +36,6 @@ public class RankController {
     @Autowired
     private RankSortService rankSortService;
 
-
-
-//    public BaseResp<List<Rank>> selectRankList(){
-//
-//    }
-
     /**
      * 用户 参榜
      * @url http://ip:port/app_service/rank/insertRankMember
@@ -116,6 +110,7 @@ public class RankController {
 
     /**
      * 获取整个榜单的排名
+     * @url http://ip:port/app_service/rank/rankMemberSort
      * @param rankId 榜单id
      * @param sortType 排序的方式 comprehensive:综合排序 likes:赞 flower:花
      * @param startNum
@@ -144,9 +139,10 @@ public class RankController {
 
     /**
      * 获取龙榜列表
-     * @param rankTitle
-     * @param pType
-     * @param rankscope
+     * @url http://ip:port/app_service/rank/selectRankList
+     * @param rankTitle 榜单名称
+     * @param pType 十全十美分类
+     * @param rankscope 地区
      * @param startNum
      * @param endNum
      * @return
@@ -163,16 +159,16 @@ public class RankController {
         }
 
         Rank rank = new Rank();
-        if(StringUtils.isEmpty(rankTitle)){
+        if(rankTitle != null && StringUtils.isEmpty(rankTitle)){
             rank.setRanktitle(rankTitle);
         }
-        if(StringUtils.isNotEmpty(pType)){
+        if(pType != null && StringUtils.isNotEmpty(pType)){
             rank.setPtype(pType);
         }
-        if(StringUtils.isNotEmpty(rankscope)){
+        if(rankscope != null && StringUtils.isNotEmpty(rankscope)){
             rank.setRankscope(rankscope);
         }
-        Page<Rank> pageRank= this.rankService.selectRankList(rank,startNum,endNum);
+        Page<Rank> pageRank= this.rankService.selectRankList(rank,startNum,pageSize,true);
         baseResp.setData(pageRank);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
@@ -180,6 +176,7 @@ public class RankController {
 
     /**
      * 获取榜单详情
+     * @url http://ip:port/app_service/rank/rankDetail
      * @param rankId
      * @return
      */
@@ -196,6 +193,7 @@ public class RankController {
 
     /**
      * 查询榜单中的达人
+     * @url http://ip:port/app_service/rank/selectFashionMan
      * @param rankId 榜单id
      * @param startNum
      * @param endNum
@@ -220,13 +218,37 @@ public class RankController {
 
     /**
      * 用户领奖
-     * @param userId
-     * @param rankId
+     * @url http://ip:port/app_service/rank/acceptAward
+     * @param userId 用户id
+     * @param rankId 榜单id
      * @return
      */
     @RequestMapping(value="acceptAward")
     public BaseResp<Object> acceptAward(Long userId,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userId == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_00);
+        }
+        baseResp = this.rankService.acceptAward(userId,rankId);
+        return baseResp;
+    }
+
+    /**
+     * 查询获奖公示
+     * @param startNum 开始下标
+     * @param endNum 结束下标
+     * @return
+     */
+    public BaseResp<Object> rankAwardList(Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankService.rankAwardList(startNum,pageSize);
         return baseResp;
     }
 

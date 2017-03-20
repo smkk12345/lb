@@ -58,7 +58,7 @@ public class RankApiController {
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<Rank>> baseResp = new BaseResp<>();
         try {
-            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
         } catch (NumberFormatException e) {

@@ -34,17 +34,18 @@ public class FriendController {
      * @param message 发送的消息
      * @return
      */
-    @RequestMapping(value="addFriendAsk")
-    public BaseResp<Object> addFriendAsk(Long userId,Long friendId,FriendAddAsk.Source source,String message){
-        logger.info("add friendAsk userId:{} friendId:{} source:{} message:{}",userId,friendId,source,message);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value="addFriendAsk")
+    public BaseResp<Object> addFriendAsk(Long userid,Long friendId,FriendAddAsk.Source source,String message){
+        logger.info("add friendAsk userId:{} friendId:{} source:{} message:{}",userid,friendId,source,message);
         BaseResp baseResp = new BaseResp<Object>();
-        if(userId == null || friendId == null || userId.equals(friendId) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
+        if(userid == null || friendId == null || userid.equals(friendId) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(source == null){
             source = FriendAddAsk.Source.unknown;
         }
-        baseResp= friendService.addFriendAsk(userId,friendId,source,message);
+        baseResp= friendService.addFriendAsk(userid,friendId,source,message);
 
         return baseResp;
     }
@@ -57,14 +58,15 @@ public class FriendController {
      * @param message 回复的消息内容
      * @return
      */
-    @RequestMapping(value="replyMessage")
-    public BaseResp<Object> replyMessage(Long id,Long userId,String message){
-        logger.info("reply friendAddAsk message id:{} userId:{} message:{}",id,userId,message);
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="replyMessage")
+    public BaseResp<Object> replyMessage(Long id,Long userid,String message){
+        logger.info("reply friendAddAsk message id:{} userId:{} message:{}",id,userid,message);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(id == null || userId == null || StringUtils.isEmpty(message) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
+        if(id == null || userid == null || StringUtils.isEmpty(message) || (StringUtils.isNotEmpty(message) && message.length() > FriendAddAsk.MessageContentMaxLength)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = friendService.replyMessage(id,userId,message);
+        baseResp = friendService.replyMessage(id,userid,message);
 
         return baseResp;
 
@@ -77,14 +79,15 @@ public class FriendController {
      * @param  userId 当前登录用户id
      * @return
      */
-    @RequestMapping(value="getFriendAddAskDetail")
-    public BaseResp<Object> getFriendAddAskDetail(Long id,Long userId){
-        logger.info("see friendAddAsk detail id:{} userId:{}",id,userId);
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="getFriendAddAskDetail")
+    public BaseResp<Object> getFriendAddAskDetail(Long id,Long userid){
+        logger.info("see friendAddAsk detail id:{} userid:{}",id,userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(id == null || userId == null){
+        if(id == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = friendService.getFriendAddAskDetail(id,userId);
+        baseResp = friendService.getFriendAddAskDetail(id,userid);
         return baseResp;
     }
 
@@ -96,14 +99,15 @@ public class FriendController {
      * @param userId 当前登录用户id
      * @return
      */
-    @RequestMapping(value="updateFriendAddAskStatus")
-    public BaseResp<Object> updateFriendAddAskStatus(Long id,Integer status,Long userId){
-        logger.info("update FriendAddAsk Status id:{} status:{} userId:{}",id,status,userId);
+    @SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value="updateFriendAddAskStatus")
+    public BaseResp<Object> updateFriendAddAskStatus(Long id,Integer status,Long userid){
+        logger.info("update FriendAddAsk Status id:{} status:{} userid:{}",id,status,userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(id== null || status == null || status == 0 || userId == null){
+        if(id== null || status == null || status == 0 || userid == null){
             return baseResp.fail("参数错误");
         }
-        baseResp = friendService.updateFriendAddAskStatus(id,status,userId);
+        baseResp = friendService.updateFriendAddAskStatus(id,status,userid);
 
         return baseResp;
     }
@@ -116,11 +120,12 @@ public class FriendController {
      * @param endNum 结束下标
      * @return
      */
-    @RequestMapping(value="friendAddAskList")
-    public BaseResp<Object> friendAddAskList(Long userId,Integer startNum,Integer endNum){
-        logger.info("see friendAddAsk list userId:{} startNum:{} endNum:{}",userId,startNum,endNum);
+    @SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value="friendAddAskList")
+    public BaseResp<Object> friendAddAskList(Long userid,Integer startNum,Integer endNum){
+        logger.info("see friendAddAsk list userId:{} startNum:{} endNum:{}",userid,startNum,endNum);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(userId == null){
+        if(userid == null){
             return baseResp.fail("参数错误");
         }
         if(startNum == null){
@@ -131,7 +136,7 @@ public class FriendController {
             pageSize = endNum - startNum;
         }
 
-        baseResp = friendService.friendAddAskList(userId,startNum,pageSize);
+        baseResp = friendService.friendAddAskList(userid,startNum,pageSize);
 
         return baseResp;
     }
