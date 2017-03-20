@@ -83,7 +83,7 @@ public interface RankService extends BaseService{
      * @return
      * @author luye
      */
-    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize);
+    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
 
     /**
      * 删除榜单 非线上
@@ -268,4 +268,12 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> acceptAward(Long userId, Long rankId);
+
+    /**
+     * 获取榜单的获奖公示
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize);
 }

@@ -44,6 +44,7 @@
     <result column="notice" property="notice" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
   </resultMap>
 
 
@@ -52,7 +53,7 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,rankrule
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -66,17 +67,53 @@
       COUNT(*)
     FROM rankimage
     WHERE 1=1
-    <if test="ranktitle != null" >
+    <if test="ranktitle != null and ranktitle != ''" >
       AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
     </if>
-    <if test="rankbrief != null" >
+    <if test="rankbrief != null and rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
     </if>
-    <if test="ptype != null" >
+    <if test="ptype != null and ptype != '-1'.toString()" >
       AND ptype = #{ptype}
     </if>
-    <if test="rankscope != null" >
+    <if test="ranktype != null and ranktype != '-1'.toString()" >
+      AND ranktype = #{ranktype}
+    </if>
+    <if test="sstarttime != null" >
+      AND starttime &gt;= #{sstarttime}
+    </if>
+    <if test="estarttime != null" >
+      AND starttime &lt; #{estarttime}
+    </if>
+    <if test="checkstatus != null" >
+      <choose>
+        <when test="checkstatus=='-1'.toString()">
+          AND (checkstatus = '0' OR checkstatus = '2')
+        </when>
+        <otherwise>
+          AND checkstatus = #{checkstatus}
+        </otherwise>
+      </choose>
+    </if>
+    <if test="rankscope != null and rankscope != '-1'.toString()" >
       AND rankscope = #{rankscope}
+    </if>
+    <if test="isup != null" >
+      AND isup = #{isup}
+    </if>
+    <choose>
+      <when test="isdel != null">
+        AND isdel = #{isdel}
+      </when>
+      <otherwise>
+        AND isdel = '0'
+      </otherwise>
+    </choose>
+    <if test="sourcetype != null" >
+      AND sourcetype = #{sourcetype}
+    </if>
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
     </if>
   </select>
 
@@ -99,8 +136,11 @@
     <if test="rankimage.rankbrief != null and rankimage.rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankimage.rankbrief}),'%')
     </if>
-    <if test="rankimage.ptype != null and rankimage.ptype != '-1'" >
+    <if test="rankimage.ptype != null and rankimage.ptype != '-1'.toString()" >
       AND ptype = #{rankimage.ptype}
+    </if>
+    <if test="rankimage.ranktype != null and rankimage.ranktype != '-1'.toString()" >
+      AND ranktype = #{rankimage.ranktype}
     </if>
     <if test="rankimage.sstarttime != null" >
       AND starttime &gt;= #{rankimage.sstarttime}
@@ -110,7 +150,7 @@
     </if>
     <if test="rankimage.checkstatus != null" >
       <choose>
-      <when test="rankimage.checkstatus=='0'.toString()">
+      <when test="rankimage.checkstatus=='-1'.toString()">
         AND (checkstatus = '0' OR checkstatus = '2')
       </when>
       <otherwise>
@@ -118,7 +158,7 @@
       </otherwise>
       </choose>
     </if>
-    <if test="rankimage.rankscope != null" >
+    <if test="rankimage.rankscope != null and rankimage.rankscope != '-1'.toString()" >
       AND rankscope = #{rankimage.rankscope}
     </if>
     <if test="rankimage.isup != null" >
@@ -300,6 +340,9 @@
       <if test="isdel != null" >
         isdel,
       </if>
+      <if test="rankrule != null" >
+        rankrule,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -425,6 +468,9 @@
       <if test="isdel != null" >
         #{isdel},
       </if>
+      <if test="rankrule != null" >
+        #{rankrule},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
@@ -546,6 +592,9 @@
       </if>
       <if test="isdel != null" >
         isdel = #{isdel},
+      </if>
+      <if test="rankrule != null" >
+        rankrule = #{rankrule},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}

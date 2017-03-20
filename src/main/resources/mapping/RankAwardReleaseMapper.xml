@@ -141,4 +141,17 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 获取榜单的奖品 -->
+  <select id="findRankAward" resultMap="BaseResultMap">
+    select
+    awardid,
+    awardlevel,
+    awardnickname,
+    awardrate,
+    awardcount
+    from rank_award
+    where rankid = #{rankid}
+    order by awardlevel
+  </select>
 </mapper>
