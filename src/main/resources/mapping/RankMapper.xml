@@ -60,39 +60,39 @@
   </select>
   <select id="selectListCount" parameterType="com.longbei.appservice.entity.Rank" resultType="java.lang.Integer">
     SELECT
-    COUNT(*)
+      COUNT(1)
     FROM rank
     WHERE 1=1
-    <if test="ranktitle != null and ranktitle != ''" >
-      AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
-    </if>
-    <if test="rankbrief != null and rankbrief != ''" >
-      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
-    </if>
-    <if test="ptype != null and ptype != '-1'" >
-      AND ptype = #{ptype}
-    </if>
-    <if test="sstarttime != null" >
-      AND starttime &gt;= #{sstarttime}
-    </if>
-    <if test="estarttime != null" >
-      AND starttime &lt; #{estarttime}
-    </if>
-    <if test="rankscope != null" >
-      AND rankscope = #{rankscope}
-    </if>
-    <if test="isup != null" >
-      AND isup = #{isup}
-    </if>
-    <if test="isdel != null" >
-      AND isdel = #{isdel}
-    </if>
-    <if test="sourcetype != null" >
-      AND sourcetype = #{sourcetype}
-    </if>
-    <if test="createuserid != null" >
-      AND createuserid = #{createuserid}
-    </if>
+      <if test="ranktitle != null and ranktitle != ''" >
+        AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+      </if>
+      <if test="rankbrief != null and rankbrief != ''" >
+        AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+      </if>
+      <if test="ptype != null and ptype != '-1'" >
+        AND ptype = #{ptype}
+      </if>
+      <if test="sstarttime != null" >
+        AND starttime &gt;= #{sstarttime}
+      </if>
+      <if test="estarttime != null" >
+        AND starttime &lt; #{estarttime}
+      </if>
+      <if test="rankscope != null" >
+        AND rankscope = #{rankscope}
+      </if>
+      <if test="isup != null" >
+        AND isup = #{isup}
+      </if>
+      <if test="isdel != null" >
+        AND isdel = #{isdel}
+      </if>
+      <if test="sourcetype != null" >
+        AND sourcetype = #{sourcetype}
+      </if>
+      <if test="createuserid != null" >
+        AND createuserid = #{createuserid}
+      </if>
   </select>
 
   <select id="selectListWithPage" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
@@ -570,4 +570,52 @@
       set rankinvolved = rankinvolved + #{count,jdbcType=INTEGER}
       where rankid = #{rankId,jdbcType=BIGINT}
   </update>
+
+  <!-- 查询榜单列表 -->
+  <select id="selectRankList" parameterType="map" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      FROM rank
+      WHERE 1=1
+        <if test="ranktitle != null and ranktitle != ''" >
+          AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+        </if>
+        <if test="rankbrief != null and rankbrief != ''" >
+          AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+        </if>
+        <if test="ptype != null and ptype != '-1'" >
+          AND ptype = #{rank.ptype}
+        </if>
+        <if test="starttime != null" >
+          AND starttime &gt;= #{starttime}
+        </if>
+        <if test="estarttime != null" >
+          AND starttime &lt; #{starttime}
+        </if>
+        <if test="rankscope != null" >
+          AND rankscope = #{rankscope}
+        </if>
+        <if test="isup != null" >
+          AND isup = #{isup}
+        </if>
+        <if test="isdel != null" >
+          AND isdel = #{isdel}
+        </if>
+        <if test="sourcetype != null" >
+          AND sourcetype = #{sourcetype}
+        </if>
+        <if test="createuserid != null" >
+          AND createuserid = #{createuserid}
+        </if>
+        <if test="isfinish != null">
+          and isfinish =#{isfinish}
+        </if>
+      <if test="orderByType != null and orderByType == 'endtime'">
+          order by endtime DESC
+      </if>
+      <if test="orderByType == null or orderByType == ''">
+          order by id desc
+      </if>
+      limit #{startNum},#{pageSize}
+  </select>
 </mapper>

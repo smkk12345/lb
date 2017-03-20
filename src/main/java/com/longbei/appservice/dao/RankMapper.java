@@ -1,4 +1,5 @@
 package com.longbei.appservice.dao;
+import com.longbei.appservice.entity.Award;
 import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.Rank;
@@ -43,5 +44,12 @@ public interface RankMapper {
      * @return
      */
     int updateRankMemberCount(@Param("rankId") Long rankId,@Param("count") int count);
+
+    /**
+     * 查询榜单列表
+     * @param parameterMap
+     * @return
+     */
+    List<Rank> selectRankList(Map<String, Object> parameterMap);
 
 }

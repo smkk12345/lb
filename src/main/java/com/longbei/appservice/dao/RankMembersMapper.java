@@ -78,4 +78,11 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> selectRankMembers(Map<String, Object> parameterMap);
+
+    /**
+     * 查看已结束的榜单的获奖情况
+     * @param rankId
+     * @return
+     */
+    List<RankMembers> selectAwardMemberList(Integer rankId);
 }
