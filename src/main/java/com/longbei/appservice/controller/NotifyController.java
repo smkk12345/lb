@@ -16,6 +16,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.PayService;
+import com.longbei.pay.weixin.res.ResponseHandler;
 
 @RestController
 @RequestMapping("/notify")
@@ -64,9 +65,35 @@ public class NotifyController {
   			resMap.put("body", request.getParameter("body"));
   			
   			//2：购买龙币
-  			baseResp = payService.ali(Long.parseLong(userid), "2", resMap);
+  			baseResp = payService.verifyali(Long.parseLong(userid), "2", resMap);
 		} catch (Exception e) {
 			logger.error("verify/ali userid = {}", userid, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/notify/verify/wx
+    * @Description: 微信回调---龙币支付
+    * @param @param userid  
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年3月20日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/verify/wx")
+    public BaseResp<Object> verifywx(String userid, 
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			ResponseHandler resHandler = new ResponseHandler(request, response);
+  			//2：购买龙币
+  			baseResp = payService.verifywx(Long.parseLong(userid), "2", resHandler);
+		} catch (Exception e) {
+			logger.error("verifywx userid = {}", userid, e);
 		}
   		return baseResp;
 	}

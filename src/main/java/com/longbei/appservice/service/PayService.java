@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.pay.weixin.res.ResponseHandler;
 
 public interface PayService {
 	
@@ -31,6 +32,14 @@ public interface PayService {
 	 * @param @param orderType 2：购买龙币
 	 * 2017年3月20日
 	 */
-	 BaseResp<Object> ali(Long userid, String orderType, Map<String, String> resMap);
+	 BaseResp<Object> verifyali(Long userid, String orderType, Map<String, String> resMap);
+	 
+	 /**
+	 * 微信支付回调
+	 * @author yinxc
+	 * @param @param orderType 2：购买龙币
+	 * 2017年3月21日
+	 */
+	 BaseResp<Object> verifywx(Long userid, String orderType, ResponseHandler resHandler);
 
 }
