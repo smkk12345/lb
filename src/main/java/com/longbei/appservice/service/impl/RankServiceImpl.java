@@ -312,6 +312,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Rank initRankAward(Rank rank){
         List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
         if(awardList != null && awardList.size() > 0){
+            awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getRankid())));
             rank.setRankAwards(awardList);
         }
         return rank;
@@ -1325,5 +1326,58 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
 
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankAcceptAwardListPage(RankMembers rankMembers, Integer pageno, Integer pagesize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (null == rankMembers){
+            return baseResp;
+        }
+        Page<RankMembers> page = new Page<>(pageno,pagesize);
+        try {
+            //搜索用户
+            AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
+            List<AppUserMongoEntity> users = null;
+            if (null != user) {
+                users = userMongoDao.getAppUsers(user);
+            }
+            rankMembers.setAppUserMongoEntities(users);
 
+
+            if (null != rankMembers.getRankAward()){
+
+                //搜索榜单
+                Rank ranksearch = rankMembers.getRankAward().getRank();
+                if (null != ranksearch){
+                    List<Rank> ranks = rankMapper.selectListWithPage(ranksearch,null,null);
+                    rankMembers.setRanks(ranks);
+                }
+
+                //搜索类目
+                Award award = rankMembers.getRankAward().getAward();
+                if (null != award){
+                    List<Award> awards = awardMapper.selectAwardList(award,null,null);
+                    rankMembers.setAwards(awards);
+                }
+
+            }
+
+
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectRankAcceptAwardList(rankMembers,pagesize*(pageno-1),pagesize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
+                if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
+                    rankMembers1.getRankAward().setRank(rankMapper.selectRankByRankid(rankMembers1.getRankid()));
+                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
+                }
+            }
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select rankmembers list rankid={} is error:",rankMembers.getRankid(),e);
+        }
+        return baseResp;
+    }
 }

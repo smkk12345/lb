@@ -42,6 +42,16 @@ public class RankMembers {
 
     private Integer awardlevel;//奖品等级
 
+    private Date spublishawarddate; //搜索使用
+
+    private Date publishawarddate; //获奖发布时间
+
+    private Date epublishawarddate; //搜索使用
+
+    private List<Rank> ranks; //查询使用
+
+    private List<Award> awards; //查询使用
+
     private AppUserMongoEntity appUserMongoEntity;
 
     private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
@@ -53,6 +63,52 @@ public class RankMembers {
     private String receivecode; //领奖口令
 
     private RankAward rankAward;
+
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getSpublishawarddate() {
+        return spublishawarddate;
+    }
+
+    public void setSpublishawarddate(Date spublishawarddate) {
+        this.spublishawarddate = spublishawarddate;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEpublishawarddate() {
+        return epublishawarddate;
+    }
+
+    public void setEpublishawarddate(Date epublishawarddate) {
+        this.epublishawarddate = epublishawarddate;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getPublishawarddate() {
+        return publishawarddate;
+    }
+
+    public void setPublishawarddate(Date publishawarddate) {
+        this.publishawarddate = publishawarddate;
+    }
+
+    public List<Rank> getRanks() {
+        return ranks;
+    }
+
+    public void setRanks(List<Rank> ranks) {
+        this.ranks = ranks;
+    }
+
+    public List<Award> getAwards() {
+        return awards;
+    }
+
+    public void setAwards(List<Award> awards) {
+        this.awards = awards;
+    }
 
     public String getReceivecode() {
         return receivecode;
