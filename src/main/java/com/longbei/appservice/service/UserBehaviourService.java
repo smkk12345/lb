@@ -1,7 +1,10 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserInfo;
+import net.sf.json.JSONObject;
 
 /**
  * 用户行为接口   可能包含统计  每日操作
@@ -34,6 +37,16 @@ public interface UserBehaviourService {
      */
     BaseResp<Object> hasPrivilege(long userid,UserInfo userInfo, String operateType);
 
-    
+    /**
+     * 用户信息统计
+     * @param userSumType  类型
+     * @param userid 当前用户id
+     * @param improve 对象
+     * @param count 数量
+     * @return
+     */
+    BaseResp<Object> userSumInfo(Constant.UserSumType userSumType,
+                                 long userid, Improve improve, int count);
+
 
 }

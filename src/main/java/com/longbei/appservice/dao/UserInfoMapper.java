@@ -92,4 +92,19 @@ public interface UserInfoMapper {
 	 * @return
 	 */
 	int updateUserCoin(@Param("userid") long userid,@Param("coin") int coin);
+
+	/**
+	 * 异步更新统计信息
+	 * @param userid
+	 * @param totalimp
+	 * @param totallikes
+	 * @param totalfans
+	 * @param totalflower
+	 * @return
+	 */
+	int updateUserSumInfo(@Param("userid")long userid,
+						  @Param("totalimp") int totalimp,
+						  @Param("totallikes") int totallikes,
+						  @Param("totalfans") int totalfans,
+						  @Param("totalflower") int totalflower);
 }

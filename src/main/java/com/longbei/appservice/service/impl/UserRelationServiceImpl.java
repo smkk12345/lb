@@ -12,6 +12,7 @@ import java.util.*;
 
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.service.FriendService;
+import com.longbei.appservice.service.UserBehaviourService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private FriendService friendService;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
 	
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#insertFriend(long, long)
@@ -177,6 +180,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 			SnsFans snsFans = new SnsFans(userid,likeuserid);
 			int n = snsFansMapper.insert(snsFans);
 			if(n > 0){
+				userBehaviourService.userSumInfo(Constant.UserSumType.addedFans,
+						userid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -195,6 +200,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			int n = snsFansMapper.deleteByUidAndLid(userid, likeuserid);
 			if(n > 0){
+				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,
+						userid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
