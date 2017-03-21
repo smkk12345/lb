@@ -12,17 +12,15 @@ import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.UserPointDetailMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserMsg;
-import com.longbei.appservice.entity.UserPlDetail;
-import com.longbei.appservice.entity.UserPointDetail;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -47,6 +45,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
     private UserMsgMapper userMsgMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -123,6 +123,46 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     @Override
     public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
         return BaseResp.ok();
+    }
+
+    @Override
+    public BaseResp<Object> userSumInfo(final Constant.UserSumType userSumType,
+                                        final long userid,
+                                        final Improve improve,
+                                        final int count) {
+
+        BaseResp<Object> baseResp = new BaseResp<>();
+//         * @param userid
+//                * @param totalimp
+//                * @param totallikes
+//                * @param totalfans
+//                * @param totalflower
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int res = 0;
+                try{
+                    if(userSumType.equals(Constant.UserSumType.addedImprove)){
+                        res = userInfoMapper.updateUserSumInfo(userid,1,0,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedImprove)){
+                        res = userInfoMapper.updateUserSumInfo(userid,-1,improve.getLikes(),0,improve.getFlowers());
+                    }else if(userSumType.equals(Constant.UserSumType.addedLike)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,1,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedLike)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,-1,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.addedFans)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,1,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedFans)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,-1,0);
+                    }else if(userSumType.equals(Constant.UserSumType.addedFlower)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,0,count);
+                    }
+                }catch (Exception e){
+                    logger.error("updateUserSumInfo error and UserSumType={}",userSumType,e);
+                }
+            }
+        });
+        return baseResp;
     }
 
     private int getHashValueFromCache(String key,String hashKey){

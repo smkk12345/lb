@@ -178,6 +178,7 @@ public class ImproveServiceImpl implements ImproveService{
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);
             springJedisDao.expire(key,Constant.CACHE_24X60X60);
+            userBehaviourService.userSumInfo(Constant.UserSumType.addedImprove,Long.parseLong(userid),null,0);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -797,6 +798,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if (isok){
             timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+            Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
+            userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
+                    Long.parseLong(userid),improve,0);
         }
         return isok;
     }
@@ -1207,6 +1211,7 @@ public class ImproveServiceImpl implements ImproveService{
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
+                userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
             }
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
@@ -1246,6 +1251,7 @@ public class ImproveServiceImpl implements ImproveService{
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
+                userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
