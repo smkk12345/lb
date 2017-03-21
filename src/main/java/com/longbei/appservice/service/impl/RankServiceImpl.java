@@ -13,10 +13,7 @@ import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.RankService;
-import com.longbei.appservice.service.RankSortService;
-import com.longbei.appservice.service.UserIdcardService;
-import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.*;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -70,6 +67,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
     private CodeDao codeDao;
+    @Autowired
+    private RankAcceptAwardService rankAcceptAwardService;
+    @Autowired
+    private UserBehaviourService userBehaviourService;
 
     /**
      *  @author luye
@@ -310,7 +311,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Rank initRankAward(Rank rank){
         List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
         if(awardList != null && awardList.size() > 0){
-            awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getRankid())));
+            try{
+                awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getRankid())));
+            }catch (Exception e){
+                logger.error("setAward error ",e);
+            }
             rank.setRankAwards(awardList);
         }
         return rank;
@@ -468,9 +473,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("加入该榜单,需要用户实名认证,您还未实名认证通过");
                 }
             }
-
+            UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
             if("1".equals(rank.getIslonglevel())){
-                UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
                 if(rank.getLonglevel() != null && (userInfo.getGrade() < Integer.parseInt(rank.getLonglevel()))){
                     return baseResp.fail("由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!");
                 }
@@ -512,6 +516,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //TODO 发送消息给榜主
 
                 return baseResp.ok("入榜成功!");
+            }
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            if(!ResultUtil.isSuccess(baseResp1)){
+                return baseResp1;
             }
 
             RankMembers rankMember = new RankMembers();
@@ -723,6 +731,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (ResultUtil.isSuccess(baseResp)){
             int res = rankMapper.updateSymbolByRankId(rank);
             if (res > 0){
+                //添加中奖名单信息
+                insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
                 return baseResp;
             }
         }
@@ -1230,6 +1240,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private void publishRankAward(String rankid){
         RankMembers rankMembers = new RankMembers();
         rankMembers.setRankid(Long.parseLong(rankid));
+
         //获取榜单全部成员列表
         List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
         //获得榜单奖品
@@ -1248,11 +1259,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     tempcount++;
                     rankMembers.setUserid(rkmember.getUserid());
                     rankMembers.setIswinning("1");
-                    rankMembers.setReceivecode(codeDao.getCode(null));
+                    String awardcode = codeDao.getCode(null);
+                    rankMembers.setReceivecode(awardcode);
                     RankAward rankAward1 = new RankAward();
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
+
+
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())
@@ -1265,6 +1279,52 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             awardcount = 0;
         }
+
+    }
+
+
+    private boolean insertRankAcceptAwardInfo(String rankid){
+
+        RankMembers rankMembers = new RankMembers();
+        rankMembers.setRankid(Long.parseLong(rankid));
+        List<RankAcceptAward> rankAcceptAwards = new ArrayList<>();
+        //获取榜单全部成员列表
+        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+
+        for (int j = 0 ; j < rankMemberses.size();j++){
+            RankMembers rkmember = rankMemberses.get(j);
+            if ("3".equals(rkmember.getCheckstatus())){
+                //生成获奖订单
+                RankAcceptAward rankAcceptAward = new RankAcceptAward();
+                rankAcceptAward.setRankid(Long.parseLong(rankid));
+                rankAcceptAward.setUserid(rkmember.getUserid());
+                rankAcceptAward.setReceivecode(rkmember.getReceivecode());
+                rankAcceptAward.setAwardlevel(rkmember.getAwardlevel());
+                rankAcceptAward.setAwardid(rkmember.getAwardid());
+                rankAcceptAward.setCreatedate(new Date());
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(rkmember.getUserid()));
+                if (null != appUserMongoEntity){
+                    rankAcceptAward.setUsername(appUserMongoEntity.getUsername());
+                }
+                Award award = awardMapper.selectByPrimaryKey(rkmember.getAwardid());
+                if (null != award){
+                    rankAcceptAward.setAwardcateid(String.valueOf(award.getAwardcateid()));
+                }
+                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+                if (null != rank){
+                    rankAcceptAward.setRanktitle(rank.getRanktitle());
+                }
+                RankAwardRelease awardRelease = rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid,String.valueOf(rkmember.getAwardid()));
+                if (null != awardRelease){
+                    rankAcceptAward.setAwardnickname(awardRelease.getAwardnickname());
+                }
+                rankAcceptAwards.add(rankAcceptAward);
+            }
+        }
+
+        //添加领奖信息
+        rankAcceptAwardService.insertAcceptAwardInfoBatch(rankAcceptAwards);
+        return true;
     }
 
 

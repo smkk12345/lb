@@ -54,6 +54,7 @@ public class ImproveServiceImpl implements ImproveService{
     private UserMongoDao userMongoDao;
     @Autowired
     private TimeLineDao timeLineDao;
+    @Autowired
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
@@ -337,8 +338,14 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             //没有
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
-            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),1);
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(improve.getBusinessid());
+            rankMembers.setUserid(improve.getUserid());
+            rankMembers.setUpdatetime(new Date());
+            rankMembers.setIcount(1);
+            //更新rankmember中的updatetime
+            res = rankMembersMapper.updateRankMemberState(rankMembers);
         } catch (Exception e) {
             logger.error("insert rank immprove:{} is error:{}", "",e);
         }

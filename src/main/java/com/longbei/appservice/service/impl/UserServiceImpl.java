@@ -356,7 +356,8 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
-	private BaseResp<Object> checkSms(String mobile, String random){
+	@Override
+	public BaseResp<Object> checkSms(String mobile, String random){
 		String res = springJedisDao.get(mobile);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {

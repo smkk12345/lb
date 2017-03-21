@@ -48,6 +48,9 @@
     <if test="award.awardcateid != null">
       AND awardcateid=#{award.awardcateid}
     </if>
+    <if test="award.awardcateid != null">
+      AND awardcateid=#{award.awardcateid}
+    </if>
     ORDER BY a.createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}

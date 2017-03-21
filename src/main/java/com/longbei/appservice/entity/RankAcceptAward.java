@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class RankAcceptAward {
     /**
@@ -14,9 +15,24 @@ public class RankAcceptAward {
     private Long rankid;
 
     /**
+     * 榜单标题
+     */
+    private String ranktitle; //榜单标题
+
+    /**
      * 用户id
      */
     private Long userid;
+
+    /**
+     * 用户手机号
+     */
+    private String username;
+
+    /**
+     * 获奖码
+     */
+    private String receivecode;
 
     /**
      * 领奖日期
@@ -37,6 +53,16 @@ public class RankAcceptAward {
      * 奖品id
      */
     private Integer awardid;
+
+    /**
+     * 奖品类别
+     */
+    private String awardcateid;
+
+    /**
+     * 奖项名称
+     */
+    private String awardnickname;
 
     /**
      * 状态 0 - 未领取 1 - 已领取 2 - 已经发货 3 - 待确认（实物 物流） 4 - 已完成
@@ -83,10 +109,81 @@ public class RankAcceptAward {
      */
     private Integer handleuserid;
 
+
+    private Date screatedate;
+
     /**
      * 创建日期
      */
     private Date createdate;
+
+    private Date ecreatedate;
+
+    private List<Award> awards; //查询用
+
+    public List<Award> getAwards() {
+        return awards;
+    }
+
+    public void setAwards(List<Award> awards) {
+        this.awards = awards;
+    }
+
+    public Date getScreatedate() {
+        return screatedate;
+    }
+
+    public void setScreatedate(Date screatedate) {
+        this.screatedate = screatedate;
+    }
+
+    public Date getEcreatedate() {
+        return ecreatedate;
+    }
+
+    public void setEcreatedate(Date ecreatedate) {
+        this.ecreatedate = ecreatedate;
+    }
+
+    public String getAwardnickname() {
+        return awardnickname;
+    }
+
+    public void setAwardnickname(String awardnickname) {
+        this.awardnickname = awardnickname;
+    }
+
+    public String getRanktitle() {
+        return ranktitle;
+    }
+
+    public void setRanktitle(String ranktitle) {
+        this.ranktitle = ranktitle;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getAwardcateid() {
+        return awardcateid;
+    }
+
+    public void setAwardcateid(String awardcateid) {
+        this.awardcateid = awardcateid;
+    }
+
+    public String getReceivecode() {
+        return receivecode;
+    }
+
+    public void setReceivecode(String receivecode) {
+        this.receivecode = receivecode;
+    }
 
     public Integer getId() {
         return id;

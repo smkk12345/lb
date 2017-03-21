@@ -35,7 +35,7 @@ public interface UserBehaviourService {
      *  public static final String USER_PRIVILEGE_ADD_RANK = "1";//
      *  public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
      */
-    BaseResp<Object> hasPrivilege(long userid,UserInfo userInfo, String operateType);
+    BaseResp<Object> hasPrivilege(UserInfo userInfo, Constant.PrivilegeType privilegeType,Object o);
 
     /**
      * 用户信息统计
