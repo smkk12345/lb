@@ -74,6 +74,9 @@
       <if test="rankid != null">
         and rankid=#{rankid}
       </if>
+      <if test="userid != null">
+        and userid=#{userid}
+      </if>
     </where>
   </select>
 
