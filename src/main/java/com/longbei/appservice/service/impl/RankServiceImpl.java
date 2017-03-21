@@ -69,6 +69,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private CodeDao codeDao;
     @Autowired
     private RankAcceptAwardService rankAcceptAwardService;
+    @Autowired
+    private UserBehaviourService userBehaviourService;
 
     /**
      *  @author luye
@@ -471,9 +473,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("加入该榜单,需要用户实名认证,您还未实名认证通过");
                 }
             }
-
+            UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
             if("1".equals(rank.getIslonglevel())){
-                UserInfo userInfo = this.userInfoMapper.selectByUserid(userId);
                 if(rank.getLonglevel() != null && (userInfo.getGrade() < Integer.parseInt(rank.getLonglevel()))){
                     return baseResp.fail("由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!");
                 }
@@ -515,6 +516,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //TODO 发送消息给榜主
 
                 return baseResp.ok("入榜成功!");
+            }
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            if(!ResultUtil.isSuccess(baseResp1)){
+                return baseResp1;
             }
 
             RankMembers rankMember = new RankMembers();

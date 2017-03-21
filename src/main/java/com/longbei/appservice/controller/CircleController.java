@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
@@ -99,7 +100,8 @@ public class CircleController {
             creategoup = false;
         }
         //校验用户是否有该权限
-        baseResp = userBehaviourService.hasPrivilege(Long.parseLong(userId),null,USER_PRIVILEGE_ADD_CIRCLE);
+        UserInfo userInfo = null;
+        baseResp = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.createCircle,null);
         if(baseResp.getCode() != 0){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_88,Constant.RTNINFO_SYS_88);
         }

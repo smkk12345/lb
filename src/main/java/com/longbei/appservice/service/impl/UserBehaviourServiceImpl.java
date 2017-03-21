@@ -7,14 +7,12 @@ import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
-import com.longbei.appservice.dao.UserPlDetailMapper;
-import com.longbei.appservice.dao.UserPointDetailMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -25,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +46,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserMsgMapper userMsgMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private UserLevelMapper userLevelMapper;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -121,8 +124,37 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     @Override
-    public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
-        return BaseResp.ok();
+    public BaseResp<Object> hasPrivilege(UserInfo userInfo, Constant.PrivilegeType privilegeType,Object o) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+        //加榜单个数
+        if(privilegeType.equals(Constant.PrivilegeType.joinranknum)){
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setUserid(userInfo.getUserid());
+            int count = rankMembersMapper.selectCount(rankMembers);
+            if(count < userLevel.getJoinranknum()){
+                return BaseResp.ok();
+            }else{
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
+            }
+        }else {
+            //发榜  判断发布榜单个数  暂时不做
+            Rank r = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+            if(r.getIspublic().equals("0")){ //公开榜单参与人数限制
+                if(r.getRanklimite() <=  userLevel.getPubrankjoinnum()){
+                    return BaseResp.ok();
+                }else{
+                    //后面处理
+                }
+            }else{//私有榜单参与人数限制
+                if(r.getRanklimite() <=  userLevel.getPrirankjoinnum()){
+                    return BaseResp.ok();
+                }else{
+                    //operate later
+                }
+            }
+        }
+        return baseResp;
     }
 
     @Override

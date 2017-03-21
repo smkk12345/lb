@@ -54,7 +54,7 @@ public class Constant {
 	public static final int STATUS_SYS_11 = -11;
 	public static final int STATUS_SYS_12 = -12;
 	public static final int STATUS_SYS_13 = -13;
-	
+	public static final int STATUS_SYS_14 = -14;
 	public static final int STATUS_SYS_15 = -15;
 	public static final int STATUS_SYS_16 = -16;
 	
@@ -158,7 +158,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_11 = "您已绑定其他帐号";
 	public static final String RTNINFO_SYS_12 = "密码和验证码均错误";
 	public static final String RTNINFO_SYS_13 = "不能给自己点赞";
-	
+	public static final String RTNINFO_SYS_14 = "加榜个数已达到上限";
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	
@@ -583,6 +583,15 @@ public class Constant {
 		addedFlower,//被送花
 		addedFans,//被关注
 		removedFans//被移除关注
+	}
+
+	/**
+	 * 特权类型
+	 */
+	public enum PrivilegeType{
+		joinranknum,//加入榜单限制
+		createRank, //创建榜单时  私有榜单数量参与人数  公共榜单数量 参与人数
+		createCircle
 	}
 
 
