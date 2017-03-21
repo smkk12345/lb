@@ -310,7 +310,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Rank initRankAward(Rank rank){
         List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
         if(awardList != null && awardList.size() > 0){
-            awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getRankid())));
+            try{
+                awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getRankid())));
+            }catch (Exception e){
+                logger.error("setAward error ",e);
+            }
             rank.setRankAwards(awardList);
         }
         return rank;

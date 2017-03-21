@@ -54,6 +54,7 @@ public class ImproveServiceImpl implements ImproveService{
     private UserMongoDao userMongoDao;
     @Autowired
     private TimeLineDao timeLineDao;
+    @Autowired
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
