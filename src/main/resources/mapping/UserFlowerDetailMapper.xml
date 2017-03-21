@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserFlowerDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserFlowerDetail" >
+    <id column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="improveid" property="improveid" jdbcType="BIGINT" />
+    <result column="friendid" property="friendid" jdbcType="BIGINT" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="ftype" property="ftype" jdbcType="CHAR" />
+    <result column="origin" property="origin" jdbcType="CHAR" />
+    <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pid, id, userid, improveid, friendid, number, ftype, origin, drawdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_flower_detail
+    where pid = #{pid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_flower_detail
+    where pid = #{pid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+    insert into user_flower_detail (pid, id, userid, 
+      improveid, friendid, number, 
+      ftype, origin, drawdate
+      )
+    values (#{pid,jdbcType=INTEGER}, #{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{improveid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT}, #{number,jdbcType=INTEGER}, 
+      #{ftype,jdbcType=CHAR}, #{origin,jdbcType=CHAR}, #{drawdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+    insert into user_flower_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="improveid != null" >
+        improveid,
+      </if>
+      <if test="friendid != null" >
+        friendid,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="ftype != null" >
+        ftype,
+      </if>
+      <if test="origin != null" >
+        origin,
+      </if>
+      <if test="drawdate != null" >
+        drawdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="improveid != null" >
+        #{improveid,jdbcType=BIGINT},
+      </if>
+      <if test="friendid != null" >
+        #{friendid,jdbcType=BIGINT},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="ftype != null" >
+        #{ftype,jdbcType=CHAR},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=CHAR},
+      </if>
+      <if test="drawdate != null" >
+        #{drawdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+    update user_flower_detail
+    <set >
+      <if test="id != null" >
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="improveid != null" >
+        improveid = #{improveid,jdbcType=BIGINT},
+      </if>
+      <if test="friendid != null" >
+        friendid = #{friendid,jdbcType=BIGINT},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="ftype != null" >
+        ftype = #{ftype,jdbcType=CHAR},
+      </if>
+      <if test="origin != null" >
+        origin = #{origin,jdbcType=CHAR},
+      </if>
+      <if test="drawdate != null" >
+        drawdate = #{drawdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pid = #{pid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+    update user_flower_detail
+    set id = #{id,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT},
+      improveid = #{improveid,jdbcType=BIGINT},
+      friendid = #{friendid,jdbcType=BIGINT},
+      number = #{number,jdbcType=INTEGER},
+      ftype = #{ftype,jdbcType=CHAR},
+      origin = #{origin,jdbcType=CHAR},
+      drawdate = #{drawdate,jdbcType=TIMESTAMP}
+    where pid = #{pid,jdbcType=INTEGER}
+  </update>
+</mapper>

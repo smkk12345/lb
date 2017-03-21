@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.RankAcceptAwardMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.RankAcceptAward" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rankid" property="rankid" jdbcType="BIGINT" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="acceptdate" property="acceptdate" jdbcType="TIMESTAMP" />
+    <result column="confirmacceptdate" property="confirmacceptdate" jdbcType="TIMESTAMP" />
+    <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
+    <result column="awardid" property="awardid" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="reciverusername" property="reciverusername" jdbcType="VARCHAR" />
+    <result column="reciverusertel" property="reciverusertel" jdbcType="VARCHAR" />
+    <result column="reciveruseraddr" property="reciveruseraddr" jdbcType="VARCHAR" />
+    <result column="logisticscompany" property="logisticscompany" jdbcType="VARCHAR" />
+    <result column="logisticsnum" property="logisticsnum" jdbcType="VARCHAR" />
+    <result column="dispatchdate" property="dispatchdate" jdbcType="TIMESTAMP" />
+    <result column="remarker" property="remarker" jdbcType="VARCHAR" />
+    <result column="handleuserid" property="handleuserid" jdbcType="INTEGER" />
+    <result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rankid, userid, acceptdate, confirmacceptdate, awardlevel, awardid, status, reciverusername, 
+    reciverusertel, reciveruseraddr, logisticscompany, logisticsnum, dispatchdate, remarker, 
+    handleuserid, createdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rank_accept_award
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rank_accept_award
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into rank_accept_award
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="acceptdate != null" >
+        acceptdate,
+      </if>
+      <if test="confirmacceptdate != null" >
+        confirmacceptdate,
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel,
+      </if>
+      <if test="awardid != null" >
+        awardid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reciverusername != null" >
+        reciverusername,
+      </if>
+      <if test="reciverusertel != null" >
+        reciverusertel,
+      </if>
+      <if test="reciveruseraddr != null" >
+        reciveruseraddr,
+      </if>
+      <if test="logisticscompany != null" >
+        logisticscompany,
+      </if>
+      <if test="logisticsnum != null" >
+        logisticsnum,
+      </if>
+      <if test="dispatchdate != null" >
+        dispatchdate,
+      </if>
+      <if test="remarker != null" >
+        remarker,
+      </if>
+      <if test="handleuserid != null" >
+        handleuserid,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+    </trim>
+    values
+    <foreach collection ="list" item="acceptaward" index= "index" separator =",">
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+        <if test="acceptaward.rankid != null" >
+          #{acceptaward.rankid,jdbcType=BIGINT},
+        </if>
+        <if test="acceptaward.userid != null" >
+          #{acceptaward.userid,jdbcType=BIGINT},
+        </if>
+        <if test="acceptaward.acceptdate != null" >
+          #{acceptaward.acceptdate,jdbcType=TIMESTAMP},
+        </if>
+        <if test="acceptaward.confirmacceptdate != null" >
+          #{acceptaward.confirmacceptdate,jdbcType=TIMESTAMP},
+        </if>
+        <if test="acceptaward.awardlevel != null" >
+          #{acceptaward.awardlevel,jdbcType=INTEGER},
+        </if>
+        <if test="acceptaward.awardid != null" >
+          #{acceptaward.awardid,jdbcType=INTEGER},
+        </if>
+        <if test="acceptaward.status != null" >
+          #{acceptaward.status,jdbcType=INTEGER},
+        </if>
+        <if test="acceptaward.reciverusername != null" >
+          #{acceptaward.reciverusername,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.reciverusertel != null" >
+          #{acceptaward.reciverusertel,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.reciveruseraddr != null" >
+          #{acceptaward.reciveruseraddr,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.logisticscompany != null" >
+          #{acceptaward.logisticscompany,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.logisticsnum != null" >
+          #{acceptaward.logisticsnum,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.dispatchdate != null" >
+          #{acceptaward.dispatchdate,jdbcType=TIMESTAMP},
+        </if>
+        <if test="acceptaward.remarker != null" >
+          #{acceptaward.remarker,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.handleuserid != null" >
+          #{acceptaward.handleuserid,jdbcType=INTEGER},
+        </if>
+        <if test="acceptaward.createdate != null" >
+          #{acceptaward.createdate,jdbcType=TIMESTAMP},
+        </if>
+      </trim>
+    </foreach >
+  </insert>
+
+
+  <insert id="insert" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
+    insert into rank_accept_award (id, rankid, userid, 
+      acceptdate, confirmacceptdate, awardlevel, 
+      awardid, status, reciverusername, 
+      reciverusertel, reciveruseraddr, logisticscompany, 
+      logisticsnum, dispatchdate, remarker, 
+      handleuserid, createdate)
+    values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
+      #{acceptdate,jdbcType=TIMESTAMP}, #{confirmacceptdate,jdbcType=TIMESTAMP}, #{awardlevel,jdbcType=INTEGER}, 
+      #{awardid,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{reciverusername,jdbcType=VARCHAR}, 
+      #{reciverusertel,jdbcType=VARCHAR}, #{reciveruseraddr,jdbcType=VARCHAR}, #{logisticscompany,jdbcType=VARCHAR}, 
+      #{logisticsnum,jdbcType=VARCHAR}, #{dispatchdate,jdbcType=TIMESTAMP}, #{remarker,jdbcType=VARCHAR}, 
+      #{handleuserid,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
+    insert into rank_accept_award
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="rankid != null" >
+        rankid,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="acceptdate != null" >
+        acceptdate,
+      </if>
+      <if test="confirmacceptdate != null" >
+        confirmacceptdate,
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel,
+      </if>
+      <if test="awardid != null" >
+        awardid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reciverusername != null" >
+        reciverusername,
+      </if>
+      <if test="reciverusertel != null" >
+        reciverusertel,
+      </if>
+      <if test="reciveruseraddr != null" >
+        reciveruseraddr,
+      </if>
+      <if test="logisticscompany != null" >
+        logisticscompany,
+      </if>
+      <if test="logisticsnum != null" >
+        logisticsnum,
+      </if>
+      <if test="dispatchdate != null" >
+        dispatchdate,
+      </if>
+      <if test="remarker != null" >
+        remarker,
+      </if>
+      <if test="handleuserid != null" >
+        handleuserid,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rankid != null" >
+        #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="acceptdate != null" >
+        #{acceptdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="confirmacceptdate != null" >
+        #{confirmacceptdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardlevel != null" >
+        #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardid != null" >
+        #{awardid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="reciverusername != null" >
+        #{reciverusername,jdbcType=VARCHAR},
+      </if>
+      <if test="reciverusertel != null" >
+        #{reciverusertel,jdbcType=VARCHAR},
+      </if>
+      <if test="reciveruseraddr != null" >
+        #{reciveruseraddr,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticscompany != null" >
+        #{logisticscompany,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsnum != null" >
+        #{logisticsnum,jdbcType=VARCHAR},
+      </if>
+      <if test="dispatchdate != null" >
+        #{dispatchdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarker != null" >
+        #{remarker,jdbcType=VARCHAR},
+      </if>
+      <if test="handleuserid != null" >
+        #{handleuserid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
+    update rank_accept_award
+    <set >
+      <if test="rankid != null" >
+        rankid = #{rankid,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="acceptdate != null" >
+        acceptdate = #{acceptdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="confirmacceptdate != null" >
+        confirmacceptdate = #{confirmacceptdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardlevel != null" >
+        awardlevel = #{awardlevel,jdbcType=INTEGER},
+      </if>
+      <if test="awardid != null" >
+        awardid = #{awardid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="reciverusername != null" >
+        reciverusername = #{reciverusername,jdbcType=VARCHAR},
+      </if>
+      <if test="reciverusertel != null" >
+        reciverusertel = #{reciverusertel,jdbcType=VARCHAR},
+      </if>
+      <if test="reciveruseraddr != null" >
+        reciveruseraddr = #{reciveruseraddr,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticscompany != null" >
+        logisticscompany = #{logisticscompany,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsnum != null" >
+        logisticsnum = #{logisticsnum,jdbcType=VARCHAR},
+      </if>
+      <if test="dispatchdate != null" >
+        dispatchdate = #{dispatchdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarker != null" >
+        remarker = #{remarker,jdbcType=VARCHAR},
+      </if>
+      <if test="handleuserid != null" >
+        handleuserid = #{handleuserid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
+    update rank_accept_award
+    set rankid = #{rankid,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT},
+      acceptdate = #{acceptdate,jdbcType=TIMESTAMP},
+      confirmacceptdate = #{confirmacceptdate,jdbcType=TIMESTAMP},
+      awardlevel = #{awardlevel,jdbcType=INTEGER},
+      awardid = #{awardid,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      reciverusername = #{reciverusername,jdbcType=VARCHAR},
+      reciverusertel = #{reciverusertel,jdbcType=VARCHAR},
+      reciveruseraddr = #{reciveruseraddr,jdbcType=VARCHAR},
+      logisticscompany = #{logisticscompany,jdbcType=VARCHAR},
+      logisticsnum = #{logisticsnum,jdbcType=VARCHAR},
+      dispatchdate = #{dispatchdate,jdbcType=TIMESTAMP},
+      remarker = #{remarker,jdbcType=VARCHAR},
+      handleuserid = #{handleuserid,jdbcType=INTEGER},
+      createdate = #{createdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

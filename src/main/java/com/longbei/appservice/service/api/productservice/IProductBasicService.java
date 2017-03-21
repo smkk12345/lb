@@ -4,6 +4,7 @@ package com.longbei.appservice.service.api.productservice;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Param;
 import feign.RequestLine;
@@ -206,6 +207,15 @@ public interface IProductBasicService {
 	 * 2017年3月20日
 	 */
 	 @RequestLine("POST /notify/verify/ali?orderType={orderType}")
-	 BaseResp<Object> ali(@Param("orderType") String orderType, Map<String, String> resMap);
+	 BaseResp<Object> verifyali(@Param("orderType") String orderType, Map<String, String> resMap);
+	 
+	 /**
+	 * 微信支付回调
+	 * @author yinxc
+	 * @param @param orderType 2：购买龙币
+	 * 2017年3月21日
+	 */
+	 @RequestLine("POST /notify/verify/wx?orderType={orderType}")
+	 BaseResp<Object> verifywx(@Param("orderType") String orderType, ResponseHandler resHandler);
 	 
 }
