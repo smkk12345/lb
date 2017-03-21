@@ -63,8 +63,8 @@
         <!-- each <producerConfig> translates to regular kafka-client config (format: key=value) -->
         <!-- producer configs are documented here: https://kafka.apache.org/documentation.html#newproducerconfigs -->
         <!-- bootstrap.servers is the only mandatory producerConfig -->
-        <producerConfig>bootstrap.servers=172.21.1.3:9092</producerConfig>
-
+        <!--<producerConfig>bootstrap.servers=172.21.1.3:9092</producerConfig>-->
+        <broker>172.21.1.3:9092,172.21.2.4:9092,172.21.1.4:9092</broker>
         <!-- this is the fallback appender if kafka is not available. -->
         <appender-ref ref="STDOUT"/>
     </appender>
@@ -73,7 +73,7 @@
     <root level="INFO">
         <!--<appender-ref ref="INFO_FILE" />-->
         <!--<appender-ref ref="ERROR_FILE" />-->
-        <appender-ref ref="kafkaAppender" />
+        <!--<appender-ref ref="kafkaAppender" />-->
         <appender-ref ref="CONSOLE" />
     </root>
 

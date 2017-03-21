@@ -1,6 +1,8 @@
 package com.longbei.appservice.service.api.productservice;
 
 
+import java.util.Map;
+
 import com.longbei.appservice.common.BaseResp;
 
 import feign.Param;
@@ -172,5 +174,38 @@ public interface IProductBasicService {
 	 @RequestLine("GET /order/updateOrderStatus?userid={userid}&orderid={orderid}&orderstatus={orderstatus}")
 	 BaseResp<Object> updateOrderStatus(@Param("userid") Long userid, @Param("orderid") String orderid, 
 			 @Param("orderstatus") String orderstatus);
+	 
+	 
+	 
+	 
+	 //------------------------支付接口------------------------------------
+	 
+	 /**
+	 * 微信支付
+	 * @author yinxc
+	 * @param @param orderid 订单编号
+	 * 2017年3月20日
+	 */
+	 @RequestLine("GET /new_wxpay/wxPayMainPage?orderid={orderid}")
+	 BaseResp<Object> wxPayMainPage(@Param("orderid") String orderid);
+	 
+	 /**
+	 * 支付宝支付
+	 * @author yinxc
+	 * @param @param orderid 订单编号
+	 * @param @param userid 
+	 * 2017年3月20日
+	 */
+	 @RequestLine("POST /pay/signature?userid={userid}&orderid={orderid}")
+	 BaseResp<Object> signature(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
+	 * 支付宝支付回调
+	 * @author yinxc
+	 * @param @param orderType 2：购买龙币
+	 * 2017年3月20日
+	 */
+	 @RequestLine("POST /notify/verify/ali?orderType={orderType}")
+	 BaseResp<Object> ali(@Param("orderType") String orderType, Map<String, String> resMap);
 	 
 }

@@ -1,6 +1,7 @@
 package com.longbei.appservice;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ServletComponentScan
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
+
 
 
     @Override
