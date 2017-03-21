@@ -19,6 +19,11 @@ public class RankAcceptAward {
     private Long userid;
 
     /**
+     * 获奖码
+     */
+    private String receivecode;
+
+    /**
      * 领奖日期
      */
     private Date acceptdate;
@@ -87,6 +92,14 @@ public class RankAcceptAward {
      * 创建日期
      */
     private Date createdate;
+
+    public String getReceivecode() {
+        return receivecode;
+    }
+
+    public void setReceivecode(String receivecode) {
+        this.receivecode = receivecode;
+    }
 
     public Integer getId() {
         return id;
