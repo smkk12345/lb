@@ -94,4 +94,8 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankAwardRelease> rankMemberAwardList(Long rankid);
+
+
+    List<RankMembers> selectRankAcceptAwardList(@Param("rankmember") RankMembers rankMembers,
+                                                @Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
 }

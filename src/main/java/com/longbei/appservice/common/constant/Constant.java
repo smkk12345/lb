@@ -567,7 +567,23 @@ public class Constant {
 	public static final String USER_MONEY_GIFT = "1";
 //	public static final String ;
 
-
+	/**
+	 * 	用户统计数据处理----运营后台使用
+	 *        0 发进步 1 删除进步
+	 *        2 点赞 3 取消赞
+	 *        4 送花
+	 *        5 被关注
+	 *        6 取消关注
+	 */
+	public enum UserSumType{
+		addedImprove,//发进步
+		removedImprove,//删除
+		addedLike,//被点赞
+		removedLike,//被取消赞
+		addedFlower,//被送花
+		addedFans,//被关注
+		removedFans//被移除关注
+	}
 
 
 }

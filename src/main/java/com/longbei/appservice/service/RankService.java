@@ -312,4 +312,15 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectRankAward(Long rankId);
+
+    /**
+     * 获取领奖列表
+     * @param rankMembers
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankAcceptAwardListPage(RankMembers rankMembers,Integer pageno,Integer pagesize);
+
+
 }

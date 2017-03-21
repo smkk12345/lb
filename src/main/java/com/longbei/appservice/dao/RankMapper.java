@@ -28,8 +28,8 @@ public interface RankMapper {
     Rank selectRankByRankid(@Param("rankid")Long rankid);
 
     List<Rank> selectListWithPage(@Param("rank") Rank rank,
-                                       @Param("startno")int startno,
-                                       @Param("pagesize")int pagesize);
+                                       @Param("startno")Integer startno,
+                                       @Param("pagesize")Integer pagesize);
 
     int selectListCount(Rank rank);
 
