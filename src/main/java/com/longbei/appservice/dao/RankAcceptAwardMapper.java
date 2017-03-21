@@ -18,4 +18,8 @@ public interface RankAcceptAwardMapper {
     int updateByPrimaryKeySelective(RankAcceptAward record);
 
     int updateByPrimaryKey(RankAcceptAward record);
+
+    int selectCount(RankAcceptAward rankAcceptAward);
+
+    List<RankAcceptAward> selectList(RankAcceptAward rankAcceptAward,Integer startno,Integer pagesize);
 }

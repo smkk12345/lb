@@ -36,6 +36,15 @@
   </select>
 
 
+  <select id="selectByRankIdAndAwardId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank_award_release
+    WHERE rankid=#{rankid} AND awardid=#{awardid}
+  </select>
+
+
+
   <delete id="deleteByRankid">
     DELETE FROM rank_award_release
     WHERE rankid=#{rankid}

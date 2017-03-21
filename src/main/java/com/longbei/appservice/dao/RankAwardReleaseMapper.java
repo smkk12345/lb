@@ -32,4 +32,7 @@ public interface RankAwardReleaseMapper {
      * @return
      */
     List<RankAwardRelease> findRankAward(@Param("rankid") Long rankid);
+
+
+    RankAwardRelease selectByRankIdAndAwardId(@Param("rankid") String rankid,@Param("awardid") String awardid);
 }
