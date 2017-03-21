@@ -137,7 +137,10 @@
     <if test="rank.createuserid != null" >
       AND createuserid = #{rank.createuserid}
     </if>
-    ORDER BY createtime DESC limit #{startno},#{pagesize}
+    ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
