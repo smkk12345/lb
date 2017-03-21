@@ -21,6 +21,7 @@
     <result column="checkuserid" property="checkuserid" jdbcType="VARCHAR" />
     <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
+    <result column="publishawarddate" property="publishawarddate" jdbcType="TIMESTAMP" />
     <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
       <result column="awardid" property="awardid" jdbcType="VARCHAR" />
       <result column="awardlevel" property="awardlevel" jdbcType="VARCHAR" />
@@ -32,7 +33,7 @@
   <sql id="Base_Column_List" >
       id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
     likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
-    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode
+    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -70,7 +71,9 @@
           </foreach>
         </if>
         AND status = '1'
+      <if test="rankid != null">
         and rankid=#{rankid}
+      </if>
     </where>
   </select>
 
@@ -103,7 +106,89 @@
           </foreach>
         </if>
         AND status = '1'
-        and rankid=#{rankmember.rankid}
+        <if test="rankmember.rankid != null">
+          and rankid=#{rankmember.rankid}
+        </if>
+
+    </where>
+    ORDER BY sortnum DESC ,likes DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+
+  <select id="selectRankAcceptAwardCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">
+    SELECT
+      count(*)
+    FROM rank_members
+    <where>
+      <if test="receivecode != null">
+        AND receivecode=#{receivecode}
+      </if>
+      <if test="spublishawarddate != null" >
+        AND publishawarddate &gt;= #{spublishawarddate}
+      </if>
+      <if test="epublishawarddate != null" >
+        AND publishawarddate &lt; #{epublishawarddate}
+      </if>
+      <if test="appUserMongoEntities != null and appUserMongoEntities.size() > 0">
+        AND  userid in
+        <foreach item="item" index="index" collection="appUserMongoEntities" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
+      </if>
+      AND status = '1'
+      <if test="ranks != null and ranks.size() > 0">
+        AND  rankid in
+        <foreach item="item" index="index" collection="ranks" open="(" separator="," close=")">
+          #{item.rankid}
+        </foreach>
+      </if>
+      <if test="awards != null and awards.size() > 0">
+        AND  awardid in
+        <foreach item="item" index="index" collection="awards" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
+      </if>
+
+    </where>
+  </select>
+
+  <select id="selectRankAcceptAwardList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank_members
+    <where>
+      <if test="rankmember.receivecode != null">
+        AND receivecode=#{rankmember.receivecode}
+      </if>
+      <if test="rankmember.spublishawarddate != null" >
+        AND publishawarddate &gt;= #{rankmember.spublishawarddate}
+      </if>
+      <if test="rankmember.epublishawarddate != null" >
+        AND publishawarddate &lt; #{rankmember.epublishawarddate}
+      </if>
+      <if test="rankmember.appUserMongoEntities != null and rankmember.appUserMongoEntities.size() > 0">
+        AND  userid in
+        <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
+      </if>
+      AND status = '1'
+      <if test="rankmember.ranks != null and rankmember.ranks.size() > 0">
+        AND  rankid in
+        <foreach item="item" index="index" collection="rankmember.ranks" open="(" separator="," close=")">
+          #{item.rankid}
+        </foreach>
+      </if>
+      <if test="rankmember.awards != null and rankmember.awards.size() > 0">
+        AND  awardid in
+        <foreach item="item" index="index" collection="rankmember.awards" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
+      </if>
+
     </where>
     ORDER BY sortnum DESC ,likes DESC
     <if test="startno != null">

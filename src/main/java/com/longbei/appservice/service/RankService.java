@@ -294,4 +294,16 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope, Long lastRankId, Integer pageSize,Boolean showAward);
+
+
+    /**
+     * 获取领奖列表
+     * @param rankMembers
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankAcceptAwardListPage(RankMembers rankMembers,Integer pageno,Integer pagesize);
+
+
 }

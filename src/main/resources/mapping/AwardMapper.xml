@@ -45,6 +45,9 @@
     <if test="award.awardtitle != null">
       AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
     </if>
+    <if test="award.awardcateid != null">
+      AND awardcateid=#{award.awardcateid}
+    </if>
     ORDER BY a.createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
