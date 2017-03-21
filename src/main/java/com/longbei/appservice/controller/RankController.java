@@ -265,6 +265,30 @@ public class RankController {
         return baseResp;
     }
 
+    /**
+     * 查询我的龙榜列表
+     * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="selectOwnRank")
+    public BaseResp<Object> selectOwnRank(Long userId,Integer searchType,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(searchType == null){
+            searchType = 1;
+        }
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankService.selectownRank(userId,searchType,startNum,pageSize);
+        return baseResp;
+    }
+
 //    /**
 //     * url: http://ip:port/app_service/rank/insert
 //     * method:  POST

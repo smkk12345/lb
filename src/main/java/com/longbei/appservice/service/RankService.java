@@ -294,4 +294,13 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope, Long lastRankId, Integer pageSize,Boolean showAward);
+
+    /**
+     * 查询和自己相关的榜单
+     * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize);
 }

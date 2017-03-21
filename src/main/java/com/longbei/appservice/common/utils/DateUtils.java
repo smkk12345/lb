@@ -380,7 +380,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 
 	
 	/**
-	 * 日期比较
+	 * 日期比较 第一个时间比第二个时间大,则返回true
 	 * @param oldDate
 	 * @param newDate
 	 * @return
@@ -404,4 +404,20 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		sDate2 = sDate2.substring(0, 10);
 		return sDate1.equals(sDate2);
 	}
+
+	/**
+	 * 往前推多少天
+	 * @param currentDate
+	 * @param day
+     * @return
+     */
+	public static Date getBeforeDate(Date currentDate,Integer day){
+		if(currentDate == null || day == null){
+			return new Date();
+		}
+
+		Long current = currentDate.getTime();
+		return new Date(current - (day*24*60*60));
+	}
+
 }

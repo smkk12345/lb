@@ -1,6 +1,5 @@
 package com.longbei.appservice.service.impl;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -351,6 +350,64 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    /**
+     * 查询和自己相关的榜单
+     * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            if(searchType == 1){//查询我参与的
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("userId",userId);
+                parameterMap.put("status","1");
+                parameterMap.put("ispublic","0");
+                parameterMap.put("startNum",startNum);
+                parameterMap.put("pageSize",pageSize);
+                List<RankMembers> rankMembers = this.rankMembersMapper.selectRankMembers(parameterMap);
+                List<Rank> marching = new ArrayList<Rank>();
+                List<Rank> finish = new ArrayList<Rank>();
+                List<Rank> nostart = new ArrayList<Rank>();
+                if(rankMembers != null && rankMembers.size() > 0){
+                    for(RankMembers rankMembers1:rankMembers){
+                        Rank rank = this.rankMapper.selectRankByRankid(rankMembers1.getRankid());
+                        if(rank != null && "1".equals(rank.getIsfinish())){//已结束
+                            finish.add(rank);
+                        }else if(rank != null && DateUtils.compare(rank.getStarttime(),new Date())){
+                            marching.add(rank);
+                        }else{
+                            nostart.add(rank);
+                        }
+                    }
+                }
+                List<Rank> resultList = new LinkedList<Rank>();
+                resultList.addAll(marching);
+                resultList.addAll(nostart);
+                resultList.addAll(marching);
+                baseResp.setData(resultList);
+            }else if(searchType == 2){
+
+            }else if(searchType == 3){//我创建的
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("createuserid",userId);
+                parameterMap.put("status","1");
+                parameterMap.put("ispublic","0");
+                parameterMap.put("startNum",startNum);
+                parameterMap.put("pageSize",pageSize);
+                List<Rank> createList = this.rankMapper.selectRankList(parameterMap);
+            }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select own rank list error searchType:{} startNum:{} pageSize:{}",searchType,startNum,pageSize);
+            printException(e);
+        }
+        return baseResp;
+    }
+
     @Override
     public boolean deleteRankImage(String rankimageid) {
         int res = 0;
@@ -460,6 +517,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if (!DateUtils.compare(rank.getEndtime(), new Date())) {
                 return baseResp.fail("非常抱歉,该榜单已结束!");
+            }
+            if(StringUtils.isNotEmpty(rank.getJoinlastday()) && !"0".equals(rank.getJoinlastday())){
+                int day = Integer.parseInt(rank.getJoinlastday());
+                Date lastDate = DateUtils.getBeforeDate(rank.getEndtime(),day);
+                if(!DateUtils.compare(lastDate,new Date())){
+                    return baseResp.fail("抱歉,由于当前已超过了最后的参榜时间,因此您无法参榜!");
+                }
             }
             //查看口令是否正确
             if(StringUtils.isNotEmpty(rank.getCodeword()) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getCodeword()))){
@@ -847,6 +911,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> parameterMap = new HashMap<String,Object>();
             parameterMap.put("rankId",rankId);
             parameterMap.put("isFashionMan","1");
+            parameterMap.put("status","1");
             parameterMap.put("startNum",startNum);
             parameterMap.put("pageSize",pageSize);
             List<RankMembers> rankMembersList = this.rankMembersMapper.selectRankMembers(parameterMap);

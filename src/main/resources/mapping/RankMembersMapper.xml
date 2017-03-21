@@ -435,9 +435,20 @@
       from rank_members
       <where>
           <if test="isFashionMan != null">
-              isfashionman = 1 AND
+              isfashionman = 1
           </if>
-         rankId = #{rankId}
+          <if test="ispublic != null">
+            and ispublic = #{ispublic}
+          </if>
+          <if test="status != null">
+              and status = #{status}
+          </if>
+          <if test="rankId != null">
+              and rankid = #{rankId}
+          </if>
+          <if test="userId != null">
+            and userid = #{userId}
+          </if>
       </where>
       <if test="startNum != null">
           limit #{startNum},#{pageSize}
