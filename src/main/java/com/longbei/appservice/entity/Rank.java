@@ -45,7 +45,7 @@ public class Rank {
 
     private String coordinate;//坐标
 
-    private String isfinish;//是否结束。0—为结束 1—一结束
+    private String isfinish;//是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
 
     private Long createuserid;//榜单创建人id
 
@@ -575,7 +575,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @return isfinish 是否结束。0—为结束 1—一结束
+     * @return isfinish 是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public String getIsfinish() {
         return isfinish;
@@ -583,7 +583,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @param isfinish 是否结束。0—为结束 1—一结束
+     * @param isfinish 是否结束。是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public void setIsfinish(String isfinish) {
         this.isfinish = isfinish == null ? null : isfinish.trim();

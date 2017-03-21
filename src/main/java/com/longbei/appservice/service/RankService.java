@@ -128,10 +128,12 @@ public interface RankService extends BaseService{
     /**
      * 获取榜单详情 线上
      * @param rankid
+     * @param queryCreateUser 是否查询创建榜单用户的信息
+     * @param queryAward 是否查询榜单奖品信息
      * @return
      * @author luye
      */
-    BaseResp<Rank> selectRankDetailByRankid(String rankid);
+    BaseResp<Rank> selectRankDetailByRankid(String rankid,Boolean queryCreateUser,Boolean queryAward);
 
     /**
      * 获取成员列表 pc
@@ -303,4 +305,11 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize);
+
+    /**
+     * 查询榜单奖品列表
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> selectRankAward(Long rankId);
 }

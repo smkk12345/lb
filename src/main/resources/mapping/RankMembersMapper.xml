@@ -437,9 +437,6 @@
           <if test="isFashionMan != null">
               isfashionman = 1
           </if>
-          <if test="ispublic != null">
-            and ispublic = #{ispublic}
-          </if>
           <if test="status != null">
               and status = #{status}
           </if>

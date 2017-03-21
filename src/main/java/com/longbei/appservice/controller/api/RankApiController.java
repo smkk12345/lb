@@ -107,7 +107,7 @@ public class RankApiController {
             return baseResp;
         }
         try {
-            baseResp = rankService.selectRankDetailByRankid(rankid);
+            baseResp = rankService.selectRankDetailByRankid(rankid,true,false);
         } catch (NumberFormatException e) {
             logger.error("select rank info rankid={} is error:",rankid,e);
         }
@@ -585,7 +585,7 @@ public class RankApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = this.rankService.selectRankDetailByRankid(rankId);
+        baseResp = this.rankService.selectRankDetailByRankid(rankId,true,false);
         return baseResp;
     }
 

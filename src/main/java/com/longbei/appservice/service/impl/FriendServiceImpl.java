@@ -423,7 +423,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
         if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
             return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
         }
-        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(friendId+"");
+        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId+"");
         if(appUserMongoEntity != null && StringUtils.isNotEmpty(appUserMongoEntity.getNickname())){
             return appUserMongoEntity.getNickname();
         }

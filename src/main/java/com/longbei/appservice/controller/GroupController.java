@@ -183,7 +183,7 @@ public class GroupController {
     @RequestMapping(value="groupMemberList")
     public BaseResp<Object> groupMemberList(String groupId,Long userId,Integer status){
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isEmpty(groupId) || userId == null || (status != 0 && status != 1)){
+        if(StringUtils.isEmpty(groupId) || userId == null || status == null || (status != 0 && status != 1)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.groupService.groupMemberList(groupId,userId,status);

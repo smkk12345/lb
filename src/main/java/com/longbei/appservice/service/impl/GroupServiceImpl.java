@@ -118,7 +118,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
             for(String tempUserId:newUserIds){
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(tempUserId);
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
                 if(appUserMongoEntity != null){
                     userList.add(appUserMongoEntity);
                 }
@@ -295,7 +295,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
             for(String tempUserId:userIdList){
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(tempUserId);
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
                 if(appUserMongoEntity != null){
                     userList.add(appUserMongoEntity);
                 }
@@ -581,7 +581,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 int maxLength = groupMembersList.size();
                 String[] avatarArray = new String[maxLength];
                 for(int i = 0;i<maxLength;i++){
-                    AppUserMongoEntity appUserMongoEntity= userMongoDao.findById(snsGroupMembersList.get(i).getUserid()+"");
+                    AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(snsGroupMembersList.get(i).getUserid()+"");
                     avatarArray[i] = appUserMongoEntity.getAvatar();
                 }
                 snsGroup.setAvatarArray(avatarArray);

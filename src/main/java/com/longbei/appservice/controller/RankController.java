@@ -182,7 +182,22 @@ public class RankController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = this.rankService.selectRankDetailByRankid(rankId);
+        baseResp = this.rankService.selectRankDetailByRankid(rankId,true,true);
+        return baseResp;
+    }
+
+    /**
+     * 获取榜单的奖品列表
+     * @param rankId
+     * @return
+     */
+    @RequestMapping(value="selectRankAward")
+    public BaseResp<Object> selectRankAward(Long rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.selectRankAward(rankId);
         return baseResp;
     }
 
@@ -267,14 +282,18 @@ public class RankController {
 
     /**
      * 查询我的龙榜列表
+     * @param userid
      * @param searchType 1.我参与的 2.我关注的 3.我创建的
      * @param startNum
      * @param endNum
      * @return
      */
     @RequestMapping(value="selectOwnRank")
-    public BaseResp<Object> selectOwnRank(Long userId,Integer searchType,Integer startNum,Integer endNum){
+    public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
         if(searchType == null){
             searchType = 1;
         }
@@ -285,9 +304,11 @@ public class RankController {
         if(endNum != null && endNum > startNum){
             pageSize = endNum - startNum;
         }
-        baseResp = this.rankService.selectownRank(userId,searchType,startNum,pageSize);
+        baseResp = this.rankService.selectownRank(userid,searchType,startNum,pageSize);
         return baseResp;
     }
+
+
 
 //    /**
 //     * url: http://ip:port/app_service/rank/insert
