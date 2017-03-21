@@ -9,6 +9,7 @@ import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
+import com.longbei.appservice.service.UserBusinessConcernService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ public class RankController {
     private RankService rankService;
     @Autowired
     private RankSortService rankSortService;
-
+    @Autowired
+    private UserBusinessConcernService userBusinessConcernService;
     /**
      * 用户 参榜
      * @url http://ip:port/app_service/rank/insertRankMember
@@ -308,7 +310,39 @@ public class RankController {
         return baseResp;
     }
 
+    /**
+     * 添加关注
+     * @param userid 用户id
+     * @param businessType 关注的类型1 目标 2 榜单 3 圈子 4 教室
+     * @param businessId 关注的类型id
+     * @return
+     */
+    @RequestMapping(value="insertUserBusinessConcern")
+    public BaseResp<Object> insertUserBusinessConcern(Long userid,Integer businessType,Long businessId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || businessType == null || businessId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.userBusinessConcernService.insertUserBusinessConcern(userid,businessType,businessId);
+        return baseResp;
+    }
 
+    /**
+     * 取消关注
+     * @param userid
+     * @param businessType 关注的类型 1 目标 2 榜单 3 圈子 4 教室
+     * @param businessId 关注的类型id
+     * @return
+     */
+    @RequestMapping(value="deleteUserBusinessConcern")
+    public BaseResp<Object> deleteUserBusinessConcern(Long userid,Integer businessType,Long businessId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || businessType == null || businessId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.userBusinessConcernService.deleteUserBusinessConcern(userid,businessType,businessId);
+        return baseResp;
+    }
 
 //    /**
 //     * url: http://ip:port/app_service/rank/insert
