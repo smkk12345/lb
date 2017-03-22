@@ -21,11 +21,23 @@
     from user_flower_detail
     where pid = #{pid,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectListByUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_flower_detail
+    where userid = #{userid} 
+    order by drawdate desc 
+    <if test="pageSize != 0" >
+      LIMIT #{pageNo},#{pageSize}
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_flower_detail
     where pid = #{pid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserFlowerDetail" useGeneratedKeys="true" keyProperty="pid">
     insert into user_flower_detail (pid, id, userid, 
       improveid, friendid, number, 
       ftype, origin, drawdate
@@ -35,7 +47,7 @@
       #{ftype,jdbcType=CHAR}, #{origin,jdbcType=CHAR}, #{drawdate,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserFlowerDetail" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserFlowerDetail" useGeneratedKeys="true" keyProperty="pid">
     insert into user_flower_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="pid != null" >

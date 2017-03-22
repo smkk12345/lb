@@ -11,6 +11,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.service.PayService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -23,6 +24,8 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 
@@ -124,6 +127,8 @@ public class PayServiceImpl implements PayService {
 		String buynums = (String) expandData.get("buynum");
 		if(!StringUtils.isBlank(buynums)){
 			userMoneyDetailService.insertPublic(userid, origin, Integer.parseInt(buynums), 0);
+			//修改userinfo信息
+			userInfoMapper.updateMoneyAndFlowerByUserid(userid, Integer.parseInt(buynums), 0);
 		}
 	}
 
