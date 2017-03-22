@@ -154,11 +154,9 @@ public class ImproveController {
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
 		}
-		if(StringUtils.hasBlankParams(brief)){
-			BaseResp baseResp = sysSensitiveService.getSensitiveWordSet(brief);
-			if(!ResultUtil.isSuccess(baseResp)){
-				return baseResp;
-			}
+		BaseResp baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+		if(!ResultUtil.isSuccess(baseResp)){
+			return baseResp;
 		}
 		if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 			//5：教室批复作业
@@ -168,7 +166,7 @@ public class ImproveController {
 		}
 //		boolean flag = false;
 		try {
-			BaseResp<Object> baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
+			baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
 					ispublic, itype, pimpid);
 			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");

@@ -48,7 +48,7 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
     public BaseResp<Object> getSensitiveWordSet(String str) {
         BaseResp<Object> baseResp = new BaseResp<>();
         Set<String> set = SensitiveWord.getSensitiveWord(str,2);
-        if(!set.isEmpty()){
+        if(set.isEmpty()){
             return baseResp.initCodeAndDesp();
         }else{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_17,Constant.RTNINFO_SYS_17);
