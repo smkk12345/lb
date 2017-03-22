@@ -103,4 +103,15 @@ public class SysSettingServiceImpl implements SysSettingService {
         return baseResp;
     }
 
+    /**
+     * 获取版本号相关
+     * @param ttype
+     * @return
+     */
+    @Override
+    public SysAppupdate selectRecentByKey(String ttype) {
+        SysAppupdate app = sysAppupdateMapper.selectRecentByKey(ttype);
+        return app;
+    }
+
 }
