@@ -217,5 +217,64 @@ public interface IProductBasicService {
 	 */
 	 @RequestLine("POST /notify/verify/wx?orderType={orderType}")
 	 BaseResp<Object> verifywx(@Param("orderType") String orderType, ResponseHandler resHandler);
-	 
+
+	/**
+	 * @Title: selectProductList
+	 * @Description: 按条件查询商品列表
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestLine("GET /product/selectProductList?id={productId}&productcate={productcate}&productname={productname}&enabled={enabled}&productpoint={productpoint}&productpoint1={productpoint1}&startNum={startNum}&pageSize={pageSize}")
+	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
+
+	/**
+	 * @Title: updateProductByProductId
+	 * @Description: 编辑商品详情
+	 * @param @param productId 商品id
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/updateProductByProductId?productId={productId}&productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> updateProductByProductId(@Param("productId")String productId,@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+											  @Param("productprice")String productprice,@Param("productpoint")String productpoint,@Param("lowimpicon") String lowimpicon, @Param("productbrief")String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: insertProduct
+	 * @Description: 添加商品
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/insertProduct?productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> insertProduct(@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+								   @Param("productprice")String productprice,@Param("productpoint")String productpoint, @Param("lowimpicon")String lowimpicon,
+								   @Param("productbrief") String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: deleteProductByProductId
+	 * @Description: 删除商品
+	 * @param  @param productId
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
+	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
+
 }
