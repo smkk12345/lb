@@ -408,16 +408,28 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	/**
 	 * 往前推多少天
 	 * @param currentDate
-	 * @param day
+	 * @param day 单位是天
      * @return
      */
-	public static Date getBeforeDate(Date currentDate,Integer day){
-		if(currentDate == null || day == null){
-			return new Date();
+	public static Date getBeforeDay(Date currentDate,Integer day){
+		if(day == null){
+			return null;
 		}
+		return getBeforeDateTime(currentDate,day*24*60);
+	}
 
+	/**
+	 * 从currentDate往前推多长时间 单位是分钟
+	 * @param currentDate
+	 * @param min 单位是分钟
+     * @return
+     */
+	public static Date getBeforeDateTime(Date currentDate,Integer min){
+		if(currentDate == null || min == null){
+			return null;
+		}
 		Long current = currentDate.getTime();
-		return new Date(current - (day*24*60*60));
+		return new Date(current - (min * 60 * 1000));
 	}
 
 }

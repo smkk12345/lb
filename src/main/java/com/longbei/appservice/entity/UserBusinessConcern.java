@@ -72,4 +72,5 @@ public class UserBusinessConcern {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
 }

@@ -11,6 +11,7 @@
   <sql id="Base_Column_List" >
     id, userid, businesstype, businessid, createtime
   </sql>
+    <!-- 添加关注 -->
   <insert id="insertUserBusinessConcern" parameterType="com.longbei.appservice.entity.UserBusinessConcern">
       insert into user_business_concern
       (userid,businesstype,businessid,createtime)
@@ -18,8 +19,33 @@
       (#{userid},#{businesstype},#{businessid},#{createtime})
   </insert>
 
+    <!-- 取消关注 -->
     <delete id="deleteUserBusinessConcern">
         delete from user_business_concern
-        where businesstype=#{businesstype} and businessid=#{businessid} AND userid = #{userid}
+        where businesstype=#{businessType} and businessid=#{businessId} AND userid = #{userid}
     </delete>
+
+    <!--  -->
+    <select id="findUserBusinessConcernList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List" />
+        from user_business_concern
+        <where>
+            <if test="userId != null">
+                userid = #{userId}
+            </if>
+            <if test="businessType != null">
+                and businesstype = #{businessType}
+            </if>
+            <if test="businessId != null">
+                and businessid = #{businessId}
+            </if>
+        </where>
+        <if test="orderType != null and orderType == 'idDesc'">
+            order by id DESC
+        </if>
+        <if test="startNum != null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
 </mapper>

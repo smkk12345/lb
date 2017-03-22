@@ -532,6 +532,9 @@
             and userid = #{userId}
           </if>
       </where>
+      <if test="orderType != null and orderType == 'updateTimeDesc'">
+          order by updatetime desc
+      </if>
       <if test="startNum != null">
           limit #{startNum},#{pageSize}
       </if>
@@ -571,4 +574,38 @@
       and rank_members.rankid =#{rankid}
     order by rank_members.awardlevel
   </select>
+
+  <!-- 获取可以挤走的榜成员 -->
+  <select id="getSureRemoveRankMemberCount" parameterType="map" resultType="INTEGER">
+      select
+        count(1)
+      from
+        rank_members
+      where
+        updatetime &lt; #{lastUpdateTime}
+      and status = 1
+      and icount = 0
+      and rankid = #{rankId}
+  </select>
+
+  <!-- 移除超时未发布进步的榜成员 -->
+  <update id="removeOverTimeRankMember" parameterType="map">
+      update
+      rank_members
+      set status = 2
+      where id in (
+          select * from (
+            select
+            temp.id
+            from
+            rank_members temp
+            where
+            temp.updatetime &lt; #{lastUpdateTime}
+            and temp.status = 1
+            and temp.icount = 0
+            and temp.rankid = #{rankId}
+            order by temp.updatetime limit 1
+          ) foo
+    )
+  </update>
 </mapper>

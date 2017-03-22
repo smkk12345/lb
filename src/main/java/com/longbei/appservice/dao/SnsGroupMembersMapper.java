@@ -72,7 +72,15 @@ public interface SnsGroupMembersMapper {
      * @param status
      * @return
      */
-    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,@Param("status") Integer status);
+    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,@Param("status") Integer status,@Param("startNum")Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 查询群成员数量
+     * @param groupId
+     * @param status
+     * @return
+     */
+    Integer groupMembersCount(@Param("groupId")String groupId,@Param("status") Integer status);
 
     /**
      * 根据用户查询群列表

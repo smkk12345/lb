@@ -127,13 +127,13 @@ public interface RankService extends BaseService{
 
     /**
      * 获取榜单详情 线上
-     * @param rankid
+     * @param rankId
      * @param queryCreateUser 是否查询创建榜单用户的信息
      * @param queryAward 是否查询榜单奖品信息
      * @return
      * @author luye
      */
-    BaseResp<Rank> selectRankDetailByRankid(String rankid,Boolean queryCreateUser,Boolean queryAward);
+    BaseResp<Object> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward);
 
     /**
      * 获取成员列表 pc
@@ -261,7 +261,7 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize);
+    BaseResp<Object> selectFashionMan(Long userId,Long rankId, Integer startNum, Integer pageSize);
 
     /**
      * 用户领奖
@@ -295,7 +295,7 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope, Long lastRankId, Integer pageSize,Boolean showAward);
+    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward);
 
     /**
      * 查询和自己相关的榜单

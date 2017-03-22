@@ -145,28 +145,21 @@ public class RankController {
      * @param rankTitle 榜单名称
      * @param pType 十全十美分类
      * @param rankscope 地区
+     * @param status 状态筛选 0.推荐 1.进行中 2.将开始 3.已结束
      * @param lastRankId 最后一个榜单id
      * @param pageSize
      * @return
      */
     @RequestMapping(value="selectRankList")
-    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Long lastRankId,Integer pageSize){
+    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,Long lastRankId,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(pageSize == null || pageSize < 0){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-
-        Rank rank = new Rank();
-        if(rankTitle != null && StringUtils.isEmpty(rankTitle)){
-            rank.setRanktitle(rankTitle);
+        if(status == null){
+            status = 0;
         }
-        if(pType != null && StringUtils.isNotEmpty(pType)){
-            rank.setPtype(pType);
-        }
-        if(rankscope != null && StringUtils.isNotEmpty(rankscope)){
-            rank.setRankscope(rankscope);
-        }
-        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,lastRankId,pageSize,true);
+        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,status,lastRankId,pageSize,true);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
     }
@@ -178,13 +171,13 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Rank> rankDetail(String rankId){
-        BaseResp<Rank> baseResp = new BaseResp<Rank>();
-        if(StringUtils.isEmpty(rankId)){
+    public BaseResp<Object> rankDetail(Long userid,String rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(StringUtils.isEmpty(rankId) || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = this.rankService.selectRankDetailByRankid(rankId,true,true);
+        baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
         return baseResp;
     }
 
@@ -212,9 +205,9 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="selectFashionMan")
-    public BaseResp<Object> selectFashionMan(Long rankId,Integer startNum,Integer endNum){
+    public BaseResp<Object> selectFashionMan(Long userid,Long rankId,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(rankId == null){
+        if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if (startNum == null || startNum < 0){
@@ -224,7 +217,7 @@ public class RankController {
         if(endNum != null && endNum > startNum){
             pageSize = endNum - startNum;
         }
-        baseResp = this.rankService.selectFashionMan(rankId,startNum,pageSize);
+        baseResp = this.rankService.selectFashionMan(userid,rankId,startNum,pageSize);
         return baseResp;
     }
 

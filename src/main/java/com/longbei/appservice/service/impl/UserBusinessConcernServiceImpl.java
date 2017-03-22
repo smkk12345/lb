@@ -53,6 +53,7 @@ public class UserBusinessConcernServiceImpl extends BaseServiceImpl implements U
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             int row = this.userBusinessConcernMapper.deleteUserBusinessConcern(userid,businessType,businessId);
+            return baseResp.ok();
         }catch(Exception e){
             logger.error("delete userBusinessConcern error userid:{} businessType:{} businessId:{}",userid,businessType,businessId);
             printException(e);

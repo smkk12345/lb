@@ -68,7 +68,7 @@ public interface GroupService {
      * @param status 查询的状态
      * @return
      */
-    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status);
+    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize);
 
     /**
      * 解散群

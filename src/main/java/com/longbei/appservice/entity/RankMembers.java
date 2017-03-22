@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.*;
 
 public class RankMembers {
+    public static final Integer maxHour = 24;//最大多长时间不发进步,则会被其他成员挤走
+
     private Integer id;
 
     private Long rankid;//榜单id
@@ -26,7 +28,7 @@ public class RankMembers {
 
     private Integer flowers;
 
-    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜
+    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜 3.被榜主踢出榜 无法再次申请加入榜
 
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 

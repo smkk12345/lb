@@ -178,15 +178,28 @@ public class GroupController {
      * @param groupId 群组id
      * @param userId 用户id
      * @param status 查询群组成员的状态 1.代表查询加群成功的,已经在群中的群成员 0.代表查询待群主审核的群成员(仅限群主查询)
+     * @param startNum 可不传 不传该参数，则代表获取所有的群成员 不分页
+     * @param endNum 可不传
      * @return
      */
     @RequestMapping(value="groupMemberList")
-    public BaseResp<Object> groupMemberList(String groupId,Long userId,Integer status){
+    public BaseResp<Object> groupMemberList(String groupId,Long userId,Integer status,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isEmpty(groupId) || userId == null || status == null || (status != 0 && status != 1)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.groupService.groupMemberList(groupId,userId,status);
+        if(startNum != null && startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = null;
+        if(startNum != null && endNum != null){
+            if(endNum > startNum){
+                pageSize = endNum - startNum;
+            }else {
+                pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+            }
+        }
+        baseResp = this.groupService.groupMemberList(groupId,userId,status,startNum,pageSize);
         return baseResp;
     }
 

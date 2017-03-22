@@ -277,12 +277,17 @@ public class UserRelationController extends BaseController {
 
 	/**
 	 * 加载推荐的达人
+	 * @param userid
 	 * @param startNum 开始页码
 	 * @param endNum 结束页码
      * @return
      */
 	@RequestMapping(value = "selectFashionManUser")
-	public BaseResp<Object> selectFashionManUser(Integer startNum,Integer endNum ){
+	public BaseResp<Object> selectFashionManUser(Long userid,Integer startNum,Integer endNum ){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		if(userid == null){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
 		if(startNum == null || startNum < 0){
 			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
 		}
@@ -290,8 +295,7 @@ public class UserRelationController extends BaseController {
 		if(endNum != null && endNum > startNum){
 			pageSize = endNum - startNum;
 		}
-		BaseResp<Object> baseResp = new BaseResp<Object>();
-		baseResp = this.userRelationService.selectFashionManUser(startNum,pageSize);
+		baseResp = this.userRelationService.selectFashionManUser(userid,startNum,pageSize);
 		return baseResp;
 	}
 	//－－－－－－－－－－－sns_fans－end－－－－－－－－－－－－－-

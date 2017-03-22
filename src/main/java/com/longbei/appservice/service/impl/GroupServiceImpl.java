@@ -454,7 +454,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status) {
+    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -466,7 +466,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(status == 0 && !userId.equals(snsGroup.getMainuserid())){
                 return baseResp.fail("抱歉,您暂时无法查询群组成员列表");
             }
-            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status);
+            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status,startNum,pageSize);
+
+            if(startNum != null && startNum == 0 && status == 1 && snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+                Integer count = this.snsGroupMembersMapper.groupMembersCount(groupId,status);
+                resultMap.put("snsGroupMembersCount",count);
+            }
 
             if(snsGroup.getMainuserid().equals(userId)){
                 resultMap.put("isMainUser",true);

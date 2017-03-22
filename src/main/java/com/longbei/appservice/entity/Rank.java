@@ -67,6 +67,9 @@ public class Rank {
 
     private String codeword;//口令
 
+    private Boolean isrecommend;//是否是推荐的榜单
+
+    private Integer weight;//推荐的权重
 
     private String ptype;//十全十美类型
 
@@ -798,5 +801,21 @@ public class Rank {
 
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Boolean getIsrecommend() {
+        return isrecommend;
+    }
+
+    public void setIsrecommend(Boolean isrecommend) {
+        this.isrecommend = isrecommend;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

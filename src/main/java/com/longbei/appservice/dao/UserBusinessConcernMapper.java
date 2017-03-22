@@ -1,6 +1,10 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.UserBusinessConcern;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangyongzhi 17/3/21.
@@ -21,5 +25,14 @@ public interface UserBusinessConcernMapper {
      * @param businessId
      * @return
      */
-    int deleteUserBusinessConcern(Long userid, Integer businessType, Long businessId);
+    int deleteUserBusinessConcern(@Param("userid") Long userid,@Param("businessType") Integer businessType,@Param("businessId") Long businessId);
+
+    /**
+     * 查询自己的关注列表
+     * @param map
+     * @return
+     */
+    List<UserBusinessConcern> findUserBusinessConcernList(Map<String,Object> map);
+
+
 }
