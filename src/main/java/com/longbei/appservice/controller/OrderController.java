@@ -78,13 +78,21 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/list")
-    public BaseResp<Object> list(String userid, String orderstatus, int startNo, int pageSize) {
+    public BaseResp<Object> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
+		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);;
+		if(null == startNo){
+			sNo = startNo.intValue();
+		}
+		if(null == pageSize){
+			sSize = pageSize.intValue();
+		}
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = orderService.list(Long.parseLong(userid), orderstatus, startNo, pageSize);
+  			baseResp = orderService.list(Long.parseLong(userid), orderstatus, sNo, sSize);
 		} catch (Exception e) {
 			logger.error("list userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
 					userid, orderstatus, startNo, pageSize, e);
