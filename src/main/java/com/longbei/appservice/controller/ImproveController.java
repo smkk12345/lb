@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.SysSensitiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class ImproveController {
 
 	@Autowired
 	private ImpComplaintsService impComplaintsService;
-	
+	@Autowired
+	private SysSensitiveService sysSensitiveService;
 	
 	
 	/**
@@ -151,6 +153,12 @@ public class ImproveController {
 		}
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
+		}
+		if(StringUtils.hasBlankParams(brief)){
+			BaseResp baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+			if(!ResultUtil.isSuccess(baseResp)){
+				return baseResp;
+			}
 		}
 		if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 			//5：教室批复作业

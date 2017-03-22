@@ -57,6 +57,7 @@ public class Constant {
 	public static final int STATUS_SYS_14 = -14;
 	public static final int STATUS_SYS_15 = -15;
 	public static final int STATUS_SYS_16 = -16;
+	public static final int STATUS_SYS_17 = -17;
 	
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
@@ -161,6 +162,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_14 = "加榜个数已达到上限";
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
+	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
 	
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
