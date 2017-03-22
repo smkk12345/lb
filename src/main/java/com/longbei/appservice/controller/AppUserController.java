@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,6 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
-import com.longbei.appservice.service.DictAreaService;
-import com.longbei.appservice.service.UserCheckinDetailService;
-import com.longbei.appservice.service.UserFeedbackService;
-import com.longbei.appservice.service.UserIdcardService;
-import com.longbei.appservice.service.UserInterestsService;
-import com.longbei.appservice.service.UserJobService;
-import com.longbei.appservice.service.UserSponsorService;
-import com.longbei.appservice.service.UserSchoolService;
-import com.longbei.appservice.service.RankService;
-import com.longbei.appservice.service.UserCertifyService;
-import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.SysPerfectInfoService;
-import com.longbei.appservice.service.UserPlDetailService;
-
 
 
 /**
@@ -72,6 +58,8 @@ public class AppUserController extends BaseController {
     private SysPerfectInfoService sysPerfectInfoService;
     @Autowired
     private UserPlDetailService userPlDetailService;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
     
     
@@ -391,6 +379,12 @@ public class AppUserController extends BaseController {
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+        if(StringUtils.hasBlankParams(nickname)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
+        }
         try {
             UserInfo userInfo = new UserInfo(Long.parseLong(userid), nickname, avatar, sex);
             userInfo.setUsername(username); 
@@ -433,6 +427,12 @@ public class AppUserController extends BaseController {
 		if(StringUtils.hasBlankParams(userid,nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
+        if(StringUtils.hasBlankParams(nickname)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
+        }
 		try {
             if(isJump){
                 baseResp = userService.updateNickName(userid, "", "","","");
@@ -531,6 +531,12 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if (StringUtils.hasBlankParams(userid, content, photos)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.hasBlankParams(content)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(content);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
         }
     	try {
     		UserFeedback record = new UserFeedback(Long.parseLong(userid), content, photos, new Date(), "0");

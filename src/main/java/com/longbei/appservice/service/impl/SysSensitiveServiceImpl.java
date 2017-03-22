@@ -1,5 +1,8 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.dao.SysSensitiveMapper;
 import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.service.SysSensitiveService;
@@ -34,6 +37,24 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
         String[] sArr = words.split(",");
         CollectionUtils.addAll(set,sArr);
         return set;
+    }
+
+    /**
+     * 敏感词
+     * @param str
+     * @return
+     */
+    @Override
+    public BaseResp<Object> getSensitiveWordSet(String str) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        Set<String> set = SensitiveWord.getSensitiveWord(str,2);
+        if(!set.isEmpty()){
+            return baseResp.initCodeAndDesp();
+        }else{
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_17,Constant.RTNINFO_SYS_17);
+            baseResp.setData(set);
+            return baseResp;
+        }
     }
 
 }

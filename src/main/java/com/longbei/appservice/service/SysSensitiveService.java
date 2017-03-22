@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
-import java.util.HashSet;
+import com.longbei.appservice.common.BaseResp;
+
 import java.util.Set;
 
 /**
@@ -9,5 +10,7 @@ import java.util.Set;
 public interface SysSensitiveService {
 
     Set<String> selectSensitiveWord();
+
+    BaseResp<Object> getSensitiveWordSet(String str);
 
 }
