@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SysSensitiveMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysSensitive" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="words" property="words"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, words
+  </sql>
+  <select id="selectSensitive" resultMap="BaseResultMap">
+    select 
+    id,words
+    FROM
+    sys_sensitive limit 1
+  </select>
+</mapper>

@@ -1,11 +1,13 @@
 package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.SysPerfectInfo;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.service.SysSensitiveService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class InitConfig implements CommandLineRunner {
     private UserLevelMapper userLevelMapper;
     @Autowired
     private SysPerfectInfoMapper sysPerfectInfoMapper;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -51,6 +55,8 @@ public class InitConfig implements CommandLineRunner {
         initSysRuleLevelPointCache();
         //十全十美每级详细说明缓存
         initSysPerfectInfoCache();
+        //缓存敏感词
+        initSensitiveMap();
     }
 
     /**
@@ -107,5 +113,16 @@ public class InitConfig implements CommandLineRunner {
         }
         SysRulesCache.sysPerfectInfoMap = map;
     }
+
+    /**
+     * 初始化敏感词
+     */
+    public void initSensitiveMap(){
+        Set<String> list = sysSensitiveService.selectSensitiveWord();
+        if(null!=list&&!list.isEmpty()){
+            SensitiveWord.addSensitiveWordToHashMap(list);
+        }
+    }
+
 
 }

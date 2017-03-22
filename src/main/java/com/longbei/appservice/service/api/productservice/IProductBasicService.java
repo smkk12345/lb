@@ -4,6 +4,7 @@ package com.longbei.appservice.service.api.productservice;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Param;
@@ -218,6 +219,7 @@ public interface IProductBasicService {
 	 @RequestLine("POST /notify/verify/wx?orderType={orderType}")
 	 BaseResp<Object> verifywx(@Param("orderType") String orderType, ResponseHandler resHandler);
 
+
 	/**
 	 * @Title: selectProductList
 	 * @Description: 按条件查询商品列表
@@ -276,5 +278,63 @@ public interface IProductBasicService {
 	 */
 	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
 	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
+
+	 
+	 
+	 
+	 
+	 //--------------------------------adminservice调用-------------------------------------
+	 
+	 /**
+	 * 我的订单列表(所有的)
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+	 * 						为null   则查全部 
+	 * @param @param startNo  pageSize
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminlist?userid={userid}&orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<Object> adminlist(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
+			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 
+	 /**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderid 订单业务id  
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminget?userid={userid}&orderid={orderid}")
+	 BaseResp<ProductOrders> adminget(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
+	 * 设为异常订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsexception?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsexception(@Param("orderid") String orderid);
+	 
+	 /**
+	 * 取消订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsdel?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsdel(@Param("orderid") String orderid);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}&remark={remark}")
+	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, @Param("remark") String remark);
+	 
 
 }

@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.SysAppupdate;
 import com.longbei.appservice.entity.SysLongbeiinfo;
 
 /**
@@ -16,5 +17,13 @@ public interface SysSettingService {
      * @return
      */
     BaseResp<Object> upGrade(String ttype,String version);
+
+    /**
+     * 获取最新的app
+     * @param ttype
+     * @return
+     */
+    SysAppupdate selectRecentByKey(String ttype);
+
 
 }

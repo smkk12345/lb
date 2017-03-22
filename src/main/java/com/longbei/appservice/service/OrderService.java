@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductOrders;
 
 public interface OrderService {
 	
@@ -67,5 +68,53 @@ public interface OrderService {
 	 */
 	 BaseResp<Object> updateOrderStatus(Long userid, String orderid, 
 			 String orderstatus);
+	 
+	 
+	//--------------------------------adminservice调用-------------------------------------
+	 
+	 /**
+	 * 我的订单列表(所有的)
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+	 * 						为null   则查全部 
+	 * @param @param startNo  pageSize
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> adminlist(Long userid, String orderstatus, int startNo, int pageSize);
+	 
+	 /**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderid 订单业务id  
+	 * 2017年3月22日
+	 */
+	 BaseResp<ProductOrders> adminget(Long userid, String orderid);
+	 
+	 /**
+	 * 设为异常订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersIsexception(String orderid);
+	 
+	 /**
+	 * 取消订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersIsdel(String orderid);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersRemark(String orderid, String remark);
 
 }
