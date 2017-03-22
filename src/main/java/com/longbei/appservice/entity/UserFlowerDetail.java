@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserFlowerDetail {
     private Integer pid;
 
@@ -17,7 +20,7 @@ public class UserFlowerDetail {
 
     private String ftype;//0:花朵;1:花束;2:花篮
 
-    private String origin;//来源，0:购买;1:捐赠;2:被赠与;3:增值
+    private String origin;//来源，0:龙币兑换;  1:赠与;
 
     private Date drawdate;//获得时间
 
@@ -41,6 +44,7 @@ public class UserFlowerDetail {
      * 编码
      * @return id 编码
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getId() {
         return id;
     }
@@ -57,6 +61,7 @@ public class UserFlowerDetail {
      * 用户id
      * @return userid 用户id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -73,6 +78,7 @@ public class UserFlowerDetail {
      * 如果origin为0，那么此字段非空
      * @return improveid 如果origin为0，那么此字段非空
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getImproveid() {
         return improveid;
     }
@@ -89,6 +95,7 @@ public class UserFlowerDetail {
      * 如果origin为1或2，那么此字段非空
      * @return friendid 如果origin为1或2，那么此字段非空
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getFriendid() {
         return friendid;
     }
@@ -105,6 +112,7 @@ public class UserFlowerDetail {
      * 鲜花数量
      * @return number 鲜花数量
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getNumber() {
         return number;
     }
@@ -121,6 +129,7 @@ public class UserFlowerDetail {
      * 0:花朵;1:花束;2:花篮
      * @return ftype 0:花朵;1:花束;2:花篮
      */
+    @JsonInclude(Include.ALWAYS)
     public String getFtype() {
         return ftype;
     }
@@ -134,16 +143,17 @@ public class UserFlowerDetail {
     }
 
     /**
-     * 来源，0:购买;1:捐赠;2:被赠与;3:增值
-     * @return origin 来源，0:购买;1:捐赠;2:被赠与;3:增值
+     * 来源，0:龙币兑换;  1:赠与;
+     * @return origin 来源，0:龙币兑换;  1:赠与;
      */
+    @JsonInclude(Include.ALWAYS)
     public String getOrigin() {
         return origin;
     }
 
     /**
-     * 来源，0:购买;1:捐赠;2:被赠与;3:增值
-     * @param origin 来源，0:购买;1:捐赠;2:被赠与;3:增值
+     * 来源，0:龙币兑换;  1:赠与;
+     * @param origin 来源，0:龙币兑换;  1:赠与;
      */
     public void setOrigin(String origin) {
         this.origin = origin == null ? null : origin.trim();

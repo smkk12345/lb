@@ -4,6 +4,7 @@ package com.longbei.appservice.service.api.productservice;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Param;
@@ -217,5 +218,123 @@ public interface IProductBasicService {
 	 */
 	 @RequestLine("POST /notify/verify/wx?orderType={orderType}")
 	 BaseResp<Object> verifywx(@Param("orderType") String orderType, ResponseHandler resHandler);
+
+
+	/**
+	 * @Title: selectProductList
+	 * @Description: 按条件查询商品列表
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestLine("GET /product/selectProductList?id={productId}&productcate={productcate}&productname={productname}&enabled={enabled}&productpoint={productpoint}&productpoint1={productpoint1}&startNum={startNum}&pageSize={pageSize}")
+	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
+
+	/**
+	 * @Title: updateProductByProductId
+	 * @Description: 编辑商品详情
+	 * @param @param productId 商品id
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/updateProductByProductId?productId={productId}&productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> updateProductByProductId(@Param("productId")String productId,@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+											  @Param("productprice")String productprice,@Param("productpoint")String productpoint,@Param("lowimpicon") String lowimpicon, @Param("productbrief")String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: insertProduct
+	 * @Description: 添加商品
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/insertProduct?productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> insertProduct(@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+								   @Param("productprice")String productprice,@Param("productpoint")String productpoint, @Param("lowimpicon")String lowimpicon,
+								   @Param("productbrief") String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: deleteProductByProductId
+	 * @Description: 删除商品
+	 * @param  @param productId
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
+	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
+
 	 
+	 
+	 
+	 
+	 //--------------------------------adminservice调用-------------------------------------
+	 
+	 /**
+	 * 我的订单列表(所有的)
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+	 * 						为null   则查全部 
+	 * @param @param startNo  pageSize
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminlist?userid={userid}&orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<Object> adminlist(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
+			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 
+	 /**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderid 订单业务id  
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminget?userid={userid}&orderid={orderid}")
+	 BaseResp<ProductOrders> adminget(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
+	 * 设为异常订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsexception?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsexception(@Param("orderid") String orderid);
+	 
+	 /**
+	 * 取消订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsdel?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsdel(@Param("orderid") String orderid);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}&remark={remark}")
+	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, @Param("remark") String remark);
+	 
+
 }

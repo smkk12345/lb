@@ -76,6 +76,14 @@ public interface UserInfoMapper {
 	 * 2017年3月1日
 	 */
 	int updateTotalmoneyByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户总花，总龙币数(龙币兑换花)
+	 * 2017年3月1日
+	 */
+	int updateMoneyAndFlowerByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney, 
+			@Param("totalflower") Integer totalflower);
 
 	/**
 	 * 查询系统推荐的达人
