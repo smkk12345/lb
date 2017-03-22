@@ -10,6 +10,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.OrderService;
+import com.longbei.appservice.service.UserFlowerDetailService;
 
 @RestController
 @RequestMapping(value = "order")
@@ -17,6 +18,8 @@ public class OrderController {
 	
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private UserFlowerDetailService userFlowerDetailService;
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
@@ -167,6 +170,62 @@ public class OrderController {
   		return baseResp;
 	}
 	
+	
+	/**
+    * @Title: http://ip:port/app_service/order/getUserInfoCoin
+    * @Description: 获取用户龙币，进步币以及龙币兑换进步币比例
+    * @param @param userid 
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  Map: 
+    * 				totalmoney---龙币总数
+    * 				totalcoin---进步币总数
+    * 				moneytocoin---龙币兑换进步币比例
+    * @currentdate:2017年3月21日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/getUserInfoCoin")
+    public BaseResp<Object> getUserInfoCoin(String userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = userFlowerDetailService.selectUserInfoByUserid(Long.parseLong(userid));
+		} catch (Exception e) {
+			logger.error("getUserInfoCoin userid = {}", userid, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/order/moneyExchangeFlower
+    * @Description: 用户龙币兑换鲜花
+    * @param @param userid 
+    * @param @param number 鲜花数量
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  Data: 添加的鲜花记录
+    * @desc  Map: 
+    * 				totalmoney---龙币总数
+    * 				totalcoin---进步币总数
+    * 				totalflower---鲜花总数  
+    * @currentdate:2017年3月21日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/moneyExchangeFlower")
+    public BaseResp<Object> moneyExchangeFlower(String userid, String number) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, number)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number));
+		} catch (Exception e) {
+			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
+		}
+  		return baseResp;
+	}
 	
 	
 
