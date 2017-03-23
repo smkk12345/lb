@@ -524,10 +524,16 @@ public class ImproveServiceImpl implements ImproveService{
                 default:
                     break;
             }
-
-
-            improves = improveMapper.selectListByBusinessid
-                    (rankid, Constant_table.IMPROVE_RANK,null,null,orderby,pageNo,pageSize);
+            int flowerscore = 10;
+            int likescore = 1;
+            if ("1".equals(orderby)){
+                Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
+                if (null != rank){
+                    flowerscore = rank.getFlowerscore();
+                    likescore = rank.getLikescore();
+                }
+            }
+            improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
             if(null == improves){
                 improves = new ArrayList<>();
