@@ -201,4 +201,16 @@ public class ProductServiceImpl implements ProductService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> selectProductByProductId(String productId) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.selectProductByProductId(productId);
+		}
+		catch (Exception e) {
+			logger.error("selectProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
 }

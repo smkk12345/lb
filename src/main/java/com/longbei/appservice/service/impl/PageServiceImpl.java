@@ -48,10 +48,10 @@ public class PageServiceImpl implements PageService{
         BaseResp baseResp = new BaseResp();
         try {
             if ("1".equals(homePicture.getIsup())){
-                homePicture.setUpdate(new Date());
+                homePicture.setUptime(new Date());
             }
             if ("0".equals(homePicture.getIsup())){
-                homePicture.setDowndate(new Date());
+                homePicture.setDowntime(new Date());
             }
             homePicture.setUpdatetime(new Date());
             int res = homePictureMapper.updateByPrimaryKeySelective(homePicture);

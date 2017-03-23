@@ -34,7 +34,7 @@ public interface ProductCategoryService {
     /**
      * @Title: updateCategoryByCateId
      * @param @param cateId 商品类目id
-     * @Description: 编辑商品类目
+     * @Description: 编辑商品类目的名称或排序号
      * @param @param catename 商品类目名称
      * @param @param sort 排序号
      * @auther IngaWu
