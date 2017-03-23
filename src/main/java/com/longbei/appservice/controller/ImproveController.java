@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.SysSensitiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class ImproveController {
 
 	@Autowired
 	private ImpComplaintsService impComplaintsService;
-	
+	@Autowired
+	private SysSensitiveService sysSensitiveService;
 	
 	
 	/**
@@ -152,6 +154,10 @@ public class ImproveController {
 		if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
 			return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
 		}
+		BaseResp baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+		if(!ResultUtil.isSuccess(baseResp)){
+			return baseResp;
+		}
 		if(Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 			//5：教室批复作业
 			if (StringUtils.hasBlankParams(pimpid)) {
@@ -160,7 +166,7 @@ public class ImproveController {
 		}
 //		boolean flag = false;
 		try {
-			BaseResp<Object> baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
+			baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
 					ispublic, itype, pimpid);
 			if (ResultUtil.isSuccess(baseResp)) {
 				logger.debug("insert improve success");

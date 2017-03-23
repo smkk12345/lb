@@ -1,6 +1,12 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
+import java.util.List;
+
+import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -11,7 +17,7 @@ public class ProductCategory {
     private String catename;//类别名字
 
     private String parentid;//类别父级id
-    
+
     private String parentids; //父类集合id
 
     private String sort;//排序
@@ -19,6 +25,8 @@ public class ProductCategory {
     private Date createtime;//创建时间
 
     private Date updatetime;//分型时间
+
+    private List<ProductCategory> childProductCategory;//子类别
 
     /**
      * 类别id
@@ -56,7 +64,7 @@ public class ProductCategory {
      * 类别父级id
      * @return parentid 类别父级id
      */
-    @JsonInclude(Include.ALWAYS)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public String getParentid() {
         return parentid;
     }
@@ -73,7 +81,7 @@ public class ProductCategory {
      * 排序
      * @return sort 排序
      */
-    @JsonInclude(Include.ALWAYS)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public String getSort() {
         return sort;
     }
@@ -118,12 +126,20 @@ public class ProductCategory {
         this.updatetime = updatetime;
     }
 
-    @JsonInclude(Include.ALWAYS)
-	public String getParentids() {
-		return parentids;
-	}
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    public String getParentids() {
+        return parentids;
+    }
 
-	public void setParentids(String parentids) {
-		this.parentids = parentids;
-	}
+    public void setParentids(String parentids) {
+        this.parentids = parentids;
+    }
+
+    public List<ProductCategory> getChildProductCategory() {
+        return childProductCategory;
+    }
+
+    public void setChildProductCategory(List<ProductCategory> childProductCategory) {
+        this.childProductCategory = childProductCategory;
+    }
 }

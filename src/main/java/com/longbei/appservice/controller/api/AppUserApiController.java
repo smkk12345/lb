@@ -11,7 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 用户详情接口
@@ -67,6 +71,31 @@ public class AppUserApiController {
             baseResp = userLevelService.selectByUserid(Long.parseLong(userid));
         } catch (Exception e) {
             logger.error("selectUserLevel userid = {}", userid, e);
+        }
+        return baseResp;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/registerbasic")
+    @ResponseBody
+    public BaseResp<Object> registerbasic(HttpServletRequest request, HttpServletResponse response) {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String inviteuserid = request.getParameter("inviteuserid");
+        String randomCode = request.getParameter("randomCode");
+        logger.info("registerbasic params username={},password={}", username, password);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(username, password, randomCode)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        baseResp = userService.checkSms(username,randomCode);
+        if (baseResp.getCode() != Constant.STATUS_SYS_00) {
+            return baseResp;
+        }
+        try {
+            return userService.registerbasic(username, password, inviteuserid,null,null,null);
+        } catch (Exception e) {
+            logger.error("registerbasic error and msg = {}", e);
         }
         return baseResp;
     }

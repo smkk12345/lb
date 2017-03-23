@@ -48,7 +48,7 @@ public class SysRulesCache {
         put(4,"生活");
         put(5,"公益");
         put(6,"文学");
-        put(7,"劳动");
+        put(7,"工作");
         put(8,"修养");
         put(9,"健康");
     }};
@@ -62,7 +62,7 @@ public class SysRulesCache {
         add(new PerfectTen("4","生活",4));
         add(new PerfectTen("5","公益",5));
         add(new PerfectTen("6","文字",6));
-        add(new PerfectTen("7","劳动",7));
+        add(new PerfectTen("7","工作",7));
         add(new PerfectTen("8","修养",8));
         add(new PerfectTen("9","健康",9));
     }};

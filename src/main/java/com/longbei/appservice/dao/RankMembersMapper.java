@@ -98,4 +98,18 @@ public interface RankMembersMapper {
 
     List<RankMembers> selectRankAcceptAwardList(@Param("rankmember") RankMembers rankMembers,
                                                 @Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
+
+    /**
+     * 获取可以挤走的榜成员
+     * @param map
+     * @return
+     */
+    int getSureRemoveRankMemberCount(Map<String, Object> map);
+
+    /**
+     * 移除超时未发进步的成员,只删除一个
+     * @param map
+     * @return
+     */
+    int removeOverTimeRankMember(Map<String, Object> map);
 }

@@ -485,5 +485,17 @@
       where
         userid=#{userid}
   </update>
+  
+  <update id="updateMoneyAndFlowerByUserid">
+    update user_info 
+    set 
+    <if test="totalflower != 0">
+      totalflower = totalflower + #{totalflower},
+    </if>
+    <if test="totalmoney != 0">
+      totalmoney = totalmoney + #{totalmoney}
+    </if>
+    WHERE userid = #{userid}
+  </update>
 
 </mapper>

@@ -28,7 +28,7 @@ public class FriendController {
     /**
      * 添加加为好友申请
      * @url http://ip:port/app_service/friend/addFriendAsk
-     * @param userId 当前登录用户id
+     * @param userid 当前登录用户id
      * @param friendId 添加好友的id
      * @param source 来源
      * @param message 发送的消息

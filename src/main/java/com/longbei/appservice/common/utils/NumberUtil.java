@@ -1,6 +1,5 @@
 package com.longbei.appservice.common.utils;
 
-
 import java.math.BigDecimal;
 
 /**
