@@ -1,5 +1,7 @@
 package com.longbei.appservice.controller.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,7 @@ public class OrderApiController {
 	
 	/**
     * @Title: http://ip:port/app_service/api/order/adminlist
-    * @Description: 我的订单列表(所有的)
-    * @param @param userid 
+    * @Description: 订单列表(所有的)
     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
 	* 						为null   则查全部 
     * @param @param startNo  pageSize
@@ -34,18 +35,14 @@ public class OrderApiController {
     * @desc  
     * @currentdate:2017年3月22日
 	*/
-	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/adminlist")
-    public BaseResp<Object> adminlist(String userid, String orderstatus, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
-  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-  		}
+    public BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
   		try {
-  			baseResp = orderService.adminlist(Long.parseLong(userid), orderstatus, startNo, pageSize);
+  			baseResp = orderService.adminlist(orderstatus, startNo, pageSize);
 		} catch (Exception e) {
-			logger.error("adminlist userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
-					userid, orderstatus, startNo, pageSize, e);
+			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
+					orderstatus, startNo, pageSize, e);
 		}
   		return baseResp;
 	}
@@ -146,6 +143,27 @@ public class OrderApiController {
   			baseResp = orderService.updateOrdersRemark(orderid, remark);
 		} catch (Exception e) {
 			logger.error("updateOrdersRemark orderid = {}, remark = {}", orderid, remark, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/api/order/selectCountOrders
+    * @Description: 获取用户不同的订单状态的总数
+    * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+    * 						为null   则查全部 
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月22日
+	*/
+  	@RequestMapping(value = "/selectCountOrders")
+    public BaseResp<Integer> selectCountOrders(String orderstatus) {
+		BaseResp<Integer> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = orderService.selectCountOrders(orderstatus);
+		} catch (Exception e) {
+			logger.error("selectCountOrders orderstatus = {}", orderstatus, e);
 		}
   		return baseResp;
 	}
