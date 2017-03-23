@@ -289,7 +289,7 @@ public class ProductController {
 
 	/**
 	 * @Title: http://ip:port/app_service/product/updateCategoryByCateId
-	 * @Description: 编辑商品类目
+	 * @Description: 编辑商品类目的名称或排序号
 	 * @param @param cateId 商品类目id
 	 * @param @param catename 商品类目名称
 	 * @param @param sort 排序号
@@ -473,6 +473,30 @@ public class ProductController {
 			return baseResp;
 		} catch (Exception e) {
 			logger.error("deleteProductByProductId and productId={}",productId,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: http://ip:port/app_service/product/selectProductByProductId
+	 * @Description: 通过商品id查看商品详情
+	 * @param  @param productId 商品id
+	 * @param @param code 0
+	 * @auther IngaWu
+	 * @currentdate:2017年3月22日
+	 */
+	@RequestMapping(value = "/selectProductByProductId")
+	public BaseResp<Object> selectProductByProductId(String productId) {
+		logger.info("selectProductByProductId and productId={}",productId);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.isBlank(productId)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = productService.selectProductByProductId(productId);
+			return baseResp;
+		} catch (Exception e) {
+			logger.error("selectProductByProductId and productId={}",productId,e);
 		}
 		return baseResp;
 	}

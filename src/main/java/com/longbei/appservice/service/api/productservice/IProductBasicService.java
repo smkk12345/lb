@@ -279,8 +279,15 @@ public interface IProductBasicService {
 	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
 	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
 
-	 
-	 
+
+	/**
+	 * @Title: selectProductByProductId
+	 * @Description: 通过商品id查看商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月22日
+	 */
+	@RequestLine("GET /product/selectProductByProductId?productId={productId}")
+	BaseResp<Object> selectProductByProductId(@Param("productId")String productId);
 	 
 	 
 	 //--------------------------------adminservice调用-------------------------------------
