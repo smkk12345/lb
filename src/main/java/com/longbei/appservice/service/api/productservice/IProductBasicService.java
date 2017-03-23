@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.api.productservice;
 
 
+import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
@@ -123,8 +124,9 @@ public interface IProductBasicService {
      * @param remark 备注
      * @param discount 用户等级所享受的折扣
 	 */
-	 @RequestLine("GET /order/create?userid={userid}&productidss={productidss}&numberss={numberss}&address={address}&receiver={receiver}&mobile={mobile}&impiconprice={impiconprice}&moneyprice={moneyprice}&paytype={paytype}&prices={prices}&otype={otype}&remark={remark}&discount={discount}")
-	 BaseResp<Object> create(@Param("userid") Long userid, @Param("productidss") String productidss, 
+	 @RequestLine("POST /order/create?userid={userid}&username={username}&productidss={productidss}&numberss={numberss}&address={address}&receiver={receiver}&mobile={mobile}&impiconprice={impiconprice}&moneyprice={moneyprice}&paytype={paytype}&prices={prices}&otype={otype}&remark={remark}&discount={discount}")
+	 BaseResp<Object> create(@Param("userid") Long userid, @Param("username") String username, 
+			 @Param("productidss") String productidss, 
 			 @Param("numberss") String numberss, @Param("address") String address, 
 			 @Param("receiver") String receiver, @Param("mobile") String mobile, 
 			 @Param("impiconprice") String impiconprice, @Param("moneyprice") String moneyprice, 
@@ -288,14 +290,13 @@ public interface IProductBasicService {
 	 /**
 	 * 我的订单列表(所有的)
 	 * @author yinxc
-	 * @param @param userid 
 	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
 	 * 						为null   则查全部 
 	 * @param @param startNo  pageSize
 	 * 2017年3月22日
 	 */
-	 @RequestLine("GET /api/order/adminlist?userid={userid}&orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> adminlist(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
+	 @RequestLine("GET /api/order/adminlist?orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> adminlist(@Param("orderstatus") String orderstatus, 
 			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -336,5 +337,16 @@ public interface IProductBasicService {
 	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}&remark={remark}")
 	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, @Param("remark") String remark);
 	 
+	 /**
+	 * @author yinxc
+	 * 获取用户不同的订单状态的总数
+     * @param @param userid 
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+     * 						为null   则查全部 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/selectCountOrders?orderstatus={orderstatus}")
+	 BaseResp<Integer> selectCountOrders(@Param("orderstatus") String orderstatus);
+
 
 }

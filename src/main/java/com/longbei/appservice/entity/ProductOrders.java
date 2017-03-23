@@ -11,6 +11,8 @@ public class ProductOrders {
     private Integer id;//自增id
 
     private String orderid;//订单id
+    
+    private String username; //用户手机号    冗余字段
 
     private String ordernum;//订单号
 
@@ -368,5 +370,14 @@ public class ProductOrders {
 
 	public void setIsexception(String isexception) {
 		this.isexception = isexception;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }
