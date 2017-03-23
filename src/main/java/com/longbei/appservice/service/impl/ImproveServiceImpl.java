@@ -1265,7 +1265,14 @@ public class ImproveServiceImpl implements ImproveService{
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
-                userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                try{
+//                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+//                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",improve.getPtype(),null,0,0);
+                    userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                }catch (Exception e){
+                    logger.error("pointChange,userSumInfo error",e);
+                }
+
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
