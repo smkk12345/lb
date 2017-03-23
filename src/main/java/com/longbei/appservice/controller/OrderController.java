@@ -30,9 +30,7 @@ public class OrderController {
     * @param @param userid  
     * @param @param productidss 商品id(多个商品以,分割)
     * @param @param numberss 购买数量(多个以,分割)
-    * @param @param address 收件人地址
-    * @param @param receiver 收件人
-    * @param @param mobile 收件人手机
+    * @param @param addressid 收货地址id
     * @param @param impiconprice 成交价格---进步币 
     * @param @param moneyprice 成交价格---龙币
     * @param @param paytype 支付方式 0：龙币支付 1：微信支付 2：支付宝支付
@@ -47,16 +45,16 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/create")
     public BaseResp<Object> create(String userid, String productidss, String numberss, String prices, 
-    		String address, String receiver, String mobile, String impiconprice, String moneyprice, String paytype, 
+    		String addressid, String impiconprice, String moneyprice, String paytype, 
     		String otype, String remark) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, productidss, numberss, address, receiver, mobile, 
+  		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
   				impiconprice, paytype, prices, otype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = orderService.create(Long.parseLong(userid), productidss, numberss, address, receiver, 
-  					mobile, impiconprice, moneyprice, paytype, prices, otype, remark);
+  			baseResp = orderService.create(Long.parseLong(userid), productidss, numberss, addressid, 
+  					impiconprice, moneyprice, paytype, prices, otype, remark);
 		} catch (Exception e) {
 			logger.error("create userid = {}, productidss = {}, numberss = {}, impiconprice = {}, moneyprice = {}", 
 					userid, productidss, numberss, impiconprice, moneyprice, e);
