@@ -56,6 +56,8 @@ public class ProductOrders {
     
     private List<ProductOrderInfo> orderInfoList = new ArrayList<ProductOrderInfo>(); //订单详情
     
+    private AppUserMongoEntity appUserMongoEntity; //用户信息----Userid
+    
     private int sumNum = 0; //订单总共有商品数量
 
     /**
@@ -388,5 +390,13 @@ public class ProductOrders {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
 	}
 }

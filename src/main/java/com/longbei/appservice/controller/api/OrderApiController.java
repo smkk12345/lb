@@ -148,6 +148,34 @@ public class OrderApiController {
 	}
 	
 	/**
+    * @Title: http://ip:port/app_service/api/order/updateOrderStatus
+    * @Description: 修改订单状态
+    * @param @param userid 
+    * @param @param orderid 订单业务id 
+    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成   4：已取消
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月16日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/updateOrderStatus")
+    public BaseResp<Object> updateOrderStatus(String userid, String orderid, String orderstatus) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, orderid, orderstatus)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成 
+  			baseResp = orderService.updateOrderStatus(Long.parseLong(userid), orderid, orderstatus);
+		} catch (Exception e) {
+			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 
+					userid, orderid, orderstatus, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
     * @Title: http://ip:port/app_service/api/order/selectCountOrders
     * @Description: 获取用户不同的订单状态的总数
     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
