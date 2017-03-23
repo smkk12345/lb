@@ -39,12 +39,12 @@ public class HomePicture {
     /**
      * 上线时间
      */
-    private Date update;
+    private Date uptime;
 
     /**
      * 下线时间
      */
-    private Date downdate;
+    private Date downtime;
 
     /**
      * 排序
@@ -60,6 +60,32 @@ public class HomePicture {
      * 更新时间
      */
     private Date updatetime;
+
+    /**
+     * 创建人id
+     */
+    private Long createuserid;
+
+    /**
+     * 连接 文章 专题
+     */
+    private String href;
+
+    public Long getCreateuserid() {
+        return createuserid;
+    }
+
+    public void setCreateuserid(Long createuserid) {
+        this.createuserid = createuserid;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
 
     public Integer getId() {
         return id;
@@ -110,23 +136,22 @@ public class HomePicture {
     }
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getUpdate() {
-        return update;
+    public Date getUptime() {
+        return uptime;
     }
 
-    public void setUpdate(Date update) {
-        this.update = update;
+    public void setUptime(Date uptime) {
+        this.uptime = uptime;
     }
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getDowndate() {
-        return downdate;
+    public Date getDowntime() {
+        return downtime;
     }
 
-    public void setDowndate(Date downdate) {
-        this.downdate = downdate;
+    public void setDowntime(Date downtime) {
+        this.downtime = downtime;
     }
-
     public String getSort() {
         return sort;
     }
