@@ -62,6 +62,10 @@ public class Improve {
     protected long pimpid; //批复父进步 id
     
     protected String isresponded; //0 不是批复。1 是批复
+
+    private Integer totallikes = 0;//总花数
+
+    private Integer totalflowers = 0;//总赞数
     
     //批复列表
     protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
@@ -585,6 +589,22 @@ public class Improve {
 
     public void setIsbusinessdel(String isbusinessdel) {
         this.isbusinessdel = isbusinessdel;
+    }
+
+    public void setTotallikes(Integer totallikes) {
+        this.totallikes = totallikes;
+    }
+
+    public void setTotalflowers(Integer totalflowers) {
+        this.totalflowers = totalflowers;
+    }
+
+    public Integer getTotallikes() {
+        return totallikes;
+    }
+
+    public Integer getTotalflowers() {
+        return totalflowers;
     }
 
     /**
