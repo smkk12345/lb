@@ -81,7 +81,7 @@ public class OrderController {
     public BaseResp<Object> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
-		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);;
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
 		if(null == startNo){
 			sNo = startNo.intValue();
 		}

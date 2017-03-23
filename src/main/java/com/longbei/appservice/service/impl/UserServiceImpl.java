@@ -68,6 +68,8 @@ public class UserServiceImpl implements UserService {
 	private SysPerfectTagMapper sysPerfectTagMapper;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -613,6 +615,18 @@ public class UserServiceImpl implements UserService {
 			logger.error("selectRandomTagList error ",e);
 		}
 		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> perfectInfo(String ptype) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			SysPerfectDefine sysPerfectDefine = sysPerfectDefineMapper.selectRandomByType(ptype);
+			baseResp.setData(sysPerfectDefine);
+		}catch (Exception e){
+			logger.error("selectRandomByType error ",e);
+		}
+		return baseResp.initCodeAndDesp();
 	}
 
 	@SuppressWarnings("unchecked")
