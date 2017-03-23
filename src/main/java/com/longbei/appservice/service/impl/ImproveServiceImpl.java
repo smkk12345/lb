@@ -1198,8 +1198,8 @@ public class ImproveServiceImpl implements ImproveService{
         }
 
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        AppUserMongoEntity userMongoEntity = userMongoDao.getAppUser(userid);
-        if(null == improve || null == userMongoEntity){
+        UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        if(null == improve || null == userInfo){
             return baseResp;
         }
 //        if(improve.getUserid() == Long.parseLong(userid)){
@@ -1218,13 +1218,20 @@ public class ImproveServiceImpl implements ImproveService{
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
-                        userMongoEntity.getAvatar())  ;
+                        userInfo.getAvatar())  ;
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
-                userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
+
+                try{
+                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",improve.getPtype(),null,0,0);
+                    userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
+                }catch (Exception e){
+                    logger.error("pointChange or userSumInfo error ",e);
+                }
+
             }
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
