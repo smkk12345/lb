@@ -108,6 +108,9 @@ public class Constant {
 	public static final int STATUS_SYS_65 = -65;
 	public static final int STATUS_SYS_66 = -66;
 	public static final int STATUS_SYS_67 = -67;
+	public static final int STATUS_SYS_68 = -68;
+	public static final int STATUS_SYS_69 = -69;
+	public static final int STATUS_SYS_610 = -610;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -203,13 +206,16 @@ public class Constant {
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
-	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
-	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
-	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_61 = "参榜口令不正确,请重新输入";
+	public static final String RTNINFO_SYS_62 = "抱歉,由于当前已超过了最后的参榜时间,因此您无法参榜!";
+	public static final String RTNINFO_SYS_63 = "抱歉,由于龙榜已结束或未设置为开放等原因,您暂时无法进行参榜!";
 	public static final String RTNINFO_SYS_64 = "已经点过赞";
 	public static final String RTNINFO_SYS_65 = "您已在该榜单中领过奖了";
 	public static final String RTNINFO_SYS_66 = "非常抱歉,您未在该榜单中获奖!";
 	public static final String RTNINFO_SYS_67 = "该榜单还未结束!";
+	public static final String RTNINFO_SYS_68 = "该榜单还未开始";
+	public static final String RTNINFO_SYS_69 = "非常抱歉,该榜单已结束";
+	public static final String RTNINFO_SYS_610 = "抱歉,参榜人数已达榜最大限制人数!";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";

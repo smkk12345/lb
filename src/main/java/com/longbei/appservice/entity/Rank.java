@@ -45,7 +45,7 @@ public class Rank {
 
     private String coordinate;//坐标
 
-    private String isfinish;//是否结束。0—为结束 1—一结束
+    private String isfinish;//是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
 
     private Long createuserid;//榜单创建人id
 
@@ -67,6 +67,9 @@ public class Rank {
 
     private String codeword;//口令
 
+    private Boolean isrecommend;//是否是推荐的榜单
+
+    private Integer weight;//推荐的权重
 
     private String ptype;//十全十美类型
 
@@ -575,7 +578,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @return isfinish 是否结束。0—为结束 1—一结束
+     * @return isfinish 是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public String getIsfinish() {
         return isfinish;
@@ -583,7 +586,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @param isfinish 是否结束。0—为结束 1—一结束
+     * @param isfinish 是否结束。是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public void setIsfinish(String isfinish) {
         this.isfinish = isfinish == null ? null : isfinish.trim();
@@ -798,5 +801,21 @@ public class Rank {
 
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Boolean getIsrecommend() {
+        return isrecommend;
+    }
+
+    public void setIsrecommend(Boolean isrecommend) {
+        this.isrecommend = isrecommend;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

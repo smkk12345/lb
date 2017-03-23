@@ -81,5 +81,59 @@ public interface ProductService {
 	 * @param productcount 商品数量
 	 */
 	 BaseResp<Object> updateCartProductcount(int id, int productcount);
-		 
+
+	/**
+	 * @Title: selectProductList
+	 * @Description: 按条件查询商品列表
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
+									   String startNum,String pageSize);
+
+	/**
+	 * @Title: updateProductByProductId
+	 * @Description: 编辑商品详情
+	 * @param @param productId 商品id
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	BaseResp<Object> updateProductByProductId(String productId,String productcate,String productname,String productbriefphotos,
+											  String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail);
+
+	/**
+	 * @Title: insertProduct
+	 * @Description: 添加商品
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	BaseResp<Object> insertProduct(String productcate,String productname,String productbriefphotos,
+								   String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail);
+
+	/**
+	 * @Title: deleteProductByProductId
+	 * @Description: 删除商品
+	 * @param  @param productId
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	BaseResp<Object> deleteProductByProductId(String productId);
 }

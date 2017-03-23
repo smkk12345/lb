@@ -346,9 +346,40 @@ public class UserRelationServiceImpl implements UserRelationService {
      * @return
      */
 	@Override
-	public BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize) {
-		List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
-		return null;
+	public BaseResp<Object> selectFashionManUser(Long userId,Integer startNum, Integer pageSize) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try{
+			List<Map<String,Object>> resultMap = new ArrayList<Map<String,Object>>();
+			List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
+			if(fashionManUserList != null && fashionManUserList.size() > 0){
+				for(UserInfo userInfo:fashionManUserList){
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("usernickname",userInfo.getNickname());
+					map.put("avatar",userInfo.getAvatar());
+					map.put("userid",userInfo.getUserid());
+
+					if(userId.equals(userInfo.getUserid())){
+						map.put("isfans",true);
+						resultMap.add(map);
+						continue;
+					}
+					SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,userInfo.getUserid());
+					if(snsFans != null){
+						map.put("isfans",true);
+					}else{
+						map.put("isfans",false);
+					}
+					map.put("ptype",0);
+					map.put("plevel",3);
+					resultMap.add(map);
+				}
+			}
+			baseResp.setData(resultMap);
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+			logger.error("select fashionMan user errror userId:{} startNum:{} pageSize:{} msg:{}",userId,startNum,pageSize,e);
+		}
+		return baseResp;
 	}
 
 	/**

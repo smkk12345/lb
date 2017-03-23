@@ -121,5 +121,5 @@ public interface UserRelationService {
 	 * @param pageSize
      * @return
      */
-	BaseResp<Object> selectFashionManUser(Integer startNum, Integer pageSize);
+	BaseResp<Object> selectFashionManUser(Long userId,Integer startNum, Integer pageSize);
 }

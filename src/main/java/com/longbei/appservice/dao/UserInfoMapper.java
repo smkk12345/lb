@@ -91,7 +91,7 @@ public interface UserInfoMapper {
 	 * @param pageSize
      * @return
      */
-	List<UserInfo> selectFashionManUser(Integer startNum, Integer pageSize);
+	List<UserInfo> selectFashionManUser(@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
 	/**
 	 * 更改用户的进步币 在用户的数据基础上直接进行加减

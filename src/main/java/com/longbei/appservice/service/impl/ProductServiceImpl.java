@@ -146,4 +146,59 @@ public class ProductServiceImpl implements ProductService {
 		return baseResp;
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
+											  String startNum,String pageSize) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.selectProductList(productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
+		} catch (Exception e) {
+			logger.error("selectProductList error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateProductByProductId(String productId,String productcate,String productname,String productbriefphotos,
+													 String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+
+		try {
+			baseResp = HttpClient.productBasicService.updateProductByProductId(productId,productcate, productname,productbriefphotos, productprice,
+					productpoint,lowimpicon,productbrief,enabled,productdetail);
+		} catch (Exception e) {
+			logger.error("updateProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> insertProduct(String productcate,String productname,String productbriefphotos,
+										  String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.insertProduct(productcate, productname,productbriefphotos,
+					productprice, productpoint,lowimpicon,productbrief,enabled,productdetail);
+		} catch (Exception e) {
+			logger.error("updateProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> deleteProductByProductId(String productId) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.deleteProductByProductId(productId);
+		} catch (Exception e) {
+			logger.error("deleteProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
 }

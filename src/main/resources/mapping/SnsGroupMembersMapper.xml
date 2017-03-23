@@ -250,7 +250,23 @@
           </if>
         and groupid = #{groupId}
       </where>
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
   </select>
+
+    <!-- 查询群组成员数量 -->
+    <select id="groupMembersCount" parameterType="String" resultType="INTEGER">
+        select
+            count(1)
+        from sns_group_members
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            and groupid = #{groupId}
+        </where>
+    </select>
 
   <!-- 根据用户查询群成员列表 -->
   <select id="groupMembersList" parameterType="String" resultMap="BaseResultMap">

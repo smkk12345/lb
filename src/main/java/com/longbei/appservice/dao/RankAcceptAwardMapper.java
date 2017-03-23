@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.RankAcceptAward;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,11 +16,14 @@ public interface RankAcceptAwardMapper {
 
     RankAcceptAward selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(RankAcceptAward record);
+    int updateByRankidAndUseridSelective(RankAcceptAward record);
 
     int updateByPrimaryKey(RankAcceptAward record);
 
     int selectCount(RankAcceptAward rankAcceptAward);
 
-    List<RankAcceptAward> selectList(RankAcceptAward rankAcceptAward,Integer startno,Integer pagesize);
+    List<RankAcceptAward> selectList(@Param("rankAcceptAward")RankAcceptAward rankAcceptAward,@Param("startno")Integer startno,
+                                     @Param("pagesize")Integer pagesize);
+
+    RankAcceptAward selectByRankIdAndUserid(@Param("rankid") String rankid,@Param("userid") String userid);
 }

@@ -68,7 +68,7 @@
   </delete>
   <delete id="deleteByUidAndLid" >
     delete from sns_fans
-    where userid = #{id} and likeuserid=#{likeuserid}
+    where userid = #{userid} and likeuserid=#{likeuserid}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.SnsFans" >
     insert into sns_fans (id, userid, likeuserid, 
