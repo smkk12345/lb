@@ -1,5 +1,7 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-				baseResp = HttpClient.productBasicService.create(userid, productidss, numberss, address, 
+				baseResp = HttpClient.productBasicService.create(userid, userInfo.getUsername(), productidss, numberss, address, 
 						receiver, mobile, impiconprice, moneyprice, paytype, prices, otype, 
 						remark, userLevel.getDiscount().toString());
 			}
@@ -49,6 +51,9 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Object> list(Long userid, String orderstatus, int startNo, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
+			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
+				orderstatus = "";
+			}
 			baseResp = HttpClient.productBasicService.list(userid, orderstatus, startNo, pageSize);
 		}catch (Exception e){
 			logger.error("list userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
@@ -100,16 +105,16 @@ public class OrderServiceImpl implements OrderService {
 	//--------------------------------adminservice调用-------------------------------------
 
 	@Override
-	public BaseResp<Object> adminlist(Long userid, String orderstatus, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
 		try{
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = null;
 			}
-			baseResp = HttpClient.productBasicService.adminlist(userid, orderstatus, startNo, pageSize);
+			baseResp = HttpClient.productBasicService.adminlist(orderstatus, startNo, pageSize);
 		}catch (Exception e){
-			logger.error("adminlist userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
-					userid, orderstatus, startNo, pageSize, e);
+			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
+					orderstatus, startNo, pageSize, e);
 		}
 		return baseResp;
 	}
@@ -162,8 +167,28 @@ public class OrderServiceImpl implements OrderService {
 		try{
 			baseResp = HttpClient.productBasicService.updateOrdersRemark(orderid, remark);
 		}catch (Exception e){
-			logger.error("updateOrdersRemark orderid = {}, remark= {}", 
+			logger.error("updateOrdersRemark orderid = {}, remark = {}", 
 					orderid, remark, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @author yinxc
+	 * 获取用户不同的订单状态的总数
+     * @param @param userid 
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+     * 						为null   则查全部 
+	 * 2017年3月22日
+	 */
+	@Override
+	public BaseResp<Integer> selectCountOrders(String orderstatus) {
+		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+		try{
+			baseResp = HttpClient.productBasicService.selectCountOrders(orderstatus);
+		}catch (Exception e){
+			logger.error("selectCountOrders orderstatus = {}", 
+					orderstatus, e);
 		}
 		return baseResp;
 	}
