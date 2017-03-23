@@ -23,11 +23,13 @@
     <result column="awardcateid" property="awardcateid" jdbcType="VARCHAR" />
     <result column="ranktitle" property="ranktitle" jdbcType="VARCHAR" />
     <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="publishawardtype" property="publishawardtype" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, rankid, userid, acceptdate, confirmacceptdate, awardlevel, awardid, status, reciverusername, 
     reciverusertel, reciveruseraddr, logisticscompany, logisticsnum, dispatchdate, remarker, 
-    handleuserid, createdate,username,ranktitle,awardcateid,receivecode
+    handleuserid, createdate,username,ranktitle,awardcateid,receivecode,sortnum,publishawardtype
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -36,24 +38,31 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectByRankIdAndUserid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rank_accept_award
+    where rankid=#{rankid} AND userid=#{userid}
+  </select>
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankAcceptAward" resultType="java.lang.Integer">
     SELECT
       count(*)
+    from rank_accept_award
     <where>
       <if test="rankid != null">
         AND rankid = #{rankid}
       </if>
-      <if test="receivecode != null">
+      <if test="receivecode != null and receivecode != ''.toString()">
         AND receivecode = #{receivecode}
       </if>
-      <if test="username != null">
+      <if test="username != null and username != ''.toString()">
         AND username = #{username}
       </if>
-      <if test="ranktitle != null">
+      <if test="ranktitle != null and ranktitle != ''.toString()">
         AND ranktitle = #{ranktitle}
       </if>
-      <if test="awardnickname != null">
+      <if test="awardnickname != null and awardnickname != ''.toString()">
         AND awardnickname = #{awardnickname}
       </if>
       <if test="awardcateid != null">
@@ -70,6 +79,9 @@
       </if>
       <if test="awards != null and awards.size() > 0">
         AND awardid IN
+        <foreach item="item" index="index" collection="awards" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
       </if>
     </where>
   </select>
@@ -78,33 +90,40 @@
   <select id="selectList" parameterType="com.longbei.appservice.entity.RankAcceptAward" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
+    from rank_accept_award
     <where>
-      <if test="rankid != null">
-        AND rankid = #{rankid}
+      <if test="rankAcceptAward.rankid != null">
+        AND rankid = #{rankAcceptAward.rankid}
       </if>
-      <if test="receivecode != null">
-        AND receivecode = #{receivecode}
+      <if test="rankAcceptAward.receivecode != null and rankAcceptAward.receivecode != ''.toString()">
+        AND receivecode = #{rankAcceptAward.receivecode}
       </if>
-      <if test="username != null">
-        AND username = #{username}
+      <if test="rankAcceptAward.username != null and rankAcceptAward.username != ''.toString()">
+        AND username LIKE concat(concat('%',#{rankAcceptAward.username}),'%')
       </if>
-      <if test="ranktitle != null">
-        AND ranktitle = #{ranktitle}
+      <if test="rankAcceptAward.ranktitle != null and rankAcceptAward.ranktitle != ''.toString()">
+        AND ranktitle LIKE concat(concat('%',#{rankAcceptAward.ranktitle}),'%')
       </if>
-      <if test="awardnickname != null">
-        AND awardnickname = #{awardnickname}
+      <if test="rankAcceptAward.awardnickname != null and rankAcceptAward.awardnickname != ''.toString()">
+        AND awardnickname LIKE concat(concat('%',#{rankAcceptAward.awardnickname}),'%')
       </if>
-      <if test="awardcateid != null">
-        AND awardcateid = #{awardcateid}
+      <if test="rankAcceptAward.awardcateid != null">
+        AND awardcateid = #{rankAcceptAward.awardcateid}
       </if>
-      <if test="status != null and status != '-1'.toString()">
-        AND status = #{status}
+      <if test="rankAcceptAward.status != null and rankAcceptAward.status != '-1'.toString()">
+        AND status = #{rankAcceptAward.status}
       </if>
-      <if test="screatedate != null" >
-      AND createdate &gt;= #{screatedate}
+      <if test="rankAcceptAward.screatedate != null" >
+      AND createdate &gt;= #{rankAcceptAward.screatedate}
       </if>
-      <if test="ecreatedate != null" >
-      AND createdate &lt; #{ecreatedate}
+      <if test="rankAcceptAward.ecreatedate != null" >
+      AND createdate &lt; #{rankAcceptAward.ecreatedate}
+      </if>
+      <if test="rankAcceptAward.awards != null and rankAcceptAward.awards.size() > 0">
+        AND awardid IN
+        <foreach item="item" index="index" collection="rankAcceptAward.awards" open="(" separator="," close=")">
+          #{item.id}
+        </foreach>
       </if>
     </where>
     ORDER BY createdate DESC
@@ -185,6 +204,9 @@
       <if test="receivecode != null" >
         receivecode,
       </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
     </trim>
     values
     <foreach collection ="list" item="acceptaward" index= "index" separator =",">
@@ -248,6 +270,9 @@
         </if>
         <if test="acceptaward.receivecode != null" >
           #{acceptaward.receivecode,jdbcType=VARCHAR},
+        </if>
+        <if test="acceptaward.sortnum != null" >
+          #{acceptaward.sortnum,jdbcType=INTEGER},
         </if>
       </trim>
     </foreach >
@@ -377,26 +402,15 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
+  <update id="updateByRankidAndUseridSelective" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
     update rank_accept_award
     <set >
-      <if test="rankid != null" >
-        rankid = #{rankid,jdbcType=BIGINT},
-      </if>
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
+
       <if test="acceptdate != null" >
         acceptdate = #{acceptdate,jdbcType=TIMESTAMP},
       </if>
       <if test="confirmacceptdate != null" >
         confirmacceptdate = #{confirmacceptdate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="awardlevel != null" >
-        awardlevel = #{awardlevel,jdbcType=INTEGER},
-      </if>
-      <if test="awardid != null" >
-        awardid = #{awardid,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
@@ -425,11 +439,13 @@
       <if test="handleuserid != null" >
         handleuserid = #{handleuserid,jdbcType=INTEGER},
       </if>
-      <if test="createdate != null" >
-        createdate = #{createdate,jdbcType=TIMESTAMP},
+      <if test="publishawardtype != null" >
+        publishawardtype = #{publishawardtype,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where
+    rankid = #{rankid,jdbcType=BIGINT} AND  userid = #{userid,jdbcType=BIGINT},
+
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
     update rank_accept_award
