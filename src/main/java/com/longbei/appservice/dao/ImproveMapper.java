@@ -32,6 +32,28 @@ public interface ImproveMapper {
                                          @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
+
+    /**
+     * 获取榜单进步列表
+     * @param businessid 榜单id
+     * @param orderby  排序类型 0 - 成员动态 1 - 热度 2 - 时间
+     * @param flowerscore 鲜花分数
+     * @param likescore 赞分数
+     * @param startno 开始条数
+     * @param pagesize 每页条数
+     * @return
+     */
+    List<Improve> selectListByRank(
+                                    @Param("businessid")String businessid,
+                                    @Param("orderby")String orderby,
+                                    @Param("flowerscore") int flowerscore,
+                                    @Param("likescore") int likescore,
+                                    @Param("startno")int startno,
+                                    @Param("pagesize")int pagesize
+                            );
+
+
+
     
     /**
 	 * @author yinxc
