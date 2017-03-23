@@ -9,6 +9,7 @@ import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author luye
  * @create 2017-03-22 下午4:55
  **/
+@Service
 public class PageServiceImpl implements PageService{
 
     private static Logger logger = LoggerFactory.getLogger(PageServiceImpl.class);
