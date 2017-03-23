@@ -524,10 +524,16 @@ public class ImproveServiceImpl implements ImproveService{
                 default:
                     break;
             }
-
-
-            improves = improveMapper.selectListByBusinessid
-                    (rankid, Constant_table.IMPROVE_RANK,null,null,orderby,pageNo,pageSize);
+            int flowerscore = 10;
+            int likescore = 1;
+            if ("1".equals(orderby)){
+                Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
+                if (null != rank){
+                    flowerscore = rank.getFlowerscore();
+                    likescore = rank.getLikescore();
+                }
+            }
+            improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -1265,7 +1271,14 @@ public class ImproveServiceImpl implements ImproveService{
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
-                userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                try{
+//                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+//                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",improve.getPtype(),null,0,0);
+                    userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                }catch (Exception e){
+                    logger.error("pointChange,userSumInfo error",e);
+                }
+
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
