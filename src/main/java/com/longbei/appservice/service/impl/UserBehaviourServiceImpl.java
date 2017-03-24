@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by smkk on 17/2/7.
@@ -103,10 +100,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
-            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-            springJedisDao.put(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL",dateStr,String.valueOf(point));
-            springJedisDao.expire(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL", Constant.CACHE_24X60X60);
             levelUp(userInfo.getUserid(),point,pType);
+            putPointToCache(point,userInfo.getUserid(),operateType);
         }
         //进步币发生变化
         int impIcon = 0 ;
@@ -121,6 +116,31 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
+    }
+
+    /**
+     * 统计每日得分
+     * 缓存到当天24点
+     * lixb
+     */
+    private void putPointToCache(int point,long userid,String operateType){
+        String key = Constant.RP_USER_PERDAY+"sum"+userid;
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        if(springJedisDao.hasKey(key)){
+            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+        }else{
+            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+            springJedisDao.expire(key,DateUtils.getLastTime());
+        }
+
+        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL";
+        if(springJedisDao.hasKey(totalKey)){
+            springJedisDao.increment(totalKey,dateStr,point);
+        }else{
+            springJedisDao.increment(totalKey,dateStr,point);
+            springJedisDao.expire(totalKey,DateUtils.getLastTime());
+        }
+
     }
 
     @Override
@@ -164,11 +184,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                                         final int count) {
 
         BaseResp<Object> baseResp = new BaseResp<>();
-//         * @param userid
-//                * @param totalimp
-//                * @param totallikes
-//                * @param totalfans
-//                * @param totalflower
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {

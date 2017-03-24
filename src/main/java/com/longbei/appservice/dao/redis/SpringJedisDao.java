@@ -214,6 +214,18 @@ public class SpringJedisDao {
         }
         return null;
     }
+
+    //keys 获取map中的所有的map
+    public Map<String,String> entries(String key){
+        try{
+            HashOperations<String, String, String> options = redisTemplate.opsForHash();
+            return options.entries(key);
+        }catch (Exception e){
+            logger.error("redis keys error key={}",key,e);
+        }
+        return null;
+    }
+
     //---------------------zset---------------------//
 //    public boolean keys1(String key){
 //        try{
@@ -428,4 +440,16 @@ public class SpringJedisDao {
         return 0;
     }
     /****************************** ZSET end ************************/
+
+    /******************************List start************************/
+    public void aTest(){
+//        try{
+//            ListOperations listOperations = redisTemplate.opsForList();
+//            listOperations.
+//        }catch (Exception e){
+//
+//        }
+    }
+    /******************************List end************************/
+
 }
