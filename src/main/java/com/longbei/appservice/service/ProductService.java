@@ -12,7 +12,7 @@ public interface ProductService {
 	 * @param userid 用户id
 	 * @param level  用户等级
 	 */
-	BaseResp<Object> category(Long userid, String cateid);
+	BaseResp<Object> category(Long userid);
 	
 	/**
 	 * @author yinxc

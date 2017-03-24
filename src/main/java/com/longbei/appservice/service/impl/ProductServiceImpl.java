@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 	private static Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
-	public BaseResp<Object> category(Long userid, String cateid) {
+	public BaseResp<Object> category(Long userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			String level = "";
@@ -38,14 +38,16 @@ public class ProductServiceImpl implements ProductService {
 				level = userInfo.getGrade().toString();
 				totalcoin = userInfo.getTotalcoin();
 			}
-			baseResp = HttpClient.productBasicService.category(userid, cateid, level);
+			baseResp = HttpClient.productBasicService.category(userid, level);
 			expandData.put("totalcoin", totalcoin);
 			baseResp.setExpandData(expandData);
 		}catch (Exception e){
-			logger.error("selectCategoryList cateid = {}, userid = {}", cateid, userid, e);
+			logger.error("selectCategoryList userid = {}", userid, e);
 		}
 		return baseResp;
 	}
+	
+	
 	
 	private UserInfo getLevel(long userid){
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
