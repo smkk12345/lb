@@ -1550,6 +1550,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankAcceptAward.setReceivecode(rkmember.getReceivecode());
                 rankAcceptAward.setAwardlevel(rkmember.getAwardlevel());
                 rankAcceptAward.setAwardid(rkmember.getAwardid());
+                rankAcceptAward.setSortnum(rkmember.getSortnum());
                 rankAcceptAward.setCreatedate(new Date());
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(rkmember.getUserid()));
                 if (null != appUserMongoEntity){

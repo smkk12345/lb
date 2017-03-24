@@ -11,6 +11,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
+import com.longbei.appservice.service.UserRelationService;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,10 @@ public class UserServiceImpl implements UserService {
 	private UserLevelMapper userLevelMapper;
 	@Autowired
 	private SysPerfectTagMapper sysPerfectTagMapper;
+	@Autowired
+	private UserRelationService userRelationService;
+	@Autowired
+	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -139,8 +144,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	public BaseResp<Object> register(Long userid,String username, 
+	public BaseResp<Object> register(Long userid,String username,
 			String nickname,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -155,8 +159,11 @@ public class UserServiceImpl implements UserService {
 		userInfo.setAvatar(avatar);
 		userInfo.setDeviceindex(deviceindex);
 		userInfo.setDevicetype(devicetype);
+		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
 		if(!StringUtils.isBlank(inviteuserid)){
-			userInfo.setInviteuserid(Long.parseLong(inviteuserid));
+			if(null != userInfo1){
+				userInfo.setInviteuserid(userInfo1.getUserid());
+			}
 		}
 		TokenReslut userToken;
 		try {
@@ -165,11 +172,6 @@ public class UserServiceImpl implements UserService {
 				return reseResp;
 			}
 			userInfo.setRytoken((String)tokenRtn.getData());
-// userToken = RongCloudProxy.rongCloud.user.getToken(userid+"", username, "#");
-//			if(null != userToken){
-//				JSONObject jsonObject = JSONObject.fromObject(userToken);
-//				userInfo.setRytoken(jsonObject.getString("token"));
-//			}
 		} catch (Exception e) {
 			logger.error("rongCloud getToken error and msg = {}",e);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
@@ -177,6 +179,7 @@ public class UserServiceImpl implements UserService {
 		}
 		boolean ri = registerInfo(userInfo);
 		if (ri) {
+			userRelationService.insertFriend(userid,userInfo1.getUserid());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -356,8 +359,8 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
-	@Override
-	public BaseResp<Object> checkSms(String mobile, String random){
+	public
+	BaseResp<Object> checkSms(String mobile, String random){
 		String res = springJedisDao.get(mobile);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {
@@ -612,6 +615,18 @@ public class UserServiceImpl implements UserService {
 			logger.error("selectRandomTagList error ",e);
 		}
 		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> perfectInfo(String ptype) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			SysPerfectDefine sysPerfectDefine = sysPerfectDefineMapper.selectRandomByType(ptype);
+			baseResp.setData(sysPerfectDefine);
+		}catch (Exception e){
+			logger.error("selectRandomByType error ",e);
+		}
+		return baseResp.initCodeAndDesp();
 	}
 
 	@SuppressWarnings("unchecked")

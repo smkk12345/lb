@@ -281,7 +281,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/**
-	 * 随机产生6位数字
+	 * 随机产生4位数字
 	 * 
 	 * @return
 	 */
@@ -294,11 +294,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 			array[index] = array[i - 1];
 			array[i - 1] = tmp;
 		}
-		int result = 0;
-		for (int i = 0; i < 6; i++) {
-			result = result * 10 + array[i];
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < 4; i++) {
+			sb.append(array[i]);
 		}
-		return String.valueOf(result);
+
+		return sb.toString();
 	}
 
 	/**

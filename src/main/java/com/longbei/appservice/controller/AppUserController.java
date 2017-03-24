@@ -1301,4 +1301,22 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
 
+    /**
+     * http://server_ip:port/app_service/user/perfectInfo
+     * 十全十美说明信息
+     * @param ptype
+     * @return
+     */
+    @RequestMapping(value = "/perfectInfo")
+    @ResponseBody
+    public BaseResp<Object> perfectInfo(String ptype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("perfectInfo ptype={}", ptype);
+        if(StringUtils.hasBlankParams(ptype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = userService.perfectInfo(ptype);
+        return baseResp;
+    }
+
 }

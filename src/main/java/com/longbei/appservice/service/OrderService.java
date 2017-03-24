@@ -1,5 +1,7 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.ProductOrders;
 
@@ -24,7 +26,7 @@ public interface OrderService {
      * @param discount 用户等级所享受的折扣
 	 */
 	 BaseResp<Object> create(Long userid, String productidss, 
-			 String numberss, String address, String receiver, String mobile, 
+			 String numberss, String addressid, 
 			 String impiconprice, String moneyprice, String paytype, String prices, 
 			 String otype, String remark);
 	 
@@ -81,7 +83,7 @@ public interface OrderService {
 	 * @param @param startNo  pageSize
 	 * 2017年3月22日
 	 */
-	 BaseResp<Object> adminlist(Long userid, String orderstatus, int startNo, int pageSize);
+	 BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize);
 	 
 	 /**
 	 * 订单详情
@@ -116,5 +118,14 @@ public interface OrderService {
 	 * 2017年3月22日
 	 */
 	 BaseResp<Object> updateOrdersRemark(String orderid, String remark);
+	 
+	 /**
+	 * @author yinxc
+	 * 获取用户不同的订单状态的总数
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+     * 						为null   则查全部 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Integer> selectCountOrders(String orderstatus);
 
 }

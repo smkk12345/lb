@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +33,11 @@ public class RankAcceptAward {
     private String username;
 
     /**
+     * 显示用
+     */
+    private AppUserMongoEntity appUserMongoEntity;
+
+    /**
      * 获奖码
      */
     private String receivecode;
@@ -48,6 +56,16 @@ public class RankAcceptAward {
      * 奖品等级
      */
     private Integer awardlevel;
+
+    /**
+     * 排名信息
+     */
+    private Integer sortnum;
+
+    /**
+     * 搜索用
+     */
+    private String awardtitle;
 
     /**
      * 奖品id
@@ -83,6 +101,11 @@ public class RankAcceptAward {
      * 收货人地址
      */
     private String reciveruseraddr;
+
+    /**
+     * 发奖方式 0 - 非物流 1 - 物流
+     */
+    private String publishawardtype;
 
     /**
      * 物流公司
@@ -121,6 +144,38 @@ public class RankAcceptAward {
 
     private List<Award> awards; //查询用
 
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public String getPublishawardtype() {
+        return publishawardtype;
+    }
+
+    public void setPublishawardtype(String publishawardtype) {
+        this.publishawardtype = publishawardtype;
+    }
+
+    public Integer getSortnum() {
+        return sortnum;
+    }
+
+    public void setSortnum(Integer sortnum) {
+        this.sortnum = sortnum;
+    }
+
+    public String getAwardtitle() {
+        return awardtitle;
+    }
+
+    public void setAwardtitle(String awardtitle) {
+        this.awardtitle = awardtitle;
+    }
+
     public List<Award> getAwards() {
         return awards;
     }
@@ -128,7 +183,8 @@ public class RankAcceptAward {
     public void setAwards(List<Award> awards) {
         this.awards = awards;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getScreatedate() {
         return screatedate;
     }
@@ -136,7 +192,8 @@ public class RankAcceptAward {
     public void setScreatedate(Date screatedate) {
         this.screatedate = screatedate;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEcreatedate() {
         return ecreatedate;
     }
@@ -208,7 +265,8 @@ public class RankAcceptAward {
     public void setUserid(Long userid) {
         this.userid = userid;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getAcceptdate() {
         return acceptdate;
     }
@@ -216,7 +274,8 @@ public class RankAcceptAward {
     public void setAcceptdate(Date acceptdate) {
         this.acceptdate = acceptdate;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getConfirmacceptdate() {
         return confirmacceptdate;
     }
@@ -288,7 +347,8 @@ public class RankAcceptAward {
     public void setLogisticsnum(String logisticsnum) {
         this.logisticsnum = logisticsnum == null ? null : logisticsnum.trim();
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getDispatchdate() {
         return dispatchdate;
     }
@@ -312,7 +372,8 @@ public class RankAcceptAward {
     public void setHandleuserid(Integer handleuserid) {
         this.handleuserid = handleuserid;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatedate() {
         return createdate;
     }

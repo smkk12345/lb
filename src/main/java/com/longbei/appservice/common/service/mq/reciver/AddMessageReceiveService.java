@@ -21,6 +21,7 @@ import javax.jms.MessageListener;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -184,10 +185,11 @@ public class AddMessageReceiveService{
         if(baseResp.getCode() != 0){
             return;
         }
-        List<SnsFriends> snsFriendses = (List<SnsFriends>) baseResp.getData();
-        for (SnsFriends snsFriends : snsFriendses) {
+        Map<String,Object> map = (Map<String, Object>) baseResp.getData();
+        List<Map<String,Object>> snsFriendses = (List<Map<String, Object>>) map.get("friendList");
+        for (Map snsFriends : snsFriendses) {
             timeLine.setId(MongoUtils.UUID());
-            timeLine.setUserid(String.valueOf(snsFriends.getUserid()));
+            timeLine.setUserid(String.valueOf(snsFriends.get("userid")));
             timeLine.setCtype("3");
             timeLineDao.save(timeLine);
         }

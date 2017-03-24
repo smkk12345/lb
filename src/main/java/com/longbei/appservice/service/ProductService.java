@@ -136,4 +136,14 @@ public interface ProductService {
 	 * @currentdate:2017年3月20日
 	 */
 	BaseResp<Object> deleteProductByProductId(String productId);
+
+	/**
+	 * @Title: selectProductByProductId
+	 * @Description: 通过商品id查看商品详情
+	 * @param  @param productId 商品id
+	 * @param @param code 0
+	 * @auther IngaWu
+	 * @currentdate:2017年3月22日
+	 */
+	BaseResp<Object> selectProductByProductId(String productId);
 }

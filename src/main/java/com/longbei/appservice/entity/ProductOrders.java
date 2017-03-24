@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -11,6 +14,8 @@ public class ProductOrders {
     private Integer id;//自增id
 
     private String orderid;//订单id
+    
+    private String username; //用户手机号    冗余字段
 
     private String ordernum;//订单号
 
@@ -28,7 +33,7 @@ public class ProductOrders {
 
     private String paytype;//支付方式  0：龙币支付 1：微信支付 2：支付宝支付
 
-    private String orderstatus;//订单状态   0：待付款   1：待发货   2：待收货  3：已完成
+    private String orderstatus;//订单状态   0：待付款   1：待发货   2：待收货  3：已完成     4：已取消
     
     private String otype; //订单类型。0 龙币 1 进步币 2 混排
 
@@ -50,6 +55,8 @@ public class ProductOrders {
     
     
     private List<ProductOrderInfo> orderInfoList = new ArrayList<ProductOrderInfo>(); //订单详情
+    
+    private AppUserMongoEntity appUserMongoEntity; //用户信息----Userid
     
     private int sumNum = 0; //订单总共有商品数量
 
@@ -291,6 +298,8 @@ public class ProductOrders {
      * 发货日期
      * @return sendgoodsdate 发货日期
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getSendgoodsdate() {
         return sendgoodsdate;
     }
@@ -307,6 +316,8 @@ public class ProductOrders {
      * 创建日期
      * @return createtime 创建日期
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -323,6 +334,8 @@ public class ProductOrders {
      * 更新日期
      * @return updatetime 更新日期
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -368,5 +381,22 @@ public class ProductOrders {
 
 	public void setIsexception(String isexception) {
 		this.isexception = isexception;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
 	}
 }

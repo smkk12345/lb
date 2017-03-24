@@ -84,7 +84,7 @@ public interface ImproveService {
      * @param userid
      * @param rankid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
-     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
+     * @param orderby 排序字段 0 - 成员动态 1 - 热度 2 - 时间
      * @param pageNo
      * @param pageSize
      * @return
@@ -96,7 +96,7 @@ public interface ImproveService {
      * @param userid
      * @param rankid
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
-     * @param orderby 排序字段 0.按照时间倒叙排列 1.按照热度排序
+     * @param orderby 排序字段 0 - 成员动态 1 - 热度 2 - 时间
      * @param pageNo
      * @param pageSize
      * @return
