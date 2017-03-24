@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SysPerfectDefineMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysPerfectDefine" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ptype" property="ptype" jdbcType="CHAR"/>
+    <result column="author" property="author" jdbcType="VARCHAR"/>
+    <result column="comment" property="comment" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectRandomByType" resultMap="BaseResultMap">
+    SELECT id,ptype,author,comment
+     from sys_perfect_define
+     WHERE ptype = #{ptype}
+      ORDER BY RAND() LIMIT 1
+  </select>
+</mapper>

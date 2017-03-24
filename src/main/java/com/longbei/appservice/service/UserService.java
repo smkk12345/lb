@@ -175,4 +175,6 @@ public interface UserService {
 	 */
 	BaseResp<Object> selectRandomTagList();
 
+	BaseResp<Object> perfectInfo(String ptype);
+
 }
