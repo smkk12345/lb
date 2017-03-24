@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
@@ -46,7 +47,36 @@ public class OrderApiController {
 		}
   		return baseResp;
 	}
-	
+  	
+  	/**
+     * @Title: http://ip:port/app_service/api/order/searchList
+     * @Description: 订单搜索
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+     * @param @param startNo pageSize
+     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @desc  
+     * @currentdate:2017年3月16日
+ 	*/
+  	@RequestMapping(value = "/searchList", method = RequestMethod.POST)
+    public BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, 
+    		String username, String screatetime, String ecreatetime, 
+    		int startNo, int pageSize) {
+  		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+  		try {
+  			baseResp = orderService.searchList(orderstatus, ordernum, username, 
+  					screatetime, ecreatetime, startNo, pageSize);
+		} catch (Exception e) {
+			logger.error("searchList orderstatus = {}, startNo = {}, pageSize = {}", 
+					orderstatus, startNo, pageSize, e);
+		}
+  		return baseResp;
+	}
+  	
 	/**
     * @Title: http://ip:port/app_service/order/adminget
     * @Description: 订单详情
@@ -195,5 +225,27 @@ public class OrderApiController {
 		}
   		return baseResp;
 	}
-	
+  	
+  	/**
+	 * 获取订单搜索的总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+	 */
+  	@RequestMapping(value = "/selectCountSearchOrders")
+    public BaseResp<Integer> selectCountSearchOrders(String orderstatus, String ordernum, 
+    		String username, String screatetime, String ecreatetime) {
+		BaseResp<Integer> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = orderService.selectCountSearchOrders(orderstatus, ordernum, username, screatetime, ecreatetime);
+		} catch (Exception e) {
+			logger.error("selectCountSearchOrders orderstatus = {}, ordernum = {}", orderstatus, ordernum, e);
+		}
+  		return baseResp;
+	}
+  	
 }

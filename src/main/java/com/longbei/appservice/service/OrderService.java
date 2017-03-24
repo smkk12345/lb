@@ -127,5 +127,28 @@ public interface OrderService {
 	 * 2017年3月22日
 	 */
 	 BaseResp<Integer> selectCountOrders(String orderstatus);
+	 
+	 /**
+	 * 获取订单搜索的总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+	 */
+	BaseResp<Integer> selectCountSearchOrders(String orderstatus, String ordernum, 
+    		String username, String screatetime, String ecreatetime);
+	 
+	 /**
+	 * 订单搜索
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, 
+			 String username, String screatetime, String ecreatetime, 
+			 int startNo, int pageSize);
+
 
 }
