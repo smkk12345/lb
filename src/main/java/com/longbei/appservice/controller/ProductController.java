@@ -28,7 +28,6 @@ public class ProductController {
     * @Title: http://ip:port/app_service/product/category
     * @Description: 获取商品类别
     * @param @param userid  
-    * @param @param cateid 分类id
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @desc  map：totalcoin：进步币数量
@@ -36,13 +35,13 @@ public class ProductController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/category")
-    public BaseResp<Object> category(String userid, String cateid) {
+    public BaseResp<Object> category(String userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, cateid)) {
+  		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = productService.category(Long.parseLong(userid), cateid);
+  			baseResp = productService.category(Long.parseLong(userid));
 		} catch (Exception e) {
 			logger.error("category userid = {}", userid, e);
 		}
