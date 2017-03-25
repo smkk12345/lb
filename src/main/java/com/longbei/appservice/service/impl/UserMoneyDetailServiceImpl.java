@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMoneyDetailMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -136,7 +135,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			if(null != list && list.size()>0){
 				for (UserMoneyDetail userMoneyDetail : list) {
 					//初始化用户信息
-					initMsgUserInfoByFriendid(userMoneyDetail);
+//					initMsgUserInfoByFriendid(userMoneyDetail);
+					initMsgUserInfoByUserid(userMoneyDetail);
 				}
 			}
 			reseResp.setData(list);
@@ -181,19 +181,19 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	/**
      * 初始化用户龙币信息 ------Friendid
      */
-    private void initMsgUserInfoByFriendid(UserMoneyDetail userMoneyDetail){
-    	if(!StringUtils.hasBlankParams(userMoneyDetail.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
-    		userMoneyDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
-		}
-    }
+//    private void initMsgUserInfoByFriendid(UserMoneyDetail userMoneyDetail){
+//    	if(!StringUtils.hasBlankParams(userMoneyDetail.getFriendid().toString())){
+//    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
+//    		userMoneyDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
+//		}
+//    }
 
     /**
      * 初始化用户龙币信息 ------Userid
      */
-//    private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail){
-//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getUserid()));
-//        userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
-//    }
+   private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail){
+       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getUserid()));
+       userMoneyDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
+   }
 
 }

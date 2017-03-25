@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -125,6 +126,7 @@ public class UserImpCoinDetail {
      * 
      * @return createtime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -141,10 +143,11 @@ public class UserImpCoinDetail {
      * 
      * @return updatetime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
-
+    
     /**
      * 
      * @param updatetime 
