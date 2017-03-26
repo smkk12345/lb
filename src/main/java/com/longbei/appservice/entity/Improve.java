@@ -66,7 +66,9 @@ public class Improve {
     private Integer totallikes = 0;//总花数
 
     private Integer totalflowers = 0;//总赞数
-    
+
+    private Integer sortnum;
+
     //批复列表
     protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
     
@@ -209,6 +211,7 @@ public class Improve {
         this.id = id;
     }
 
+
     /**
      * 微进步id
      * @return impid 微进步id
@@ -225,6 +228,7 @@ public class Improve {
     public void setImpid(Long impid) {
         this.impid = impid;
     }
+
 
     /**
      * 类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
@@ -349,6 +353,14 @@ public class Improve {
     @JsonInclude(Include.ALWAYS)
     public Integer getLikes() {
         return likes;
+    }
+
+    public Integer getSortnum() {
+        return sortnum;
+    }
+
+    public void setSortnum(Integer sortnum) {
+        this.sortnum = sortnum;
     }
 
     /**

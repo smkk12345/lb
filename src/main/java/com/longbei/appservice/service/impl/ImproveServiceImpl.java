@@ -526,8 +526,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
             int flowerscore = 10;
             int likescore = 1;
+            Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
             if ("1".equals(orderby)){
-                Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
                 if (null != rank){
                     flowerscore = rank.getFlowerscore();
                     likescore = rank.getLikescore();
@@ -535,6 +535,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
+            initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
             }
@@ -542,6 +543,15 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
         return improves;
+    }
+
+    private void initSortInfo(Rank rank,List<Improve> improves){
+        if(rank.getIsfinish().equals("1")){//进行中
+            for (Improve improve : improves){
+                Long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rank.getRankid(),String.valueOf(improve.getUserid()));
+                improve.setSortnum(sort.intValue());
+            }
+        }
     }
     /**
      *  @author luye

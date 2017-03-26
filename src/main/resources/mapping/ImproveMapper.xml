@@ -27,6 +27,7 @@
     <result column="isresponded" property="isresponded" />
     <result column="totallikes" property="totallikes" jdbcType="INTEGER" />
     <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -379,7 +380,7 @@
     ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
     ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
-    ir.ispublic,ir.sourcekey,ir.complaincount
+    ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
     FROM improve_rank ir JOIN rank_members rm ON ir.businessid=rm.rankid
     <where>
       rm.status = '1'
