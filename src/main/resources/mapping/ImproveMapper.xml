@@ -374,20 +374,23 @@
 
   <select id="selectListByRank" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List"/>
+    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
+    ir.businessid, ir.businesstype, ir.likes,
+    ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
+    ir.ispublic,ir.sourcekey,ir.complaincount
     FROM improve_rank ir JOIN rank_members rm ON ir.businessid=rm.rankid
     <where>
       rm.status = '1'
-      AND businessid = #{businessid}
+      AND ir.businessid = #{businessid}
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
       </if>
     </where>
     <if test="orderby=='2'.toString() or orderby=='0'.toString()">
-      ORDER BY createtime DESC
+      ORDER BY ir.createtime DESC
     </if>
     <if test="orderby=='1'.toString()">
-      ORDER BY sum(flowers*#{flowerscore}+likes*#{likescore}) desc
+      ORDER BY sum(rm.flowers*#{flowerscore}+rm.likes*#{likescore}) desc
     </if>
     limit #{startno},#{pagesize}
   </select>
