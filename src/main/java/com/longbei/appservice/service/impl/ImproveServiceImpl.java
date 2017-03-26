@@ -1718,25 +1718,29 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void afterAddOrRemoveLike(Improve improve,int count,String otype){
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
-        switch (improve.getBusinesstype()){
-            case Constant.IMPROVE_GOAL_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
-                break;
-            case Constant.IMPROVE_RANK_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
-                //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                if(count>0){
-                    rankSortService.updateRankSortScore(improve.getBusinessid(),
-                            improve.getUserid(),Constant.OperationType.like,count);
-                }else{
-                    rankSortService.updateRankSortScore(improve.getBusinessid(),
-                            improve.getUserid(),Constant.OperationType.cancleLike,-count);
-                }
+        try{
+            switch (improve.getBusinesstype()){
+                case Constant.IMPROVE_GOAL_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                    break;
+                case Constant.IMPROVE_RANK_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                    //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
+                    if(count>0){
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.like,count);
+                    }else{
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                    }
 
-                break;
-            default:
+                    break;
+                default:
 
-                break;
+                    break;
+            }
+        }catch (Exception e){
+            logger.error("afterAddOrRemoveLike error ",e);
         }
     }
 
