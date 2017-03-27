@@ -73,7 +73,6 @@ public class InitConfig implements CommandLineRunner {
         initSensitiveMap();
 
         initListener();
-//        testSend.test();
     }
 
     /**
