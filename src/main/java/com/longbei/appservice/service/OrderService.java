@@ -39,7 +39,7 @@ public interface OrderService {
 	 * @param @param startNo  pageSize
 	 * 2017年3月17日
 	 */
-	 BaseResp<Object> list(Long userid, String orderstatus, 
+	 BaseResp<List<ProductOrders>> list(Long userid, String orderstatus, 
 			 int startNo, int pageSize);
 	 
 	 /**
@@ -48,7 +48,7 @@ public interface OrderService {
 	 * @param @param orderid 订单业务id  
 	 * 2017年3月17日
 	 */
-	 BaseResp<Object> get(Long userid, String orderid);
+	 BaseResp<ProductOrders> get(Long userid, String orderid);
 	 
 	 /**
 	 * 再次兑换
@@ -149,6 +149,29 @@ public interface OrderService {
 	 BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, 
 			 String username, String screatetime, String ecreatetime, 
 			 int startNo, int pageSize);
+	 
+	 /**
+	 * 获取异常订单列表
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param startNo 
+	 * @param pageSize 
+	 */
+	 BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize);
+    
+     /**
+	 * 订单发货
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany);
+	 
+	 /**
+	 * 获取异常订单总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<Integer> selectCountException();
 
 
 }

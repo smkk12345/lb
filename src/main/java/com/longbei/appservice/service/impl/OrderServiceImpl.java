@@ -62,8 +62,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public BaseResp<Object> list(Long userid, String orderstatus, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductOrders>> list(Long userid, String orderstatus, int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		try{
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = "";
@@ -75,10 +75,12 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return baseResp;
 	}
+	
+	
 
 	@Override
-	public BaseResp<Object> get(Long userid, String orderid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<ProductOrders> get(Long userid, String orderid) {
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
 			baseResp = HttpClient.productBasicService.get(userid, orderid);
 		}catch (Exception e){
@@ -248,7 +250,42 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return baseResp;
 	}
+
+	@Override
+	public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+		try{
+			baseResp = HttpClient.productBasicService.exceptionlist(startNo, pageSize);
+		}catch (Exception e){
+			logger.error("exceptionlist startNo = {}, pageSize = {}", 
+					startNo, pageSize, e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			baseResp = HttpClient.productBasicService.updateDeliver(orderid, logisticscode, logisticscompany);
+		}catch (Exception e){
+			logger.error("updateDeliver orderid = {}, logisticscode={}, logisticscompany={}", 
+					orderid, logisticscode, logisticscompany, e);
+		}
+		return baseResp;
+	}
 	
+	@Override
+	public BaseResp<Integer> selectCountException() {
+		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+		try{
+			baseResp = HttpClient.productBasicService.selectCountException();
+		}catch (Exception e){
+			logger.error("selectCountException ", e);
+		}
+		return baseResp;
+	}
+
 	/**
      * 初始化消息中用户信息 ------Userid
      */
@@ -257,4 +294,5 @@ public class OrderServiceImpl implements OrderService {
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
 
+    
 }

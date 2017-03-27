@@ -1,89 +1,89 @@
-server:
-      port: 9090 #definded in application-osrad.yml
-      session-timeout: 1800 # session timeout in seconds
-      context-path: /app_service # the context path, defaults to '/'
-      servlet-path: / # the servlet path, defaults to '/'
-# mysql
-spring:
-      # mysql
-      datasource:
-                url: jdbc:mysql://192.168.1.10:3306/longbei3.0?useUnicode=true&characterEncoding=utf-8
-                username: longbei
-                password: longbei
-                driver-class-name: com.mysql.jdbc.Driver
-      # REDIS
-      redis:
-            database: 0 # database name
-            host: 192.168.1.40 # server host
-            password: LongXiao@015 # server password
-            port: 6379 # connection port
-            pool:
-                  max-idle: 100 # pool settings ...
-                  min-idle: 0
-                  max-active: 8
-                  max-wait: -1
-      data:
-            mongodb:
-                  uri: mongodb://longbei:LongXiao@015@192.168.1.45:27017/longbei
-                  host: 192.168.1.45
-                  port: 27017
-                  database: longbei
-                  username: longbei
-                  password: LongXiao@015
-      http:
-            encoding:
-                  charset: UTF-8
-                  enable: true
-                  force: true
-      mvc:
-            date-formart: yyyy-MM-dd
-      mail:
-            host: smtp.mxhichina.com
-            username: service@longbei.com
-            password: Lb123321
-#            properties:
-#                      mail:
-#                           smtp:
-#                                auth: true
-#                                starttls:
-#                                          enable: true
-#                                          required: true
-      activemq:
-                broker-url: tcp://192.168.1.22:61616
-                in-memory: true
-#                password:
-#                user:
-                packages:
-                           trust-all: false
-                pool:
-#                      configuration:
-                      enabled: true
-                      expiry-timeout: 0
-                      idle-timeout: 30000
-                      max-connections: 100
-                queue:
-                       name:
-                             add: improvecircle.add.dev
-                             update: improvecircle.update.dev.ly.test
-                topic:
-                       name:
-                             common: common.dev.luye.test
-oss:
-    endpoint: https://pic1.longbei.ren
-    accessKeyId: bmb3uihjoxyWYaQ3
-    secretAccessKey: XIOs9nlE6sMxmU0jpXeXwsfQs17JbO
-    bucketName: my-first-oss-bucket-test
-alidayu:
-        appKey: 23363944
-        appSecret: d55b04747b89790eb39646fcebc8bfc4
-        aliUrl: http://gw.api.taobao.com/router/rest
-        signName: \u9F99\u676F
-#logging:
-#        config: classpath:longbei-logback.xml
-#        level.com.longbei.appservice.dao:
-#                                          DEBUG
-
-##        path: ../log
-
-
-
+#server:
+#      port: 9090 #definded in application-osrad.yml
+#      session-timeout: 1800 # session timeout in seconds
+#      context-path: /app_service # the context path, defaults to '/'
+#      servlet-path: / # the servlet path, defaults to '/'
+## mysql
+#spring:
+#      # mysql
+#      datasource:
+#                url: jdbc:mysql://192.168.1.10:3306/longbei3.0?useUnicode=true&characterEncoding=utf-8
+#                username: longbei
+#                password: longbei
+#                driver-class-name: com.mysql.jdbc.Driver
+#      # REDIS
+#      redis:
+#            database: 0 # database name
+#            host: 192.168.1.40 # server host
+#            password: LongXiao@015 # server password
+#            port: 6379 # connection port
+#            pool:
+#                  max-idle: 100 # pool settings ...
+#                  min-idle: 0
+#                  max-active: 8
+#                  max-wait: -1
+#      data:
+#            mongodb:
+#                  uri: mongodb://longbei:LongXiao@015@192.168.1.45:27017/longbei
+#                  host: 192.168.1.45
+#                  port: 27017
+#                  database: longbei
+#                  username: longbei
+#                  password: LongXiao@015
+#      http:
+#            encoding:
+#                  charset: UTF-8
+#                  enable: true
+#                  force: true
+#      mvc:
+#            date-formart: yyyy-MM-dd
+#      mail:
+#            host: smtp.mxhichina.com
+#            username: service@longbei.com
+#            password: Lb123321
+##            properties:
+##                      mail:
+##                           smtp:
+##                                auth: true
+##                                starttls:
+##                                          enable: true
+##                                          required: true
+#      lbactivemq:
+#                broker-url: tcp://192.168.1.22:61616
+#                in-memory: true
+##                password:
+##                user:
+#                packages:
+#                           trust-all: false
+#                pool:
+##                      configuration:
+#                      enabled: true
+#                      expiry-timeout: 0
+#                      idle-timeout: 30000
+#                      max-connections: 100
+#                queue:
+#                       name:
+#                             add: improvecircle.add.dev.smkk
+#                             update: improvecircle.update.dev.ly.test.smkk
+#                topic:
+#                       name:
+#                             common: common.dev.luye.test
+#oss:
+#    endpoint: https://pic1.longbei.ren
+#    accessKeyId: bmb3uihjoxyWYaQ3
+#    secretAccessKey: XIOs9nlE6sMxmU0jpXeXwsfQs17JbO
+#    bucketName: my-first-oss-bucket-test
+#alidayu:
+#        appKey: 23363944
+#        appSecret: d55b04747b89790eb39646fcebc8bfc4
+#        aliUrl: http://gw.api.taobao.com/router/rest
+#        signName: \u9F99\u676F
+##logging:
+##        config: classpath:longbei-logback.xml
+##        level.com.longbei.appservice.dao:
+##                                          DEBUG
+#
+###        path: ../log
+#
+#
+#
