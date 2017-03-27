@@ -21,7 +21,7 @@ public interface AwardMapper {
     List<Award> selectAwardList(@Param("award") Award award,
                                 @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
 
-    int selectAwardCount(Award award);
+    int selectAwardCount(@Param("award") Award award);
 
     /**
      * 查询奖品 和 奖品分类
