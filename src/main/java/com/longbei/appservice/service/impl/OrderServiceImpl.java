@@ -21,6 +21,8 @@ import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserAddressService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.api.HttpClient;
 
 @Service("orderService")
@@ -34,6 +36,11 @@ public class OrderServiceImpl implements OrderService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserAddressService userAddressService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
+	@Autowired
+	private UserMoneyDetailService userMoneyDetailService;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -109,6 +116,17 @@ public class OrderServiceImpl implements OrderService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			baseResp = HttpClient.productBasicService.updateOrderStatus(userid, orderid, orderstatus);
+			if(ResultUtil.isSuccess(baseResp)){
+  				//取消订单---返回当前订单用户花销的进步币以及龙币
+  				BaseResp<ProductOrders> resResp = adminget(userid, orderid);
+  				if(ResultUtil.isSuccess(resResp)){
+  					ProductOrders productOrders = resResp.getData();
+  					if(null != productOrders){
+//  						userMoneyDetailService.insertPublic(userid, origin, number, friendid)
+//  						userImpCoinDetailService
+  					}
+  				}
+  			}
 		}catch (Exception e){
 			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 
 					userid, orderid, orderstatus, e);

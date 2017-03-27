@@ -2251,6 +2251,18 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<String> impids, String isrecommend) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            timeLineDetailDao.updateRecommendImprove(impids,businesstype,isrecommend);
+            baseResp = BaseResp.ok();
+        } catch (Exception e) {
+            logger.error("update improve recommend status is error:",e);
+        }
+        return baseResp;
+    }
+
     private boolean canAcceptAward(RankMembers rankMembers){
         boolean result = false;
         if(rankMembers.getIswinning().equals("1")&&rankMembers.getAcceptaward().equals("0")){

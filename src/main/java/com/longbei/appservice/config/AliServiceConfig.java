@@ -17,7 +17,6 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @ConfigurationProperties
-@PropertySource({"classpath:longbei.properties"})
 public class AliServiceConfig {
 
 //    private static Logger logger = LoggerFactory.getLogger(AliServiceConfig.class);
