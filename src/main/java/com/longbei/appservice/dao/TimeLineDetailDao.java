@@ -42,7 +42,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         if (null != lastdate) {
             criteria.and("createdate").lt(lastdate);
         }
-        if ()
+        return null;
     }
 
     public void deleteImprove(Long improveid,String userid){

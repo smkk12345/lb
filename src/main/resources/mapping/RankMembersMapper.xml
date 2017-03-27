@@ -114,7 +114,7 @@
         </if>
 
     </where>
-    ORDER BY sortnum DESC ,likes DESC
+    ORDER BY sortnum ASC ,likes DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>

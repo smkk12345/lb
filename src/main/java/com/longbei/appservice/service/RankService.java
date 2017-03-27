@@ -284,7 +284,7 @@ public interface RankService extends BaseService{
      * @param rankid
      * @return
      */
-    BaseResp<Object> rankAwardDetail(Long rankid);
+    BaseResp<Object> rankAwardDetail(Long rankid,Long userid);
 
     /**
      * 通过各种条件 查询榜 列表

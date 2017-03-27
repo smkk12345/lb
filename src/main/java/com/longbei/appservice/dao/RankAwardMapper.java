@@ -25,4 +25,11 @@ public interface RankAwardMapper {
 
     int deleteByRankid(@Param("rankid") String rankid);
 
+    /**
+     * 根据rankId和awardId 查询rankAward
+     * @param rankId 榜单id
+     * @param awardId 奖品id
+     * @return
+     */
+    RankAward selectRankAwardByRankIdAndAwardId(@Param("rankId") Long rankId,@Param("awardId") Integer awardId);
 }

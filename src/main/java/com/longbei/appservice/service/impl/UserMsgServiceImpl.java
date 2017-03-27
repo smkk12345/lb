@@ -359,6 +359,32 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return this.userMsgMapper.findCircleNoticeMsg(circleId,userId);
 	}
 
+	/**
+	 * 查看是否有同一个类型的信息
+	 * @param userId 接收消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	@Override
+	public int findSameTypeMessage(Long userId, String msgType, Long snsId, String gType) {
+		return this.userMsgMapper.findSameTypeMessage(userId,msgType,snsId,gType);
+	}
+
+	/**
+	 * 更改消息的已读状态
+	 * @param userId 接受消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	@Override
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType);
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;

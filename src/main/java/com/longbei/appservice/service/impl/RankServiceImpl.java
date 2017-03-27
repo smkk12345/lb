@@ -576,6 +576,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @param codeword 口令
      * @return
      */
+    @Transactional
     @Override
     public BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -658,12 +659,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
                 }
 
+                //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
+                String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+                boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+
                 //初始化redis的排名
                 boolean redisInitFlag = initRedisRankSort(rank,userId);
-
-                //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
-                String remark = "有用户正在申请加入龙榜\""+rank.getRanktitle()+"\"" ;
-                //boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
 
                 return baseResp.ok("入榜成功!");
             }
@@ -688,19 +689,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             int row = rankMembersMapper.insertSelective(rankMember);
             if(row > 0 && rankMember.getStatus() == 1){
-                //往reids中放入初始化的排名值
-                boolean initRedisFlag = initRedisRankSort(rank,userId);
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
 
                 //TODO 发送消息给榜主
-                String remark = "有用户正在申请加入龙榜\""+rank.getRanktitle()+"\"" ;
-                //boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+                String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+                boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+
+                //往reids中放入初始化的排名值
+                boolean initRedisFlag = initRedisRankSort(rank,userId);
 
                 return baseResp.ok();
             }
         } catch (Exception e) {
             logger.error("insert rankMemeber error rankId:{} userId:{}",rankId,userId);
-            printException(e);
+            //从redis中删除该用户
+            printExceptionAndRollBackTransaction(e);
         }
         return baseResp;
     }
@@ -718,8 +721,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private Boolean sendUserMsg(boolean isOnly,Long userId,Long friendId,String msgType,Long snsId,String remark,String gType){
         if(isOnly){
-            //先查询是否有该榜单的消息
-
+            //先查询是否有该榜单的@我 消息
+            int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
+            if(count > 0){
+                //直接更改已读状态
+                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType);
+                if(updateRow > 0){
+                    return true;
+                }
+            }
         }
         UserMsg userMsg = new UserMsg();
         userMsg.setUserid(userId);
@@ -892,6 +902,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             updateMap.put("status",status);
             updateMap.put("initRankMember",false);
 
+            List<Long> userIdList = new ArrayList<Long>();
             boolean flag = true;
             //牵扯到是否需要往redis中初始化用户排名,以及批量处理申请时,可能会超过人数限制,所以用了循环
             for(Long userId:userIds){
@@ -917,6 +928,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 //3.初始化redis的用户排名
                 boolean redisFlag = initRedisRankSort(rank,userId);
+                userIdList.add(userId);
+            }
+            if(userIdList.size() > 0){
+                String remark = null;
+                if(status == 1){
+                    remark = "您提交的加入龙榜\""+rank.getRanktitle()+"\"申请,已被审核通过,快去看看吧!";
+                }else{
+                    remark = "抱歉,您提交的加入龙榜\""+rank.getRanktitle()+"\"申请,已被榜主拒绝!";
+                }
+                UserMsg userMsg = new UserMsg();
+                userMsg.setFriendid(rank.getCreateuserid());
+                userMsg.setMsgtype("17");
+                userMsg.setSnsid(rank.getRankid());
+                userMsg.setRemark(remark);
+                userMsg.setGtype("2");
+                userMsg.setMtype("2");//@我消息 榜的消息 都属于@我消息
+                userMsg.setCreatetime(new Date());
+                userMsg.setIsdel("0");
+                userMsg.setIsread("0");
+                boolean insertUserMsg = this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
             }
             if(flag){
                 return baseResp.ok();
@@ -996,7 +1027,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rankMembers == null || rankMembers.getStatus() != 1){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_910,Constant.RTNINFO_SYS_910);
             }
-            if("1".equals(rank.getIsfinish())){
+            if("0".equals(rank.getIsfinish())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_68,Constant.RTNINFO_SYS_68);
+            }else if("1".equals(rank.getIsfinish())){
                 long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userId+"");
                 rankMembers.setSortnum(Integer.parseInt(sort+""));
             }
@@ -1004,15 +1037,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
             rankMembers.setAppUserMongoEntity(appUserMongoEntity);
 
-            rankMembers.setIswinning("0");
             Map<String,Object> resultMap = new HashMap<String,Object>();
-            if("5".equals(rank.getIsfinish()) && "0".equals(rankMembers.getIswinning())){
+            if("5".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
                 if("3".equals(rankMembers.getCheckstatus())){
-                    rankMembers.setIswinning("1");//已中奖 人工审核已通过
-
+                    if("0".equals(rankMembers.getAcceptaward())){
+                        rankMembers.setIswinning("1");//已中奖 未领取
+                    }else{
+                        rankMembers.setIswinning("3");//已中奖 且已领奖
+                    }
+                }else if("0".equals(rankMembers.getCheckstatus())){
+                    rankMembers.setIswinning("4");//已中奖 人工审核中
                 }else{
-                    rankMembers.setIswinning("2");//已中奖 人工审核中
+                    rankMembers.setIswinning("2");//审核未通过
                 }
+                RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                rankMembers.setRankAward(rankAward);
             }
 
             baseResp.setData(rankMembers);
@@ -1067,10 +1106,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         //获取奖
                         if("5".equals(rank.getIsfinish()) && "1".equals(rankMember.getIswinning())){
                             if("3".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("1");
+                                if("0".equals(rankMember.getAcceptaward())){
+                                    rankMember.setIswinning("1");//已中奖 未领取
+                                }else{
+                                    rankMember.setIswinning("3");//已中奖 且已领奖
+                                }
+                            }else if("0".equals(rankMember.getCheckstatus())){
+                                rankMember.setIswinning("4");//已中奖 人工审核中
+                            }else{
+                                rankMember.setIswinning("2");//审核未通过
                             }
+                            RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMember.getRankAward().getAwardid()));
+                            rankMember.setRankAward(rankAward);
                         }else{
-                            rankMember.setIsfashionman("0");
+                            rankMember.setIswinning("0");
                         }
 
                         i++;
@@ -1367,7 +1416,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> rankAwardDetail(Long rankid) {
+    public BaseResp<Object> rankAwardDetail(Long rankid,Long userid) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -1426,6 +1475,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             resultMap.put("awardList",awardList);
             baseResp.setData(resultMap);
+
+            //查看该用户的领奖状态
+            int showBtn = 0;//未登录
+            if(userid != null){
+                RankMembers rankMembers= this.rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+                if(rankMembers == null){
+                    showBtn = 1;//已登录 不在榜中
+                }
+                if(!"1".equals(rankMembers.getIswinning())){
+                    showBtn = 2;//在榜中 未中奖
+                }else if("0".equals(rankMembers.getAcceptaward())){
+                    showBtn = 3;//中奖 但未领取
+                }else{
+                    showBtn = 4;//中奖 且已领奖
+                }
+            }
+            Map<String,Object> expandMap = new HashMap<String,Object>();
+            expandMap.put("showBtn",showBtn);
+            baseResp.setExpandData(expandMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank award detail error rankId:{}",rankid);
@@ -1668,7 +1736,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for(int i=0;i<rankAwards.size();i++){
             RankAward rankAward = rankAwards.get(i);
             for (int j = tempcount ; j < rankMemberses.size();j++){
-                if (awardcount > rankAward.getAwardrate()){
+                if (awardcount >= rankAward.getAwardrate()){
                     break;
                 }
                 RankMembers rkmember = rankMemberses.get(j);

@@ -244,4 +244,24 @@ public interface UserMsgService {
      * @return
      */
 	UserMsg findCircleNoticeMsg(Long circleId, Long userId);
+
+	/**
+	 * 查看是否有同一个类型的信息
+	 * @param userId 接收消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+     * @return
+     */
+	int findSameTypeMessage(Long userId, String msgType, Long snsId, String gType);
+
+	/**
+	 * 更改消息的已读状态
+	 * @param userId 接受消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+     * @return
+     */
+	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType);
 }

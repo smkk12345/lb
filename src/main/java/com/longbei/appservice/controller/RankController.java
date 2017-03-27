@@ -284,12 +284,12 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="rankAwardDetail")
-    public BaseResp<Object> rankAwardDetail(Long rankid){
+    public BaseResp<Object> rankAwardDetail(Long rankid,Long userid){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.rankAwardDetail(rankid);
+        baseResp = this.rankService.rankAwardDetail(rankid,userid);
         return baseResp;
     }
 

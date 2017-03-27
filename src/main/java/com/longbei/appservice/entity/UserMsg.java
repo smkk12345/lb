@@ -45,6 +45,8 @@ public class UserMsg {
 	private Integer num;  //送花  送钻石   个数
 	
 	private Date createtime;
+
+	private Date updatetime;
 	
 	private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
 	
@@ -293,7 +295,15 @@ public class UserMsg {
 		this.num = num;
 	}
 
-//	public String getImpPickey() {
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	//	public String getImpPickey() {
 //		return impPickey;
 //	}
 //
@@ -308,5 +318,5 @@ public class UserMsg {
 //	public void setImpFilekey(String impFilekey) {
 //		this.impFilekey = impFilekey;
 //	}
-	
+
 }
