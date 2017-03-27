@@ -247,5 +247,72 @@ public class OrderApiController {
 		}
   		return baseResp;
 	}
+
+	/**
+    * @Title: http://ip:port/app_service/api/order/updateDeliver
+    * @Description: 订单发货
+    * @param @param orderid 订单业务id 
+    * @param @param logisticscode 物流编号
+    * @param @param logisticscompany 物流公司
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月24日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/updateDeliver", method = RequestMethod.POST)
+    public BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+  		if (StringUtils.hasBlankParams(orderid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = orderService.updateDeliver(orderid, logisticscode, logisticscompany);
+		} catch (Exception e) {
+			logger.error("updateDeliver orderid = {}, logisticscode={}, logisticscompany={}", 
+					orderid, logisticscode, logisticscompany, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/api/order/exceptionlist
+    * @Description: 获取异常订单列表
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月24日
+	*/
+  	@RequestMapping(value = "/exceptionlist")
+    public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+  		try {
+  			baseResp = orderService.exceptionlist(startNo, pageSize);
+		} catch (Exception e) {
+			logger.error("exceptionlist startNo = {}, pageSize = {}", 
+					startNo, pageSize, e);
+		}
+  		return baseResp;
+	}
+  	
+  	/**
+     * @Title: http://ip:port/product_service/api/order/selectCountException
+     * @Description: 获取异常订单总数
+     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @desc  
+     * @currentdate:2017年3月16日
+ 	*/
+   	@RequestMapping(value = "/selectCountException")
+     public BaseResp<Integer> selectCountException() {
+ 		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+   		try {
+   			baseResp = orderService.selectCountException();
+ 		} catch (Exception e) {
+ 			logger.error("selectCountException", e);
+ 		}
+   		return baseResp;
+ 	}
   	
 }

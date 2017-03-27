@@ -33,8 +33,12 @@ public interface AwardService {
      */
     Page<Award> selectAwardListWithPage(Award award,int pageno,int pagesize);
 
+    Page<AwardClassify> selectAwardClassifyListWithPage(int pageno,int pagesize);
+
 
     List<Award> selectAwardList(Award award);
+
+    List<AwardClassify> selectAwardClassifyList();
 
 
     /**
@@ -53,9 +57,6 @@ public interface AwardService {
 
 
     boolean deleteAwardClassify(Integer id);
-
-
-    List<AwardClassify> selectAwardClassifyList(AwardClassify awardClassify);
 
 
     AwardClassify selectAwardClassify(Integer id);

@@ -12,6 +12,7 @@ public class ActivemqJmsConsumer extends JmsGatewaySupport implements BaseJmsCon
 
 	@Override
 	public MapMessage receiveMsg(IConsumerCallback consumerCallback) {
+
 		MapMessage message = (MapMessage) getJmsTemplate().receive();
 
 		if (null != message) {

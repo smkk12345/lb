@@ -10,35 +10,45 @@
     <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
     <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
     <result column="awardtype" property="awardtype" jdbcType="CHAR" />
+    <result column="sponsor" property="sponsor" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
-    <result column="count" property="count" jdbcType="INTEGER" />
-    <result column="count" property="count" jdbcType="INTEGER" />
     <association property="awardClassify" javaType="com.longbei.appservice.entity.AwardClassify">
       <id property="id" column="awardcateid"/>
       <result property="classifyname" column="classifyname"/>
-      <result property="classifyname" column="classifyname"/>
-      <result property="classifytype" column="classifytype" jdbcType="INTEGER"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype, 
+    id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype, sponsor,
     createtime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,
+    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,sponsor,
     a.createtime, a.updatetime
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     where a.id = #{id,jdbcType=INTEGER}
   </select>
+
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
     SELECT count(*) FROM award
   </select>
 
+  <!--<select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">-->
+    <!--SELECT count(*)-->
+    <!--FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id-->
+    <!--WHERE 1=1-->
+    <!--<if test="award.awardtitle != null">-->
+      <!--AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')-->
+    <!--</if>-->
+    <!--<if test="award.awardcateid != null">-->
+      <!--AND awardcateid = #{award.awardcateid}-->
+    <!--</if>-->
+  <!--</select>-->
+
   <select id="selectAwardList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.Award">
     SELECT
-    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,
+    a.id, awardtitle, awardbrief, awardcateid, awardprice, awardlevel, awardphotos, awardtype,sponsor,
     a.createtime, a.updatetime,classifyname
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     WHERE 1=1
@@ -46,15 +56,39 @@
       AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
     </if>
     <if test="award.awardcateid != null">
-      AND awardcateid=#{award.awardcateid}
-    </if>
-    <if test="award.awardcateid != null">
-      AND awardcateid=#{award.awardcateid}
+      AND awardcateid = #{award.awardcateid}
     </if>
     ORDER BY a.createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
+  </select>
+
+  <!--<select id="selectAwardList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.Award">-->
+    <!--SELECT-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--FROM award-->
+    <!--WHERE 1=1-->
+    <!--ORDER BY createtime DESC-->
+    <!--limit #{startno},#{pagesize}-->
+  <!--</select>-->
+
+  <!-- 查询奖品 -->
+  <select id="selectAwardAndAwardClassify" parameterType="INTEGER" resultMap="BaseResultMap">
+    select
+    award.id,
+    award.awardtitle,
+    award.awardprice,
+    award.awardlevel,
+    award.awardphotos,
+    awardclassify.id awardcateid,
+    awardclassify.classifyname classifyname,
+    awardclassify.classifytype classifytype
+    from
+    awardclassify,award
+    where
+    awardclassify.id = award.awardcateid
+    and award.id = #{awardId}
   </select>
 
 
@@ -65,12 +99,12 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.Award" >
     insert into award (id, awardtitle, awardbrief, 
       awardcateid, awardprice, awardlevel, 
-      awardphotos, awardtype, createtime, 
-      updatetime)
+      awardphotos, awardtype, sponsor,
+      createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{awardtitle,jdbcType=VARCHAR}, #{awardbrief,jdbcType=VARCHAR}, 
       #{awardcateid,jdbcType=INTEGER}, #{awardprice,jdbcType=DOUBLE}, #{awardlevel,jdbcType=INTEGER}, 
-      #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP})
+      #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR}, #{sponsor,jdbcType=VARCHAR},
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Award" >
     insert into award
@@ -98,6 +132,9 @@
       </if>
       <if test="awardtype != null" >
         awardtype,
+      </if>
+      <if test="sponsor != null" >
+        sponsor,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -131,6 +168,9 @@
       <if test="awardtype != null" >
         #{awardtype,jdbcType=CHAR},
       </if>
+      <if test="sponsor != null" >
+        #{sponsor,jdbcType=VARCHAR},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -163,6 +203,9 @@
       <if test="awardtype != null" >
         awardtype = #{awardtype,jdbcType=CHAR},
       </if>
+      <if test="sponsor != null" >
+        sponsor = #{sponsor,jdbcType=VARCHAR},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -181,26 +224,9 @@
       awardlevel = #{awardlevel,jdbcType=INTEGER},
       awardphotos = #{awardphotos,jdbcType=VARCHAR},
       awardtype = #{awardtype,jdbcType=CHAR},
+      sponsor = #{sponsor,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <!-- 查询奖品 -->
-  <select id="selectAwardAndAwardClassify" parameterType="INTEGER" resultMap="BaseResultMap">
-      select
-          award.id,
-          award.awardtitle,
-          award.awardprice,
-          award.awardlevel,
-          award.awardphotos,
-          awardclassify.id awardcateid,
-          awardclassify.classifyname classifyname,
-          awardclassify.classifytype classifytype
-      from
-          awardclassify,award
-      where
-          awardclassify.id = award.awardcateid
-          and award.id = #{awardId}
-  </select>
 </mapper>

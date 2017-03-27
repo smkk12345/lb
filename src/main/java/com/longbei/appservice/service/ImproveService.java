@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
 import com.mysql.fabric.xmlrpc.base.Data;
 import org.springframework.transaction.annotation.Transactional;
@@ -380,5 +381,32 @@ public interface ImproveService {
      * @return
      */
     BaseResp<Object> delGoal(long goalId,long userId);
+
+    /**
+     * 获取推荐进步列表（pc）
+     * @param brief
+     * @param usernickname
+     * @param starttime
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(String brief, String usernickname,
+                                                              Date starttime, Integer pageno, Integer pagesize);
+
+    /**
+     * 获取不同类型的进步列表（pc）
+     * @param businesstype
+     * @param brief
+     * @param usernickname
+     * @param starttime
+     * @param pageno
+     * @param pagesize
+     * @param order
+     * @return
+     */
+    BaseResp<Page<Improve>> selectImproveList(String businesstype,String brief, String usernickname,
+                                              Date starttime,Integer pageno,
+                                              Integer pagesize,String order);
 
 }

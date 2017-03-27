@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +34,8 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean insertAward(Award award) {
         try {
+            award.setCreatetime(new Date());
+            award.setUpdatetime(new Date());
             int res = awardMapper.insertSelective(award);
             if (res > 0){
                 return true;
@@ -86,6 +89,21 @@ public class AwardServiceImpl implements AwardService {
     }
 
     @Override
+    public Page<AwardClassify> selectAwardClassifyListWithPage(int pageno, int pagesize) {
+        Page<AwardClassify> page = new Page<>(pageno,pagesize);
+        try {
+            int totalcount = awardClassifyMapper.selectAwardClassifyCount();
+            List<AwardClassify> awardClassifies = awardClassifyMapper.selectAwardClassifyList(pagesize*(pageno-1),pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(awardClassifies);
+            return page;
+        } catch (Exception e) {
+            logger.error("select awardClassifies list with page is error:{}",e);
+        }
+        return page;
+    }
+
+    @Override
     public List<Award> selectAwardList(Award award) {
         List<Award> awards = null;
         try {
@@ -94,6 +112,17 @@ public class AwardServiceImpl implements AwardService {
             logger.error("select award list is error:{}",e);
         }
         return awards;
+    }
+
+    @Override
+    public List<AwardClassify> selectAwardClassifyList() {
+        List<AwardClassify> awardClassifies = null;
+        try {
+            awardClassifies = awardClassifyMapper.selectAwardClassifyList(null,null);
+        } catch (Exception e) {
+            logger.error("select awardClassify list is error:{}",e);
+        }
+        return awardClassifies;
     }
 
     @Override
@@ -144,17 +173,6 @@ public class AwardServiceImpl implements AwardService {
             logger.error("delete awardclassify is error:{}",e);
         }
         return false;
-    }
-
-    @Override
-    public List<AwardClassify> selectAwardClassifyList(AwardClassify awardClassify) {
-        List<AwardClassify> awardClassifies = null;
-        try {
-            awardClassifies = awardClassifyMapper.selectList();
-        } catch (Exception e) {
-            logger.error("select awardclassify is error:{}",e);
-        }
-        return awardClassifies;
     }
 
     @Override
