@@ -1,29 +1,29 @@
-#server settings
-server:
-      port: 9090 #definded in application-osrad.yml
-      session-timeout: 1800 # session timeout in seconds
-      context-path: /app_service # the context path, defaults to '/'
-      servlet-path: / # the servlet path, defaults to '/'
-
-spring:
-    application:
-        name: app_service
-
-    cloud:
-        config:
-            enabled: true
-
-            name: app_service
-            profile: devel
-
-            discovery:
-              enabled: true
-              serviceId: config-server
-
-eureka:
-  instance:
-    preferIpAddress: true
-
-  client:
-    serviceUrl:
-        defaultZone: http://192.168.1.70:8888/eureka/,http://192.168.1.70:9999/eureka/
+##server settings
+#server:
+#      port: 9090 #definded in application-osrad.yml
+#      session-timeout: 1800 # session timeout in seconds
+#      context-path: /app_service # the context path, defaults to '/'
+#      servlet-path: / # the servlet path, defaults to '/'
+#
+#spring:
+#    application:
+#        name: app_service
+#
+#    cloud:
+#        config:
+#            enabled: true
+#
+#            name: app_service
+#            profile: devel
+#
+#            discovery:
+#              enabled: true
+#              serviceId: config-server
+#
+#eureka:
+#  instance:
+#    preferIpAddress: true
+#
+#  client:
+#    serviceUrl:
+#        defaultZone: http://192.168.1.70:8888/eureka/,http://192.168.1.70:9999/eureka/
