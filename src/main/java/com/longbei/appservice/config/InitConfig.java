@@ -2,18 +2,21 @@ package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.security.SensitiveWord;
+import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.SysPerfectInfo;
 import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.SysSensitiveService;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import javax.jms.*;
+import javax.jms.Queue;
 import java.util.*;
 import java.util.List;
 
@@ -25,6 +28,8 @@ import java.util.List;
  **/
 @Component
 public class InitConfig implements CommandLineRunner {
+
+    private static Logger logger = LoggerFactory.getLogger(InitConfig.class);
 
        //签到规则
     @Autowired
@@ -44,6 +49,15 @@ public class InitConfig implements CommandLineRunner {
     private SysPerfectInfoMapper sysPerfectInfoMapper;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private ConnectionFactory activeMQConnectionFactory;
+
+    @Autowired
+    private Queue addqueue;
+    @Autowired
+    private Queue updatequeue;
+    @Autowired
+    private AddMessageReceiveService addMessageReceiveService;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -57,7 +71,52 @@ public class InitConfig implements CommandLineRunner {
         initSysPerfectInfoCache();
         //缓存敏感词
         initSensitiveMap();
+
+        initListener();
+//        testSend.test();
     }
+
+    /**
+     * 添加多个监听
+     */
+    private void initListener(){
+        try {
+            Session session = getSession();
+            //进步相关监听
+            initImproveListener(session,addqueue,addMessageReceiveService);
+            //其他监听
+        } catch (Exception e) {
+            logger.error("initListener ",e);
+        }
+    }
+
+    private void initImproveListener(Session session,Queue queue,MessageListener mssageListener){
+        try {
+            MessageConsumer messageConsumer=session.createConsumer(queue); // 创建消息消费者
+            messageConsumer.setMessageListener(mssageListener); // 注册消息监听
+        }catch (Exception e){
+            logger.error("set messageConsumer lister error");
+        }
+
+    }
+
+    /**
+     * smkk
+     * 获取session
+     * @return
+     */
+    private Session getSession(){
+        try{
+            Connection connection = activeMQConnectionFactory.createConnection();  // 通过连接工厂获取连接
+            connection.start(); // 启动连接
+            Session session=connection.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE); // 创建Session
+            return session;
+        }catch (Exception e){
+            logger.error("getSession ",e);
+        }
+        return null;
+    }
+
 
     /**
      * 初始化签到规则

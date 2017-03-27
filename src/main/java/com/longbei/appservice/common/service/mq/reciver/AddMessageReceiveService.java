@@ -1,10 +1,10 @@
 package com.longbei.appservice.common.service.mq.reciver;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.activemq.ActivemqJmsConsumer;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.MongoUtils;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.config.ActiveMQConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
@@ -29,7 +29,7 @@ import java.util.Map;
  * Created by luye on 2017/1/18.
  */
 @Service
-public class AddMessageReceiveService{
+public class AddMessageReceiveService implements MessageListener{
 
     private static Logger logger = LoggerFactory.getLogger(AddMessageReceiveService.class);
 
@@ -42,42 +42,41 @@ public class AddMessageReceiveService{
     @Autowired
     private UserRelationService relationService;
 
-
     /**
      * 接收mq消息
      * @author luye
      * @param msg 消息内容
      */
-    @JmsListener(destination="${spring.activemq.queue.name.add}")
-    public void receiveMessage(String msg){
-
-        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
-        if (StringUtils.isBlank(msg)
-                || msg.indexOf(",") == -1
-                || msg.split(",").length < 5
-                || msg.split(",").length > 5){
-            return;
-        }
-        //id,businesstype,businessid,userid,date
-        String []content = msg.split(",");
-        //提取消息中的内容
-        String id = content[0];
-        String businesstype = content[1];
-        String businessid = content[2];
-        String userid = content[3];
-        String date = content[4];
-
-        Date creatdate = null;
-        try {
-            creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
-        } catch (ParseException e) {
-            creatdate = new Date();
-            logger.error("string:{} to date is error:{}",date,e);
-        }
-
-        //保存时间线详情
-        insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
-    }
+//    @JmsListener(destination="${spring.activemq.queue.name.add}")
+//    public void receiveMessage(String msg){
+//
+//        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
+//        if (StringUtils.isBlank(msg)
+//                || msg.indexOf(",") == -1
+//                || msg.split(",").length < 5
+//                || msg.split(",").length > 5){
+//            return;
+//        }
+//        //id,businesstype,businessid,userid,date
+//        String []content = msg.split(",");
+//        //提取消息中的内容
+//        String id = content[0];
+//        String businesstype = content[1];
+//        String businessid = content[2];
+//        String userid = content[3];
+//        String date = content[4];
+//
+//        Date creatdate = null;
+//        try {
+//            creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
+//        } catch (ParseException e) {
+//            creatdate = new Date();
+//            logger.error("string:{} to date is error:{}",date,e);
+//        }
+//
+//        //保存时间线详情
+//        insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
+//    }
 
 
     /**
@@ -221,4 +220,42 @@ public class AddMessageReceiveService{
 
     }
 
+    @Override
+    public void onMessage(Message message) {
+        try{
+            String action = message.getStringProperty("action");
+            String domainName = message.getStringProperty("domainName");
+            String msg = message.getStringProperty("ids");
+
+            System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
+            if (StringUtils.isBlank(msg)
+                    || msg.indexOf(",") == -1
+                    || msg.split(",").length < 5
+                    || msg.split(",").length > 5){
+                return;
+            }
+            //id,businesstype,businessid,userid,date
+            String []content = msg.split(",");
+            //提取消息中的内容
+            String id = content[0];
+            String businesstype = content[1];
+            String businessid = content[2];
+            String userid = content[3];
+            String date = content[4];
+
+            Date creatdate = null;
+            try {
+                creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
+            } catch (ParseException e) {
+                creatdate = new Date();
+                logger.error("string:{} to date is error:{}",date,e);
+            }
+            //保存时间线详情
+            insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
+        }catch (Exception e){
+
+        }
+
+
+    }
 }

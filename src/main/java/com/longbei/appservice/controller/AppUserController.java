@@ -61,12 +61,8 @@ public class AppUserController extends BaseController {
     @Autowired
     private SysSensitiveService sysSensitiveService;
 
-    
-    
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
-    
-    
-    
+
     /**
      * @Title: http://ip:port/app_service/user/infoMore
      * @Description: 个人中心
@@ -379,7 +375,7 @@ public class AppUserController extends BaseController {
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if(StringUtils.hasBlankParams(nickname)){
+        if(!StringUtils.hasBlankParams(nickname)){
             baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
             if(!ResultUtil.isSuccess(baseResp)){
                 return baseResp;
