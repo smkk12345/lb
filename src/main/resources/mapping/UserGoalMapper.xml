@@ -3,6 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.UserGoalMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserGoal" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="goalid" property="goalid" jdbcType="BIGINT"/>
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="goaltag" property="goaltag" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
