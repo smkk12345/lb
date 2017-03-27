@@ -399,6 +399,26 @@
   </select>
 
 
+  <select id="selectGoalImproveCount" resultType="java.lang.Integer">
+    SELECT
+    count(*)
+    FROM improve_goal ig
+    JOIN  user_goal ug ON  ig.businessid=ug.goalid
+    WHERE ug.ispublic='2' AND ug.isdel = '0'
+    <if test="startdate != null">
+      AND ig.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND ig.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND ig.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+  </select>
+
   <select id="selectGoalImproveList" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
@@ -430,6 +450,26 @@
   </select>
 
 
+  <select id="selectRankImproveCount" resultType="java.lang.Integer">
+    SELECT
+    count(*)
+    FROM improve_rank ir
+    JOIN rank_members rm ON  ir.businessid=rm.rankid
+    WHERE rm.status = '2' AND ir.status = '0'
+    <if test="startdate != null">
+      AND ir.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND ir.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND ir.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+  </select>
+
   <select id="selectRankImproveList" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
@@ -458,6 +498,27 @@
       ORDER BY ir.flowers DESC ,ir.createtime DESC
     </if>
     limit #{startno},#{pagesize}
+  </select>
+
+
+  <select id="selecImproveCount" resultType="java.lang.Integer">
+    SELECT
+    count(*)
+    FROM
+    improve
+    WHERE ispublic = '2' AND isdel = '0'
+    <if test="startdate != null">
+      AND createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
   </select>
 
   <select id="selectImproveList" resultMap="BaseResultMap">

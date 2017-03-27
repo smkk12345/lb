@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
@@ -23,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * 进步业务操作实现类
@@ -2171,6 +2174,70 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("delGoalToImprove goalid={},userid={}",goalId,userId,e);
         }
         return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(String brief, String usernickname,
+
+                                                                     Date starttime, Integer pageno,Integer pagesize) {
+        BaseResp<Page<TimeLineDetail>> baseResp = new BaseResp<>();
+        Page<TimeLineDetail> page = new Page<>();
+        try {
+            List<String> userids = new ArrayList<>();
+            if (!StringUtils.isBlank(usernickname)){
+                AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+                appUserMongoEntity.setNickname(usernickname);
+                List<AppUserMongoEntity> users = userMongoDao.getAppUsers(appUserMongoEntity);
+                for (AppUserMongoEntity user : users){
+                    userids.add(user.getId());
+                }
+            }
+            int totalcount = Integer.parseInt(String.valueOf
+                    (timeLineDetailDao.selectRecommendImproveCount(brief,userids,starttime)));
+            List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
+                    (brief,userids,starttime,pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(timeLineDetails);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select recommend improve list from mongo is error:",e);
+        }
+
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<Improve>> selectImproveList(String businesstype,String brief, String usernickname,
+                                                     Date starttime,Integer pageno,
+                                                     Integer pagesize,String order) {
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+        Page<Improve> page = new Page<>(pageno,pagesize);
+        int totalcount = 0;
+        List<Improve> improves = null;
+        List<AppUserMongoEntity> users = new ArrayList<>();
+        if (!StringUtils.isBlank(usernickname)){
+            AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+            appUserMongoEntity.setNickname(usernickname);
+            users = userMongoDao.getAppUsers(appUserMongoEntity);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+
+
+        return null;
     }
 
     private boolean canAcceptAward(RankMembers rankMembers){

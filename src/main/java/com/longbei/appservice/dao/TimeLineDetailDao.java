@@ -34,6 +34,22 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
     }
 
+    public Long selectRecommendImproveCount(String brief,List<String> userids, Date lastdate){
+        Criteria criteria = Criteria.where("isrecommend").is("1");
+        if (null != userids && userids.size() != 0){
+            criteria.in(userids);
+        }
+        if (!StringUtils.isEmpty(brief)){
+            criteria.regex(brief);
+        }
+        if (null != lastdate) {
+            criteria.and("createdate").lt(lastdate);
+        }
+        Query query = new Query(criteria);
+        Long count = mongoTemplate.count(query,TimeLineDetail.class);
+        return count;
+    }
+
     public List<TimeLineDetail> selectRecommendImproveList(String brief,List<String> userids, Date lastdate,
                                                   int pagesize){
         Criteria criteria = Criteria.where("isrecommend").is("1");

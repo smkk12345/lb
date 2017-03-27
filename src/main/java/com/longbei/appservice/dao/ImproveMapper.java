@@ -55,13 +55,19 @@ public interface ImproveMapper {
                             );
 
 
-    List<Improve> selectGoalList(@Param("statrdate")Date startdate,
+    List<Improve> selectGoalImproveList(@Param("statrdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
                                  @Param("users") List<AppUserMongoEntity> users,
                                  @Param("order") String order,
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
+
+    int selectGoalImproveCount(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users);
+
 
     List<Improve> selectImproveList(@Param("statrdate")Date startdate,
                                  @Param("ismain") String ismain,
@@ -72,6 +78,14 @@ public interface ImproveMapper {
                                  @Param("pagesize") Integer pagesize);
 
 
+    int selectImproveCount(@Param("statrdate")Date startdate,
+                                        @Param("ismain") String ismain,
+                                        @Param("brief") String breif,
+                                        @Param("users") List<AppUserMongoEntity> users);
+
+
+
+
     List<Improve> selectRankImproveList(@Param("statrdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
@@ -79,6 +93,13 @@ public interface ImproveMapper {
                                  @Param("order") String order,
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
+
+
+
+    int selectRankImproveCount(@Param("statrdate")Date startdate,
+                                        @Param("ismain") String ismain,
+                                        @Param("brief") String breif,
+                                        @Param("users") List<AppUserMongoEntity> users);
 
 
 
