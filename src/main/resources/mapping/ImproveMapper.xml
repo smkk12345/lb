@@ -25,6 +25,9 @@
     <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
     <result column="pimpid" property="pimpid" />
     <result column="isresponded" property="isresponded" />
+    <result column="totallikes" property="totallikes" jdbcType="INTEGER" />
+    <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -374,20 +377,23 @@
 
   <select id="selectListByRank" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List"/>
+    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
+    ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
+    ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
+    ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
     FROM improve_rank ir JOIN rank_members rm ON ir.businessid=rm.rankid
     <where>
       rm.status = '1'
-      AND businessid = #{businessid}
+      AND ir.businessid = #{businessid}
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
       </if>
     </where>
     <if test="orderby=='2'.toString() or orderby=='0'.toString()">
-      ORDER BY createtime DESC
+      ORDER BY ir.createtime DESC
     </if>
     <if test="orderby=='1'.toString()">
-      ORDER BY sum(flowers*#{flowerscore}+likes*#{likescore}) desc
+      ORDER BY sum(rm.flowers*#{flowerscore}+rm.likes*#{likescore}) desc
     </if>
     limit #{startno},#{pagesize}
   </select>
@@ -490,10 +496,10 @@
 
   <update id="updateSourceLike">
     update ${tablename}
-    SET <if test="operatetype == '0'">
+    SET <if test="operatetype == '0'.toString()">
         likes = likes + #{icount}
         </if>
-        <if test="operatetype == '1'">
+        <if test="operatetype == '1'.toString()">
           flowers = flowers + #{icount}
         </if>
     where ${field}=#{businessid}

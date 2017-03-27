@@ -17,12 +17,22 @@ public class UserPointDetail {
 
     private String ptype;//十全十美id
 
+    private String pointtype;//积分类型  后续完善吧
+
     public String getPtype() {
         return ptype;
     }
 
     public void setPtype(String ptype) {
         this.ptype = ptype;
+    }
+
+    public void setPointtype(String pointtype) {
+        this.pointtype = pointtype;
+    }
+
+    public String getPointtype() {
+        return pointtype;
     }
 
     /**

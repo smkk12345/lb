@@ -432,4 +432,16 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return new Date(current - (min * 60 * 1000));
 	}
 
+	/**
+	 * 获取距离明天还有多少秒
+	 * @return
+	 */
+	public static long getLastTime(){
+		long milliSecondsLeftToday = 86400000 -
+				DateUtils.getFragmentInMilliseconds(Calendar.getInstance(), Calendar.DATE);
+		if(milliSecondsLeftToday == 0){
+			return 0;
+		}else
+		return milliSecondsLeftToday/1000;
+	}
 }

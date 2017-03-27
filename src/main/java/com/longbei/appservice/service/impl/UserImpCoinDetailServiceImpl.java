@@ -243,7 +243,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 			if(null != list && list.size()>0){
 				for (UserImpCoinDetail userImpCoinDetail : list) {
 					//初始化用户信息
-					initMsgUserInfoByFriendid(userImpCoinDetail);
+//					initMsgUserInfoByFriendid(userImpCoinDetail);
 					initMsgUserInfoByUserid(userImpCoinDetail);
 				}
 			}
@@ -278,12 +278,15 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	/**
      * 初始化用户进步币信息 ------Friendid
      */
-    private void initMsgUserInfoByFriendid(UserImpCoinDetail userImpCoinDetail){
-    	if(!StringUtils.hasBlankParams(userImpCoinDetail.getFriendid().toString())){
-    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));
-            userImpCoinDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
-		}
-    }
+//    private void initMsgUserInfoByFriendid(UserImpCoinDetail userImpCoinDetail){
+//    	if(null != userImpCoinDetail){
+//    		if(!StringUtils.hasBlankParams(userImpCoinDetail.getFriendid().toString()) && userImpCoinDetail.getFriendid() != 0){
+//        		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));
+//                userImpCoinDetail.setAppUserMongoEntityFriendid(appUserMongoEntity);
+//    		}
+//    	}
+//    	
+//    }
 
     /**
      * 初始化用户进步币信息 ------Userid

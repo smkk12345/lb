@@ -10,6 +10,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 时间线详情mongo操作
@@ -27,6 +31,18 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Update update = new Update();
         update.set("fileKey",fliekey).set("photos",pickey);
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
+    }
+
+    public List<TimeLineDetail> selectImproveList(String isrecommend,String brief,List<String> userids, Date lastdate, int pagesize){
+        Criteria criteria = new Criteria();
+        if (null != userids && userids.size() != 0){
+            criteria.in(userids);
+        }
+
+        if (null != lastdate) {
+            criteria.and("createdate").lt(lastdate);
+        }
+        if ()
     }
 
     public void deleteImprove(Long improveid,String userid){

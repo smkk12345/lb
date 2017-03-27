@@ -67,7 +67,7 @@ public class Rank {
 
     private String codeword;//口令
 
-    private Boolean isrecommend;//是否是推荐的榜单
+    private String isrecommend;//是否是推荐的榜单
 
     private Integer weight;//推荐的权重
 
@@ -129,8 +129,18 @@ public class Rank {
 
     private String joincode; //入榜口令
 
+    private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
+
     //--------
 
+
+    public String getIshomerecommend() {
+        return ishomerecommend;
+    }
+
+    public void setIshomerecommend(String ishomerecommend) {
+        this.ishomerecommend = ishomerecommend;
+    }
 
     public String getRankrule() {
         return rankrule;
@@ -803,11 +813,11 @@ public class Rank {
         this.appUserMongoEntity = appUserMongoEntity;
     }
 
-    public Boolean getIsrecommend() {
+    public String getIsrecommend() {
         return isrecommend;
     }
 
-    public void setIsrecommend(Boolean isrecommend) {
+    public void setIsrecommend(String isrecommend) {
         this.isrecommend = isrecommend;
     }
 

@@ -549,7 +549,7 @@ public class UserServiceImpl implements UserService {
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
 			Map<String,Object> map = new HashedMap();
 			map.put("userLevel",userLevel);
-			List<String> ist = getPointOriginate();
+			List<String> ist = getPointInfoPerDay(userid);
 			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
 			map.put("pointDetail",ist);
@@ -560,6 +560,73 @@ public class UserServiceImpl implements UserService {
 			logger.error("selectByGrade error grade={}",grade,e);
 		}
 		return baseResp;
+	}
+
+
+	private List<String> getPointInfoPerDay(long userid){
+		String key = Constant.RP_USER_PERDAY+"sum"+userid;
+		List<String> list = new ArrayList<>();
+		if(springJedisDao.hasKey(key)){
+			Map<String,String> map = springJedisDao.entries(key);
+			Iterator<String> iterator = map.keySet().iterator();
+			while (iterator.hasNext()){
+				String subKey = iterator.next();
+				String value = map.get(subKey);
+				String operateType = subKey.split("#")[0];
+				String disStr = "";
+				switch (operateType){
+					case "NEW_REGISTER":
+						disStr = "注册成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_QQ":
+						disStr = "绑定QQ成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_WX":
+						disStr = "绑定微信成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_WB":
+						disStr = "绑定微博成功+"+value+"分";
+						break;
+					case "NEW_CERTIFY_USERCARD":
+						disStr = "完成实名认证+"+value+"分";
+						break;
+					case "NEW_USERINFO":
+						disStr = "完善个人信息+"+value+"分";
+						break;
+					case "DAILY_CHECKIN":
+						disStr = "签到成功+"+value+"分";
+						break;
+					case "DAILY_SHARE":
+						disStr = "分享+"+value+"分";
+						break;
+					case "INVITE_LEVEL1":
+						disStr = "邀请好友注册+"+value+"分";
+						break;
+					case "DAILY_ADDFRIEND":
+						disStr = "添加好友+"+value+"分";
+						break;
+					case "DAILY_FUN":
+						disStr = "关注他人+"+value+"分";
+						break;
+					case "DAILY_COMMENT":
+						disStr = "与他人评论互动+"+value+"分";
+						break;
+					case "DAILY_ADDIMP":
+						disStr = "发微进步+"+value+"分";
+						break;
+					case "DAILY_ADDRANK":
+						disStr = "加入龙榜+"+value+"分";
+						break;
+					case "DAILY_ADDCLASSROOM":
+						disStr = "加入教室+"+value+"分";
+						break;
+					default:
+						break;
+				}
+				list.add(disStr);
+			}
+		}
+		return list;
 	}
 
 
@@ -574,7 +641,7 @@ public class UserServiceImpl implements UserService {
 	private List<String> getPointOriginate(){
 		List<String> list = new ArrayList<>();
 		list.add("注册成功+"+ Constant_point.NEW_REGISTER+"分");
-		list.add("绑定QQ成功+"+Constant_point.NEW_LOGIN_QQ+"分");
+//		list.add("绑定QQ成功+"+Constant_point.+"分");
 		list.add("绑定微信成功+"+Constant_point.NEW_LOGIN_WX+"分");
 		list.add("绑定微博成功+"+Constant_point.NEW_LOGIN_WB+"分");
 		list.add("完成实名认证+"+Constant_point.NEW_CERTIFY_USERCARD+"分");

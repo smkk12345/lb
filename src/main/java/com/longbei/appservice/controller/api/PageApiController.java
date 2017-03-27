@@ -5,6 +5,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,5 +111,80 @@ public class PageApiController {
         }
         return baseResp;
     }
+
+
+
+    /**
+     * 添加首页推荐
+     * @param homeRecommend
+     * @return
+     */
+    @RequestMapping(value = "insertrecommend")
+    public BaseResp<Object> insertHomeRecommend(@RequestBody HomeRecommend homeRecommend){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == homeRecommend){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = pageService.insertHomeRecommend(homeRecommend);
+        } catch (Exception e) {
+            logger.error("insert into homerecommend is error:",e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 获取首页推荐列表（分页）pc
+     * @param homeRecommend
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @RequestMapping(value = "recommendlist")
+    public BaseResp<Page<HomeRecommend>> selectHomeRecommendList(@RequestBody HomeRecommend homeRecommend,
+                                                          String pageno,String pagesize){
+        BaseResp<Page<HomeRecommend>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = pageService.selectHomeRecommendList(homeRecommend,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select home recommend list is error:",e);
+        }
+        return baseResp;
+    }
+
+
+
+
+    /**
+     * 更新首页推荐
+     * @param homeRecommend
+     * @return
+     */
+    @RequestMapping(value = "updaterecommend")
+    public BaseResp<Object> updateHomeRecommend(@RequestBody HomeRecommend homeRecommend){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (null == homeRecommend){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = pageService.updateHomeRecommend(homeRecommend);
+        } catch (Exception e) {
+            logger.error("update into homerecommend is error:",e);
+        }
+        return baseResp;
+    }
+
+
+
+
+
+
 
 }
