@@ -4,7 +4,9 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.HomePictureMapper;
+import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,8 @@ public class PageServiceImpl implements PageService{
 
     @Autowired
     private HomePictureMapper homePictureMapper;
+    @Autowired
+    private HomeRecommendMapper homeRecommendMapper;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -94,5 +98,56 @@ public class PageServiceImpl implements PageService{
             logger.error("select home pic list is error:",e);
         }
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> insertHomeRecommend(HomeRecommend homeRecommend) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            homeRecommendMapper.insertBantch(homeRecommend);
+            baseResp = BaseResp.ok();
+        } catch (Exception e) {
+            logger.error("insert into homerecommend is error:",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Page<HomeRecommend>> selectHomeRecommendList(HomeRecommend homeRecommend,
+                                                                 Integer pageno, Integer pagesize) {
+        BaseResp<Page<HomeRecommend>> baseResp = new BaseResp<>();
+        Page<HomeRecommend> page = new Page<>(pageno,pagesize);
+
+        try {
+            int totalcount = homeRecommendMapper.selectCount(homeRecommend);
+            List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(homeRecommends);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select home recommend list is error:",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<HomeRecommend> selectHomeRecommendList(Integer startno, Integer pagesize) {
+        return null;
+    }
+
+    @Override
+    public BaseResp<Object> updateHomeRecommend(HomeRecommend homeRecommend) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            int res = homeRecommendMapper.updateByPrimaryKeySelective(homeRecommend);
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("update homerecommend is error:",e);
+        }
+        return baseResp;
+
     }
 }

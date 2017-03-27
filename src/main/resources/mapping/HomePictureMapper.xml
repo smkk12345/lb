@@ -31,13 +31,13 @@
     SELECT count(*) FROM homepicture
     <where>
       <if test="picname != null and picname != ''">
-        picname LIKE concat(concat('%',#{picname}),'%')
+        AND picname LIKE concat(concat('%',#{picname}),'%')
       </if>
       <if test="contenttype != null and contenttype != '-1'.toString()">
-        contenttype = #{contenttype}
+        AND contenttype = #{contenttype}
       </if>
       <if test="isup != null and isup != '-1'.toString()">
-        isup = #{isup}
+        AND isup = #{isup}
       </if>
     </where>
   </select>
@@ -48,13 +48,13 @@
     from homepicture
     <where>
       <if test="homePicture.picname != null and homePicture.picname != ''">
-        picname LIKE concat(concat('%',#{picname}),'%')
+        AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
       </if>
       <if test="homePicture.contenttype != null and homePicture.contenttype != '-1'.toString()">
-        contenttype = #{contenttype}
+        AND contenttype = #{homePicture.contenttype}
       </if>
       <if test="homePicture.isup != null and homePicture.isup != '-1'.toString()">
-        isup = #{isup}
+        AND isup = #{homePicture.isup}
       </if>
     </where>
     ORDER BY sort DESC,createtime DESC

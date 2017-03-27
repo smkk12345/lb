@@ -44,13 +44,17 @@
     <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
+    <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
+    <result column="ishomerecommend" property="ishomerecommend" jdbcType="VARCHAR" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype,
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,sponsormoney,rankrule
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend
   </sql>
   <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -93,6 +97,12 @@
       </if>
       <if test="createuserid != null" >
         AND createuserid = #{createuserid}
+      </if>
+      <if test="ishomerecommend != null" >
+        AND ishomerecommend = #{ishomerecommend}
+      </if>
+      <if test="isrecommend != null" >
+        AND isrecommend = #{isrecommend}
       </if>
   </select>
 
@@ -137,7 +147,21 @@
     <if test="rank.createuserid != null" >
       AND createuserid = #{rank.createuserid}
     </if>
-    ORDER BY createtime DESC
+    <if test="rank.ishomerecommend != null" >
+      AND ishomerecommend = #{rank.ishomerecommend}
+    </if>
+    <if test="rank.isrecommend != null" >
+      AND isrecommend = #{rank.isrecommend}
+    </if>
+    <choose>
+      <when test="rank.isrecommend=='1'.toString()">
+        ORDER BY weight DESC ,createtime DESC
+      </when>
+      <otherwise>
+        ORDER BY createtime DESC
+      </otherwise>
+    </choose>
+
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
@@ -578,6 +602,15 @@
       </if>
       <if test="notice != null" >
         notice = #{notice},
+      </if>
+      <if test="isrecommend != null" >
+        isrecommend = #{isrecommend},
+      </if>
+      <if test="ishomerecommend != null" >
+        ishomerecommend = #{ishomerecommend},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
