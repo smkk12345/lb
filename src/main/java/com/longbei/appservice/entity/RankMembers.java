@@ -66,6 +66,8 @@ public class RankMembers {
 
     private RankAward rankAward;
 
+    private Award award;
+
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")

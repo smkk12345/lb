@@ -133,6 +133,16 @@ public class UserRelationController extends BaseController {
 		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+		Integer pageSize = null;
+		if(startNum != null && startNum < 0){
+			startNum = 0;
+		}
+		if(startNum != null && (endNum == null || endNum < startNum)){
+			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		}else if(startNum != null){
+			pageSize = endNum - startNum;
+		}
+
 		Date updateDate = null;
 		if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
 			try{
@@ -143,7 +153,7 @@ public class UserRelationController extends BaseController {
 			}
 		}
 		try {
-			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, endNum,updateDate);
+			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, pageSize,updateDate);
 		} catch (Exception e) {
 			logger.error("selectListByUserId userid = {}, startNum = {}, endNum = {}", userid, startNum, endNum, e);
 		}

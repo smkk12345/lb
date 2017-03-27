@@ -21,6 +21,7 @@ import java.util.List;
  * @create 2017-02-20 上午11:06
  **/
 @Repository
+
 public class ImproveMongoDao extends BaseMongoDao<Improve>{
 
     /**

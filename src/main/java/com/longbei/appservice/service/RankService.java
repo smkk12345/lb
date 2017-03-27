@@ -252,7 +252,7 @@ public interface RankService extends BaseService{
      * @param pageSize 每页条数
      * @return
      */
-    BaseResp<Object> rankMemberSort(Long rankId, Constant.SortType sortType, Integer startNum, Integer pageSize);
+    BaseResp<Object> rankMemberSort(Long rankId, Integer sortType, Integer startNum, Integer pageSize);
 
     /**
      * 获取榜中的达人
@@ -322,5 +322,12 @@ public interface RankService extends BaseService{
      */
     BaseResp<Page<RankMembers>> selectRankAcceptAwardListPage(RankMembers rankMembers,Integer pageno,Integer pagesize);
 
-
+    /**
+     * 领取实物礼品
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param userAddressId 收货地址id
+     * @return
+     */
+    BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId);
 }

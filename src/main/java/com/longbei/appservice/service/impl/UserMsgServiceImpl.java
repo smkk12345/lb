@@ -348,6 +348,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 		map.put("userIdList",userIdList);
 		map.put("userMsg",userMsg);
 		int row = this.userMsgMapper.batchInsertUserMsg(map);
+		if(row > 0){
+			return true;
+		}
 		return false;
 	}
 

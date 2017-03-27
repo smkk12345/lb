@@ -215,4 +215,13 @@
       update sns_group set mainuserid=#{userId} where groupid = #{groupId}
   </update>
 
+  <!-- 根据关键字搜索群 -->
+  <select id="selectGroup" resultMap="BaseResultMap">
+      select
+        <include refid="Base_Column_List" />
+      FROM sns_group
+      where groupid like concat(#{keyword},'%')
+      limit #{startNum},#{pageSize}
+  </select>
+
 </mapper>

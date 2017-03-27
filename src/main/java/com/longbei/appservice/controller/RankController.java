@@ -114,19 +114,19 @@ public class RankController {
      * 获取整个榜单的排名
      * @url http://ip:port/app_service/rank/rankMemberSort
      * @param rankId 榜单id
-     * @param sortType 排序的方式 comprehensive:综合排序 likes:赞 flower:花
+     * @param sortType 排序的方式 0:综合排序 1:赞 2:花
      * @param startNum
      * @param endNum
      * @return
      */
     @RequestMapping(value="rankMemberSort")
-    public BaseResp<Object> rankMemberSort(Long rankId,Constant.SortType sortType,Integer startNum,Integer endNum){
+    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(sortType == null){//默认综合排序
-            sortType = Constant.SortType.comprehensive;
+            sortType = 0;
         }
         if(startNum == null || startNum < 1){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -183,6 +183,7 @@ public class RankController {
 
     /**
      * 获取榜单的奖品列表
+     * @url http://ip:port/app_service/rank/selectRankAward
      * @param rankId
      * @return
      */
@@ -232,9 +233,26 @@ public class RankController {
     public BaseResp<Object> acceptAward(Long userid,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_00);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.rankService.acceptAward(userid,rankId);
+        return baseResp;
+    }
+
+    /**
+     * 领取实物奖品
+     * @param userid 用户id
+     * @param rankId 榜单id
+     * @param addressId 收货地址id
+     * @return
+     */
+    @RequestMapping(value="acceptRealAard")
+    public BaseResp<Object> acceptRealAard(Long userid,Long rankId,Integer addressId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || rankId == null || addressId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp= this.rankService.acceptRealAward(userid,rankId,addressId);
         return baseResp;
     }
 

@@ -200,8 +200,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			int n = snsFansMapper.deleteByUidAndLid(userid, likeuserid);
 			if(n > 0){
-				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,
-						userid,null,0);
+				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,userid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

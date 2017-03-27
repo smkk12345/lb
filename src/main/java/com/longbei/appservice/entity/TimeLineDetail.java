@@ -30,6 +30,7 @@ public class TimeLineDetail {
 	private String hasAddLike;
 	private String hasGiveFlower;
 	private Date createdate;
+	private String isrecommend; //是否被推荐 0 - 否 1 - 是
 
 	public String getSourcekey() {
 		return sourcekey;
