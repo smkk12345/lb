@@ -25,8 +25,6 @@ import org.springframework.jms.annotation.EnableJms;
 public class ActiveMQJmsConfiguration {
     Logger logger = LoggerFactory.getLogger(ActiveMQJmsConfiguration.class);
 
-    private String brokerURL = "tcp://192.168.1.22:61616";
-
     private boolean pubSubDomain = true;
 
     private int maxConnections = 100;
@@ -37,17 +35,17 @@ public class ActiveMQJmsConfiguration {
 
     private String password;
 
-    @Value("${spring.activemq.queue.name.add}")
+    @Value("${spring.lbactivemq.broker-url}")
+    private String brokerURL;
+    @Value("${spring.lbactivemq.queue.name.add}")
     private String addqueue;
-    @Value("${spring.activemq.queue.name.update}")
+    @Value("${spring.lbactivemq.queue.name.update}")
     private String updatequeue;
-    @Value("${spring.activemq.topic.name.common}")
+    @Value("${spring.lbactivemq.topic.name.common}")
     private String topiccommon;
 
 
     private static BaseActiveMQJmsTemplate jmsTemplate;
-
-//    private static PooledConnectionFactory pooledConnectionFactory;
 
     private static ActiveMQConnectionFactory activeMQConnectionFactory;
 
@@ -65,23 +63,6 @@ public class ActiveMQJmsConfiguration {
     public Topic topic(){
         return new ActiveMQTempTopic(topiccommon);
     }
-
-    /**
-     * 初始化PooledConnectionFactory
-     * @return
-     */
-//    @Bean
-//    public PooledConnectionFactory pooledConnectionFactoryBean() {
-//        if (null != pooledConnectionFactory) {
-//            return pooledConnectionFactory;
-//        }
-//        pooledConnectionFactory = new PooledConnectionFactory();
-//        pooledConnectionFactory.setConnectionFactory(ConnectionFactoryBean());
-//        pooledConnectionFactory.setMaxConnections(maxConnections);
-//        logger.debug("oooo init pooledConnectionFactoryBean ....");
-//
-//        return pooledConnectionFactory;
-//    }
 
     @Bean(name = "activeMQConnectionFactory")
     public ConnectionFactory ConnectionFactoryBean(){
