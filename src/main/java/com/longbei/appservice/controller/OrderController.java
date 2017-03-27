@@ -1,5 +1,7 @@
 package com.longbei.appservice.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 
@@ -74,10 +77,10 @@ public class OrderController {
     * @desc  
     * @currentdate:2017年3月16日
 	*/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
   	@RequestMapping(value = "/list")
-    public BaseResp<Object> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<List<ProductOrders>> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
 		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
 		if(null == startNo){
@@ -110,8 +113,8 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/get")
-    public BaseResp<Object> get(String userid, String orderid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<ProductOrders> get(String userid, String orderid) {
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
