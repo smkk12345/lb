@@ -57,5 +57,5 @@ public interface IProductCategoryService {
      * @currentdate:2017年3月19日
      */
     @RequestLine("GET /product/deleteCategoryByCateId?cateId={cateId}")
-    BaseResp<Object> deleteCategoryByCateId(String cateId);
+    BaseResp<Object> deleteCategoryByCateId(@Param("cateId")String cateId);
 }
