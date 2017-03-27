@@ -19,10 +19,11 @@ spring:
             discovery:
               enabled: true
               serviceId: config-server
+#            url: http://192.168.1.70:8888
 
 eureka:
   instance:
-    preferIpAddress: true
+    preferIpAddress: true #就可以将IP注册到Eureka Server上，而如果不配置就是机器的主机名。
 
   client:
     serviceUrl:
