@@ -3,6 +3,8 @@ package com.longbei.appservice.service;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductBasic;
+import com.longbei.appservice.entity.ProductCart;
 import com.longbei.appservice.entity.ProductCategory;
 
 public interface ProductService {
@@ -26,7 +28,7 @@ public interface ProductService {
 	 * @param starttime 日期
 	 * @param startNo pageSize
 	 */
-	 BaseResp<Object> list(Long userid, Long cateid, 
+	 BaseResp<List<ProductBasic>> list(Long userid, Long cateid, 
 			 String starttime, int startNo, int pageSize);
 
 	 /**
@@ -36,7 +38,7 @@ public interface ProductService {
 	 * @param userid 用户id
 	 * @param productid 商品id
 	 */
-	 BaseResp<Object> selectProduct(Long userid, String productid);
+	 BaseResp<ProductBasic> selectProduct(Long userid, String productid);
 	 
 	 /**
 	 * @author yinxc
@@ -74,7 +76,7 @@ public interface ProductService {
 	 * @param pageSize 
 	 * 2017年3月15日
 	 */
-	 BaseResp<Object> getCart(Long userid, int startNo, int pageSize);
+	 BaseResp<List<ProductCart>> getCart(Long userid, int startNo, int pageSize);
 	 
 	 /**
 	 * @author yinxc

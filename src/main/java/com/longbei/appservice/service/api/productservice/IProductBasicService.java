@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductBasic;
+import com.longbei.appservice.entity.ProductCart;
 import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.pay.weixin.res.ResponseHandler;
@@ -35,7 +37,7 @@ public interface IProductBasicService {
 	 * @param startNo pageSize
 	 */
 	 @RequestLine("GET /product/list?userid={userid}&cateid={cateid}&level={level}&starttime={starttime}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level, 
+	 BaseResp<List<ProductBasic>> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level, 
 			 @Param("starttime") String starttime, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -46,7 +48,7 @@ public interface IProductBasicService {
 	 * @param productid 商品id
 	 */
 	 @RequestLine("GET /product/getProduct?userid={userid}&productid={productid}&discount={discount}")
-	 BaseResp<Object> getProduct(@Param("userid") Long userid, @Param("productid") String productid, 
+	 BaseResp<ProductBasic> getProduct(@Param("userid") Long userid, @Param("productid") String productid, 
 			 @Param("discount") double discount); 
 	 
 	 /**
@@ -90,7 +92,7 @@ public interface IProductBasicService {
 	 * 2017年3月15日
 	 */
 	 @RequestLine("GET /product/getCart?userid={userid}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> getCart(@Param("userid") Long userid, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 BaseResp<List<ProductCart>> getCart(@Param("userid") Long userid, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
 	 * @author yinxc
@@ -144,7 +146,7 @@ public interface IProductBasicService {
 	 * 2017年3月17日
 	 */
 	 @RequestLine("GET /order/list?userid={userid}&orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> list(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
+	 BaseResp<List<ProductOrders>> list(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
 			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -154,7 +156,7 @@ public interface IProductBasicService {
 	 * 2017年3月17日
 	 */
 	 @RequestLine("GET /order/get?userid={userid}&orderid={orderid}")
-	 BaseResp<Object> get(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 BaseResp<ProductOrders> get(@Param("userid") Long userid, @Param("orderid") String orderid);
 	 
 	 /**
 	 * 再次兑换

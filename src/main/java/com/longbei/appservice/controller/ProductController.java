@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ProductBasic;
+import com.longbei.appservice.entity.ProductCart;
 import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.service.ProductService;
 import com.longbei.appservice.service.ProductCategoryService;
@@ -64,8 +66,8 @@ public class ProductController {
 	*/
   	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/list")
-    public BaseResp<Object> list(String userid, String cateid, String starttime, Integer startNo, Integer pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<List<ProductBasic>> list(String userid, String cateid, String starttime, Integer startNo, Integer pageSize) {
+		BaseResp<List<ProductBasic>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, cateid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -93,15 +95,15 @@ public class ProductController {
     * @Description: 获取商品详情
     * @param @param userid 用户id
     * @param @param productid 商品id
-    * @param @param discount 用户等级所享受的折扣
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
+    * @desc  Map: isred 购物车是否显示红点     0：不显示     1：显示
     * @currentdate:2017年3月13日
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/getProduct")
-    public BaseResp<Object> getProduct(String userid, String productid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<ProductBasic> getProduct(String userid, String productid) {
+		BaseResp<ProductBasic> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -192,19 +194,28 @@ public class ProductController {
     * @Title: http://ip:port/app_service/product/getCart
     * @Description: 获取购物车
     * @param @param userid 用户id
+    * @param @param startNo  pageSize
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年3月15日
 	*/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked"})
   	@RequestMapping(value = "/getCart")
-    public BaseResp<Object> getCart(String userid, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<List<ProductCart>> getCart(String userid, Integer startNo, Integer pageSize) {
+		BaseResp<List<ProductCart>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = productService.getCart(Long.parseLong(userid), startNo, pageSize);
+  			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+  			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+  			if(null != startNo){
+  				sNo = startNo.intValue();
+  			}
+  			if(null != pageSize){
+  				sSize = pageSize.intValue();
+  			}
+  			baseResp = productService.getCart(Long.parseLong(userid), sNo, sSize);
 		} catch (Exception e) {
 			logger.error("getCart userid = {}, startNo = {}, pageSize = {}", 
 					userid, startNo, pageSize, e);
@@ -245,6 +256,7 @@ public class ProductController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectCategoryByCateId")
 	public BaseResp<Object> selectCategoryByCateId(String cateId) {
 		logger.info("selectCategoryByCateId and cateId={}",cateId);
@@ -285,6 +297,7 @@ public class ProductController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insertCategory")
 	public BaseResp<Object> insertCategory(String catename,String parentid) {
 		logger.info("insertCategory and catename={},parentid={}",catename,parentid);
@@ -310,6 +323,7 @@ public class ProductController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateCategoryByCateId")
 	public BaseResp<Object> updateCategoryByCateId(String cateId,String catename,String sort) {
 		logger.info("updateCategoryByCateId and cateId={},catename={},sort={}",cateId,catename,sort);
@@ -334,6 +348,7 @@ public class ProductController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/deleteCategoryByCateId")
 	public BaseResp<Object> deleteCategoryByCateId(String cateId) {
 		logger.info("deleteCategoryByCateId and cateId={}",cateId);
@@ -498,6 +513,7 @@ public class ProductController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月22日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectProductByProductId")
 	public BaseResp<Object> selectProductByProductId(String productId) {
 		logger.info("selectProductByProductId and productId={}",productId);
