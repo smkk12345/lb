@@ -69,8 +69,8 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         return timeLineDetails;
     }
 
-    public void updateRecommendImprove(String impid,String businesstype,String isrecommend){
-        Criteria criteria = Criteria.where("impid").is(impid)
+    public void updateRecommendImprove(List<String> impids,String businesstype,String isrecommend){
+        Criteria criteria = Criteria.where("impid").in(impids)
                 .and("businesstype").is(businesstype);
         Query query = new Query(criteria);
         Update update = new Update();

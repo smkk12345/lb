@@ -1,5 +1,6 @@
 package com.longbei.appservice.service;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.List;
 
@@ -408,5 +409,14 @@ public interface ImproveService {
     BaseResp<Page<Improve>> selectImproveList(String businesstype,String brief, String usernickname,
                                               Date starttime,Integer pageno,
                                               Integer pagesize,String order);
+
+    /**
+     * 更新进步推荐状态
+     * @param businesstype
+     * @param impids
+     * @param isrecommend
+     * @return
+     */
+    BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<String> impids,String isrecommend);
 
 }
