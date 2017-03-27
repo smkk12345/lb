@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.OrderService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 
 @RestController
 @RequestMapping(value = "/api/order")
@@ -182,7 +184,7 @@ public class OrderApiController {
     * @Description: 修改订单状态
     * @param @param userid 
     * @param @param orderid 订单业务id 
-    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成   4：已取消
+    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成   4：已取消(需要返还用户龙币和进步币)
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -196,7 +198,7 @@ public class OrderApiController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成 
+  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成    4：已取消(需要返还用户龙币和进步币)
   			baseResp = orderService.updateOrderStatus(Long.parseLong(userid), orderid, orderstatus);
 		} catch (Exception e) {
 			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 

@@ -77,16 +77,16 @@ public class OrderController {
     * @desc  
     * @currentdate:2017年3月16日
 	*/
-	@SuppressWarnings({ "unchecked", "null" })
+	@SuppressWarnings({ "unchecked" })
   	@RequestMapping(value = "/list")
     public BaseResp<List<ProductOrders>> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
 		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-		if(null == startNo){
+		if(null != startNo){
 			sNo = startNo.intValue();
 		}
-		if(null == pageSize){
+		if(null != pageSize){
 			sSize = pageSize.intValue();
 		}
   		if (StringUtils.hasBlankParams(userid)) {
