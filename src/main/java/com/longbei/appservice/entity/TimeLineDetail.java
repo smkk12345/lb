@@ -30,7 +30,42 @@ public class TimeLineDetail {
 	private String hasAddLike;
 	private String hasGiveFlower;
 	private Date createdate;
+	private String businesstype;
+	private Long businessid;
 	private String isrecommend; //是否被推荐 0 - 否 1 - 是
+	private Date recommendtime; //推荐时间
+
+	public String getBusinesstype() {
+		return businesstype;
+	}
+
+	public void setBusinesstype(String businesstype) {
+		this.businesstype = businesstype;
+	}
+
+	public Long getBusinessid() {
+		return businessid;
+	}
+
+	public void setBusinessid(Long businessid) {
+		this.businessid = businessid;
+	}
+
+	public String getIsrecommend() {
+		return isrecommend;
+	}
+
+	public void setIsrecommend(String isrecommend) {
+		this.isrecommend = isrecommend;
+	}
+
+	public Date getRecommendtime() {
+		return recommendtime;
+	}
+
+	public void setRecommendtime(Date recommendtime) {
+		this.recommendtime = recommendtime;
+	}
 
 	public String getSourcekey() {
 		return sourcekey;

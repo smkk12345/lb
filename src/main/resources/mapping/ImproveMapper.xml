@@ -399,6 +399,98 @@
   </select>
 
 
+  <select id="selectGoalImproveList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM improve_goal ig
+    JOIN  user_goal ug ON  ig.businessid=ug.goalid
+    WHERE ug.ispublic='2' AND ug.isdel = '0'
+    <if test="startdate != null">
+      AND ig.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND ig.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND ig.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    <if test="order == null || order == '0'.toString()">
+      ORDER  BY  ig.createtime DESC
+    </if>
+    <if test="order == '1'.toString()">
+      ORDER BY ig.likes DESC ,ig.createtime DESC
+    </if>
+    <if test="order == '2'.toString()">
+      ORDER BY ig.flowers DESC ,ig.createtime DESC
+    </if>
+    limit #{startno},#{pagesize}
+  </select>
+
+
+  <select id="selectRankImproveList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM improve_rank ir
+    JOIN rank_members rm ON  ir.businessid=rm.rankid
+    WHERE rm.status = '2' AND ir.status = '0'
+    <if test="startdate != null">
+      AND ir.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND ir.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND ir.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    <if test="order == null || order == '0'.toString()">
+      ORDER  BY  ir.createtime DESC
+    </if>
+    <if test="order == '1'.toString()">
+      ORDER BY ir.likes DESC ,ir.createtime DESC
+    </if>
+    <if test="order == '2'.toString()">
+      ORDER BY ir.flowers DESC ,ir.createtime DESC
+    </if>
+    limit #{startno},#{pagesize}
+  </select>
+
+  <select id="selectImproveList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    improve
+    WHERE ispublic = '2' AND isdel = '0'
+    <if test="startdate != null">
+      AND createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    <if test="order == null || order == '0'.toString()">
+      ORDER  BY createtime DESC
+    </if>
+    <if test="order == '1'.toString()">
+      ORDER BY likes DESC ,createtime DESC
+    </if>
+    <if test="order == '2'.toString()">
+      ORDER BY flowers DESC ,createtime DESC
+    </if>
+    limit #{startno},#{pagesize}
+  </select>
+
+
   
   <select id="selectImproveGoal" resultMap="goalMap" >
     select

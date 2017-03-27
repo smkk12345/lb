@@ -1,9 +1,11 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,8 +55,36 @@ public interface ImproveMapper {
                             );
 
 
+    List<Improve> selectGoalList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
 
-    
+    List<Improve> selectImproveList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
+
+
+    List<Improve> selectRankImproveList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
+
+
+
+
+
+
     /**
 	 * @author yinxc
 	 * 获取目标进步最新微进步
