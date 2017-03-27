@@ -1,5 +1,6 @@
 package com.longbei.appservice.common.service.mq.send;
 
+import com.longbei.appservice.common.activemq.IActiveMq.BaseJmsProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class QueueMessageSendService {
 
     private  static Logger logger = LoggerFactory.getLogger(QueueMessageSendService.class);
 
-    @Autowired
-    private JmsMessagingTemplate jmsMessagingTemplate;//使用JmsMessagingTemplate将消息放入队列
+//    @Autowired
+//    private JmsMessagingTemplate jmsMessagingTemplate;//使用JmsMessagingTemplate将消息放入队列
 
     @Autowired
     @Qualifier("addqueue")
@@ -28,12 +29,16 @@ public class QueueMessageSendService {
     @Qualifier("updatequeue")
     private Queue updatequeue;
 
+    @Autowired
+    private BaseJmsProducer improveJmsProducer;
+
     /**
      * 向添加队列发送消息
      * @param message
      */
     public void sendAddMessage(String message) {
-        this.jmsMessagingTemplate.convertAndSend(this.addqueue, message);
+        improveJmsProducer.sendMsg("","",message);
+//        this.jmsMessagingTemplate.convertAndSend(this.addqueue, message);
     }
 
     /**
@@ -41,7 +46,7 @@ public class QueueMessageSendService {
      * @param message
      */
     public void sendUpdateMessage(String message) {
-        this.jmsMessagingTemplate.convertAndSend(this.updatequeue, message);
+//        this.jmsMessagingTemplate.convertAndSend(this.updatequeue, message);
     }
 
 
