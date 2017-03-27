@@ -216,6 +216,38 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 	
+	@Override
+	public BaseResp<Integer> selectCountSearchOrders(String orderstatus, String ordernum, String username,
+			String screatetime, String ecreatetime) {
+		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+		try{
+			baseResp = HttpClient.productBasicService.selectCountSearchOrders(orderstatus, ordernum, username, 
+					screatetime, ecreatetime);
+		}catch (Exception e){
+			logger.error("selectCountOrders orderstatus = {}", 
+					orderstatus, e);
+		}
+		return baseResp;
+	}
+	
+	
+
+	@Override
+	public BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, String username,
+			String screatetime, String ecreatetime, int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+		try{
+			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
+				orderstatus = null;
+			}
+			baseResp = HttpClient.productBasicService.searchList(orderstatus, ordernum, username, 
+					screatetime, ecreatetime, startNo, pageSize);
+		}catch (Exception e){
+			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
+					orderstatus, startNo, pageSize, e);
+		}
+		return baseResp;
+	}
 	
 	/**
      * 初始化消息中用户信息 ------Userid

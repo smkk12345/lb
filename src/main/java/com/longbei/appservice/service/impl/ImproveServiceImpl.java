@@ -526,8 +526,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
             int flowerscore = 10;
             int likescore = 1;
+            Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
             if ("1".equals(orderby)){
-                Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
                 if (null != rank){
                     flowerscore = rank.getFlowerscore();
                     likescore = rank.getLikescore();
@@ -535,6 +535,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
+            initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
             }
@@ -542,6 +543,15 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
         return improves;
+    }
+
+    private void initSortInfo(Rank rank,List<Improve> improves){
+        if(rank.getIsfinish().equals("1")){//进行中
+            for (Improve improve : improves){
+                Long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rank.getRankid(),String.valueOf(improve.getUserid()));
+                improve.setSortnum(sort.intValue());
+            }
+        }
     }
     /**
      *  @author luye
@@ -1718,25 +1728,29 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void afterAddOrRemoveLike(Improve improve,int count,String otype){
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
-        switch (improve.getBusinesstype()){
-            case Constant.IMPROVE_GOAL_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
-                break;
-            case Constant.IMPROVE_RANK_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
-                //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                if(count>0){
-                    rankSortService.updateRankSortScore(improve.getBusinessid(),
-                            improve.getUserid(),Constant.OperationType.like,count);
-                }else{
-                    rankSortService.updateRankSortScore(improve.getBusinessid(),
-                            improve.getUserid(),Constant.OperationType.cancleLike,-count);
-                }
+        try{
+            switch (improve.getBusinesstype()){
+                case Constant.IMPROVE_GOAL_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                    break;
+                case Constant.IMPROVE_RANK_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                    //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
+                    if(count>0){
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.like,count);
+                    }else{
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                    }
 
-                break;
-            default:
+                    break;
+                default:
 
-                break;
+                    break;
+            }
+        }catch (Exception e){
+            logger.error("afterAddOrRemoveLike error ",e);
         }
     }
 

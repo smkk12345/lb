@@ -17,12 +17,11 @@ public interface IProductBasicService {
 	 * @author yinxc
 	 * 获得不同商品类目及其子类，id=-1则获取全部类别列表
 	 * 2017年3月15日
-	 * @param cateid 分类id
 	 * @param userid 用户id
 	 * @param level  用户等级
 	 */
-	 @RequestLine("GET /product/category?userid={userid}&cateid={cateid}&level={level}")
-	 BaseResp<Object> category(@Param("userid") Long userid, @Param("cateid") String cateid, 
+	 @RequestLine("GET /product/category?userid={userid}&level={level}")
+	 BaseResp<Object> category(@Param("userid") Long userid, 
 			 @Param("level") String level);
 	 
 	 /**
@@ -354,6 +353,31 @@ public interface IProductBasicService {
 	 */
 	 @RequestLine("GET /api/order/selectCountOrders?orderstatus={orderstatus}")
 	 BaseResp<Integer> selectCountOrders(@Param("orderstatus") String orderstatus);
+	 
+	 /**
+	 * 获取订单搜索的总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+     * @param @param startNo pageSize
+	 */
+	 @RequestLine("POST /api/order/selectCountSearchOrders?orderstatus={orderstatus}&ordernum={ordernum}&username={username}&screatetime={screatetime}&ecreatetime={ecreatetime}")
+	 BaseResp<Integer> selectCountSearchOrders(@Param("orderstatus") String orderstatus, @Param("ordernum") String ordernum, 
+			 @Param("username") String username, @Param("screatetime") String screatetime, @Param("ecreatetime") String ecreatetime);
+	 
+	 /**
+	 * 订单搜索
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("POST /api/order/searchList?orderstatus={orderstatus}&ordernum={ordernum}&username={username}&screatetime={screatetime}&ecreatetime={ecreatetime}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> searchList(@Param("orderstatus") String orderstatus, @Param("ordernum") String ordernum, 
+			 @Param("username") String username, @Param("screatetime") String screatetime, @Param("ecreatetime") String ecreatetime, 
+			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 
 
 }
