@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
+import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.ProductService;
@@ -27,8 +29,8 @@ public class ProductServiceImpl implements ProductService {
 	private static Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
-	public BaseResp<Object> category(Long userid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductCategory>> category(Long userid) {
+		BaseResp<List<ProductCategory>> baseResp = new BaseResp<>();
 		try{
 			String level = "";
 			UserInfo userInfo = getLevel(userid);
@@ -38,6 +40,8 @@ public class ProductServiceImpl implements ProductService {
 				level = userInfo.getGrade().toString();
 				totalcoin = userInfo.getTotalcoin();
 			}
+			
+			
 			baseResp = HttpClient.productBasicService.category(userid, level);
 			expandData.put("totalcoin", totalcoin);
 			baseResp.setExpandData(expandData);
@@ -58,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public BaseResp<Object> list(Long userid, String cateid, String starttime, int startNo,
+	public BaseResp<Object> list(Long userid, Long cateid, String starttime, int startNo,
 			int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
@@ -75,6 +79,8 @@ public class ProductServiceImpl implements ProductService {
 		return baseResp;
 	}
 
+	
+	
 	@Override
 	public BaseResp<Object> selectProduct(Long userid, String productid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
