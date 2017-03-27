@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class AwardClassify {
@@ -23,7 +26,7 @@ public class AwardClassify {
      */
     private Integer sort;
 
-    private String classifytype; //0 - 进步币 1 - 红包 3 - 实物
+    private Integer classifytype; //0 - 进步币 1 - 红包 3 - 实物
 
     /**
      * 
@@ -35,13 +38,6 @@ public class AwardClassify {
      */
     private Date createtime;
 
-    public String getClassifytype() {
-        return classifytype;
-    }
-
-    public void setClassifytype(String classifytype) {
-        this.classifytype = classifytype;
-    }
 
     public Integer getId() {
         return id;
@@ -75,6 +71,15 @@ public class AwardClassify {
         this.sort = sort;
     }
 
+    public Integer getClassifytype() {
+        return classifytype;
+    }
+
+    public void setClassifytype(Integer classifytype) {
+        this.classifytype = classifytype;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -82,7 +87,8 @@ public class AwardClassify {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

@@ -200,7 +200,7 @@ public class AwardApiController {
             return baseResp;
         }
         try {
-            boolean flag = awardService.deleteAward(Integer.parseInt(classifyid));
+            boolean flag = awardService.deleteAwardClassify(Integer.parseInt(classifyid));
             if (flag){
                 baseResp = BaseResp.ok();
             }
@@ -215,7 +215,7 @@ public class AwardApiController {
     public BaseResp<List<AwardClassify>> getAwardClassifyList(){
         BaseResp<List<AwardClassify>> baseResp = new BaseResp<>();
         try {
-            List<AwardClassify> awardClassifies = awardService.selectAwardClassifyList(null);
+            List<AwardClassify> awardClassifies = awardService.selectAwardClassifyList();
             baseResp = BaseResp.ok();
             baseResp.setData(awardClassifies);
         } catch (Exception e) {
@@ -240,6 +240,25 @@ public class AwardApiController {
         return baseResp;
     }
 
+    @RequestMapping(value = "classify/list/{pageno}/{pagesize}")
+    public BaseResp<Page<AwardClassify>> getAwardClassifyListWithPage(@PathVariable("pageno") String pageno,
+                                                      @PathVariable("pagesize") String pagesize){
+        BaseResp<Page<AwardClassify>> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isEmpty(pagesize)){
+            pageno = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            Page<AwardClassify> page = awardService.selectAwardClassifyListWithPage(Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("get AwardClassify list with page is error:{}",e);
+        }
+        return baseResp;
+    }
 
 
 }

@@ -6,11 +6,12 @@
     <result column="classifyname" property="classifyname" jdbcType="VARCHAR" />
     <result column="parentid" property="parentid" jdbcType="INTEGER" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="classifytype" property="classifytype" jdbcType="INTEGER" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, classifyname, parentid, sort, updatetime, createtime
+    id, classifyname, parentid, sort, classifytype, updatetime, createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -19,26 +20,30 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectList">
+  <select id="selectAwardClassifyCount" parameterType="com.longbei.appservice.entity.AwardClassify" resultType="java.lang.Integer">
+    SELECT count(*) FROM awardclassify
+  </select>
+
+  <select id="selectAwardClassifyList" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
     FROM awardclassify
     ORDER BY sort ASC
+    <if test="startno != null" >
+      LIMIT #{startno},#{pagesize}
+    </if>
   </select>
-
-
-
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from awardclassify
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.AwardClassify" >
-    insert into awardclassify (id, classifynamev, parentid, 
-      sort, updatetime, createtime
+    insert into awardclassify (id, classifyname, parentid,
+      sort, classifytype, updatetime, createtime
       )
-    values (#{id,jdbcType=INTEGER}, #{classifynamev,jdbcType=VARCHAR}, #{parentid,jdbcType=INTEGER}, 
-      #{sort,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}
+    values (#{id,jdbcType=INTEGER}, #{classifyname,jdbcType=VARCHAR}, #{parentid,jdbcType=INTEGER},
+      #{sort,jdbcType=INTEGER}, #{classifytype,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.AwardClassify" >
@@ -47,14 +52,17 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="classifynamev != null" >
-        classifynamev,
+      <if test="classifyname != null" >
+        classifyname,
       </if>
       <if test="parentid != null" >
         parentid,
       </if>
       <if test="sort != null" >
         sort,
+      </if>
+      <if test="classifytype != null" >
+        classifytype,
       </if>
       <if test="updatetime != null" >
         updatetime,
@@ -67,14 +75,17 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="classifynamev != null" >
-        #{classifynamev,jdbcType=VARCHAR},
+      <if test="classifyname != null" >
+        #{classifyname,jdbcType=VARCHAR},
       </if>
       <if test="parentid != null" >
         #{parentid,jdbcType=INTEGER},
       </if>
       <if test="sort != null" >
         #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="classifytype != null" >
+        #{classifytype,jdbcType=INTEGER},
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
@@ -87,14 +98,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.AwardClassify" >
     update awardclassify
     <set >
-      <if test="classifynamev != null" >
-        classifynamev = #{classifynamev,jdbcType=VARCHAR},
+      <if test="classifyname != null" >
+        classifyname = #{classifyname,jdbcType=VARCHAR},
       </if>
       <if test="parentid != null" >
         parentid = #{parentid,jdbcType=INTEGER},
       </if>
       <if test="sort != null" >
         sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="classifytype != null" >
+        classifytype = #{classifytype,jdbcType=INTEGER},
       </if>
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
@@ -107,9 +121,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.AwardClassify" >
     update awardclassify
-    set classifynamev = #{classifynamev,jdbcType=VARCHAR},
+    set classifyname = #{classifyname,jdbcType=VARCHAR},
       parentid = #{parentid,jdbcType=INTEGER},
       sort = #{sort,jdbcType=INTEGER},
+      classifytype = #{classifytype,jdbcType=INTEGER},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

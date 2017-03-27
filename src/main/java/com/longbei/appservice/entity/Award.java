@@ -26,6 +26,8 @@ public class Award {
 
     private Date updatetime;//更新时间
 
+    private String sponsor;//赞助商
+
     private AwardClassify awardClassify; //奖品分类信息
 
     public AwardClassify getAwardClassify() {
@@ -162,6 +164,18 @@ public class Award {
      */
     public void setAwardtype(String awardtype) {
         this.awardtype = awardtype == null ? null : awardtype.trim();
+    }
+
+    /**
+     * 赞助商
+     * @return
+     */
+    public String getSponsor() {
+        return sponsor;
+    }
+
+    public void setSponsor(String sponsor) {
+        this.sponsor = sponsor;
     }
 
     /**
