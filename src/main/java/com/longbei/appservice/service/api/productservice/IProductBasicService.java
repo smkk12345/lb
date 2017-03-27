@@ -1,8 +1,16 @@
 package com.longbei.appservice.service.api.productservice;
 
+import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductBasic;
+import com.longbei.appservice.entity.ProductCart;
+import com.longbei.appservice.entity.ProductCategory;
+import com.longbei.appservice.entity.ProductOrders;
+import com.longbei.pay.weixin.res.ResponseHandler;
 
+import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
@@ -12,12 +20,11 @@ public interface IProductBasicService {
 	 * @author yinxc
 	 * 获得不同商品类目及其子类，id=-1则获取全部类别列表
 	 * 2017年3月15日
-	 * @param cateid 分类id
 	 * @param userid 用户id
 	 * @param level  用户等级
 	 */
-	 @RequestLine("GET /product/category?userid={userid}&cateid={cateid}&level={level}")
-	 BaseResp<Object> category(@Param("userid") Long userid, @Param("cateid") String cateid, 
+	 @RequestLine("GET /product/category?userid={userid}&level={level}")
+	 BaseResp<List<ProductCategory>> category(@Param("userid") Long userid, 
 			 @Param("level") String level);
 	 
 	 /**
@@ -30,7 +37,7 @@ public interface IProductBasicService {
 	 * @param startNo pageSize
 	 */
 	 @RequestLine("GET /product/list?userid={userid}&cateid={cateid}&level={level}&starttime={starttime}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> list(@Param("userid") Long userid, @Param("cateid") String cateid, @Param("level") String level, 
+	 BaseResp<List<ProductBasic>> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level, 
 			 @Param("starttime") String starttime, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -41,7 +48,7 @@ public interface IProductBasicService {
 	 * @param productid 商品id
 	 */
 	 @RequestLine("GET /product/getProduct?userid={userid}&productid={productid}&discount={discount}")
-	 BaseResp<Object> getProduct(@Param("userid") Long userid, @Param("productid") String productid, 
+	 BaseResp<ProductBasic> getProduct(@Param("userid") Long userid, @Param("productid") String productid, 
 			 @Param("discount") double discount); 
 	 
 	 /**
@@ -85,7 +92,7 @@ public interface IProductBasicService {
 	 * 2017年3月15日
 	 */
 	 @RequestLine("GET /product/getCart?userid={userid}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> getCart(@Param("userid") Long userid, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 BaseResp<List<ProductCart>> getCart(@Param("userid") Long userid, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
 	 * @author yinxc
@@ -119,8 +126,9 @@ public interface IProductBasicService {
      * @param remark 备注
      * @param discount 用户等级所享受的折扣
 	 */
-	 @RequestLine("GET /order/create?userid={userid}&productidss={productidss}&numberss={numberss}&address={address}&receiver={receiver}&mobile={mobile}&impiconprice={impiconprice}&moneyprice={moneyprice}&paytype={paytype}&prices={prices}&otype={otype}&remark={remark}&discount={discount}")
-	 BaseResp<Object> create(@Param("userid") Long userid, @Param("productidss") String productidss, 
+	 @RequestLine("POST /order/create?userid={userid}&username={username}&productidss={productidss}&numberss={numberss}&address={address}&receiver={receiver}&mobile={mobile}&impiconprice={impiconprice}&moneyprice={moneyprice}&paytype={paytype}&prices={prices}&otype={otype}&remark={remark}&discount={discount}")
+	 BaseResp<Object> create(@Param("userid") Long userid, @Param("username") String username, 
+			 @Param("productidss") String productidss, 
 			 @Param("numberss") String numberss, @Param("address") String address, 
 			 @Param("receiver") String receiver, @Param("mobile") String mobile, 
 			 @Param("impiconprice") String impiconprice, @Param("moneyprice") String moneyprice, 
@@ -138,7 +146,7 @@ public interface IProductBasicService {
 	 * 2017年3月17日
 	 */
 	 @RequestLine("GET /order/list?userid={userid}&orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> list(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
+	 BaseResp<List<ProductOrders>> list(@Param("userid") Long userid, @Param("orderstatus") String orderstatus, 
 			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -148,7 +156,7 @@ public interface IProductBasicService {
 	 * 2017年3月17日
 	 */
 	 @RequestLine("GET /order/get?userid={userid}&orderid={orderid}")
-	 BaseResp<Object> get(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 BaseResp<ProductOrders> get(@Param("userid") Long userid, @Param("orderid") String orderid);
 	 
 	 /**
 	 * 再次兑换
@@ -173,4 +181,235 @@ public interface IProductBasicService {
 	 BaseResp<Object> updateOrderStatus(@Param("userid") Long userid, @Param("orderid") String orderid, 
 			 @Param("orderstatus") String orderstatus);
 	 
+	 
+	 
+	 
+	 //------------------------支付接口------------------------------------
+	 
+	 /**
+	 * 微信支付
+	 * @author yinxc
+	 * @param @param orderid 订单编号
+	 * 2017年3月20日
+	 */
+	 @RequestLine("GET /new_wxpay/wxPayMainPage?orderid={orderid}")
+	 BaseResp<Object> wxPayMainPage(@Param("orderid") String orderid);
+	 
+	 /**
+	 * 支付宝支付
+	 * @author yinxc
+	 * @param @param orderid 订单编号
+	 * @param @param userid 
+	 * 2017年3月20日
+	 */
+	 @RequestLine("POST /pay/signature?userid={userid}&orderid={orderid}")
+	 BaseResp<Object> signature(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
+	 * 支付宝支付回调
+	 * @author yinxc
+	 * @param @param orderType 2：购买龙币
+	 * 2017年3月20日
+	 */
+	 @RequestLine("POST /notify/verify/ali?orderType={orderType}")
+	 BaseResp<Object> verifyali(@Param("orderType") String orderType, Map<String, String> resMap);
+	 
+	 /**
+	 * 微信支付回调
+	 * @author yinxc
+	 * @param @param orderType 2：购买龙币
+	 * 2017年3月21日
+	 */
+	 @RequestLine("POST /notify/verify/wx?orderType={orderType}")
+	 BaseResp<Object> verifywx(@Param("orderType") String orderType, ResponseHandler resHandler);
+
+
+	/**
+	 * @Title: selectProductList
+	 * @Description: 按条件查询商品列表
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestLine("GET /product/selectProductList?id={productId}&productcate={productcate}&productname={productname}&enabled={enabled}&productpoint={productpoint}&productpoint1={productpoint1}&startNum={startNum}&pageSize={pageSize}")
+	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
+
+	/**
+	 * @Title: updateProductByProductId
+	 * @Description: 编辑商品详情
+	 * @param @param productId 商品id
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/updateProductByProductId?productId={productId}&productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> updateProductByProductId(@Param("productId")String productId,@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+											  @Param("productprice")String productprice,@Param("productpoint")String productpoint,@Param("lowimpicon") String lowimpicon, @Param("productbrief")String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: insertProduct
+	 * @Description: 添加商品
+	 * @param @param productcate 商品类目
+	 * @param @param productname 商品名称
+	 * @param @param productbriefphotos 商品缩略图
+	 * @param @param productprice 市场价格
+	 * @param @param productpoint 兑换商品所需币
+	 * @param @param lowimpicon 最低进步币要求
+	 * @param @param productbrief 商品规格
+	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
+	 * @param @param productdetail 商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/insertProduct?productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	BaseResp<Object> insertProduct(@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
+								   @Param("productprice")String productprice,@Param("productpoint")String productpoint, @Param("lowimpicon")String lowimpicon,
+								   @Param("productbrief") String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
+
+	/**
+	 * @Title: deleteProductByProductId
+	 * @Description: 删除商品
+	 * @param  @param productId
+	 * @auther IngaWu
+	 * @currentdate:2017年3月20日
+	 */
+	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
+	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
+
+
+	/**
+	 * @Title: selectProductByProductId
+	 * @Description: 通过商品id查看商品详情
+	 * @auther IngaWu
+	 * @currentdate:2017年3月22日
+	 */
+	@RequestLine("GET /product/selectProductByProductId?productId={productId}")
+	BaseResp<Object> selectProductByProductId(@Param("productId")String productId);
+	 
+	 
+	 //--------------------------------adminservice调用-------------------------------------
+	 
+	 /**
+	 * 我的订单列表(所有的)
+	 * @author yinxc
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+	 * 						为null   则查全部 
+	 * @param @param startNo  pageSize
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminlist?orderstatus={orderstatus}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> adminlist(@Param("orderstatus") String orderstatus, 
+			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 
+	 /**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderid 订单业务id  
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/adminget?userid={userid}&orderid={orderid}")
+	 BaseResp<ProductOrders> adminget(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
+	 * 设为异常订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsexception?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsexception(@Param("orderid") String orderid);
+	 
+	 /**
+	 * 取消订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersIsdel?orderid={orderid}")
+	 BaseResp<Object> updateOrdersIsdel(@Param("orderid") String orderid);
+	 
+	 /**
+	 * @author yinxc
+	 * 获取用户不同的订单状态的总数
+     * @param @param userid 
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+     * 						为null   则查全部 
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/selectCountOrders?orderstatus={orderstatus}")
+	 BaseResp<Integer> selectCountOrders(@Param("orderstatus") String orderstatus);
+	 
+	 /**
+	 * 获取订单搜索的总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+     * @param @param startNo pageSize
+	 */
+	 @RequestLine("POST /api/order/selectCountSearchOrders?orderstatus={orderstatus}&ordernum={ordernum}&username={username}&screatetime={screatetime}&ecreatetime={ecreatetime}")
+	 BaseResp<Integer> selectCountSearchOrders(@Param("orderstatus") String orderstatus, @Param("ordernum") String ordernum, 
+			 @Param("username") String username, @Param("screatetime") String screatetime, @Param("ecreatetime") String ecreatetime);
+	 
+	 /**
+	 * 订单搜索
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("POST /api/order/searchList?orderstatus={orderstatus}&ordernum={ordernum}&username={username}&screatetime={screatetime}&ecreatetime={ecreatetime}&startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> searchList(@Param("orderstatus") String orderstatus, @Param("ordernum") String ordernum, 
+			 @Param("username") String username, @Param("screatetime") String screatetime, @Param("ecreatetime") String ecreatetime, 
+			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
+	 
+	 /**
+	 * 获取异常订单列表
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param startNo 
+	 * @param pageSize 
+	 */
+	 @RequestLine("GET /api/order/exceptionlist?startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> exceptionlist(@Param("startNo") int startNo, @Param("pageSize") int pageSize);
+    
+     /**
+	 * 订单发货
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("POST /api/order/updateDeliver?orderid={orderid}&logisticscode={logisticscode}")
+	 @Headers("Content-Type: application/json")
+	 BaseResp<Object> updateDeliver(@Param("orderid") String orderid, @Param("logisticscode") String logisticscode, 
+			 String logisticscompany);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}")
+	 @Headers("Content-Type: application/json")
+	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, String remark);
+		 
+	 
+	 /**
+	 * 获取异常订单总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("GET /api/order/selectCountException")
+	 BaseResp<Integer> selectCountException();
+
 }

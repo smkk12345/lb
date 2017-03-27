@@ -7,28 +7,21 @@ import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
-import com.longbei.appservice.dao.UserPlDetailMapper;
-import com.longbei.appservice.dao.UserPointDetailMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserMsg;
-import com.longbei.appservice.entity.UserPlDetail;
-import com.longbei.appservice.entity.UserPointDetail;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import scala.collection.immutable.Stream;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by smkk on 17/2/7.
@@ -48,6 +41,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
     private UserMsgMapper userMsgMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private UserLevelMapper userLevelMapper;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -101,10 +100,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
-            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-            springJedisDao.put(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL",dateStr,String.valueOf(point));
-            springJedisDao.expire(Constant.RP_USER_PERDAY+userInfo.getUserid()+"_TOTAL", Constant.CACHE_24X60X60);
             levelUp(userInfo.getUserid(),point,pType);
+            putPointToCache(point,userInfo.getUserid(),operateType);
         }
         //进步币发生变化
         int impIcon = 0 ;
@@ -121,9 +118,102 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return baseResp;
     }
 
+    /**
+     * 统计每日得分
+     * 缓存到当天24点
+     * lixb
+     */
+    private void putPointToCache(int point,long userid,String operateType){
+        String key = Constant.RP_USER_PERDAY+"sum"+userid;
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        if(springJedisDao.hasKey(key)){
+            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+        }else{
+            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+            springJedisDao.expire(key,DateUtils.getLastTime());
+        }
+
+        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL";
+        if(springJedisDao.hasKey(totalKey)){
+            springJedisDao.increment(totalKey,dateStr,point);
+        }else{
+            springJedisDao.increment(totalKey,dateStr,point);
+            springJedisDao.expire(totalKey,DateUtils.getLastTime());
+        }
+
+    }
+
     @Override
-    public BaseResp<Object> hasPrivilege(long userid, UserInfo userInfo, String operateType) {
-        return BaseResp.ok();
+    public BaseResp<Object> hasPrivilege(UserInfo userInfo, Constant.PrivilegeType privilegeType,Object o) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+            //加榜单个数
+            if(privilegeType.equals(Constant.PrivilegeType.joinranknum)){
+                RankMembers rankMembers = new RankMembers();
+                rankMembers.setUserid(userInfo.getUserid());
+                int count = rankMembersMapper.selectCount(rankMembers);
+                if(count < userLevel.getJoinranknum()){
+                    return BaseResp.ok();
+                }else{
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
+                }
+            }else {
+                //发榜  判断发布榜单个数  暂时不做
+                Rank r = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+                if(r.getIspublic().equals("0")){ //公开榜单参与人数限制
+                    if(r.getRanklimite() <=  userLevel.getPubrankjoinnum()){
+                        return BaseResp.ok();
+                    }else{
+                        //后面处理
+                    }
+                }else{//私有榜单参与人数限制
+                    if(r.getRanklimite() <=  userLevel.getPrirankjoinnum()){
+                        return BaseResp.ok();
+                    }else{
+                        //operate later
+                    }
+                }
+            }
+        }catch(Exception e){
+            logger.error("hasPrivilege error msg:{}",e);
+        }
+        return baseResp.ok();
+    }
+
+    @Override
+    public BaseResp<Object> userSumInfo(final Constant.UserSumType userSumType,
+                                        final long userid,
+                                        final Improve improve,
+                                        final int count) {
+
+        BaseResp<Object> baseResp = new BaseResp<>();
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int res = 0;
+                try{
+                    if(userSumType.equals(Constant.UserSumType.addedImprove)){
+                        res = userInfoMapper.updateUserSumInfo(userid,1,0,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedImprove)){
+                        res = userInfoMapper.updateUserSumInfo(userid,-1,improve.getLikes(),0,improve.getFlowers());
+                    }else if(userSumType.equals(Constant.UserSumType.addedLike)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,1,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedLike)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,-1,0,0);
+                    }else if(userSumType.equals(Constant.UserSumType.addedFans)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,1,0);
+                    }else if(userSumType.equals(Constant.UserSumType.removedFans)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,-1,0);
+                    }else if(userSumType.equals(Constant.UserSumType.addedFlower)){
+                        res = userInfoMapper.updateUserSumInfo(userid,0,0,0,count);
+                    }
+                }catch (Exception e){
+                    logger.error("updateUserSumInfo error and UserSumType={}",userSumType,e);
+                }
+            }
+        });
+        return baseResp;
     }
 
     private int getHashValueFromCache(String key,String hashKey){

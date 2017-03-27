@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsGroupMapper;
 import com.longbei.appservice.dao.SnsGroupMembersMapper;
@@ -77,6 +78,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userIdString = userIdString.substring(1,userIdString.length()-1);
             String[] newUserIds = userIdString.split(",");
 
+            if(StringUtils.isEmpty(groupName)){
+                groupName = "群组"+groupId;
+            }
+
             //1.调用融云 创建群组
             BaseResp rongyunResp = HttpClient.rongYunService.createGroup(userIdString,groupId,groupName);
             if(rongyunResp.getCode() != 0){
@@ -118,7 +123,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
             for(String tempUserId:newUserIds){
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(tempUserId);
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
                 if(appUserMongoEntity != null){
                     userList.add(appUserMongoEntity);
                 }
@@ -130,7 +135,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             map.put("mainUserId",mainGroupUserId);
             int insertGroupMemebersRow = snsGroupMembersMapper.batchInsertGroupMembers(map);
             if(insertGroupMemebersRow > 0){
-                return baseResp.ok();
+                baseResp.setData(snsGroup);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
             return baseResp.fail();
         }catch(Exception e){
@@ -222,7 +228,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             if(userIds.length+snsGroup.getCurrentnum() > snsGroup.getMaxnum()){
-                return baseResp.fail("抱歉,当前群已达人数上限!");
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_92,Constant.RTNINFO_SYS_92);
             }
             List<String> updateGroupMemberList = new ArrayList<String>();
             List<String> userIdList = new ArrayList<String>(Arrays.asList(userIds));
@@ -242,7 +248,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         continue;
                     }else{
                         if(snsGroup.getNeedconfirm() && snsGroupMembers.getStatus() == 0 && (invitationUserId == null || (invitationUserId != null && !invitationUserId.equals(snsGroup.getMainuserid())))){
-                            return baseResp.ok("您已申请加群,正在等待群主审核~~");
+                            continue;
                         }
 
                         if(!snsGroup.getNeedconfirm() || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
@@ -295,7 +301,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
             for(String tempUserId:userIdList){
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.findById(tempUserId);
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
                 if(appUserMongoEntity != null){
                     userList.add(appUserMongoEntity);
                 }
@@ -371,7 +377,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(status == 1){//审核通过
                 //校验群组人数是否超过限制
                 if((snsGroup.getCurrentnum()-deleteList.size()+ userIdList.size()) > snsGroup.getMaxnum()){
-                    return baseResp.fail("抱歉,当前群组已达最大人数!");
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_92,Constant.RTNINFO_SYS_92);
                 }
 
                 updateFlag = insertRongYunGroupMember(userIdList.toArray(new String[]{}),groupId,snsGroup.getGroupname());
@@ -415,15 +421,14 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             if(userIds.length > 1 && !currentUserId.equals(snsGroup.getMainuserid())){
-                return baseResp.fail("您暂时没有权限操作该群组相关信息");
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_94,Constant.RTNINFO_SYS_94);
             }
-            if(userIds.length == 1 && !currentUserId.equals(snsGroup.getMainuserid()) && !currentUserId.equals(userIds[0])  ){
-                return baseResp.fail("您暂时没有权限操作该群组相关信息");
+            if(userIds.length == 1 && !currentUserId.equals(snsGroup.getMainuserid()) && !(currentUserId+"").equals(userIds[0])){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_94,Constant.RTNINFO_SYS_94);
             }
             for(String tempUserId:userIds){
                 if(tempUserId.equals(snsGroup.getMainuserid()+"")){
-                    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                    return baseResp.fail("抱歉,群主不可退出群组!");
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_95,Constant.RTNINFO_SYS_95);
                 }
             }
 
@@ -433,6 +438,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 Map<String,Object> deleteMap = new HashMap<String,Object>();
                 deleteMap.put("userIds",userIds);
                 deleteMap.put("groupId",groupId);
+                deleteMap.put("nowDate",new Date());
                 int deleteRow = this.snsGroupMembersMapper.batchDeleteGroupMember(deleteMap);
                 if(deleteRow > 0){
                     updateGroupCurrentNum(groupId,-deleteRow);
@@ -454,7 +460,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status) {
+    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -466,7 +472,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(status == 0 && !userId.equals(snsGroup.getMainuserid())){
                 return baseResp.fail("抱歉,您暂时无法查询群组成员列表");
             }
-            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status);
+            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status,startNum,pageSize);
+
+            if(startNum != null && startNum == 0 && status == 1 && snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+                Integer count = this.snsGroupMembersMapper.groupMembersCount(groupId,status);
+                resultMap.put("snsGroupMembersCount",count);
+            }
 
             if(snsGroup.getMainuserid().equals(userId)){
                 resultMap.put("isMainUser",true);
@@ -497,7 +508,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             //根据groupid查询群
             SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(groupId,userId);
             if(snsGroup == null){
-                return baseResp.fail("抱歉,您暂时没有权限解散该群组!");
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_93,Constant.RTNINFO_SYS_93);
             }
             BaseResp<Object> ryResult = HttpClient.rongYunService.dismissGroup(userId+"",groupId);
             if(ryResult.getCode() != 0){
@@ -506,7 +517,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             //删除群组成员
             Map<String,Object> deleteMap = new HashMap<String,Object>();
             deleteMap.put("groupId",groupId);
-            int deleteRow = this.snsGroupMembersMapper.batchDeleteGroupMember(deleteMap);
+            int deleteGroupMemberRow = this.snsGroupMembersMapper.batchDeleteGroupMember(deleteMap);
             //删除群组 snsGroup
             int deleteGroupRow = this.snsGroupMapper.deleteByGroupId(groupId);
             if(deleteGroupRow > 0){
@@ -563,16 +574,19 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize) {
+    public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize,Date updateTime) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize);
-        List<SnsGroup> snsGroupList = new ArrayList<SnsGroup>();
+
+        List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+        List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize,updateTime);
         if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
             for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
                 SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
                 if(snsGroup == null){
                     continue;
                 }
+                Map<String,Object> map = new HashMap<String,Object>();
+
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
                 parameterMap.put("groupId",snsGroup.getGroupid());
                 parameterMap.put("startNum",0);
@@ -581,15 +595,55 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 int maxLength = groupMembersList.size();
                 String[] avatarArray = new String[maxLength];
                 for(int i = 0;i<maxLength;i++){
-                    AppUserMongoEntity appUserMongoEntity= userMongoDao.findById(snsGroupMembersList.get(i).getUserid()+"");
+                    AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(snsGroupMembersList.get(i).getUserid()+"");
                     avatarArray[i] = appUserMongoEntity.getAvatar();
                 }
-                snsGroup.setAvatarArray(avatarArray);
-                snsGroupList.add(snsGroup);
+
+                map.put("groupid",snsGroup.getGroupid());
+                map.put("groupname",snsGroup.getGroupname());
+                map.put("grouptype",snsGroup.getGrouptype());
+                map.put("needconfirm",snsGroup.getNeedconfirm());
+                map.put("notice",snsGroup.getNotice());
+                map.put("currentnum",snsGroup.getCurrentnum());
+                map.put("maxnum",snsGroup.getMaxnum());
+                map.put("avatarArray",avatarArray);
+
+                if(updateTime != null){
+                    if(snsGroupMembers.getStatus() == 4){
+                        map.put("operationType","delete");
+                    }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
+                        map.put("operationType","insert");
+                    }else{
+                        map.put("operationType","update");
+                    }
+                }
+                resultList.add(map);
             }
         }
-        baseResp.setData(snsGroupList);
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        resultMap.put("groupList",resultList);
+        resultMap.put("updateTime",DateUtils.getDateTime());
+        baseResp.setData(resultMap);
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
+    /**
+     * 查询群组 根据群号搜索
+     * @param keyword
+     * @return
+     */
+    @Override
+    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            List<SnsGroup> groupList = this.snsGroupMapper.selectGroup(keyword,startNum,pageSize);
+            baseResp.setData(groupList);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("search group by keyword error keyword:{}",keyword);
+            printException(e);
+        }
+        return baseResp;
     }
 
     /**

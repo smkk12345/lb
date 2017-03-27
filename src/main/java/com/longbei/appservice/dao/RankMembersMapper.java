@@ -1,5 +1,7 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.entity.RankMembers;
 import org.apache.ibatis.annotations.Param;
 
@@ -63,7 +65,7 @@ public interface RankMembersMapper {
      * @param pageSize
      * @return
      */
-    List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") String sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+    List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") Integer sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
     /**
      * 审核用户的进步条数
@@ -78,4 +80,36 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> selectRankMembers(Map<String, Object> parameterMap);
+
+    /**
+     * 查看已结束的榜单的获奖情况 带分组,按照中奖等级分组
+     * @param rankId
+     * @return
+     */
+    List<RankAwardRelease> selectAwardMemberList(Long rankId);
+
+    /**
+     * 查询榜单的所有中奖用户 不分组,按照中奖等级排序
+     * @param rankid
+     * @return
+     */
+    List<RankAwardRelease> rankMemberAwardList(Long rankid);
+
+
+    List<RankMembers> selectRankAcceptAwardList(@Param("rankmember") RankMembers rankMembers,
+                                                @Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
+
+    /**
+     * 获取可以挤走的榜成员
+     * @param map
+     * @return
+     */
+    int getSureRemoveRankMemberCount(Map<String, Object> map);
+
+    /**
+     * 移除超时未发进步的成员,只删除一个
+     * @param map
+     * @return
+     */
+    int removeOverTimeRankMember(Map<String, Object> map);
 }

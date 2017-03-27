@@ -11,6 +11,7 @@ public class Constant {
 
 	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
 	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
+	public static final int RMB_COIN = 10;//人民币 兑换 龙币 1元兑换10 龙币
 
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
@@ -53,9 +54,10 @@ public class Constant {
 	public static final int STATUS_SYS_11 = -11;
 	public static final int STATUS_SYS_12 = -12;
 	public static final int STATUS_SYS_13 = -13;
-	
+	public static final int STATUS_SYS_14 = -14;
 	public static final int STATUS_SYS_15 = -15;
 	public static final int STATUS_SYS_16 = -16;
+	public static final int STATUS_SYS_17 = -17;
 	
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
@@ -103,6 +105,14 @@ public class Constant {
 	public static final int STATUS_SYS_62 = -62;
 	public static final int STATUS_SYS_63 = -63;
 	public static final int STATUS_SYS_64 = -64;
+	public static final int STATUS_SYS_65 = -65;
+	public static final int STATUS_SYS_66 = -66;
+	public static final int STATUS_SYS_67 = -67;
+	public static final int STATUS_SYS_68 = -68;
+	public static final int STATUS_SYS_69 = -69;
+	public static final int STATUS_SYS_610 = -610;
+	public static final int STATUS_SYS_611 = -611;
+	public static final int STATUS_SYS_612 = -612;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -125,6 +135,7 @@ public class Constant {
 	public static final int STATUS_SYS_97 = -97;
 	public static final int STATUS_SYS_98 = -98;
 	public static final int STATUS_SYS_99 = -99;
+	public static final int STATUS_SYS_910 = -910;
 
 
 	//100-120 商品有关
@@ -154,9 +165,10 @@ public class Constant {
 	public static final String RTNINFO_SYS_11 = "您已绑定其他帐号";
 	public static final String RTNINFO_SYS_12 = "密码和验证码均错误";
 	public static final String RTNINFO_SYS_13 = "不能给自己点赞";
-	
+	public static final String RTNINFO_SYS_14 = "加榜个数已达到上限";
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
+	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
 	
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -197,10 +209,18 @@ public class Constant {
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
-	public static final String RTNINFO_SYS_61 = "送钻失败，龙币扣除";
-	public static final String RTNINFO_SYS_62 = "送钻失败，龙币扣除";
-	public static final String RTNINFO_SYS_63 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_61 = "参榜口令不正确,请重新输入";
+	public static final String RTNINFO_SYS_62 = "抱歉,由于当前已超过了最后的参榜时间,因此您无法参榜!";
+	public static final String RTNINFO_SYS_63 = "抱歉,由于龙榜已结束或未设置为开放等原因,您暂时无法进行参榜!";
 	public static final String RTNINFO_SYS_64 = "已经点过赞";
+	public static final String RTNINFO_SYS_65 = "您已在该榜单中领过奖了";
+	public static final String RTNINFO_SYS_66 = "非常抱歉,您未在该榜单中获奖!";
+	public static final String RTNINFO_SYS_67 = "该榜单还未结束!";
+	public static final String RTNINFO_SYS_68 = "该榜单还未开始";
+	public static final String RTNINFO_SYS_69 = "非常抱歉,该榜单已结束";
+	public static final String RTNINFO_SYS_610 = "抱歉,参榜人数已达榜最大限制人数!";
+	public static final String RTNINFO_SYS_611 = "抱歉,您暂时无法领奖,详情请联系客服";
+	public static final String RTNINFO_SYS_612 = "榜主不可退榜";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
@@ -227,17 +247,18 @@ public class Constant {
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
-	/** 90-99  好友相关 by wangyongzhi **/
+	/** 90-99  好友  群组 相关 by wangyongzhi **/
 	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";
 	public static final String RTNINFO_SYS_91 = "抱歉,七天内不能重复添加同一个好友!";
-	public static final String RTNINFO_SYS_92 = "";
-	public static final String RTNINFO_SYS_93 = "";
-	public static final String RTNINFO_SYS_94 = "";
-	public static final String RTNINFO_SYS_95 = "";
-	public static final String RTNINFO_SYS_96 = "";
-	public static final String RTNINFO_SYS_97 = "";
-	public static final String RTNINFO_SYS_98 = "";
-	public static final String RTNINFO_SYS_99 = "";
+	public static final String RTNINFO_SYS_92 = "抱歉,被邀请人入群后人数将超过群人数上限!";
+	public static final String RTNINFO_SYS_93 = "您已提交申请,正在等待审核";
+	public static final String RTNINFO_SYS_94 = "抱歉,您当前没有权限操作该群组相关信息";
+	public static final String RTNINFO_SYS_95 = "群主不可退出群组!";
+	public static final String RTNINFO_SYS_96 = "加入该榜单,需要用户实名认证,您还未实名认证通过";
+	public static final String RTNINFO_SYS_97 = "由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!";
+	public static final String RTNINFO_SYS_98 = "您已在龙榜中,无需再次提交申请";
+	public static final String RTNINFO_SYS_99 = "由于您被榜主踢出了该龙榜,因此无法再次申请加入!";
+	public static final String RTNINFO_SYS_910 = "您当前还未加入该榜单,或已退出该榜单";
 
 
 	//新浪提供的短连接
@@ -560,7 +581,32 @@ public class Constant {
 	public static final String USER_MONEY_GIFT = "1";
 //	public static final String ;
 
+	/**
+	 * 	用户统计数据处理----运营后台使用
+	 *        0 发进步 1 删除进步
+	 *        2 点赞 3 取消赞
+	 *        4 送花
+	 *        5 被关注
+	 *        6 取消关注
+	 */
+	public enum UserSumType{
+		addedImprove,//发进步
+		removedImprove,//删除
+		addedLike,//被点赞
+		removedLike,//被取消赞
+		addedFlower,//被送花
+		addedFans,//被关注
+		removedFans//被移除关注
+	}
 
+	/**
+	 * 特权类型
+	 */
+	public enum PrivilegeType{
+		joinranknum,//加入榜单限制
+		createRank, //创建榜单时  私有榜单数量参与人数  公共榜单数量 参与人数
+		createCircle
+	}
 
 
 }

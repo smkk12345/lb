@@ -83,7 +83,7 @@ public interface RankService extends BaseService{
      * @return
      * @author luye
      */
-    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize);
+    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
 
     /**
      * 删除榜单 非线上
@@ -127,11 +127,13 @@ public interface RankService extends BaseService{
 
     /**
      * 获取榜单详情 线上
-     * @param rankid
+     * @param rankId
+     * @param queryCreateUser 是否查询创建榜单用户的信息
+     * @param queryAward 是否查询榜单奖品信息
      * @return
      * @author luye
      */
-    BaseResp<Rank> selectRankDetailByRankid(String rankid);
+    BaseResp<Object> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward);
 
     /**
      * 获取成员列表 pc
@@ -250,7 +252,7 @@ public interface RankService extends BaseService{
      * @param pageSize 每页条数
      * @return
      */
-    BaseResp<Object> rankMemberSort(Long rankId, Constant.SortType sortType, Integer startNum, Integer pageSize);
+    BaseResp<Object> rankMemberSort(Long rankId, Integer sortType, Integer startNum, Integer pageSize);
 
     /**
      * 获取榜中的达人
@@ -259,5 +261,73 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectFashionMan(Long rankId, Integer startNum, Integer pageSize);
+    BaseResp<Object> selectFashionMan(Long userId,Long rankId, Integer startNum, Integer pageSize);
+
+    /**
+     * 用户领奖
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    BaseResp<Object> acceptAward(Long userId, Long rankId);
+
+    /**
+     * 获取榜单的获奖公示
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize);
+
+    /**
+     * 获取榜单获奖详情
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> rankAwardDetail(Long rankid);
+
+    /**
+     * 通过各种条件 查询榜 列表
+     * @param rankTitle
+     * @param pType
+     * @param rankscope
+     * @param lastRankId
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward);
+
+    /**
+     * 查询和自己相关的榜单
+     * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize);
+
+    /**
+     * 查询榜单奖品列表
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> selectRankAward(Long rankId);
+
+    /**
+     * 获取领奖列表
+     * @param rankMembers
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankAcceptAwardListPage(RankMembers rankMembers,Integer pageno,Integer pagesize);
+
+    /**
+     * 领取实物礼品
+     * @param userId 用户id
+     * @param rankId 榜单id
+     * @param userAddressId 收货地址id
+     * @return
+     */
+    BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId);
 }

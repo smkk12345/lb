@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
@@ -23,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * 进步业务操作实现类
@@ -54,6 +57,7 @@ public class ImproveServiceImpl implements ImproveService{
     private UserMongoDao userMongoDao;
     @Autowired
     private TimeLineDao timeLineDao;
+    @Autowired
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
@@ -178,6 +182,7 @@ public class ImproveServiceImpl implements ImproveService{
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);
             springJedisDao.expire(key,Constant.CACHE_24X60X60);
+            userBehaviourService.userSumInfo(Constant.UserSumType.addedImprove,Long.parseLong(userid),null,0);
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -336,8 +341,14 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             //没有
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
-            res = rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),1);
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(improve.getBusinessid());
+            rankMembers.setUserid(improve.getUserid());
+            rankMembers.setUpdatetime(new Date());
+            rankMembers.setIcount(1);
+            //更新rankmember中的updatetime
+            res = rankMembersMapper.updateRankMemberState(rankMembers);
         } catch (Exception e) {
             logger.error("insert rank immprove:{} is error:{}", "",e);
         }
@@ -516,11 +527,18 @@ public class ImproveServiceImpl implements ImproveService{
                 default:
                     break;
             }
-
-
-            improves = improveMapper.selectListByBusinessid
-                    (rankid, Constant_table.IMPROVE_RANK,null,null,orderby,pageNo,pageSize);
+            int flowerscore = 10;
+            int likescore = 1;
+            Rank rank = rankService.selectByRankid(Long.parseLong(rankid));
+            if ("1".equals(orderby)){
+                if (null != rank){
+                    flowerscore = rank.getFlowerscore();
+                    likescore = rank.getLikescore();
+                }
+            }
+            improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
             initImproveListOtherInfo(userid,improves);
+            initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
             }
@@ -528,6 +546,15 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
         return improves;
+    }
+
+    private void initSortInfo(Rank rank,List<Improve> improves){
+        if(rank.getIsfinish().equals("1")){//进行中
+            for (Improve improve : improves){
+                Long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rank.getRankid(),String.valueOf(improve.getUserid()));
+                improve.setSortnum(sort.intValue());
+            }
+        }
     }
     /**
      *  @author luye
@@ -797,6 +824,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if (isok){
             timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+            Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
+            userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
+                    Long.parseLong(userid),improve,0);
         }
         return isok;
     }
@@ -1181,8 +1211,8 @@ public class ImproveServiceImpl implements ImproveService{
         }
 
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        AppUserMongoEntity userMongoEntity = userMongoDao.getAppUser(userid);
-        if(null == improve || null == userMongoEntity){
+        UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        if(null == improve || null == userInfo){
             return baseResp;
         }
 //        if(improve.getUserid() == Long.parseLong(userid)){
@@ -1201,12 +1231,20 @@ public class ImproveServiceImpl implements ImproveService{
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
                 //mongo
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
-                        userMongoEntity.getAvatar())  ;
+                        userInfo.getAvatar())  ;
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
+
+                try{
+                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",improve.getPtype(),null,0,0);
+                    userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
+                }catch (Exception e){
+                    logger.error("pointChange or userSumInfo error ",e);
+                }
+
             }
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
@@ -1246,6 +1284,14 @@ public class ImproveServiceImpl implements ImproveService{
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
                 }
+                try{
+//                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+//                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",improve.getPtype(),null,0,0);
+                    userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                }catch (Exception e){
+                    logger.error("pointChange,userSumInfo error",e);
+                }
+
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
@@ -1685,19 +1731,29 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void afterAddOrRemoveLike(Improve improve,int count,String otype){
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
-        switch (improve.getBusinesstype()){
-            case Constant.IMPROVE_GOAL_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
-                break;
-            case Constant.IMPROVE_RANK_TYPE:
-                improveMapper.updateSourceLike(improve.getGoalid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
-                //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                rankSortService.updateRankSortScore(improve.getBusinessid(),
-                        improve.getUserid(),Constant.OperationType.like,count);
-                break;
-            default:
+        try{
+            switch (improve.getBusinesstype()){
+                case Constant.IMPROVE_GOAL_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                    break;
+                case Constant.IMPROVE_RANK_TYPE:
+                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                    //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
+                    if(count>0){
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.like,count);
+                    }else{
+                        rankSortService.updateRankSortScore(improve.getBusinessid(),
+                                improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                    }
 
-                break;
+                    break;
+                default:
+
+                    break;
+            }
+        }catch (Exception e){
+            logger.error("afterAddOrRemoveLike error ",e);
         }
     }
 
@@ -2118,6 +2174,70 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("delGoalToImprove goalid={},userid={}",goalId,userId,e);
         }
         return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(String brief, String usernickname,
+
+                                                                     Date starttime, Integer pageno,Integer pagesize) {
+        BaseResp<Page<TimeLineDetail>> baseResp = new BaseResp<>();
+        Page<TimeLineDetail> page = new Page<>();
+        try {
+            List<String> userids = new ArrayList<>();
+            if (!StringUtils.isBlank(usernickname)){
+                AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+                appUserMongoEntity.setNickname(usernickname);
+                List<AppUserMongoEntity> users = userMongoDao.getAppUsers(appUserMongoEntity);
+                for (AppUserMongoEntity user : users){
+                    userids.add(user.getId());
+                }
+            }
+            int totalcount = Integer.parseInt(String.valueOf
+                    (timeLineDetailDao.selectRecommendImproveCount(brief,userids,starttime)));
+            List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
+                    (brief,userids,starttime,pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(timeLineDetails);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select recommend improve list from mongo is error:",e);
+        }
+
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<Page<Improve>> selectImproveList(String businesstype,String brief, String usernickname,
+                                                     Date starttime,Integer pageno,
+                                                     Integer pagesize,String order) {
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+        Page<Improve> page = new Page<>(pageno,pagesize);
+        int totalcount = 0;
+        List<Improve> improves = null;
+        List<AppUserMongoEntity> users = new ArrayList<>();
+        if (!StringUtils.isBlank(usernickname)){
+            AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+            appUserMongoEntity.setNickname(usernickname);
+            users = userMongoDao.getAppUsers(appUserMongoEntity);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        }
+
+
+        return null;
     }
 
     private boolean canAcceptAward(RankMembers rankMembers){

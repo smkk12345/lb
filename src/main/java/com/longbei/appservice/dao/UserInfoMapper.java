@@ -76,6 +76,14 @@ public interface UserInfoMapper {
 	 * 2017年3月1日
 	 */
 	int updateTotalmoneyByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney);
+	
+	/**
+	 * @author yinxc
+	 * 修改用户总花，总龙币数(龙币兑换花)
+	 * 2017年3月1日
+	 */
+	int updateMoneyAndFlowerByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney, 
+			@Param("totalflower") Integer totalflower);
 
 	/**
 	 * 查询系统推荐的达人
@@ -83,7 +91,7 @@ public interface UserInfoMapper {
 	 * @param pageSize
      * @return
      */
-	List<UserInfo> selectFashionManUser(Integer startNum, Integer pageSize);
+	List<UserInfo> selectFashionManUser(@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
 	/**
 	 * 更改用户的进步币 在用户的数据基础上直接进行加减
@@ -92,4 +100,19 @@ public interface UserInfoMapper {
 	 * @return
 	 */
 	int updateUserCoin(@Param("userid") long userid,@Param("coin") int coin);
+
+	/**
+	 * 异步更新统计信息
+	 * @param userid
+	 * @param totalimp
+	 * @param totallikes
+	 * @param totalfans
+	 * @param totalflower
+	 * @return
+	 */
+	int updateUserSumInfo(@Param("userid")long userid,
+						  @Param("totalimp") int totalimp,
+						  @Param("totallikes") int totallikes,
+						  @Param("totalfans") int totalfans,
+						  @Param("totalflower") int totalflower);
 }

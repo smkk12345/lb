@@ -6,6 +6,7 @@ import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import com.longbei.appservice.service.api.productservice.IProductBasicService;
+import com.longbei.appservice.service.api.productservice.IProductCategoryService;
 import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import feign.Feign;
 import feign.gson.GsonDecoder;
@@ -18,6 +19,12 @@ public class HttpClient {
 //			.requestInterceptor(new ApiRequestInterceptor())
 			.decoder(new GsonDecoder())
             .target(IProductBasicService.class, AppserviceConfig.host_product_service);
+
+	public static IProductCategoryService productCategoryService =
+			Feign.builder()
+//			.requestInterceptor(new ApiRequestInterceptor())
+					.decoder(new GsonDecoder())
+					.target(IProductCategoryService.class, AppserviceConfig.host_product_service);
 
 	//user_service
 	public static IUserBasicService userBasicService =

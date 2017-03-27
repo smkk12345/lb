@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.SysAppupdate;
 import com.longbei.appservice.entity.SysLongbeiinfo;
 import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
@@ -69,6 +70,21 @@ public class SysSettingController {
             logger.error("upgrade ttype={},version={}",ttype,version,e);
         }
         return baseResp;
+    }
+
+    /**
+     * lixb
+     * http://localhost:9090/app_service/syssetting/downloadApp
+     * appType IOS 或者 安卓
+     *下载跳转
+     */
+    @RequestMapping("downloadApp")
+    public String testdownload(String appType) {
+        if(org.apache.commons.lang3.StringUtils.isBlank(appType)){
+            return "";
+        }
+        SysAppupdate appUpdate = sysSettingService.selectRecentByKey(appType);
+        return "redirect:" + appUpdate.getUrl();
     }
 
 

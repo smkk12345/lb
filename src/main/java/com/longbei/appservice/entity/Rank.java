@@ -2,7 +2,6 @@ package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
-import scala.App;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +14,8 @@ public class Rank {
     private String ranktitle;//榜单标题
 
     private String rankbrief;//榜单简介
+
+    private String rankrule; //榜单规则，入榜提示
 
     private String rankdetail;//榜单详情
 
@@ -44,7 +45,7 @@ public class Rank {
 
     private String coordinate;//坐标
 
-    private String isfinish;//是否结束。0—为结束 1—一结束
+    private String isfinish;//是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
 
     private Long createuserid;//榜单创建人id
 
@@ -66,6 +67,9 @@ public class Rank {
 
     private String codeword;//口令
 
+    private String isrecommend;//是否是推荐的榜单
+
+    private Integer weight;//推荐的权重
 
     private String ptype;//十全十美类型
 
@@ -125,8 +129,26 @@ public class Rank {
 
     private String joincode; //入榜口令
 
+    private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
+
     //--------
 
+
+    public String getIshomerecommend() {
+        return ishomerecommend;
+    }
+
+    public void setIshomerecommend(String ishomerecommend) {
+        this.ishomerecommend = ishomerecommend;
+    }
+
+    public String getRankrule() {
+        return rankrule;
+    }
+
+    public void setRankrule(String rankrule) {
+        this.rankrule = rankrule;
+    }
 
     public String getJoincode() {
         return joincode;
@@ -566,7 +588,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @return isfinish 是否结束。0—为结束 1—一结束
+     * @return isfinish 是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public String getIsfinish() {
         return isfinish;
@@ -574,7 +596,7 @@ public class Rank {
 
     /**
      * 是否结束。0—为结束 1—一结束
-     * @param isfinish 是否结束。0—为结束 1—一结束
+     * @param isfinish 是否结束。是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
      */
     public void setIsfinish(String isfinish) {
         this.isfinish = isfinish == null ? null : isfinish.trim();
@@ -789,5 +811,21 @@ public class Rank {
 
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public String getIsrecommend() {
+        return isrecommend;
+    }
+
+    public void setIsrecommend(String isrecommend) {
+        this.isrecommend = isrecommend;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

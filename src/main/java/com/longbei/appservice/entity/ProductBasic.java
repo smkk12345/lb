@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -38,8 +41,22 @@ public class ProductBasic {
 
     private String updatetime;//更新时间
     
-    
     private Double discount; // 折扣价
+    
+    private Integer goodsCount; //购物车提交时带的该商品数量
+
+    private Long lowimpicon; //最低进步币要求
+
+
+    // -------------------------按条件查询商品列表属性--------------------
+
+    private Long productpoint1; //兑换商品所需币1
+
+    private Integer startNum;  //分页起始值
+
+    private Integer pageSize;  // 每页显示条数
+    //-----------------------------------------------------------
+
 
     /**
      * 
@@ -217,7 +234,7 @@ public class ProductBasic {
 
     /**
      * 是否可用 0—不可用 1—可用
-     * @param enable 是否可用 0—不可用 1—可用
+     * @param @param enable 是否可用 0—不可用 1—可用
      */
     public void setEnabled(String enabled) {
         this.enabled = enabled == null ? null : enabled.trim();
@@ -227,6 +244,8 @@ public class ProductBasic {
      * 上架时间
      * @return uptime 上架时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUptime() {
         return uptime;
     }
@@ -243,6 +262,8 @@ public class ProductBasic {
      * 下架时间
      * @return downtime 下架时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getDowntime() {
         return downtime;
     }
@@ -303,4 +324,60 @@ public class ProductBasic {
 	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getGoodsCount() {
+		return goodsCount;
+	}
+
+	public void setGoodsCount(Integer goodsCount) {
+		this.goodsCount = goodsCount;
+	}
+
+    /**
+     * 兑换商品所需币1
+     * @return setProductpoint1 兑换商品所需币1
+     */
+    public Long getProductpoint1() {
+        return productpoint1;
+    }
+
+    /**
+     * 兑换商品所需币1
+     * @param @param setProductpoint1 兑换商品所需币1
+     */
+    public void setProductpoint1(Long productpoint1) {
+        this.productpoint1 = productpoint1;
+    }
+
+    public Integer getStartNum() {
+        return startNum;
+    }
+
+    public void setStartNum(Integer startNum) {
+        this.startNum = startNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    /**
+     * 最低进步币要求
+     * @return   lowimpicon
+     */
+    public Long getLowimpicon() {  //最低进步币要求
+        return lowimpicon;
+    }
+    /**
+     * 最低进步币要求
+     * @param @param  lowimpicon
+     */
+    public void setLowimpicon(Long lowimpicon) {//最低进步币要求
+        this.lowimpicon = lowimpicon;
+    }
 }

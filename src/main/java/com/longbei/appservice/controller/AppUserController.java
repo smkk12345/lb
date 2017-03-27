@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,6 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
-import com.longbei.appservice.service.DictAreaService;
-import com.longbei.appservice.service.UserCheckinDetailService;
-import com.longbei.appservice.service.UserFeedbackService;
-import com.longbei.appservice.service.UserIdcardService;
-import com.longbei.appservice.service.UserInterestsService;
-import com.longbei.appservice.service.UserJobService;
-import com.longbei.appservice.service.UserSponsorService;
-import com.longbei.appservice.service.UserSchoolService;
-import com.longbei.appservice.service.RankService;
-import com.longbei.appservice.service.UserCertifyService;
-import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.SysPerfectInfoService;
-import com.longbei.appservice.service.UserPlDetailService;
-
 
 
 /**
@@ -72,13 +58,11 @@ public class AppUserController extends BaseController {
     private SysPerfectInfoService sysPerfectInfoService;
     @Autowired
     private UserPlDetailService userPlDetailService;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
-    
-    
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
-    
-    
-    
+
     /**
      * @Title: http://ip:port/app_service/user/infoMore
      * @Description: 个人中心
@@ -391,6 +375,12 @@ public class AppUserController extends BaseController {
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+        if(!StringUtils.hasBlankParams(nickname)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
+        }
         try {
             UserInfo userInfo = new UserInfo(Long.parseLong(userid), nickname, avatar, sex);
             userInfo.setUsername(username); 
@@ -433,6 +423,12 @@ public class AppUserController extends BaseController {
 		if(StringUtils.hasBlankParams(userid,nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
+        if(StringUtils.hasBlankParams(nickname)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
+        }
 		try {
             if(isJump){
                 baseResp = userService.updateNickName(userid, "", "","","");
@@ -531,6 +527,12 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if (StringUtils.hasBlankParams(userid, content, photos)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(StringUtils.hasBlankParams(content)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(content);
+            if(!ResultUtil.isSuccess(baseResp)){
+                return baseResp;
+            }
         }
     	try {
     		UserFeedback record = new UserFeedback(Long.parseLong(userid), content, photos, new Date(), "0");
@@ -700,8 +702,14 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
-    	try {
+    	}
+        if (StringUtils.isBlank(startNum)) {
+             startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+             pageSize = "15";
+        }
+        try {
     		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
 		} catch (Exception e) {
@@ -806,7 +814,13 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
     	try {
     		baseResp = userJobService.selectJobList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
     		return baseResp;	
@@ -881,25 +895,12 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectInterests(String userid) {
         logger.info("selectInterests and userid={}",userid);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(userid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
+//        if(StringUtils.isBlank(userid)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//        }
         try {
-            baseResp = BaseResp.ok();
-            baseResp.setData(new ArrayList<UserInterests>(){{
-                add(new UserInterests("-1","全部"));
-                add(new UserInterests("0","学习"));
-                add(new UserInterests("1","运动"));
-                add(new UserInterests("2","社交"));
-                add(new UserInterests("3","艺术"));
-                add(new UserInterests("4","生活"));
-                add(new UserInterests("5","公益"));
-                add(new UserInterests("6","文字"));
-                add(new UserInterests("7","劳动"));
-                add(new UserInterests("8","修养"));
-                add(new UserInterests("9","健康"));
-            }});
-            return baseResp;
+            baseResp = userService.selectRandomTagList();
+            return baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("selectInterests and userid={}",userid,e);
         }
@@ -995,6 +996,12 @@ public class AppUserController extends BaseController {
     public BaseResp<List<DictArea>> selectCityList(String pid,String startNum,String pageSize) {
         logger.info("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize);
         BaseResp<List<DictArea>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
         try {
             baseResp = dictAreaService.selectCityList(pid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
@@ -1107,6 +1114,12 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectSponsorList(String bid,String startNum,String pageSize) {
         logger.info("selectSponsorList and bid={},startNum={},pageSize={}",bid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
         try {
             baseResp = userSponsorService.selectSponsorList(Long.parseLong(bid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
@@ -1208,6 +1221,12 @@ public class AppUserController extends BaseController {
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
         try {
             baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
             return baseResp;
@@ -1275,6 +1294,24 @@ public class AppUserController extends BaseController {
         }
         String dateStr = DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         baseResp = userService.gps(Long.parseLong(userid), Double.parseDouble(longitude), Double.parseDouble(latitude), dateStr);
+        return baseResp;
+    }
+
+    /**
+     * http://server_ip:port/app_service/user/perfectInfo
+     * 十全十美说明信息
+     * @param ptype
+     * @return
+     */
+    @RequestMapping(value = "/perfectInfo")
+    @ResponseBody
+    public BaseResp<Object> perfectInfo(String ptype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("perfectInfo ptype={}", ptype);
+        if(StringUtils.hasBlankParams(ptype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = userService.perfectInfo(ptype);
         return baseResp;
     }
 

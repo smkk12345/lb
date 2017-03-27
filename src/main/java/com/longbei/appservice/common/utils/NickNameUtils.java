@@ -14,8 +14,9 @@ public class NickNameUtils {
      * @return
      */
     public static String getSingleNickName(String p,String sNum) {
-        Calendar now = Calendar.getInstance();
-        String day = now.get(Calendar.DAY_OF_MONTH)+"";
+        sNum = sNum.replaceFirst("1","");
+//        Calendar now = Calendar.getInstance();
+//        String day = now.get(Calendar.DAY_OF_MONTH)+"";
         String sb1  = "";
         String sb2  = "";
         String mToken = sNum.charAt(8) + "" + sNum.charAt(5) + "" + sNum.charAt(2);
@@ -30,11 +31,17 @@ public class NickNameUtils {
                 sb2 = sb2+c;
             }
         }
-        if(day.length() == 1){
-            day = day+"0";
-        }
-        String result = p+day.charAt(0)+mToken+sb2+sb1+day.charAt(1);
+//        if(day.length() == 1){
+//            day = day+"0";
+//        }
+//        String result = p+day.charAt(0)+mToken+sb2+sb1+day.charAt(1);
+        String result = p+mToken+sb2+sb1;
         return result;
+    }
+
+    public static void main1(String[] args){
+        String nickname = getSingleNickName("lb","18201526455");
+        System.out.print(nickname);
     }
 
 

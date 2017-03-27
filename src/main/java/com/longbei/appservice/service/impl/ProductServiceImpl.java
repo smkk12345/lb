@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
+import com.longbei.appservice.entity.ProductBasic;
+import com.longbei.appservice.entity.ProductCart;
+import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.ProductService;
@@ -27,8 +31,8 @@ public class ProductServiceImpl implements ProductService {
 	private static Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
-	public BaseResp<Object> category(Long userid, String cateid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductCategory>> category(Long userid) {
+		BaseResp<List<ProductCategory>> baseResp = new BaseResp<>();
 		try{
 			String level = "";
 			UserInfo userInfo = getLevel(userid);
@@ -38,14 +42,18 @@ public class ProductServiceImpl implements ProductService {
 				level = userInfo.getGrade().toString();
 				totalcoin = userInfo.getTotalcoin();
 			}
-			baseResp = HttpClient.productBasicService.category(userid, cateid, level);
+			
+			
+			baseResp = HttpClient.productBasicService.category(userid, level);
 			expandData.put("totalcoin", totalcoin);
 			baseResp.setExpandData(expandData);
 		}catch (Exception e){
-			logger.error("selectCategoryList cateid = {}, userid = {}", cateid, userid, e);
+			logger.error("selectCategoryList userid = {}", userid, e);
 		}
 		return baseResp;
 	}
+	
+	
 	
 	private UserInfo getLevel(long userid){
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
@@ -56,9 +64,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public BaseResp<Object> list(Long userid, String cateid, String starttime, int startNo,
+	public BaseResp<List<ProductBasic>> list(Long userid, Long cateid, String starttime, int startNo,
 			int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<ProductBasic>> baseResp = new BaseResp<>();
 		try{
 			String level = "";
 			UserInfo userInfo = getLevel(userid);
@@ -72,10 +80,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return baseResp;
 	}
-
+	
 	@Override
-	public BaseResp<Object> selectProduct(Long userid, String productid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<ProductBasic> selectProduct(Long userid, String productid) {
+		BaseResp<ProductBasic> baseResp = new BaseResp<>();
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
@@ -124,8 +132,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public BaseResp<Object> getCart(Long userid, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductCart>> getCart(Long userid, int startNo, int pageSize) {
+		BaseResp<List<ProductCart>> baseResp = new BaseResp<>();
 		try{
 			baseResp = HttpClient.productBasicService.getCart(userid, startNo, pageSize);
 		}catch (Exception e){
@@ -135,6 +143,8 @@ public class ProductServiceImpl implements ProductService {
 		return baseResp;
 	}
 
+	
+	
 	@Override
 	public BaseResp<Object> updateCartProductcount(int id, int productcount) {
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -142,6 +152,69 @@ public class ProductServiceImpl implements ProductService {
 			baseResp = HttpClient.productBasicService.updateCartProductcount(id, productcount);
 		}catch (Exception e){
 			logger.error("updateCartProductcount id = {}, productcount = {}", id, productcount, e);
+		}
+		return baseResp;
+	}
+
+
+	@Override
+	public BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
+											  String startNum,String pageSize) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.selectProductList(productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
+		} catch (Exception e) {
+			logger.error("selectProductList error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateProductByProductId(String productId,String productcate,String productname,String productbriefphotos,
+													 String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+
+		try {
+			baseResp = HttpClient.productBasicService.updateProductByProductId(productId,productcate, productname,productbriefphotos, productprice,
+					productpoint,lowimpicon,productbrief,enabled,productdetail);
+		} catch (Exception e) {
+			logger.error("updateProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> insertProduct(String productcate,String productname,String productbriefphotos,
+										  String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.insertProduct(productcate, productname,productbriefphotos,
+					productprice, productpoint,lowimpicon,productbrief,enabled,productdetail);
+		} catch (Exception e) {
+			logger.error("updateProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> deleteProductByProductId(String productId) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.deleteProductByProductId(productId);
+		} catch (Exception e) {
+			logger.error("deleteProductByProductId error and msg={}",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> selectProductByProductId(String productId) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = HttpClient.productBasicService.selectProductByProductId(productId);
+		}
+		catch (Exception e) {
+			logger.error("selectProductByProductId error and msg={}",e);
 		}
 		return baseResp;
 	}

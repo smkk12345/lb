@@ -43,13 +43,18 @@
     <result column="sponsornum" property="sponsornum" jdbcType="INTEGER" />
     <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
+    <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
+    <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
+    <result column="ishomerecommend" property="ishomerecommend" jdbcType="VARCHAR" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype,
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,sponsormoney
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend
   </sql>
   <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -60,39 +65,45 @@
   </select>
   <select id="selectListCount" parameterType="com.longbei.appservice.entity.Rank" resultType="java.lang.Integer">
     SELECT
-    COUNT(*)
+      COUNT(1)
     FROM rank
     WHERE 1=1
-    <if test="ranktitle != null and ranktitle != ''" >
-      AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
-    </if>
-    <if test="rankbrief != null and rankbrief != ''" >
-      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
-    </if>
-    <if test="ptype != null and ptype != '-1'" >
-      AND ptype = #{ptype}
-    </if>
-    <if test="sstarttime != null" >
-      AND starttime &gt;= #{sstarttime}
-    </if>
-    <if test="estarttime != null" >
-      AND starttime &lt; #{estarttime}
-    </if>
-    <if test="rankscope != null" >
-      AND rankscope = #{rankscope}
-    </if>
-    <if test="isup != null" >
-      AND isup = #{isup}
-    </if>
-    <if test="isdel != null" >
-      AND isdel = #{isdel}
-    </if>
-    <if test="sourcetype != null" >
-      AND sourcetype = #{sourcetype}
-    </if>
-    <if test="createuserid != null" >
-      AND createuserid = #{createuserid}
-    </if>
+      <if test="ranktitle != null and ranktitle != ''" >
+        AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+      </if>
+      <if test="rankbrief != null and rankbrief != ''" >
+        AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+      </if>
+      <if test="ptype != null and ptype != '-1'" >
+        AND ptype = #{ptype}
+      </if>
+      <if test="sstarttime != null" >
+        AND starttime &gt;= #{sstarttime}
+      </if>
+      <if test="estarttime != null" >
+        AND starttime &lt; #{estarttime}
+      </if>
+      <if test="rankscope != null" >
+        AND rankscope = #{rankscope}
+      </if>
+      <if test="isup != null" >
+        AND isup = #{isup}
+      </if>
+      <if test="isdel != null" >
+        AND isdel = #{isdel}
+      </if>
+      <if test="sourcetype != null" >
+        AND sourcetype = #{sourcetype}
+      </if>
+      <if test="createuserid != null" >
+        AND createuserid = #{createuserid}
+      </if>
+      <if test="ishomerecommend != null" >
+        AND ishomerecommend = #{ishomerecommend}
+      </if>
+      <if test="isrecommend != null" >
+        AND isrecommend = #{isrecommend}
+      </if>
   </select>
 
   <select id="selectListWithPage" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
@@ -106,8 +117,14 @@
     <if test="rank.rankbrief != null and rank.rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rank.rankbrief}),'%')
     </if>
-    <if test="rank.ptype != null and rank.ptype != '-1'" >
+    <if test="rank.ptype != null and rank.ptype != '-1'.toString()" >
       AND ptype = #{rank.ptype}
+    </if>
+    <if test="rank.ranktype != null and rank.ranktype != '-1'.toString()" >
+      AND ranktype = #{rank.ranktype}
+    </if>
+    <if test="rank.isfinish != null and rank.isfinish != '-1'.toString()" >
+      AND isfinish = #{rank.isfinish}
     </if>
     <if test="rank.sstarttime != null" >
       AND starttime &gt;= #{rank.sstarttime}
@@ -115,7 +132,7 @@
     <if test="rank.estarttime != null" >
       AND starttime &lt; #{rank.estarttime}
     </if>
-    <if test="rank.rankscope != null" >
+    <if test="rank.rankscope != null  and rank.rankscope != '-1'.toString()" >
       AND rankscope = #{rank.rankscope}
     </if>
     <if test="rank.isup != null" >
@@ -124,13 +141,30 @@
     <if test="rank.isdel != null" >
       AND isdel = #{rank.isdel}
     </if>
-    <if test="rank.sourcetype != null" >
+    <if test="rank.sourcetype != null  and rank.sourcetype != '-1'.toString()" >
       AND sourcetype = #{rank.sourcetype}
     </if>
     <if test="rank.createuserid != null" >
       AND createuserid = #{rank.createuserid}
     </if>
-    ORDER BY createtime DESC limit #{startno},#{pagesize}
+    <if test="rank.ishomerecommend != null" >
+      AND ishomerecommend = #{rank.ishomerecommend}
+    </if>
+    <if test="rank.isrecommend != null" >
+      AND isrecommend = #{rank.isrecommend}
+    </if>
+    <choose>
+      <when test="rank.isrecommend=='1'.toString()">
+        ORDER BY weight DESC ,createtime DESC
+      </when>
+      <otherwise>
+        ORDER BY createtime DESC
+      </otherwise>
+    </choose>
+
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
@@ -276,6 +310,9 @@
       <if test="joincode != null" >
         joincode,
       </if>
+      <if test="rankrule != null" >
+        rankrule,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -395,6 +432,9 @@
       <if test="joincode != null" >
         #{joincode},
       </if>
+      <if test="rankrule != null" >
+        #{rankrule},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Rank" >
@@ -508,6 +548,9 @@
       <if test="isdel != null" >
         isdel = #{isdel},
       </if>
+      <if test="rankrule != null" >
+        rankrule = #{rankrule},
+      </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>
@@ -560,6 +603,15 @@
       <if test="notice != null" >
         notice = #{notice},
       </if>
+      <if test="isrecommend != null" >
+        isrecommend = #{isrecommend},
+      </if>
+      <if test="ishomerecommend != null" >
+        ishomerecommend = #{ishomerecommend},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight},
+      </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>
@@ -570,4 +622,81 @@
       set rankinvolved = rankinvolved + #{count,jdbcType=INTEGER}
       where rankid = #{rankId,jdbcType=BIGINT}
   </update>
+
+  <!-- 查询榜单列表 -->
+  <select id="selectRankList" parameterType="map" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      FROM rank
+      WHERE 1=1
+        <if test="ranktitle != null and ranktitle != ''" >
+          AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+        </if>
+        <if test="rankbrief != null and rankbrief != ''" >
+          AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+        </if>
+        <if test="lastRankId != null">
+            and id > #{lastRankId}
+        </if>
+        <if test="minEndDate != null">
+            and endtime &gt; #{minEndDate}
+        </if>
+        <if test="ptype != null and ptype != '-1'" >
+          AND ptype = #{ptype}
+        </if>
+        <if test="starttime != null" >
+          AND starttime &gt;= #{starttime}
+        </if>
+        <if test="estarttime != null" >
+          AND starttime &lt; #{starttime}
+        </if>
+        <if test="rankscope != null" >
+          AND rankscope = #{rankscope}
+        </if>
+        <if test="isup != null" >
+          AND isup = #{isup}
+        </if>
+        <if test="isdel != null" >
+          AND isdel = #{isdel}
+        </if>
+        <if test="isfinish != null and isfinish != 2">
+          and isfinish = #{isfinish}
+        </if>
+        <if test="isfinish != null and isfinish == 2">
+          and isfinish > 1
+        </if>
+        <if test="ispublic != null" >
+          AND ispublic = #{ispublic}
+        </if>
+        <if test="sourcetype != null" >
+          AND sourcetype = #{sourcetype}
+        </if>
+        <if test="createuserid != null" >
+          AND createuserid = #{createuserid}
+        </if>
+        <if test="isrecommend != null">
+            and isrecommend = #{isrecommend}
+        </if>
+        <if test="orderByType != null and orderByType == 'endtime'">
+            order by endtime DESC
+        </if>
+        <if test="orderByType != null and orderByType == 'recommend'">
+          order by weight DESC
+        </if>
+        <if test="orderByType != null and orderByType == 'starttimeAsc'">
+          order by starttime
+        </if>
+        <if test="orderByType != null and orderByType == 'starttimeDesc'">
+          order by starttime DESC
+        </if>
+        <if test="orderByType == null or orderByType == ''">
+            order by id desc
+        </if>
+        <if test="startNum != null">
+          limit #{startNum},#{pageSize}
+        </if>
+        <if test="startNum == null and pageSize != null">
+            limit 0,#{pageSize}
+        </if>
+  </select>
 </mapper>

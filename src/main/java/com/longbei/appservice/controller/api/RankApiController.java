@@ -58,7 +58,7 @@ public class RankApiController {
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<Rank>> baseResp = new BaseResp<>();
         try {
-            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
         } catch (NumberFormatException e) {
@@ -100,14 +100,14 @@ public class RankApiController {
      */
     @ResponseBody
     @RequestMapping(value = "selectdetail")
-    public BaseResp<Rank> selectRankDetail(String rankid){
+    public BaseResp<Object> selectRankDetail(String rankid){
         logger.info("selectRankDetail rankid={}",rankid);
-        BaseResp<Rank> baseResp = new BaseResp();
+        BaseResp<Object> baseResp = new BaseResp();
         if (com.longbei.appservice.common.utils.StringUtils.isBlank(rankid)){
             return baseResp;
         }
         try {
-            baseResp = rankService.selectRankDetailByRankid(rankid);
+            baseResp = rankService.selectRankDetailByRankid(null,rankid,true,false);
         } catch (NumberFormatException e) {
             logger.error("select rank info rankid={} is error:",rankid,e);
         }
@@ -570,6 +570,22 @@ public class RankApiController {
         } catch (Exception e) {
             logger.error("submit rank member check result rankid={} is error:",rank.getRankid(),e);
         }
+        return baseResp;
+    }
+
+    /**
+     * 获取榜单详情
+     * @param rankId
+     * @return
+     */
+    @RequestMapping(value="rankDetail")
+    public BaseResp<Object> rankDetail(String rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(com.longbei.appservice.common.utils.StringUtils.isEmpty(rankId)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+
+        baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,false);
         return baseResp;
     }
 

@@ -1,9 +1,11 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,78 @@ public interface ImproveMapper {
                                          @Param("orderby")String orderby,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
-    
+
+    /**
+     * 获取榜单进步列表
+     * @param businessid 榜单id
+     * @param orderby  排序类型 0 - 成员动态 1 - 热度 2 - 时间
+     * @param flowerscore 鲜花分数
+     * @param likescore 赞分数
+     * @param startno 开始条数
+     * @param pagesize 每页条数
+     * @return
+     */
+    List<Improve> selectListByRank(
+                                    @Param("businessid")String businessid,
+                                    @Param("orderby")String orderby,
+                                    @Param("flowerscore") int flowerscore,
+                                    @Param("likescore") int likescore,
+                                    @Param("startno")int startno,
+                                    @Param("pagesize")int pagesize
+                            );
+
+
+    List<Improve> selectGoalImproveList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
+
+    int selectGoalImproveCount(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users);
+
+
+    List<Improve> selectImproveList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
+
+
+    int selectImproveCount(@Param("statrdate")Date startdate,
+                                        @Param("ismain") String ismain,
+                                        @Param("brief") String breif,
+                                        @Param("users") List<AppUserMongoEntity> users);
+
+
+
+
+    List<Improve> selectRankImproveList(@Param("statrdate")Date startdate,
+                                 @Param("ismain") String ismain,
+                                 @Param("brief") String breif,
+                                 @Param("users") List<AppUserMongoEntity> users,
+                                 @Param("order") String order,
+                                 @Param("startno") Integer startno,
+                                 @Param("pagesize") Integer pagesize);
+
+
+
+    int selectRankImproveCount(@Param("statrdate")Date startdate,
+                                        @Param("ismain") String ismain,
+                                        @Param("brief") String breif,
+                                        @Param("users") List<AppUserMongoEntity> users);
+
+
+
+
+
+
     /**
 	 * @author yinxc
 	 * 获取目标进步最新微进步

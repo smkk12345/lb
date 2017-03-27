@@ -9,6 +9,13 @@
     <result column="awardrate" property="awardrate" jdbcType="DOUBLE" />
     <result column="awardcount" property="awardcount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <association property="award" javaType="com.longbei.appservice.entity.Award">
+      <result column="awardprice" property="awardprice" jdbcType="DOUBLE" />
+      <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
+      <result column="awardtype" property="awardtype" jdbcType="VARCHAR" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List" >
     id, rankid, awardid, awardlevel, awardrate, awardcount,awardnickname, createtime
@@ -27,6 +34,15 @@
     FROM rank_award_release
     WHERE rankid=#{rankid} ORDER BY awardlevel ASC
   </select>
+
+
+  <select id="selectByRankIdAndAwardId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank_award_release
+    WHERE rankid=#{rankid} AND awardid=#{awardid}
+  </select>
+
 
 
   <delete id="deleteByRankid">
@@ -141,4 +157,17 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 获取榜单的奖品 -->
+  <select id="findRankAward" resultMap="BaseResultMap">
+    select
+    awardid,
+    awardlevel,
+    awardnickname,
+    awardrate,
+    awardcount
+    from rank_award
+    where rankid = #{rankid}
+    order by awardlevel
+  </select>
 </mapper>

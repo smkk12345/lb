@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.SnsGroupMembers;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +73,15 @@ public interface SnsGroupMembersMapper {
      * @param status
      * @return
      */
-    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,@Param("status") Integer status);
+    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,@Param("status") Integer status,@Param("startNum")Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 查询群成员数量
+     * @param groupId
+     * @param status
+     * @return
+     */
+    Integer groupMembersCount(@Param("groupId")String groupId,@Param("status") Integer status);
 
     /**
      * 根据用户查询群列表
@@ -81,5 +90,12 @@ public interface SnsGroupMembersMapper {
      * @param pageSize
      * @return
      */
-    List<SnsGroupMembers> groupMembersList(@Param("userId") Long userId,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+    List<SnsGroupMembers> groupMembersList(@Param("userId") Long userId,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize,@Param("updateTime") Date updateTime);
+
+    /**
+     * 真实从数据库删除群成员
+     * @param deleteMap
+     * @return
+     */
+    int batchRealDeleteGroupMember(Map<String, Object> deleteMap);
 }

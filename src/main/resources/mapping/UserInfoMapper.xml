@@ -464,4 +464,38 @@
         </if>
         userid = #{userid}
   </update>
+
+  <update id="updateUserSumInfo">
+      UPDATE
+        user_info
+      <set>
+        <if test="totalimp != 0">
+          totalimp = totalimp + #{totalimp},
+        </if>
+        <if test="totallikes != 0">
+          totallikes = totallikes + #{totallikes},
+        </if>
+        <if test="totalfans != 0">
+          totalfans = totalfans + #{totalfans},
+        </if>
+        <if test="totalflower != 0">
+          totalflower = totalflower + #{totalflower},
+        </if>
+      </set>
+      where
+        userid=#{userid}
+  </update>
+  
+  <update id="updateMoneyAndFlowerByUserid">
+    update user_info 
+    set 
+    <if test="totalflower != 0">
+      totalflower = totalflower + #{totalflower},
+    </if>
+    <if test="totalmoney != 0">
+      totalmoney = totalmoney + #{totalmoney}
+    </if>
+    WHERE userid = #{userid}
+  </update>
+
 </mapper>

@@ -6,14 +6,17 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.SysPerfectInfo;
+import com.longbei.appservice.entity.*;
 
+import com.longbei.appservice.service.UserRelationService;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.nativejdbc.OracleJdbc4NativeJdbcExtractor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -21,21 +24,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.SnsFansMapper;
-import com.longbei.appservice.dao.SysPerfectInfoMapper;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserInterestsMapper;
-import com.longbei.appservice.dao.UserJobMapper;
-import com.longbei.appservice.dao.UserLevelMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
-import com.longbei.appservice.dao.UserPlDetailMapper;
-import com.longbei.appservice.dao.UserSchoolMapper;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserInterests;
-import com.longbei.appservice.entity.UserJob;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserPlDetail;
-import com.longbei.appservice.entity.UserSchool;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -76,6 +64,12 @@ public class UserServiceImpl implements UserService {
 	private UserMsgService userMsgService;
 	@Autowired
 	private UserLevelMapper userLevelMapper;
+	@Autowired
+	private SysPerfectTagMapper sysPerfectTagMapper;
+	@Autowired
+	private UserRelationService userRelationService;
+	@Autowired
+	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -150,8 +144,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	public BaseResp<Object> register(Long userid,String username, 
+	public BaseResp<Object> register(Long userid,String username,
 			String nickname,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -166,8 +159,11 @@ public class UserServiceImpl implements UserService {
 		userInfo.setAvatar(avatar);
 		userInfo.setDeviceindex(deviceindex);
 		userInfo.setDevicetype(devicetype);
+		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
 		if(!StringUtils.isBlank(inviteuserid)){
-			userInfo.setInviteuserid(Long.parseLong(inviteuserid));
+			if(null != userInfo1){
+				userInfo.setInviteuserid(userInfo1.getUserid());
+			}
 		}
 		TokenReslut userToken;
 		try {
@@ -176,11 +172,6 @@ public class UserServiceImpl implements UserService {
 				return reseResp;
 			}
 			userInfo.setRytoken((String)tokenRtn.getData());
-// userToken = RongCloudProxy.rongCloud.user.getToken(userid+"", username, "#");
-//			if(null != userToken){
-//				JSONObject jsonObject = JSONObject.fromObject(userToken);
-//				userInfo.setRytoken(jsonObject.getString("token"));
-//			}
 		} catch (Exception e) {
 			logger.error("rongCloud getToken error and msg = {}",e);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
@@ -188,6 +179,7 @@ public class UserServiceImpl implements UserService {
 		}
 		boolean ri = registerInfo(userInfo);
 		if (ri) {
+			userRelationService.insertFriend(userid,userInfo1.getUserid());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -367,7 +359,8 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
-	private BaseResp<Object> checkSms(String mobile, String random){
+	public
+	BaseResp<Object> checkSms(String mobile, String random){
 		String res = springJedisDao.get(mobile);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (res == null) {
@@ -554,17 +547,86 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
-			baseResp.setData(userLevel);
-			List<String> ist = getPointOriginate();
+			Map<String,Object> map = new HashedMap();
+			map.put("userLevel",userLevel);
+			List<String> ist = getPointInfoPerDay(userid);
 			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
-			baseResp.getExpandData().put("pointDetail",ist);
-			baseResp.getExpandData().put("todayPoint",point);
+			map.put("pointDetail",ist);
+			map.put("todayPoint",point);
+			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
 			logger.error("selectByGrade error grade={}",grade,e);
 		}
 		return baseResp;
+	}
+
+
+	private List<String> getPointInfoPerDay(long userid){
+		String key = Constant.RP_USER_PERDAY+"sum"+userid;
+		List<String> list = new ArrayList<>();
+		if(springJedisDao.hasKey(key)){
+			Map<String,String> map = springJedisDao.entries(key);
+			Iterator<String> iterator = map.keySet().iterator();
+			while (iterator.hasNext()){
+				String subKey = iterator.next();
+				String value = map.get(subKey);
+				String operateType = subKey.split("#")[0];
+				String disStr = "";
+				switch (operateType){
+					case "NEW_REGISTER":
+						disStr = "注册成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_QQ":
+						disStr = "绑定QQ成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_WX":
+						disStr = "绑定微信成功+"+value+"分";
+						break;
+					case "NEW_LOGIN_WB":
+						disStr = "绑定微博成功+"+value+"分";
+						break;
+					case "NEW_CERTIFY_USERCARD":
+						disStr = "完成实名认证+"+value+"分";
+						break;
+					case "NEW_USERINFO":
+						disStr = "完善个人信息+"+value+"分";
+						break;
+					case "DAILY_CHECKIN":
+						disStr = "签到成功+"+value+"分";
+						break;
+					case "DAILY_SHARE":
+						disStr = "分享+"+value+"分";
+						break;
+					case "INVITE_LEVEL1":
+						disStr = "邀请好友注册+"+value+"分";
+						break;
+					case "DAILY_ADDFRIEND":
+						disStr = "添加好友+"+value+"分";
+						break;
+					case "DAILY_FUN":
+						disStr = "关注他人+"+value+"分";
+						break;
+					case "DAILY_COMMENT":
+						disStr = "与他人评论互动+"+value+"分";
+						break;
+					case "DAILY_ADDIMP":
+						disStr = "发微进步+"+value+"分";
+						break;
+					case "DAILY_ADDRANK":
+						disStr = "加入龙榜+"+value+"分";
+						break;
+					case "DAILY_ADDCLASSROOM":
+						disStr = "加入教室+"+value+"分";
+						break;
+					default:
+						break;
+				}
+				list.add(disStr);
+			}
+		}
+		return list;
 	}
 
 
@@ -579,7 +641,7 @@ public class UserServiceImpl implements UserService {
 	private List<String> getPointOriginate(){
 		List<String> list = new ArrayList<>();
 		list.add("注册成功+"+ Constant_point.NEW_REGISTER+"分");
-		list.add("绑定QQ成功+"+Constant_point.NEW_LOGIN_QQ+"分");
+//		list.add("绑定QQ成功+"+Constant_point.+"分");
 		list.add("绑定微信成功+"+Constant_point.NEW_LOGIN_WX+"分");
 		list.add("绑定微博成功+"+Constant_point.NEW_LOGIN_WB+"分");
 		list.add("完成实名认证+"+Constant_point.NEW_CERTIFY_USERCARD+"分");
@@ -605,6 +667,31 @@ public class UserServiceImpl implements UserService {
 			userMongoDao.updateGps(userid,longitude,latitude,dateStr);
 		}catch (Exception e){
 			logger.error("updateGps error userid={},longitude={},latitude={}",userid,longitude,latitude);
+		}
+		return baseResp.initCodeAndDesp();
+	}
+
+	@Override
+	public BaseResp<Object> selectRandomTagList() {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList();
+			baseResp.setData(list);
+			return baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("selectRandomTagList error ",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> perfectInfo(String ptype) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			SysPerfectDefine sysPerfectDefine = sysPerfectDefineMapper.selectRandomByType(ptype);
+			baseResp.setData(sysPerfectDefine);
+		}catch (Exception e){
+			logger.error("selectRandomByType error ",e);
 		}
 		return baseResp.initCodeAndDesp();
 	}

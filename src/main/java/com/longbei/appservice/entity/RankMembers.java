@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.*;
 
 public class RankMembers {
+    public static final Integer maxHour = 24;//最大多长时间不发进步,则会被其他成员挤走
+
     private Integer id;
 
     private Long rankid;//榜单id
@@ -26,7 +28,7 @@ public class RankMembers {
 
     private Integer flowers;
 
-    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜
+    private Integer status;//0.待审核 1.同意 已入榜 2.拒绝 已退榜 3.被榜主踢出榜 无法再次申请加入榜
 
     private String acceptaward;//0 未领奖 1 领奖 2 发货 3签收
 
@@ -37,6 +39,20 @@ public class RankMembers {
     private String checkresult; //审s核不通过原因
 
     private Integer complaintotalcount; //投诉次数
+
+    private Integer awardid;//奖品id
+
+    private Integer awardlevel;//奖品等级
+
+    private Date spublishawarddate; //搜索使用
+
+    private Date publishawarddate; //获奖发布时间
+
+    private Date epublishawarddate; //搜索使用
+
+    private List<Rank> ranks; //查询使用
+
+    private List<Award> awards; //查询使用
 
     private AppUserMongoEntity appUserMongoEntity;
 
@@ -49,6 +65,54 @@ public class RankMembers {
     private String receivecode; //领奖口令
 
     private RankAward rankAward;
+
+    private Award award;
+
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getSpublishawarddate() {
+        return spublishawarddate;
+    }
+
+    public void setSpublishawarddate(Date spublishawarddate) {
+        this.spublishawarddate = spublishawarddate;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEpublishawarddate() {
+        return epublishawarddate;
+    }
+
+    public void setEpublishawarddate(Date epublishawarddate) {
+        this.epublishawarddate = epublishawarddate;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getPublishawarddate() {
+        return publishawarddate;
+    }
+
+    public void setPublishawarddate(Date publishawarddate) {
+        this.publishawarddate = publishawarddate;
+    }
+
+    public List<Rank> getRanks() {
+        return ranks;
+    }
+
+    public void setRanks(List<Rank> ranks) {
+        this.ranks = ranks;
+    }
+
+    public List<Award> getAwards() {
+        return awards;
+    }
+
+    public void setAwards(List<Award> awards) {
+        this.awards = awards;
+    }
 
     public String getReceivecode() {
         return receivecode;
@@ -355,5 +419,37 @@ public class RankMembers {
      */
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    /**
+     * 获取奖品id
+     * @return
+     */
+    public Integer getAwardid() {
+        return awardid;
+    }
+
+    /**
+     * 设置奖品id
+     * @param awardid
+     */
+    public void setAwardid(Integer awardid) {
+        this.awardid = awardid;
+    }
+
+    /**
+     * 获取奖品等级
+     * @return
+     */
+    public Integer getAwardlevel() {
+        return awardlevel;
+    }
+
+    /**
+     * 设置奖品等级
+     * @param awardlevel
+     */
+    public void setAwardlevel(Integer awardlevel) {
+        this.awardlevel = awardlevel;
     }
 }

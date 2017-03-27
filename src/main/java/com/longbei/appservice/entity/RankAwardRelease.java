@@ -24,6 +24,8 @@ public class RankAwardRelease {
 
     private Award award;
 
+    private Long userid;
+
     public Award getAward() {
         return award;
     }
@@ -152,5 +154,13 @@ public class RankAwardRelease {
      */
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public Long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 }

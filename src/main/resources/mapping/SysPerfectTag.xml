@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SysPerfectTagMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysPerfectTag" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, tag, ptype
+  </sql> 
+   <select id="selectRandomTagList" resultMap="BaseResultMap" >
+    select
+       id, tag, ptype
+    from sys_perfect_tag
+    where 1=1
+           order by rand() LIMIT 10
+  </select>
+</mapper>

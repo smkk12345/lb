@@ -1,6 +1,9 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductOrders;
 
 public interface OrderService {
 	
@@ -23,7 +26,7 @@ public interface OrderService {
      * @param discount 用户等级所享受的折扣
 	 */
 	 BaseResp<Object> create(Long userid, String productidss, 
-			 String numberss, String address, String receiver, String mobile, 
+			 String numberss, String addressid, 
 			 String impiconprice, String moneyprice, String paytype, String prices, 
 			 String otype, String remark);
 	 
@@ -36,7 +39,7 @@ public interface OrderService {
 	 * @param @param startNo  pageSize
 	 * 2017年3月17日
 	 */
-	 BaseResp<Object> list(Long userid, String orderstatus, 
+	 BaseResp<List<ProductOrders>> list(Long userid, String orderstatus, 
 			 int startNo, int pageSize);
 	 
 	 /**
@@ -45,7 +48,7 @@ public interface OrderService {
 	 * @param @param orderid 订单业务id  
 	 * 2017年3月17日
 	 */
-	 BaseResp<Object> get(Long userid, String orderid);
+	 BaseResp<ProductOrders> get(Long userid, String orderid);
 	 
 	 /**
 	 * 再次兑换
@@ -67,5 +70,108 @@ public interface OrderService {
 	 */
 	 BaseResp<Object> updateOrderStatus(Long userid, String orderid, 
 			 String orderstatus);
+	 
+	 
+	//--------------------------------adminservice调用-------------------------------------
+	 
+	 /**
+	 * 我的订单列表(所有的)
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+	 * 						为null   则查全部 
+	 * @param @param startNo  pageSize
+	 * 2017年3月22日
+	 */
+	 BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize);
+	 
+	 /**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param userid 
+	 * @param @param orderid 订单业务id  
+	 * 2017年3月22日
+	 */
+	 BaseResp<ProductOrders> adminget(Long userid, String orderid);
+	 
+	 /**
+	 * 设为异常订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersIsexception(String orderid);
+	 
+	 /**
+	 * 取消订单
+	 * @author yinxc
+	 * @param @param orderid 订单业务id 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersIsdel(String orderid);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 BaseResp<Object> updateOrdersRemark(String orderid, String remark);
+	 
+	 /**
+	 * @author yinxc
+	 * 获取用户不同的订单状态的总数
+     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+     * 						为null   则查全部 
+	 * 2017年3月22日
+	 */
+	 BaseResp<Integer> selectCountOrders(String orderstatus);
+	 
+	 /**
+	 * 获取订单搜索的总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
+ 	 * 						为null   则查全部 
+     * @param @param ordernum 订单编号
+     * @param @param username 用户手机号
+     * @param @param screatetime    ecreatetime下单搜索时间段
+	 */
+	BaseResp<Integer> selectCountSearchOrders(String orderstatus, String ordernum, 
+    		String username, String screatetime, String ecreatetime);
+	 
+	 /**
+	 * 订单搜索
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, 
+			 String username, String screatetime, String ecreatetime, 
+			 int startNo, int pageSize);
+	 
+	 /**
+	 * 获取异常订单列表
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param startNo 
+	 * @param pageSize 
+	 */
+	 BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize);
+    
+     /**
+	 * 订单发货
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany);
+	 
+	 /**
+	 * 获取异常订单总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 BaseResp<Integer> selectCountException();
+
 
 }

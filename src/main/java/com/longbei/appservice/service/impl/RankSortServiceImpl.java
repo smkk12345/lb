@@ -43,7 +43,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
      * @param rankId 榜id
      * @param userId 用户id
      * @param operationType 操作类型 点赞/送花/取消点赞
-     * @param num 送花的数量,默认是1
+     * @param num 送花的数量,默认是1 num可为负数,例如在榜中删除进步时,需要将该进步中的花影响的排名撤回,则需要将num写成负数
      * @return
      */
     @Override
@@ -94,7 +94,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                 return false;
             }
             //如果时间已经到了,则往redis中放入一个标识 标识已结束,正在计算排名
-            if("1".equals(rank.getIsfinish()) || ("0".equals(rank.getIsfinish()) && rank.getEndtime().getTime() < new Date().getTime())){
+            if(!"1".equals(rank.getIsfinish()) || ("1".equals(rank.getIsfinish()) && rank.getEndtime().getTime() > new Date().getTime())){
                 return true;
             }
             //标识活动刚刚结束
@@ -103,7 +103,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             if(StringUtils.isNotEmpty(redisEndFlag)){
                 return true;
             }
-            springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",5);
+            springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",4);
 
             //2.从redis中同步用户的排名
             Set<String> rankSortSet = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),0,-1);
@@ -142,7 +142,11 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             //5.更改rank的活动标识为已结束
             Rank updateRank = new Rank();
             updateRank.setRankid(rank.getRankid());
-            updateRank.setIsfinish("1");
+            if("0".equals(rank.getIscheck())){//不需要人工审核
+                updateRank.setIsfinish("5");
+            }else{//需要人工审核
+                updateRank.setIsfinish("2");
+            }
             int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);
 
             //6.从redis中删除该标识 以及从redis中删除该榜单的排名

@@ -134,7 +134,7 @@ public class ImageUtils {
 	/**
 	 * 创建图片缩略图
 	 * 
-	 * @param originalImage
+	 * @param srcImageFile
 	 * @param scaledWidth
 	 * @param scaledHeight
 	 * @param preserveAlpha
@@ -524,7 +524,7 @@ public class ImageUtils {
 	/**
 	 * 生成背景透明的圆形图片，前提是图片为正方形
 	 * 
-	 * @param image
+	 * @param srcImageFile
 	 * @return
 	 */
 	public static void makeRoundedCorner(String srcImageFile, String destImageFile, String imageType) {

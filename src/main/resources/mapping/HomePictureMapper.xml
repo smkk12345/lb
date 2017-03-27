@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.HomePictureMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.HomePicture" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="picname" property="picname" jdbcType="VARCHAR" />
+    <result column="photos" property="photos" jdbcType="VARCHAR" />
+    <result column="contenttype" property="contenttype" jdbcType="CHAR" />
+    <result column="scannum" property="scannum" jdbcType="INTEGER" />
+    <result column="isup" property="isup" jdbcType="CHAR" />
+    <result column="uptime" property="uptime" jdbcType="TIMESTAMP" />
+    <result column="downtime" property="downtime" jdbcType="TIMESTAMP" />
+    <result column="sort" property="sort" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="createuserid" property="createuserid" jdbcType="VARCHAR" />
+    <result column="href" property="href" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, picname, photos, contenttype, scannum, isup, uptime, downtime, sort, createtime, createuserid,href,
+    updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from homepicture
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.HomePicture" resultType="java.lang.Integer">
+    SELECT count(*) FROM homepicture
+    <where>
+      <if test="picname != null and picname != ''">
+        AND picname LIKE concat(concat('%',#{picname}),'%')
+      </if>
+      <if test="contenttype != null and contenttype != '-1'.toString()">
+        AND contenttype = #{contenttype}
+      </if>
+      <if test="isup != null and isup != '-1'.toString()">
+        AND isup = #{isup}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from homepicture
+    <where>
+      <if test="homePicture.picname != null and homePicture.picname != ''">
+        AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
+      </if>
+      <if test="homePicture.contenttype != null and homePicture.contenttype != '-1'.toString()">
+        AND contenttype = #{homePicture.contenttype}
+      </if>
+      <if test="homePicture.isup != null and homePicture.isup != '-1'.toString()">
+        AND isup = #{homePicture.isup}
+      </if>
+    </where>
+    ORDER BY sort DESC,createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from homepicture
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.HomePicture" >
+    insert into homepicture (id, picname, photos, 
+      contenttype, scannum, isup, 
+      update, downdate, sort, 
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{picname,jdbcType=VARCHAR}, #{photos,jdbcType=VARCHAR}, 
+      #{contenttype,jdbcType=CHAR}, #{scannum,jdbcType=INTEGER}, #{isup,jdbcType=CHAR}, 
+      #{update,jdbcType=TIMESTAMP}, #{downdate,jdbcType=TIMESTAMP}, #{sort,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.HomePicture" >
+    insert into homepicture
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="picname != null" >
+        picname,
+      </if>
+      <if test="photos != null" >
+        photos,
+      </if>
+      <if test="contenttype != null" >
+        contenttype,
+      </if>
+      <if test="scannum != null" >
+        scannum,
+      </if>
+      <if test="isup != null" >
+        isup,
+      </if>
+      <if test="uptime != null" >
+        uptime,
+      </if>
+      <if test="downtime != null" >
+        downtime,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="createuserid != null" >
+        createuserid,
+      </if>
+      <if test="href != null" >
+        href,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="picname != null" >
+        #{picname,jdbcType=VARCHAR},
+      </if>
+      <if test="photos != null" >
+        #{photos,jdbcType=VARCHAR},
+      </if>
+      <if test="contenttype != null" >
+        #{contenttype,jdbcType=CHAR},
+      </if>
+      <if test="scannum != null" >
+        #{scannum,jdbcType=INTEGER},
+      </if>
+      <if test="isup != null" >
+        #{isup,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuserid != null" >
+        #{createuserid},
+      </if>
+      <if test="href != null" >
+        #{href},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.HomePicture" >
+    update homepicture
+    <set >
+      <if test="picname != null" >
+        picname = #{picname,jdbcType=VARCHAR},
+      </if>
+      <if test="photos != null" >
+        photos = #{photos,jdbcType=VARCHAR},
+      </if>
+      <if test="contenttype != null" >
+        contenttype = #{contenttype,jdbcType=CHAR},
+      </if>
+      <if test="scannum != null" >
+        scannum = #{scannum,jdbcType=INTEGER},
+      </if>
+      <if test="isup != null" >
+        isup = #{isup,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        uptime = #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        downtime = #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="href != null" >
+        href = #{href},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.HomePicture" >
+    update homepicture
+    set picname = #{picname,jdbcType=VARCHAR},
+      photos = #{photos,jdbcType=VARCHAR},
+      contenttype = #{contenttype,jdbcType=CHAR},
+      scannum = #{scannum,jdbcType=INTEGER},
+      isup = #{isup,jdbcType=CHAR},
+      update = #{update,jdbcType=TIMESTAMP},
+      downdate = #{downdate,jdbcType=TIMESTAMP},
+      sort = #{sort,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

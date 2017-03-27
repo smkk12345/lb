@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import scala.collection.immutable.Stream;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -424,7 +423,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
         if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
             return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
         }
-        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.findById(friendId+"");
+        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId+"");
         if(appUserMongoEntity != null && StringUtils.isNotEmpty(appUserMongoEntity.getNickname())){
             return appUserMongoEntity.getNickname();
         }

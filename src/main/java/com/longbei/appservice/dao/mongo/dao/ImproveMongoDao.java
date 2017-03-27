@@ -6,12 +6,14 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
 import com.longbei.appservice.entity.ImproveLFDDetail;
+import com.longbei.appservice.entity.TimeLineDetail;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ import java.util.List;
  * @create 2017-02-20 上午11:06
  **/
 @Repository
+
 public class ImproveMongoDao extends BaseMongoDao<Improve>{
 
     /**
@@ -146,6 +149,9 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         boolean isexits = mongoTemplate.exists(query,ImproveLFDDetail.class);
         return isexits;
     }
+
+
+
 
 
 

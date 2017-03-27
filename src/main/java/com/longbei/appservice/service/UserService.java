@@ -66,6 +66,14 @@ public interface UserService {
 	* @currentdate:2017年1月16日
 	*/
 	BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype);
+
+	/**
+	 * 校验验证码
+	 * @param mobile
+	 * @param random
+	 * @return
+	 */
+	BaseResp<Object> checkSms(String mobile, String random);
 	/**
 	* @Title: findPassword
 	* @Description: TODO
@@ -160,5 +168,13 @@ public interface UserService {
 	 * @return
 	 */
 	BaseResp<Object> gps(long userid,double longitude,double latitude,String dateStr);
+
+	/**
+	 * 感兴趣的标签
+	 * @return
+	 */
+	BaseResp<Object> selectRandomTagList();
+
+	BaseResp<Object> perfectInfo(String ptype);
 
 }

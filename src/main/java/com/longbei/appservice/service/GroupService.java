@@ -2,6 +2,8 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 
+import java.util.Date;
+
 /**
  * Created by wangyongzhi 17/3/8.
  */
@@ -68,7 +70,7 @@ public interface GroupService {
      * @param status 查询的状态
      * @return
      */
-    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status);
+    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize);
 
     /**
      * 解散群
@@ -94,5 +96,12 @@ public interface GroupService {
      * @param pageSize
      * @return
      */
-    BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize);
+    BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize,Date updateTime);
+
+    /**
+     * 查询群组
+     * @param keyword
+     * @return
+     */
+    BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize);
 }
