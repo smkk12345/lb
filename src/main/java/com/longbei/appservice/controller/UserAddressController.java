@@ -45,15 +45,23 @@ public class UserAddressController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "list")
 	@ResponseBody
-	public BaseResp<Object> list(@RequestParam("userid") String userid, int startNum, int endNum) {
+	public BaseResp<Object> list(String userid, Integer startNum, Integer endNum) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = userAddressService.selectByUserId(Long.parseLong(userid), startNum, endNum);
+			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+  			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+  			if(null != startNum){
+  				sNo = startNum.intValue();
+  			}
+  			if(null != endNum){
+  				sSize = endNum.intValue();
+  			}
+			baseResp = userAddressService.selectByUserId(Long.parseLong(userid), sNo, sSize);
 		} catch (Exception e) {
-			logger.error("list error and msg = {}", e);
+			logger.error("list userid = {}", userid, e);
 		}
 		return baseResp;
 	}

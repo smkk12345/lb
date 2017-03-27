@@ -21,6 +21,8 @@ import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserAddressService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.api.HttpClient;
 
 @Service("orderService")
@@ -34,6 +36,11 @@ public class OrderServiceImpl implements OrderService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserAddressService userAddressService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
+	@Autowired
+	private UserMoneyDetailService userMoneyDetailService;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -62,8 +69,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public BaseResp<Object> list(Long userid, String orderstatus, int startNo, int pageSize) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<ProductOrders>> list(Long userid, String orderstatus, int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		try{
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = "";
@@ -75,10 +82,12 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return baseResp;
 	}
+	
+	
 
 	@Override
-	public BaseResp<Object> get(Long userid, String orderid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<ProductOrders> get(Long userid, String orderid) {
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
 			baseResp = HttpClient.productBasicService.get(userid, orderid);
 		}catch (Exception e){
@@ -107,6 +116,17 @@ public class OrderServiceImpl implements OrderService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			baseResp = HttpClient.productBasicService.updateOrderStatus(userid, orderid, orderstatus);
+			if(ResultUtil.isSuccess(baseResp)){
+  				//取消订单---返回当前订单用户花销的进步币以及龙币
+  				BaseResp<ProductOrders> resResp = adminget(userid, orderid);
+  				if(ResultUtil.isSuccess(resResp)){
+  					ProductOrders productOrders = resResp.getData();
+  					if(null != productOrders){
+//  						userMoneyDetailService.insertPublic(userid, origin, number, friendid)
+//  						userImpCoinDetailService
+  					}
+  				}
+  			}
 		}catch (Exception e){
 			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 
 					userid, orderid, orderstatus, e);
@@ -248,7 +268,42 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return baseResp;
 	}
+
+	@Override
+	public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+		try{
+			baseResp = HttpClient.productBasicService.exceptionlist(startNo, pageSize);
+		}catch (Exception e){
+			logger.error("exceptionlist startNo = {}, pageSize = {}", 
+					startNo, pageSize, e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			baseResp = HttpClient.productBasicService.updateDeliver(orderid, logisticscode, logisticscompany);
+		}catch (Exception e){
+			logger.error("updateDeliver orderid = {}, logisticscode={}, logisticscompany={}", 
+					orderid, logisticscode, logisticscompany, e);
+		}
+		return baseResp;
+	}
 	
+	@Override
+	public BaseResp<Integer> selectCountException() {
+		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+		try{
+			baseResp = HttpClient.productBasicService.selectCountException();
+		}catch (Exception e){
+			logger.error("selectCountException ", e);
+		}
+		return baseResp;
+	}
+
 	/**
      * 初始化消息中用户信息 ------Userid
      */
@@ -257,4 +312,5 @@ public class OrderServiceImpl implements OrderService {
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
 
+    
 }

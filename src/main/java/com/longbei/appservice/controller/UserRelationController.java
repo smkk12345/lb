@@ -8,7 +8,6 @@
 */
 package com.longbei.appservice.controller;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

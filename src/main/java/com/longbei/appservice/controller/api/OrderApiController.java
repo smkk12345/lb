@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.OrderService;
+import com.longbei.appservice.service.UserImpCoinDetailService;
 
 @RestController
 @RequestMapping(value = "/api/order")
@@ -182,7 +184,7 @@ public class OrderApiController {
     * @Description: 修改订单状态
     * @param @param userid 
     * @param @param orderid 订单业务id 
-    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成   4：已取消
+    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成   4：已取消(需要返还用户龙币和进步币)
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -196,7 +198,7 @@ public class OrderApiController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成 
+  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成    4：已取消(需要返还用户龙币和进步币)
   			baseResp = orderService.updateOrderStatus(Long.parseLong(userid), orderid, orderstatus);
 		} catch (Exception e) {
 			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 
@@ -247,5 +249,72 @@ public class OrderApiController {
 		}
   		return baseResp;
 	}
+
+	/**
+    * @Title: http://ip:port/app_service/api/order/updateDeliver
+    * @Description: 订单发货
+    * @param @param orderid 订单业务id 
+    * @param @param logisticscode 物流编号
+    * @param @param logisticscompany 物流公司
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月24日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/updateDeliver", method = RequestMethod.POST)
+    public BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+  		if (StringUtils.hasBlankParams(orderid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = orderService.updateDeliver(orderid, logisticscode, logisticscompany);
+		} catch (Exception e) {
+			logger.error("updateDeliver orderid = {}, logisticscode={}, logisticscompany={}", 
+					orderid, logisticscode, logisticscompany, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/api/order/exceptionlist
+    * @Description: 获取异常订单列表
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年3月24日
+	*/
+  	@RequestMapping(value = "/exceptionlist")
+    public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+  		try {
+  			baseResp = orderService.exceptionlist(startNo, pageSize);
+		} catch (Exception e) {
+			logger.error("exceptionlist startNo = {}, pageSize = {}", 
+					startNo, pageSize, e);
+		}
+  		return baseResp;
+	}
+  	
+  	/**
+     * @Title: http://ip:port/product_service/api/order/selectCountException
+     * @Description: 获取异常订单总数
+     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @desc  
+     * @currentdate:2017年3月16日
+ 	*/
+   	@RequestMapping(value = "/selectCountException")
+     public BaseResp<Integer> selectCountException() {
+ 		BaseResp<Integer> baseResp = new BaseResp<Integer>();
+   		try {
+   			baseResp = orderService.selectCountException();
+ 		} catch (Exception e) {
+ 			logger.error("selectCountException", e);
+ 		}
+   		return baseResp;
+ 	}
   	
 }
