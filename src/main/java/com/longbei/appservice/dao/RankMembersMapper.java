@@ -65,7 +65,7 @@ public interface RankMembersMapper {
      * @param pageSize
      * @return
      */
-    List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") String sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+    List<RankMembers> selectUserSort(@Param("rankId")Long rankId,@Param("sortType") Integer sortType,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
     /**
      * 审核用户的进步条数

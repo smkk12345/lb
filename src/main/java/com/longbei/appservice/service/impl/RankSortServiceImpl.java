@@ -103,7 +103,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             if(StringUtils.isNotEmpty(redisEndFlag)){
                 return true;
             }
-            springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",5);
+            springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",4);
 
             //2.从redis中同步用户的排名
             Set<String> rankSortSet = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),0,-1);

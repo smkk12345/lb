@@ -2,11 +2,16 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.GroupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * Created by wangyongzhi 17/3/8.
@@ -14,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "group")
 public class GroupController {
-
+    private static Logger logger = LoggerFactory.getLogger(GroupController.class);
     @Autowired
     private GroupService groupService;
 
@@ -31,7 +36,7 @@ public class GroupController {
     @RequestMapping(value="createGroup")
     public BaseResp<Object> createGroup(String userIds,String mainGroupUserId,Integer type,Long typeId,String groupName,Boolean needConfirm){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(mainGroupUserId == null || StringUtils.isEmpty(groupName) || groupName.length() > 30){
+        if(mainGroupUserId == null || groupName.length() > 30){
             return baseResp.fail("参数错误");
         }
         String[] userIdss = null;
@@ -242,15 +247,58 @@ public class GroupController {
      * @param userId 当前登录用户id
      * @param startNum
      * @param endNum
+     * @param updateTime 上次更新用户群列表的时间
      * @return
      */
     @RequestMapping(value="groupList")
-    public BaseResp<Object> groupList(Long userId,Integer startNum,Integer endNum){
+    public BaseResp<Object> groupList(Long userId,Integer startNum,Integer endNum,String updateTime){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.groupService.goupListByUser(userId,startNum,endNum);
+        Integer pageSize = null;
+        if(startNum != null && startNum < 0){
+            startNum = 0;
+        }
+        if(startNum != null && (endNum == null || endNum < startNum)){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }else if(startNum != null){
+            pageSize = endNum - startNum;
+        }
+
+        Date updateDate = null;
+        if(StringUtils.isNotEmpty(updateTime)){
+            try{
+                updateDate = DateUtils.formatDate(updateTime,null);
+            }catch(Exception e){
+                logger.error("select group list format updateTime error updateTime:{}",updateTime);
+            }
+        }
+
+        baseResp = this.groupService.goupListByUser(userId,startNum,endNum,updateDate);
+        return baseResp;
+    }
+
+    /**
+     * 搜索群组 按照群号搜索
+     * @url http://ip:port/app_service/group/searchGroup
+     * @param keyword
+     * @return
+     */
+    @RequestMapping(value="searchGroup")
+    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(StringUtils.isEmpty(keyword)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.groupService.searchGroup(keyword,startNum,pageSize);
         return baseResp;
     }
 
