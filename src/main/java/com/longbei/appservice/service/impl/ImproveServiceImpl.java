@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -1149,6 +1150,9 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initImproveCommentInfo(Improve improve){
 
+        if (null == improve){
+            return;
+        }
         //对进步的评论数赋值
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
                         (String.valueOf(improve.getId()),Constant.COMMENT_SINGLE_TYPE);
@@ -2215,29 +2219,36 @@ public class ImproveServiceImpl implements ImproveService{
                                                      Integer pagesize,String order) {
         BaseResp<Page<Improve>> baseResp = new BaseResp<>();
         Page<Improve> page = new Page<>(pageno,pagesize);
-        int totalcount = 0;
-        List<Improve> improves = null;
-        List<AppUserMongoEntity> users = new ArrayList<>();
-        if (!StringUtils.isBlank(usernickname)){
-            AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
-            appUserMongoEntity.setNickname(usernickname);
-            users = userMongoDao.getAppUsers(appUserMongoEntity);
-        }
-        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
-            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
-        }
-        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
-            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
-        }
-        if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-            totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
-            improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+        try {
+            int totalcount = 0;
+            List<Improve> improves = null;
+            List<AppUserMongoEntity> users = new ArrayList<>();
+            if (!StringUtils.isBlank(usernickname)){
+                AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+                appUserMongoEntity.setNickname(usernickname);
+                users = userMongoDao.getAppUsers(appUserMongoEntity);
+            }
+            if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            }
+            if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            }
+            if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            }
+            page.setTotalCount(totalcount);
+            page.setList(improves);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select improve list for pc is error:",e);
         }
 
-
-        return null;
+        return baseResp;
     }
 
     private boolean canAcceptAward(RankMembers rankMembers){
