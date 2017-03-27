@@ -1,6 +1,9 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductCategory;
 
 public interface ProductService {
 	
@@ -12,7 +15,7 @@ public interface ProductService {
 	 * @param userid 用户id
 	 * @param level  用户等级
 	 */
-	BaseResp<Object> category(Long userid);
+	BaseResp<List<ProductCategory>> category(Long userid);
 	
 	/**
 	 * @author yinxc
@@ -23,7 +26,7 @@ public interface ProductService {
 	 * @param starttime 日期
 	 * @param startNo pageSize
 	 */
-	 BaseResp<Object> list(Long userid, String cateid, 
+	 BaseResp<Object> list(Long userid, Long cateid, 
 			 String starttime, int startNo, int pageSize);
 
 	 /**

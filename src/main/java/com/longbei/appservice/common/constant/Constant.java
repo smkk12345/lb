@@ -111,6 +111,8 @@ public class Constant {
 	public static final int STATUS_SYS_68 = -68;
 	public static final int STATUS_SYS_69 = -69;
 	public static final int STATUS_SYS_610 = -610;
+	public static final int STATUS_SYS_611 = -611;
+	public static final int STATUS_SYS_612 = -612;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -133,6 +135,7 @@ public class Constant {
 	public static final int STATUS_SYS_97 = -97;
 	public static final int STATUS_SYS_98 = -98;
 	public static final int STATUS_SYS_99 = -99;
+	public static final int STATUS_SYS_910 = -910;
 
 
 	//100-120 商品有关
@@ -216,6 +219,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_68 = "该榜单还未开始";
 	public static final String RTNINFO_SYS_69 = "非常抱歉,该榜单已结束";
 	public static final String RTNINFO_SYS_610 = "抱歉,参榜人数已达榜最大限制人数!";
+	public static final String RTNINFO_SYS_611 = "抱歉,您暂时无法领奖,详情请联系客服";
+	public static final String RTNINFO_SYS_612 = "榜主不可退榜";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
@@ -242,17 +247,18 @@ public class Constant {
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
 
-	/** 90-99  好友相关 by wangyongzhi **/
+	/** 90-99  好友  群组 相关 by wangyongzhi **/
 	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";
 	public static final String RTNINFO_SYS_91 = "抱歉,七天内不能重复添加同一个好友!";
-	public static final String RTNINFO_SYS_92 = "";
-	public static final String RTNINFO_SYS_93 = "";
-	public static final String RTNINFO_SYS_94 = "";
-	public static final String RTNINFO_SYS_95 = "";
-	public static final String RTNINFO_SYS_96 = "";
-	public static final String RTNINFO_SYS_97 = "";
-	public static final String RTNINFO_SYS_98 = "";
-	public static final String RTNINFO_SYS_99 = "";
+	public static final String RTNINFO_SYS_92 = "抱歉,被邀请人入群后人数将超过群人数上限!";
+	public static final String RTNINFO_SYS_93 = "您已提交申请,正在等待审核";
+	public static final String RTNINFO_SYS_94 = "抱歉,您当前没有权限操作该群组相关信息";
+	public static final String RTNINFO_SYS_95 = "群主不可退出群组!";
+	public static final String RTNINFO_SYS_96 = "加入该榜单,需要用户实名认证,您还未实名认证通过";
+	public static final String RTNINFO_SYS_97 = "由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!";
+	public static final String RTNINFO_SYS_98 = "您已在龙榜中,无需再次提交申请";
+	public static final String RTNINFO_SYS_99 = "由于您被榜主踢出了该龙榜,因此无法再次申请加入!";
+	public static final String RTNINFO_SYS_910 = "您当前还未加入该榜单,或已退出该榜单";
 
 
 	//新浪提供的短连接

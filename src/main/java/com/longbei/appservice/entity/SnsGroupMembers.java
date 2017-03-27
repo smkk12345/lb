@@ -11,7 +11,7 @@ public class SnsGroupMembers {
 
     private String remark;//备注
 
-    private int status;//状态 0.待处理 1.已入群 2.拒绝入群
+    private int status;//状态 0.待处理 1.已入群 2.拒绝入群 4.已不在群中
 
     private String nickname;//群昵称
 

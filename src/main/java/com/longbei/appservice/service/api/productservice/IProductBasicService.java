@@ -1,13 +1,14 @@
 package com.longbei.appservice.service.api.productservice;
 
-
 import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
+import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
@@ -21,7 +22,7 @@ public interface IProductBasicService {
 	 * @param level  用户等级
 	 */
 	 @RequestLine("GET /product/category?userid={userid}&level={level}")
-	 BaseResp<Object> category(@Param("userid") Long userid, 
+	 BaseResp<List<ProductCategory>> category(@Param("userid") Long userid, 
 			 @Param("level") String level);
 	 
 	 /**
@@ -34,7 +35,7 @@ public interface IProductBasicService {
 	 * @param startNo pageSize
 	 */
 	 @RequestLine("GET /product/list?userid={userid}&cateid={cateid}&level={level}&starttime={starttime}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<Object> list(@Param("userid") Long userid, @Param("cateid") String cateid, @Param("level") String level, 
+	 BaseResp<Object> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level, 
 			 @Param("starttime") String starttime, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
 	 
 	 /**
@@ -335,16 +336,6 @@ public interface IProductBasicService {
 	 
 	 /**
 	 * @author yinxc
-	 * 修改订单备注
-     * @param @param orderid 
-     * @param @param remark 备注
-	 * 2017年3月22日
-	 */
-	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}&remark={remark}")
-	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, @Param("remark") String remark);
-	 
-	 /**
-	 * @author yinxc
 	 * 获取用户不同的订单状态的总数
      * @param @param userid 
      * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
@@ -378,6 +369,45 @@ public interface IProductBasicService {
 	 BaseResp<List<ProductOrders>> searchList(@Param("orderstatus") String orderstatus, @Param("ordernum") String ordernum, 
 			 @Param("username") String username, @Param("screatetime") String screatetime, @Param("ecreatetime") String ecreatetime, 
 			 @Param("startNo") int startNo, @Param("pageSize") int pageSize);
-
+	 
+	 /**
+	 * 获取异常订单列表
+	 * @author yinxc
+	 * 2017年3月24日
+	 * @param startNo 
+	 * @param pageSize 
+	 */
+	 @RequestLine("GET /api/order/exceptionlist?startNo={startNo}&pageSize={pageSize}")
+	 BaseResp<List<ProductOrders>> exceptionlist(@Param("startNo") int startNo, @Param("pageSize") int pageSize);
+    
+     /**
+	 * 订单发货
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("POST /api/order/updateDeliver?orderid={orderid}&logisticscode={logisticscode}")
+	 @Headers("Content-Type: application/json")
+	 BaseResp<Object> updateDeliver(@Param("orderid") String orderid, @Param("logisticscode") String logisticscode, 
+			 String logisticscompany);
+	 
+	 /**
+	 * @author yinxc
+	 * 修改订单备注
+     * @param @param orderid 
+     * @param @param remark 备注
+	 * 2017年3月22日
+	 */
+	 @RequestLine("GET /api/order/updateOrdersRemark?orderid={orderid}")
+	 @Headers("Content-Type: application/json")
+	 BaseResp<Object> updateOrdersRemark(@Param("orderid") String orderid, String remark);
+		 
+	 
+	 /**
+	 * 获取异常订单总数
+	 * @author yinxc
+	 * 2017年3月24日
+	 */
+	 @RequestLine("GET /api/order/selectCountException")
+	 BaseResp<Integer> selectCountException();
 
 }

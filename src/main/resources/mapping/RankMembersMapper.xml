@@ -237,7 +237,7 @@
       #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER},#{status,jdbcType=INTEGER},
       #{acceptaward,jdbcType=CHAR}, #{isfashionman,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankMembers" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankMembers">
     insert into rank_members
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -485,7 +485,7 @@
   </update>
 
   <!-- 获取用户在榜单中的排名 -->
-  <select id="selectUserSort">
+  <select id="selectUserSort" resultMap="BaseResultMap">
       select
           <include refid="Base_Column_List" />
       from
@@ -493,14 +493,17 @@
       <where>
         rankId = #{rankId}
       </where>
-      <if test="sortType == 'likes'">
+      <if test="sortType == 1">
         order by likes desc
       </if>
-      <if test="sortType == 'flower'">
+      <if test="sortType == 2">
         order by flowers desc
       </if>
+      <if test="sortType == 0">
+          order by sortnum asc
+      </if>
       <if test="startNum != null">
-          limit #{startNum},#{pageSizee}
+          limit #{startNum},#{pageSize}
       </if>
   </select>
 

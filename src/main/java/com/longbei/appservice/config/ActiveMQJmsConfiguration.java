@@ -29,7 +29,7 @@ public class ActiveMQJmsConfiguration {
 
     private int maxConnections = 100;
 
-    private String defaultDestjnation="addqueue";
+    private String defaultDestjnation="testsmkk";
 
     private String userName;
 
@@ -78,25 +78,32 @@ public class ActiveMQJmsConfiguration {
         }
         jmsTemplate = new BaseActiveMQJmsTemplate();
         jmsTemplate.setConnectionFactory(pooledConnectionFactoryBean());
-        jmsTemplate.setDefaultDestination(new ActiveMQQueue(defaultDestjnation));
         logger.debug("oooo init elasticsearchJmsTemplateBean ....");
         return jmsTemplate;
     }
 
-    @Bean
+    public BaseActiveMQJmsTemplate initDestination(ActiveMQQueue queue){
+        jmsTemplate = baseActiveMQJmsTemplateBean();
+        jmsTemplate.setDefaultDestination(queue);
+        return jmsTemplate;
+    }
+
+
+    @Bean(name="improveJmsProducer")
     public BaseJmsProducer baseJmsProducerBean() {
         ActivemqJmsProducer producer = new ActivemqJmsProducer();
-        producer.setJmsTemplate(baseActiveMQJmsTemplateBean());
+        producer.setJmsTemplate(initDestination(new ActiveMQQueue(defaultDestjnation)));
 
-        logger.debug("oooo init elasticsearchJmsProducerBean ....");
+        logger.debug("oooo init improveJmsProducer ....");
         return producer;
     }
 
-    @Bean
+    @Bean(name="improveJmsConsumer")
     public BaseJmsConsumer baseJmsConsumerBean() {
         ActivemqJmsConsumer consumer = new ActivemqJmsConsumer();
-        consumer.setJmsTemplate(baseActiveMQJmsTemplateBean());
-        logger.debug("oooo init elasticsearchJmsConsumerBean ....");
+        consumer.setJmsTemplate(initDestination(new ActiveMQQueue(defaultDestjnation)));
+
+        logger.debug("oooo init improveJmsConsumer ....");
         return consumer;
     }
 

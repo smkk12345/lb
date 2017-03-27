@@ -1,5 +1,7 @@
 package com.longbei.appservice.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.service.ProductService;
 import com.longbei.appservice.service.ProductCategoryService;
 
@@ -35,8 +38,8 @@ public class ProductController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/category")
-    public BaseResp<Object> category(String userid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<List<ProductCategory>> category(String userid) {
+		BaseResp<List<ProductCategory>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -59,15 +62,26 @@ public class ProductController {
     * @auther yxc
     * @currentdate:2017年3月15日
 	*/
-	@SuppressWarnings("unchecked")
-  	@RequestMapping(value = "/list")
-    public BaseResp<Object> list(String userid, String cateid, String starttime, int startNo, int pageSize) {
+  	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/list")
+    public BaseResp<Object> list(String userid, String cateid, String starttime, Integer startNo, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, cateid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = productService.list(Long.parseLong(userid), cateid, starttime, startNo, pageSize);
+  			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+  			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+  			if(null != startNo){
+  				sNo = startNo.intValue();
+  			}
+  			if(null != pageSize){
+  				sSize = pageSize.intValue();
+  			}
+  			if(cateid.indexOf(".0") != -1){
+  				cateid = cateid.substring(0, cateid.length()-2);
+  			}
+  			baseResp = productService.list(Long.parseLong(userid), Long.parseLong(cateid), starttime, sNo, sSize);
 		} catch (Exception e) {
 			logger.error("list userid = {}", userid, e);
 		}

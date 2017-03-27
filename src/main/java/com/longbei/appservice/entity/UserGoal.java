@@ -5,6 +5,7 @@ import java.util.Date;
 public class UserGoal {
     private Integer id;
 
+    private Long goalid;
     private Long userid;
 
     private String goaltag;//目标关键字
@@ -89,6 +90,14 @@ public class UserGoal {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Long getGoalid() {
+        return goalid;
+    }
+
+    public void setGoalid(Long goalid) {
+        this.goalid = goalid;
     }
 
     /**
