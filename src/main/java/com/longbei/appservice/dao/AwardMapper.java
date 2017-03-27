@@ -22,4 +22,11 @@ public interface AwardMapper {
                                 @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
 
     int selectAwardCount(@Param("award") Award award);
+
+    /**
+     * 查询奖品 和 奖品分类
+     * @param awardId
+     * @return
+     */
+    Award selectAwardAndAwardClassify(@Param("awardId") Integer awardId);
 }
