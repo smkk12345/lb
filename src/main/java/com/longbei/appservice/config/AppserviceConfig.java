@@ -19,9 +19,12 @@ public class AppserviceConfig {
     public static String host_outernet_service;
     public static String host_product_service;
     
-    //龙币兑换花比例       龙币兑换进步币比例
+    //龙币兑换花比例       
     public static int moneytoflower;
+    //龙币兑换进步币比例
     public static int moneytocoin;
+    //花兑换进步币比例    
+    public static int flowertocoin;
 
     @Value("${service.outernet}")
     public void setHost_outernet_service(String host_outernet_service) {
@@ -45,6 +48,11 @@ public class AppserviceConfig {
     @Value("${moneytocoin}")
 	public void setMoneytocoin(int moneytocoin) {
     	this.moneytocoin = moneytocoin;
+	}
+    
+    @Value("${flowertocoin}")
+	public void setFlowertocoin(int flowertocoin) {
+    	this.flowertocoin = flowertocoin;
 	}
 
 }
