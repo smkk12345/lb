@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.entity.UserInfo;
@@ -31,13 +29,13 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
-	@Autowired
-	private SpringJedisDao springJedisDao;
+//	@Autowired
+//	private SpringJedisDao springJedisDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserImpCoinDetailServiceImpl.class);
-	
-	
-	
+
+
+
 	/**
 	 * @author yinxc
 	 * 进步币公用添加明细方法
@@ -46,19 +44,22 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	 * param origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
 	 * 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
 	 * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
+	 * 					11:取消订单返还龙币   12:兑换鲜花
 	 *
 	 * param number 数量 --- 消耗：(7:兑换商品    9：公益抽奖消耗进步币)value值为负---方法里面已做判断
-	 * param impid 业务id  类型：     
+	 * param impid 业务id  类型：
 	 * 						发进步：进步id，  榜获奖：榜id，   收到钻石礼物和收到鲜花礼物：进步id
 	 * 						兑换商品:商品id
+	 * 						11取消订单返还龙币:	订单id
 	 * param friendid 
 	 */
+	@SuppressWarnings({ "unchecked", "static-access" })
 	@Transactional
 	@Override
 	public BaseResp<Object> insertPublic(long userid, String origin, int number, long impid, Long friendid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try{
-			if("7".equals(origin) || "9".equals(origin)){
+			if("7".equals(origin) || "9".equals(origin) || "12".equals(origin)){
 				number = 0 - number;
 			}
 			boolean flag = true;
@@ -159,15 +160,15 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 //		return reseResp;
 	}
 	
-	private void jedisKey(long userid, Integer number){
-		//存在
-		springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, number);
-		//重新设置过期时间---10秒
-		String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
-		springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, value, 10);
-		//修改数据库数据
-		userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
-	}
+//	private void jedisKey(long userid, Integer number){
+//		//存在
+//		springJedisDao.increment(Constant.RP_USER_IMP_COIN_VALUE + userid, number);
+//		//重新设置过期时间---10秒
+//		String value = springJedisDao.get(Constant.RP_USER_IMP_COIN_VALUE + userid);
+//		springJedisDao.set(Constant.RP_USER_IMP_COIN_VALUE + userid, value, 10);
+//		//修改数据库数据
+//		userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
+//	}
 
 	/**
 	 * @author yinxc

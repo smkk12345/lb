@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -185,7 +184,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.setData(list);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
 			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);
@@ -230,7 +229,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.setData(commentList);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
 			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);
