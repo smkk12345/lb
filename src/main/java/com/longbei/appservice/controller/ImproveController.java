@@ -718,5 +718,38 @@ public class ImproveController {
         return null;
     }
 
+    /**
+     * url  improve/selectListInRank
+     * @param curuserid  当前用户id
+     * @param userid   进步的用户id
+     * @param rankid  榜单id
+     * @param startno 分页数据
+     * @param pagesize
+     * @return
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "selectListInRank")
+    public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
+
+        if (StringUtils.hasBlankParams(curuserid,userid, rankid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(null == startno){
+            startno = 0;
+        }
+        if(null == pagesize){
+            pagesize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+        logger.info("inprove select userid={},impid={}", userid);
+        try {
+            return improveService.selectListInRank(curuserid,userid,rankid,
+                    Constant.IMPROVE_RANK_TYPE,startno,pagesize);
+        } catch (Exception e) {
+            logger.error("get improve detail  is error userid={},impid={} ", userid, e);
+        }
+        return null;
+    }
+
 
 }
