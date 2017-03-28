@@ -115,7 +115,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			}
 			reseResp.setData(list);
 			if(startNum == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_32, Constant.RTNINFO_SYS_32);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_32);
 				return reseResp;
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
