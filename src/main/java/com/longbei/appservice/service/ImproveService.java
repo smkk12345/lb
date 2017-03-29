@@ -419,4 +419,16 @@ public interface ImproveService {
      */
     BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<String> impids,String isrecommend);
 
+    /**
+     * 查询个人榜单中的进步列表
+     * @param userid
+     * @param businessid
+     * @param businesstype
+     * @param startno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<List<Improve>> selectListInRank(String curuserid,String userid,String businessid,
+                                                      String businesstype,Integer startno,Integer pagesize);
+
 }

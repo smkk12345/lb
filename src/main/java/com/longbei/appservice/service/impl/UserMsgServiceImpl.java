@@ -270,7 +270,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			
 			
 			if (startNum == 0 && list.size() == 0) {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -469,7 +469,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
@@ -705,7 +705,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {

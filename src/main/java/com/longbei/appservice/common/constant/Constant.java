@@ -62,6 +62,8 @@ public class Constant {
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
 	public static final int STATUS_SYS_22 = -22;
+	public static final int STATUS_SYS_23 = -23;
+	public static final int STATUS_SYS_24 = -24;
 	
 	public static final int STATUS_SYS_26 = -26;
 	public static final int STATUS_SYS_27 = -27;
@@ -174,6 +176,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
 	public static final String RTNINFO_SYS_21 = "暂无评论信息";
 	public static final String RTNINFO_SYS_22 = "该评论已点赞";
+	public static final String RTNINFO_SYS_23 = "龙币数量不足";
+	public static final String RTNINFO_SYS_24 = "进步币数量不足";
 	
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
 	public static final String RTNINFO_SYS_27 = "暂无搜索信息";

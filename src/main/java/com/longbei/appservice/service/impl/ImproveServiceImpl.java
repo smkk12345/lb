@@ -2263,6 +2263,21 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
+        if(ResultUtil.isSuccess(baseResp)){
+            List<Improve> list = baseResp.getData();
+            for (int i = 0; i < list.size(); i++) {
+                Improve improve = list.get(i);
+                initImproveInfo(improve,Long.parseLong(curuserid));
+//                initUserRelateInfo();
+                initImproveUserInfo(improve,Long.parseLong(curuserid));
+            }
+        }
+        return baseResp;
+    }
+
     private boolean canAcceptAward(RankMembers rankMembers){
         boolean result = false;
         if(rankMembers.getIswinning().equals("1")&&rankMembers.getAcceptaward().equals("0")){

@@ -13,10 +13,7 @@ import com.longbei.appservice.service.UserBusinessConcernService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -431,6 +428,33 @@ public class RankController {
 //        }
 //        return BaseResp.fail(Constant.RTNINFO_SYS_51);
 //    }
+
+    /**
+     * url: http://ip:port/app_service/rank/selectRankList
+     * @ 首页推荐的龙榜列表
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectRankListForApp")
+    public BaseResp<List<Rank>> selectRankListForApp(String pageno, String pagesize){
+        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(pageno)){
+            pageno = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            Rank r = new Rank();
+            r.setIsrecommend("1");
+            baseResp = rankService.selectRankListForApp(r,Integer.parseInt(pageno),Integer.parseInt(pagesize),true);
+        } catch (Exception e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return baseResp;
+    }
 
 
 }
