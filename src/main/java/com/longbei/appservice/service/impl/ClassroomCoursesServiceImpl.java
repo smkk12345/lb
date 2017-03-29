@@ -28,7 +28,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			reseResp.setData(list);
 			if(startNum == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_34, Constant.RTNINFO_SYS_34);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_34);
 				return reseResp;
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

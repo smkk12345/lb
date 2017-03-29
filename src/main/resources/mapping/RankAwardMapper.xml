@@ -143,4 +143,13 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <!-- 根据rankId和awardId 查询rankAward  -->
+  <select id="selectRankAwardByRankIdAndAwardId" resultMap="BaseResultMap">
+      select 
+        <include refid="Base_Column_List" />
+      from rank_award
+      where rankid = #{rankId}
+          and awardid = #{awardId}
+  </select>
+
 </mapper>

@@ -2,7 +2,9 @@ package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
@@ -166,6 +168,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype,
 			int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<>();
+		int commentNum = 0;
 		try {
 			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
 			if(null != list && list.size()>0){
@@ -182,11 +186,18 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //						comment.setIsaddlike("1");
 //					}
 				}
+				BaseResp<Integer> resp = selectCommentCountSum(businessid, businesstype);
+				//获取评论总数
+				if (ResultUtil.isSuccess(resp)){
+					commentNum = resp.getData();
+		        }
 				reseResp.setData(list);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_21);
 			}
+			expandData.put("commentNum", commentNum);
+			reseResp.setExpandData(expandData);
 		} catch (Exception e) {
 			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
@@ -230,7 +241,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				reseResp.setData(commentList);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_21, Constant.RTNINFO_SYS_21);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_21);
 			}
 		} catch (Exception e) {
 			logger.error("selectCommentListByItypeidAndFriendid businessid = {}, businesstype = {}", businessid, businesstype, e);

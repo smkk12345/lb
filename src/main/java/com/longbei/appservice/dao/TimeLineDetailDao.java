@@ -25,7 +25,6 @@ import java.util.List;
 @Repository
 public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
 
-
     public void updateImproveFileKey(String sourcekey,String pickey,String fliekey){
         Criteria criteria = Criteria.where("sourcekey").is(sourcekey);
         Query query = new Query(criteria);
@@ -89,7 +88,6 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
     }
 
-
     public void deleteImprove(Long improveid,String userid){
         Query query = Query.query(Criteria.where("improveId").is(improveid));
         TimeLineDetail timeLineDetail = mongoTemplate.findOne(query, TimeLineDetail.class);
@@ -99,7 +97,5 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         }
         mongoTemplate.remove(query, TimeLineDetail.class);
     }
-
-
 
 }

@@ -482,7 +482,7 @@
           totalflower = totalflower + #{totalflower},
         </if>
       </set>
-      where
+      where 
         userid=#{userid}
   </update>
   
@@ -495,7 +495,33 @@
     <if test="totalmoney != 0">
       totalmoney = totalmoney + #{totalmoney}
     </if>
-    WHERE userid = #{userid}
+    WHERE 
+    <if test="totalflower &lt; 0">
+      totalflower > ROUND(#{totalflower}) and
+    </if>
+    <if test="totalmoney &lt; 0">
+      totalmoney > ROUND(#{totalmoney}) and
+    </if>
+    userid = #{userid}
+  </update>
+  
+  <update id="updateCoinAndFlowerByUserid">
+    update user_info 
+    set 
+    <if test="totalflower != 0">
+      totalflower = totalflower + #{totalflower},
+    </if>
+    <if test="totalmoney != 0">
+      totalcoin = totalcoin + #{totalcoin}
+    </if>
+    WHERE 
+    <if test="totalflower &lt; 0">
+      totalflower > ROUND(#{totalflower}) and
+    </if>
+    <if test="totalcoin &lt; 0">
+      totalcoin > ROUND(#{totalcoin}) and
+    </if>
+    userid = #{userid}
   </update>
 
 </mapper>

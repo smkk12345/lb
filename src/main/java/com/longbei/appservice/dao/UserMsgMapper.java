@@ -199,4 +199,24 @@ public interface UserMsgMapper {
      * @return
      */
 	UserMsg findCircleNoticeMsg(@Param("circleId") Long circleId,@Param("userId") Long userId);
+
+	/**
+	 * 查看是否有同一个类型的信息
+	 * @param userId 接收消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	int findSameTypeMessage(@Param("userId")Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType);
+
+	/**
+	 * 更改消息的已读状态
+	 * @param userId 接受消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType);
 }

@@ -2308,7 +2308,21 @@ public class ImproveServiceImpl implements ImproveService{
             timeLineDetailDao.updateRecommendImproveSort(impid,businesstype,sort);
             baseResp = BaseResp.ok();
         } catch (Exception e) {
-            logger.error("update improve recommend sort is error:",e);
+            logger.error("update improve recommend sort is error:", e);
+        }
+        return baseResp;
+    }
+    @Override
+    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
+        if(ResultUtil.isSuccess(baseResp)){
+            List<Improve> list = baseResp.getData();
+            for (int i = 0; i < list.size(); i++) {
+                Improve improve = list.get(i);
+                initImproveInfo(improve,Long.parseLong(curuserid));
+//                initUserRelateInfo();
+                initImproveUserInfo(improve,Long.parseLong(curuserid));
+            }
         }
         return baseResp;
     }
