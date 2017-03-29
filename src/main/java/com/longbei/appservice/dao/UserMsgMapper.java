@@ -170,7 +170,7 @@ public interface UserMsgMapper {
 	 * return_type
 	 * UserMsgService
 	 */
-    int updateIsreadByid(@Param("id") Integer id);
+    int updateIsreadByid(@Param("id") Integer id, @Param("userid") long userid);
     
     /**
 	 * @author yinxc

@@ -26,6 +26,17 @@ public interface IProductCategoryService {
 	BaseResp<Object> productCategories();
 
 	/**
+	 * @Title: selectCategory
+	 * @Description: 查找类目列表(通过父级类目id)
+	 * @param @param parentid 父级类目编号 (通过parentid=1可查全部一级类目id，一级类目id可查其全部二级类目id，后面级别以此类推)
+	 * @param @param startNum分页起始值，pageSize每页显示条数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月29日
+	 */
+	@RequestLine("GET /product/selectCategory?parentid={parentid}&startNum={startNum}&pageSize={pageSize}")
+	BaseResp<Object> selectCategory(@Param("parentid") String parentid,@Param("startNum") String startNum,@Param("pageSize")String pageSize);
+
+	/**
 	 * @Title: insertCategory
 	 * @Description: 添加商品类目
 	 * @param @param catename 商品类目名称

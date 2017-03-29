@@ -79,9 +79,10 @@ public class ImproveController {
     /**
      * @Title: http://ip:port/app_service/improve/addImpComplaints
      * @Description: 投诉进步
-     * @param @param userid
+     * @param @param userid 投诉人id
      * @param @param impid 进步id
-     * @param @param impid 投诉内容
+     * @param @param content 投诉内容
+     * @param @param friendid 被投诉人id
      * @param @param contenttype  0：该微进步与龙榜内容不符~~
      * @param @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -91,12 +92,12 @@ public class ImproveController {
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "addImpComplaints")
-    public BaseResp<ImpComplaints> addImpComplaints(String userid, String impid, String content, String contenttype,
+    public BaseResp<ImpComplaints> addImpComplaints(String userid, String friendid, String impid, String content, String contenttype,
                                              String gtype) {
         logger.info("addImpComplaints userid={},impid={},content={},contenttype={},gtype={}", userid, impid, content,
                 contenttype, gtype);
         BaseResp<ImpComplaints> baseResp = new BaseResp<>();
-        if (StringUtils.hasBlankParams(userid, impid, contenttype, gtype)) {
+        if (StringUtils.hasBlankParams(userid, friendid, impid, contenttype, gtype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
@@ -108,7 +109,7 @@ public class ImproveController {
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
-            baseResp = impComplaintsService.insertSelective(record);
+            baseResp = impComplaintsService.insertSelective(record, Long.parseLong(friendid));
         } catch (Exception e) {
             logger.error(
                     "addImpComplaints userid = {}, impid = {}, content = {}, contenttype = {}, gtype = {}, msg = {}",
