@@ -556,7 +556,7 @@ public class Constant {
 
 	/****** JPUSH 消息的tag start ******/
 
-	public static final String JPUSH_TAG_COUNT_1001 = "1001";
+	public static final String JPUSH_TAG_COUNT_1001 = "1001";//申请加好友通知
 
 	/****** JPUSH 消息的tag end ******/
 
