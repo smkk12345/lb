@@ -69,7 +69,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 			record.setImpid(impid);
 
 			//1.从超级用户中扣除进步币 只有给用户加进步币的时候,才从超级用户中扣除进步币
-			if(number > 0){
+			if(number > 0 && !"11".equals(origin)){
 				int updateRow = this.userInfoMapper.updateUserCoin(Long.parseLong(Constant.SQUARE_USER_ID),-number);
 				if(updateRow < 1){
 					flag = false;

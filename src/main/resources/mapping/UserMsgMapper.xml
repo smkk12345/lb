@@ -97,13 +97,13 @@
   <select id="selectCountByType" resultType="java.lang.Integer">
   	SELECT count(1) from user_msg
   	where userid = #{userid} 
-  	<if test="mtype != null" >
+  	<if test="mtype != null and mtype != ''" >
     	and mtype = #{mtype} 
     </if> 
-    <if test="msgtype != null" >
+    <if test="msgtype != null and msgtype != ''" >
     	and msgtype = #{msgtype}  
     </if> 
-    <if test="isread != null" >
+    <if test="isread != null and isread != ''" >
     	and isread = #{isread}
     </if> 
   </select>
@@ -307,7 +307,8 @@
   <update id="updateIsreadByid">
     update user_msg
     SET  isread = 1,updatetime = now()
-    where id = #{id}
+    where id = #{id} 
+    and userid = #{userid}
   </update>
   
   <update id="updateIsreadByUserid">
