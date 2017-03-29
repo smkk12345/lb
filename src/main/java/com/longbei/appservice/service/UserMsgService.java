@@ -211,7 +211,7 @@ public interface UserMsgService {
 	 * 修改消息已读状态信息
 	 * 2017年2月7日
 	 */
-	BaseResp<Object> updateIsreadByid(Integer id);
+	BaseResp<Object> updateIsreadByid(Integer id, long userid);
 	
 	/**
 	 * @author yinxc

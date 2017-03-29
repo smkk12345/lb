@@ -301,10 +301,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 
 	@Override
-	public BaseResp<Object> updateIsreadByid(Integer id) {
+	public BaseResp<Object> updateIsreadByid(Integer id, long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = updateId(id);
+			boolean temp = updateId(id, userid);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -314,8 +314,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 	
-	private boolean updateId(Integer id){
-		int temp = userMsgMapper.updateIsreadByid(id);
+	private boolean updateId(Integer id, long userid){
+		int temp = userMsgMapper.updateIsreadByid(id, userid);
 		return temp > 0 ? true : false;
 	}
 
