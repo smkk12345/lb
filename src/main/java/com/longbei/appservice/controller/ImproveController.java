@@ -91,11 +91,11 @@ public class ImproveController {
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "addImpComplaints")
-    public BaseResp<Object> addImpComplaints(String userid, String impid, String content, String contenttype,
+    public BaseResp<ImpComplaints> addImpComplaints(String userid, String impid, String content, String contenttype,
                                              String gtype) {
         logger.info("addImpComplaints userid={},impid={},content={},contenttype={},gtype={}", userid, impid, content,
                 contenttype, gtype);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<ImpComplaints> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, impid, contenttype, gtype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -719,16 +719,36 @@ public class ImproveController {
     }
 
     /**
-     * url  improve/selectListInRank
-     * @param curuserid  当前用户id
-     * @param userid   进步的用户id
-     * @param rankid  榜单id
-     * @param startno 分页数据
+     * 获取进步推荐列表
+     * @param userid
+     * @param startno
      * @param pagesize
      * @return
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
+    @RequestMapping(value = "recommendlist")
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startno,String pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        if (StringUtils.isBlank(startno)) {
+            startno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)) {
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImproveList(userid, Integer.parseInt(startno),
+                    Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select recommend improve list for app is error:", e);
+        }
+        return baseResp;
+    }
+
+
     @RequestMapping(value = "selectListInRank")
     public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
 
