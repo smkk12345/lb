@@ -267,7 +267,7 @@ public class GroupController {
         }
 
         Date updateDate = null;
-        if(StringUtils.isNotEmpty(updateTime)){
+        if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
             try{
                 updateDate = DateUtils.formatDate(updateTime,null);
             }catch(Exception e){

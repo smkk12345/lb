@@ -589,5 +589,19 @@ public class RankApiController {
         return baseResp;
     }
 
+    /**
+     * 通知关注榜单的用户 榜单已开始
+     * @param currentTime
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="noticeFollowRankUser")
+    public BaseResp<Object> noticeFollowRankUser(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        System.out.println("-------------"+currentTime);
+        baseResp.setData(currentTime);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
 
 }
