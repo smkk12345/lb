@@ -84,6 +84,15 @@ public interface RankService extends BaseService{
      * @author luye
      */
     Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
+    /**
+     * 获取榜单列表 推荐的 针对app
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author lixb
+     */
+    BaseResp<List<Rank>> selectRankListForApp(Rank rank, int pageno, int pagesize,Boolean showAward);
 
     /**
      * 删除榜单 非线上
@@ -226,7 +235,7 @@ public interface RankService extends BaseService{
      * @param rank
      * @return
      */
-    BaseResp<Object> submitRankMemberCheckResult(Rank rank);
+    BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank);
 
     /**
      * 获取成员列表 预览
@@ -284,7 +293,7 @@ public interface RankService extends BaseService{
      * @param rankid
      * @return
      */
-    BaseResp<Object> rankAwardDetail(Long rankid);
+    BaseResp<Object> rankAwardDetail(Long rankid,Long userid);
 
     /**
      * 通过各种条件 查询榜 列表
@@ -330,4 +339,18 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId);
+
+    /**
+     * 查看单个用户在榜中的信息
+     * @param userid
+     * @param currentUserId
+     * @return
+     */
+    BaseResp<Object> selectRankMebmerDetail(Long userid,Long rankId, Long currentUserId);
+
+    /**
+     * 查询中奖的用户
+     * @return
+     */
+    BaseResp<Object> selectWinningRankAward();
 }

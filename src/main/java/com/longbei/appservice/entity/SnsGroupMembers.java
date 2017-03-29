@@ -21,6 +21,8 @@ public class SnsGroupMembers {
 
     private Date updatetime;//更新时间
 
+    private Long inviteuserid;//邀请加入群组的用户id
+
     /**
      * 
      * @return id 
@@ -143,5 +145,13 @@ public class SnsGroupMembers {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public Long getInviteuserid() {
+        return inviteuserid;
+    }
+
+    public void setInviteuserid(Long inviteuserid) {
+        this.inviteuserid = inviteuserid;
     }
 }

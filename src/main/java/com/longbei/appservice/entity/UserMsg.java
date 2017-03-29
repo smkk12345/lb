@@ -17,21 +17,23 @@ public class UserMsg {
 												//25:订单发货N天后自动确认收货    26：实名认证审核结果
 												//27:工作认证审核结果      28：学历认证审核结果
 												//29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-												//32：创建的龙榜/教室/圈子被选中推荐  33：订单已取消)
+												//32：创建的龙榜/教室/圈子被选中推荐  
+												//40：订单已取消)
 							//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 							//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 
-	private String msgtype; //0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等
+	private String msgtype; //0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝 等等
 							//10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
-							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果
+							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果 33.榜主/群主接收申请消息
 							// 18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 							//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 							//25:订单发货N天后自动确认收货    26：实名认证审核结果
 							//27:工作认证审核结果      28：学历认证审核结果
 							//29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-							//32：创建的龙榜/教室/圈子被选中推荐  33：订单已取消
-
+							//32：创建的龙榜/教室/圈子被选中推荐
+							//32：创建的龙榜/教室/圈子被选中推荐 33.榜主/群主接收申请消息 34.
+	  						//40：订单已取消
 	private Long snsid;// 业务id
 
 	private String remark;// 可能会有一些说明
@@ -45,6 +47,8 @@ public class UserMsg {
 	private Integer num;  //送花  送钻石   个数
 	
 	private Date createtime;
+
+	private Date updatetime;
 	
 	private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
 	
@@ -293,7 +297,15 @@ public class UserMsg {
 		this.num = num;
 	}
 
-//	public String getImpPickey() {
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
+	//	public String getImpPickey() {
 //		return impPickey;
 //	}
 //
@@ -308,5 +320,5 @@ public class UserMsg {
 //	public void setImpFilekey(String impFilekey) {
 //		this.impFilekey = impFilekey;
 //	}
-	
+
 }

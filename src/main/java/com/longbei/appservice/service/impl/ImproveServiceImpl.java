@@ -2271,6 +2271,8 @@ public class ImproveServiceImpl implements ImproveService{
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
                 initImproveInfo(improve,Long.parseLong(curuserid));
+//                initUserRelateInfo();
+                initImproveUserInfo(improve,Long.parseLong(curuserid));
             }
         }
         return baseResp;

@@ -13,10 +13,7 @@ import com.longbei.appservice.service.UserBusinessConcernService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -284,17 +281,18 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="rankAwardDetail")
-    public BaseResp<Object> rankAwardDetail(Long rankid){
+    public BaseResp<Object> rankAwardDetail(Long rankid,Long userid){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.rankAwardDetail(rankid);
+        baseResp = this.rankService.rankAwardDetail(rankid,userid);
         return baseResp;
     }
 
     /**
      * 查询我的龙榜列表
+     * @url http://ip:port/app_service/rank/selectOwnRank
      * @param userid
      * @param searchType 1.我参与的 2.我关注的 3.我创建的
      * @param startNum
@@ -323,6 +321,7 @@ public class RankController {
 
     /**
      * 添加关注
+     * @url http://ip:port/app_service/rank/insertUserBusinessConcern
      * @param userid 用户id
      * @param businessType 关注的类型1 目标 2 榜单 3 圈子 4 教室
      * @param businessId 关注的类型id
@@ -340,6 +339,7 @@ public class RankController {
 
     /**
      * 取消关注
+     * @url http://ip:port/app_service/rank/deleteUserBusinessConcern
      * @param userid
      * @param businessType 关注的类型 1 目标 2 榜单 3 圈子 4 教室
      * @param businessId 关注的类型id
@@ -352,6 +352,35 @@ public class RankController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.userBusinessConcernService.deleteUserBusinessConcern(userid,businessType,businessId);
+        return baseResp;
+    }
+
+    /**
+     * 查看单个用户在榜中的信息
+     * @url http://ip:port/app_service/rank/selectRankMemberDetail
+     * @param userid 用户id
+     * @param rankId 榜单id
+     * @param currentUserId 当前登录用户id
+     * @return
+     */
+    @RequestMapping(value="selectRankMemberDetail")
+    public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId,Long currentUserId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || currentUserId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,currentUserId);
+        return baseResp;
+    }
+
+    /**
+     * 查询中奖的用户和奖项
+     * @url @url http://ip:port/app_service/rank/selectWinningRankAward
+     * @return
+     */
+    @RequestMapping(value="selectWinningRankAward")
+    public BaseResp<Object> selectWinningRankAward(){
+        BaseResp<Object> baseResp = this.rankService.selectWinningRankAward();
         return baseResp;
     }
 
@@ -399,6 +428,33 @@ public class RankController {
 //        }
 //        return BaseResp.fail(Constant.RTNINFO_SYS_51);
 //    }
+
+    /**
+     * url: http://ip:port/app_service/rank/selectRankList
+     * @ 首页推荐的龙榜列表
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectRankListForApp")
+    public BaseResp<List<Rank>> selectRankListForApp(String pageno, String pagesize){
+        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(pageno)){
+            pageno = Constant.DEFAULT_START_NO;
+        }
+        if(StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            Rank r = new Rank();
+            r.setIsrecommend("1");
+            baseResp = rankService.selectRankListForApp(r,Integer.parseInt(pageno),Integer.parseInt(pagesize),true);
+        } catch (Exception e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return baseResp;
+    }
 
 
 }
