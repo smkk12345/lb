@@ -106,19 +106,19 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             springJedisDao.set(Constant.REDIS_RANK_END+rank.getId(),"end",4);
 
             //2.从redis中同步用户的排名
-//            Set<String> rankSortSet = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),0,-1);
-//            int i = 1;
-//            Integer minImproveNum = Integer.parseInt(rank.getMinimprovenum());
-//
-//            Map<String,Object> map =new HashMap<String,Object>();
-//            map.put("rankId",rank.getRankid());
-//            for(String userId:rankSortSet){
-//                map.put("userId",userId);
-//                map.put("sortNum",i);
-//
-//                int row = this.rankMembersMapper.updateRank(map);
-//                i++;
-//            }
+            Set<String> rankSortSet = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),0,-1);
+            int i = 1;
+            Integer minImproveNum = Integer.parseInt(rank.getMinimprovenum());
+
+            Map<String,Object> map =new HashMap<String,Object>();
+            map.put("rankId",rank.getRankid());
+            for(String userId:rankSortSet){
+                map.put("userId",userId);
+                map.put("sortNum",i);
+
+                int row = this.rankMembersMapper.updateRank(map);
+                i++;
+            }
             //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
             Map<String,Object> updateMap = new HashMap<String,Object>();
             updateMap.put("rankId",rank.getRankid());
@@ -136,7 +136,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
 
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
             if("0".equals(rank.getIscheck())){
-                this.rankService.submitRankMemberCheckResultPreview(rank.getRankid()+"");
+                this.rankService.submitRankMemberCheckResult(rank,false);
             }
 
             //5.更改rank的活动标识为已结束

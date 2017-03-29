@@ -226,7 +226,7 @@ public interface RankService extends BaseService{
      * @param rank
      * @return
      */
-    BaseResp<Object> submitRankMemberCheckResult(Rank rank);
+    BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank);
 
     /**
      * 获取成员列表 预览
@@ -330,4 +330,18 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId);
+
+    /**
+     * 查看单个用户在榜中的信息
+     * @param userid
+     * @param currentUserId
+     * @return
+     */
+    BaseResp<Object> selectRankMebmerDetail(Long userid,Long rankId, Long currentUserId);
+
+    /**
+     * 查询中奖的用户
+     * @return
+     */
+    BaseResp<Object> selectWinningRankAward();
 }

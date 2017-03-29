@@ -385,6 +385,52 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType);
 	}
 
+	/**
+	 * 发送消息
+	 * @param isOnly 消息是否要求唯一
+	 * @param userId 接受消息 用户id
+	 * @param friendId 发送消息
+	 * @param mType 消息类型 0.系统消息 1.对话消息 2.@我消息
+	 * @param msgType
+	 * @param snsId 业务id
+	 * @param remark 备注
+	 * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+     * @return
+     */
+	@Override
+	public boolean sendMessage(boolean isOnly, Long userId, Long friendId, String mType, String msgType, Long snsId, String remark, String gType) {
+		if(isOnly){
+			//先查询是否有该类型的 消息 根据接收人userid, msytype 业务id snsId
+			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
+			if(count > 0){
+				//直接更改已读状态
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType);
+				if(updateRow > 0){
+					return true;
+				}
+			}
+		}
+		UserMsg userMsg = new UserMsg();
+		userMsg.setUserid(userId);
+		if(friendId != null){
+			userMsg.setFriendid(friendId);
+		}
+		userMsg.setMsgtype(msgType);
+		userMsg.setSnsid(Long.parseLong(snsId+""));
+		userMsg.setRemark(remark);
+		userMsg.setGtype(gType);
+		userMsg.setMtype(mType);
+		userMsg.setCreatetime(new Date());
+		userMsg.setIsdel("0");
+		userMsg.setIsread("0");
+
+		BaseResp<Object> insertResult = this.insertSelective(userMsg);
+		if(insertResult.getCode() == 0){
+			return true;
+		}
+		return false;
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;

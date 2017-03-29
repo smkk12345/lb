@@ -12,12 +12,16 @@ import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.SnsGroup;
 import com.longbei.appservice.entity.SnsGroupMembers;
+import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.GroupService;
+import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.api.HttpClient;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +44,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private SpringJedisDao springJedisDao;
     @Autowired
     private UserMongoDao userMongoDao;
+    @Autowired
+    private UserMsgService userMsgService;
 
     /**
      * 新建群组
@@ -268,6 +274,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         updateMap.put("updateUserIds",updateGroupMemberList);
                         updateMap.put("groupId",groupId);
                         updateMap.put("status",status);
+                        if(invitationUserId != null){
+                            updateMap.put("inviteuserid",invitationUserId);
+                        }
                         //更改用户加群的状态
                         int updateStatusRow = this.snsGroupMembersMapper.batchUpdateSnsGroupMemberStatus(updateMap);
                         if(updateStatusRow > 0 && status == 1){
@@ -287,6 +296,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             newSnsGroupMember.setCreatetime(new Date());
             newSnsGroupMember.setUpdatetime(new Date());
             newSnsGroupMember.setGroupid(Long.parseLong(groupId));
+            if(invitationUserId != null){
+                newSnsGroupMember.setInviteuserid(invitationUserId);
+            }
             if(!snsGroup.getNeedconfirm() || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
                 newSnsGroupMember.setStatus(1);
                 boolean flag = insertRongYunGroupMember(userIdList.toArray(new String[]{}),snsGroup.getGroupid()+"",snsGroup.getGroupname());
@@ -306,10 +318,20 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     userList.add(appUserMongoEntity);
                 }
             }
+            if(userList.size() < 1){
+                return baseResp.ok();
+            }
+
+            //通知群主审核
+            if(newSnsGroupMember.getStatus() == 0){
+                String memo = "有用户申请加入群组:"+snsGroup.getGroupname()+",快去处理吧!";
+                boolean sendMessageFlag = this.userMsgService.sendMessage(true,snsGroup.getMainuserid(),null,"0","33",snsGroup.getGroupid(),memo,"5");
+            }
 
             Map<String,Object> insertMap = new HashMap<String,Object>();
             insertMap.put("snsGroupMembers",newSnsGroupMember);
             insertMap.put("userList",userList);
+            System.out.println("````````````````"+userList.size());
             int insertRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
             if(insertRow > 0){
                 insertGroupNum += userIdList.size();
@@ -344,6 +366,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroup == null){
                 return baseResp.fail("您暂时没有权限操作该群组相关信息");
             }
+            Set<Long> sendMessageUserList = new HashSet<Long>();
+            Set<Long> sendToInviteUserList = new HashSet<Long>();
             List<String> deleteList = new ArrayList<String>();
             List<String> userIdList = new ArrayList<String>(Arrays.asList(userIds));
             int insertGroupNum = 0;
@@ -353,13 +377,21 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             parameterMap.put("userIds",userIdList);
             parameterMap.put("groupId",groupId);
             List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+            if(snsGroupMembersList == null || snsGroupMembersList.size() == 0){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
 
-            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
-                for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                    if(status.equals(snsGroupMembers.getStatus())){
-                        userIdList.remove(snsGroupMembers.getUserid()+"");
-                    }else if(status == 2 && snsGroupMembers.getStatus() == 1){//原来是审核通过的,现在变成审核不通过
-                        deleteList.add(snsGroupMembers.getUserid()+"");
+            for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                if(status.equals(snsGroupMembers.getStatus())){
+                    userIdList.remove(snsGroupMembers.getUserid()+"");
+                }else if(status == 2 && snsGroupMembers.getStatus() == 1){//原来是审核通过的,现在变成审核不通过
+                    deleteList.add(snsGroupMembers.getUserid()+"");
+                }
+                if(snsGroupMembers.getStatus() == 0){
+                    if(snsGroupMembers.getInviteuserid() != null){
+                        sendToInviteUserList.add(snsGroupMembers.getInviteuserid());
+                    }else{
+                        sendMessageUserList.add(snsGroupMembers.getUserid());
                     }
                 }
             }
@@ -385,6 +417,34 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     insertGroupNum += userIdList.size();
                 }
             }
+
+            UserMsg userMsg = new UserMsg();
+            userMsg.setFriendid(snsGroup.getMainuserid());
+            userMsg.setMtype("0");
+            userMsg.setMsgtype("17");
+            userMsg.setGtype("5");
+            userMsg.setSnsid(snsGroup.getGroupid());
+            userMsg.setIsdel("0");
+            userMsg.setIsread("0");
+            userMsg.setCreatetime(new Date());
+            userMsg.setUpdatetime(new Date());
+            if(sendMessageUserList.size() > 0){
+                List<Long> tempList = new ArrayList<Long>();
+                for(Long tempUserId:sendMessageUserList){
+                    tempList.add(tempUserId);
+                }
+                userMsg.setRemark("您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
+            }
+            if(sendToInviteUserList.size() > 0){
+                List<Long> tempList = new ArrayList<Long>();
+                for(Long tempUserId:sendToInviteUserList){
+                    tempList.add(tempUserId);
+                }
+                userMsg.setRemark("您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
+            }
+
             Map<String, Object> updateMap = new HashMap<String, Object>();
             updateMap.put("updateUserIds", userIdList);
             updateMap.put("groupId", groupId);

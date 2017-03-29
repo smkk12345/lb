@@ -264,4 +264,18 @@ public interface UserMsgService {
      * @return
      */
 	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType);
+
+	/**
+	 * 发送消息
+	 * @param isOnly 消息是否要求唯一
+	 * @param userId 接受消息 用户id
+	 * @param friendId 发送消息
+	 * @param mType 消息类型 0.系统消息 1.对话消息 2.@我消息
+	 * @param msgType
+	 * @param snsId 业务id
+	 * @param remark 备注
+     * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+     * @return
+     */
+	boolean sendMessage(boolean isOnly,Long userId,Long friendId,String mType,String msgType,Long snsId,String remark,String gType);
 }

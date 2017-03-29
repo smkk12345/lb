@@ -82,6 +82,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private RankAcceptAwardMapper rankAcceptAwardMapper;
     @Autowired
     private UserMsgService userMsgService;
+    @Autowired
+    private SnsFriendsMapper snsFriendsMapper;
 
     /**
      *  @author luye
@@ -978,15 +980,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
     @Override
-    public BaseResp<Object> submitRankMemberCheckResult(Rank rank) {
+    public BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank) {
         BaseResp<Object>  baseResp = submitRankMemberCheckResultPreview(String.valueOf(rank.getRankid()));
         if (ResultUtil.isSuccess(baseResp)){
-            int res = rankMapper.updateSymbolByRankId(rank);
-            if (res > 0){
-                //添加中奖名单信息
-                insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
-                return baseResp;
+            if(isUpdateRank){
+                int res = rankMapper.updateSymbolByRankId(rank);
             }
+            //添加中奖名单信息
+            insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
+            return baseResp;
         }
         return BaseResp.fail();
     }
@@ -1345,6 +1347,87 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }catch(Exception e){
             logger.error("accept real award error userid:{} rankId:{} userAddressId:{}",userId,rankId,userAddressId);
             printExceptionAndRollBackTransaction(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查看单个用户在榜中的信息
+     * @param userid 用户id
+     * @param currentUserId 当前登录用户id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectRankMebmerDetail(Long userid,Long rankId, Long currentUserId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
+            if(appUserMongoEntity == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
+            if(rankMembers == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            Long sortNum = null;
+            if(rankMembers.getSortnum() == null){
+                sortNum = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userid+"");
+            }else{
+                sortNum = new Long(rankMembers.getSortnum());
+            }
+            SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
+            if(snsFans != null){
+                resultMap.put("isfans",1);
+            }else{
+                resultMap.put("isfans",0);
+            }
+            SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userid,currentUserId);
+            if(snsFriends != null && "0".equals(snsFriends.getIsdel())){
+                resultMap.put("isFriends",1);
+            }else{
+                resultMap.put("isFriends",0);
+            }
+
+            resultMap.put("likes",rankMembers.getLikes());
+            resultMap.put("flowers",rankMembers.getFlowers());
+            resultMap.put("nickname",appUserMongoEntity.getNickname());
+            resultMap.put("avatar",appUserMongoEntity.getAvatar());
+            resultMap.put("userid",appUserMongoEntity.getUserid());
+            resultMap.put("sortnum",sortNum);
+            resultMap.put("icount",rankMembers.getIcount());
+
+            baseResp.setData(resultMap);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select rankMember detail error userid:{} currentUserId:{}",userid,currentUserId);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询中奖的用户
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectWinningRankAward() {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            List<RankMembers> winningRankAwardList = this.rankMembersMapper.selectWinningRankAward();
+            if(winningRankAwardList != null && winningRankAwardList.size() > 0){
+                for(RankMembers rankMembers: winningRankAwardList){
+                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
+
+                    Map<String,Object> map = new HashMap<String,Object>();
+                    map.put("rankid",rankMembers.getRankid());
+                    map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
+                    map.put("nickname",appUserMongoEntity.getNickname());
+                    resultList.add(map);
+                }
+            }
+            baseResp.setData(resultList);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select winning rankAward error");
+            printException(e);
         }
         return baseResp;
     }
