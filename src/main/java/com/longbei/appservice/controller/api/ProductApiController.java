@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -60,6 +61,34 @@ public class ProductApiController {
 			logger.error("productCategories error",e);
 		}
 		return null;
+	}
+
+	/**
+	 * @Title: http://ip:port/app_service/product/selectCategory
+	 * @Description: 查找类目列表(通过父级类目id)
+	 * @param @param parentid 父级类目编号 (通过parentid=1可查全部一级类目id，一级类目id可查其全部二级类目id，后面级别以此类推)
+	 * @param @param startNum分页起始值，pageSize每页显示条数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月29日
+	 */
+	@RequestMapping(value = "/selectCategory")
+	@ResponseBody
+	public BaseResp<Object> selectCategory(String parentid,String startNum,String pageSize) {
+		logger.info("selectCategory and parentid={},startNum={},pageSize={}",parentid,startNum,pageSize);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.isBlank(startNum)) {
+			startNum = "0";
+		}
+		if (StringUtils.isBlank(pageSize)) {
+			pageSize = "15";
+		}
+		try {
+			baseResp = productCategoryService.selectCategory(parentid,startNum,pageSize);
+			return baseResp;
+		} catch (Exception e) {
+			logger.error("selectCategory and parentid={},startNum={},pageSize={}",parentid,startNum,pageSize,e);
+		}
+		return baseResp;
 	}
 
 	/**

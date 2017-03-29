@@ -24,6 +24,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> selectCategory(String parentid,String startNum,String pageSize){
+		BaseResp<Object> baseResp = HttpClient.productCategoryService.selectCategory(parentid,startNum,pageSize);
+		return baseResp;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertCategory(String catename,String parentid) {
