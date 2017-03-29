@@ -718,5 +718,36 @@ public class ImproveController {
         return null;
     }
 
+    /**
+     * 获取进步推荐列表
+     * @param userid
+     * @param startno
+     * @param pagesize
+     * @return
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "recommendlist")
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startno,String pagesize){
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        if (StringUtils.isBlank(startno)){
+            startno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImproveList(userid,Integer.parseInt(startno),
+                    Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select recommend improve list for app is error:",e);
+        }
+        return baseResp;
+    }
+
 
 }

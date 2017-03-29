@@ -396,6 +396,14 @@ public interface ImproveService {
                                                               Date starttime, Integer pageno, Integer pagesize);
 
     /**
+     * 获取进步推荐列表
+     * @param startno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<List<Improve>> selectRecommendImproveList(String userid,Integer startno,Integer pagesize);
+
+    /**
      * 获取不同类型的进步列表（pc）
      * @param businesstype
      * @param brief
@@ -417,6 +425,16 @@ public interface ImproveService {
      * @param isrecommend
      * @return
      */
-    BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<String> impids,String isrecommend);
+    BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<Long> impids,String isrecommend);
+
+
+    /**
+     * 更新进步推荐排序
+     * @param impid
+     * @param businesstype
+     * @param sort
+     * @return
+     */
+    BaseResp updateImproveRecommendSort(Long impid,String businesstype,Integer sort);
 
 }

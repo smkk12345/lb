@@ -2198,9 +2198,10 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
             int totalcount = Integer.parseInt(String.valueOf
-                    (timeLineDetailDao.selectRecommendImproveCount(brief,userids,starttime)));
+                    (timeLineDetailDao.selectRecommendImproveCount(brief,userids,
+                            starttime)));
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
-                    (brief,userids,starttime,pagesize);
+                    (brief,userids,pagesize*(pageno-1),pagesize);
             page.setTotalCount(totalcount);
             page.setList(timeLineDetails);
             baseResp = BaseResp.ok();
@@ -2212,6 +2213,40 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid, Integer startno, Integer pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        List<Improve> improves = new ArrayList<>();
+        try {
+            List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
+                    (null,null,startno,pagesize);
+            if (null != timeLineDetails && timeLineDetails.size() != 0){
+                for (int i = 0 ; i < timeLineDetails.size() ; i++){
+                    TimeLineDetail timeLineDetail = timeLineDetails.get(i);
+                    Improve improve = new Improve();
+                    improve.setImpid(timeLineDetail.getImproveId());
+                    improve.setBrief(timeLineDetail.getBrief());
+                    improve.setPickey(timeLineDetail.getPhotos());
+                    improve.setFilekey(timeLineDetail.getFileKey());
+                    improve.setSourcekey(timeLineDetail.getSourcekey());
+                    improve.setItype(timeLineDetail.getItype());
+                    improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
+
+                    initImproveInfo(improve,Long.parseLong(userid));
+                    //初始化 赞 花 数量
+                    initImproveLikeAndFlower(improve);
+                    improves.add(improve);
+                }
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(improves);
+        } catch (Exception e) {
+            logger.error("select recommend list is error:",e);
+        }
+
+        return baseResp;
+    }
 
     @Override
     public BaseResp<Page<Improve>> selectImproveList(String businesstype,String brief, String usernickname,
@@ -2232,13 +2267,13 @@ public class ImproveServiceImpl implements ImproveService{
                 totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
                 improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
             }
-            if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
-                improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            if (Constant.IMPROVE_GOAL_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectGoalImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectGoalImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
             }
-            if (Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
-                totalcount = improveMapper.selectImproveCount(starttime,null,brief,users);
-                improves = improveMapper.selectImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            if (Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectRankImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectRankImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
             }
             page.setTotalCount(totalcount);
             page.setList(improves);
@@ -2252,13 +2287,28 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<String> impids, String isrecommend) {
+    public BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<Long> impids, String isrecommend) {
         BaseResp baseResp = new BaseResp();
         try {
             timeLineDetailDao.updateRecommendImprove(impids,businesstype,isrecommend);
+            improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),impids,isrecommend);
             baseResp = BaseResp.ok();
         } catch (Exception e) {
             logger.error("update improve recommend status is error:",e);
+        }
+        return baseResp;
+    }
+
+
+
+    @Override
+    public BaseResp updateImproveRecommendSort(Long impid, String businesstype, Integer sort) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            timeLineDetailDao.updateRecommendImproveSort(impid,businesstype,sort);
+            baseResp = BaseResp.ok();
+        } catch (Exception e) {
+            logger.error("update improve recommend sort is error:",e);
         }
         return baseResp;
     }
