@@ -297,6 +297,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<Rank> ranks = selectRankListByRank(rank,pageno,pagesize,showAward);
+            page.setTotalCount(totalcount);
+            page.setList(ranks);
+        } catch (Exception e) {
+            logger.error("select rank list for adminservice is error:",e);
+        }
+        return page;
+    }
+
+    private List<Rank> selectRankListByRank(Rank rank, int pageno, int pagesize, Boolean showAward){
+        try{
             List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
             if(showAward != null && showAward && ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
@@ -306,12 +317,18 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-            page.setTotalCount(totalcount);
-            page.setList(ranks);
-        } catch (Exception e) {
-            logger.error("select rank list for adminservice is error:",e);
+            return ranks;
+        }catch (Exception e){
+            logger.error("selectListWithPage",e);
         }
-        return page;
+        return null;
+    }
+
+    @Override
+    public BaseResp<List<Rank>> selectRankListForApp(Rank rank, int pageno, int pagesize, Boolean showAward) {
+        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        baseResp.setData(selectRankListByRank(rank,pageno,pagesize,showAward));
+        return baseResp.initCodeAndDesp();
     }
 
     /**
