@@ -16,7 +16,6 @@ import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.GroupService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.api.HttpClient;
-import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
