@@ -720,9 +720,9 @@ public class ImproveController {
 
     /**
      * 获取进步推荐列表
-     * @param userid
-     * @param startno
-     * @param pagesize
+     * @param userid 用户id
+     * @param startno 开始条数
+     * @param pagesize 每页显示条数
      * @return
      */
     @ResponseBody
