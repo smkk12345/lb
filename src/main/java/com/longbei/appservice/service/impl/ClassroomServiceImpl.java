@@ -252,7 +252,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				list = selectList(list);
 			}
 			if(startNum == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -274,7 +274,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				list = selectList(list);
 			}
 			if(startNum == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
 			reseResp.setData(list);
@@ -307,7 +307,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}
 			}
 			if(startNum == 0 && roomlist.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
 			//操作
@@ -334,7 +334,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				list = selectList(list);
 			}
 			if(startNum == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_33, Constant.RTNINFO_SYS_33);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
 			reseResp.setData(list);

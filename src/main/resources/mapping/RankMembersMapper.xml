@@ -28,6 +28,7 @@
       <result column="awardprice" property="awardprice" jdbcType="DOUBLE" />
       <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
       <result column="awardtype" property="awardtype" jdbcType="VARCHAR" />
+      <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -114,10 +115,26 @@
         </if>
 
     </where>
-    ORDER BY sortnum DESC ,likes DESC
+    ORDER BY sortnum ASC ,likes DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
+  </select>
+
+  <!-- 查询中奖的用户和奖项 -->
+  <select id="selectWinningRankAward" resultMap="BaseResultMap">
+      select
+          rank_award.awardnickname,
+          rank.rankid,
+          rank_members.userid
+      from rank,rank_award,rank_members
+      where rank.rankid = rank_members.rankid
+        and rank_award.rankid = rank.rankid
+        and rank_members.awardid = rank_award.awardid
+        and rank_members.awardlevel = 2
+        and rank_members.iswinning = 1
+        and rank.isfinish = 5
+      order by rank.endtime DESC
   </select>
 
 

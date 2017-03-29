@@ -95,15 +95,15 @@
   </select>
   
   <select id="selectCountByType" resultType="java.lang.Integer">
-  	SELECT count(*) from user_msg 
+  	SELECT count(1) from user_msg
   	where userid = #{userid} 
-  	<if test="mtype != null" >
+  	<if test="mtype != null and mtype != ''" >
     	and mtype = #{mtype} 
     </if> 
-    <if test="msgtype != null" >
+    <if test="msgtype != null and msgtype != ''" >
     	and msgtype = #{msgtype}  
     </if> 
-    <if test="isread != null" >
+    <if test="isread != null and isread != ''" >
     	and isread = #{isread}
     </if> 
   </select>
@@ -159,12 +159,12 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
     insert into user_msg (userid, friendid,
       msgtype, snsid, remark, 
-      isdel, isread, gtype, mtype, num, createtime
+      isdel, isread, gtype, mtype, num, createtime,updatetime
       )
     values ( #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT},
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
       #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{mtype,jdbcType=CHAR}, 
-      #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+      #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},#{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserMsg" >
@@ -204,7 +204,7 @@
         num,
       </if>
       <if test="createtime != null" >
-        createtime,
+        createtime,updatetime,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -242,6 +242,7 @@
         #{num,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
         #{createtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
@@ -282,6 +283,7 @@
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      updatetime = now()
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -297,20 +299,22 @@
       gtype = #{gtype,jdbcType=CHAR},
       mtype = #{mtype,jdbcType=CHAR},
       num = #{num,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=TIMESTAMP}
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   
   <update id="updateIsreadByid">
     update user_msg
-      isread = 1
-    where id = #{id}
+    SET  isread = 1,updatetime = now()
+    where id = #{id} 
+    and userid = #{userid}
   </update>
   
   <update id="updateIsreadByUserid">
     update user_msg
-      isread = 1 
-    where userid = #{userid} 
+    set isread = 1,updatetime = now()
+    where userid = #{userid}
     <if test="mtype != null" >
     	and mtype = #{mtype} 
     </if> 
@@ -351,7 +355,7 @@
             num,
           </if>
           <if test="userMsg.createtime != null">
-            createtime,
+            createtime,updatetime,
           </if>
         </trim>
     )values
@@ -387,6 +391,7 @@
               </if>
               <if test="userMsg.createtime != null">
                 #{userMsg.createtime},
+                #{userMsg.createtime},
               </if>
             </trim>
           )
@@ -405,4 +410,24 @@
           and userid = #{userId}
           and snsid = #{circleId}
   </select>
+
+  <!-- 查找是否有同一个类型的信息 -->
+  <select id="findSameTypeMessage" resultType="INTEGER">
+      select count(1)
+      from user_msg
+      WHERE userid = #{userId}
+          and msgtype = #{msgType}
+          and gtype = #{gType}
+          and snsid = #{snsId}
+  </select>
+
+  <!-- 更改用户消息的已读状态 -->
+  <update id="updateUserMsgStatus">
+      update user_msg
+      set isdel = 0,isread = 0,updatetime = now()
+      where userid = #{userId}
+          and msgtype = #{msgType}
+          and gtype = #{gType}
+          and snsid = #{snsId}
+  </update>
 </mapper>

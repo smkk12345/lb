@@ -77,25 +77,25 @@ public class ImproveController {
     }
 
     /**
+     * @Title: http://ip:port/app_service/improve/addImpComplaints
+     * @Description: 投诉进步
      * @param @param userid
      * @param @param impid 进步id
      * @param @param impid 投诉内容
      * @param @param contenttype  0：该微进步与龙榜内容不符~~
      * @param @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-     * @Title: http://ip:port/app_service/improve/addImpComplaints
-     * @Description: 投诉进步
      * @auther yinxc
      * @currentdate:2017年2月7日
      */
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "addImpComplaints")
-    public BaseResp<Object> addImpComplaints(String userid, String impid, String content, String contenttype,
+    public BaseResp<ImpComplaints> addImpComplaints(String userid, String impid, String content, String contenttype,
                                              String gtype) {
         logger.info("addImpComplaints userid={},impid={},content={},contenttype={},gtype={}", userid, impid, content,
                 contenttype, gtype);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<ImpComplaints> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, impid, contenttype, gtype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -104,7 +104,7 @@ public class ImproveController {
             record.setContent(content);
             record.setContenttype(contenttype);
             record.setCreatetime(new Date());
-            record.setGtype(gtype);
+            record.setBusinesstype(gtype);
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
@@ -714,6 +714,59 @@ public class ImproveController {
             return improveService.select(userid, impid, businesstype, businessid);
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, impid, e);
+        }
+        return null;
+    }
+
+    /**
+     * 获取进步推荐列表
+     * @param userid 用户id
+     * @param startno 开始条数
+     * @param pagesize 每页显示条数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "recommendlist")
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startno,String pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        if (StringUtils.isBlank(startno)) {
+            startno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)) {
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImproveList(userid, Integer.parseInt(startno),
+                    Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select recommend improve list for app is error:", e);
+        }
+        return baseResp;
+    }
+
+
+    @RequestMapping(value = "selectListInRank")
+    public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
+
+        if (StringUtils.hasBlankParams(curuserid,userid, rankid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(null == startno){
+            startno = 0;
+        }
+        if(null == pagesize){
+            pagesize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+        logger.info("inprove select userid={},impid={}", userid);
+        try {
+            return improveService.selectListInRank(curuserid,userid,rankid,
+                    Constant.IMPROVE_RANK_TYPE,startno,pagesize);
+        } catch (Exception e) {
+            logger.error("get improve detail  is error userid={},impid={} ", userid, e);
         }
         return null;
     }

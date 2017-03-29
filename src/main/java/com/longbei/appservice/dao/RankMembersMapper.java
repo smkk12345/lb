@@ -112,4 +112,10 @@ public interface RankMembersMapper {
      * @return
      */
     int removeOverTimeRankMember(Map<String, Object> map);
+
+    /**
+     * 查询中奖的用户
+     * @return
+     */
+    List<RankMembers> selectWinningRankAward();
 }

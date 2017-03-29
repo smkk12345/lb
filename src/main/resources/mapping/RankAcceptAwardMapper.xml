@@ -108,7 +108,7 @@
         AND awardnickname LIKE concat(concat('%',#{rankAcceptAward.awardnickname}),'%')
       </if>
       <if test="rankAcceptAward.awardcateid != null">
-        AND awardcateid = #{rankAcceptAward.awardcateid}
+        AND awardcateid = #{rankAcceptAwaFrd.awardcateid}
       </if>
       <if test="rankAcceptAward.status != null and rankAcceptAward.status != '-1'.toString()">
         AND status = #{rankAcceptAward.status}

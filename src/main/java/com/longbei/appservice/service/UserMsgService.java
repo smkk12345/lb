@@ -211,7 +211,7 @@ public interface UserMsgService {
 	 * 修改消息已读状态信息
 	 * 2017年2月7日
 	 */
-	BaseResp<Object> updateIsreadByid(Integer id);
+	BaseResp<Object> updateIsreadByid(Integer id, long userid);
 	
 	/**
 	 * @author yinxc
@@ -244,4 +244,38 @@ public interface UserMsgService {
      * @return
      */
 	UserMsg findCircleNoticeMsg(Long circleId, Long userId);
+
+	/**
+	 * 查看是否有同一个类型的信息
+	 * @param userId 接收消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+     * @return
+     */
+	int findSameTypeMessage(Long userId, String msgType, Long snsId, String gType);
+
+	/**
+	 * 更改消息的已读状态
+	 * @param userId 接受消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+     * @return
+     */
+	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType);
+
+	/**
+	 * 发送消息
+	 * @param isOnly 消息是否要求唯一
+	 * @param userId 接受消息 用户id
+	 * @param friendId 发送消息
+	 * @param mType 消息类型 0.系统消息 1.对话消息 2.@我消息
+	 * @param msgType
+	 * @param snsId 业务id
+	 * @param remark 备注
+     * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+     * @return
+     */
+	boolean sendMessage(boolean isOnly,Long userId,Long friendId,String mType,String msgType,Long snsId,String remark,String gType);
 }

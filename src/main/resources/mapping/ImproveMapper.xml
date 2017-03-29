@@ -28,10 +28,11 @@
     <result column="totallikes" property="totallikes" jdbcType="INTEGER" />
     <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
+    impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey,complaincount
   </sql>
 
@@ -404,7 +405,7 @@
     count(*)
     FROM improve_goal ig
     JOIN  user_goal ug ON  ig.businessid=ug.goalid
-    WHERE ug.ispublic='2' AND ug.isdel = '0'
+    WHERE ug.ispublic='2' AND ug.isdel = '0' AND ig.isrecommend='0'
     <if test="startdate != null">
       AND ig.createtime &gt;= #{startdate}
     </if>
@@ -421,10 +422,13 @@
 
   <select id="selectGoalImproveList" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List" />
+    ig.id, ig.impid, ig.itype, ig.brief, ig.pickey, ig.filekey, ig.userid,
+    ig.businessid, ig.businesstype, ig.likes,
+    ig.flowers, ig.diamonds, ig.createtime, ig.updatetime, ig.indexnum, ig.isdel, ig.ptype,
+    ig.ispublic,ig.sourcekey,ig.complaincount
     FROM improve_goal ig
     JOIN  user_goal ug ON  ig.businessid=ug.goalid
-    WHERE ug.ispublic='2' AND ug.isdel = '0'
+    WHERE ug.ispublic='2' AND ug.isdel = '0' AND ig.isrecommend='0'
     <if test="startdate != null">
       AND ig.createtime &gt;= #{startdate}
     </if>
@@ -452,10 +456,10 @@
 
   <select id="selectRankImproveCount" resultType="java.lang.Integer">
     SELECT
-    count(*)
+    count(DISTINCT (ir.id))
     FROM improve_rank ir
     JOIN rank_members rm ON  ir.businessid=rm.rankid
-    WHERE rm.status = '2' AND ir.status = '0'
+    WHERE rm.status = '1' AND ir.status = '0' AND ir.isrecommend='0'
     <if test="startdate != null">
       AND ir.createtime &gt;= #{startdate}
     </if>
@@ -472,10 +476,13 @@
 
   <select id="selectRankImproveList" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List" />
+    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
+    ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
+    ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
+    ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
     FROM improve_rank ir
     JOIN rank_members rm ON  ir.businessid=rm.rankid
-    WHERE rm.status = '2' AND ir.status = '0'
+    WHERE rm.status = '1' AND ir.status = '0' AND ir.isrecommend='0'
     <if test="startdate != null">
       AND ir.createtime &gt;= #{startdate}
     </if>
@@ -488,12 +495,14 @@
         #{item.id}
       </foreach>
     </if>
+    GROUP BY ir.id
     <if test="order == null || order == '0'.toString()">
       ORDER  BY  ir.createtime DESC
     </if>
     <if test="order == '1'.toString()">
       ORDER BY ir.likes DESC ,ir.createtime DESC
     </if>
+
     <if test="order == '2'.toString()">
       ORDER BY ir.flowers DESC ,ir.createtime DESC
     </if>
@@ -501,12 +510,12 @@
   </select>
 
 
-  <select id="selecImproveCount" resultType="java.lang.Integer">
+  <select id="selectImproveCount" resultType="java.lang.Integer">
     SELECT
     count(*)
     FROM
     improve
-    WHERE ispublic = '2' AND isdel = '0'
+    WHERE ispublic = '0' AND isdel = '0' AND isrecommend='0'
     <if test="startdate != null">
       AND createtime &gt;= #{startdate}
     </if>
@@ -526,7 +535,7 @@
     <include refid="Base_Column_List" />
     FROM
     improve
-    WHERE ispublic = '2' AND isdel = '0'
+    WHERE ispublic = '0' AND isdel = '0' AND isrecommend='0'
     <if test="startdate != null">
       AND createtime &gt;= #{startdate}
     </if>
@@ -657,6 +666,16 @@
         </if>
     where ${field}=#{businessid}
     and userid=#{userid}
+  </update>
+
+
+  <update id="updateImproveRecommend" >
+    UPDATE ${tablename}
+    SET isrecommend=#{isrecommend}
+    WHERE impid in
+    <foreach item="item" index="index" collection="impids" open="(" separator="," close=")">
+      #{item}
+    </foreach>
   </update>
 
 </mapper>

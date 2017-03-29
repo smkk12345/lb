@@ -34,6 +34,15 @@ public class TimeLineDetail {
 	private Long businessid;
 	private String isrecommend; //是否被推荐 0 - 否 1 - 是
 	private Date recommendtime; //推荐时间
+	private int sort; //推荐排序
+
+	public int getSort() {
+		return sort;
+	}
+
+	public void setSort(int sort) {
+		this.sort = sort;
+	}
 
 	public String getBusinesstype() {
 		return businesstype;

@@ -2,12 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 public class ImpComplaints {
-	private Long id;
-	
+    private Long id;
+
     private Long userid;//用户id
 
     private Long impid;//进步组id
@@ -26,15 +23,30 @@ public class ImpComplaints {
 
     private String contenttype;
 
-    private Long rankid;//榜单id
+    private Long businessid;//榜单id
 
-    private String gtype;//0 零散 1 目标中 2 榜中 3 圈中 4教室中
+    private String businesstype;
+
+    /**
+     * 
+     * @return id 
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * 
+     * @param id 
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * 用户id
      * @return userid 用户id
      */
-    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -51,7 +63,6 @@ public class ImpComplaints {
      * 进步组id
      * @return impid 进步组id
      */
-    @JsonInclude(Include.ALWAYS)
     public Long getImpid() {
         return impid;
     }
@@ -100,7 +111,6 @@ public class ImpComplaints {
      * 0--未处理 1---无用 2---有用
      * @return status 0--未处理 1---无用 2---有用
      */
-    @JsonInclude(Include.ALWAYS)
     public String getStatus() {
         return status;
     }
@@ -165,7 +175,6 @@ public class ImpComplaints {
      * 
      * @return contenttype 
      */
-    @JsonInclude(Include.ALWAYS)
     public String getContenttype() {
         return contenttype;
     }
@@ -180,43 +189,33 @@ public class ImpComplaints {
 
     /**
      * 榜单id
-     * @return rankid 榜单id
+     * @return businessid 榜单id
      */
-    @JsonInclude(Include.ALWAYS)
-    public Long getRankid() {
-        return rankid;
+    public Long getBusinessid() {
+        return businessid;
     }
 
     /**
      * 榜单id
-     * @param rankid 榜单id
+     * @param businessid 榜单id
      */
-    public void setRankid(Long rankid) {
-        this.rankid = rankid;
+    public void setBusinessid(Long businessid) {
+        this.businessid = businessid;
     }
 
     /**
-     * 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     * @return gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
+     * 
+     * @return businesstype 
      */
-    @JsonInclude(Include.ALWAYS)
-    public String getGtype() {
-        return gtype;
+    public String getBusinesstype() {
+        return businesstype;
     }
 
     /**
-     * 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     * @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
+     * 
+     * @param businesstype 
      */
-    public void setGtype(String gtype) {
-        this.gtype = gtype == null ? null : gtype.trim();
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype == null ? null : businesstype.trim();
     }
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 }

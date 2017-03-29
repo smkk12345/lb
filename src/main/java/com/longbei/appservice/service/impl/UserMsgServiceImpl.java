@@ -270,7 +270,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			
 			
 			if (startNum == 0 && list.size() == 0) {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -301,10 +301,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 
 	@Override
-	public BaseResp<Object> updateIsreadByid(Integer id) {
+	public BaseResp<Object> updateIsreadByid(Integer id, long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = updateId(id);
+			boolean temp = updateId(id, userid);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -314,8 +314,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 	
-	private boolean updateId(Integer id){
-		int temp = userMsgMapper.updateIsreadByid(id);
+	private boolean updateId(Integer id, long userid){
+		int temp = userMsgMapper.updateIsreadByid(id, userid);
 		return temp > 0 ? true : false;
 	}
 
@@ -359,6 +359,78 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return this.userMsgMapper.findCircleNoticeMsg(circleId,userId);
 	}
 
+	/**
+	 * 查看是否有同一个类型的信息
+	 * @param userId 接收消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	@Override
+	public int findSameTypeMessage(Long userId, String msgType, Long snsId, String gType) {
+		return this.userMsgMapper.findSameTypeMessage(userId,msgType,snsId,gType);
+	}
+
+	/**
+	 * 更改消息的已读状态
+	 * @param userId 接受消息的用户id
+	 * @param msgType 消息类型
+	 * @param snsId 业务id
+	 * @param gType
+	 * @return
+	 */
+	@Override
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType);
+	}
+
+	/**
+	 * 发送消息
+	 * @param isOnly 消息是否要求唯一
+	 * @param userId 接受消息 用户id
+	 * @param friendId 发送消息
+	 * @param mType 消息类型 0.系统消息 1.对话消息 2.@我消息
+	 * @param msgType
+	 * @param snsId 业务id
+	 * @param remark 备注
+	 * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+     * @return
+     */
+	@Override
+	public boolean sendMessage(boolean isOnly, Long userId, Long friendId, String mType, String msgType, Long snsId, String remark, String gType) {
+		if(isOnly){
+			//先查询是否有该类型的 消息 根据接收人userid, msytype 业务id snsId
+			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
+			if(count > 0){
+				//直接更改已读状态
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType);
+				if(updateRow > 0){
+					return true;
+				}
+			}
+		}
+		UserMsg userMsg = new UserMsg();
+		userMsg.setUserid(userId);
+		if(friendId != null){
+			userMsg.setFriendid(friendId);
+		}
+		userMsg.setMsgtype(msgType);
+		userMsg.setSnsid(Long.parseLong(snsId+""));
+		userMsg.setRemark(remark);
+		userMsg.setGtype(gType);
+		userMsg.setMtype(mType);
+		userMsg.setCreatetime(new Date());
+		userMsg.setIsdel("0");
+		userMsg.setIsread("0");
+
+		BaseResp<Object> insertResult = this.insertSelective(userMsg);
+		if(insertResult.getCode() == 0){
+			return true;
+		}
+		return false;
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;
@@ -397,7 +469,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
@@ -633,7 +705,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {

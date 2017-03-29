@@ -11,9 +11,10 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="nickname" property="nickname" jdbcType="VARCHAR" />
     <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="inviteuserid" property="inviteuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, groupid, userid, remark, createtime, updatetime,nickname,status,avatar
+    id, groupid, userid, remark, createtime, updatetime,nickname,status,avatar,inviteuserid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -142,6 +143,9 @@
   <insert id="batchInsertGroupMembers" parameterType="map">
       insert into sns_group_members(
         groupid,userid,status,createtime,updatetime,nickname,avatar
+        <if test="snsGroupMembers.inviteuserid != null">
+            ,inviteuserid
+        </if>
       )values
       <foreach collection="userList" item="user" separator=",">
         (
@@ -157,6 +161,9 @@
           #{snsGroupMembers.updatetime},
           #{user.nickname},
           #{user.avatar}
+          <if test="snsGroupMembers.inviteuserid != null">
+              ,#{snsGroupMembers.inviteuserid}
+          </if>
         )
       </foreach>
   </insert>
@@ -215,7 +222,14 @@
   <update id="batchUpdateSnsGroupMemberStatus" parameterType="map">
       update
           sns_group_members
-      set status = #{status},updatetime = now()
+      <set>
+          status = #{status},
+          updatetime = now()
+          <if test="inviteuserid != null">
+             ,inviteuserid = #{inviteuserid}
+          </if>
+      </set>
+
       <where>
         <if test="updateUserIds != null">
           userid in (

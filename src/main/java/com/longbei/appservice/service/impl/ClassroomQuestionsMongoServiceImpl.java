@@ -82,7 +82,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			}
 			reseResp.setData(list);
 			if(startNo == 0 && list.size() == 0){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_35, Constant.RTNINFO_SYS_35);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_35);
 				return reseResp;
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

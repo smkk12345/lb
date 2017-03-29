@@ -20,7 +20,7 @@ public class RankMembers {
 
     private Integer sortnum;//榜单内排名 榜单结束之后存入
 
-    private String iswinning;//中奖 0 未中间 1 中奖
+    private String iswinning;//中奖 0 未中间 1 中奖 2 审核未通过
 
     private Integer icount;//子进步条数
 
@@ -289,16 +289,16 @@ public class RankMembers {
     }
 
     /**
-     * 中奖 0 未中间 1 中奖
-     * @return iswinning 中奖 0 未中间 1 中奖
+     * 中奖 0 未中间 1 中奖 2 审核未通过
+     * @return iswinning 中奖 0 未中间 1 中奖 2 审核未通过
      */
     public String getIswinning() {
         return iswinning;
     }
 
     /**
-     * 中奖 0 未中间 1 中奖
-     * @param iswinning 中奖 0 未中间 1 中奖
+     * 中奖 0 未中间 1 中奖 2 审核未通过
+     * @param iswinning 中奖 0 未中间 1 中奖 2 审核未通过
      */
     public void setIswinning(String iswinning) {
         this.iswinning = iswinning == null ? null : iswinning.trim();
