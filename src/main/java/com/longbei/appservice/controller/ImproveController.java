@@ -91,11 +91,11 @@ public class ImproveController {
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "addImpComplaints")
-    public BaseResp<Object> addImpComplaints(String userid, String impid, String content, String contenttype,
+    public BaseResp<ImpComplaints> addImpComplaints(String userid, String impid, String content, String contenttype,
                                              String gtype) {
         logger.info("addImpComplaints userid={},impid={},content={},contenttype={},gtype={}", userid, impid, content,
                 contenttype, gtype);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<ImpComplaints> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, impid, contenttype, gtype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }

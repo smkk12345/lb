@@ -511,6 +511,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         userMsg.setRemark(remark);
         userMsg.setIsdel("0");
         userMsg.setIsread("0");
+        //gtype  0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+        userMsg.setGtype("6");
         userMsg.setCreatetime(new Date());
         userMsgMapper.insertSelective(userMsg);
     }
