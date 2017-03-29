@@ -1,5 +1,7 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private static Logger logger = LoggerFactory.getLogger(ImpComplaintsServiceImpl.class);
 	
 	@Override
-	public BaseResp<Object> insertSelective(ImpComplaints record) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<ImpComplaints> insertSelective(ImpComplaints record) {
+		BaseResp<ImpComplaints> reseResp = new BaseResp<>();
 		try {
 			boolean temp = insert(record);
 			if (temp) {
@@ -36,6 +38,12 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private boolean insert(ImpComplaints record){
 		int temp = impComplaintsMapper.insertSelective(record);
 		return temp > 0 ? true : false;
+	}
+
+	@Override
+	public BaseResp<List<ImpComplaints>> selectImpComplaints(int startNo, int pageSize) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
