@@ -3,7 +3,6 @@
 <mapper namespace="com.longbei.appservice.dao.ImpComplaintsMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImpComplaints" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <id column="pid" property="pid" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="impid" property="impid" jdbcType="BIGINT" />
     <result column="content" property="content" jdbcType="VARCHAR" />
@@ -13,36 +12,36 @@
     <result column="dealuser" property="dealuser" jdbcType="BIGINT" />
     <result column="checkoption" property="checkoption" jdbcType="VARCHAR" />
     <result column="contenttype" property="contenttype" jdbcType="VARCHAR" />
-    <result column="rankid" property="rankid" jdbcType="BIGINT" />
-    <result column="gtype" property="gtype" jdbcType="CHAR" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
-    contenttype, rankid, gtype
+    contenttype, businessid, businesstype
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.ImpComplaints" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from imp_complaints
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.longbei.appservice.entity.ImpComplaints" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from imp_complaints
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ImpComplaints" >
-    insert into imp_complaints (id, userid, 
-      impid, content, createtime, 
-      status, dealtime, dealuser, 
-      checkoption, contenttype, rankid, 
-      gtype)
-    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
-      #{impid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=CHAR}, #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, 
-      #{checkoption,jdbcType=VARCHAR}, #{contenttype,jdbcType=VARCHAR}, #{rankid,jdbcType=BIGINT}, 
-      #{gtype,jdbcType=CHAR})
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ImpComplaints" useGeneratedKeys="true" keyProperty="id">
+    insert into imp_complaints (id, userid, impid, 
+      content, createtime, status, 
+      dealtime, dealuser, checkoption, 
+      contenttype, businessid, businesstype
+      )
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, 
+      #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR}, 
+      #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, #{checkoption,jdbcType=VARCHAR}, 
+      #{contenttype,jdbcType=VARCHAR}, #{businessid,jdbcType=BIGINT}, #{businesstype,jdbcType=CHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpComplaints" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpComplaints" useGeneratedKeys="true" keyProperty="id">
     insert into imp_complaints
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -75,11 +74,11 @@
       <if test="contenttype != null" >
         contenttype,
       </if>
-      <if test="rankid != null" >
-        rankid,
+      <if test="businessid != null" >
+        businessid,
       </if>
-      <if test="gtype != null" >
-        gtype,
+      <if test="businesstype != null" >
+        businesstype,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -113,11 +112,11 @@
       <if test="contenttype != null" >
         #{contenttype,jdbcType=VARCHAR},
       </if>
-      <if test="rankid != null" >
-        #{rankid,jdbcType=BIGINT},
+      <if test="businessid != null" >
+        #{businessid,jdbcType=BIGINT},
       </if>
-      <if test="gtype != null" >
-        #{gtype,jdbcType=CHAR},
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -151,11 +150,11 @@
       <if test="contenttype != null" >
         contenttype = #{contenttype,jdbcType=VARCHAR},
       </if>
-      <if test="rankid != null" >
-        rankid = #{rankid,jdbcType=BIGINT},
+      <if test="businessid != null" >
+        businessid = #{businessid,jdbcType=BIGINT},
       </if>
-      <if test="gtype != null" >
-        gtype = #{gtype,jdbcType=CHAR},
+      <if test="businesstype != null" >
+        businesstype = #{businesstype,jdbcType=CHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -171,8 +170,8 @@
       dealuser = #{dealuser,jdbcType=BIGINT},
       checkoption = #{checkoption,jdbcType=VARCHAR},
       contenttype = #{contenttype,jdbcType=VARCHAR},
-      rankid = #{rankid,jdbcType=BIGINT},
-      gtype = #{gtype,jdbcType=CHAR}
+      businessid = #{businessid,jdbcType=BIGINT},
+      businesstype = #{businesstype,jdbcType=CHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -77,14 +77,14 @@ public class ImproveController {
     }
 
     /**
+     * @Title: http://ip:port/app_service/improve/addImpComplaints
+     * @Description: 投诉进步
      * @param @param userid
      * @param @param impid 进步id
      * @param @param impid 投诉内容
      * @param @param contenttype  0：该微进步与龙榜内容不符~~
      * @param @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-     * @Title: http://ip:port/app_service/improve/addImpComplaints
-     * @Description: 投诉进步
      * @auther yinxc
      * @currentdate:2017年2月7日
      */
@@ -104,7 +104,7 @@ public class ImproveController {
             record.setContent(content);
             record.setContenttype(contenttype);
             record.setCreatetime(new Date());
-            record.setGtype(gtype);
+            record.setBusinesstype(gtype);
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
