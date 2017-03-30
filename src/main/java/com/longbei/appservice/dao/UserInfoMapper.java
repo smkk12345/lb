@@ -123,4 +123,19 @@ public interface UserInfoMapper {
 						  @Param("totallikes") int totallikes,
 						  @Param("totalfans") int totalfans,
 						  @Param("totalflower") int totalflower);
+
+
+
+	int selectCount(UserInfo userInfo);
+
+
+	List<UserInfo> selectList(@Param("user") UserInfo userInfo,
+							  @Param("order") String order,
+							  @Param("ordersc") String ordersc,
+							  @Param("startno") Integer startno,
+							  @Param("pagesize") Integer pagesize);
+
+
+
+
 }
