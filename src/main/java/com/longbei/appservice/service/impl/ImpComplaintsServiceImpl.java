@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.ImpComplaints;
 import com.longbei.appservice.service.ImpComplaintsService;
 
@@ -18,13 +20,19 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 
 	@Autowired
 	private ImpComplaintsMapper impComplaintsMapper;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(ImpComplaintsServiceImpl.class);
 	
 	@Override
-	public BaseResp<ImpComplaints> insertSelective(ImpComplaints record) {
+	public BaseResp<ImpComplaints> insertSelective(ImpComplaints record, long friendid) {
 		BaseResp<ImpComplaints> reseResp = new BaseResp<>();
 		try {
+			String username = initMsgUserInfoByFriendid(record.getUserid());
+			String cusername = initMsgUserInfoByFriendid(friendid);
+			record.setUsername(username);
+			record.setCusername(cusername);
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -45,5 +53,19 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	
+	//------------------------公用方法，初始化用户信息------------------------------------------
+	/**
+     * 初始化用户信息 ------Friendid
+     */
+    private String initMsgUserInfoByFriendid(long friendid){
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(friendid));
+		if(null != appUserMongoEntity){
+			return appUserMongoEntity.getUsername();
+		}
+        return "";
+    }
 
 }

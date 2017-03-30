@@ -9,15 +9,17 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="dealtime" property="dealtime" jdbcType="TIMESTAMP" />
-    <result column="dealuser" property="dealuser" jdbcType="BIGINT" />
+    <result column="dealuser" property="dealuser" />
     <result column="checkoption" property="checkoption" jdbcType="VARCHAR" />
     <result column="contenttype" property="contenttype" jdbcType="VARCHAR" />
     <result column="businessid" property="businessid" jdbcType="BIGINT" />
     <result column="businesstype" property="businesstype" jdbcType="CHAR" />
+    <result column="username" property="username" />
+    <result column="cusername" property="cusername" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
-    contenttype, businessid, businesstype
+    contenttype, businessid, businesstype, username, cusername 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -25,6 +27,90 @@
     from imp_complaints
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectListByStatus" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from imp_complaints 
+    <if test="status != null and status != ''" >
+      where status = #{status} 
+    </if>
+    order by createtime desc 
+    <if test="pageSize != 0">
+    	LIMIT #{startNo},#{pageSize}
+    </if>
+  </select>
+  
+  <select id="selectCountByStatus" resultType="java.lang.Integer">
+  	SELECT count(*) from imp_complaints 
+  	<if test="status != null and status != ''" >
+      where status = #{status} 
+    </if>
+  </select>
+  
+  <select id="searchList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from imp_complaints 
+    where 1=1 
+    <if test="status != null and status != ''" >
+      and status = #{status} 
+    </if>
+    <if test="username != null and username != ''" >
+      and username = #{username} 
+    </if>
+    <if test="businesstype != null and businesstype != ''" >
+      and businesstype = #{businesstype} 
+    </if>
+    <if test="sdealtime != null and sdealtime != ''" >
+      AND dealtime &gt;= #{sdealtime} 
+    </if>
+    <if test="edealtime != null and edealtime != ''" >
+      AND dealtime &lt; #{edealtime} 
+    </if>
+    order by createtime desc 
+    <if test="pageSize != 0">
+    	LIMIT #{startNo},#{pageSize} 
+    </if>
+  </select>
+  
+  <select id="searchCount" resultType="java.lang.Integer">
+  	SELECT count(*) from imp_complaints 
+  	where 1=1 
+    <if test="status != null and status != ''" >
+      and status = #{status} 
+    </if>
+    <if test="username != null and username != ''" >
+      and username = #{username} 
+    </if>
+    <if test="businesstype != null and businesstype != ''" >
+      and businesstype = #{businesstype} 
+    </if>
+    <if test="sdealtime != null and sdealtime != ''" >
+      AND dealtime &gt;= #{sdealtime} 
+    </if>
+    <if test="edealtime != null and edealtime != ''" >
+      AND dealtime &lt; #{edealtime} 
+    </if>
+  </select>
+  
+  <select id="selectCountByImpid" resultType="java.lang.Integer">
+  	SELECT count(*) from imp_complaints 
+  	where 1=1 
+    <if test="status != null and status != ''" >
+      and status = #{status} 
+    </if>
+    <if test="impid != null and impid != ''" >
+      and impid = #{impid} 
+    </if>
+    <if test="businesstype != null and businesstype != ''" >
+      and businesstype = #{businesstype} 
+    </if>
+    <if test="businessid != null and businessid != ''" >
+      AND businessid = #{businessid} 
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from imp_complaints
     where id = #{id,jdbcType=BIGINT}
@@ -33,12 +119,13 @@
     insert into imp_complaints (id, userid, impid, 
       content, createtime, status, 
       dealtime, dealuser, checkoption, 
-      contenttype, businessid, businesstype
+      contenttype, businessid, businesstype, username, cusername
       )
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, 
       #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR}, 
       #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, #{checkoption,jdbcType=VARCHAR}, 
-      #{contenttype,jdbcType=VARCHAR}, #{businessid,jdbcType=BIGINT}, #{businesstype,jdbcType=CHAR}
+      #{contenttype,jdbcType=VARCHAR}, #{businessid}, #{businesstype},
+      #{username}, #{cusername}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpComplaints" useGeneratedKeys="true" keyProperty="id">
@@ -80,6 +167,12 @@
       <if test="businesstype != null" >
         businesstype,
       </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="cusername != null" >
+        cusername,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -113,10 +206,16 @@
         #{contenttype,jdbcType=VARCHAR},
       </if>
       <if test="businessid != null" >
-        #{businessid,jdbcType=BIGINT},
+        #{businessid},
       </if>
       <if test="businesstype != null" >
-        #{businesstype,jdbcType=CHAR},
+        #{businesstype},
+      </if>
+      <if test="username != null" >
+        #{username},
+      </if>
+      <if test="cusername != null" >
+        #{cusername},
       </if>
     </trim>
   </insert>
@@ -151,10 +250,10 @@
         contenttype = #{contenttype,jdbcType=VARCHAR},
       </if>
       <if test="businessid != null" >
-        businessid = #{businessid,jdbcType=BIGINT},
+        businessid = #{businessid},
       </if>
       <if test="businesstype != null" >
-        businesstype = #{businesstype,jdbcType=CHAR},
+        businesstype = #{businesstype},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -170,8 +269,32 @@
       dealuser = #{dealuser,jdbcType=BIGINT},
       checkoption = #{checkoption,jdbcType=VARCHAR},
       contenttype = #{contenttype,jdbcType=VARCHAR},
-      businessid = #{businessid,jdbcType=BIGINT},
-      businesstype = #{businesstype,jdbcType=CHAR}
+      businessid = #{businessid},
+      businesstype = #{businesstype}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateImpComplaintsByStatus" >
+    update imp_complaints
+    set 
+      dealtime = #{dealtime},
+      <if test="dealuser != null" >
+        dealuser = #{dealuser},
+      </if>
+      <if test="checkoption != null" >
+        checkoption = #{checkoption},
+      </if>
+      status = #{status} 
+    where 1=1 
+    <if test="impid != 0" >
+      and impid = #{impid},
+    </if>
+    <if test="businessid != 0" >
+      and businessid = #{businessid},
+    </if>
+    <if test="businesstype != null" >
+      and businesstype = #{businesstype},
+    </if>
+  </update>
+  
 </mapper>
