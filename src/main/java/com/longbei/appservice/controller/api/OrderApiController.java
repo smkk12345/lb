@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.OrderService;
-import com.longbei.appservice.service.UserImpCoinDetailService;
 
 @RestController
 @RequestMapping(value = "/api/order")
@@ -115,14 +113,14 @@ public class OrderApiController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrdersIsexception")
-    public BaseResp<Object> updateOrdersIsexception(String orderid) {
+    public BaseResp<Object> updateOrdersIsexception(String userid, String orderid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
   			//isexception   0 正常 1 异常订单
-  			baseResp = orderService.updateOrdersIsexception(orderid);
+  			baseResp = orderService.updateOrdersIsexception(Long.parseLong(userid), orderid);
 		} catch (Exception e) {
 			logger.error("updateOrdersIsexception orderid = {}", orderid, e);
 		}
@@ -147,7 +145,7 @@ public class OrderApiController {
   		}
   		try {
   			//isdel   是否取消订单   0：不取消 1:取消
-  			baseResp = orderService.updateOrdersIsexception(orderid);
+  			baseResp = orderService.updateOrdersIsdel(orderid);
 		} catch (Exception e) {
 			logger.error("updateOrdersIsdel orderid = {}", orderid, e);
 		}
@@ -263,13 +261,13 @@ public class OrderApiController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateDeliver", method = RequestMethod.POST)
-    public BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany) {
+    public BaseResp<Object> updateDeliver(String userid, String orderid, String logisticscode, String logisticscompany) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
-  		if (StringUtils.hasBlankParams(orderid)) {
+  		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = orderService.updateDeliver(orderid, logisticscode, logisticscompany);
+  			baseResp = orderService.updateDeliver(Long.parseLong(userid), orderid, logisticscode, logisticscompany);
 		} catch (Exception e) {
 			logger.error("updateDeliver orderid = {}, logisticscode={}, logisticscompany={}", 
 					orderid, logisticscode, logisticscompany, e);

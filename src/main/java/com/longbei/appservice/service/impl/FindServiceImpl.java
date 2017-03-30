@@ -22,13 +22,13 @@ public class FindServiceImpl implements FindService{
     private UserMongoDao userMongoDao;
 
     @Override
-    public BaseResp<Object> near(String longitude, String latitude, String userid, String startNum, String endNum) {
+    public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String endNum) {
         BaseResp<Object> baseResp = new BaseResp<>();
 
         try {
             List<AppUserMongoEntity> list = userMongoDao.findNear(
-                    Double.parseDouble(longitude),Double.parseDouble(latitude),50.00,
-                    Integer.parseInt(startNum),Integer.parseInt(endNum));
+                    Double.parseDouble(longitude),Double.parseDouble(latitude),50.00,gender,
+                    Integer.parseInt(startNum),Integer.parseInt(endNum)-Integer.parseInt(startNum));
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
                 //判断是否好友 是否关注 是否粉丝等等
