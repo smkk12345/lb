@@ -53,7 +53,7 @@ public class FindController extends BaseController {
     @RequestMapping(value = "near")
     public BaseResp<Object> near(String longitude, String latitude,
                          String userid, String startNum,
-                         String endNum) {
+                         String endNum,String sex) {
 
         BaseResp<Object> baseResp = new BaseResp<>();
         String radius = "50";
@@ -61,7 +61,7 @@ public class FindController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         logger.info("near longitude={},latitude={},radius={},userid={}",longitude,latitude,radius,userid);
-        baseResp = findService.near(longitude,latitude,userid,startNum,endNum);
+        baseResp = findService.near(longitude,latitude,userid,sex,startNum,endNum);
         return  baseResp;
     }
 
