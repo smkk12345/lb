@@ -68,42 +68,48 @@
       COUNT(1)
     FROM rank
     WHERE 1=1
-      <if test="ranktitle != null and ranktitle != ''" >
-        AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
-      </if>
-      <if test="rankbrief != null and rankbrief != ''" >
-        AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
-      </if>
-      <if test="ptype != null and ptype != '-1'" >
-        AND ptype = #{ptype}
-      </if>
-      <if test="sstarttime != null" >
-        AND starttime &gt;= #{sstarttime}
-      </if>
-      <if test="estarttime != null" >
-        AND starttime &lt; #{estarttime}
-      </if>
-      <if test="rankscope != null" >
-        AND rankscope = #{rankscope}
-      </if>
-      <if test="isup != null" >
-        AND isup = #{isup}
-      </if>
-      <if test="isdel != null" >
-        AND isdel = #{isdel}
-      </if>
-      <if test="sourcetype != null" >
-        AND sourcetype = #{sourcetype}
-      </if>
-      <if test="createuserid != null" >
-        AND createuserid = #{createuserid}
-      </if>
-      <if test="ishomerecommend != null" >
-        AND ishomerecommend = #{ishomerecommend}
-      </if>
-      <if test="isrecommend != null" >
-        AND isrecommend = #{isrecommend}
-      </if>
+    <if test="ranktitle != null and ranktitle != ''" >
+      AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+    </if>
+    <if test="rankbrief != null and rankbrief != ''" >
+      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+    </if>
+    <if test="ptype != null and ptype != '-1'.toString()" >
+      AND ptype = #{ptype}
+    </if>
+    <if test="ranktype != null and ranktype != '-1'.toString()" >
+      AND ranktype = #{ranktype}
+    </if>
+    <if test="isfinish != null and isfinish != '-1'.toString()" >
+      AND isfinish = #{isfinish}
+    </if>
+    <if test="sstarttime != null" >
+      AND starttime &gt;= #{sstarttime}
+    </if>
+    <if test="estarttime != null" >
+      AND starttime &lt; #{estarttime}
+    </if>
+    <if test="rankscope != null  and rankscope != '-1'.toString()" >
+      AND rankscope = #{rankscope}
+    </if>
+    <if test="isup != null" >
+      AND isup = #{isup}
+    </if>
+    <if test="isdel != null" >
+      AND isdel = #{isdel}
+    </if>
+    <if test="sourcetype != null  and sourcetype != '-1'.toString()" >
+      AND sourcetype = #{sourcetype}
+    </if>
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
+    </if>
+    <if test="ishomerecommend != null" >
+      AND ishomerecommend = #{ishomerecommend}
+    </if>
+    <if test="isrecommend != null" >
+      AND isrecommend = #{isrecommend}
+    </if>
   </select>
 
   <select id="selectListWithPage" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">

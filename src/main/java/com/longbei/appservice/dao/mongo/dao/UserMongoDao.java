@@ -2,21 +2,26 @@ package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
+import com.longbei.appservice.common.utils.GPSUtils;
+import com.longbei.appservice.common.utils.LoggerUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
-import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
+
+import com.mongodb.*;
+import com.mongodb.util.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import scala.App;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -140,14 +145,27 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 	}
 
-	public List<AppUserMongoEntity> findNear(double longitude, double latitude,
-											 double distance,int count, int limit){
+	/**
+	 * 附近的人 带距离 分页不好处理
+	 * @param longitude
+	 * @param latitude
+	 * @param distance
+	 * @param gender
+	 * @param count
+	 * @param limit
+	 * @return
+	 */
+	public List<AppUserMongoEntity> findNear1(double longitude, double latitude,
+											 double distance,String gender,int count, int limit){
 		BasicDBObject myCmd = new BasicDBObject();
 		myCmd.append("geoNear", "appuser");
 		double[] loc = {longitude,latitude};
 		myCmd.append("near", loc);
 		myCmd.append("spherical", true);
 		myCmd.append("distanceMultiplier", 6378137);
+		if(StringUtils.isBlank(gender)){
+		}else
+			myCmd.append("sex",gender);
 		myCmd.append("maxDistance", distance / Constant.DISTANCE_CONVERT_2D );
 		if(limit > 0){
 			myCmd.append("limit", limit);
@@ -167,9 +185,42 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 			nearUser.setDistance(double1.intValue());
 			list.add(nearUser);
 		}
-
 		return list;
 	}
+	//{gispoint: {$near : [116.302645,40.035655]}}
 
+	/**
+	 * 附近的人 分页距离自己计算
+	 * @param longitude
+	 * @param latitude
+	 * @param distance
+	 * @param gender
+	 * @param count
+	 * @param limit
+	 * @return
+	 */
+	public List<AppUserMongoEntity> findNear(double longitude, double latitude,
+											 double distance,String gender,int count, int limit){
+		List<AppUserMongoEntity> list = new ArrayList<>();
+		BasicDBObject basicDBObject = new BasicDBObject();
+		basicDBObject.append("gispoint", JSON.parse("{$near : ["+longitude+","+latitude+"]}"));
 
+		basicDBObject.append("sex",gender);
+		DBCollection dbCollection = mongoTemplate.getDb().getCollection("appuser");
+		DBCursor dbCursor = dbCollection.find(basicDBObject).skip(count).limit(limit);
+		while (dbCursor.hasNext()) {
+			try {
+				DBObject result = dbCursor.next();
+				JSONObject jsonObject = JSONObject.fromObject(result);
+				AppUserMongoEntity appUserMongoEntity = (AppUserMongoEntity)JSONObject.toBean(jsonObject,AppUserMongoEntity.class);
+				int d = (int) GPSUtils.computeDistance(longitude, latitude,
+						appUserMongoEntity.getGispoint()[0], appUserMongoEntity.getGispoint()[1]);
+				appUserMongoEntity.setDistance(d);
+				list.add(appUserMongoEntity);
+			} catch (Exception e) {
+				logger.error("UserMongoDao错误：",e);
+			}
+		}
+		return list;
+	}
 }

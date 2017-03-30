@@ -156,7 +156,7 @@ public class OrderController {
     * @Description: 修改订单状态
     * @param @param userid 
     * @param @param orderid 订单业务id 
-    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成 
+    * @param @param orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成  4:已取消
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -170,7 +170,7 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成 
+  			//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成  4:已取消
   			baseResp = orderService.updateOrderStatus(Long.parseLong(userid), orderid, orderstatus);
 		} catch (Exception e) {
 			logger.error("updateOrderStatus userid = {}, orderid = {}, orderstatus= {}", 
@@ -189,7 +189,9 @@ public class OrderController {
     * @desc  Map: 
     * 				totalmoney---龙币总数
     * 				totalcoin---进步币总数
-    * 				moneytocoin---龙币兑换进步币比例
+    * 				moneytocoin---龙币兑换进步币比例 1:10
+    * 				flowertocoin---花兑换进步币比例  1:10
+    * 				moneytoflower---龙币兑换花比例 1:1
     * @currentdate:2017年3月21日
 	*/
 	@SuppressWarnings("unchecked")
@@ -236,6 +238,34 @@ public class OrderController {
   		return baseResp;
 	}
 	
+	/**
+    * @Title: http://ip:port/app_service/order/coinExchangeFlower
+    * @Description: 用户进步币兑换鲜花
+    * @param @param userid 
+    * @param @param number 鲜花数量
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  Data: 添加的鲜花记录
+    * @desc  Map: 
+    * 				totalmoney---龙币总数
+    * 				totalcoin---进步币总数
+    * 				totalflower---鲜花总数  
+    * @currentdate:2017年3月28日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/coinExchangeFlower")
+    public BaseResp<Object> coinExchangeFlower(String userid, String number) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, number)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number));
+		} catch (Exception e) {
+			logger.error("coinExchangeFlower userid = {}, number = {}", userid, number, e);
+		}
+  		return baseResp;
+	}
 	
 
 }

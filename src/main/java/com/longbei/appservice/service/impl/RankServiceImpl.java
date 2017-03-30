@@ -84,6 +84,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserMsgService userMsgService;
     @Autowired
     private SnsFriendsMapper snsFriendsMapper;
+    @Autowired
+    private UserService userService;
 
     /**
      *  @author luye
@@ -880,6 +882,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> setIsfishionman(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            if("1".equals(rankMembers.getIsfashionman())){
+                rankMembers.setUpfashionmantime(new Date());
+            }
+            if ("0".equals(rankMembers.getIsfashionman())){
+                rankMembers.setDownfashionmantime(new Date());
+            }
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
                 return BaseResp.ok();
@@ -1756,8 +1764,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
     @Override
-    public BaseResp<Object> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward) {
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Rank> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward) {
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
         try {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankId));
@@ -1832,7 +1840,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rankMembers.setAppUserMongoEntities(users);
             int totalcount = rankMembersMapper.selectCount(rankMembers);
-            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,pageSize*(pageNo-1),pageSize);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,pageSize*(pageNo-1),pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
@@ -1849,6 +1857,38 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankAllMemberList(UserInfo userInfo, Integer pageno, Integer pagesize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        Page<RankMembers> page = new Page<>(pageno,pagesize);
+        try {
+            List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setIsfashionman("1");
+            List<AppUserMongoEntity> appUserMongoEntities = new ArrayList<>();
+            for (UserInfo userInfo1 : userInfos){
+                AppUserMongoEntity user = new AppUserMongoEntity();
+                user.setId(String.valueOf(userInfo1.getUserid()));
+                appUserMongoEntities.add(user);
+            }
+            rankMembers.setAppUserMongoEntities(appUserMongoEntities);
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,"1",pagesize*(pageno-1),pagesize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                UserInfo userInfo1 = userInfoMapper.selectByPrimaryKey(rankMembers1.getUserid());
+                Rank rank = rankMapper.selectRankByRankid(rankMembers1.getRankid());
+                rankMembers1.setUserInfo(userInfo1);
+                rankMembers1.setRank(rank);
+            }
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select all rank member list for pc is error:",e);
+        }
+        return baseResp;
+    }
 
     @Override
     public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
@@ -1944,7 +1984,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         rankMembers.setRankid(Long.parseLong(rankid));
 
         //获取榜单全部成员列表
-        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
         //获得榜单奖品
         List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankid);
         int awardcount = 0;
@@ -1991,7 +2031,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         rankMembers.setRankid(Long.parseLong(rankid));
         List<RankAcceptAward> rankAcceptAwards = new ArrayList<>();
         //获取榜单全部成员列表
-        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+        List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
 
         for (int j = 0 ; j < rankMemberses.size();j++){
             RankMembers rkmember = rankMemberses.get(j);
@@ -2053,7 +2093,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             rankMembers.setRankid(Long.parseLong(rankid));
             rankMembers.setUserid(Long.parseLong(userid));
-            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
             if (null != rankMemberses && rankMemberses.size() != 0){
                 RankMembers rankMembers1 = rankMemberses.get(0);
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
@@ -2072,7 +2112,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         RankMembers rankMembers = new RankMembers();
         try {
             rankMembers.setRankid(Long.parseLong(rankid));
-            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,startNo,pageSize);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,startNo,pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
             }

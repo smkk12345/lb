@@ -102,9 +102,9 @@ public class RankApiController {
      */
     @ResponseBody
     @RequestMapping(value = "selectdetail")
-    public BaseResp<Object> selectRankDetail(String rankid){
+    public BaseResp<Rank> selectRankDetail(String rankid){
         logger.info("selectRankDetail rankid={}",rankid);
-        BaseResp<Object> baseResp = new BaseResp();
+        BaseResp<Rank> baseResp = new BaseResp();
         if (com.longbei.appservice.common.utils.StringUtils.isBlank(rankid)){
             return baseResp;
         }
@@ -330,6 +330,27 @@ public class RankApiController {
         return baseResp;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "membersall/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> getAllRankMembers(@RequestBody UserInfo userInfo,
+                                                         @PathVariable("pageNo") String pageNo,
+                                                         @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankAllMemberList(userInfo,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select all rank member list for pc is error:",e);
+        }
+        return baseResp;
+
+    }
+
 
 
 
@@ -490,7 +511,7 @@ public class RankApiController {
 
 
     /**
-     * 设置，取消达人
+     * 设置，取消达人,附带 达人排序
      * @param rankMembers
      * @return
      */
@@ -498,6 +519,8 @@ public class RankApiController {
     @RequestMapping(value = "fashionman")
     public BaseResp<Object> setFashionman(@RequestBody RankMembers rankMembers){
         BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info(String.valueOf(rankMembers.getRankid()));
+        logger.info(String.valueOf(rankMembers.getUserid()));
         if (null == rankMembers
                 || rankMembers.getRankid()==null
                 || rankMembers.getUserid() == null){
@@ -581,8 +604,8 @@ public class RankApiController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Object> rankDetail(String rankId){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Rank> rankDetail(String rankId){
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(com.longbei.appservice.common.utils.StringUtils.isEmpty(rankId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

@@ -100,7 +100,7 @@ public interface OrderService {
 	 * @param @param orderid 订单业务id 
 	 * 2017年3月22日
 	 */
-	 BaseResp<Object> updateOrdersIsexception(String orderid);
+	 BaseResp<Object> updateOrdersIsexception(long userid, String orderid);
 	 
 	 /**
 	 * 取消订单
@@ -164,7 +164,7 @@ public interface OrderService {
 	 * @author yinxc
 	 * 2017年3月24日
 	 */
-	 BaseResp<Object> updateDeliver(String orderid, String logisticscode, String logisticscompany);
+	 BaseResp<Object> updateDeliver(long userid, String orderid, String logisticscode, String logisticscompany);
 	 
 	 /**
 	 * 获取异常订单总数

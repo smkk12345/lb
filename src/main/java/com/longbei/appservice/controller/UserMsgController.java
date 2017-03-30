@@ -1,5 +1,8 @@
 package com.longbei.appservice.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -362,8 +365,9 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/isMsgRed")
-    public BaseResp<Integer> isMsgRed(String userid, String type) {
-		BaseResp<Integer> baseResp = new BaseResp<>();
+    public BaseResp<Object> isMsgRed(String userid, String type) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<>();
   		if (StringUtils.hasBlankParams(userid, type)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -375,7 +379,7 @@ public class UserMsgController extends BaseController {
   			}else{
   				userMsgService.selectCountByType(Long.parseLong(userid), type, null, "0");
   			}
-  			baseResp.setData(temp);
+  			expandData.put("isred", temp);
   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("isMsgRed userid = {}, type = {}", userid, type, e);

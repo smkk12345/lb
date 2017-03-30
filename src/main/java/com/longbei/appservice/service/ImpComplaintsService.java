@@ -14,7 +14,7 @@ public interface ImpComplaintsService {
 	 * return_type
 	 * ImpComplaintsService
 	 */
-	BaseResp<ImpComplaints> insertSelective(ImpComplaints record);
+	BaseResp<ImpComplaints> insertSelective(ImpComplaints record, long friendid);
 	
 	
 	

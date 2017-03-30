@@ -3,10 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.RankCheckDetail;
-import com.longbei.appservice.entity.RankImage;
-import com.longbei.appservice.entity.RankMembers;
+import com.longbei.appservice.entity.*;
 
 import java.util.Date;
 import java.util.List;
@@ -142,7 +139,7 @@ public interface RankService extends BaseService{
      * @return
      * @author luye
      */
-    BaseResp<Object> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward);
+    BaseResp<Rank> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward);
 
     /**
      * 获取成员列表 pc
@@ -152,6 +149,15 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+
+    /**
+     * 获取所有榜中的成员
+     * @param userInfo
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankAllMemberList(UserInfo userInfo,Integer pageno,Integer pagesize);
 
     /**
      * 获取成员列表 待审核 pc

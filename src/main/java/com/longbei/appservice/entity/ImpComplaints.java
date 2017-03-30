@@ -2,6 +2,12 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class ImpComplaints {
     private Long id;
 
@@ -13,7 +19,7 @@ public class ImpComplaints {
 
     private Date createtime;//反馈时间
 
-    private String status;//0--未处理 1---无用 2---有用
+    private String status;//0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
 
     private Date dealtime;//处理时间
 
@@ -23,9 +29,22 @@ public class ImpComplaints {
 
     private String contenttype;
 
-    private Long businessid;//榜单id
+    private Long businessid;//类型业务id
 
-    private String businesstype;
+    private String businesstype; ////类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+    
+    private String username; //投诉人手机号
+    
+    private String nickname; //投诉人昵称
+    
+    private String cusername; //被投诉人手机号
+    
+    private String cnickname; //被投诉人昵称
+    
+    
+    
+    private String businessname; //各类型title  即榜名称，圈子名称，教室名称
+    
 
     /**
      * 
@@ -47,6 +66,7 @@ public class ImpComplaints {
      * 用户id
      * @return userid 用户id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -63,6 +83,7 @@ public class ImpComplaints {
      * 进步组id
      * @return impid 进步组id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getImpid() {
         return impid;
     }
@@ -95,6 +116,8 @@ public class ImpComplaints {
      * 反馈时间
      * @return createtime 反馈时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -108,16 +131,17 @@ public class ImpComplaints {
     }
 
     /**
-     * 0--未处理 1---无用 2---有用
-     * @return status 0--未处理 1---无用 2---有用
+     * 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
+     * @return status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
      */
+    @JsonInclude(Include.ALWAYS)
     public String getStatus() {
         return status;
     }
 
     /**
-     * 0--未处理 1---无用 2---有用
-     * @param status 0--未处理 1---无用 2---有用
+     * 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
+     * @param status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
      */
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
@@ -127,6 +151,8 @@ public class ImpComplaints {
      * 处理时间
      * @return dealtime 处理时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getDealtime() {
         return dealtime;
     }
@@ -143,6 +169,7 @@ public class ImpComplaints {
      * 处理人
      * @return dealuser 处理人
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getDealuser() {
         return dealuser;
     }
@@ -218,4 +245,44 @@ public class ImpComplaints {
     public void setBusinesstype(String businesstype) {
         this.businesstype = businesstype == null ? null : businesstype.trim();
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getCusername() {
+		return cusername;
+	}
+
+	public void setCusername(String cusername) {
+		this.cusername = cusername;
+	}
+
+	public String getCnickname() {
+		return cnickname;
+	}
+
+	public void setCnickname(String cnickname) {
+		this.cnickname = cnickname;
+	}
+
+	public String getBusinessname() {
+		return businessname;
+	}
+
+	public void setBusinessname(String businessname) {
+		this.businessname = businessname;
+	}
 }

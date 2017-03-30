@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserInfo;
 
 /**
@@ -176,5 +177,24 @@ public interface UserService {
 	BaseResp<Object> selectRandomTagList();
 
 	BaseResp<Object> perfectInfo(String ptype);
+
+	/**
+	 * 获取用户列表
+	 * @param userInfo
+	 * @param order
+	 * @param ordersc
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 */
+	BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo,String order,String ordersc,Integer pageno,Integer pagesize);
+
+	/**
+	 * 更新用户状态 达人，封号等
+	 * @param userInfo
+	 * @return
+	 */
+	BaseResp<Object> updateUserStatus(UserInfo userInfo);
+
 
 }
