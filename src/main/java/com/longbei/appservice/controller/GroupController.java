@@ -86,6 +86,26 @@ public class GroupController {
     }
 
     /**
+     * 更新用户群组的其他信息
+     * @url http://ip:port/app_service/group/updateUserGroupOtherInfo
+     * @param userid 用户id
+     * @param groupId 群组id
+     * @param topStatus 群组是否置顶 0.不置顶 1.置顶
+     * @param disturbStatus 是否消息免打扰 0.关闭消息免打扰 1.开启消息免打扰
+     * @return
+     */
+    @RequestMapping(value="updateUserGroupOtherInfo")
+    public BaseResp<Object> updateUserGroupOtherInfo(Long userid,Long groupId,Integer topStatus,Integer disturbStatus){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || groupId == null || (topStatus != null && disturbStatus != null) ||
+                (topStatus == null && disturbStatus == null)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.groupService.updateUserGroupOtherInfo(userid,groupId,topStatus,disturbStatus);
+        return baseResp;
+    }
+
+    /**
      * 更改群公告
      * @url http://ip:port/app_service/group/updateGroupNotice
      * @param userId 用户id
@@ -299,6 +319,22 @@ public class GroupController {
             pageSize = endNum - startNum;
         }
         baseResp = this.groupService.searchGroup(keyword,startNum,pageSize);
+        return baseResp;
+    }
+
+    /**
+     * 查询群组详情
+     * @param groupId 群组id
+     * @param userid 用户id
+     * @return
+     */
+    @RequestMapping(value="groupDetail")
+    public BaseResp<Object> groupDetail(Long groupId,Long userid){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(groupId == null || userid == null){
+            return  baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.groupService.groupDetail(groupId,userid);
         return baseResp;
     }
 

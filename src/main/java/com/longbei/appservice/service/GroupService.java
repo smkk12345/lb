@@ -104,4 +104,22 @@ public interface GroupService {
      * @return
      */
     BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize);
+
+    /**
+     * 更新用户群组的其他信息
+     * @param userid 用户id
+     * @param groupId 群组id
+     * @param topStatus 群组是否置顶 0.不置顶 1.置顶
+     * @param disturbStatus 是否消息免打扰 0.关闭消息免打扰 1.开启消息免打扰
+     * @return
+     */
+    BaseResp<Object> updateUserGroupOtherInfo(Long userid, Long groupId, Integer topStatus, Integer disturbStatus);
+
+    /**
+     * 查询群组的详情
+     * @param groupId
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> groupDetail(Long groupId, Long userid);
 }

@@ -52,4 +52,17 @@ public interface RankMapper {
      */
     List<Rank> selectRankList(Map<String, Object> parameterMap);
 
+    /**
+     * 查询五分钟前刚刚开始的榜单
+     * @param map
+     * @return
+     */
+    List<Rank> selectStartRank(Map<String, Object> map);
+
+    /**
+     * 将已开始的榜单置为已开始
+     * @param map
+     * @return
+     */
+    int handleStartRank(Map<String, Object> map);
 }

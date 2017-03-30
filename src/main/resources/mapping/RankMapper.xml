@@ -699,4 +699,22 @@
             limit 0,#{pageSize}
         </if>
   </select>
+
+  <!-- 查看五分钟前刚刚开始的榜单 -->
+  <select id="selectStartRank" parameterType="map" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from rank
+    where starttime &gt; #{beforeDate}
+    and starttime &lt;= #{currentDate}
+    and isfinish = 1
+  </select>
+
+  <!-- 将已开始的活动置为已开始 -->
+  <update id="handleStartRank" parameterType="map">
+      update rank
+      set isfinish = 1
+      where starttime &gt; #{beforeDate}
+          and starttime &lt;= #{currentDate}
+  </update>
 </mapper>
