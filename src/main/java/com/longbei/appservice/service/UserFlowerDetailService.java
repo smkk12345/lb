@@ -9,7 +9,7 @@ public interface UserFlowerDetailService {
 	 * 花公用添加明细方法
 	 * 2017年3月21日
 	 * param userid 
-	 * param origin： 来源  0:龙币兑换;  1:赠与;
+	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
 	 *
 	 * param number 鲜花数量 --- 消耗：(1:赠与;)value值为负---方法里面已做判断
 	 * param improveid 业务id  类型：     
@@ -44,5 +44,15 @@ public interface UserFlowerDetailService {
 	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
 	 */
 	BaseResp<Object> moneyExchangeFlower(long userid, int number);
+	
+	/**
+	 * @author yinxc
+	 * 进步币兑换鲜花
+	 * 2017年3月21日
+	 * param userid 
+	 * param number 鲜花数量 
+	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
+	 */
+	BaseResp<Object> coinExchangeFlower(long userid, int number);
 	
 }
