@@ -22,6 +22,9 @@
     <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
     <result column="publishawarddate" property="publishawarddate" jdbcType="TIMESTAMP" />
+      <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
+      <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
+      <result column="sort" property="sort" jdbcType="INTEGER" />
     <association property="rankAward" javaType="com.longbei.appservice.entity.RankAward">
       <result column="awardid" property="awardid" jdbcType="VARCHAR" />
       <result column="awardlevel" property="awardlevel" jdbcType="VARCHAR" />
@@ -34,7 +37,8 @@
   <sql id="Base_Column_List" >
       id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
     likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
-    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate
+    checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate,
+    downfashionmantime,upfashionmantime,sort
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -115,7 +119,17 @@
         </if>
 
     </where>
-    ORDER BY sortnum ASC ,likes DESC
+      <if test="order != null">
+
+      </if>
+      <choose>
+          <when test="order != null">
+              ORDER BY sort DESC , upfashionmantime DESC
+          </when>
+          <otherwise>
+              ORDER BY sortnum ASC ,likes DESC
+          </otherwise>
+      </choose>
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
@@ -486,9 +500,18 @@
       <if test="updatetime != null">
         updatetime = #{updatetime},
       </if>
-      <if test="icount">
+      <if test="icount != null">
         icount = icount+#{icount}
       </if>
+        <if test="upfashionmantime != null">
+            upfashionmantime = #{upfashionmantime},
+        </if>
+        <if test="downfashionmantime != null">
+            downfashionmantime = #{downfashionmantime},
+        </if>
+        <if test="sort != null">
+            sort = #{sort},
+        </if>
     </set>
     where rankid = #{rankid} and userid = #{userid}
   </update>

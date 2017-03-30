@@ -50,11 +50,15 @@ public class RankMembers {
 
     private Date epublishawarddate; //搜索使用
 
+    private Rank rank; //pc用
+
     private List<Rank> ranks; //查询使用
 
     private List<Award> awards; //查询使用
 
     private AppUserMongoEntity appUserMongoEntity;
+
+    private UserInfo userInfo; // pc使用
 
     private List<AppUserMongoEntity> appUserMongoEntities; //查询使用
 
@@ -68,6 +72,54 @@ public class RankMembers {
 
     private Award award;
 
+    private Date upfashionmantime; //设置为达人时间
+
+    private Date downfashionmantime; //取消达人时间
+
+    private Integer sort; //达人排序
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getUpfashionmantime() {
+        return upfashionmantime;
+    }
+
+    public void setUpfashionmantime(Date upfashionmantime) {
+        this.upfashionmantime = upfashionmantime;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getDownfashionmantime() {
+        return downfashionmantime;
+    }
+
+    public void setDownfashionmantime(Date downfashionmantime) {
+        this.downfashionmantime = downfashionmantime;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public Rank getRank() {
+        return rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")

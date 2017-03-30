@@ -109,7 +109,7 @@ public class ImproveController {
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
-            baseResp = impComplaintsService.insertSelective(record, Long.parseLong(friendid));
+            baseResp = impComplaintsService.insertSelective(record);
         } catch (Exception e) {
             logger.error(
                     "addImpComplaints userid = {}, impid = {}, content = {}, contenttype = {}, gtype = {}, msg = {}",
