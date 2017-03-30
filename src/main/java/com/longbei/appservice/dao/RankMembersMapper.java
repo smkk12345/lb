@@ -23,6 +23,7 @@ public interface RankMembersMapper {
     int selectCount(RankMembers rankMembers);
 
     List<RankMembers> selectList(@Param("rankmember") RankMembers rankMembers,
+                                 @Param("order") String order,
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
 

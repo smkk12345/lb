@@ -509,7 +509,7 @@ public class RankApiController {
 
 
     /**
-     * 设置，取消达人
+     * 设置，取消达人,附带 达人排序
      * @param rankMembers
      * @return
      */
@@ -517,6 +517,8 @@ public class RankApiController {
     @RequestMapping(value = "fashionman")
     public BaseResp<Object> setFashionman(@RequestBody RankMembers rankMembers){
         BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info(String.valueOf(rankMembers.getRankid()));
+        logger.info(String.valueOf(rankMembers.getUserid()));
         if (null == rankMembers
                 || rankMembers.getRankid()==null
                 || rankMembers.getUserid() == null){
