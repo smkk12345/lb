@@ -1,5 +1,8 @@
 package com.longbei.appservice.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,19 +298,20 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgUpdIsread
     * @Description: 修改消息状态 isread 是否已读 0：未读 1：已读
     * @param @param id  
+    * @param @param userid
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgUpdIsread")
-    public BaseResp<Object> msgUpdIsread(String id) {
+    public BaseResp<Object> msgUpdIsread(String id, String userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.updateIsreadByid(Integer.parseInt(id));
+  			baseResp = userMsgService.updateIsreadByid(Integer.parseInt(id), Long.parseLong(userid));
 		} catch (Exception e) {
 			logger.error("msgUpdIsread id = {}", id, e);
 		}
@@ -347,7 +351,41 @@ public class UserMsgController extends BaseController {
   		return baseResp;
 	}
 	
-	
+	/**
+    * @Title: http://ip:port/app_service/userMsg/isMsgRed
+    * @Description: 获取消息是否显示红点
+    * @param @param userid  
+    * @param @param type 0 通知消息(系统消息)页面是否显示红点
+	* 		 			 1  获取"我的"页面是否显示红点
+	* 		 			 2:@我消息页面是否显示红点
+	* return_type  0:不显示   1：显示
+    * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+    * @auther yxc
+    * @currentdate:2017年2月8日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/isMsgRed")
+    public BaseResp<Object> isMsgRed(String userid, String type) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<>();
+  		if (StringUtils.hasBlankParams(userid, type)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			int temp = 0;
+  			if("1".equals(type)){
+  				//type 1   获取"我的"页面是否显示红点
+  				temp = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
+  			}else{
+  				userMsgService.selectCountByType(Long.parseLong(userid), type, null, "0");
+  			}
+  			expandData.put("isred", temp);
+  			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("isMsgRed userid = {}, type = {}", userid, type, e);
+		}
+  		return baseResp;
+	}
 	
 	
 }

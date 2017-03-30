@@ -24,9 +24,9 @@ public interface IProductBasicService {
 	 * @param level  用户等级
 	 */
 	 @RequestLine("GET /product/category?userid={userid}&level={level}")
-	 BaseResp<List<ProductCategory>> category(@Param("userid") Long userid, 
+	 BaseResp<List<ProductCategory>> category(@Param("userid") Long userid,
 			 @Param("level") String level);
-	 
+
 	 /**
 	 * @author yinxc
 	 * 获取商品列表
@@ -37,9 +37,9 @@ public interface IProductBasicService {
 	 * @param startNo pageSize
 	 */
 	 @RequestLine("GET /product/list?userid={userid}&cateid={cateid}&level={level}&starttime={starttime}&startNo={startNo}&pageSize={pageSize}")
-	 BaseResp<List<ProductBasic>> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level, 
+	 BaseResp<List<ProductBasic>> list(@Param("userid") Long userid, @Param("cateid") Long cateid, @Param("level") String level,
 			 @Param("starttime") String starttime, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
-	 
+
 	 /**
 	 * @author yinxc
 	 * 获取商品详情
@@ -48,9 +48,9 @@ public interface IProductBasicService {
 	 * @param productid 商品id
 	 */
 	 @RequestLine("GET /product/getProduct?userid={userid}&productid={productid}&discount={discount}")
-	 BaseResp<ProductBasic> getProduct(@Param("userid") Long userid, @Param("productid") String productid, 
-			 @Param("discount") double discount); 
-	 
+	 BaseResp<ProductBasic> getProduct(@Param("userid") Long userid, @Param("productid") String productid,
+			 @Param("discount") double discount);
+
 	 /**
 	 * @author yinxc
 	 * 添加商品到购物车
@@ -61,9 +61,9 @@ public interface IProductBasicService {
      * @param enabled  商品状态  是否下架 0 下架 1 未下架（默认为 1）
 	 */
 	 @RequestLine("GET /product/addCart?userid={userid}&productid={productid}&productcount={productcount}&enabled={enabled}")
-	 BaseResp<Object> addCart(@Param("userid") Long userid, @Param("productid") String productid, 
+	 BaseResp<Object> addCart(@Param("userid") Long userid, @Param("productid") String productid,
 			 @Param("productcount") int productcount, @Param("enabled") String enabled);
-	 
+
 	 /**
 	 * @author yinxc
 	 * 批量删除购物车
@@ -73,7 +73,7 @@ public interface IProductBasicService {
 	 */
 	 @RequestLine("GET /product/removeCart?userid={userid}&ids={ids}")
 	 BaseResp<Object> removeCart(@Param("userid") Long userid, @Param("ids") String ids);
-	 
+
 	 /**
 	 * @author yinxc
 	 * 根据userid清空购物车信息
@@ -82,18 +82,18 @@ public interface IProductBasicService {
 	 */
 	 @RequestLine("GET /product/clearCart?userid={userid}")
 	 BaseResp<Object> clearCart(@Param("userid") Long userid);
-	 
+
 	 /**
 	 * 根据状态和用户id获取购物车列表
 	 * @author yinxc
 	 * @param userid
-	 * @param startNo 
-	 * @param pageSize 
+	 * @param startNo
+	 * @param pageSize
 	 * 2017年3月15日
 	 */
 	 @RequestLine("GET /product/getCart?userid={userid}&startNo={startNo}&pageSize={pageSize}")
 	 BaseResp<List<ProductCart>> getCart(@Param("userid") Long userid, @Param("startNo") int startNo, @Param("pageSize") int pageSize);
-	 
+
 	 /**
 	 * @author yinxc
 	 * 修改购物车商品数量

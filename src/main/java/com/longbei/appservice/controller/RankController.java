@@ -168,8 +168,8 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Object> rankDetail(Long userid,String rankId){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Rank> rankDetail(Long userid,String rankId){
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId) || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

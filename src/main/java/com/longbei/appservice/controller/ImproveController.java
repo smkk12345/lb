@@ -79,9 +79,10 @@ public class ImproveController {
     /**
      * @Title: http://ip:port/app_service/improve/addImpComplaints
      * @Description: 投诉进步
-     * @param @param userid
+     * @param @param userid 投诉人id
      * @param @param impid 进步id
-     * @param @param impid 投诉内容
+     * @param @param content 投诉内容
+     * @param @param friendid 被投诉人id
      * @param @param contenttype  0：该微进步与龙榜内容不符~~
      * @param @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -91,12 +92,12 @@ public class ImproveController {
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "addImpComplaints")
-    public BaseResp<Object> addImpComplaints(String userid, String impid, String content, String contenttype,
+    public BaseResp<ImpComplaints> addImpComplaints(String userid, String friendid, String impid, String content, String contenttype,
                                              String gtype) {
         logger.info("addImpComplaints userid={},impid={},content={},contenttype={},gtype={}", userid, impid, content,
                 contenttype, gtype);
-        BaseResp<Object> baseResp = new BaseResp<>();
-        if (StringUtils.hasBlankParams(userid, impid, contenttype, gtype)) {
+        BaseResp<ImpComplaints> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid, friendid, impid, contenttype, gtype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
@@ -108,7 +109,7 @@ public class ImproveController {
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
-            baseResp = impComplaintsService.insertSelective(record);
+            baseResp = impComplaintsService.insertSelective(record, Long.parseLong(friendid));
         } catch (Exception e) {
             logger.error(
                     "addImpComplaints userid = {}, impid = {}, content = {}, contenttype = {}, gtype = {}, msg = {}",
@@ -719,16 +720,36 @@ public class ImproveController {
     }
 
     /**
-     * url  improve/selectListInRank
-     * @param curuserid  当前用户id
-     * @param userid   进步的用户id
-     * @param rankid  榜单id
-     * @param startno 分页数据
-     * @param pagesize
+     * 获取进步推荐列表
+     * @param userid 用户id
+     * @param startno 开始条数
+     * @param pagesize 每页显示条数
      * @return
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
+    @RequestMapping(value = "recommendlist")
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startno,String pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        if (StringUtils.isBlank(startno)) {
+            startno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)) {
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImproveList(userid, Integer.parseInt(startno),
+                    Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select recommend improve list for app is error:", e);
+        }
+        return baseResp;
+    }
+
+
     @RequestMapping(value = "selectListInRank")
     public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
 

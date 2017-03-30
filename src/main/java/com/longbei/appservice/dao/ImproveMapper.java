@@ -5,6 +5,7 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 import org.apache.ibatis.annotations.Param;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public interface ImproveMapper {
                             );
 
 
-    List<Improve> selectGoalImproveList(@Param("statrdate")Date startdate,
+    List<Improve> selectGoalImproveList(@Param("startdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
                                  @Param("users") List<AppUserMongoEntity> users,
@@ -63,13 +64,13 @@ public interface ImproveMapper {
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
 
-    int selectGoalImproveCount(@Param("statrdate")Date startdate,
+    int selectGoalImproveCount(@Param("startdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
                                  @Param("users") List<AppUserMongoEntity> users);
 
 
-    List<Improve> selectImproveList(@Param("statrdate")Date startdate,
+    List<Improve> selectImproveList(@Param("startdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
                                  @Param("users") List<AppUserMongoEntity> users,
@@ -78,7 +79,7 @@ public interface ImproveMapper {
                                  @Param("pagesize") Integer pagesize);
 
 
-    int selectImproveCount(@Param("statrdate")Date startdate,
+    int selectImproveCount(@Param("startdate")Date startdate,
                                         @Param("ismain") String ismain,
                                         @Param("brief") String breif,
                                         @Param("users") List<AppUserMongoEntity> users);
@@ -86,7 +87,7 @@ public interface ImproveMapper {
 
 
 
-    List<Improve> selectRankImproveList(@Param("statrdate")Date startdate,
+    List<Improve> selectRankImproveList(@Param("startdate")Date startdate,
                                  @Param("ismain") String ismain,
                                  @Param("brief") String breif,
                                  @Param("users") List<AppUserMongoEntity> users,
@@ -96,7 +97,7 @@ public interface ImproveMapper {
 
 
 
-    int selectRankImproveCount(@Param("statrdate")Date startdate,
+    int selectRankImproveCount(@Param("startdate")Date startdate,
                                         @Param("ismain") String ismain,
                                         @Param("brief") String breif,
                                         @Param("users") List<AppUserMongoEntity> users);
@@ -227,5 +228,9 @@ public interface ImproveMapper {
                          @Param("operatetype")String otype,
                          @Param("tablename")String tablename,
                          @Param("field")String field);
+
+    int updateImproveRecommend(@Param("tablename") String tablename,
+                               @Param("impids") List<Long> impids,
+                               @Param("isrecommend")String isrecommend);
 
 }

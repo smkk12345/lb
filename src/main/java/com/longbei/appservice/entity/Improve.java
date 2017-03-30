@@ -102,6 +102,17 @@ public class Improve {
 
     private BusinessEntity businessEntity = new BusinessEntity();
 
+    private String isrecommend; //是否推荐 0 - 否 1 - 是
+
+    public String getIsrecommend() {
+        return isrecommend;
+    }
+
+    public void setIsrecommend(String isrecommend) {
+        this.isrecommend = isrecommend;
+    }
+
+
     public Integer getComplaincount() {
         return complaincount;
     }

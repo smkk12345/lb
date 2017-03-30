@@ -20,7 +20,7 @@ public class UserFlowerDetail {
 
     private String ftype;//0:花朵;1:花束;2:花篮
 
-    private String origin;//来源，0:龙币兑换;  1:赠与;
+    private String origin;//来源，0:龙币兑换;  1:赠与; 2:进步币兑换
 
     private Date drawdate;//获得时间
 

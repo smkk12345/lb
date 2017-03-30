@@ -84,6 +84,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserMsgService userMsgService;
     @Autowired
     private SnsFriendsMapper snsFriendsMapper;
+    @Autowired
+    private UserService userService;
 
     /**
      *  @author luye
@@ -1640,8 +1642,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
     @Override
-    public BaseResp<Object> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward) {
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Rank> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward) {
+        BaseResp<Rank> baseResp = new BaseResp<Rank>();
         try {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankId));
@@ -1733,6 +1735,32 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankAllMemberList(UserInfo userInfo, Integer pageno, Integer pagesize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        Page<RankMembers> page = new Page<>(pageno,pagesize);
+        try {
+            List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setIsfashionman("1");
+            List<AppUserMongoEntity> appUserMongoEntities = new ArrayList<>();
+            for (UserInfo userInfo1 : userInfos){
+                AppUserMongoEntity user = new AppUserMongoEntity();
+                user.setId(String.valueOf(userInfo1.getUserid()));
+                appUserMongoEntities.add(user);
+            }
+            rankMembers.setAppUserMongoEntities(appUserMongoEntities);
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,pagesize*(pageno-1),pagesize);
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select all rank member list for pc is error:",e);
+        }
+        return baseResp;
+    }
 
     @Override
     public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {

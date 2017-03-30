@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
@@ -740,7 +741,45 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-	
-	
+	@Override
+	public BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo, String order, String ordersc, Integer pageno, Integer pagesize) {
+		BaseResp<Page<UserInfo>> baseResp = new BaseResp<>();
+		Page<UserInfo> page = new Page<>(pageno,pagesize);
+		try {
+			int totalcount = userInfoMapper.selectCount(userInfo);
+			Integer startno = null;
+			if (null != pageno){
+				startno = pagesize*(pageno-1);
+			}
+			List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,order,ordersc,startno,pagesize);
+			page.setTotalCount(totalcount);
+			page.setList(userInfos);
+			baseResp = BaseResp.ok();
+			baseResp.setData(page);
+		} catch (Exception e) {
+			logger.error("select user list for pc is error:",e);
+		}
+		return baseResp;
+	}
 
+	@Override
+	public BaseResp<Object> updateUserStatus(UserInfo userInfo) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			if ("0".equals(userInfo.getIsfashionman())){
+				userInfo.setDownfashionmantime(new Date());
+				userInfo.setSort(0);
+			}
+			if ("1".equals(userInfo.getIsfashionman())){
+				userInfo.setUpfashionmantime(new Date());
+			}
+			int res = userInfoMapper.updateByUseridSelective(userInfo);
+			if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+		} catch (Exception e) {
+			logger.error("update userinfo status is error:",e);
+		}
+		return baseResp;
+	}
 }

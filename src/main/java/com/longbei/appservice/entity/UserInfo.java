@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserInfo {
@@ -49,7 +51,11 @@ public class UserInfo {
 
     private Date updatetime;//更新时间
 
+    private Date screatetime;
+
     private Date createtime;
+
+    private Date ecreatetime;
 
     private String payword;//支付密码
 
@@ -76,10 +82,86 @@ public class UserInfo {
     private String isfriend = "0"; //是否是好友    0：不是   1：是
 
     private Integer point;//龙分
+
+    private Integer sgrade; //查询用
+
     private Integer grade;//等级
+
+    private Integer egrade; //查询用
+
     private Integer curpoint;//当前龙分
 
-    private Boolean isFashionMan;//是否是达人
+    private String schoolcertify; //学历认证
+
+    private String jobcertify; //工作认证
+
+    private String isfashionman; //达人
+
+    private Date upfashionmantime; //设置为达人时间
+
+    private Date downfashionmantime; //取消达人时间
+
+    private Integer sort; //排序
+
+    private String settings; //设置
+
+    public String getJobcertify() {
+        return jobcertify;
+    }
+
+    public void setJobcertify(String jobcertify) {
+        this.jobcertify = jobcertify;
+    }
+
+    public String getSchoolcertify() {
+        return schoolcertify;
+    }
+
+    public void setSchoolcertify(String schoolcertify) {
+        this.schoolcertify = schoolcertify;
+    }
+
+    public String getSettings() {
+        return settings;
+    }
+
+    public void setSettings(String settings) {
+        this.settings = settings;
+    }
+
+    public String getIsfashionman() {
+        return isfashionman;
+    }
+
+    public void setIsfashionman(String isfashionman) {
+        this.isfashionman = isfashionman;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getUpfashionmantime() {
+        return upfashionmantime;
+    }
+
+    public void setUpfashionmantime(Date upfashionmantime) {
+        this.upfashionmantime = upfashionmantime;
+    }
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getDownfashionmantime() {
+        return downfashionmantime;
+    }
+
+    public void setDownfashionmantime(Date downfashionmantime) {
+        this.downfashionmantime = downfashionmantime;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
     private List<UserJob> jobList = new ArrayList<UserJob>();
 
@@ -89,6 +171,41 @@ public class UserInfo {
 
     private List<UserPlDetail> detailList = new ArrayList<UserPlDetail>();  //用户十全十美的信息列表
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getScreatetime() {
+        return screatetime;
+    }
+
+    public void setScreatetime(Date screatetime) {
+        this.screatetime = screatetime;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEcreatetime() {
+        return ecreatetime;
+    }
+
+    public void setEcreatetime(Date ecreatetime) {
+        this.ecreatetime = ecreatetime;
+    }
+
+    public Integer getSgrade() {
+        return sgrade;
+    }
+
+    public void setSgrade(Integer sgrade) {
+        this.sgrade = sgrade;
+    }
+
+    public Integer getEgrade() {
+        return egrade;
+    }
+
+    public void setEgrade(Integer egrade) {
+        this.egrade = egrade;
+    }
 
     public UserInfo(){}
     public UserInfo(long userid,String nickname,String avatar,String sex){
@@ -139,16 +256,8 @@ public class UserInfo {
         this.totalimp = totalimp;
     }
 
-    public void setFashionMan(Boolean fashionMan) {
-        isFashionMan = fashionMan;
-    }
-
     public void setTotallikes(Integer totallikes) {
         this.totallikes = totallikes;
-    }
-
-    public Boolean getFashionMan() {
-        return isFashionMan;
     }
 
     public Integer getTotalfans() {
@@ -354,6 +463,8 @@ public class UserInfo {
      * 生日
      * @return birthday 生日
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getBirthday() {
         return birthday;
     }
@@ -420,6 +531,8 @@ public class UserInfo {
      * 更新时间
      * @return updatetime 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -436,6 +549,8 @@ public class UserInfo {
      * 
      * @return createtime 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

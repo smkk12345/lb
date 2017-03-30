@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserInfo;
@@ -10,6 +11,7 @@ import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -99,5 +101,59 @@ public class AppUserApiController {
         }
         return baseResp;
     }
+
+
+    /**
+     * 获取用户列表
+     * @param userInfo
+     * @param order
+     * @param ordersc
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/userlist")
+    @ResponseBody
+    public BaseResp<Page<UserInfo>> selectUserList(@RequestBody UserInfo userInfo, String order,
+                                                   String ordersc, String pageno, String pagesize){
+        BaseResp<Page<UserInfo>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(ordersc)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = userService.selectUserList(userInfo,order,ordersc,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select user list for pc is error:",e);
+        }
+        return baseResp;
+
+    }
+
+    /**
+     * 更新用户状态 达人，封号等
+     * @param userInfo
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/updateuser")
+    @ResponseBody
+    public BaseResp<Object> updateUserStatus(@RequestBody UserInfo userInfo){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = userService.updateUserStatus(userInfo);
+        } catch (Exception e) {
+            logger.error("update user status is error:",e);
+        }
+        return baseResp;
+    }
+
+
 
 }

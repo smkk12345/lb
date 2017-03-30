@@ -33,11 +33,27 @@
     <result column="curpoint" property="curpoint"/>
     <result column="point" property="point"/>
     <result column="grade" property="grade"/>
+    <result column="settings" property="settings"/>
+    <result column="area" property="area"/>
+    <result column="schoolcertify" property="schoolcertify"/>
+    <result column="jobcertify" property="jobcertify"/>
+    <result column="isfashionman" property="isfashionman"/>
+    <result column="totalimp" property="totalimp"/>
+    <result column="totallikes" property="totallikes"/>
+    <result column="totalfans" property="totalfans"/>
+    <result column="givedflowers" property="givedflowers"/>
+    <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
+    <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+
   </resultMap>
+
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
-    avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,hcnickname,curpoint,point,grade
+    avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
+    hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
+    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sort
   </sql>
   
   <sql id="InfoMore_List" >
@@ -51,6 +67,151 @@
     <include refid="InfoMore_List" />
     from user_info
     where userid = #{userid}
+  </select>
+
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.UserInfo" resultType="java.lang.Integer">
+    SELECT count(*) FROM user_info
+    <where>
+      <if test="nickname != null and nickname!=''">
+        AND nickname LIKE concat(concat("%",#{nickname}),"%")
+      </if>
+      <if test="username != null and username!=''">
+        AND username LIKE concat(concat("%",#{username}),"%")
+      </if>
+      <if test="isfashionman != null">
+        AND isfashionman = #{isfashionman}
+      </if>
+      <if test="sex != null and sex != '-1'.toString()">
+        AND sex = #{sex}
+      </if>
+      <if test="sgrade != null">
+        AND grade &gt;= #{sgrade}
+      </if>
+      <if test="egrade != null">
+        AND grade &lt; #{egrade}
+      </if>
+      <if test="screatetime != null">
+        AND createtime &gt;= #{screatetime}
+      </if>
+      <if test="ecreatetime != null">
+        AND createtime &lt; #{ecreatetime}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_info
+    <where>
+      <if test="user.nickname != null and user.nickname!=''">
+        AND nickname LIKE concat(concat("%",#{user.nickname}),"%")
+      </if>
+      <if test="user.username != null and user.username!=''">
+        AND username LIKE concat(concat("%",#{user.username}),"%")
+      </if>
+      <if test="user.isfashionman != null">
+        AND isfashionman = #{user.isfashionman}
+      </if>
+      <if test="user.sex != null and user.sex != '-1'.toString()">
+        AND sex = #{user.sex}
+      </if>
+      <if test="user.sgrade != null">
+        AND grade &gt;= #{user.sgrade}
+      </if>
+      <if test="user.egrade != null">
+        AND grade &lt; #{user.egrade}
+      </if>
+      <if test="user.screatetime != null">
+        AND createtime &gt;= #{user.screatetime}
+      </if>
+      <if test="user.ecreatetime != null">
+        AND createtime &lt; #{user.ecreatetime}
+      </if>
+    </where>
+    <if test="order=='-1'.toString()">
+      ORDER BY sort DESC ,upfashionmantime DESC
+    </if>
+    <if test="order=='0'.toString()">
+      ORDER BY createtime
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='1'.toString()">
+      ORDER BY point
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='2'.toString()">
+      ORDER BY grade
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='3'.toString()">
+      ORDER BY totalimp
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='4'.toString()">
+      ORDER BY totallikes
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='5'.toString()">
+      ORDER BY givedflowers
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="order=='6'.toString()">
+      ORDER BY totalfans
+      <choose>
+        <when test="ordersc == 1">
+          DESC
+        </when>
+        <otherwise>
+          ASC
+        </otherwise>
+      </choose>
+    </if>
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
   </select>
   
   <sql id="Info_List" >
@@ -385,6 +546,18 @@
       </if>
       <if test="devicetype != null">
       	devicetype = #{devicetype,jdbcType=VARCHAR},
+      </if>
+      <if test="upfashionmantime != null" >
+        upfashionmantime = #{upfashionmantime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downfashionmantime != null" >
+        downfashionmantime = #{downfashionmantime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isfashionman != null">
+        isfashionman = #{isfashionman,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=INTEGER},
       </if>
     </set>
     where userid = #{userid,jdbcType=BIGINT}
