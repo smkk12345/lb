@@ -170,6 +170,20 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public int selectListCount() {
+		int total;
+		try {
+			total = HttpClient.productBasicService.selectListCount();
+			if(total>0){
+				return  total;
+			}
+		} catch (Exception e) {
+			logger.error("selectListCount error and msg={}",e);
+		}
+		return 0;
+	}
+
+	@Override
 	public BaseResp<Object> updateProductByProductId(String productId,String productcate,String productname,String productbriefphotos,
 													 String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();

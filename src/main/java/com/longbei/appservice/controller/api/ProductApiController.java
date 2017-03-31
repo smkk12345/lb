@@ -196,6 +196,28 @@ public class ProductApiController {
 	}
 
 	/**
+	 * @Title: http://ip:port/product_service/product/selectListCount
+	 * @Description: 查询商品列表总数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月31日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectListCount")
+	public int selectListCount() {
+		int total =0;
+		try {
+			total = productService.selectListCount();
+			if(total>0){
+				return  total;
+			}
+		} catch (Exception e) {
+			logger.error("selectListCount error and msg={}",e);
+		}
+		return 0;
+	}
+
+
+	/**
 	 * @Title: http://ip:port/app_service/product/updateProductByProductId
 	 * @Description: 编辑商品详情
 	 * @param @param productId 商品id
