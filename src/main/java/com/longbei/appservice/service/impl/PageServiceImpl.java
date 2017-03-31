@@ -5,9 +5,12 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.HomePictureMapper;
 import com.longbei.appservice.dao.HomeRecommendMapper;
+import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.PageService;
+import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ public class PageServiceImpl implements PageService{
     private HomePictureMapper homePictureMapper;
     @Autowired
     private HomeRecommendMapper homeRecommendMapper;
+    @Autowired
+    private RankMapper rankMapper;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -104,7 +109,17 @@ public class PageServiceImpl implements PageService{
     public BaseResp<Object> insertHomeRecommend(HomeRecommend homeRecommend) {
         BaseResp baseResp = new BaseResp();
         try {
+            homeRecommend.setCreatetime(new Date());
             homeRecommendMapper.insertBantch(homeRecommend);
+            List<Long> list = homeRecommend.getBusinessids();
+            if (null != list && list.size()!=0){
+                for (Long lo: list){
+                    Rank rank = new Rank();
+                    rank.setRankid(lo);
+                    rank.setIshomerecommend("1");
+                    rankMapper.updateSymbolByRankId(rank);
+                }
+            }
             baseResp = BaseResp.ok();
         } catch (Exception e) {
             logger.error("insert into homerecommend is error:",e);
@@ -121,6 +136,10 @@ public class PageServiceImpl implements PageService{
         try {
             int totalcount = homeRecommendMapper.selectCount(homeRecommend);
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
+            for (HomeRecommend homeRecommend1 : homeRecommends){
+                Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                homeRecommend1.setRank(rank);
+            }
             page.setTotalCount(totalcount);
             page.setList(homeRecommends);
             baseResp = BaseResp.ok();
@@ -142,6 +161,12 @@ public class PageServiceImpl implements PageService{
         try {
             int res = homeRecommendMapper.updateByPrimaryKeySelective(homeRecommend);
             if (res > 0){
+                if ("1".equals(homeRecommend.getIsdel())){
+                    Rank rank = new Rank();
+                    rank.setRankid(homeRecommend.getBusinessid());
+                    rank.setIshomerecommend("0");
+                    rankMapper.updateSymbolByRankId(rank);
+                }
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {

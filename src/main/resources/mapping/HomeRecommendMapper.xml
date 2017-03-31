@@ -138,7 +138,7 @@
       </if>
     </trim>
     VALUES
-    <foreach collection="businessids" item="b">
+    <foreach collection="businessids" item="b" separator=",">
       <trim prefix="(" suffix=")" suffixOverrides="," >
         <if test="recommendtype != null" >
           #{recommendtype,jdbcType=INTEGER},
