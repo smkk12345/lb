@@ -372,7 +372,7 @@ public class OrderServiceImpl implements OrderService {
 		BaseResp<UserAddress> baseResp = new BaseResp<>();
 		try{
 			UserAddress userAddress = userAddressMapper.selectDefaultAddressByUserid(userid);
-			if(null != userAddress){
+			if(null == userAddress){
 				//获取用户最新添加的一条
 				List<UserAddress> list = userAddressMapper.selectByUserId(userid, 0, 1);
 				if(null != list && list.size()>0){
