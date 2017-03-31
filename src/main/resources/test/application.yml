@@ -48,8 +48,9 @@ spring:
 #                                starttls:
 #                                          enable: true
 #                                          required: true
+
       lbactivemq:
-                broker-url: tcp://172.23.1.4:8161
+                broker-url: tcp://172.23.1.4:61616
                 in-memory: true
 #                password:
 #                user:
