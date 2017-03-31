@@ -97,6 +97,14 @@ public interface ProductService {
 									   String startNum,String pageSize);
 
 	/**
+	 * @Title: selectListCount
+	 * @Description: 查询商品列表总数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月30日
+	 */
+	int selectListCount();
+
+	/**
 	 * @Title: updateProductByProductId
 	 * @Description: 编辑商品详情
 	 * @param @param productId 商品id
