@@ -1,5 +1,6 @@
 package com.longbei.appservice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
@@ -176,5 +177,10 @@ public interface OrderService {
 	 */
 	 BaseResp<Integer> selectCountException();
 
-
+	/**
+	 * 系统自动确认收货
+	 * @param currentDate
+	 * @return
+     */
+	BaseResp<Object> autoConfirmReceipt(Date currentDate);
 }

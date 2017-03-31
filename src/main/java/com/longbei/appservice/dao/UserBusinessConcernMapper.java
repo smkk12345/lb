@@ -34,5 +34,10 @@ public interface UserBusinessConcernMapper {
      */
     List<UserBusinessConcern> findUserBusinessConcernList(Map<String,Object> map);
 
-
+    /**
+     * 查询关注的用户列表
+     * @param paraMap
+     * @return
+     */
+    List<UserBusinessConcern> findConcernUserList(Map<String, Object> paraMap);
 }

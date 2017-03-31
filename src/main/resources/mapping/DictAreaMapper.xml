@@ -25,4 +25,17 @@
        </if>
 
   </select>
+
+    <!-- 根据id加载地区 -->
+    <select id="findAreaListById" parameterType="List" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List" />
+        from dict_area
+        where 
+          id in (
+          <foreach collection="areaIdList" item="id" separator=",">#{id}
+          </foreach>
+        )
+        and id != 0
+    </select>
 </mapper>

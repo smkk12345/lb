@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImpComplaints" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="comuserid" property="comuserid" />
     <result column="impid" property="impid" jdbcType="BIGINT" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
@@ -18,7 +19,7 @@
     <result column="cusername" property="cusername" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
+    id, userid, comuserid, impid, content, createtime, status, dealtime, dealuser, checkoption, 
     contenttype, businessid, businesstype, username, cusername 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -32,19 +33,25 @@
     select 
     <include refid="Base_Column_List" />
     from imp_complaints 
-    <if test="status != null and status != ''" >
-      where status = #{status} 
+    <if test="status != 0" >
+      where status != 0 
+    </if>
+    <if test="status == 0" >
+      where status = 0 
     </if>
     order by createtime desc 
     <if test="pageSize != 0">
-    	LIMIT #{startNo},#{pageSize}
+    	LIMIT #{pageNo},#{pageSize}
     </if>
   </select>
   
   <select id="selectCountByStatus" resultType="java.lang.Integer">
   	SELECT count(*) from imp_complaints 
-  	<if test="status != null and status != ''" >
-      where status = #{status} 
+  	<if test="status != 0" >
+      where status != 0 
+    </if>
+    <if test="status == 0" >
+      where status = 0 
     </if>
   </select>
   
@@ -53,8 +60,11 @@
     <include refid="Base_Column_List" />
     from imp_complaints 
     where 1=1 
-    <if test="status != null and status != ''" >
-      and status = #{status} 
+    <if test="status != 0" >
+      and status != 0 
+    </if>
+    <if test="status == 0" >
+      and status = 0 
     </if>
     <if test="username != null and username != ''" >
       and username = #{username} 
@@ -70,15 +80,18 @@
     </if>
     order by createtime desc 
     <if test="pageSize != 0">
-    	LIMIT #{startNo},#{pageSize} 
+    	LIMIT #{pageNo},#{pageSize} 
     </if>
   </select>
   
   <select id="searchCount" resultType="java.lang.Integer">
   	SELECT count(*) from imp_complaints 
   	where 1=1 
-    <if test="status != null and status != ''" >
-      and status = #{status} 
+    <if test="status != 0" >
+      and status != 0 
+    </if>
+    <if test="status == 0" >
+      and status = 0 
     </if>
     <if test="username != null and username != ''" >
       and username = #{username} 
@@ -97,8 +110,11 @@
   <select id="selectCountByImpid" resultType="java.lang.Integer">
   	SELECT count(*) from imp_complaints 
   	where 1=1 
-    <if test="status != null and status != ''" >
-      and status = #{status} 
+    <if test="status != 0" >
+      and status != 0 
+    </if>
+    <if test="status == 0" >
+      and status = 0 
     </if>
     <if test="impid != null and impid != ''" >
       and impid = #{impid} 
@@ -116,12 +132,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ImpComplaints" useGeneratedKeys="true" keyProperty="id">
-    insert into imp_complaints (id, userid, impid, 
+    insert into imp_complaints (id, userid, comuserid, impid, 
       content, createtime, status, 
       dealtime, dealuser, checkoption, 
       contenttype, businessid, businesstype, username, cusername
       )
-    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{comuserid}, #{impid,jdbcType=BIGINT}, 
       #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR}, 
       #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, #{checkoption,jdbcType=VARCHAR}, 
       #{contenttype,jdbcType=VARCHAR}, #{businessid}, #{businesstype},
@@ -136,6 +152,9 @@
       </if>
       <if test="userid != null" >
         userid,
+      </if>
+      <if test="comuserid != null" >
+        comuserid,
       </if>
       <if test="impid != null" >
         impid,
@@ -180,6 +199,9 @@
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="comuserid != null" >
+        #{comuserid},
       </if>
       <if test="impid != null" >
         #{impid,jdbcType=BIGINT},

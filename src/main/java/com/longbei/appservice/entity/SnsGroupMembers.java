@@ -23,6 +23,10 @@ public class SnsGroupMembers {
 
     private Long inviteuserid;//邀请加入群组的用户id
 
+    private Boolean topstatus;//是否置顶
+
+    private Boolean disturbstatus;//是否开启消息免打扰
+
     /**
      * 
      * @return id 
@@ -153,5 +157,21 @@ public class SnsGroupMembers {
 
     public void setInviteuserid(Long inviteuserid) {
         this.inviteuserid = inviteuserid;
+    }
+
+    public Boolean getTopstatus() {
+        return topstatus;
+    }
+
+    public void setTopstatus(Boolean topstatus) {
+        this.topstatus = topstatus;
+    }
+
+    public Boolean getDisturbstatus() {
+        return disturbstatus;
+    }
+
+    public void setDisturbstatus(Boolean disturbstatus) {
+        this.disturbstatus = disturbstatus;
     }
 }

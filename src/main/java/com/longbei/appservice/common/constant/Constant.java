@@ -9,6 +9,8 @@ public class Constant {
 
 	public static final double DISTANCE_CONVERT_2D = 111.12;
 
+	public static final Integer AUTO_CONFIRM_RECEIPT = 10*24*60;//自动确认收货时间 10天
+
 	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
 	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
 	public static final int RMB_COIN = 10;//人民币 兑换 龙币 1元兑换10 龙币
@@ -556,7 +558,7 @@ public class Constant {
 
 	/****** JPUSH 消息的tag start ******/
 
-	public static final String JPUSH_TAG_COUNT_1001 = "1001";
+	public static final String JPUSH_TAG_COUNT_1001 = "1001";//申请加好友通知
 
 	/****** JPUSH 消息的tag end ******/
 

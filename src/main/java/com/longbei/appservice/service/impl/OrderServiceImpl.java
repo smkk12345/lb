@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +17,12 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.UserAddressMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.ProductOrders;
-import com.longbei.appservice.entity.UserAddress;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.OrderService;
-import com.longbei.appservice.service.UserAddressService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -41,15 +37,14 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private UserMongoDao userMongoDao;
 	@Autowired
-	private UserAddressService userAddressService;
+	private UserAddressMapper userAddressMapper;
 	@Autowired
 	private UserImpCoinDetailService userImpCoinDetailService;
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserMsgMapper userMsgMapper;
-	
-	
+
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Override
@@ -60,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				UserAddress userAddress = userAddressService.selectByPrimaryKey(Integer.parseInt(addressid));
+				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(Integer.parseInt(addressid));
 				//省市+详细地址
 				String address = userAddress.getRegion() + userAddress.getAddress();
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
@@ -371,7 +366,14 @@ public class OrderServiceImpl implements OrderService {
 		
 		BaseResp<UserAddress> baseResp = new BaseResp<>();
 		try{
-			UserAddress userAddress = userAddressService.selectDefaultAddressByUserid(userid);
+			UserAddress userAddress = userAddressMapper.selectDefaultAddressByUserid(userid);
+			if(null == userAddress){
+				//获取用户最新添加的一条
+				List<UserAddress> list = userAddressMapper.selectByUserId(userid, 0, 1);
+				if(null != list && list.size()>0){
+					userAddress = list.get(0);
+				}
+			}
 			baseResp.setData(userAddress);
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			Map<String, Object> expandData = new HashMap<>();
@@ -392,6 +394,51 @@ public class OrderServiceImpl implements OrderService {
 	
 	
 
+
+	/**
+	 * 系统自动确认收货
+	 * @param currentDate
+	 * @return
+     */
+	@Override
+	public BaseResp<Object> autoConfirmReceipt(Date currentDate) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try{
+			Date beforeDate = DateUtils.getBeforeDateTime(currentDate,Constant.AUTO_CONFIRM_RECEIPT);
+			BaseResp<List<ProductOrders>> baseOrderList = HttpClient.productBasicService.selectAutoReceiptOrder(beforeDate.getTime());
+			if(baseOrderList.getCode() != 0){
+				return baseResp;
+			}
+			List<ProductOrders> orderList = baseOrderList.getData();
+			if(orderList == null || orderList.size() == 0){
+				return baseResp.ok();
+			}
+
+			for(ProductOrders productOrders:orderList){
+				UserMsg userMsg = new UserMsg();
+				userMsg.setCreatetime(new Date());
+				userMsg.setUpdatetime(new Date());
+				userMsg.setIsdel("0");
+				userMsg.setIsread("0");
+				userMsg.setRemark("您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!");
+				userMsg.setMtype("0");
+				userMsg.setMsgtype("25");
+				userMsg.setGtype("7");
+				userMsg.setSnsid(Long.parseLong(productOrders.getOrderid()));
+				userMsg.setUserid(Long.parseLong(productOrders.getUserid()));
+				userMsg.setFriendid(new Long(Constant.SQUARE_USER_ID));
+				this.userMsgMapper.insertSelective(userMsg);
+			}
+
+			//修改订单状态
+			BaseResp<Object> updateResp = HttpClient.productBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
+
+			return baseResp.ok();
+		}catch(Exception e){
+			logger.error("order auto confirm receipt error currentDate:{} msg:{}",currentDate,e);
+		}
+		return baseResp;
+	}
 
 	/**
      * 初始化消息中用户信息 ------Userid

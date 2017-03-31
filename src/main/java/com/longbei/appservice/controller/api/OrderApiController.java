@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -314,5 +315,21 @@ public class OrderApiController {
  		}
    		return baseResp;
  	}
+
+	/**
+	 * 系统自动确认收货
+	 * @param currentTime
+	 * @return
+     */
+	@RequestMapping(value="autoConfirmReceipt")
+	public BaseResp<Object> autoConfirmReceipt(Long currentTime){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		if(currentTime == null){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		Date currentDate = new Date(currentTime);
+		baseResp = this.orderService.autoConfirmReceipt(currentDate);
+		return baseResp;
+	}
   	
 }

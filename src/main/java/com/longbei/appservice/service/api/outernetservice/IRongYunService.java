@@ -17,7 +17,7 @@ public interface IRongYunService {
 
     /**
      * 新建群组
-     * @param userIds 新建群组的用户id
+     * @param userIdss 新建群组的用户id
      * @param groupId 群组的id
      * @param groupName 群组名称
      * @return
