@@ -1948,10 +1948,10 @@ public class ImproveServiceImpl implements ImproveService{
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
             if(null != improve){
-                initImproveInfo(improve,Long.parseLong(userid));
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(userid);
+                initImproveInfo(improve,improve.getUserid());
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 improve.setAppUserMongoEntity(appUserMongoEntity);
-                initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                initUserRelateInfo(improve.getUserid(),appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
                 switch(businesstype){
                     case Constant.IMPROVE_SINGLE_TYPE:
