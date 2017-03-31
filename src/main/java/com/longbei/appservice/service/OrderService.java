@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.ProductOrders;
+import com.longbei.appservice.entity.UserAddress;
 
 public interface OrderService {
+	
+	BaseResp<UserAddress> selectAddress(long userid);
 	
 	/**
 	 * @author yinxc

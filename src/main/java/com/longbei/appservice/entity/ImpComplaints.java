@@ -12,6 +12,8 @@ public class ImpComplaints {
     private Long id;
 
     private Long userid;//用户id
+    
+    private Long comuserid; //被投诉人id
 
     private Long impid;//进步组id
 
@@ -23,7 +25,7 @@ public class ImpComplaints {
 
     private Date dealtime;//处理时间
 
-    private Long dealuser;//处理人
+    private String dealuser;//处理人
 
     private String checkoption;
 
@@ -31,7 +33,7 @@ public class ImpComplaints {
 
     private Long businessid;//类型业务id
 
-    private String businesstype; ////类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+    private String businesstype; //类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
     
     private String username; //投诉人手机号
     
@@ -43,7 +45,13 @@ public class ImpComplaints {
     
     
     
-    private String businessname; //各类型title  即榜名称，圈子名称，教室名称
+    private String businessname; //各类型名称  即龙榜，圈子，教室，其他
+    
+    private String businesstitle; //各类型title  即榜名称，圈子名称，教室名称
+    
+    private Integer compcount = 0; //各类型进步被投诉次数
+    
+    private Improve improve;
     
 
     /**
@@ -79,7 +87,16 @@ public class ImpComplaints {
         this.userid = userid;
     }
 
-    /**
+    @JsonInclude(Include.ALWAYS)
+    public Long getComuserid() {
+		return comuserid;
+	}
+
+	public void setComuserid(Long comuserid) {
+		this.comuserid = comuserid;
+	}
+
+	/**
      * 进步组id
      * @return impid 进步组id
      */
@@ -170,7 +187,7 @@ public class ImpComplaints {
      * @return dealuser 处理人
      */
     @JsonInclude(Include.ALWAYS)
-    public Long getDealuser() {
+    public String getDealuser() {
         return dealuser;
     }
 
@@ -178,7 +195,7 @@ public class ImpComplaints {
      * 处理人
      * @param dealuser 处理人
      */
-    public void setDealuser(Long dealuser) {
+    public void setDealuser(String dealuser) {
         this.dealuser = dealuser;
     }
 
@@ -202,6 +219,7 @@ public class ImpComplaints {
      * 
      * @return contenttype 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getContenttype() {
         return contenttype;
     }
@@ -218,6 +236,7 @@ public class ImpComplaints {
      * 榜单id
      * @return businessid 榜单id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getBusinessid() {
         return businessid;
     }
@@ -234,6 +253,7 @@ public class ImpComplaints {
      * 
      * @return businesstype 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getBusinesstype() {
         return businesstype;
     }
@@ -246,6 +266,7 @@ public class ImpComplaints {
         this.businesstype = businesstype == null ? null : businesstype.trim();
     }
 
+    @JsonInclude(Include.ALWAYS)
 	public String getUsername() {
 		return username;
 	}
@@ -262,6 +283,7 @@ public class ImpComplaints {
 		this.nickname = nickname;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public String getCusername() {
 		return cusername;
 	}
@@ -284,5 +306,30 @@ public class ImpComplaints {
 
 	public void setBusinessname(String businessname) {
 		this.businessname = businessname;
+	}
+
+	public String getBusinesstitle() {
+		return businesstitle;
+	}
+
+	public void setBusinesstitle(String businesstitle) {
+		this.businesstitle = businesstitle;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCompcount() {
+		return compcount;
+	}
+
+	public void setCompcount(Integer compcount) {
+		this.compcount = compcount;
+	}
+
+	public Improve getImprove() {
+		return improve;
+	}
+
+	public void setImprove(Improve improve) {
+		this.improve = improve;
 	}
 }

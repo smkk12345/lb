@@ -231,6 +231,15 @@ public interface IProductBasicService {
 	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
 
 	/**
+	 * @Title: selectListCount
+	 * @Description: 查询商品列表总数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月30日
+	 */
+	@RequestLine("GET /product/selectListCount")
+	int selectListCount();
+
+	/**
 	 * @Title: updateProductByProductId
 	 * @Description: 编辑商品详情
 	 * @param @param productId 商品id

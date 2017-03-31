@@ -1,7 +1,6 @@
 package com.longbei.appservice.controller;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductOrders;
+import com.longbei.appservice.entity.UserAddress;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 
@@ -23,9 +23,39 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private UserFlowerDetailService userFlowerDetailService;
+
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
+	
+	/**
+    * @Title: http://ip:port/app_service/order/selectAddressIsdefault
+    * @Description: 获取订单默认收货地址
+    * @param @param userid 
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc   Map: 
+    * 				totalmoney---龙币总数
+    * 				totalcoin---进步币总数
+    * 				moneytocoin---龙币兑换进步币比例 1:10
+    * 				flowertocoin---花兑换进步币比例  1:10
+    * 				moneytoflower---龙币兑换花比例 1:1  
+    * @currentdate:2017年3月31日
+	*/
+	@SuppressWarnings({ "unchecked" })
+  	@RequestMapping(value = "/selectAddressIsdefault")
+    public BaseResp<UserAddress> list(String userid) {
+		BaseResp<UserAddress> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = orderService.selectAddress(Long.parseLong(userid));
+		} catch (Exception e) {
+			logger.error("selectAddressIsdefault userid = {}", userid, e);
+		}
+  		return baseResp;
+	}
 	
 	/**
     * @Title: http://ip:port/app_service/order/create

@@ -58,7 +58,7 @@ public class ProductController {
     * @Description: 获取商品列表
     * @param @param userid 用户id
     * @param @param cateid 商品类别id(获取全部的时候 cateid=1)
-    * @param @param starttime
+    * @param @param starttime 上架时间    为null查全部  
     * @param @param startNo   pageSize
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc

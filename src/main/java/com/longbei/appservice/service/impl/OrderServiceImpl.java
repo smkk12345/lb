@@ -1,7 +1,9 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.*;
@@ -14,12 +16,13 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.UserAddressMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.OrderService;
-import com.longbei.appservice.service.UserAddressService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -34,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private UserMongoDao userMongoDao;
 	@Autowired
-	private UserAddressService userAddressService;
+	private UserAddressMapper userAddressMapper;
 	@Autowired
 	private UserImpCoinDetailService userImpCoinDetailService;
 	@Autowired
@@ -52,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				UserAddress userAddress = userAddressService.selectByPrimaryKey(Integer.parseInt(addressid));
+				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(Integer.parseInt(addressid));
 				//省市+详细地址
 				String address = userAddress.getRegion() + userAddress.getAddress();
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
@@ -358,6 +361,40 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<UserAddress> selectAddress(long userid) {
+		
+		BaseResp<UserAddress> baseResp = new BaseResp<>();
+		try{
+			UserAddress userAddress = userAddressMapper.selectDefaultAddressByUserid(userid);
+			if(null != userAddress){
+				//获取用户最新添加的一条
+				List<UserAddress> list = userAddressMapper.selectByUserId(userid, 0, 1);
+				if(null != list && list.size()>0){
+					userAddress = list.get(0);
+				}
+			}
+			baseResp.setData(userAddress);
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			Map<String, Object> expandData = new HashMap<>();
+			if(null != userInfo){
+				expandData.put("totalmoney", userInfo.getTotalmoney());
+				expandData.put("totalcoin", userInfo.getTotalcoin());
+			}
+			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
+			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
+			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);
+			baseResp.setExpandData(expandData);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch (Exception e){
+			logger.error("selectCountException ", e);
+		}
+		return baseResp;
+	}
+	
+	
+
+
 	/**
 	 * 系统自动确认收货
 	 * @param currentDate
@@ -410,6 +447,5 @@ public class OrderServiceImpl implements OrderService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
-
     
 }

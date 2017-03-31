@@ -2124,6 +2124,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
 
+
     private int getRankAwardCount(String rankid){
         int awardcont = 0;
         try {

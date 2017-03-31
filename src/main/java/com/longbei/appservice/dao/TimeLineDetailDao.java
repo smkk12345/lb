@@ -53,10 +53,10 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
                                                   int pagesize){
         Criteria criteria = Criteria.where("isrecommend").is("1");
         if (null != userids && userids.size() != 0){
-            criteria.in(userids);
+            criteria.and("user.$id").in(userids);
         }
         if (!StringUtils.isEmpty(brief)){
-            criteria.regex(brief);
+            criteria.and("brief").regex(brief);
         }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC,"sort")).with(new Sort(Sort.Direction.DESC, "recommendtime"));

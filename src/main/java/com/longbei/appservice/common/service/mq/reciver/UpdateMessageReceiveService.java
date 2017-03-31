@@ -14,9 +14,9 @@ import javax.jms.MessageListener;
 @Service
 public class UpdateMessageReceiveService{
 
-    @JmsListener(destination="${spring.activemq.queue.name.update}")
-    public void receiveMessage(String msg){
-        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
-    }
+//    @JmsListener(destination="${spring.activemq.queue.name.update}")
+//    public void receiveMessage(String msg){
+//        System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
+//    }
 
 }
