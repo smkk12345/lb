@@ -1,8 +1,10 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -67,7 +69,8 @@ public class TimeLineDetail {
 	public void setIsrecommend(String isrecommend) {
 		this.isrecommend = isrecommend;
 	}
-
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	public Date getRecommendtime() {
 		return recommendtime;
 	}
