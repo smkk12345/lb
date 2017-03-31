@@ -11,10 +11,12 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="nickname" property="nickname" jdbcType="VARCHAR" />
     <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+      <result column="topstatus" property="topstatus" jdbcType="CHAR" />
+      <result column="disturbstatus" property="disturbstatus" jdbcType="CHAR" />
     <result column="inviteuserid" property="inviteuserid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, groupid, userid, remark, createtime, updatetime,nickname,status,avatar,inviteuserid
+    id, groupid, userid, remark, createtime, updatetime,nickname,status,avatar,inviteuserid,topstatus,disturbstatus
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -65,6 +67,12 @@
       <if test="avatar != null">
          avatar,
       </if>
+        <if test="topstatus != null">
+            topstatus,
+        </if>
+        <if test="disturbstatus != null">
+            disturbstatus,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -94,6 +102,12 @@
       <if test="avatar != null">
         #{avatar},
       </if>
+        <if test="topstatus != null">
+            topstatus = #{topstatus},
+        </if>
+        <if test="disturbstatus != null">
+            disturbstatus = #{disturbstatus},
+        </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SnsGroupMembers" >
@@ -322,4 +336,19 @@
           limit #{startNum},#{pageSize}
       </if>
   </select>
+
+    <!-- 更新群组的信息 -->
+    <update id="updateUserGroupOtherInfo" parameterType="map">
+        update sns_group_members
+        <set>
+            <if test="topStatus != null">
+                topstatus = #{topStatus}
+            </if>
+            <if test="disturbStatus != null">
+                disturbstatus = #{disturbStatus}
+            </if>
+        </set>
+        where groupid = #{groupId}
+            and userid = #{userId}
+    </update>
 </mapper>

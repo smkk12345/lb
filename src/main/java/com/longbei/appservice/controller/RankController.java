@@ -238,6 +238,7 @@ public class RankController {
 
     /**
      * 领取实物奖品
+     * @url http://ip:port/app_service/acceptRealAard
      * @param userid 用户id
      * @param rankId 榜单id
      * @param addressId 收货地址id
@@ -250,6 +251,23 @@ public class RankController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp= this.rankService.acceptRealAward(userid,rankId,addressId);
+        return baseResp;
+    }
+
+    /**
+     * 实物领奖 用户手动确认收货
+     * @url http://ip:port/app_service/rankAwardConfirmReceipt
+     * @param userid 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @RequestMapping(value="rankAwardConfirmReceipt")
+    public BaseResp<Object> rankAwardConfirmReceipt(Long userid,Long rankId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.userRankAwardConfirmReceipt(userid,rankId);
         return baseResp;
     }
 
@@ -375,13 +393,23 @@ public class RankController {
 
     /**
      * 查询中奖的用户和奖项
-     * @url @url http://ip:port/app_service/rank/selectWinningRankAward
+     * @url http://ip:port/app_service/rank/selectWinningRankAward
      * @return
      */
     @RequestMapping(value="selectWinningRankAward")
     public BaseResp<Object> selectWinningRankAward(){
         BaseResp<Object> baseResp = this.rankService.selectWinningRankAward();
         return baseResp;
+    }
+
+    /**
+     * 查询榜单的地区
+     * @url http://ip:port/app_service/rank/selectRankArea
+     * @return
+     */
+    @RequestMapping(value="selectRankArea")
+    public BaseResp<Object> selectRankArea(){
+        return this.rankService.selectRankArea();
     }
 
 //    /**
