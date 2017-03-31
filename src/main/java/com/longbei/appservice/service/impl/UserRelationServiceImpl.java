@@ -90,9 +90,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 
 			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
-			if(null != list && list.size()>0){
+			if(list != null && list.size()>0){
 				for (SnsFriends snsFriends : list) {
-					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.findById(snsFriends.getFriendid()+"");
+					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
 
 					if(appUserMongoEntit == null){
 						continue;

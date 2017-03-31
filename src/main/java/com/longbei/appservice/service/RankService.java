@@ -380,4 +380,18 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> rankAwardConfirmReceipt(Date currentDate);
+
+    /**
+     * 查询榜单地区
+     * @return
+     */
+    BaseResp<Object> selectRankArea();
+
+    /**
+     * 用户手动确认收货
+     * @param userid
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> userRankAwardConfirmReceipt(Long userid, Long rankId);
 }

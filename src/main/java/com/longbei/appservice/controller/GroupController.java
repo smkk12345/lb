@@ -324,6 +324,7 @@ public class GroupController {
 
     /**
      * 查询群组详情
+     * @url http://ip:port/app_service/group/groupDetail
      * @param groupId 群组id
      * @param userid 用户id
      * @return

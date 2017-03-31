@@ -723,4 +723,9 @@
       where starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
   </update>
+
+  <!-- 查询榜单的所有地区 -->
+  <select id="selectRankArea" resultType="Long">
+      select distinct rankscope from rank where isdel = 0
+  </select>
 </mapper>

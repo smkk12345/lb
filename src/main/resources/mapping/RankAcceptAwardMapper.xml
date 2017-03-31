@@ -469,11 +469,11 @@
   </update>
 
   <!-- 查询需要自动确认收货的领奖单 -->
-  <select id="selectAutoConfirmReceiptRankAward" parameterType="map" resultMap="">
+  <select id="selectAutoConfirmReceiptRankAward" parameterType="map" resultMap="BaseResultMap">
       select
           <include refid="Base_Column_List" />
       from rank_accept_award
-      where dispatchdate &gt; #{beforeDate}
+      where dispatchdate &lt; #{beforeDate}
         and status = #{status}
   </select>
 
@@ -483,7 +483,7 @@
       set status = #{newStatus}
       <where>
           <if test="beforeDate != null">
-            dispatchdate &gt; #{beforeDate}
+            dispatchdate &lt; #{beforeDate}
           </if>
           <if test="status != null">
               and status = #{status}

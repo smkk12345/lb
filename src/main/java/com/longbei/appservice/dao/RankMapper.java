@@ -65,4 +65,10 @@ public interface RankMapper {
      * @return
      */
     int handleStartRank(Map<String, Object> map);
+
+    /**
+     * 查询榜单的所有地区ids
+     * @return
+     */
+    List<Long> selectRankArea();
 }

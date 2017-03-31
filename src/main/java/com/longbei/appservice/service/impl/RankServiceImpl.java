@@ -14,6 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
@@ -86,6 +87,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DictAreaMapper dictAreaMapper;
 
     /**
      *  @author luye
@@ -361,7 +364,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(StringUtils.isNotEmpty(rankTitle)){
                 map.put("ranktitle",rankTitle);
             }
-            if(StringUtils.isNotEmpty(pType)){
+            if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
             }
             if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankSortService)){
@@ -1255,9 +1258,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         return baseResp.fail("系统异常");
                     }
                     Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
+                    rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
                     rankAcceptAwardMap.put("reciverusername",rankAcceptAward.getReciverusername());//收货人姓名
                     rankAcceptAwardMap.put("reciveruseraddr",rankAcceptAward.getReciveruseraddr());//收货人地址
                     rankAcceptAwardMap.put("reciverusertel",rankAcceptAward.getReciverusertel());//收货人电话
+                    rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
 
                     resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 }
@@ -1569,6 +1574,54 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
         }catch(Exception e){
             logger.error("rank award confirm receipt error currentDate:{}",currentDate);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询榜单地区
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectRankArea() {
+        //查询榜单的所有地区
+        List<Long> areaIdList = this.rankMapper.selectRankArea();
+        List<DictArea> areaList = this.dictAreaMapper.findAreaListById(areaIdList);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        baseResp.setData(areaList);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
+    /**
+     * 用户手动确认收货
+     * @param userid 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> userRankAwardConfirmReceipt(Long userid, Long rankId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            //查询是否有该用户的获奖信息
+            RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userid+"");
+            if(rankAcceptAward == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            if(!"2".equals(rankAcceptAward.getStatus())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            //修改订单状态为已收货
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id",rankAcceptAward.getId());
+            map.put("newStatus","3");
+            int row = this.rankAcceptAwardMapper.updateRankAwardStatus(map);
+
+            if(row > 0){
+                return baseResp.ok();
+            }
+        }catch(Exception e){
+            logger.error("user rank award confirm receipt error userid:{} rankId:{}",userid,rankId);
             printException(e);
         }
         return baseResp;

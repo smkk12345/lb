@@ -2,8 +2,12 @@ package com.longbei.appservice.service.api.productservice;
 
 import com.longbei.appservice.common.BaseResp;
 
+import com.longbei.appservice.entity.ProductOrderInfo;
 import feign.Param;
 import feign.RequestLine;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IProductCategoryService {
     /**
@@ -69,4 +73,5 @@ public interface IProductCategoryService {
      */
     @RequestLine("GET /product/deleteCategoryByCateId?cateId={cateId}")
     BaseResp<Object> deleteCategoryByCateId(@Param("cateId")String cateId);
+
 }

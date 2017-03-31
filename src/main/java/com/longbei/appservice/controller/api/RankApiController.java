@@ -653,6 +653,8 @@ public class RankApiController {
      * @param currentTime
      * @return
      */
+    @ResponseBody
+    @RequestMapping(value="rankAwardConfirmReceipt")
     public BaseResp<Object> rankAwardConfirmReceipt(Long currentTime){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
