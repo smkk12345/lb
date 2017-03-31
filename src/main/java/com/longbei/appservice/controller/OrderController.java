@@ -1,7 +1,6 @@
 package com.longbei.appservice.controller;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserAddress;
 import com.longbei.appservice.service.OrderService;
-import com.longbei.appservice.service.UserAddressService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 
 @RestController
@@ -25,8 +23,7 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private UserFlowerDetailService userFlowerDetailService;
-	@Autowired
-	private UserAddressService userAddressService;
+
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
@@ -37,7 +34,12 @@ public class OrderController {
     * @param @param userid 
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
-    * @desc  
+    * @desc   Map: 
+    * 				totalmoney---龙币总数
+    * 				totalcoin---进步币总数
+    * 				moneytocoin---龙币兑换进步币比例 1:10
+    * 				flowertocoin---花兑换进步币比例  1:10
+    * 				moneytoflower---龙币兑换花比例 1:1  
     * @currentdate:2017年3月31日
 	*/
 	@SuppressWarnings({ "unchecked" })
@@ -48,9 +50,7 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			UserAddress userAddress = userAddressService.selectDefaultAddressByUserid(Long.parseLong(userid));
-  			baseResp.setData(userAddress);
-  			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+  			baseResp = orderService.selectAddress(Long.parseLong(userid));
 		} catch (Exception e) {
 			logger.error("selectAddressIsdefault userid = {}", userid, e);
 		}

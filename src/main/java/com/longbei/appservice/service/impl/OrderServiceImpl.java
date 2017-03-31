@@ -1,7 +1,9 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
@@ -363,6 +366,33 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<UserAddress> selectAddress(long userid) {
+		
+		BaseResp<UserAddress> baseResp = new BaseResp<>();
+		try{
+			UserAddress userAddress = userAddressService.selectDefaultAddressByUserid(userid);
+			baseResp.setData(userAddress);
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			Map<String, Object> expandData = new HashMap<>();
+			if(null != userInfo){
+				expandData.put("totalmoney", userInfo.getTotalmoney());
+				expandData.put("totalcoin", userInfo.getTotalcoin());
+			}
+			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
+			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
+			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);
+			baseResp.setExpandData(expandData);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch (Exception e){
+			logger.error("selectCountException ", e);
+		}
+		return baseResp;
+	}
+	
+	
+
+
 	/**
      * 初始化消息中用户信息 ------Userid
      */
@@ -370,6 +400,5 @@ public class OrderServiceImpl implements OrderService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
-
     
 }
