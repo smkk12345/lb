@@ -48,16 +48,16 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	public AppUserMongoEntity updateAppUserMongoEntity(UserInfo user) {
 		Query query = Query.query(Criteria.where("userid").is(user.getUserid()));
 		Update update = new Update();
-		if(StringUtils.isBlank(user.getUsername())){
+		if(!StringUtils.isBlank(user.getUsername())){
 			update.set("username", user.getUsername());
 		}
-		if(StringUtils.isBlank(user.getNickname())){
+		if(!StringUtils.isBlank(user.getNickname())){
 			update.set("nickname", user.getNickname());
 		}
-		if(StringUtils.isBlank(user.getAvatar())){
+		if(!StringUtils.isBlank(user.getAvatar())){
 			update.set("avatar",user.getAvatar());
 		}
-		if(StringUtils.isBlank(user.getSex())){
+		if(!StringUtils.isBlank(user.getSex())){
 			update.set("sex", user.getSex());
 		}
 		AppUserMongoEntity mongoUser =  updateOne(query,update);
