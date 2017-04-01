@@ -83,7 +83,7 @@ public class RankAcceptAward {
     private String awardnickname;
 
     /**
-     * 状态 0 - 未领取 1 - 已领取 2 - 已经发货 3 - 待确认（实物 物流） 4 - 已完成
+     * 状态 0 - 未领取 1 - 已领取 2 - 已经发货 待确认（实物 物流） 3 - 已完成 4 - 已经失效
      */
     private Integer status;
 

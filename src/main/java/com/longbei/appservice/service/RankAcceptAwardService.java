@@ -5,6 +5,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.RankAcceptAward;
 import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +49,17 @@ public interface RankAcceptAwardService {
      */
     BaseResp<Object> updateRankAcceptAward(RankAcceptAward rankAcceptAward);
 
+    /**
+     * 查询系统自动确认收货
+     * @param currentDate
+     * @return
+     */
+    List<RankAcceptAward> selectAutoConfirmReceiptRankAward(Date currentDate);
 
-
-
+    /**
+     * 更改rankAcceptAward的状态 自动确认收货
+     * @param currentDate
+     * @return
+     */
+    int updateRankAwardStatus(Date currentDate);
 }

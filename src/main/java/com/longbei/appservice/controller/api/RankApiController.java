@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smkk
@@ -612,5 +614,54 @@ public class RankApiController {
         return baseResp;
     }
 
+    /**
+     * 通知关注榜单的用户 榜单已开始
+     * @param currentTime
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="noticeFollowRankUser")
+    public BaseResp<Object> noticeFollowRankUser(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDate = new Date(currentTime);
+        baseResp = this.rankService.noticeFollowRankUser(currentDate);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
 
+    /**
+     * 将已经开始的榜单置为已开始
+     * @param currentTime
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="handleStartRank")
+    public BaseResp<Object> handleStartRank(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDate = new Date(currentTime);
+        baseResp = this.rankService.handleStartRank(currentDate);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
+    /**
+     * 榜单自动确认收货
+     * @param currentTime
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="rankAwardConfirmReceipt")
+    public BaseResp<Object> rankAwardConfirmReceipt(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDate = new Date(currentTime);
+        baseResp = this.rankService.rankAwardConfirmReceipt(currentDate);
+        return baseResp;
+    }
 }

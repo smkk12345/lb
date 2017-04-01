@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.ProductBasic;
-import com.longbei.appservice.entity.ProductCart;
-import com.longbei.appservice.entity.ProductCategory;
-import com.longbei.appservice.entity.ProductOrders;
+import com.longbei.appservice.entity.*;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Headers;
@@ -421,4 +418,19 @@ public interface IProductBasicService {
 	 @RequestLine("GET /api/order/selectCountException")
 	 BaseResp<Integer> selectCountException();
 
+	/**
+	 * 查询需要自动确认
+	 * @param beforeDateTime 查询多久之前发货的 时间
+	 * @return
+	 */
+	@RequestLine("GET /order/selectAutoReceiptOrder?beforeDateTime={beforeDateTime}")
+	BaseResp<List<ProductOrders>> selectAutoReceiptOrder(@Param("beforeDateTime")Long beforeDateTime);
+
+	/**
+	 * 修改系统自动收货的订单状态
+	 * @param beforeDateTime
+	 * @return
+     */
+	@RequestLine("GET /order/updateOrderAutoConfirmReceipt?beforeDateTime={beforeDateTime}")
+	BaseResp<Object> updateOrderAutoConfirmReceipt(@Param("beforeDateTime")Long beforeDateTime);
 }

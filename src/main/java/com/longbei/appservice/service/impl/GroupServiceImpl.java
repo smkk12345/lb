@@ -635,55 +635,60 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     @Override
     public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize,Date updateTime) {
         BaseResp<Object> baseResp = new BaseResp<>();
-
-        List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
-        List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize,updateTime);
-        if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
-            for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
-                if(snsGroup == null){
-                    continue;
-                }
-                Map<String,Object> map = new HashMap<String,Object>();
-
-                Map<String,Object> parameterMap = new HashMap<String,Object>();
-                parameterMap.put("groupId",snsGroup.getGroupid());
-                parameterMap.put("startNum",0);
-                parameterMap.put("pageSize",9);
-                List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                int maxLength = groupMembersList.size();
-                String[] avatarArray = new String[maxLength];
-                for(int i = 0;i<maxLength;i++){
-                    AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(snsGroupMembersList.get(i).getUserid()+"");
-                    avatarArray[i] = appUserMongoEntity.getAvatar();
-                }
-
-                map.put("groupid",snsGroup.getGroupid());
-                map.put("groupname",snsGroup.getGroupname());
-                map.put("grouptype",snsGroup.getGrouptype());
-                map.put("needconfirm",snsGroup.getNeedconfirm());
-                map.put("notice",snsGroup.getNotice());
-                map.put("currentnum",snsGroup.getCurrentnum());
-                map.put("maxnum",snsGroup.getMaxnum());
-                map.put("avatarArray",avatarArray);
-
-                if(updateTime != null){
-                    if(snsGroupMembers.getStatus() == 4){
-                        map.put("operationType","delete");
-                    }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
-                        map.put("operationType","insert");
-                    }else{
-                        map.put("operationType","update");
+        try{
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize,updateTime);
+            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+                for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                    SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
+                    if(snsGroup == null){
+                        continue;
                     }
+                    Map<String,Object> map = new HashMap<String,Object>();
+
+                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+                    parameterMap.put("groupId",snsGroup.getGroupid());
+                    parameterMap.put("startNum",0);
+                    parameterMap.put("pageSize",9);
+                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+                    int maxLength = groupMembersList.size();
+                    String[] avatarArray = new String[maxLength];
+                    for(int i = 0;i<maxLength;i++){
+                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
+                    }
+
+                    map.put("groupid",snsGroup.getGroupid());
+                    map.put("groupname",snsGroup.getGroupname());
+                    map.put("grouptype",snsGroup.getGrouptype());
+                    map.put("needconfirm",snsGroup.getNeedconfirm());
+                    map.put("notice",snsGroup.getNotice());
+                    map.put("currentnum",snsGroup.getCurrentnum());
+                    map.put("maxnum",snsGroup.getMaxnum());
+                    map.put("avatarArray",avatarArray);
+
+                    if(updateTime != null){
+                        if(snsGroupMembers.getStatus() == 4){
+                            map.put("operationType","delete");
+                        }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
+                            map.put("operationType","insert");
+                        }else{
+                            map.put("operationType","update");
+                        }
+                    }
+                    resultList.add(map);
                 }
-                resultList.add(map);
             }
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            resultMap.put("groupList",resultList);
+            resultMap.put("updateTime",DateUtils.getDateTime());
+            baseResp.setData(resultMap);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select user group list error userId:{} startNum:{} pageSize:{} updateTime:{}",userId,startNum,pageSize,updateTime);
+            printException(e);
         }
-        Map<String,Object> resultMap = new HashMap<String,Object>();
-        resultMap.put("groupList",resultList);
-        resultMap.put("updateTime",DateUtils.getDateTime());
-        baseResp.setData(resultMap);
-        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        return baseResp;
     }
 
     /**
@@ -696,10 +701,91 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<SnsGroup> groupList = this.snsGroupMapper.selectGroup(keyword,startNum,pageSize);
+            if(groupList != null && groupList.size() > 0){
+                for(SnsGroup snsGroup:groupList){
+                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+                    parameterMap.put("groupId",snsGroup.getGroupid());
+                    parameterMap.put("startNum",0);
+                    parameterMap.put("pageSize",9);
+                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+                    int maxLength = groupMembersList.size();
+                    String[] avatarArray = new String[maxLength];
+                    for(int i = 0;i<maxLength;i++){
+                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+                        avatarArray[i] = appUserMongoEntity.getAvatar();
+                    }
+                    snsGroup.setAvatarArray(avatarArray);
+                }
+            }
+
             baseResp.setData(groupList);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("search group by keyword error keyword:{}",keyword);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 更新用户群组的其他信息
+     * @param userid 用户id
+     * @param groupId 群组id
+     * @param topStatus 群组是否置顶 0.不置顶 1.置顶
+     * @param disturbStatus 是否消息免打扰 0.关闭消息免打扰 1.开启消息免打扰
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateUserGroupOtherInfo(Long userid, Long groupId, Integer topStatus, Integer disturbStatus) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("userId",userid);
+            map.put("groupId",groupId);
+            if(topStatus != null){
+                map.put("topStatus",topStatus == 1?true:false);
+            }
+            if(disturbStatus != null){
+                map.put("disturbStatus",disturbStatus == 1?true:false);
+            }
+            int row = this.snsGroupMembersMapper.updateUserGroupOtherInfo(map);
+            if(row > 0){
+                return baseResp.ok();
+            }
+        }catch(Exception e){
+            logger.error("update User group other info userid:{} groupId:{} topStatus;{} disturbStatus:{}",userid,groupId,topStatus,disturbStatus);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询群组详情
+     * @param groupId 群组id
+     * @param userid 用户id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> groupDetail(Long groupId, Long userid) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(groupId+"",null);
+            if(snsGroup == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            int status = 0;//0.可加群 1.已提交入群申请 2.已经在群中
+            //校验该用户是否已经在这个群中
+            SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
+            if(snsGroupMembers != null && snsGroupMembers.getStatus() != 4 && snsGroupMembers.getStatus() != 2){
+                status = snsGroupMembers.getStatus() == 0?1:2;
+            }
+            baseResp.setData(snsGroup);
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            resultMap.put("status",status);
+            baseResp.setExpandData(resultMap);
+            return baseResp;
+        }catch(Exception e){
+            logger.error("select group detail error groupId:{} userId:{}",groupId,userid);
             printException(e);
         }
         return baseResp;

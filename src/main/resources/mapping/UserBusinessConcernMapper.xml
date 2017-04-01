@@ -48,4 +48,13 @@
             limit #{startNum},#{pageSize}
         </if>
     </select>
+
+    <!-- 查询关注的用户列表 -->
+    <select id="findConcernUserList" parameterType="map" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from user_business_concern
+        where businesstype = #{businessType}
+            and businessid = #{businessId}
+    </select>
 </mapper>
