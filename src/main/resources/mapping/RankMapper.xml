@@ -626,7 +626,11 @@
   <update id="updateRankMemberCount">
       update rank
       set rankinvolved = rankinvolved + #{count,jdbcType=INTEGER}
-      where rankid = #{rankId,jdbcType=BIGINT}
+      where
+        <if test="count &lt; 0">
+          rankinvolved > 1
+        </if>
+        rankid = #{rankId,jdbcType=BIGINT}
   </update>
 
   <!-- 查询榜单列表 -->
@@ -727,5 +731,14 @@
   <!-- 查询榜单的所有地区 -->
   <select id="selectRankArea" resultType="Long">
       select distinct rankscope from rank where isdel = 0
+  </select>
+
+  <!-- 查看将要结束的榜单 -->
+  <select id="selectWillEndRank" parameterType="map" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from rank
+    where endTime &lt;= #{currentTime}
+    and isfinish = #{isfinish}
   </select>
 </mapper>

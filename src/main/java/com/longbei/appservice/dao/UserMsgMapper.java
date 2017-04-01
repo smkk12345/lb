@@ -219,4 +219,11 @@ public interface UserMsgMapper {
 	 * @return
 	 */
 	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType);
+
+	/**
+	 * 批量插入消息
+	 * @param userMsgList
+	 * @return
+     */
+	int batchInsertUserMsgList(List<UserMsg> userMsgList);
 }
