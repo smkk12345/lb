@@ -681,4 +681,20 @@ public class RankApiController {
         baseResp = this.rankService.endRank(currentDateTime);
         return baseResp;
     }
+
+    /**
+     * 发布榜单
+     * @param currentTime 系统时间
+     * @return
+     */
+    @RequestMapping(value="publishRank")
+    public BaseResp<Object> publishRank(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDateTime = new Date(currentTime);
+        baseResp = this.rankService.publishRank(currentDateTime);
+        return baseResp;
+    }
 }

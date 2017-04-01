@@ -657,4 +657,14 @@
       ptype = #{ptype,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询需要发布的榜单 -->
+  <select id="selectPublishRank" parameterType="map" resultMap="BaseResultMap">
+      select 
+        <include refid="Base_Column_List" />
+      from rankimage
+      where autotime &lt;= #{currentTime}
+        and checkstatus = #{checkStatus}
+        and isauto =#{isAuto}
+  </select>
 </mapper>

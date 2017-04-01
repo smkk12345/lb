@@ -428,4 +428,11 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> updateUserRankMemberByImprove(Long rankId,Long userId,int likes,int flowers);
+
+    /**
+     * 发布榜单
+     * @param currentDateTime 系统当前时间
+     * @return
+     */
+    BaseResp<Object> publishRank(Date currentDateTime);
 }
