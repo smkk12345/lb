@@ -71,52 +71,57 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	@Override
 	public int selectShowMyByMtype(long userid) {
-		Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
-		//键名称     新消息提醒    (新粉丝：is_new_fans 
+		//键名称     新消息提醒    (新粉丝：is_new_fans
 		//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
-		if(expandData.get("is_new_fans").toString().equals("1")){
-			//粉丝   打开提醒
-			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
-			if(temp > 0){
-				return temp;
+		try{
+			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
+			if(expandData.get("is_new_fans").toString().equals("1")){
+				//粉丝   打开提醒
+				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
+				if(temp > 0){
+					return temp;
+				}
 			}
-		}
-		if(expandData.get("is_like").toString().equals("1")){
-			//点赞   打开提醒
-			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
-			if(temp > 0){
-				return temp;
+			if(expandData.get("is_like").toString().equals("1")){
+				//点赞   打开提醒
+				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
+				if(temp > 0){
+					return temp;
+				}
 			}
-		}
-		if(expandData.get("is_flower").toString().equals("1")){
-			//献花   打开提醒
-			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FLOWER_TYPE, "0");
-			if(temp > 0){
-				return temp;
+			if(expandData.get("is_flower").toString().equals("1")){
+				//献花   打开提醒
+				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FLOWER_TYPE, "0");
+				if(temp > 0){
+					return temp;
+				}
 			}
-		}
-		if(expandData.get("is_diamond").toString().equals("1")){
-			//钻石   打开提醒
-			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
-			if(temp > 0){
-				return temp;
+			if(expandData.get("is_diamond").toString().equals("1")){
+				//钻石   打开提醒
+				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
+				if(temp > 0){
+					return temp;
+				}
 			}
-		}
-		// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
-		if(expandData.get("is_comment").toString().equals("1")){
-			//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
-			int temp = getShowComment(userid);
-			if(temp > 0){
-				return temp;
+			// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
+			if(expandData.get("is_comment").toString().equals("1")){
+				//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
+				int temp = getShowComment(userid);
+				if(temp > 0){
+					return temp;
+				}
 			}
-		}
-		if(expandData.get("is_comment").toString().equals("2")){
-			//评论设置   打开提醒   ---所有人
-			int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
-			if(temp > 0){
-				return temp;
+			if(expandData.get("is_comment").toString().equals("2")){
+				//评论设置   打开提醒   ---所有人
+				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+				if(temp > 0){
+					return temp;
+				}
 			}
+		}catch (Exception e){
+			logger.error("selectMapByUserid ",e);
 		}
+
 		return 0;
 	}
 	

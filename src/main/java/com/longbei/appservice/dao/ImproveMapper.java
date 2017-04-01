@@ -233,4 +233,9 @@ public interface ImproveMapper {
                                @Param("impids") List<Long> impids,
                                @Param("isrecommend")String isrecommend);
 
+
+    int removeImproveFromBusiness(@Param("tablename") String tablename,
+                                  @Param("businessid") String businessid,
+                                  @Param("impid") String impid);
+
 }
