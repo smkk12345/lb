@@ -244,7 +244,7 @@ public class ProductApiController {
 				productpoint,lowimpicon,productbrief,enabled,productdetail);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(productId,productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled,productdetail)){
+				productpoint,lowimpicon,productbrief,enabled)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
@@ -287,7 +287,7 @@ public class ProductApiController {
 				productpoint,lowimpicon,productbrief,enabled,productdetail);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled,productdetail)){
+				productpoint,lowimpicon,productbrief,enabled)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
