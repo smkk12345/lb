@@ -35,12 +35,11 @@ public class ImpComplaintsApiController {
     * @currentdate:2017年3月30日
 	*/
   	@RequestMapping(value = "/selectListByStatus")
-    public BaseResp<Page<ImpComplaints>> selectListByStatus(String status, String startNo, String pageSize) {
-  		Page.initPageNoAndPageSize(startNo, pageSize);
+    public BaseResp<Page<ImpComplaints>> selectListByStatus(String status, int startNo, int pageSize) {
+  		Page.initPageNoAndPageSize(startNo + "", pageSize + "");
 		BaseResp<Page<ImpComplaints>> baseResp = new BaseResp<>();
   		try {
-  			Page<ImpComplaints> page = impComplaintsService.selectListByStatus(status, Integer.parseInt(startNo), 
-  					Integer.parseInt(pageSize));
+  			Page<ImpComplaints> page = impComplaintsService.selectListByStatus(status, startNo, pageSize);
   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
   			baseResp.setData(page);
 		} catch (Exception e) {
