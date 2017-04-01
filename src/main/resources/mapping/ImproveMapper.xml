@@ -678,4 +678,15 @@
     </foreach>
   </update>
 
+
+
+  <update id="removeImproveFromBusiness" >
+    UPDATE ${tablename}
+    SET isbusinessdel = 1
+    WHERE businessid=#{businessid} and impid=#{impid}
+  </update>
+
+
+
+
 </mapper>
