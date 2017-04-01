@@ -3,6 +3,9 @@ server:
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
+moneytoflower: 1
+moneytocoin: 10
+flowertocoin: 10
 
 spring:
     application:
