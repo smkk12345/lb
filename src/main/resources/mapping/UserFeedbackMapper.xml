@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserFeedback" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="username" property="username" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="photos" property="photos" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
@@ -13,7 +14,7 @@
     <result column="checkoption" property="checkoption" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, content, photos, createtime, status, dealtime, dealuser, checkoption
+    id, userid, username, content, photos, createtime, status, dealtime, dealuser, checkoption
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -26,11 +27,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserFeedback" >
-    insert into user_feedback (id, userid, content, 
+    insert into user_feedback (id, userid, username, content, 
       photos, createtime, status, 
       dealtime, dealuser, checkoption
       )
-    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{username}, #{content,jdbcType=VARCHAR}, 
       #{photos,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR}, 
       #{dealtime,jdbcType=TIMESTAMP}, #{dealuser,jdbcType=BIGINT}, #{checkoption,jdbcType=VARCHAR}
       )
@@ -43,6 +44,9 @@
       </if>
       <if test="userid != null" >
         userid,
+      </if>
+      <if test="username != null" >
+        username,
       </if>
       <if test="content != null" >
         content,
@@ -72,6 +76,9 @@
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="username != null" >
+        #{username},
       </if>
       <if test="content != null" >
         #{content,jdbcType=VARCHAR},
