@@ -19,8 +19,10 @@ public class UserFeedback {
 
     private Long dealuser;//处理人
 
-    private String checkoption;
-    
+    private String checkoption;//回复内容
+
+    private UserInfo userInfo;//用户信息
+
     public UserFeedback(){
     	super();
     }
@@ -64,6 +66,17 @@ public class UserFeedback {
      */
     public void setUserid(Long userid) {
         this.userid = userid;
+    }
+
+    /**
+     * 用户userInfo
+     */
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     /**
