@@ -430,4 +430,98 @@
           and gtype = #{gType}
           and snsid = #{snsId}
   </update>
+
+  <!-- 批量插入消息 -->
+  <insert id="batchInsertUserMsgList" parameterType="List">
+    insert into user_msg
+    ( userid,
+      friendid,
+      msgtype,
+      snsid,
+      remark,
+      isdel,
+      isread,
+      gtype,
+      mtype,
+      num,
+      createtime,
+      updatetime
+    )values
+      <foreach collection="list" item="userMsg" separator=",">
+        (
+          <if test="userMsg.userid != null">
+             #{userMsg.userid},
+          </if>
+          <if test="userMsg.userid == null">
+              null,
+          </if>
+          <if test="userMsg.friendid != null">
+            #{userMsg.friendid},
+          </if>
+          <if test="userMsg.friendid == null">
+            null,
+          </if>
+          <if test="userMsg.msgtype != null">
+            #{userMsg.msgtype},
+          </if>
+          <if test="userMsg.msgtype == null">
+            null,
+          </if>
+          <if test="userMsg.snsid != null">
+            #{userMsg.snsid},
+          </if>
+          <if test="userMsg.snsid == null">
+            null,
+          </if>
+          <if test="userMsg.remark != null">
+            #{userMsg.remark},
+          </if>
+          <if test="userMsg.remark == null">
+            null,
+          </if>
+          <if test="userMsg.isdel != null">
+            #{userMsg.isdel},
+          </if>
+          <if test="userMsg.isdel == null">
+            0,
+          </if>
+          <if test="userMsg.isread != null">
+            #{userMsg.isread},
+          </if>
+          <if test="userMsg.isread == null">
+            0,
+          </if>
+          <if test="userMsg.gtype != null">
+            #{userMsg.gtype},
+          </if>
+          <if test="userMsg.gtype == null">
+            0,
+          </if>
+          <if test="userMsg.mtype != null">
+            #{userMsg.mtype},
+          </if>
+          <if test="userMsg.mtype == null">
+            0,
+          </if>
+          <if test="userMsg.num != null">
+            #{userMsg.num},
+          </if>
+          <if test="userMsg.num == null">
+            0,
+          </if>
+          <if test="userMsg.createtime != null">
+            #{userMsg.createtime},
+          </if>
+          <if test="userMsg.createtime == null">
+            now(),
+          </if>
+          <if test="userMsg.updatetime != null">
+            #{userMsg.updatetime}
+          </if>
+          <if test="userMsg.updatetime == null">
+            now()
+          </if>
+        )
+      </foreach>
+  </insert>
 </mapper>

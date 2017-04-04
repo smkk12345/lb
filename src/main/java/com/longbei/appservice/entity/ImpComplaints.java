@@ -21,7 +21,7 @@ public class ImpComplaints {
 
     private Date createtime;//反馈时间
 
-    private String status;//0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理
+    private String status;//status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
 
     private Date dealtime;//处理时间
 
@@ -33,7 +33,7 @@ public class ImpComplaints {
 
     private Long businessid;//类型业务id
 
-    private String businesstype; //类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+    private String businesstype; //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
     
     private String username; //投诉人手机号
     

@@ -5,6 +5,7 @@ import com.longbei.appservice.entity.RankImage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RankImageMapper {
     int deleteByPrimaryKey(Integer id);
@@ -30,4 +31,11 @@ public interface RankImageMapper {
     int updateSymbolByRankId(RankImage rankImage);
 
     int selectListCount(RankImage rankImage);
+
+    /**
+     * 查询需要发布的榜单
+     * @param map
+     * @return
+     */
+    List<RankImage> selectPublishRank(Map<String, Object> map);
 }

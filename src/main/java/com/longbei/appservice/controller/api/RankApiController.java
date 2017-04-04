@@ -109,7 +109,7 @@ public class RankApiController {
             return baseResp;
         }
         try {
-            baseResp = rankService.selectRankDetailByRankid(null,rankid,true,false);
+            baseResp = rankService.selectRankDetailByRankid(null,rankid,true,true);
         } catch (NumberFormatException e) {
             logger.error("select rank info rankid={} is error:",rankid,e);
         }
@@ -610,7 +610,7 @@ public class RankApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,false);
+        baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,true);
         return baseResp;
     }
 
@@ -662,6 +662,39 @@ public class RankApiController {
         }
         Date currentDate = new Date(currentTime);
         baseResp = this.rankService.rankAwardConfirmReceipt(currentDate);
+        return baseResp;
+    }
+
+    /**
+     * 结束榜单
+     * @param currentTime
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="endRank")
+    public BaseResp<Object> endRank(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDateTime= new Date(currentTime);
+        baseResp = this.rankService.endRank(currentDateTime);
+        return baseResp;
+    }
+
+    /**
+     * 发布榜单
+     * @param currentTime 系统时间
+     * @return
+     */
+    @RequestMapping(value="publishRank")
+    public BaseResp<Object> publishRank(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDateTime = new Date(currentTime);
+        baseResp = this.rankService.publishRank(currentDateTime);
         return baseResp;
     }
 }

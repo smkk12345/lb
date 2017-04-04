@@ -71,4 +71,11 @@ public interface RankMapper {
      * @return
      */
     List<Long> selectRankArea();
+
+    /**
+     * 查询需要结束的榜单
+     * @param map
+     * @return
+     */
+    List<Rank> selectWillEndRank(Map<String, Object> map);
 }

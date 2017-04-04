@@ -359,6 +359,19 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return false;
 	}
 
+	/**
+	 * 批量插入消息
+	 * @param userMsgList
+	 * @return
+     */
+	@Override
+	public int batchInsertUserMsg(List<UserMsg> userMsgList) {
+		if(userMsgList == null || userMsgList.size() == 0){
+			return 0;
+		}
+		return this.userMsgMapper.batchInsertUserMsgList(userMsgList);
+	}
+
 	@Override
 	public UserMsg findCircleNoticeMsg(Long circleId, Long userId) {
 		return this.userMsgMapper.findCircleNoticeMsg(circleId,userId);
