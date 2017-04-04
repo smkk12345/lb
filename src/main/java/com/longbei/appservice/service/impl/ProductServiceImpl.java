@@ -158,11 +158,10 @@ public class ProductServiceImpl implements ProductService {
 
 
 	@Override
-	public BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
-											  String startNum,String pageSize) {
+	public BaseResp<Object> selectProductList(ProductBasic productBasic,String startNum,String pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			baseResp = HttpClient.productBasicService.selectProductList(productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
+			baseResp = HttpClient.productBasicService.selectProductList(productBasic,startNum,pageSize);
 		} catch (Exception e) {
 			logger.error("selectProductList error and msg={}",e);
 		}
@@ -170,10 +169,10 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int selectListCount() {
+	public int selectListCount(ProductBasic productBasic) {
 		int total;
 		try {
-			total = HttpClient.productBasicService.selectListCount();
+			total = HttpClient.productBasicService.selectListCount(productBasic);
 			if(total>0){
 				return  total;
 			}
