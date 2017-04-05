@@ -80,6 +80,14 @@ public interface ProductService {
 	 
 	 /**
 	 * @author yinxc
+	 * 购物车是否为空
+	 * 2017年4月5日
+	 * @param userid
+	 */
+	 BaseResp<Object> emptyCart(long userid);
+	 
+	 /**
+	 * @author yinxc
 	 * 修改购物车商品数量
 	 * 2017年3月15日
 	 * @param id 购物车id
