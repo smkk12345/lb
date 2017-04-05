@@ -1446,7 +1446,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(winningRankAwardList != null && winningRankAwardList.size() > 0){
                 for(RankMembers rankMembers: winningRankAwardList){
                     AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
-
+                    if(null == appUserMongoEntity){
+                        continue;
+                    }
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
                     map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());

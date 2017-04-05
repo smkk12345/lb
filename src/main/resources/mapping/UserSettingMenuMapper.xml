@@ -3,15 +3,18 @@
 <mapper namespace="com.longbei.appservice.dao.UserSettingMenuMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserSettingMenu" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="menuid" property="menuid" jdbcType="INTEGER" />
+    <result column="menutype" property="menutype" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="isdefault" property="isdefault" jdbcType="CHAR" />
+    <result column="picurl" property="picurl" />
+    <result column="displaytitle" property="displaytitle" />
+    <result column="defaultmenu" property="defaultmenu"/>
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, menuid, userid, sortnum, isdefault, createtime, updatetime
+    id, menutype, userid, sortnum, isdefault, picurl,displaytitle,defaultmenu,createtime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -19,16 +22,23 @@
     from user_setting_menu
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectDefaultMenu" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from user_setting_menu
+    where defaultmenu='0'
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_setting_menu
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserSettingMenu" >
-    insert into user_setting_menu (id, menuid, userid, 
-      sortnum, isdefault, createtime, 
+    insert into user_setting_menu (id, menutype, userid,
+      sortnum, isdefault,picurl,displaytitle,defaultmenu, createtime,
       updatetime)
-    values (#{id,jdbcType=INTEGER}, #{menuid,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, 
-      #{sortnum,jdbcType=INTEGER}, #{isdefault,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{menutype,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT},
+      #{sortnum,jdbcType=INTEGER}, #{isdefault,jdbcType=CHAR},#{picurl,jdbcType=VARCHAR},
+       #{displaytitle,jdbcType=VARCHAR},#{defaultmenu,jdbcType=CHAR},#{createtime,jdbcType=TIMESTAMP},
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserSettingMenu" >

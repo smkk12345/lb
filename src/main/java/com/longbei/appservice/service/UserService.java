@@ -3,6 +3,9 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserSettingMenu;
+
+import java.util.List;
 
 /**
  * insert
@@ -195,6 +198,13 @@ public interface UserService {
 	 * @return
 	 */
 	BaseResp<Object> updateUserStatus(UserInfo userInfo);
+
+	/**
+	 * 选择用户首页菜单
+	 * @param userid
+	 * @return
+	 */
+	BaseResp<List<UserSettingMenu>> selectMenuByUid(long userid);
 
 
 }

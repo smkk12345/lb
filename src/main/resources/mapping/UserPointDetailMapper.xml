@@ -7,9 +7,10 @@
     <result column="point" property="point" jdbcType="INTEGER" />
     <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="pointtype" property="pointtype"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, point, drawdate, ptype
+    id, userid, point, drawdate, ptype,pointtype
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -23,10 +24,10 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserPointDetail" >
     insert into user_point_detail (id, userid,
-      point, drawdate, ptype
+      point, drawdate, ptype,pointtype
       )
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT},
-      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype}
+      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype},#{pointtype}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserPointDetail" >

@@ -681,4 +681,34 @@ public class RankApiController {
         baseResp = this.rankService.endRank(currentDateTime);
         return baseResp;
     }
+
+    /**
+     * 获取整个榜单的排名
+     * @url http://ip:port/app_service/rank/rankMemberSort
+     * @param rankId 榜单id
+     * @param sortType 排序的方式 0:综合排序 1:赞 2:花
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="rankMemberSort")
+    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(sortType == null){//默认综合排序
+            sortType = 0;
+        }
+        if(startNum == null || startNum < 1){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
+        return baseResp;
+    }
+
 }

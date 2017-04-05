@@ -1315,4 +1315,21 @@ public class AppUserController extends BaseController {
         return baseResp;
     }
 
+    /**
+     * http://server_ip:port/app_service/user/usermenus
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value = "/usermenus")
+    @ResponseBody
+    public BaseResp<List<UserSettingMenu>> usermenulist(String userid) {
+        BaseResp<List<UserSettingMenu>> baseResp = new BaseResp<>();
+        logger.info("usermenulist userid={}", userid);
+        if(StringUtils.hasBlankParams(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return userService.selectMenuByUid(Long.parseLong(userid));
+    }
+
+
 }
