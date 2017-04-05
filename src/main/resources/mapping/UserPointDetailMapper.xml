@@ -7,10 +7,17 @@
     <result column="point" property="point" jdbcType="INTEGER" />
     <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="pointtype" property="pointtype" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, point, drawdate, ptype
+    id, userid, point, drawdate, ptype, pointtype
   </sql>
+  <select id="selectPointListByUseridAndPointtype" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_point_detail
+    where userid=#{userid} and pointtype=#{pointtype} limit #{startNum},#{pageSize}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

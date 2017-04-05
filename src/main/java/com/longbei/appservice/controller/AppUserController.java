@@ -60,6 +60,8 @@ public class AppUserController extends BaseController {
     private UserPlDetailService userPlDetailService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private UserPointDetailService userPointDetailService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
 
@@ -1312,6 +1314,40 @@ public class AppUserController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = userService.perfectInfo(ptype);
+        return baseResp;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/user/selectPointListByUseridAndPointtype
+     * @Description: 获取用户发进步积分列表
+     * @param @param userid 用户id
+     * @param @param pointtype 积分类型
+     * @param @param startNum分页起始值
+     * @param @param pageSize每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年4月5日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectPointListByUseridAndPointtype")
+    @ResponseBody
+    public BaseResp<Object> selectPointListByUseridAndPointtype(String userid,String pointtype,String startNum,String pageSize) {
+        logger.info("selectPointListByUseridAndPointtype and userid={},pointtype={},startNum={},pageSize={}",userid,pointtype,startNum,pageSize);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid,pointtype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "15";
+        }
+        try {
+            baseResp = userPointDetailService.selectPointListByUseridAndPointtype(Long.parseLong(userid),pointtype,Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectPointListByUseridAndPointtype and userid={},pointtype={},startNum={},pageSize={}",userid,pointtype,startNum,pageSize,e);
+        }
         return baseResp;
     }
 
