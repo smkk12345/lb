@@ -28,10 +28,10 @@ public class UserFeedbackApiController {
     private UserFeedbackService userFeedbackService;
 
     /**
-     * 未处理意见反馈列表
+     * 意见反馈列表
      */
-    @RequestMapping(value = "nolist/{pageno}/{pagesize}")
-    public BaseResp<Page<UserFeedback>> getNoFeedbackListWithPage(@RequestBody UserFeedback userFeedback,
+    @RequestMapping(value = "list/{pageno}/{pagesize}")
+    public BaseResp<Page<UserFeedback>> getFeedbackListWithPage(@RequestBody UserFeedback userFeedback,
                                                                   @PathVariable("pageno") String pageno,
                                                                   @PathVariable("pagesize") String pagesize){
         BaseResp<Page<UserFeedback>> baseResp = new BaseResp<>();
@@ -42,7 +42,7 @@ public class UserFeedbackApiController {
             pageno = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
-            Page<UserFeedback> page = userFeedbackService.selectNoFeedbackListWithPage(userFeedback,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            Page<UserFeedback> page = userFeedbackService.selectFeedbackListWithPage(userFeedback,Integer.parseInt(pageno),Integer.parseInt(pagesize));
             baseResp = BaseResp.ok();
             baseResp.setData(page);
         } catch (NumberFormatException e) {
@@ -51,34 +51,25 @@ public class UserFeedbackApiController {
         return baseResp;
     }
 
-
-    /**
-     * 已处理意见反馈列表
-     */
-    @RequestMapping(value = "haslist/{pageno}/{pagesize}")
-    public BaseResp<Page<UserFeedback>> getHasFeedbackListWithPage(@RequestBody UserFeedback userFeedback,
-                                                                  @PathVariable("pageno") String pageno,
-                                                                  @PathVariable("pagesize") String pagesize){
-        BaseResp<Page<UserFeedback>> baseResp = new BaseResp<>();
-        if (StringUtils.isEmpty(pageno)){
-            pageno = "1";
-        }
-        if (StringUtils.isEmpty(pagesize)){
-            pageno = Constant.DEFAULT_PAGE_SIZE;
+    @RequestMapping(value = "select/{id}")
+    public  BaseResp<UserFeedback> selectFeedback(@PathVariable("id") String id){
+        BaseResp<UserFeedback> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(id)){
+            return baseResp;
         }
         try {
-            Page<UserFeedback> page = userFeedbackService.selectHasFeedbackListWithPage(userFeedback,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            UserFeedback userFeedback = userFeedbackService.selectUserFeedback(id);
             baseResp = BaseResp.ok();
-            baseResp.setData(page);
-        } catch (NumberFormatException e) {
-            logger.error("get userFeedback list with page is error:{}",e);
+            baseResp.setData(userFeedback);
+        } catch (Exception e) {
+            logger.error("get userFeedback is error:{}",e);
         }
         return baseResp;
     }
 
     @RequestMapping(value = "edit")
     public BaseResp editFeedback(@RequestBody UserFeedback userFeedback){
-        BaseResp<Page<UserFeedback>> baseResp = new BaseResp<>();
+        BaseResp baseResp = new BaseResp();
         try {
             boolean flag = userFeedbackService.updateFeedback(userFeedback);
             if (flag){

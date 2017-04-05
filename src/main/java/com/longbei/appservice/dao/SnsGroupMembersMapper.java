@@ -98,4 +98,11 @@ public interface SnsGroupMembersMapper {
      * @return
      */
     int batchRealDeleteGroupMember(Map<String, Object> deleteMap);
+
+    /**
+     * 更新用户群组的信息
+     * @param map
+     * @return
+     */
+    int updateUserGroupOtherInfo(Map<String, Object> map);
 }

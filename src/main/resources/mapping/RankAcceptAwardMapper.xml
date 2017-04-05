@@ -467,4 +467,30 @@
       createdate = #{createdate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询需要自动确认收货的领奖单 -->
+  <select id="selectAutoConfirmReceiptRankAward" parameterType="map" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from rank_accept_award
+      where dispatchdate &lt; #{beforeDate}
+        and status = #{status}
+  </select>
+
+  <!-- 修改rankAcceptAward状态 确认收货 -->
+  <update id="updateRankAwardStatus" parameterType="map">
+      update rank_accept_award
+      set status = #{newStatus}
+      <where>
+          <if test="beforeDate != null">
+            dispatchdate &lt; #{beforeDate}
+          </if>
+          <if test="status != null">
+              and status = #{status}
+          </if>
+          <if test="id != null">
+              and id = #{id}
+          </if>
+      </where>
+  </update>
 </mapper>

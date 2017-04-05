@@ -42,7 +42,7 @@
     <include refid="Base_Column_List" />
     from user_address
     where userid = #{userid} and isdel = '0' 
-    order by isdefault desc 
+    order by isdefault desc, createtime desc  
     <if test="pageSize != 0" >
       LIMIT #{pageNo},#{pageSize}
     </if>

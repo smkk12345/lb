@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @SuppressWarnings("static-access")
 @Configuration
 @ConfigurationProperties
-@PropertySource({"classpath:appservice.properties"})
+//@PropertySource({"classpath:appservice.properties"})
 public class AppserviceConfig {
 
 

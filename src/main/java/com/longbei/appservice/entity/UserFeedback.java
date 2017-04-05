@@ -2,10 +2,18 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserFeedback {
     private Long id;
 
     private Long userid;//用户id
+    
+    private String username; //用户手机号
 
     private String content;//反馈内容
 
@@ -21,7 +29,17 @@ public class UserFeedback {
 
     private String checkoption;//回复内容
 
+    private AppUserMongoEntity appUserMongoEntity; //用户信息
+
     private UserInfo userInfo;//用户信息
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
 
     public UserFeedback(){
     	super();
@@ -56,6 +74,7 @@ public class UserFeedback {
      * 用户id
      * @return userid 用户id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -68,9 +87,16 @@ public class UserFeedback {
         this.userid = userid;
     }
 
-    /**
-     * 用户userInfo
-     */
+    @JsonInclude(Include.ALWAYS)
+    public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+    @JsonInclude(Include.ALWAYS)
     public UserInfo getUserInfo() {
         return userInfo;
     }
@@ -115,6 +141,8 @@ public class UserFeedback {
      * 反馈时间
      * @return createtime 反馈时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -131,6 +159,7 @@ public class UserFeedback {
      * 0--未处理 1---无用  2---有用
      * @return status 0--未处理 1---无用  2---有用
      */
+    @JsonInclude(Include.ALWAYS)
     public String getStatus() {
         return status;
     }
@@ -147,6 +176,8 @@ public class UserFeedback {
      * 处理时间
      * @return dealtime 处理时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getDealtime() {
         return dealtime;
     }
@@ -163,6 +194,7 @@ public class UserFeedback {
      * 处理人
      * @return dealuser 处理人
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getDealuser() {
         return dealuser;
     }

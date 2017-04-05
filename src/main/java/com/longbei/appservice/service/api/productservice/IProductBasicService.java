@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.ProductBasic;
-import com.longbei.appservice.entity.ProductCart;
-import com.longbei.appservice.entity.ProductCategory;
-import com.longbei.appservice.entity.ProductOrders;
+import com.longbei.appservice.entity.*;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Headers;
@@ -234,6 +231,15 @@ public interface IProductBasicService {
 	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
 
 	/**
+	 * @Title: selectListCount
+	 * @Description: 查询商品列表总数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月30日
+	 */
+	@RequestLine("GET /product/selectListCount")
+	int selectListCount();
+
+	/**
 	 * @Title: updateProductByProductId
 	 * @Description: 编辑商品详情
 	 * @param @param productId 商品id
@@ -412,4 +418,19 @@ public interface IProductBasicService {
 	 @RequestLine("GET /api/order/selectCountException")
 	 BaseResp<Integer> selectCountException();
 
+	/**
+	 * 查询需要自动确认
+	 * @param beforeDateTime 查询多久之前发货的 时间
+	 * @return
+	 */
+	@RequestLine("GET /order/selectAutoReceiptOrder?beforeDateTime={beforeDateTime}")
+	BaseResp<List<ProductOrders>> selectAutoReceiptOrder(@Param("beforeDateTime")Long beforeDateTime);
+
+	/**
+	 * 修改系统自动收货的订单状态
+	 * @param beforeDateTime
+	 * @return
+     */
+	@RequestLine("GET /order/updateOrderAutoConfirmReceipt?beforeDateTime={beforeDateTime}")
+	BaseResp<Object> updateOrderAutoConfirmReceipt(@Param("beforeDateTime")Long beforeDateTime);
 }

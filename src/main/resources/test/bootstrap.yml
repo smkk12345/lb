@@ -1,11 +1,8 @@
 server:
-      port: 9090 #definded in application-osrad.yml
+      port: 8080 #definded in application-osrad.yml
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
-moneytoflower: 1
-moneytocoin: 10
-flowertocoin: 10
 
 spring:
     application:
@@ -14,11 +11,10 @@ spring:
         config:
             enabled: true
             name: app_service
-            profile: devel
+            profile: test
             discovery:
               enabled: true
               serviceId: config-server
-#            url: http://192.168.1.70:8888
 
 eureka:
   instance:
@@ -26,8 +22,4 @@ eureka:
 
   client:
     serviceUrl:
-        defaultZone: http://192.168.1.70:9999/eureka/,http://192.168.1.70:8888/eureka/
-
-service.user: http://localhost:8081/user_service
-service.outernet: http://localhost:8085/outernet_service
-service.product: http://localhost:8089/product_service
+        defaultZone: http://172.23.1.7:8080/eureka/

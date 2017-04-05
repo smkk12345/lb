@@ -14,6 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
@@ -86,6 +87,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DictAreaMapper dictAreaMapper;
 
     /**
      *  @author luye
@@ -361,7 +364,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(StringUtils.isNotEmpty(rankTitle)){
                 map.put("ranktitle",rankTitle);
             }
-            if(StringUtils.isNotEmpty(pType)){
+            if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
             }
             if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankSortService)){
@@ -712,7 +715,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(row > 0 && rankMember.getStatus() == 1){
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
 
-                //TODO 发送消息给榜主
+                // 发送消息给榜主
                 String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
                 boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
 
@@ -1255,9 +1258,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         return baseResp.fail("系统异常");
                     }
                     Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
+                    rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
                     rankAcceptAwardMap.put("reciverusername",rankAcceptAward.getReciverusername());//收货人姓名
                     rankAcceptAwardMap.put("reciveruseraddr",rankAcceptAward.getReciveruseraddr());//收货人地址
                     rankAcceptAwardMap.put("reciverusertel",rankAcceptAward.getReciverusertel());//收货人电话
+                    rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
 
                     resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 }
@@ -1292,7 +1297,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     int updateRow = this.rankMembersMapper.updateRank(parameterMap);
                     rankMember.setAcceptaward("1");
 
-                    rankAcceptAward.setStatus(4);
+                    rankAcceptAward.setStatus(3);
                 }
             }
             if(rankAcceptAward.getAcceptdate() != null){
@@ -1452,6 +1457,171 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select winning rankAward error");
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 通知关注榜单的用户 榜单已开始
+     * @param currentDate
+     * @return
+     */
+    @Override
+    public BaseResp<Object> noticeFollowRankUser(Date currentDate) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,5);
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("beforeDate",beforeDate);
+            map.put("currentDate",currentDate);
+            //查看前五分钟刚刚开始的榜单
+            List<Rank> rankList = this.rankMapper.selectStartRank(map);
+            if(rankList == null || rankList.size() == 0 ){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+            List<Long> userIdList = new ArrayList<Long>();
+            for(Rank rank:rankList){
+                //通过rank查看关注的用户
+                Map<String,Object> paraMap = new HashMap<String,Object>();
+                paraMap.put("businessId",rank.getRankid());
+                paraMap.put("businessType","2");
+                List<UserBusinessConcern> userList = this.userBusinessConcernMapper.findConcernUserList(paraMap);
+                for(UserBusinessConcern userBusinessConcern:userList){
+                    userIdList.add(userBusinessConcern.getUserid());
+                }
+                if(userIdList.size() == 0){
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                }
+                UserMsg userMsg = new UserMsg();
+                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                userMsg.setMtype("0");
+                userMsg.setMsgtype("20");
+                userMsg.setSnsid(rank.getRankid());
+                userMsg.setRemark("您关注的榜已经开始了,快去参榜吧!");
+                userMsg.setGtype("2");
+                userMsg.setMtype("0");//系统消息
+                userMsg.setCreatetime(new Date());
+                userMsg.setUpdatetime(new Date());
+                userMsg.setIsdel("0");
+                userMsg.setIsread("0");
+                this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
+            }
+            return baseResp.ok();
+        }catch(Exception e){
+            logger.error("notice follow rank user error currentDate:{}",currentDate);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 将已开始的榜单置为已开始
+     * @param currentDate
+     * @return
+     */
+    @Override
+    public BaseResp<Object> handleStartRank(Date currentDate) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,5);
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("beforeDate",beforeDate);
+            map.put("currentDate",currentDate);
+            int row = this.rankMapper.handleStartRank(map);
+            return baseResp.ok();
+        }catch(Exception e){
+            logger.error("handle start rank error currentDate:{]",currentDate);
+            printException(e);
+        }
+        return baseResp.fail();
+    }
+
+    /**
+     * 榜单奖品自动确认收货
+     * @param currentDate
+     * @return
+     */
+    @Override
+    public BaseResp<Object> rankAwardConfirmReceipt(Date currentDate) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            //查询待确认收货的
+            List<RankAcceptAward> rankAcceptAwardList = this.rankAcceptAwardService.selectAutoConfirmReceiptRankAward(currentDate);
+            if(rankAcceptAwardList == null || rankAcceptAwardList.size() == 0){
+                return baseResp.ok();
+            }
+            for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
+                //将状态改成已确认收货,发消息给该用户
+                UserMsg userMsg = new UserMsg();
+                userMsg.setCreatetime(new Date());
+                userMsg.setUpdatetime(new Date());
+                userMsg.setUserid(rankAcceptAward.getUserid());
+                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                userMsg.setMtype("0");//系统消息
+                userMsg.setMsgtype("25");
+                userMsg.setSnsid(rankAcceptAward.getRankid());
+                userMsg.setGtype("2");
+                userMsg.setIsdel("0");
+                userMsg.setIsread("0");
+                userMsg.setRemark("由于您长时间未确认收货,系统已为您自动确认收货!");
+                BaseResp baseResp1 = this.userMsgService.insertSelective(userMsg);
+            }
+            //系统同意修改确认收货状态
+            int row = this.rankAcceptAwardService.updateRankAwardStatus(currentDate);
+            if(row > 0){
+                return baseResp.ok();
+            }
+        }catch(Exception e){
+            logger.error("rank award confirm receipt error currentDate:{}",currentDate);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询榜单地区
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectRankArea() {
+        //查询榜单的所有地区
+        List<Long> areaIdList = this.rankMapper.selectRankArea();
+        List<DictArea> areaList = this.dictAreaMapper.findAreaListById(areaIdList);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        baseResp.setData(areaList);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+    }
+
+    /**
+     * 用户手动确认收货
+     * @param userid 用户id
+     * @param rankId 榜单id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> userRankAwardConfirmReceipt(Long userid, Long rankId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            //查询是否有该用户的获奖信息
+            RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userid+"");
+            if(rankAcceptAward == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            if(!"2".equals(rankAcceptAward.getStatus())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            //修改订单状态为已收货
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id",rankAcceptAward.getId());
+            map.put("newStatus","3");
+            int row = this.rankAcceptAwardMapper.updateRankAwardStatus(map);
+
+            if(row > 0){
+                return baseResp.ok();
+            }
+        }catch(Exception e){
+            logger.error("user rank award confirm receipt error userid:{} rankId:{}",userid,rankId);
             printException(e);
         }
         return baseResp;
@@ -1618,7 +1788,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return rankAwards;
     }
-
 
     /**
      * 更改榜中的参榜人数
@@ -1953,6 +2122,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         rankAcceptAwardService.insertAcceptAwardInfoBatch(rankAcceptAwards);
         return true;
     }
+
 
 
     private int getRankAwardCount(String rankid){

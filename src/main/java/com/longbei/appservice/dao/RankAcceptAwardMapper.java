@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.RankAcceptAward;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RankAcceptAwardMapper {
     int deleteByPrimaryKey(Integer id);
@@ -26,4 +27,17 @@ public interface RankAcceptAwardMapper {
                                      @Param("pagesize")Integer pagesize);
 
     RankAcceptAward selectByRankIdAndUserid(@Param("rankid") String rankid,@Param("userid") String userid);
+
+    /**
+     * 查询需要自动确认收货的订单
+     * @return
+     */
+    List<RankAcceptAward> selectAutoConfirmReceiptRankAward(Map<String,Object> map);
+
+    /**
+     * 修改rankAcceptAward的状态 自动确认收货
+     * @param map
+     * @return
+     */
+    int updateRankAwardStatus(Map<String, Object> map);
 }

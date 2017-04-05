@@ -31,13 +31,13 @@ public interface ImpComplaintsMapper {
      * @Title: selectByStatus 
      * @Description: 根据status获取投诉信息
      * @param @param status 处理状态   0：未处理   1：已处理
-     * @param @param startNo
+     * @param @param pageNo
      * @param @param pageSize
      * @param @return    设定文件 
      * @return List<ImpComplaints>    返回类型
      */
     List<ImpComplaints> selectListByStatus(@Param("status") String status, 
-    		@Param("startNo") int startNo, @Param("pageSize") int pageSize);
+    		@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     
     /**
     * @Title: selectCountByStatus 
@@ -56,7 +56,7 @@ public interface ImpComplaintsMapper {
     * @param @param businesstype
     * @param @param sdealtime
     * @param @param edealtime
-    * @param @param startNo
+    * @param @param pageNo
     * @param @param pageSize
     * @param @return    设定文件 
     * @return List<ImpComplaints>    返回类型
@@ -64,7 +64,7 @@ public interface ImpComplaintsMapper {
     List<ImpComplaints> searchList(@Param("status") String status, 
     		@Param("username") String username, @Param("businesstype") String businesstype, 
     		@Param("sdealtime") String sdealtime, @Param("edealtime") String edealtime, 
-    		@Param("startNo") int startNo, @Param("pageSize") int pageSize);
+    		@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
     
     /**
     * @Title: searchCount 
@@ -91,8 +91,8 @@ public interface ImpComplaintsMapper {
     * @param @return    设定文件 
     * @return int    返回类型
      */
-    int selectCountByImpid(@Param("status") String status, @Param("impid") String impid, 
-    		@Param("businessid") String businessid, @Param("businesstype") String businesstype);
+    int selectCountByImpid(@Param("status") String status, @Param("impid") long impid, 
+    		@Param("businessid") long businessid, @Param("businesstype") String businesstype);
     
     /**
     * @Title: updateImpComplaintsByStatus 

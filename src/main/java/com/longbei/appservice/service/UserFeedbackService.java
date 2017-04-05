@@ -14,19 +14,11 @@ public interface UserFeedbackService {
 	 */
 	BaseResp<Object> insertSelective(UserFeedback record);
 
-
 	/**
-	 * * 未处理意见反馈列表
+	 * * 意见反馈列表
 	 * Created by mchaolee on 17/4/1.
 	 */
-	Page<UserFeedback> selectNoFeedbackListWithPage(UserFeedback userFeedback,int pageno,int pagesize);
-
-	/**
-	 * * 已处理意见反馈列表
-	 * Created by mchaolee on 17/4/1.
-	 */
-	Page<UserFeedback> selectHasFeedbackListWithPage(UserFeedback userFeedback,int pageno,int pagesize);
-
+	Page<UserFeedback> selectFeedbackListWithPage(UserFeedback userFeedback,int pageno,int pagesize);
 
 	/**
 	 * 处理意见反馈
@@ -37,10 +29,12 @@ public interface UserFeedbackService {
 
 	/**
 	 * 意见反馈详情
-	 * @param userid
+	 * @param id
 	 * @return
 	 */
-	UserFeedback selectUserFeedback(String userid);
+	UserFeedback selectUserFeedback(String id);
+
+
 
 
 }

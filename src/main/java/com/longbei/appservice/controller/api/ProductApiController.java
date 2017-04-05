@@ -196,6 +196,28 @@ public class ProductApiController {
 	}
 
 	/**
+	 * @Title: http://ip:port/product_service/product/selectListCount
+	 * @Description: 查询商品列表总数
+	 * @auther IngaWu
+	 * @currentdate:2017年3月31日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectListCount")
+	public int selectListCount() {
+		int total =0;
+		try {
+			total = productService.selectListCount();
+			if(total>0){
+				return  total;
+			}
+		} catch (Exception e) {
+			logger.error("selectListCount error and msg={}",e);
+		}
+		return 0;
+	}
+
+
+	/**
 	 * @Title: http://ip:port/app_service/product/updateProductByProductId
 	 * @Description: 编辑商品详情
 	 * @param @param productId 商品id
@@ -222,7 +244,7 @@ public class ProductApiController {
 				productpoint,lowimpicon,productbrief,enabled,productdetail);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(productId,productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled,productdetail)){
+				productpoint,lowimpicon,productbrief,enabled)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
@@ -265,7 +287,7 @@ public class ProductApiController {
 				productpoint,lowimpicon,productbrief,enabled,productdetail);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled,productdetail)){
+				productpoint,lowimpicon,productbrief,enabled)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {

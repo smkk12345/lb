@@ -359,4 +359,39 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> selectWinningRankAward();
+
+    /**
+     * 通知关注榜单的用户 榜单已开始
+     * @param currentDate
+     * @return
+     */
+    BaseResp<Object> noticeFollowRankUser(Date currentDate);
+
+    /**
+     * 将开始的榜单状态置为已开始
+     * @param currentDate
+     * @return
+     */
+    BaseResp<Object> handleStartRank(Date currentDate);
+
+    /**
+     * 榜单奖品 自动确认收货
+     * @param currentDate
+     * @return
+     */
+    BaseResp<Object> rankAwardConfirmReceipt(Date currentDate);
+
+    /**
+     * 查询榜单地区
+     * @return
+     */
+    BaseResp<Object> selectRankArea();
+
+    /**
+     * 用户手动确认收货
+     * @param userid
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> userRankAwardConfirmReceipt(Long userid, Long rankId);
 }
