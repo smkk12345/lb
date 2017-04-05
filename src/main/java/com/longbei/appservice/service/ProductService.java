@@ -93,8 +93,7 @@ public interface ProductService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
-									   String startNum,String pageSize);
+	BaseResp<Object> selectProductList(ProductBasic productBasic,String startNum,String pageSize);
 
 	/**
 	 * @Title: selectListCount
@@ -102,7 +101,7 @@ public interface ProductService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月30日
 	 */
-	int selectListCount();
+	int selectListCount(ProductBasic productBasic);
 
 	/**
 	 * @Title: updateProductByProductId

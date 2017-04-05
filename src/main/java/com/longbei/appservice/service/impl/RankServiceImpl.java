@@ -197,38 +197,35 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return rankAwards;
     }
 
-    @Override
-    public BaseResp publishRankImage(String  rankImageid) {
-        BaseResp<RankImage> baseResp = selectRankImage(rankImageid);
-        if (!ResultUtil.isSuccess(baseResp)){
-            return baseResp;
-        }
-        RankImage rankim = baseResp.getData();
-        if (!Constant.RANKIMAGE_STATUS_4.equals(rankim.getCheckstatus())){
+    private BaseResp publishRankImage(RankImage rankImage){
+        BaseResp baseResp = new BaseResp();
+        String rankImageId = rankImage.getRankid()+"";
+        rankImage.setRankAwards(selectRankAwardByRankid(rankImageId));
+        if (!Constant.RANKIMAGE_STATUS_4.equals(rankImage.getCheckstatus())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_60, Constant.RTNINFO_SYS_60);
         }
         Rank rank = new Rank();
         try {
-            BeanUtils.copyProperties(rank,rankim);
+            BeanUtils.copyProperties(rank,rankImage);
         } catch (Exception e) {
             logger.error("copy rankimage to rank is error:{}",e);
         }
         try {
-            Rank rank1 = rankMapper.selectRankByRankid(rankim.getRankid());
+            Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
             int res = 0;
-            boolean flag = updateRankAwardRelease(rankImageid);
+            boolean flag = updateRankAwardRelease(rankImageId);
             if (flag){
                 if (null != rank1){
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
-                    if ("1".equals(rankim.getRanktype())){
+                    if ("1".equals(rankImage.getRanktype())){
                         rank.setJoincode(codeDao.getCode(null));
                     }
                     res = rankMapper.insertSelective(rank);
                 }
                 if (res > 0){
                     RankImage rm = new RankImage();
-                    rm.setRankid(Long.valueOf(rankImageid));
+                    rm.setRankid(Long.valueOf(rankImageId));
                     rm.setIsup(Constant.RANK_ISUP_YES);
                     rankImageMapper.updateSymbolByRankId(rm);
                     return BaseResp.ok();
@@ -236,9 +233,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
         } catch (Exception e) {
-            logger.error("publish rank rankid={} is error:",rankImageid,e);
+            logger.error("publish rank rankid={} is error:",rankImageId,e);
         }
         return BaseResp.fail();
+    }
+
+    @Override
+    public BaseResp publishRankImage(String rankImageid) {
+        RankImage rankImage = rankImageMapper.selectByRankImageId(rankImageid);
+        return publishRankImage(rankImage);
     }
 
     private boolean deleteRankAwardRelease(String rankid){
@@ -384,6 +387,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
+            map.put("isup","1");
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("lastRankId",lastRankId);
@@ -471,6 +475,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
                 parameterMap.put("createuserid",userId);
                 parameterMap.put("status","1");
+                parameterMap.put("isup","1");
                 parameterMap.put("isdel","0");
                 parameterMap.put("startNum",startNum);
                 parameterMap.put("pageSize",pageSize);
@@ -1715,6 +1720,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    /**
+     * 发布榜单
+     * @param currentDateTime 系统当前时间
+     * @return
+     */
+    @Override
+    public BaseResp<Object> publishRank(Date currentDateTime) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            //查询哪些需要发布
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("checkStatus",Constant.RANKIMAGE_STATUS_4);//审核通过的
+            map.put("isAuto",Constant.RANK_ISAUTO_TIME);//定时发布
+            map.put("currentTime",currentDateTime);
+            List<RankImage> rankImageList = this.rankImageMapper.selectPublishRank(map);
+            if(rankImageList == null || rankImageList.size() == 0){
+                return baseResp;
+            }
+            for(RankImage rankImage:rankImageList){
+                BaseResp baseResp1 = this.publishRankImage(rankImage);
+            }
+        }catch(Exception e){
+            logger.error("publish rank error currentDateTime:{}",currentDateTime);
+            printException(e);
+        }
+        return baseResp;
+    }
+
     private BaseResp<Object> sendRankEndUserMsg(Rank rank){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
@@ -1816,6 +1849,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> parameterMap = new HashMap<String,Object>();
             parameterMap.put("isfinish","5");
             parameterMap.put("isdel","0");
+            parameterMap.put("isup","1");
             parameterMap.put("startNum",startNum);
             parameterMap.put("pageSize",pageSize);
 

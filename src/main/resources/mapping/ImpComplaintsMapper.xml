@@ -309,13 +309,13 @@
       status = #{status} 
     where 1=1 
     <if test="impid != 0" >
-      and impid = #{impid},
+      and impid = #{impid} 
     </if>
     <if test="businessid != 0" >
-      and businessid = #{businessid},
+      and businessid = #{businessid} 
     </if>
     <if test="businesstype != null" >
-      and businesstype = #{businesstype},
+      and businesstype = #{businesstype} 
     </if>
   </update>
   
