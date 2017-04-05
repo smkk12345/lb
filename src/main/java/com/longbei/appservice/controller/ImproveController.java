@@ -475,8 +475,8 @@ public class ImproveController {
      */
 
     /**
-     * 收藏进步 improve/collectImp
-     *
+     * url : http://ip:port/app_service/improve/collectImp
+     * 收藏进步
      * @param userid       用户uid
      * @param improveid    进步id
      * @param businesstype 进步类型
@@ -501,8 +501,8 @@ public class ImproveController {
     }
 
     /**
+     * url : http://ip:port/app_service/improve/removeCollect
      * 取消收藏  improve/removeCollect
-     *
      * @param userid
      * @param improveid
      * @param businesstype

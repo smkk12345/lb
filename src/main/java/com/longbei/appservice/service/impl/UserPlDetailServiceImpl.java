@@ -79,6 +79,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			String photos;
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
+				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));
 				String ptype = userPlDetail.getPtype();
 				SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
 				if (null != sysPerfectInfo) {

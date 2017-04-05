@@ -30,10 +30,10 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserPointDetail" >
     insert into user_point_detail (id, userid,
-      point, drawdate, ptype
+      point, drawdate, ptype,pointtype
       )
     values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT},
-      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype}
+      #{point,jdbcType=INTEGER}, #{drawdate,jdbcType=TIMESTAMP}, #{ptype},#{pointtype}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserPointDetail" >
