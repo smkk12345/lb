@@ -558,6 +558,7 @@ public class UserServiceImpl implements UserService {
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
 			map.put("pointDetail",ist);
 			map.put("todayPoint",point);
+//			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){

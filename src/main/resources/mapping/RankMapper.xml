@@ -640,7 +640,8 @@
       FROM rank
       WHERE 1=1
         <if test="ranktitle != null and ranktitle != ''" >
-          AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+          (AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+          OR codeword = #{codeword})
         </if>
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
@@ -684,6 +685,7 @@
         <if test="createuserid != null" >
           AND createuserid = #{createuserid}
         </if>
+
         <if test="isrecommend != null">
             and isrecommend = #{isrecommend}
         </if>
@@ -702,6 +704,7 @@
         <if test="orderByType == null or orderByType == ''">
             order by id desc
         </if>
+
         <if test="startNum != null">
           limit #{startNum},#{pageSize}
         </if>

@@ -366,6 +366,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> map = new HashMap<String,Object>();
             if(StringUtils.isNotEmpty(rankTitle)){
                 map.put("ranktitle",rankTitle);
+                map.put("codeword",rankTitle);
             }
             if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
