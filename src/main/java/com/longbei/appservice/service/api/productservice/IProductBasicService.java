@@ -156,6 +156,15 @@ public interface IProductBasicService {
 	 BaseResp<ProductOrders> get(@Param("userid") Long userid, @Param("orderid") String orderid);
 	 
 	 /**
+	 * @author yinxc
+	 * 购物车结算(用户龙币，进步币兑换商品)
+	 * 2017年4月5日
+	 * @param orderid 订单业务id
+	 */
+	 @RequestLine("GET /order/buyOrder?userid={userid}&orderid={orderid}")
+	 BaseResp<Object> buyOrder(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
 	 * 再次兑换
 	 * @author yinxc
 	 * @param @param userid 

@@ -128,7 +128,7 @@ public class PayServiceImpl implements PayService {
 		if(!StringUtils.isBlank(buynums)){
 			userMoneyDetailService.insertPublic(userid, origin, Integer.parseInt(buynums), 0);
 			//修改userinfo信息
-			userInfoMapper.updateMoneyAndFlowerByUserid(userid, Integer.parseInt(buynums), 0);
+//			userInfoMapper.updateMoneyAndFlowerByUserid(userid, Integer.parseInt(buynums), 0);
 		}
 	}
 
