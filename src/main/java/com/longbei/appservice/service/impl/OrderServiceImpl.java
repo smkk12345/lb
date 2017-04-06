@@ -46,6 +46,64 @@ public class OrderServiceImpl implements OrderService {
 	private UserMsgMapper userMsgMapper;
 
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+	
+
+    /**
+	 * @author yinxc
+	 * 购物车结算(用户龙币，进步币兑换商品)
+	 * 2017年4月5日
+	 * @param orderid 订单业务id
+	 */
+	@Override
+	public BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			//判断用户进步币，龙币是否够用
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(null != userInfo){
+				if(userInfo.getTotalcoin() < impiconprice){
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_24);
+					return baseResp;
+				}
+				if(userInfo.getTotalmoney() < moneyprice){
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_23);
+					return baseResp;
+				}
+				baseResp = HttpClient.productBasicService.buyOrder(userid, orderid);
+				if(ResultUtil.isSuccess(baseResp)){
+					//调用product_service成功后    扣除进步币，龙币   
+					if(moneyprice != 0){
+						//origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+						// 					3：设榜单    4：赞助榜单    5：赞助教室 
+						userMoneyDetailService.insertPublic(userid, "2", moneyprice, 0);
+					}else{
+						baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+					}
+					if(impiconprice != 0){
+						// 7:兑换商品
+						userImpCoinDetailService.insertPublic(userid, "7",
+								impiconprice, Long.parseLong(orderid), 0l);
+					}
+				}
+			}
+		}catch (Exception e){
+			logger.error("buyOrder userid = {}, orderid = {}", userid, orderid, e);
+		}
+		return baseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 添加龙币明细
+	 * 2017年4月5日
+	 * @param baseResp 
+	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
+	 */
+	private void insertMoney(Integer moneyprice, Long userid, String origin){
+		//数量
+		userMoneyDetailService.insertPublic(userid, origin, moneyprice, 0);
+	}
 
 	@Override
 	public BaseResp<Object> create(Long userid, String productidss, String numberss, String addressid, 
@@ -447,5 +505,6 @@ public class OrderServiceImpl implements OrderService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
+
     
 }
