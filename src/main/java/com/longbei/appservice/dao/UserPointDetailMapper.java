@@ -28,5 +28,5 @@ public interface UserPointDetailMapper {
      * @auther IngaWu
      * @currentdate:2017年4月5日
      */
-    List<UserPointDetail> selectPointListByUseridAndPointtype(@Param("userid")long userid, @Param("pointtype")String pointtype,@Param("startNum")int startNum,@Param("pageSize")int pageSize);
+    List<UserPointDetail> selectPointListByUseridAndPtype(@Param("userid")long userid, @Param("ptype")String ptype,@Param("startNum")int startNum,@Param("pageSize")int pageSize);
 }
