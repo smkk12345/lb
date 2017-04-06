@@ -89,6 +89,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserService userService;
     @Autowired
     private DictAreaMapper dictAreaMapper;
+    @Autowired
+    private CommentMongoService commonMongoService;
 
     /**
      *  @author luye
@@ -2075,6 +2077,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 resultMap.put("userRankMemberStatus",userRankMemberStatus);
             }
+            //加载评论数
+            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"2");
+            if(commentResp.getCode() == 0){
+                resultMap.put("commentCount",commentResp.getData());
+            }else{
+                resultMap.put("commentCount","0");
+            }
+
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);
             baseResp.setExpandData(resultMap);
