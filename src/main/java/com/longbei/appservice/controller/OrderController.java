@@ -29,6 +29,38 @@ public class OrderController {
 	
 	
 	/**
+    * @Title: http://ip:port/app_service/order/buyOrder
+    * @Description: 购物车结算(用户龙币，进步币兑换商品)
+    * @param @param userid 
+    * @param @param orderid 订单业务id 
+    * @param @param impiconprice 成交价格---进步币
+    * @param @param moneyprice 成交价格---龙币       若没有,传0
+    * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @desc  
+    * @currentdate:2017年4月5日
+	*/
+	@SuppressWarnings("unchecked")
+  	@RequestMapping(value = "/buyOrder")
+    public BaseResp<Object> buyOrder(String userid, String orderid, String impiconprice, String moneyprice) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, orderid, impiconprice)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			if(StringUtils.isBlank(moneyprice) || "0".equals(moneyprice)){
+  				moneyprice = "0";
+  			}
+  			baseResp = orderService.buyOrder(Long.parseLong(userid), orderid, 
+  					Integer.parseInt(impiconprice), Integer.parseInt(moneyprice));
+		} catch (Exception e) {
+			logger.error("buyOrder userid = {}, orderid = {}, impiconprice = {}, moneyprice = {}", 
+					userid, orderid, impiconprice, moneyprice, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
     * @Title: http://ip:port/app_service/order/selectAddressIsdefault
     * @Description: 获取订单默认收货地址
     * @param @param userid 

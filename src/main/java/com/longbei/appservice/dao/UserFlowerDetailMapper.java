@@ -29,4 +29,11 @@ public interface UserFlowerDetailMapper {
     List<UserFlowerDetail> selectListByUserid(@Param("userid") long userid, @Param("pageNo") int pageNo, 
     		@Param("pageSize") int pageSize);
     
+    /**
+	 * @author yinxc
+	 * 获取用户被赠与鲜花总数
+	 * 2017年4月6日
+	 */
+    int selectCountFlower(@Param("userid") long userid);
+    
 }

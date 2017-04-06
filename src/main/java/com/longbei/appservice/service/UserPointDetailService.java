@@ -14,5 +14,5 @@ public interface UserPointDetailService {
 	 * @auther IngaWu
 	 * @currentdate:2017年4月5日
 	 */
-	BaseResp<Object> selectPointListByUseridAndPointtype(long userid,String pointtype,int startNum,int pageSize);
+	BaseResp<Object> selectPointListByUseridAndPtype(long userid,String pointtype,int startNum,int pageSize);
 }
