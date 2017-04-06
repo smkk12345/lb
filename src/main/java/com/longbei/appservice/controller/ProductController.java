@@ -15,7 +15,7 @@ import com.longbei.appservice.entity.ProductBasic;
 import com.longbei.appservice.entity.ProductCart;
 import com.longbei.appservice.entity.ProductCategory;
 import com.longbei.appservice.service.ProductService;
-import com.longbei.appservice.service.ProductCategoryService;
+//import com.longbei.appservice.service.ProductCategoryService;
 
 @RestController
 @RequestMapping(value = "product")
@@ -23,8 +23,8 @@ public class ProductController {
 	
 	@Autowired
 	private ProductService productService;
-	@Autowired
-	private ProductCategoryService productCategoryService;
+//	@Autowired
+//	private ProductCategoryService productCategoryService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ProductController.class);
 	
@@ -244,6 +244,30 @@ public class ProductController {
 		} catch (Exception e) {
 			logger.error("updateCartProductcount id = {}, productcount = {}", 
 					id, productcount, e);
+		}
+  		return baseResp;
+	}
+	
+	/**
+    * @Title: http://ip:port/app_service/product/emptyCart
+    * @Description: 购物车是否为空
+    * @param @param userid 用户id
+    * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
+    * @desc 	Map:  isempty  0:为空     1：有商品
+    * @auther yxc
+    * @currentdate:2017年3月15日
+	*/
+	@SuppressWarnings({ "unchecked"})
+  	@RequestMapping(value = "/emptyCart")
+    public BaseResp<Object> emptyCart(String userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = productService.emptyCart(Long.parseLong(userid));
+		} catch (Exception e) {
+			logger.error("emptyCart userid = {}", userid, e);
 		}
   		return baseResp;
 	}

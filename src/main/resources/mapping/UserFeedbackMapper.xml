@@ -128,7 +128,7 @@
         dealuser = #{dealuser,jdbcType=BIGINT},
       </if>
       <if test="checkoption != null" >
-        checkoption = #{checkoption,jdbcType=VARCHAR},
+        checkoption = #{checkoption,jdbcType=VARCHAR}
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -145,4 +145,68 @@
       checkoption = #{checkoption,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <select id="selectFeedbackCount" parameterType="com.longbei.appservice.entity.UserFeedback" resultType="java.lang.Integer">
+    SELECT count(*) FROM user_feedback
+    <where>
+      <choose>
+        <when test="userFeedback.status=='0'.toString()">
+          AND status = '0'
+        </when>
+        <otherwise>
+          AND status != '0'
+        </otherwise>
+      </choose>
+    </where>
+  </select>
+
+  <!--<select id="selectHasFeedbackCount" parameterType="com.longbei.appservice.entity.UserFeedback" resultType="java.lang.Integer">-->
+    <!--SELECT count(*) FROM user_feedback-->
+    <!--WHERE status != 0-->
+  <!--</select>-->
+
+  <select id="selectNoFeedbackList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.UserFeedback">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_feedback
+    WHERE status = 0
+    <!--<if test="userFeedback.UserInfo.username != null">-->
+      <!--AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')-->
+    <!--</if>-->
+    <!--<if test="award.awardcateid != null">-->
+      <!--AND awardcateid = #{award.awardcateid}-->
+    <!--</if>-->
+    ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
+  <select id="selectFeedbackList" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_feedback
+    <where>
+      <choose>
+        <when test="userFeedback.status=='0'.toString()">
+          AND status = '0'
+        </when>
+        <otherwise>
+          AND status != '0'
+        </otherwise>
+      </choose>
+    </where>
+    <!--<if test="userFeedback.UserInfo.username != null">-->
+    <!--AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')-->
+    <!--</if>-->
+    <!--<if test="award.awardcateid != null">-->
+    <!--AND awardcateid = #{award.awardcateid}-->
+    <!--</if>-->
+    ORDER BY createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
 </mapper>

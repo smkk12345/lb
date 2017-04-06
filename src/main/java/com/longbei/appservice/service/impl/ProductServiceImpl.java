@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.entity.ProductBasic;
@@ -130,6 +132,30 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return baseResp;
 	}
+	
+
+	@Override
+	public BaseResp<Object> emptyCart(long userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<>();
+		try{
+			BaseResp<List<ProductCart>> resp = HttpClient.productBasicService.getCart(userid, 0, 1);
+			String isempty = "0";
+			if(ResultUtil.isSuccess(resp)){
+				List<ProductCart> list = resp.getData();
+				if(null != list && list.size()>0){
+					isempty = "1";
+				}
+			}
+			expandData.put("isempty", isempty);
+			baseResp.setExpandData(expandData);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch (Exception e){
+			logger.error("emptyCart userid = {}", userid, e);
+		}
+		return baseResp;
+	}
+
 
 	@Override
 	public BaseResp<List<ProductCart>> getCart(Long userid, int startNo, int pageSize) {
@@ -231,5 +257,7 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return baseResp;
 	}
+
+
 
 }
