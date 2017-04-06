@@ -21,6 +21,10 @@ public class UserFeedback {
 
     private Date createtime;//反馈时间
 
+    private String starttime;//搜索起始时间
+
+    private String endtime;//搜索终止时间
+
     private String status;//0--未处理 1---无用  2---有用
 
     private Date dealtime;//处理时间
@@ -153,6 +157,22 @@ public class UserFeedback {
      */
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public String getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
     }
 
     /**

@@ -149,60 +149,44 @@
 
   <select id="selectFeedbackCount" parameterType="com.longbei.appservice.entity.UserFeedback" resultType="java.lang.Integer">
     SELECT count(*) FROM user_feedback
-    <where>
-      <choose>
-        <when test="userFeedback.status=='0'.toString()">
-          AND status = '0'
-        </when>
-        <otherwise>
-          AND status != '0'
-        </otherwise>
-      </choose>
-    </where>
-  </select>
-
-  <!--<select id="selectHasFeedbackCount" parameterType="com.longbei.appservice.entity.UserFeedback" resultType="java.lang.Integer">-->
-    <!--SELECT count(*) FROM user_feedback-->
-    <!--WHERE status != 0-->
-  <!--</select>-->
-
-  <select id="selectNoFeedbackList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.UserFeedback">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM user_feedback
-    WHERE status = 0
-    <!--<if test="userFeedback.UserInfo.username != null">-->
-      <!--AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')-->
-    <!--</if>-->
-    <!--<if test="award.awardcateid != null">-->
-      <!--AND awardcateid = #{award.awardcateid}-->
-    <!--</if>-->
-    ORDER BY createtime DESC
-    <if test="startno != null">
-      limit #{startno},#{pagesize}
+    WHERE 1=1
+    <if test="userFeedback.status != 0" >
+      and status != 0
+    </if>
+    <if test="userFeedback.status == 0" >
+      and status = 0
+    </if>
+    <if test="userFeedback.username != null and userFeedback.username != ''" >
+      and username = #{userFeedback.username}
+    </if>
+    <if test="userFeedback.starttime != null and userFeedback.starttime != ''" >
+      AND createtime &gt;= #{userFeedback.starttime}
+    </if>
+    <if test="userFeedback.endtime != null and userFeedback.endtime != ''" >
+      AND createtime &lt; #{userFeedback.endtime}
     </if>
   </select>
 
-  <select id="selectFeedbackList" resultMap="BaseResultMap" >
+  <select id="selectFeedbackList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.UserFeedback" >
     SELECT
     <include refid="Base_Column_List" />
     FROM user_feedback
-    <where>
-      <choose>
-        <when test="userFeedback.status=='0'.toString()">
-          AND status = '0'
-        </when>
-        <otherwise>
-          AND status != '0'
-        </otherwise>
-      </choose>
-    </where>
-    <!--<if test="userFeedback.UserInfo.username != null">-->
-    <!--AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')-->
-    <!--</if>-->
-    <!--<if test="award.awardcateid != null">-->
-    <!--AND awardcateid = #{award.awardcateid}-->
-    <!--</if>-->
+    WHERE 1=1
+    <if test="userFeedback.status != 0" >
+      and status != 0
+    </if>
+    <if test="userFeedback.status == 0" >
+      and status = 0
+    </if>
+    <if test="userFeedback.username != null and userFeedback.username != ''" >
+      and username = #{userFeedback.username}
+    </if>
+    <if test="userFeedback.starttime != null and userFeedback.starttime != ''" >
+      AND createtime &gt;= #{userFeedback.starttime}
+    </if>
+    <if test="userFeedback.endtime != null and userFeedback.endtime != ''" >
+      AND createtime &lt; #{userFeedback.endtime}
+    </if>
     ORDER BY createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
