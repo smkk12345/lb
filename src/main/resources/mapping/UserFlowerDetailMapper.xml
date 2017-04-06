@@ -33,6 +33,13 @@
     </if>
   </select>
   
+  <select id="selectCountFlower" resultType="java.lang.Integer" >
+    select SUM(number) 
+    from user_flower_detail 
+    where userid = #{userid} 
+    and origin = 3 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_flower_detail
     where pid = #{pid,jdbcType=INTEGER}
