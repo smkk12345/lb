@@ -96,13 +96,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 					return temp;
 				}
 			}
-			if(expandData.get("is_diamond").toString().equals("1")){
-				//钻石   打开提醒
-				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
-				if(temp > 0){
-					return temp;
-				}
-			}
+//			if(expandData.get("is_diamond").toString().equals("1")){
+//				//钻石   打开提醒
+//				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
+//				if(temp > 0){
+//					return temp;
+//				}
+//			}
 			// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
 			if(expandData.get("is_comment").toString().equals("1")){
 				//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
@@ -119,7 +119,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 			}
 		}catch (Exception e){
-			logger.error("selectMapByUserid ",e);
+			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
 
 		return 0;
