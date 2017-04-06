@@ -10,6 +10,7 @@ import com.longbei.appservice.service.api.productservice.IProductCategoryService
 import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import feign.Feign;
 import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
 
 public class HttpClient {
 	
@@ -17,7 +18,8 @@ public class HttpClient {
 	public static IProductBasicService productBasicService =
 			Feign.builder()
 //			.requestInterceptor(new ApiRequestInterceptor())
-			.decoder(new GsonDecoder())
+					.encoder(new GsonEncoder())
+					.decoder(new GsonDecoder())
             .target(IProductBasicService.class, AppserviceConfig.host_product_service);
 
 	public static IProductCategoryService productCategoryService =

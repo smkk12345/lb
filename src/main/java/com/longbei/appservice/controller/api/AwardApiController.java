@@ -110,7 +110,7 @@ public class AwardApiController {
             Award award = awardService.selectAward(awardid);
             baseResp.setData(award);
         } catch (NumberFormatException e) {
-            logger.error("delete award  is error:{}",e);
+            logger.error("get award  is error:{}",e);
         }
         return baseResp;
     }

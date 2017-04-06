@@ -2235,6 +2235,8 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setPickey(timeLineDetail.getPhotos());
                     improve.setFilekey(timeLineDetail.getFileKey());
                     improve.setSourcekey(timeLineDetail.getSourcekey());
+                    improve.setBusinessid(timeLineDetail.getBusinessid());
+                    improve.setBusinesstype(timeLineDetail.getBusinesstype());
                     improve.setItype(timeLineDetail.getItype());
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());

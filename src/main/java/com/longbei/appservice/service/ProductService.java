@@ -80,6 +80,14 @@ public interface ProductService {
 	 
 	 /**
 	 * @author yinxc
+	 * 购物车是否为空
+	 * 2017年4月5日
+	 * @param userid
+	 */
+	 BaseResp<Object> emptyCart(long userid);
+	 
+	 /**
+	 * @author yinxc
 	 * 修改购物车商品数量
 	 * 2017年3月15日
 	 * @param id 购物车id
@@ -93,8 +101,7 @@ public interface ProductService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
-									   String startNum,String pageSize);
+	BaseResp<Object> selectProductList(ProductBasic productBasic,String startNum,String pageSize);
 
 	/**
 	 * @Title: selectListCount
@@ -102,7 +109,7 @@ public interface ProductService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月30日
 	 */
-	int selectListCount();
+	int selectListCount(ProductBasic productBasic);
 
 	/**
 	 * @Title: updateProductByProductId

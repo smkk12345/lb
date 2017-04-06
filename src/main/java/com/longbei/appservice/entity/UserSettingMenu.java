@@ -5,13 +5,19 @@ import java.util.Date;
 public class UserSettingMenu {
     private Integer id;
 
-    private Integer menuid;//一键直达 菜单id
+    private Integer menutype;//一键直达 菜单id
 
     private Long userid;
 
     private Integer sortnum;//排序
 
     private String isdefault;//系统默认  位置固定
+
+    private String picurl;
+
+    private String displaytitle;
+
+    private String defaultmenu;
 
     private Date createtime;
 
@@ -31,22 +37,6 @@ public class UserSettingMenu {
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     * 一键直达 菜单id
-     * @return menuid 一键直达 菜单id
-     */
-    public Integer getMenuid() {
-        return menuid;
-    }
-
-    /**
-     * 一键直达 菜单id
-     * @param menuid 一键直达 菜单id
-     */
-    public void setMenuid(Integer menuid) {
-        this.menuid = menuid;
     }
 
     /**
@@ -128,4 +118,37 @@ public class UserSettingMenu {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+    public void setDisplaytitle(String displaytitle) {
+        this.displaytitle = displaytitle;
+    }
+
+    public void setMenutype(Integer menutype) {
+        this.menutype = menutype;
+    }
+
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
+    }
+
+    public Integer getMenutype() {
+        return menutype;
+    }
+
+    public String getDisplaytitle() {
+        return displaytitle;
+    }
+
+    public String getPicurl() {
+        return picurl;
+    }
+
+    public void setDefaultmenu(String defaultmenu) {
+        this.defaultmenu = defaultmenu;
+    }
+
+    public String getDefaultmenu() {
+        return defaultmenu;
+    }
+
 }

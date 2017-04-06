@@ -24,7 +24,6 @@ import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.RankService;
 
 @Service("impComplaintsService")
 public class ImpComplaintsServiceImpl implements ImpComplaintsService {
@@ -41,8 +40,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private ImproveService improveService;
-	@Autowired
-	private RankService rankService;
+//	@Autowired
+//	private RankService rankService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ImpComplaintsServiceImpl.class);

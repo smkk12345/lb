@@ -71,6 +71,8 @@ public class UserServiceImpl implements UserService {
 	private UserRelationService userRelationService;
 	@Autowired
 	private SysPerfectDefineMapper sysPerfectDefineMapper;
+	@Autowired
+	private UserSettingMenuMapper userSettingMenuMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -216,6 +218,7 @@ public class UserServiceImpl implements UserService {
 		saveUserInfoToMongo(userInfo);
 		//保存其他信息,如个人信息等  十全十美数据
 		saveUserPointInfo(userInfo);
+		initUserCommonMenuInfo(userInfo.getUserid());
 		return true;
 	}
 
@@ -555,6 +558,7 @@ public class UserServiceImpl implements UserService {
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
 			map.put("pointDetail",ist);
 			map.put("todayPoint",point);
+//			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
@@ -782,4 +786,26 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
+
+	@Override
+	public BaseResp<List<UserSettingMenu>> selectMenuByUid(long userid) {
+		BaseResp<List<UserSettingMenu>> baseResp = new BaseResp<List<UserSettingMenu>>();
+		try{
+			List<UserSettingMenu> list = userSettingMenuMapper.selectDefaultMenu();
+			baseResp.setData(list);
+			return baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("selectDefaultMenu error ",e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 用户注册初始化用户显示菜单
+	 */
+	private void initUserCommonMenuInfo(Long userid){
+//		List<UserSettingMenu> list = userSettingMenuMapper.selectDefaultMenu();
+	}
+
+
 }

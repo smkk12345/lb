@@ -19,8 +19,18 @@ public class UserPlDetail {
 
     private Integer scorce = 0;
 
+    private Integer totalscorce = 200;
+
     //前端扩展字段
     private String photo;
+
+    public Integer getTotalscorce() {
+        return totalscorce;
+    }
+
+    public void setTotalscorce(Integer totalscorce) {
+        this.totalscorce = totalscorce;
+    }
 
     public void setPhoto(String photo) {
         this.photo = photo;

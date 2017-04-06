@@ -101,6 +101,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         baseResp.getExpandData().put("point",point);
         if(point > 0){
             levelUp(userInfo.getUserid(),point,pType);
+            saveUserPointDetail(userInfo,point,pType,operateType);
             putPointToCache(point,userInfo.getUserid(),operateType);
         }
         //进步币发生变化
@@ -376,7 +377,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
             }
-            saveUserPointDetail(userInfo,iPoint,pType);
         }catch (Exception e){
             logger.error("subLevelUp error and msg = {}",e);
         }
@@ -435,13 +435,14 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @param iPoint
      * @param ptype
      */
-    private void saveUserPointDetail(UserInfo userInfo,int iPoint,String ptype){
+    private void saveUserPointDetail(UserInfo userInfo,int iPoint,String ptype,String pointtype){
         try{
             UserPointDetail userPointDetail = new UserPointDetail();
             userPointDetail.setUserid(userInfo.getUserid());
             userPointDetail.setDrawdate(new Date());
             userPointDetail.setPoint(iPoint);
             userPointDetail.setPtype(ptype);
+            userPointDetail.setPointtype(pointtype);
             userPointDetailMapper.insert(userPointDetail);
         }catch (Exception e){
             logger.error("userPointDetailMapper.insert error and msg={}",e);

@@ -17,7 +17,7 @@ public interface IProductCategoryService {
      * @auther IngaWu
      * @currentdate:2017年3月19日
      */
-    @RequestLine("GET /product/selectCategoryByCateId?cateId={cateId}")
+    @RequestLine("POST /api/product/selectCategoryByCateId?cateId={cateId}")
     BaseResp<Object> selectCategoryByCateId(@Param("cateId")String cateId);
 
 	/**
@@ -26,7 +26,7 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	@RequestLine("GET /product/productCategories")
+	@RequestLine("POST /api/product/productCategories")
 	BaseResp<Object> productCategories();
 
 	/**
@@ -37,7 +37,7 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月29日
 	 */
-	@RequestLine("GET /product/selectCategory?parentid={parentid}&startNum={startNum}&pageSize={pageSize}")
+	@RequestLine("POST /api/product/selectCategory?parentid={parentid}&startNum={startNum}&pageSize={pageSize}")
 	BaseResp<Object> selectCategory(@Param("parentid") String parentid,@Param("startNum") String startNum,@Param("pageSize")String pageSize);
 
 	/**
@@ -48,7 +48,7 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-    @RequestLine("GET /product/insertCategory?catename={catename}&parentid={parentid}")
+    @RequestLine("POST /api/product/insertCategory?catename={catename}&parentid={parentid}")
 	BaseResp<Object> insertCategory(@Param("catename") String catename,
 									@Param("parentid") String parentid);
 
@@ -61,7 +61,7 @@ public interface IProductCategoryService {
      * @auther IngaWu
      * @currentdate:2017年3月19日
      */
-    @RequestLine("GET /product/updateCategoryByCateId?cateId={cateId}&catename={catename}&sort={sort}")
+    @RequestLine("POST /api/product/updateCategoryByCateId?cateId={cateId}&catename={catename}&sort={sort}")
     BaseResp<Object> updateCategoryByCateId(@Param("cateId")String cateId,@Param("catename")String catename,@Param("sort")String sort);
 
     /**
@@ -71,7 +71,7 @@ public interface IProductCategoryService {
      * @auther IngaWu
      * @currentdate:2017年3月19日
      */
-    @RequestLine("GET /product/deleteCategoryByCateId?cateId={cateId}")
+    @RequestLine("POST /api/product/deleteCategoryByCateId?cateId={cateId}")
     BaseResp<Object> deleteCategoryByCateId(@Param("cateId")String cateId);
 
 }

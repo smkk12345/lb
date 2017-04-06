@@ -156,6 +156,15 @@ public interface IProductBasicService {
 	 BaseResp<ProductOrders> get(@Param("userid") Long userid, @Param("orderid") String orderid);
 	 
 	 /**
+	 * @author yinxc
+	 * 购物车结算(用户龙币，进步币兑换商品)
+	 * 2017年4月5日
+	 * @param orderid 订单业务id
+	 */
+	 @RequestLine("GET /order/buyOrder?userid={userid}&orderid={orderid}")
+	 BaseResp<Object> buyOrder(@Param("userid") Long userid, @Param("orderid") String orderid);
+	 
+	 /**
 	 * 再次兑换
 	 * @author yinxc
 	 * @param @param userid 
@@ -227,8 +236,11 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	@RequestLine("GET /product/selectProductList?id={productId}&productcate={productcate}&productname={productname}&enabled={enabled}&productpoint={productpoint}&productpoint1={productpoint1}&startNum={startNum}&pageSize={pageSize}")
-	BaseResp<Object> selectProductList(@Param("productId") String productId,@Param("productcate") String productcate,@Param("productname") String productname,@Param("enabled") String enabled,@Param("productpoint") String productpoint,@Param("productpoint1") String productpoint1,@Param("startNum") String startNum,@Param("pageSize") String pageSize);
+	@RequestLine("POST /api/product/selectProductList?startNum={startNum}&pageSize={pageSize}")
+	@Headers("Content-Type: application/json")
+	BaseResp<Object> selectProductList(ProductBasic productBasic,
+									   @Param("startNum") String startNum,
+									   @Param("pageSize") String pageSize);
 
 	/**
 	 * @Title: selectListCount
@@ -236,8 +248,9 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月30日
 	 */
-	@RequestLine("GET /product/selectListCount")
-	int selectListCount();
+	@RequestLine("POST /api/product/selectListCount")
+	@Headers("Content-Type: application/json")
+	int selectListCount(ProductBasic productBasic);
 
 	/**
 	 * @Title: updateProductByProductId
@@ -255,7 +268,7 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月20日
 	 */
-	@RequestLine("GET /product/updateProductByProductId?productId={productId}&productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	@RequestLine("POST /api/product/updateProductByProductId?productId={productId}&productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
 	BaseResp<Object> updateProductByProductId(@Param("productId")String productId,@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
 											  @Param("productprice")String productprice,@Param("productpoint")String productpoint,@Param("lowimpicon") String lowimpicon, @Param("productbrief")String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
 
@@ -274,7 +287,7 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月20日
 	 */
-	@RequestLine("GET /product/insertProduct?productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
+	@RequestLine("POST /api/product/insertProduct?productcate={productcate}&productname={productname}&productbriefphotos={productbriefphotos}&productprice={productprice}&productpoint={productpoint}&lowimpicon={lowimpicon}&productbrief={productbrief}&enabled={enabled}&productdetail={productdetail}")
 	BaseResp<Object> insertProduct(@Param("productcate")String productcate,@Param("productname")String productname,@Param("productbriefphotos")String productbriefphotos,
 								   @Param("productprice")String productprice,@Param("productpoint")String productpoint, @Param("lowimpicon")String lowimpicon,
 								   @Param("productbrief") String productbrief,@Param("enabled")String enabled,@Param("productdetail")String productdetail);
@@ -286,7 +299,7 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月20日
 	 */
-	@RequestLine("GET /product/deleteProductByProductId?productId={productId}")
+	@RequestLine("POST /api/product/deleteProductByProductId?productId={productId}")
 	BaseResp<Object> deleteProductByProductId(@Param("productId")String productId);
 
 
@@ -296,7 +309,7 @@ public interface IProductBasicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月22日
 	 */
-	@RequestLine("GET /product/selectProductByProductId?productId={productId}")
+	@RequestLine("POST /api/product/selectProductByProductId?productId={productId}")
 	BaseResp<Object> selectProductByProductId(@Param("productId")String productId);
 	 
 	 

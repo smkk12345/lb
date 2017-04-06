@@ -3,11 +3,13 @@ package com.longbei.appservice.controller.api;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ProductBasic;
 import com.longbei.appservice.service.ProductCategoryService;
 import com.longbei.appservice.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -179,18 +181,28 @@ public class ProductApiController {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
+	@ResponseBody
 	@RequestMapping(value = "/selectProductList")
-	public BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
-											  String startNum,String pageSize) {
+	public BaseResp<Object> selectProductList(@RequestBody ProductBasic productBasic, String startNum, String pageSize) {
+		logger.info("selectProductList and productBasic={},startNum={},pageSize={}",
+				productBasic,startNum,pageSize);
+		if(!StringUtils.isBlank(startNum)) {
+			productBasic.setStartNum(Integer.parseInt(startNum));
+		}else if (StringUtils.isBlank(startNum)){
+			productBasic.setStartNum(0);
+		}
+		if(!StringUtils.isBlank(pageSize)) {
+			productBasic.setPageSize(Integer.parseInt(pageSize));
+		}else if(StringUtils.isBlank(pageSize)) {
+			productBasic.setPageSize(15);
+		}
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			logger.info("selectProductList and productId={},productcate={},productname={},enabled={},productpoint={},productpoint1={},startNum={},pageSize={}",
-					productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
-			baseResp = productService.selectProductList(productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
+			baseResp = productService.selectProductList(productBasic,startNum,pageSize);
 			return baseResp;
 		} catch (Exception e) {
-			logger.error("selectProductList and productId={},productcate={},productname={},enabled={},productpoint={},productpoint1={},startNum={},pageSize={}",
-					productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize,e);
+			logger.error("selectProductList and productBasic={},startNum={},pageSize={}",
+					productBasic,startNum,pageSize,e);
 		}
 		return baseResp;
 	}
@@ -202,11 +214,12 @@ public class ProductApiController {
 	 * @currentdate:2017年3月31日
 	 */
 	@SuppressWarnings("unchecked")
+	@ResponseBody
 	@RequestMapping(value = "/selectListCount")
-	public int selectListCount() {
+	public int selectListCount(@RequestBody ProductBasic productBasic) {
 		int total =0;
 		try {
-			total = productService.selectListCount();
+			total = productService.selectListCount(productBasic);
 			if(total>0){
 				return  total;
 			}
