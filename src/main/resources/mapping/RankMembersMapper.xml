@@ -454,6 +454,9 @@
         <if test="acceptaward != null">
             acceptaward = #{acceptaward},
         </if>
+        <if test="updateTime != null">
+            updatetime = #{updateTime}
+        </if>
     </set>
     where userid = #{userId} and rankid = #{rankId}
   </update>

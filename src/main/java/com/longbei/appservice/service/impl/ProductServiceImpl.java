@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.entity.ProductBasic;
@@ -130,6 +132,30 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return baseResp;
 	}
+	
+
+	@Override
+	public BaseResp<Object> emptyCart(long userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String, Object> expandData = new HashMap<>();
+		try{
+			BaseResp<List<ProductCart>> resp = HttpClient.productBasicService.getCart(userid, 0, 1);
+			String isempty = "0";
+			if(ResultUtil.isSuccess(resp)){
+				List<ProductCart> list = resp.getData();
+				if(null != list && list.size()>0){
+					isempty = "1";
+				}
+			}
+			expandData.put("isempty", isempty);
+			baseResp.setExpandData(expandData);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch (Exception e){
+			logger.error("emptyCart userid = {}", userid, e);
+		}
+		return baseResp;
+	}
+
 
 	@Override
 	public BaseResp<List<ProductCart>> getCart(Long userid, int startNo, int pageSize) {
@@ -158,11 +184,10 @@ public class ProductServiceImpl implements ProductService {
 
 
 	@Override
-	public BaseResp<Object> selectProductList(String productId,String productcate,String productname,String enabled,String productpoint,String productpoint1,
-											  String startNum,String pageSize) {
+	public BaseResp<Object> selectProductList(ProductBasic productBasic,String startNum,String pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			baseResp = HttpClient.productBasicService.selectProductList(productId,productcate,productname,enabled,productpoint,productpoint1,startNum,pageSize);
+			baseResp = HttpClient.productBasicService.selectProductList(productBasic,startNum,pageSize);
 		} catch (Exception e) {
 			logger.error("selectProductList error and msg={}",e);
 		}
@@ -170,10 +195,10 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int selectListCount() {
+	public int selectListCount(ProductBasic productBasic) {
 		int total;
 		try {
-			total = HttpClient.productBasicService.selectListCount();
+			total = HttpClient.productBasicService.selectListCount(productBasic);
 			if(total>0){
 				return  total;
 			}
@@ -232,5 +257,7 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return baseResp;
 	}
+
+
 
 }

@@ -7,12 +7,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Improve {
 
+    @JsonSerialize(using=ToStringSerializer.class)
     protected Long id;
-
+    @JsonSerialize(using=ToStringSerializer.class)
     protected Long impid;//微进步id
 
     protected String itype;//类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
@@ -22,9 +25,9 @@ public class Improve {
     protected String pickey;//图片的key
 
     protected String filekey;//文件key  视频文件  音频文件 普通文件
-
+    @JsonSerialize(using=ToStringSerializer.class)
     protected Long userid;//用户id
-
+    @JsonSerialize(using=ToStringSerializer.class)
     protected Long businessid;//业务id  榜单id  圈子id 教室id
 
     protected String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室

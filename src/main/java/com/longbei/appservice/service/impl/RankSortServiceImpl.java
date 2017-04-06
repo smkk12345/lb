@@ -53,6 +53,9 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                 return false;
             }
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null || !"1".equals(rank.getIsfinish())){
+                return false;
+            }
             if(num == null){
                 num = 1;
             }
@@ -137,6 +140,8 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
             if("0".equals(rank.getIscheck())){
                 this.rankService.submitRankMemberCheckResult(rank,false);
+                //发送通知消息给参榜的所有用户
+                this.rankService.rankEndNotice(rank);
             }
 
             //5.更改rank的活动标识为已结束

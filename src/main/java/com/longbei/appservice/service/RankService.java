@@ -394,4 +394,45 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> userRankAwardConfirmReceipt(Long userid, Long rankId);
+
+    /**
+     * 结束榜单
+     * @param currentTime
+     * @return
+     */
+    BaseResp<Object> endRank(Date currentTime);
+
+    /**
+     * 榜单结束 通知用户榜结束 包含给中奖用户发消息 给未中奖用户发消息
+     * 该接口将不再校验榜单是否已结束,所以调用该接口前请确认该榜单已结束
+     * @param rankId
+     * @return
+     */
+    BaseResp<Object> rankEndNotice(Long rankId);
+
+    /**
+     * 榜单结束 通知用户榜结束 包含给中奖用户发消息 给未中奖用户发消息
+     * 该接口将不再校验榜单是否已结束,所以调用该接口前请确认该榜单已结束
+     * @param rank
+     * @return
+     */
+    BaseResp<Object> rankEndNotice(Rank rank);
+
+    /**
+     * 删除进步时,1.修改用户在榜中发布的进步总条数,
+     *          2.删除用户获得的赞和花影响的排名
+     * @param rankId
+     * @param userId
+     * @param likes
+     * @param flowers
+     * @return
+     */
+    BaseResp<Object> updateUserRankMemberByImprove(Long rankId,Long userId,int likes,int flowers);
+
+    /**
+     * 发布榜单
+     * @param currentDateTime 系统当前时间
+     * @return
+     */
+    BaseResp<Object> publishRank(Date currentDateTime);
 }

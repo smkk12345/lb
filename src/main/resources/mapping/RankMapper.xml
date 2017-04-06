@@ -626,7 +626,11 @@
   <update id="updateRankMemberCount">
       update rank
       set rankinvolved = rankinvolved + #{count,jdbcType=INTEGER}
-      where rankid = #{rankId,jdbcType=BIGINT}
+      where
+        <if test="count &lt; 0">
+          rankinvolved > 1
+        </if>
+        rankid = #{rankId,jdbcType=BIGINT}
   </update>
 
   <!-- 查询榜单列表 -->
@@ -636,7 +640,8 @@
       FROM rank
       WHERE 1=1
         <if test="ranktitle != null and ranktitle != ''" >
-          AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+          (AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+          OR codeword = #{codeword})
         </if>
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
@@ -680,6 +685,7 @@
         <if test="createuserid != null" >
           AND createuserid = #{createuserid}
         </if>
+
         <if test="isrecommend != null">
             and isrecommend = #{isrecommend}
         </if>
@@ -698,6 +704,7 @@
         <if test="orderByType == null or orderByType == ''">
             order by id desc
         </if>
+
         <if test="startNum != null">
           limit #{startNum},#{pageSize}
         </if>
@@ -713,6 +720,7 @@
     from rank
     where starttime &gt; #{beforeDate}
     and starttime &lt;= #{currentDate}
+    and isup = 1
     and isfinish = 1
   </select>
 
@@ -720,12 +728,21 @@
   <update id="handleStartRank" parameterType="map">
       update rank
       set isfinish = 1
-      where starttime &gt; #{beforeDate}
+      where isup = 1 AND starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
   </update>
 
   <!-- 查询榜单的所有地区 -->
   <select id="selectRankArea" resultType="Long">
-      select distinct rankscope from rank where isdel = 0
+      select distinct rankscope from rank where isup = 1 and isdel = 0
+  </select>
+
+  <!-- 查看将要结束的榜单 -->
+  <select id="selectWillEndRank" parameterType="map" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from rank
+    where isup = 1 and endTime &lt;= #{currentTime}
+    and isfinish = #{isfinish}
   </select>
 </mapper>

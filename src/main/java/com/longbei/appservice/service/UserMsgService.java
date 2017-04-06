@@ -238,6 +238,13 @@ public interface UserMsgService {
 	boolean batchInsertUserMsg(List<Long> userIdList,UserMsg userMsg);
 
 	/**
+	 * 批量插入消息
+	 * @param userMsgList
+	 * @return
+     */
+	int batchInsertUserMsg(List<UserMsg> userMsgList);
+
+	/**
 	 * 查询圈子的验证消息
 	 * @param circleId
 	 * @param userId

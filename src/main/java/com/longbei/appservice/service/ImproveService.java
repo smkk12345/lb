@@ -449,4 +449,13 @@ public interface ImproveService {
     BaseResp<List<Improve>> selectListInRank(String curuserid,String userid,String businessid,
                                                       String businesstype,Integer startno,Integer pagesize);
 
+    /**
+     * 将榜中单个微进步下榜
+     * @param impid  进步id
+     * @param businessid  榜 ，教室 ，圈子 ID
+     * @param businesstype  "0" -- 独立进步 "1" -- 目标 "2" -- 榜 "3" -- 圈子 "4" -- 教室
+     * @return
+     */
+    BaseResp<Object> removeImproveFromBusiness(String impid,String businessid,String businesstype);
+
 }

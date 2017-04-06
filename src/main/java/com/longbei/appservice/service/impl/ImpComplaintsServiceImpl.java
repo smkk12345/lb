@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
-import com.longbei.appservice.dao.ImproveMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -25,6 +23,7 @@ import com.longbei.appservice.entity.ImpComplaints;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ImpComplaintsService;
+import com.longbei.appservice.service.ImproveService;
 
 @Service("impComplaintsService")
 public class ImpComplaintsServiceImpl implements ImpComplaintsService {
@@ -40,7 +39,9 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	@Autowired
 	private ClassroomMapper classroomMapper;
 	@Autowired
-	private ImproveMapper improveMapper;
+	private ImproveService improveService;
+//	@Autowired
+//	private RankService rankService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ImpComplaintsServiceImpl.class);
@@ -73,7 +74,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		Page<ImpComplaints> page = new Page<>(pageNo, pageSize);
 		try {
             int totalcount = impComplaintsMapper.selectCountByStatus(status);
-            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
+//            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
             List<ImpComplaints> list = impComplaintsMapper.selectListByStatus(status, pageNo, pageSize);
             if(null != list && list.size()>0){
             	for (ImpComplaints impComplaints : list) {
@@ -85,6 +86,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
             		impComplaints.setCompcount(compcount);
             		//获取选择的投诉类型
             		getContenttype(impComplaints);
+            		//实例化用户信息
+            		selectUserNickname(impComplaints);
 				}
             }
             page.setTotalCount(totalcount);
@@ -102,7 +105,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		Page<ImpComplaints> page = new Page<>(pageNo, pageSize);
 		try {
             int totalcount = impComplaintsMapper.searchCount(status, username, businesstype, sdealtime, edealtime);
-            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
+//            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
             List<ImpComplaints> list = impComplaintsMapper.searchList(status, username, businesstype, sdealtime, 
             		edealtime, pageNo, pageSize);
             if(null != list && list.size()>0){
@@ -115,6 +118,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
             		impComplaints.setCompcount(compcount);
             		//获取选择的投诉类型
             		getContenttype(impComplaints);
+            		//实例化用户信息
+            		selectUserNickname(impComplaints);
 				}
             }
             page.setTotalCount(totalcount);
@@ -124,6 +129,13 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
             		status, username, businesstype, e);
         }
         return page;
+	}
+	
+	private void selectUserNickname(ImpComplaints impComplaints){
+		String nickname = initNicknameByFriendid(impComplaints.getUserid());
+		impComplaints.setNickname(nickname);
+		String cnickname = initNicknameByFriendid(impComplaints.getComuserid());
+		impComplaints.setCnickname(cnickname);
 	}
 	
 	/**
@@ -220,6 +232,23 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 			boolean temp = updateStatus(status, dealtime, dealuser, checkoption, impComplaints.getImpid(), 
 					impComplaints.getBusinessid(), impComplaints.getBusinesstype());
 			if (temp) {
+				//status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
+				if("1".equals(status)){
+					//businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+					if("2".equals(impComplaints.getBusinesstype())){
+						//删除
+						improveService.removeImprove(impComplaints.getComuserid().toString(), impComplaints.getImpid().toString(), 
+								impComplaints.getBusinesstype().toString(), impComplaints.getBusinessid().toString());
+					}
+				}
+				if("2".equals(status)){
+					//businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+					if("2".equals(impComplaints.getBusinesstype())){
+						//下榜
+						improveService.removeImproveFromBusiness(impComplaints.getImpid().toString(), 
+								impComplaints.getBusinessid().toString(), impComplaints.getBusinesstype().toString());
+					}
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -243,11 +272,23 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		try {
 			ImpComplaints impComplaints = impComplaintsMapper.selectByPrimaryKey(id);
 			if(null != impComplaints){
-				Improve improve = selectImprove(impComplaints.getImpid(), 
-						impComplaints.getBusinesstype(), impComplaints.getBusinessid().toString(), null, null);
+				Improve improve = improveService.selectImproveByImpid(impComplaints.getImpid(), 
+						impComplaints.getComuserid().toString(),  
+						impComplaints.getBusinesstype(), impComplaints.getBusinessid().toString());
 				impComplaints.setImprove(improve);
+				//获取各类型标题
 				getImpComplaintsTitle(impComplaints);
+				//各类型进步被投诉次数
+        		Integer compcount = impComplaintsMapper.selectCountByImpid(impComplaints.getStatus(), impComplaints.getImpid(), 
+        				impComplaints.getBusinessid(), impComplaints.getBusinesstype());
+        		impComplaints.setCompcount(compcount);
+        		//获取选择的投诉类型
+        		getContenttype(impComplaints);
+        		//实例化用户信息
+        		selectUserNickname(impComplaints);
 			}
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			reseResp.setData(impComplaints);
 		} catch (Exception e) {
 			logger.error("selectDetail id = {}", id, e);
 		}
@@ -255,37 +296,37 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	}
 	
 	
-	private Improve selectImprove(Long impid,
-            String businesstype,String businessid, String isdel,String ispublic){
-		Improve improve = null;
-		try {
-		    switch (businesstype){
-		        case Constant.IMPROVE_SINGLE_TYPE:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
-		            break;
-		        case Constant.IMPROVE_RANK_TYPE:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
-		            break;
-		        case Constant.IMPROVE_CLASSROOM_TYPE:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
-		            break;
-		        case Constant.IMPROVE_CIRCLE_TYPE:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
-		            break;
-		        case Constant.IMPROVE_GOAL_TYPE:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
-		            break;
-		        default:
-		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
-		            break;
-		    }
-		
-		} catch (Exception e) {
-		    logger.error("select improve by id:{} businesstype:{} businessid:{}",
-		            impid,businesstype,businessid,e);
-		}
-		return improve;
-	}
+//	private Improve selectImprove(Long impid,
+//            String businesstype,String businessid, String isdel,String ispublic){
+//		Improve improve = null;
+//		try {
+//		    switch (businesstype){
+//		        case Constant.IMPROVE_SINGLE_TYPE:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+//		            break;
+//		        case Constant.IMPROVE_RANK_TYPE:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
+//		            break;
+//		        case Constant.IMPROVE_CLASSROOM_TYPE:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+//		            break;
+//		        case Constant.IMPROVE_CIRCLE_TYPE:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
+//		            break;
+//		        case Constant.IMPROVE_GOAL_TYPE:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
+//		            break;
+//		        default:
+//		            improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+//		            break;
+//		    }
+//		
+//		} catch (Exception e) {
+//		    logger.error("select improve by id:{} businesstype:{} businessid:{}",
+//		            impid,businesstype,businessid,e);
+//		}
+//		return improve;
+//	}
 	
 	
 
@@ -303,5 +344,15 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
         return "";
     }
 
+    /**
+     * 初始化用户信息 ------Friendid
+     */
+    private String initNicknameByFriendid(long friendid){
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(friendid));
+		if(null != appUserMongoEntity){
+			return appUserMongoEntity.getNickname();
+		}
+        return "";
+    }
 
 }

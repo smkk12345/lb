@@ -104,6 +104,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserMoneyDetailService userMoneyDetailService;
     @Autowired
     private RankSortService rankSortService;
+    @Autowired
+    private RankMapper rankMapper;
 
     /**
      *  @author luye
@@ -803,31 +805,35 @@ public class ImproveServiceImpl implements ImproveService{
                                  String businesstype,String businessid) {
 
         boolean isok = false;
-        switch (businesstype){
-            case Constant.IMPROVE_SINGLE_TYPE:
-                isok = removeSingleImprove(userid,improveid);
-                break;
-            case Constant.IMPROVE_RANK_TYPE:
-                isok = removeRankImprove(userid,businessid,improveid);
-                break;
-            case Constant.IMPROVE_CLASSROOM_TYPE:
-                isok = removeClassroomImprove(userid,businessid,improveid);
-                break;
-            case Constant.IMPROVE_CIRCLE_TYPE:
-                isok = removeCircleImprove(userid,businessid,improveid);
-                break;
-            case Constant.IMPROVE_GOAL_TYPE:
-                isok = removeGoalImprove(userid,businessid,improveid);
-                break;
-            default:
-                isok = removeSingleImprove(userid,improveid);
-                break;
-        }
-        if (isok){
-            timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
-            Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
-            userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
-                    Long.parseLong(userid),improve,0);
+        try {
+            switch (businesstype){
+                case Constant.IMPROVE_SINGLE_TYPE:
+                    isok = removeSingleImprove(userid,improveid);
+                    break;
+                case Constant.IMPROVE_RANK_TYPE:
+                    isok = removeRankImprove(userid,businessid,improveid);
+                    break;
+                case Constant.IMPROVE_CLASSROOM_TYPE:
+                    isok = removeClassroomImprove(userid,businessid,improveid);
+                    break;
+                case Constant.IMPROVE_CIRCLE_TYPE:
+                    isok = removeCircleImprove(userid,businessid,improveid);
+                    break;
+                case Constant.IMPROVE_GOAL_TYPE:
+                    isok = removeGoalImprove(userid,businessid,improveid);
+                    break;
+                default:
+                    isok = removeSingleImprove(userid,improveid);
+                    break;
+            }
+            if (isok){
+                timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+                Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
+                userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
+                        Long.parseLong(userid),improve,0);
+            }
+        } catch (Exception e) {
+            logger.error("remove improve is error:",e);
         }
         return isok;
     }
@@ -2229,6 +2235,8 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setPickey(timeLineDetail.getPhotos());
                     improve.setFilekey(timeLineDetail.getFileKey());
                     improve.setSourcekey(timeLineDetail.getSourcekey());
+                    improve.setBusinessid(timeLineDetail.getBusinessid());
+                    improve.setBusinesstype(timeLineDetail.getBusinesstype());
                     improve.setItype(timeLineDetail.getItype());
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
@@ -2323,6 +2331,47 @@ public class ImproveServiceImpl implements ImproveService{
 //                initUserRelateInfo();
                 initImproveUserInfo(improve,Long.parseLong(curuserid));
             }
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> removeImproveFromBusiness(String impid, String businessid, String businesstype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            if (Constant.IMPROVE_RANK_TYPE.equals(businesstype)){
+                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(businessid));
+                if (rank == null){
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_613,Constant.RTNINFO_SYS_613);
+                    return baseResp;
+                }
+                int finish = Integer.parseInt(rank.getIsfinish());
+                if (finish >= 2){
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
+                    return baseResp;
+                }
+            }
+            Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),
+                    getSourecTableNameByBusinessType(businesstype),"0",null);
+            if (null == improve){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_55,Constant.RTNINFO_SYS_55);
+                return baseResp;
+            }
+            int res = improveMapper.removeImproveFromBusiness(getTableNameByBusinessType(businesstype),businessid,impid);
+            UserMsg userMsg = new UserMsg();
+            userMsg.setUserid(improve.getUserid());
+            userMsg.setMtype("0");
+            userMsg.setMsgtype("41");
+            userMsg.setSnsid(Long.parseLong(businessid));
+            userMsg.setRemark("榜中下榜");
+            userMsg.setGtype("2");
+            userMsg.setCreatetime(new Date());
+            userMsgMapper.insertSelective(userMsg);
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("remove improve  impid={} from {} is error:",impid,getTableNameByBusinessType(businesstype),e);
         }
         return baseResp;
     }
