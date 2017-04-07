@@ -113,6 +113,7 @@ public class GroupController {
      * @param notice 公告
      * @return
      */
+    @RequestMapping(value="updateGroupNotice")
     public BaseResp<Object> updateGroupNotice(Long userId,String groupId,String notice){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || StringUtils.hasBlankParams(groupId,notice) || notice.length() > 100){

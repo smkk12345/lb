@@ -72,6 +72,9 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 				return mongoUser;
 			}else{
 				UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+				if(userInfo == null){
+					return null;
+				}
 				mongoUser = saveUserInfoToMongo(userInfo);
 				return  mongoUser;
 			}

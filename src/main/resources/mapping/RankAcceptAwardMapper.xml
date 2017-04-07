@@ -514,4 +514,21 @@
           </if>
       </where>
   </update>
+
+  <!-- 查询用户的榜单获奖列表 -->
+  <select id="userRankAcceptAwardList" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from rank_accept_award
+    where userid = #{userid}
+    order by createdate desc
+    limit #{startNum},#{pageSize}
+  </select>
+
+  <select id="userRankAcceptAwardCount" resultType="Integer">
+    select
+      count(1)
+    from rank_accept_award
+    where userid = #{userid}
+  </select>
 </mapper>

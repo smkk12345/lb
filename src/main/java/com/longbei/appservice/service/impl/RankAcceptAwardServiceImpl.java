@@ -6,11 +6,17 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.AwardMapper;
 import com.longbei.appservice.dao.RankAcceptAwardMapper;
+import com.longbei.appservice.dao.RankAwardMapper;
+import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankAcceptAward;
 import com.longbei.appservice.entity.RankAward;
 import com.longbei.appservice.service.RankAcceptAwardService;
+import com.longbei.appservice.service.RankService;
+import com.netflix.discovery.converters.Auto;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +32,7 @@ import java.util.*;
  * @create 2017-03-21 下午3:03
  **/
 @Service
-public class RankAcceptAwardServiceImpl implements RankAcceptAwardService{
+public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankAcceptAwardService{
 
     private static Logger logger = LoggerFactory.getLogger(RankAcceptAwardServiceImpl.class);
 
@@ -34,9 +40,11 @@ public class RankAcceptAwardServiceImpl implements RankAcceptAwardService{
     @Autowired
     private RankAcceptAwardMapper rankAcceptAwardMapper;
     @Autowired
-    private AwardMapper awardMapper;
-    @Autowired
     private UserMongoDao userMongoDao;
+    @Autowired
+    private RankMapper rankMapper;
+    @Autowired
+    private AwardMapper awardMapper;
 
     @Override
     public boolean insertAcceptAwardInfoBatch(List<RankAcceptAward> rankAcceptAwards) {
@@ -160,6 +168,63 @@ public class RankAcceptAwardServiceImpl implements RankAcceptAwardService{
             return this.rankAcceptAwardMapper.updateRankAwardStatus(map);
         }catch(Exception e){
             logger.error("update rank award status error currentDate:{}",currentDate);
+        }
+        return 0;
+    }
+
+    /**
+     * 查看用户的榜单获奖列表
+     * @param userid
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            List<RankAcceptAward> rankAcceptAwardList = this.rankAcceptAwardMapper.userRankAcceptAwardList(userid,startNum,pageSize);
+            if(rankAcceptAwardList == null || rankAcceptAwardList.size() == 0){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
+                Rank rank = this.rankMapper.selectRankByRankid(rankAcceptAward.getRankid());
+                Award award = this.awardMapper.selectByPrimaryKey(rankAcceptAward.getAwardid());
+                if(rank == null || award == null){
+                    continue;
+                }
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("rankid",rankAcceptAward.getRankid());
+                map.put("ranktitle",rankAcceptAward.getRanktitle());
+                map.put("awardnickname",rankAcceptAward.getAwardnickname());
+                map.put("endtime",rank.getEndtime());
+                map.put("awardphotos",award.getAwardphotos());
+                map.put("status",rankAcceptAward.getStatus());//奖品领取状态
+
+                resultList.add(map);
+            }
+            baseResp.setData(resultList);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("user rank accept award list error userid:{} startNum:{} pageSize:{}",userid,startNum,pageSize);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查看用户的榜单获奖 总数
+     * @param userid
+     * @return
+     */
+    @Override
+    public int userRankAcceptAwardCount(Long userid) {
+        try{
+            return this.rankAcceptAwardMapper.userRankAcceptAwardCount(userid);
+        }catch (Exception e){
+            logger.error("user rank accept award count errror userid:{}",userid);
+            printException(e);
         }
         return 0;
     }

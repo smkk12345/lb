@@ -285,6 +285,7 @@ public class UserRelationController extends BaseController {
 
 	/**
 	 * 加载推荐的达人
+	 * @url http://ip:port/app_service/user/selectFashionManUser
 	 * @param userid
 	 * @param startNum 开始页码
 	 * @param endNum 结束页码
