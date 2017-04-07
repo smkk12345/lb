@@ -483,26 +483,26 @@ public class RankController {
 //    }
 
     /**
-     * url: http://ip:port/app_service/rank/selectRankList
+     * url: http://ip:port/app_service/rank/selectRankListForApp
      * @ 首页推荐的龙榜列表
-     * @param pageno
-     * @param pagesize
+     * @param startNo
+     * @param endNum
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectRankListForApp")
-    public BaseResp<List<Rank>> selectRankListForApp(String pageno, String pagesize){
+    public BaseResp<List<Rank>> selectRankListForApp(String startNo, String endNum){
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(pageno)){
-            pageno = Constant.DEFAULT_START_NO;
+        if(StringUtils.isBlank(startNo)){
+            startNo = Constant.DEFAULT_START_NO;
         }
-        if(StringUtils.isBlank(pagesize)){
-            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        if(StringUtils.isBlank(endNum)){
+            endNum = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
             Rank r = new Rank();
             r.setIsrecommend("1");
-            baseResp = rankService.selectRankListForApp(r,Integer.parseInt(pageno),Integer.parseInt(pagesize),true);
+            baseResp = rankService.selectRankListForApp(r,Integer.parseInt(startNo),Integer.parseInt(endNum),true);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }

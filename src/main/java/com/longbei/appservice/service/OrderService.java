@@ -9,6 +9,14 @@ import com.longbei.appservice.entity.UserAddress;
 
 public interface OrderService {
 	
+	/**
+	 * @author yinxc
+	 * 购物车结算(用户龙币，进步币兑换商品)
+	 * 2017年4月5日
+	 * @param orderid 订单业务id
+	 */
+	BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice);
+	
 	BaseResp<UserAddress> selectAddress(long userid);
 	
 	/**

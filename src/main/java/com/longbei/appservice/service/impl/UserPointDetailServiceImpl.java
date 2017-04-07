@@ -23,10 +23,10 @@ public class UserPointDetailServiceImpl implements UserPointDetailService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectPointListByUseridAndPointtype(long userid,String pointtype,int startNum,int pageSize) {
+	public BaseResp<Object> selectPointListByUseridAndPtype(long userid,String ptype,int startNum,int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			List<UserPointDetail> list = userPointDetailMapper.selectPointListByUseridAndPointtype(userid,pointtype,startNum,pageSize);
+			List<UserPointDetail> list = userPointDetailMapper.selectPointListByUseridAndPtype(userid,ptype,startNum,pageSize);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.setData(list);
 		} catch (Exception e) {

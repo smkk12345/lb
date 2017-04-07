@@ -81,19 +81,4 @@ public class UserFeedbackApiController {
         return baseResp;
     }
 
-    @RequestMapping(value = "detail")
-    public BaseResp feedbackDetail(@PathVariable("userid") String userid){
-        BaseResp baseResp = new BaseResp();
-        if (StringUtils.isEmpty(userid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
-        try {
-            UserFeedback userFeedback = userFeedbackService.selectUserFeedback(userid);
-            baseResp.setData(userFeedback);
-        } catch (NumberFormatException e) {
-            logger.error("get userFeedback is error:{}",e);
-        }
-        return baseResp;
-    }
-
 }

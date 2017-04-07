@@ -1,8 +1,18 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserFlowerDetail;
 
 public interface UserFlowerDetailService {
+	
+	/**
+	 * @author yinxc
+	 * 获取用户被赠与鲜花总数
+	 * 2017年4月6日
+	 */
+	BaseResp<Integer> selectCountFlower(long userid);
 
 	/**
 	 * @author yinxc
@@ -26,7 +36,7 @@ public interface UserFlowerDetailService {
 	 * return_type
 	 * UserImpCoinDetailMapper
 	 */
-	BaseResp<Object> selectListByUserid(long userid, int pageNo, int pageSize);
+	BaseResp<List<UserFlowerDetail>> selectListByUserid(long userid, int pageNo, int pageSize);
 	
 	/**
 	 * @author yinxc

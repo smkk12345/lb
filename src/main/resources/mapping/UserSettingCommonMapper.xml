@@ -38,6 +38,17 @@
     delete from user_setting_common
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  
+  <insert id="insertList" parameterType="java.util.List">
+    insert into user_setting_common (userid, ukey, 
+      uvalue, displayname, updatetime, createtime)
+    values
+    <foreach collection="list" item="common" index="index" separator="," >
+      (#{common.userid},#{common.ukey},#{common.uvalue},#{common.displayname},
+      #{common.updatetime},#{common.createtime})
+    </foreach>
+  </insert>
+  
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserSettingCommon" >
     insert into user_setting_common (id, userid, ukey, 
       uvalue, displayname, updatetime, 

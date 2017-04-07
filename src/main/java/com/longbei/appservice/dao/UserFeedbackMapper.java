@@ -21,10 +21,6 @@ public interface UserFeedbackMapper {
 
     int selectFeedbackCount(@Param("userFeedback") UserFeedback userFeedback);
 
-//    int selectHasFeedbackCount(@Param("userFeedback") UserFeedback userFeedback);
-
     List<UserFeedback> selectFeedbackList(@Param("userFeedback") UserFeedback userFeedback, @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
-
-//    List<UserFeedback> selectHasFeedbackList(@Param("userFeedback") UserFeedback userFeedback, @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
 
 }

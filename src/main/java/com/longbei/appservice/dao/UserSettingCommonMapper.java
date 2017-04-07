@@ -12,6 +12,8 @@ public interface UserSettingCommonMapper {
     int insert(UserSettingCommon record);
 
     int insertSelective(UserSettingCommon record);
+    
+    int insertList(List<UserSettingCommon> commons);
 
     UserSettingCommon selectByPrimaryKey(Integer id);
 
