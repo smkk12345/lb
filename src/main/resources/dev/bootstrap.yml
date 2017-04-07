@@ -6,6 +6,7 @@ server:
 moneytoflower: 1
 moneytocoin: 10
 flowertocoin: 10
+yuantomoney: 10
 
 spring:
     application:
@@ -29,5 +30,5 @@ eureka:
         defaultZone: http://192.168.1.70:9999/eureka/,http://192.168.1.70:8888/eureka/
 
 service.user: http://localhost:8081/user_service
-service.outernet: http://localhost:8085/outernet_service
+service.outernet: http://192.168.0.65:8085/outernet_service
 service.product: http://localhost:8089/product_service
