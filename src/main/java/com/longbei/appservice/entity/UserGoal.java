@@ -37,6 +37,12 @@ public class UserGoal {
     
     private Integer goalCount = 0;//目标中已发进步条数
     
+    private String pickey; //目标主进步key
+    
+    private Date starttime; //目标主进步更新日期
+    
+    private String itype;//目标主进步  类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+    
     private Improve improve;
     
 
@@ -222,6 +228,30 @@ public class UserGoal {
 
 	public void setImprove(Improve improve) {
 		this.improve = improve;
+	}
+
+	public String getPickey() {
+		return pickey;
+	}
+
+	public void setPickey(String pickey) {
+		this.pickey = pickey;
+	}
+
+	public Date getStarttime() {
+		return starttime;
+	}
+
+	public void setStarttime(Date starttime) {
+		this.starttime = starttime;
+	}
+
+	public String getItype() {
+		return itype;
+	}
+
+	public void setItype(String itype) {
+		this.itype = itype;
 	}
 	
 }
