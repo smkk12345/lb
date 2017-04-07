@@ -28,6 +28,18 @@ public class UserGoal {
 
     private Integer icount;//进步更新条数
 
+    private Integer likes; //点赞数
+
+    private Integer flowers; //送花数
+    
+    
+    //------------------------------------扩展字段----------------
+    
+    private Integer goalCount = 0;//目标中已发进步条数
+    
+    private Improve improve;
+    
+
     public void setIcount(Integer icount) {
         this.icount = icount;
     }
@@ -179,4 +191,37 @@ public class UserGoal {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+	public Integer getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Integer likes) {
+		this.likes = likes;
+	}
+
+	public Integer getFlowers() {
+		return flowers;
+	}
+
+	public void setFlowers(Integer flowers) {
+		this.flowers = flowers;
+	}
+
+	public Integer getGoalCount() {
+		return goalCount;
+	}
+
+	public void setGoalCount(Integer goalCount) {
+		this.goalCount = goalCount;
+	}
+
+	public Improve getImprove() {
+		return improve;
+	}
+
+	public void setImprove(Improve improve) {
+		this.improve = improve;
+	}
+	
 }

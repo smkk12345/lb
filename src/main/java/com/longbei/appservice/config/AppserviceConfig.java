@@ -3,7 +3,6 @@ package com.longbei.appservice.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Created by longbei on 2016/9/9.
@@ -19,6 +18,8 @@ public class AppserviceConfig {
     public static String host_outernet_service;
     public static String host_product_service;
     
+    //人民币兑换龙币比例       
+    public static int yuantomoney;
     //龙币兑换花比例       
     public static int moneytoflower;
     //龙币兑换进步币比例
@@ -39,6 +40,11 @@ public class AppserviceConfig {
         this.host_user_service = host_user_service;
     }
     
+    
+    @Value("${yuantomoney}")
+	public void setYuantomoney(int yuantomoney) {
+    	this.yuantomoney = yuantomoney;
+	}
     
 	@Value("${moneytoflower}")
 	public void setMoneytoflower(int moneytoflower) {
