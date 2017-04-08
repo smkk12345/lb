@@ -149,6 +149,7 @@
         and rank_members.iswinning = 1
         and rank.isfinish = 5
       order by rank.endtime DESC
+      limit 0,6
   </select>
 
 
@@ -663,4 +664,16 @@
           ) foo
     )
   </update>
+
+    <!-- 获取榜单的中奖用户 -->
+    <select id="getWinningRankAwardUser" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from rank_members
+        where iswinning = 1
+            and checkstatus = 3
+            and rankid = #{rankid}
+        order by awardlevel
+        limit #{startNum},#{pageSize}
+    </select>
 </mapper>

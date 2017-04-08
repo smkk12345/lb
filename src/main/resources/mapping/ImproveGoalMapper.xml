@@ -32,6 +32,22 @@
     from improve_goal
     where impid = #{impid,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectCountGoal" resultType="java.lang.Integer" >
+    select count(*) 
+    from improve_goal
+    where goalid=#{goalid} 
+    and userid=#{userid}
+  </select>
+  
+  <select id="selectBeanByGoalId" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from improve_goal
+    where goalid=#{goalid} 
+    and ismainimp='1'
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve_goal
     where id = #{id,jdbcType=BIGINT}

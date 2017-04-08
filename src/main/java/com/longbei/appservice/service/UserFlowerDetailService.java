@@ -1,15 +1,25 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserFlowerDetail;
 
 public interface UserFlowerDetailService {
+	
+	/**
+	 * @author yinxc
+	 * 获取用户被赠与鲜花总数
+	 * 2017年4月6日
+	 */
+	BaseResp<Integer> selectCountFlower(long userid);
 
 	/**
 	 * @author yinxc
 	 * 花公用添加明细方法
 	 * 2017年3月21日
 	 * param userid 
-	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
+	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
 	 *
 	 * param number 鲜花数量 --- 消耗：(1:赠与;)value值为负---方法里面已做判断
 	 * param improveid 业务id  类型：     
@@ -26,7 +36,7 @@ public interface UserFlowerDetailService {
 	 * return_type
 	 * UserImpCoinDetailMapper
 	 */
-	BaseResp<Object> selectListByUserid(long userid, int pageNo, int pageSize);
+	BaseResp<List<UserFlowerDetail>> selectListByUserid(long userid, int pageNo, int pageSize);
 	
 	/**
 	 * @author yinxc

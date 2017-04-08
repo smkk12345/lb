@@ -198,12 +198,12 @@
       update sns_group_members
       <set>
         <if test="nickName != null">
-            nickName = #{nickName},
+            nickname = #{nickName},
         </if>
         <if test="status != null">
-            status = #{status}
+            status = #{status},
         </if>
-        ,updatetime = now()
+        updatetime = now()
       </set>
       where userid = #{userId}
         and groupid = #{groupId}

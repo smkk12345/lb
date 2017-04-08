@@ -119,4 +119,13 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> selectWinningRankAward();
+
+    /**
+     * 获取榜单的中奖用户
+     * @param rankid 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    List<RankMembers> getWinningRankAwardUser(@Param("rankid") Long rankid,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 }

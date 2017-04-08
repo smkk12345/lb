@@ -4,14 +4,16 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
+import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.GoalService;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -54,6 +56,12 @@ public class GoalController extends BaseController {
                 "ptype={},ispublic={},needwarn={},warntime={},week={}",userid,goaltag,ptype,ispublic,needwarn,warntime,week);
         long lUserid = Long.parseLong(userid);
         try{
+            if(StringUtils.isBlank(warntime)){
+                warntime = "";
+            }
+            if(StringUtils.isBlank(week)){
+                week = "";
+            }
             baseResp = goalService.insert(lUserid,goaltag,ptype,ispublic,needwarn,warntime,week);
         }catch (Exception e){
             logger.error("goalService.insert error and msg={}",e);
@@ -63,11 +71,12 @@ public class GoalController extends BaseController {
 
     /**
      * @url http://ip:port/app_service/goal/list
-     * 获取目标列表
+     * 获取用户所有的目标进步列表
      * @param userid startNum,endNum
      * @return
      */
-    @RequestMapping(value = "list")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "list")
     public BaseResp<Object> list(String userid,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
         logger.info("goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
@@ -81,37 +90,119 @@ public class GoalController extends BaseController {
         }
         return  baseResp;
     }
+    
+    /**
+     * @url http://ip:port/app_service/goal/goallist
+     * 获取单个目标进步列表
+     * @param userid 
+     * @param goalid 目标id
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "goallist")
+    public BaseResp<List<Improve>> list(String userid, String goalid, Integer startNum,Integer endNum){
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        logger.info("goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        if(StringUtils.hasBlankParams(userid, goalid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try{
+            baseResp = goalService.selectListByGoalid(Long.parseLong(userid), Long.parseLong(goalid), startNum, endNum);
+        }catch(Exception e){
+            logger.error("goalService.list error and msg={}",e);
+        }
+        return  baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/goal/userGoalList
+     * @Description: 获取目标列表
+     * @param @param userid 当前登录id
+     * @param @param startNum,endNum
+     * @param @param 正确返回 code 0，验证码不对，参数错误，未知错误返回相应状态码
+     * @return  
+     * @auther yinxc
+     * @currentdate:2017年4月7日
+     */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "userGoalList")
+    public BaseResp<List<UserGoal>> userGoalList(String userid,Integer startNum,Integer endNum){
+        BaseResp<List<UserGoal>> baseResp = new BaseResp<>();
+        logger.info("user goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        if(StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try{
+            baseResp = goalService.selectUserGoalList(Long.parseLong(userid),startNum,endNum);
+        }catch(Exception e){
+            logger.error("goalService.list error and msg={}",e);
+        }
+        return  baseResp;
+    }
+    
+    /**
+     * @Title: http://ip:port/app_service/goal/getGoalDetail
+     * @Description: 获取目标详情
+     * @param @param userid 当前登录id
+     * @param @param goalid 目标id
+     * @param @param 正确返回 code 0，验证码不对，参数错误，未知错误返回相应状态码
+     * @return  
+     * @auther yinxc
+     * @currentdate:2017年4月8日
+     */
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "getGoalDetail")
+    public BaseResp<UserGoal> getGoalDetail(String userid, String goalid){
+        BaseResp<UserGoal> baseResp = new BaseResp<>();
+        logger.info("getGoalDetail userid = {}, goalid = {}", userid, goalid);
+        if(StringUtils.hasBlankParams(userid, goalid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try{
+            baseResp = goalService.selectUserGoal(Long.parseLong(userid), Long.parseLong(goalid));
+        }catch(Exception e){
+            logger.error("getGoalDetail userid = {}, goalid = {}", userid, goalid, e);
+        }
+        return  baseResp;
+    }
 
     /**
      * @url http://ip:port/app_service/goal/updateTtitle
-     * @param goalId
+     * 修改目标名称
+     * @param goalid
      * @param goaltag
      * @return
      */
-    @RequestMapping(value="updateTtitle")
-    public BaseResp<Object> updateTitle(String goalId,String goaltag){
-        BaseResp<Object> baseResp = new BaseResp<>();
-        logger.info("updateTtitle goalId={},title={}",goalId,goaltag);
-        if(StringUtils.hasBlankParams(goalId,goaltag)){
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="updateTtitle")
+    public BaseResp<UserGoal> updateTitle(String goalid,String goaltag){
+        BaseResp<UserGoal> baseResp = new BaseResp<>();
+        logger.info("updateTtitle goalid = {}, title = {}", goalid, goaltag);
+        if(StringUtils.hasBlankParams(goalid,goaltag)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = goalService.updateTitle(Long.parseLong(goalId),goaltag);
+        baseResp = goalService.updateTitle(Long.parseLong(goalid),goaltag);
         return baseResp;
     }
 
     /**
-     *
-     * @param goalId
-     * @param userId
+     * 删除目标
+     * @param goalid 目标id
+     * @param userid
+     * @param gtype 0:不删除目标进步   1：删除目标进步
      * @return
      */
-    public BaseResp<Object> delGoal(String goalId,String userId){
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value="delGoal")
+	public BaseResp<Object> delGoal(String goalid,String userid, String gtype){
         BaseResp<Object> baseResp = new BaseResp<>();
-        logger.info("delGoal goalId={},userId={}",goalId,userId);
-        if(StringUtils.hasBlankParams(goalId,userId)){
+        logger.info("delGoal goalid = {}, userid = {}", goalid, userid);
+        if(StringUtils.hasBlankParams(goalid, userid, gtype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = goalService.delGoal(Long.parseLong(goalId),Long.parseLong(userId));
+        baseResp = goalService.delGoal(Long.parseLong(goalid),Long.parseLong(userid), gtype);
         return baseResp;
     }
 

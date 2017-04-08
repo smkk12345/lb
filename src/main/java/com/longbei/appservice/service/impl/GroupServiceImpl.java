@@ -175,7 +175,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     return baseResp.fail();
                 }
             }
-            int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,new Date());
+            Date updateDate = null;
+            if(StringUtils.isNotEmpty(notice)){
+                updateDate = new Date();
+            }
+            int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,updateDate);
             if(row > 0){
                 return baseResp.ok();
             }
@@ -207,7 +211,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.ok();
             }
         }catch(Exception e){
-            logger.error("update groupmember nickname error",userId,groupId,nickName);
+            logger.error("update groupmember nickname error userId:{} groupId:{} nickName;{}",userId,groupId,nickName);
             printException(e);
         }
 
@@ -783,6 +787,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             resultMap.put("status",status);
             baseResp.setExpandData(resultMap);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
             logger.error("select group detail error groupId:{} userId:{}",groupId,userid);

@@ -605,7 +605,7 @@
     ORDER BY createtime DESC
   </select>
 
-  <select id="selectGoalMainImproveList">
+  <select id="selectGoalMainImproveList" resultMap="goalMap" >
     SELECT
     <include refid="Base_Column_List"/>
     FROM improve_goal

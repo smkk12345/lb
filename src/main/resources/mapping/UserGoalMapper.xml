@@ -19,7 +19,8 @@
     <result column="flowers" property="flowers" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, goaltag, createtime, isdel, updatetime,ispublic,ptype,needwarn,warntime,week,likes,flowers
+    id, userid, goaltag, createtime, isdel, updatetime, ispublic, 
+    ptype, needwarn, warntime, week, icount, likes, flowers, goalid 
   </sql>
   <select id="selectByGoalId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -27,11 +28,23 @@
     from user_goal
     where goalid = #{goalid}
   </select>
+  
+  <select id="selectUserGoalList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_goal
+    where userid = #{userid} 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      LIMIT #{startNum},#{endNum}
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_goal
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserGoal" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserGoal" useGeneratedKeys="true" keyProperty="id">
     insert into user_goal
     ( <include refid="Base_Column_List"/>
       )
@@ -45,10 +58,15 @@
             #{ptype,jdbcType=CHAR},
             #{needwarn,jdbcType=VARCHAR},
             #{warntime,jdbcType=VARCHAR},
-            #{week,jdbcType=VARCHAR}
+            #{week,jdbcType=VARCHAR},
+            #{icount},
+            #{likes},
+            #{flowers},
+            #{goalid}
+            
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserGoal" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserGoal" useGeneratedKeys="true" keyProperty="id">
     insert into user_goal
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -69,6 +87,15 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+      <if test="flowers != null" >
+        flowers,
+      </if>
+      <if test="goalid != null" >
+        goalid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -88,6 +115,15 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="likes != null" >
+        #{likes},
+      </if>
+      <if test="flowers != null" >
+        #{flowers},
+      </if>
+      <if test="goalid != null" >
+        #{goalid},
       </if>
     </trim>
   </insert>
@@ -136,10 +172,10 @@
   </update>
   <update id="updateIcount">
     UPDATE user_goal
-    <if test="otype == '1'">
+    <if test="otype == 1">
       set icount = icount+1
     </if>
-    <if test="otype == '0'">
+    <if test="otype == 0">
       set icount = icount-1
     </if>
     where goalid=#{goalid}

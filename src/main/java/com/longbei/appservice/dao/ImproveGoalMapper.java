@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveGoal;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,6 +25,20 @@ public interface ImproveGoalMapper {
      * @return
      */
     List<ImproveGoal> selectByGoalId(String goalid);
+    
+    /**
+     * 根据目标id 获取目标主进步信息
+     * @param goalid 目标id
+     * @return
+     */
+    Improve selectBeanByGoalId(@Param("goalid") long goalid);
+    
+    /**
+     * 根据目标id 获取进步Count
+     * @param goalid 目标id
+     * @return
+     */
+    int selectCountGoal(@Param("goalid") long goalid, @Param("userid") long userid);
 
     /**
      * 假删

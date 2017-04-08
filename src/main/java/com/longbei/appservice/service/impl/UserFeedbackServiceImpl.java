@@ -1,7 +1,6 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.dao.UserInfoMapper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,25 +26,23 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 	private UserFeedbackMapper userFeedbackMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
-	@Autowired
-	private UserInfoMapper userInfoMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFeedbackServiceImpl.class);
 	
 	@Override
 	public BaseResp<Object> insertSelective(UserFeedback record) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
 			String username = initUserInfoByFriendid(record.getUserid());
 			record.setUsername(username);
 			boolean temp = insert(record);
 			if (temp) {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
 			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
-		return reseResp;
+		return baseResp;
 	}
 
 	private boolean insert(UserFeedback record) {
@@ -60,10 +57,8 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 			int totalCount = userFeedbackMapper.selectFeedbackCount(userFeedback);
 			List<UserFeedback> feedbackList = userFeedbackMapper.selectFeedbackList(userFeedback,pagesize*(pageno-1),pagesize);
 			for (UserFeedback feedback:feedbackList) {
-//				UserInfo userInfo = userInfoMapper.selectByUserid(noFeedback.getUserid());
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(feedback.getUserid()));
 				feedback.setAppUserMongoEntity(appUserMongoEntity);
-//				noFeedback.setUserInfo(userInfo);
 			}
 			page.setTotalCount(totalCount);
 			page.setList(feedbackList);
@@ -73,25 +68,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 		}
 		return page;
 	}
-
-//	@Override
-//	public Page<UserFeedback> selectHasFeedbackListWithPage(UserFeedback userFeedback, int pageno, int pagesize) {
-//		Page<UserFeedback> page = new Page<>(pageno,pagesize);
-//		try {
-//			int totalCount = userFeedbackMapper.selectHasFeedbackCount(userFeedback);
-//			List<UserFeedback> hasFeedbackList = userFeedbackMapper.selectHasFeedbackList(userFeedback,pagesize*(pageno-1),pagesize);
-//			for (UserFeedback hasFeedback:hasFeedbackList) {
-//				UserInfo userInfo = userInfoMapper.selectByUserid(hasFeedback.getUserid());
-//				hasFeedback.setUserInfo(userInfo);
-//			}
-//			page.setTotalCount(totalCount);
-//			page.setList(hasFeedbackList);
-//			return page;
-//		} catch (Exception e) {
-//			logger.error("select hasFeedback list with page is error:{}",e);
-//		}
-//		return page;
-//	}
 
 	@Override
 	public boolean updateFeedback(UserFeedback userFeedback) {

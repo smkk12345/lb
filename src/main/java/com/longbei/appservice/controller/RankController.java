@@ -7,9 +7,11 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
+import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import com.longbei.appservice.service.UserBusinessConcernService;
+import com.thoughtworks.xstream.io.binary.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class RankController {
     @Autowired
     private RankService rankService;
     @Autowired
-    private RankSortService rankSortService;
+    private RankAcceptAwardService rankAcceptAwardService;
     @Autowired
     private UserBusinessConcernService userBusinessConcernService;
     /**
@@ -292,6 +294,29 @@ public class RankController {
         return baseResp;
     }
 
+        /**
+         * 获取榜单的用户列表
+         * @url http://ip:port/app_service/rank/getWinningRankAwardUser
+         * @param rankid 用户id
+         * @param startNum
+         * @param endNum
+         * @return
+         */
+        @RequestMapping(value="getWinningRankAwardUser")
+        public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        startNum = (startNum == null || startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankService.getWinningRankAwardUser(rankid,userid,startNum,pageSize);
+        return baseResp;
+    }
+
     /**
      * 查看榜单获奖详情
      * @url http://ip:port/app_service/rank/rankAwardDetail
@@ -481,6 +506,27 @@ public class RankController {
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }
+        return baseResp;
+    }
+
+    /**
+     * 查询用户榜单获奖列表
+     * @url http://ip:port/app_service/rank/userRankAcceptAwardList
+     * @param userid 用户id
+     * @param startNum
+     */
+    @RequestMapping(value="userRankAcceptAwardList")
+    public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer endNum){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        startNum = (startNum == null|| startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
+        baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(userid,startNum,pageSize);
         return baseResp;
     }
 

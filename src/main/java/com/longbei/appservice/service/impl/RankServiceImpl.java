@@ -1751,6 +1751,52 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    /**
+     * 获取榜单的获奖用户
+     * @param rankid 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            List<RankMembers> rankMembersList = this.rankMembersMapper.getWinningRankAwardUser(rankid,startNum,pageSize);
+            if(rankMembersList == null || rankMembersList.size() == 0){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_07);
+            }
+
+            //查看该用户的领奖状态
+            int showBtn = 0;//未登录/不在榜中
+
+            for(RankMembers rankMembers:rankMembersList){
+                rankMembers.setAppUserMongoEntity(this.userMongoDao.getAppUser(rankMembers.getUserid()+""));
+
+                if(userid != null && userid.equals(rankMembers.getUserid())){
+                    if(!"1".equals(rankMembers.getIswinning())){
+                        showBtn = 2;//在榜中 未中奖
+                    }else if("0".equals(rankMembers.getAcceptaward())){
+                        showBtn = 3;//中奖 但未领取
+                    }else{
+                        showBtn = 4;//中奖 且已领奖
+                    }
+                }
+            }
+            baseResp.setData(rankMembersList);
+
+            Map<String,Object> expandMap = new HashMap<String,Object>();
+            expandMap.put("showBtn",showBtn);
+            baseResp.setExpandData(expandMap);
+
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("get winning rank award user error rankid:{} startNum:{} pageSize:{}",rankid,startNum,pageSize);
+            printException(e);
+        }
+        return baseResp;
+    }
+
     private BaseResp<Object> sendRankEndUserMsg(Rank rank){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
@@ -1866,6 +1912,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     resultMap.put("ranktitle",rank.getRanktitle());
                     resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                     resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
+                    resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
 
                     List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rank.getRankid());
 
@@ -1878,6 +1925,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             if(appUserMongoEntity != null){
                                 awardMap.put("nickname",appUserMongoEntity.getNickname());
                             }
+
                             awardMap.put("awardtitle",rankAwardRelease.getAwardnickname());
                             awardMap.put("awardlevel",rankAwardRelease.getAwardlevel());
                             awardMap.put("awardcount",rankAwardRelease.getAwardrate());

@@ -45,7 +45,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 * 花公用添加明细方法
 	 * 2017年3月21日
 	 * param userid 
-	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
+	 * param origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
 	 *
 	 * param number 鲜花数量 --- 消耗：(1:赠与;)value值为负---方法里面已做判断
 	 * param improveid 业务id  类型：     
@@ -122,10 +122,30 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		int temp = userFlowerDetailMapper.insertSelective(record);
 		return temp > 0 ? true : false;
 	}
+	
+	/**
+	 * @author yinxc
+	 * 获取用户被赠与鲜花总数
+	 * 2017年4月6日
+	 * origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
+	 */
+	@Override
+	public BaseResp<Integer> selectCountFlower(long userid) {
+		BaseResp<Integer> reseResp = new BaseResp<>();
+		try {
+			Integer sumnum = userFlowerDetailMapper.selectCountFlower(userid);
+			reseResp.setData(sumnum);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectCountFlower userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+	
 
 	@Override
-	public BaseResp<Object> selectListByUserid(long userid, int pageNo, int pageSize) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<UserFlowerDetail>> selectListByUserid(long userid, int pageNo, int pageSize) {
+		BaseResp<List<UserFlowerDetail>> reseResp = new BaseResp<>();
 		try {
 			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByUserid(userid, pageNo, pageSize);
 			reseResp.setData(list);
@@ -147,6 +167,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				expandData.put("totalmoney", userInfo.getTotalmoney());
 				expandData.put("totalcoin", userInfo.getTotalcoin());
 			}
+			expandData.put("yuantomoney", AppserviceConfig.yuantomoney);
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
 			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);
@@ -211,7 +232,6 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
 	}
-	
-	
+
 
 }

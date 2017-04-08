@@ -198,7 +198,7 @@ public interface IProductBasicService {
 	 * @param @param orderid 订单编号
 	 * 2017年3月20日
 	 */
-	 @RequestLine("GET /new_wxpay/wxPayMainPage?orderid={orderid}")
+	 @RequestLine("POST /new_wxpay/wxPayMainPage?orderid={orderid}")
 	 BaseResp<Object> wxPayMainPage(@Param("orderid") String orderid);
 	 
 	 /**

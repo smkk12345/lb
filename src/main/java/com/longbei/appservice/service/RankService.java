@@ -435,4 +435,13 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> publishRank(Date currentDateTime);
+
+    /**
+     * 获取榜单获奖的用户
+     * @param rankid 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid, Integer startNum, Integer pageSize);
 }

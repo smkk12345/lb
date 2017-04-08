@@ -62,4 +62,20 @@ public interface RankAcceptAwardService {
      * @return
      */
     int updateRankAwardStatus(Date currentDate);
+
+    /**
+     * 查看用户的榜单获奖列表
+     * @param userid
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize);
+
+    /**
+     * 获取用户的榜单获奖总数
+     * @param userid
+     * @return
+     */
+    int userRankAcceptAwardCount(Long userid);
 }

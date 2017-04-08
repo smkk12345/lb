@@ -40,4 +40,20 @@ public interface RankAcceptAwardMapper {
      * @return
      */
     int updateRankAwardStatus(Map<String, Object> map);
+
+    /**
+     * 查询用户的榜单获奖列表
+     * @param userid
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    List<RankAcceptAward> userRankAcceptAwardList(@Param("userid")Long userid,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 获取用户的榜单获奖数量
+     * @param userid
+     * @return
+     */
+    int userRankAcceptAwardCount(Long userid);
 }
