@@ -228,8 +228,9 @@ public class AddMessageReceiveService implements MessageListener{
             String action = message.getStringProperty("action");
             String domainName = message.getStringProperty("domainName");
             String msg = message.getStringProperty("ids");
+            logger.info("onMessage sucess and msg={}",msg);
 
-            System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
+//            System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
             if (StringUtils.isBlank(msg)
                     || msg.indexOf(",") == -1
                     || msg.split(",").length < 5
