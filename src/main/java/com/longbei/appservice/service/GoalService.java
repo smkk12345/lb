@@ -56,6 +56,14 @@ public interface GoalService {
      * @return
      */
     BaseResp<List<UserGoal>> selectUserGoalList(long userid, int startNum, int endNum);
+    
+    /**
+     * 获取目标详情
+     * @param userid
+     * @param goalid 目标id
+     * @return
+     */
+    BaseResp<UserGoal> selectUserGoal(long userid, long goalid);
 
     /**
      * 更新目标title
@@ -63,14 +71,15 @@ public interface GoalService {
      * @param title
      * @return
      */
-    BaseResp<Object> updateTitle(long goalId, String title);
+    BaseResp<UserGoal> updateTitle(long goalId, String title);
 
     /**
      * 删除目标 同时更新目标中所有微进步的状态
      * @param goalId
      * @param userid
+     * @param gtype 0:不删除目标进步   1：删除目标进步
      * @return
      */
-    BaseResp<Object> delGoal(long goalId,long userid);
+    BaseResp<Object> delGoal(long goalId, long userid, String gtype);
 
 }

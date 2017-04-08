@@ -51,6 +51,7 @@ public class GoalServiceImpl implements GoalService {
         userGoal.setWeek(week);
         userGoal.setLikes(0);
         userGoal.setFlowers(0);
+        userGoal.setIcount(0);
         userGoal.setGoalid(idGenerateService.getUniqueIdAsLong());
         try{
             int n = userGoalMapper.insert(userGoal);
@@ -137,6 +138,37 @@ public class GoalServiceImpl implements GoalService {
     }
     
     /**
+     * 获取目标详情
+     * @param userid
+     * @param goalid 目标id
+     * @return
+     */
+	@Override
+	public BaseResp<UserGoal> selectUserGoal(long userid, long goalid) {
+		BaseResp<UserGoal> baseResp = new BaseResp<>();
+        try{
+        	UserGoal userGoal = userGoalMapper.selectByGoalId(goalid);
+        	if(null != userGoal){
+        		int goalCount = 0;
+    			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
+    			userGoal.setGoalCount(goalCount);
+    			if(goalCount != 0){
+    				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
+    				//拼接pickey
+    				impItype(improve, userGoal);
+    			}
+        		baseResp.setData(userGoal);
+        	}else{
+        		baseResp.setData(new UserGoal());
+        	}
+        	baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch (Exception e){
+            logger.error("selectUserGoal userid = {}, goalid = {}",userid, goalid,e);
+        }
+        return baseResp;
+	}
+    
+    /**
 	 * @author yinxc
 	 * itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
 	 * 2017年4月7日
@@ -166,11 +198,13 @@ public class GoalServiceImpl implements GoalService {
      */
     @SuppressWarnings("unchecked")
 	@Override
-    public BaseResp<Object> updateTitle(long goalId, String title) {
-        BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<UserGoal> updateTitle(long goalId, String title) {
+        BaseResp<UserGoal> baseResp = new BaseResp<>();
         try{
             int res = userGoalMapper.updateTitle(goalId,title);
             if(res == 1){
+            	UserGoal userGoal = userGoalMapper.selectByGoalId(goalId);
+            	baseResp.setData(userGoal);
                 return baseResp.initCodeAndDesp();
             }
         }catch (Exception e){
@@ -184,16 +218,19 @@ public class GoalServiceImpl implements GoalService {
      *        修改目标进步中的状态
      * @param goalId
      * @param userid
+     * @param gtype 0:不删除目标进步   1：删除目标进步
      * @return
      */
     @SuppressWarnings("unchecked")
 	@Override
-    public BaseResp<Object> delGoal(long goalId, long userid) {
+    public BaseResp<Object> delGoal(long goalId, long userid, String gtype) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             int res = userGoalMapper.delGoal(goalId, userid);
             if(res == 1){
-                return improveService.delGoal(goalId,userid);
+            	if("1".equals(gtype)){
+            		return improveService.delGoal(goalId,userid);
+            	}
             }
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
@@ -201,8 +238,6 @@ public class GoalServiceImpl implements GoalService {
         }
         return baseResp;
     }
-
-
 
 
 }
