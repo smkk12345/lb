@@ -13,6 +13,7 @@ import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
 import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
-	
+//	@Autowired
+//	private IAlidayuService iAlidayuService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -360,6 +362,7 @@ public class UserServiceImpl implements UserService {
 				operateName = "安全验证";
 			}
 			BaseResp<Object> resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
+//			BaseResp resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			if (mobile.contains("136836")){
 				HttpClient.alidayuService.sendMsg("13683691417", randomCode, operateName);
 			}
