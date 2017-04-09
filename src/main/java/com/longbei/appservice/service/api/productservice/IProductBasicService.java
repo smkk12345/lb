@@ -165,6 +165,19 @@ public interface IProductBasicService {
 	 BaseResp<Object> buyOrder(@Param("userid") Long userid, @Param("orderid") String orderid);
 	 
 	 /**
+	 * @author yinxc
+	 * 购买龙币---生成订单
+	 * @param userid 用户id
+	 * @param number 购买的龙币数量
+	 * @auther yinxc
+     * @desc  
+     * @currentdate:2017年4月7日
+	 */
+	 @RequestLine("POST /order/buyMoney?userid={userid}&number={number}&username={username}")
+	 BaseResp<ProductOrders> buyMoney(@Param("userid") long userid, @Param("number") Integer number, 
+			 @Param("username") String username);
+	 
+	 /**
 	 * 再次兑换
 	 * @author yinxc
 	 * @param @param userid 

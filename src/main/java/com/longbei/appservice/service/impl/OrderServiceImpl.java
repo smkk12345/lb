@@ -47,6 +47,31 @@ public class OrderServiceImpl implements OrderService {
 
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
+	
+	/**
+	 * @author yinxc
+	 * 购买龙币---生成订单
+	 * @param userid 用户id
+	 * @param number 购买的龙币数量
+	 * @auther yinxc
+     * @desc  
+     * @currentdate:2017年4月7日
+	 */
+	@Override
+	public BaseResp<ProductOrders> buyMoney(long userid, Integer number) {
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
+		try{
+			//获取用户手机号
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(null != userInfo){
+				baseResp = HttpClient.productBasicService.buyMoney(userid, number, userInfo.getUsername());
+			}
+		}catch (Exception e){
+			logger.error("buyMoney userid = {}, number = {}", userid, number, e);
+		}
+		return baseResp;
+	}
+
 
     /**
 	 * @author yinxc
@@ -100,10 +125,10 @@ public class OrderServiceImpl implements OrderService {
 	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
 	 */
-	private void insertMoney(Integer moneyprice, Long userid, String origin){
-		//数量
-		userMoneyDetailService.insertPublic(userid, origin, moneyprice, 0);
-	}
+//	private void insertMoney(Integer moneyprice, Long userid, String origin){
+//		//数量
+//		userMoneyDetailService.insertPublic(userid, origin, moneyprice, 0);
+//	}
 
 	@Override
 	public BaseResp<Object> create(Long userid, String productidss, String numberss, String addressid, 
@@ -506,5 +531,4 @@ public class OrderServiceImpl implements OrderService {
         productOrders.setAppUserMongoEntity(appUserMongoEntity);
     }
 
-    
 }

@@ -11,6 +11,17 @@ public interface OrderService {
 	
 	/**
 	 * @author yinxc
+	 * 购买龙币---生成订单
+	 * @param userid 用户id
+	 * @param number 购买的龙币数量
+	 * @auther yinxc
+     * @desc  
+     * @currentdate:2017年4月7日
+	 */
+	BaseResp<ProductOrders> buyMoney(long userid, Integer number);
+	
+	/**
+	 * @author yinxc
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日
 	 * @param orderid 订单业务id

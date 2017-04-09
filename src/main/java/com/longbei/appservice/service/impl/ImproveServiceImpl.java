@@ -794,6 +794,19 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improves;
     }
+    
+    /**
+     *  获取目标中进步Count
+     * @param userid
+     * @param goalid
+     * @return
+     */
+	@Override
+	public int selectCountGoalImprove(String userid, String goalid) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+    
     /**
      *  @author luye
      *  @desp 
@@ -2141,6 +2154,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
                     null, userid, null, startno, pagesize);
+            initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
         } catch (Exception e) {
@@ -2190,7 +2204,6 @@ public class ImproveServiceImpl implements ImproveService{
 
     @Override
     public BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(String brief, String usernickname,
-
                                                                      Date starttime, Integer pageno,Integer pagesize) {
         BaseResp<Page<TimeLineDetail>> baseResp = new BaseResp<>();
         Page<TimeLineDetail> page = new Page<>();
