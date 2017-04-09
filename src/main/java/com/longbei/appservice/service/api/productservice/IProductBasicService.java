@@ -119,7 +119,7 @@ public interface IProductBasicService {
      * @param moneyprice 成交价格---龙币
      * @param paytype 支付方式 0：龙币支付 1：微信支付 2：支付宝支付
      * @param prices 商品价格，以逗号隔开
-     * @param otype 订单类型。0 龙币 1 进步币 2 混排
+     * @param otype 订单类型。0 龙币 1 进步币 2 混排 3 其他
      * @param remark 备注
      * @param discount 用户等级所享受的折扣
 	 */
