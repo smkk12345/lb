@@ -25,6 +25,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.HttpClient;
@@ -73,6 +74,13 @@ public class UserServiceImpl implements UserService {
 	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	@Autowired
 	private UserSettingMenuMapper userSettingMenuMapper;
+	@Autowired
+	private UserFlowerDetailMapper userFlowerDetailMapper;
+	@Autowired
+	private UserSettingCommonMapper userSettingCommonMapper;
+
+	@Autowired
+	private RankAcceptAwardService rankAcceptAwardService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -99,20 +107,29 @@ public class UserServiceImpl implements UserService {
 			//获取用户星级
 			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
 			expandData.put("userStar", userLevel.getStar());
+			//龙级
+			expandData.put("grade", userLevel.getGrade());
 			//查询粉丝总数
 			int fansCount = snsFansMapper.selectCountFans(userid);
+			expandData.put("fansCount", fansCount);
+			
+			//获取用户被赠与的进步花
+			int flowernum = 0;
+			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
+			if(null != list && list.size()>0){
+				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
+			}
+			expandData.put("flowernum", flowernum);
+			
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg = userMsgService.selectShowMyByMtype(userid);
+			expandData.put("showMsg", showMsg);
 			//查询奖品数量----
-			
-			
-			
-			
+			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);
+			expandData.put("awardnum", awardnum);
 			
 			reseResp.setData(userInfo);
 //			expandData.put("detailList", detailList);
-			expandData.put("fansCount", fansCount);
-			expandData.put("showMsg", showMsg);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -180,9 +197,16 @@ public class UserServiceImpl implements UserService {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
 			return reseResp;
 		}
-		boolean ri = registerInfo(userInfo);
+		boolean ri = false;
+		try{
+			ri = registerInfo(userInfo);
+		}catch (Exception e){
+			logger.error("registerInfo",e);
+		}
 		if (ri) {
-			userRelationService.insertFriend(userid,userInfo1.getUserid());
+			if(null != userInfo1){
+				userRelationService.insertFriend(userid,userInfo1.getUserid());
+			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -219,7 +243,29 @@ public class UserServiceImpl implements UserService {
 		//保存其他信息,如个人信息等  十全十美数据
 		saveUserPointInfo(userInfo);
 		initUserCommonMenuInfo(userInfo.getUserid());
+		//初始化用户设置
+		initUserUserSettingCommon(userInfo.getUserid());
 		return true;
+	}
+	
+	/**
+	 * 初始化用户设置
+	 */
+	private void initUserUserSettingCommon(long userid){
+		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
+		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", new Date(), new Date());
+		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "0", "点赞", new Date(), new Date());
+		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", new Date(), new Date());
+		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
+		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
+		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "0", "允许通过此手机号搜到我", new Date(), new Date());
+		list.add(common);
+		list.add(common2);
+		list.add(common3);
+		list.add(common4);
+		list.add(common5);
+		list.add(common6);
+		userSettingCommonMapper.insertList(list);
 	}
 
 	/**
@@ -550,14 +596,18 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> userlevel(long userid,int grade) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
 			Map<String,Object> map = new HashedMap();
 			map.put("userLevel",userLevel);
 			List<String> ist = getPointInfoPerDay(userid);
+			List<String> levelDetail = getPointInfoLevel(userid, userLevel);
 			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
-			map.put("pointDetail",ist);
+			map.put("pointDetail", ist);
+			map.put("levelDetail", levelDetail);
 			map.put("todayPoint",point);
+			map.put("userPoint", userInfo.getCurpoint());
 //			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
@@ -567,6 +617,25 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	/**
+	* @Title: getPointInfoLevel 
+	* @Description: 拼接用户特权
+	* @param @param userid
+	* @param @return    设定文件 
+	* @return List<String>    返回类型
+	 */
+	private List<String> getPointInfoLevel(long userid, UserLevel userLevel){
+		List<String> list = new ArrayList<>();
+		if(null != userLevel){
+			list.add("同时加入公开龙榜数升为" + userLevel.getJoinranknum() + "个");
+			list.add("兑换商城中商品打" + userLevel.getDiscount()*10 + "折兑换(特殊商品除外)");
+			list.add("您可以发布" + userLevel.getPubrankjoinnum() + "人的公开龙榜");
+			list.add("您可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
+			list.add("您可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");
+			list.add("您可以同时发布" + userLevel.getPriranknum() + "个定制非公开龙榜");
+		}
+		return list;
+	}
 
 	private List<String> getPointInfoPerDay(long userid){
 		String key = Constant.RP_USER_PERDAY+"sum"+userid;

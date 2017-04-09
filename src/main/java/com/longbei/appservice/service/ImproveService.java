@@ -166,6 +166,14 @@ public interface ImproveService {
     List<Improve> selectGoalImproveList(String userid,String goalid,String orderby,int pageNo,int pageSize);
     
     /**
+     *  获取目标中进步Count
+     * @param userid
+     * @param goalid
+     * @return
+     */
+    int selectCountGoalImprove(String userid,String goalid);
+    
+    /**
      * 删除进步入口
      * @param userid  用户id
      * @param improveid  进步id

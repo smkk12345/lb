@@ -1,15 +1,9 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
-public class UserIosBuyflower {
+public class UserIosBuymoney {
     private Integer id;
 
-    private Integer flower;//购买鲜花数量
-
     private Integer money;//买花含的进步币数量
-
-    private Integer appflower;//购买赠送的鲜花数量
 
     private Integer appmoney;//购买赠送的进步币数量
 
@@ -18,8 +12,6 @@ public class UserIosBuyflower {
     private String enabled;//是否可以购买 1是可以购买
 
     private Integer price;//购买金额
-
-    private Date buydate;//购买日期
 
     /**
      * 
@@ -38,22 +30,6 @@ public class UserIosBuyflower {
     }
 
     /**
-     * 购买鲜花数量
-     * @return flower 购买鲜花数量
-     */
-    public Integer getFlower() {
-        return flower;
-    }
-
-    /**
-     * 购买鲜花数量
-     * @param flower 购买鲜花数量
-     */
-    public void setFlower(Integer flower) {
-        this.flower = flower;
-    }
-
-    /**
      * 买花含的进步币数量
      * @return money 买花含的进步币数量
      */
@@ -67,22 +43,6 @@ public class UserIosBuyflower {
      */
     public void setMoney(Integer money) {
         this.money = money;
-    }
-
-    /**
-     * 购买赠送的鲜花数量
-     * @return appflower 购买赠送的鲜花数量
-     */
-    public Integer getAppflower() {
-        return appflower;
-    }
-
-    /**
-     * 购买赠送的鲜花数量
-     * @param appflower 购买赠送的鲜花数量
-     */
-    public void setAppflower(Integer appflower) {
-        this.appflower = appflower;
     }
 
     /**
@@ -147,21 +107,5 @@ public class UserIosBuyflower {
      */
     public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    /**
-     * 购买日期
-     * @return buydate 购买日期
-     */
-    public Date getBuydate() {
-        return buydate;
-    }
-
-    /**
-     * 购买日期
-     * @param buydate 购买日期
-     */
-    public void setBuydate(Date buydate) {
-        this.buydate = buydate;
     }
 }

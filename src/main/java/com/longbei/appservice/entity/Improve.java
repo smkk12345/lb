@@ -636,7 +636,7 @@ public class Improve {
     /**
      * 业务临时实体，微进步详情中用
      */
-	class BusinessEntity{
+    public class BusinessEntity{
         private String ptype; //十全十美类型
         private String title; //榜单名称
         private Integer involved; //参与人数

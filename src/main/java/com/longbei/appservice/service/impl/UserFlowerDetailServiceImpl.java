@@ -167,6 +167,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				expandData.put("totalmoney", userInfo.getTotalmoney());
 				expandData.put("totalcoin", userInfo.getTotalcoin());
 			}
+			expandData.put("yuantomoney", AppserviceConfig.yuantomoney);
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
 			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);

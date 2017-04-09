@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
@@ -26,6 +27,35 @@ public class OrderController {
 
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
+	
+	
+	
+	
+	/**
+	 * @Title: http://ip:port/app_service/order/buyMoney
+	 * @Description: 购买龙币---生成订单
+	 * @param userid 用户id
+	 * @param number 购买的龙币数量
+	 * @auther yinxc
+     * @desc  
+     * @currentdate:2017年4月7日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/buyMoney", method = RequestMethod.POST)
+	public BaseResp<ProductOrders> buyMoney(String userid, String number) {
+		logger.info(userid + "购买 " + number + " 朵龙币，订单生成中....");
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, number)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
+  		try {
+  			baseResp = orderService.buyMoney(Long.parseLong(userid), Integer.parseInt(number));
+		} catch (Exception e) {
+			logger.error("buyMoney userid = {}, number = {}", 
+					userid, number, e);
+		}
+  		return baseResp;
+	}
 	
 	
 	/**

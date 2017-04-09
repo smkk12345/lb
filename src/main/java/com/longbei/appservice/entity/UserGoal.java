@@ -2,6 +2,10 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserGoal {
     private Integer id;
 
@@ -50,10 +54,12 @@ public class UserGoal {
         this.icount = icount;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Integer getIcount() {
         return icount;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public String getPtype() {
         return ptype;
     }
@@ -86,6 +92,7 @@ public class UserGoal {
         this.week = week;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public String getIspublic() {
         return ispublic;
     }
@@ -110,6 +117,7 @@ public class UserGoal {
         this.id = id;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Long getGoalid() {
         return goalid;
     }
@@ -122,6 +130,7 @@ public class UserGoal {
      * 
      * @return userid 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -138,6 +147,7 @@ public class UserGoal {
      * 目标关键字
      * @return goaltag 目标关键字
      */
+    @JsonInclude(Include.ALWAYS)
     public String getGoaltag() {
         return goaltag;
     }
@@ -154,6 +164,7 @@ public class UserGoal {
      * 
      * @return createtime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -170,6 +181,7 @@ public class UserGoal {
      * 是否删除  0 未删除 1 删除
      * @return isdel 是否删除  0 未删除 1 删除
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
         return isdel;
     }
@@ -186,6 +198,7 @@ public class UserGoal {
      * 
      * @return updatetime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -198,6 +211,7 @@ public class UserGoal {
         this.updatetime = updatetime;
     }
 
+    @JsonInclude(Include.ALWAYS)
 	public Integer getLikes() {
 		return likes;
 	}
@@ -206,6 +220,7 @@ public class UserGoal {
 		this.likes = likes;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public Integer getFlowers() {
 		return flowers;
 	}
@@ -214,6 +229,7 @@ public class UserGoal {
 		this.flowers = flowers;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public Integer getGoalCount() {
 		return goalCount;
 	}
@@ -238,6 +254,7 @@ public class UserGoal {
 		this.pickey = pickey;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	public Date getStarttime() {
 		return starttime;
 	}
@@ -246,6 +263,7 @@ public class UserGoal {
 		this.starttime = starttime;
 	}
 
+	@JsonInclude(Include.ALWAYS)
 	public String getItype() {
 		return itype;
 	}

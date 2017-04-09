@@ -22,6 +22,11 @@ public class UserLevel {
     private Integer joinranknum;//能参与榜单的数量
     private Integer likes;//每天点赞数
     private Integer updatetime;//更新时间
+    
+    
+    //----------------------扩展字段--------------
+    
+    private Integer userpoint; //用户当前积分
 
     public void setLikes(Integer likes) {
         this.likes = likes;
@@ -191,4 +196,12 @@ public class UserLevel {
     public void setDiscount(Double discount) {
         this.discount = discount;
     }
+
+	public Integer getUserpoint() {
+		return userpoint;
+	}
+
+	public void setUserpoint(Integer userpoint) {
+		this.userpoint = userpoint;
+	}
 }
