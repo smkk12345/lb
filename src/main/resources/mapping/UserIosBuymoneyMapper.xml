@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.longbei.appservice.dao.UserIosBuyflowerMapper" >
-  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserIosBuyflower" >
+<mapper namespace="com.longbei.appservice.dao.UserIosBuymoneyMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserIosBuymoney" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="flower" property="flower" jdbcType="INTEGER" />
     <result column="money" property="money" jdbcType="INTEGER" />
-    <result column="appflower" property="appflower" jdbcType="INTEGER" />
     <result column="appmoney" property="appmoney" jdbcType="INTEGER" />
     <result column="productid" property="productid" jdbcType="VARCHAR" />
     <result column="enabled" property="enabled" jdbcType="CHAR" />
     <result column="price" property="price" jdbcType="INTEGER" />
-    <result column="buydate" property="buydate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, flower, money, appflower, appmoney, productid, enabled, price, buydate
+    id, money, appmoney, productid, enabled, price
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from user_ios_buyflower
+    from user_ios_buymoney
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectMoneyAllList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_ios_buymoney
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from user_ios_buyflower
+    delete from user_ios_buymoney
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.UserIosBuyflower" >
-    insert into user_ios_buyflower (id, flower, money, 
-      appflower, appmoney, productid, 
-      enabled, price, buydate
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserIosBuymoney" >
+    insert into user_ios_buymoney (id, money, appmoney, 
+      productid, enabled, price
       )
-    values (#{id,jdbcType=INTEGER}, #{flower,jdbcType=INTEGER}, #{money,jdbcType=INTEGER}, 
-      #{appflower,jdbcType=INTEGER}, #{appmoney,jdbcType=INTEGER}, #{productid,jdbcType=VARCHAR}, 
-      #{enabled,jdbcType=CHAR}, #{price,jdbcType=INTEGER}, #{buydate,jdbcType=TIMESTAMP}
+    values (#{id,jdbcType=INTEGER}, #{money,jdbcType=INTEGER}, #{appmoney,jdbcType=INTEGER}, 
+      #{productid,jdbcType=VARCHAR}, #{enabled,jdbcType=CHAR}, #{price,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserIosBuyflower" >
-    insert into user_ios_buyflower
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserIosBuymoney" >
+    insert into user_ios_buymoney
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="flower != null" >
-        flower,
-      </if>
       <if test="money != null" >
         money,
-      </if>
-      <if test="appflower != null" >
-        appflower,
       </if>
       <if test="appmoney != null" >
         appmoney,
@@ -62,22 +58,13 @@
       <if test="price != null" >
         price,
       </if>
-      <if test="buydate != null" >
-        buydate,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="flower != null" >
-        #{flower,jdbcType=INTEGER},
-      </if>
       <if test="money != null" >
         #{money,jdbcType=INTEGER},
-      </if>
-      <if test="appflower != null" >
-        #{appflower,jdbcType=INTEGER},
       </if>
       <if test="appmoney != null" >
         #{appmoney,jdbcType=INTEGER},
@@ -91,22 +78,13 @@
       <if test="price != null" >
         #{price,jdbcType=INTEGER},
       </if>
-      <if test="buydate != null" >
-        #{buydate,jdbcType=TIMESTAMP},
-      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserIosBuyflower" >
-    update user_ios_buyflower
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserIosBuymoney" >
+    update user_ios_buymoney
     <set >
-      <if test="flower != null" >
-        flower = #{flower,jdbcType=INTEGER},
-      </if>
       <if test="money != null" >
         money = #{money,jdbcType=INTEGER},
-      </if>
-      <if test="appflower != null" >
-        appflower = #{appflower,jdbcType=INTEGER},
       </if>
       <if test="appmoney != null" >
         appmoney = #{appmoney,jdbcType=INTEGER},
@@ -120,22 +98,16 @@
       <if test="price != null" >
         price = #{price,jdbcType=INTEGER},
       </if>
-      <if test="buydate != null" >
-        buydate = #{buydate,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserIosBuyflower" >
-    update user_ios_buyflower
-    set flower = #{flower,jdbcType=INTEGER},
-      money = #{money,jdbcType=INTEGER},
-      appflower = #{appflower,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserIosBuymoney" >
+    update user_ios_buymoney
+    set money = #{money,jdbcType=INTEGER},
       appmoney = #{appmoney,jdbcType=INTEGER},
       productid = #{productid,jdbcType=VARCHAR},
       enabled = #{enabled,jdbcType=CHAR},
-      price = #{price,jdbcType=INTEGER},
-      buydate = #{buydate,jdbcType=TIMESTAMP}
+      price = #{price,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
