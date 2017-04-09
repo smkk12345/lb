@@ -591,14 +591,18 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> userlevel(long userid,int grade) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
 			Map<String,Object> map = new HashedMap();
 			map.put("userLevel",userLevel);
 			List<String> ist = getPointInfoPerDay(userid);
+			List<String> levelDetail = getPointInfoLevel(userid, userLevel);
 			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
-			map.put("pointDetail",ist);
+			map.put("pointDetail", ist);
+			map.put("levelDetail", levelDetail);
 			map.put("todayPoint",point);
+			map.put("userPoint", userInfo.getCurpoint());
 //			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
@@ -608,6 +612,25 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	/**
+	* @Title: getPointInfoLevel 
+	* @Description: 拼接用户特权
+	* @param @param userid
+	* @param @return    设定文件 
+	* @return List<String>    返回类型
+	 */
+	private List<String> getPointInfoLevel(long userid, UserLevel userLevel){
+		List<String> list = new ArrayList<>();
+		if(null != userLevel){
+			list.add("同时加入公开龙榜数升为" + userLevel.getJoinranknum() + "个");
+			list.add("兑换商城中商品打" + userLevel.getDiscount()*10 + "折兑换(特殊商品除外)");
+			list.add("您可以发布" + userLevel.getPubrankjoinnum() + "人的公开龙榜");
+			list.add("您可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
+			list.add("您可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");
+			list.add("您可以同时发布" + userLevel.getPriranknum() + "个定制非公开龙榜");
+		}
+		return list;
+	}
 
 	private List<String> getPointInfoPerDay(long userid){
 		String key = Constant.RP_USER_PERDAY+"sum"+userid;
