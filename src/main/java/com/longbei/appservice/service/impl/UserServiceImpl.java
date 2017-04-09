@@ -197,7 +197,12 @@ public class UserServiceImpl implements UserService {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
 			return reseResp;
 		}
-		boolean ri = registerInfo(userInfo);
+		boolean ri = false;
+		try{
+			ri = registerInfo(userInfo);
+		}catch (Exception e){
+			logger.error("registerInfo",e);
+		}
 		if (ri) {
 			if(null != userInfo1){
 				userRelationService.insertFriend(userid,userInfo1.getUserid());
