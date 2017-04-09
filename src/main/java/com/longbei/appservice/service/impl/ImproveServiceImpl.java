@@ -1059,7 +1059,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improve.setBusinessid(timeLine.getBusinessid());
             improve.setPtype(timeLine.getPtype());
-            AppUserMongoEntity appUserMongoEntity = timeLineDetail.getUser();
+
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(timeLine.getUserid());
             initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
             improve.setAppUserMongoEntity(appUserMongoEntity);
 
