@@ -28,6 +28,6 @@ public interface UserCollectMapper {
 
     int removeCollect(@Param("userid") Long userid,@Param("impid")Long impid, @Param("ctype") String ctype);
 
-    List<UserCollect> selectCollect(@Param("userid")Long uerid,@Param("startNum")int startNum,@Param("endNum")int endNum);
+    List<UserCollect> selectCollect(@Param("userid")Long uerid,@Param("ctype")String ctype,@Param("startNum")int startNum,@Param("pageSize")int pageSize);
 
 }

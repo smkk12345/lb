@@ -1367,14 +1367,14 @@ public class ImproveServiceImpl implements ImproveService{
      * 获取收藏进步列表  不包含榜单 圈子 教室等信息
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<Object> selectCollect(String userid, int startNum, int endNum) {
+    public BaseResp<Object> selectCollect(String userid, int startNum, int pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<UserCollect> list  = userCollectMapper.selectCollect(Long.parseLong(userid),startNum,endNum);
+            List<UserCollect> list  = userCollectMapper.selectCollect(Long.parseLong(userid),"0",startNum,pageSize);
             if(null == list){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }

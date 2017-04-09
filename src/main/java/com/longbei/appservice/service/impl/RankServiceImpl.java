@@ -1928,9 +1928,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                             awardMap.put("awardtitle",rankAwardRelease.getAwardnickname());
                             awardMap.put("awardlevel",rankAwardRelease.getAwardlevel());
-                            awardMap.put("awardcount",rankAwardRelease.getAwardrate());
+                            awardMap.put("awardcount",rankAwardRelease.getAwardcount());
+                            awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
+                            awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
                             awardList.add(awardMap);
-                            rankAwardCount += rankAwardRelease.getAwardrate();
+                            rankAwardCount += rankAwardRelease.getAwardcount();
                         }
                         resultMap.put("rankawardcount",rankAwardCount);
                         resultMap.put("rankawardList",awardList);
@@ -2043,7 +2045,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
         for (RankAwardRelease rankAward : rankAwards){
             Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award);
+            rankAward.setAward(award != null?award:null);
         }
         return rankAwards;
     }
@@ -2091,6 +2093,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(queryAward != null && queryAward){
                 rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
             }
+            //获取可以挤掉的用户数量
             int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
             if(removeCount > 0){
                 rank.setRankinvolved(rank.getRankinvolved()-removeCount);
