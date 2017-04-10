@@ -6,6 +6,7 @@ import java.util.*;
 import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -34,6 +35,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserIosBuymoneyServiceImpl.class);
 	
@@ -75,7 +78,7 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		map.put("addmoney", number+"");
 		map.put("price",userIosBuymoney.getPrice()+"");
 		try {
-			UserInfo userInfo = null;
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			BaseResp<ProductOrders> baseResp1 = HttpClient.productBasicService.buyMoney(userid, number,userInfo.getUsername(),
 					map.get("paytype"), map.get("transaction_id"));
 			if(ResultUtil.isSuccess(baseResp1)){
