@@ -59,7 +59,7 @@ public class UserIosBuymoneyController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = userIosBuymoneyService.buyIOSMoney(userid,productid,payloadData);
+			baseResp = userIosBuymoneyService.buyIOSMoney(Long.parseLong(userid),productid,payloadData);
 		} catch (Exception e) {
 			logger.error("selectIOSMoney ", e);
 		}
