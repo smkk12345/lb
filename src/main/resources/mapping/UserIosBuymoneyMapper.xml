@@ -18,6 +18,13 @@
     from user_ios_buymoney
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByProductid" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user_ios_buymoney
+    where productid = #{productid}
+  </select>
   
   <select id="selectMoneyAllList" resultMap="BaseResultMap" >
     select 

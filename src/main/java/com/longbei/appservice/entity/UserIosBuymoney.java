@@ -3,9 +3,9 @@ package com.longbei.appservice.entity;
 public class UserIosBuymoney {
     private Integer id;
 
-    private Integer money;//买花含的进步币数量
+    private Integer money;//龙币数量
 
-    private Integer appmoney;//购买赠送的进步币数量
+    private Integer appmoney;//购买赠送的龙币数量
 
     private String productid;//ios前端用的一个id
 

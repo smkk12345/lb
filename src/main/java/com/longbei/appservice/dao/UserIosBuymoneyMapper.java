@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import java.util.List;
 
 import com.longbei.appservice.entity.UserIosBuymoney;
+import org.apache.ibatis.annotations.Param;
 
 /** 
 * @ClassName: UserIosBuymoneyMapper 
@@ -19,6 +20,8 @@ public interface UserIosBuymoneyMapper {
     int insertSelective(UserIosBuymoney record);
 
     UserIosBuymoney selectByPrimaryKey(Integer id);
+
+    UserIosBuymoney selectByProductid(@Param("productid") String productid);
 
     int updateByPrimaryKeySelective(UserIosBuymoney record);
 

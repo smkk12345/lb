@@ -14,12 +14,12 @@ public class ProductOrders {
     private Integer id;//自增id
 
     private String orderid;//订单id
-    
-    private String username; //用户手机号    冗余字段
 
     private String ordernum;//订单号
 
     private String userid;//用户id
+    
+    private String username; //用户手机号    冗余字段
 
     private String receiver;//收件人
 
@@ -31,13 +31,14 @@ public class ProductOrders {
     
     private Double moneyprice;  //成交价格---龙币
 
-    private String paytype;//支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+    private String paytype;//paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+    						// 3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 
     private String orderstatus;//订单状态   0：待付款   1：待发货   2：待收货  3：已完成     4：已取消
     
-    private String otype; //订单类型。0 龙币 1 进步币 2 混排
+    private String otype; //otype 订单类型。0 龙币 1 进步币 2 混排
 
-    private String isdel;//是否取消订单   0：不取消 1:取消
+    private String isdel;//是否删除订单   0：未删除  1:已删除
     
     private String isexception; //0 正常 1 异常   
 
@@ -53,10 +54,13 @@ public class ProductOrders {
 
     private Date updatetime;//更新日期
     
+    private String sign; //sign IOS内购交易唯一标识
     
-    private List<ProductOrderInfo> orderInfoList = new ArrayList<ProductOrderInfo>(); //订单详情
+    private String price; //price 真实价格   以分为单位
     
     private AppUserMongoEntity appUserMongoEntity; //用户信息----Userid
+    
+    private List<ProductOrderInfo> orderInfoList = new ArrayList<ProductOrderInfo>(); //订单详情
     
     private int sumNum = 0; //订单总共有商品数量
 
@@ -392,11 +396,27 @@ public class ProductOrders {
 		this.username = username;
 	}
 
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
 	}
 
 	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
 		this.appUserMongoEntity = appUserMongoEntity;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 }

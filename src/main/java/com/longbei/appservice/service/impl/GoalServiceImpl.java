@@ -116,11 +116,11 @@ public class GoalServiceImpl implements GoalService {
         try{
         	List<UserGoal> list = userGoalMapper.selectUserGoalList(userid,startNum,endNum);
         	if(null != list && list.size()>0){
-        		int goalCount = 0;
+//        		int goalCount = 0;
         		for (UserGoal userGoal : list) {
-        			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
-        			userGoal.setGoalCount(goalCount);
-        			if(goalCount != 0){
+//        			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
+//        			userGoal.setGoalCount(goalCount);
+        			if(userGoal.getIcount() != 0){
         				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
         				//拼接pickey
         				impItype(improve, userGoal);
@@ -149,10 +149,10 @@ public class GoalServiceImpl implements GoalService {
         try{
         	UserGoal userGoal = userGoalMapper.selectByGoalId(goalid);
         	if(null != userGoal){
-        		int goalCount = 0;
-    			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
-    			userGoal.setGoalCount(goalCount);
-    			if(goalCount != 0){
+//        		int goalCount = 0;
+//    			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
+//    			userGoal.setGoalCount(goalCount);
+    			if(userGoal.getIcount() != 0){
     				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
     				//拼接pickey
     				impItype(improve, userGoal);
@@ -187,6 +187,7 @@ public class GoalServiceImpl implements GoalService {
 				userGoal.setPickey(improve.getFilekey());
 			}
 			userGoal.setItype(improve.getItype());
+            userGoal.setStarttime(improve.getCreatetime());
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.UserIosBuymoney;
@@ -14,5 +15,7 @@ public interface UserIosBuymoneyService {
     * @return BaseResp<List<UserIosBuymoney>>    返回类型
      */
 	BaseResp<List<UserIosBuymoney>> selectMoneyAllList();
+
+	BaseResp<Map<String,String>> buyIOSMoney(long userid, String productid, String payloadData);
 	
 }
