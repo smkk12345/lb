@@ -361,16 +361,22 @@ public class UserServiceImpl implements UserService {
 			}else if (operateType.equals("4")){
 				operateName = "安全验证";
 			}
-			BaseResp<Object> resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
+			BaseResp<Object> resp = new BaseResp<>();
+			resp.initCodeAndDesp();
 //			BaseResp resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			if (mobile.contains("136836")){
 				HttpClient.alidayuService.sendMsg("13683691417", randomCode, operateName);
 			}
-			if (mobile.contains("150115")){
+			else if (mobile.contains("1861207")){
+				HttpClient.alidayuService.sendMsg("18612073860", randomCode, operateName);
+			}
+			else if (mobile.contains("150115")){
 				HttpClient.alidayuService.sendMsg("15011516059", randomCode, operateName);
 			}
-			if(mobile.contains("1851128")){
+			else if(mobile.contains("1851128")){
 				HttpClient.alidayuService.sendMsg("18511285918", randomCode, operateName);
+			}else{
+				resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
 			}
 
             if (ResultUtil.isSuccess(resp)) {
