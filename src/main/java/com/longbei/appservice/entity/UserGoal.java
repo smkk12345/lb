@@ -39,8 +39,6 @@ public class UserGoal {
     
     //------------------------------------扩展字段----------------
     
-    private Integer goalCount = 0;//目标中已发进步条数
-    
     private String pickey; //目标主进步key
     
     private Date starttime; //目标主进步更新日期
@@ -227,15 +225,6 @@ public class UserGoal {
 
 	public void setFlowers(Integer flowers) {
 		this.flowers = flowers;
-	}
-
-	@JsonInclude(Include.ALWAYS)
-	public Integer getGoalCount() {
-		return goalCount;
-	}
-
-	public void setGoalCount(Integer goalCount) {
-		this.goalCount = goalCount;
 	}
 
 	public Improve getImprove() {
