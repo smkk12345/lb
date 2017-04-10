@@ -26,6 +26,10 @@ public class AppserviceConfig {
     public static int moneytocoin;
     //花兑换进步币比例    
     public static int flowertocoin;
+    
+    public static String ios_buyflower;
+    
+    public static String ios_buyflower_pro;
 
     @Value("${service.outernet}")
     public void setHost_outernet_service(String host_outernet_service) {
@@ -59,6 +63,16 @@ public class AppserviceConfig {
     @Value("${flowertocoin}")
 	public void setFlowertocoin(int flowertocoin) {
     	this.flowertocoin = flowertocoin;
+	}
+    
+    @Value("${ios_buyflower}")
+	public void setIos_buyflower(String ios_buyflower) {
+    	this.ios_buyflower = ios_buyflower;
+	}
+    
+    @Value("${ios_buyflower_pro}")
+	public void setIos_buyflower_pro(String ios_buyflower_pro) {
+    	this.ios_buyflower_pro = ios_buyflower_pro;
 	}
 
 }

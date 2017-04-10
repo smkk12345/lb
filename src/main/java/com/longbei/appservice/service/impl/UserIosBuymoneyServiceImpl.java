@@ -5,6 +5,8 @@ import java.util.*;
 
 import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.utils.*;
+import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -65,21 +67,19 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		UserIosBuymoney userIosBuymoney = null;
 		if (map.get("paytype").equals(Constant.PAY_TYPE_05)) {
 			String product_id = (String) map.get("product_id");
-			userIosBuymoney = userIosBuymoneyMapper.selectByPrimaryKey(Integer.parseInt(product_id));
+			userIosBuymoney = userIosBuymoneyMapper.selectByProductid(product_id);
 		} else {
-			userIosBuymoney = userIosBuymoneyMapper.selectByPrimaryKey(Integer.parseInt(productid));
+			userIosBuymoney = userIosBuymoneyMapper.selectByProductid(productid);
 		}
 		int number = userIosBuymoney.getMoney() + userIosBuymoney.getMoney();
 		map.put("addmoney", number+"");
 		map.put("price",userIosBuymoney.getPrice()+"");
 		try {
 			UserInfo userInfo = null;
-			BaseResp<Object> baseResp1 =HttpClient.productBasicService.create(userid,userInfo.getUsername(),
-					productid,String.valueOf(number),"","",
-					"","0","0",map.get("paytype"),
-					map.get("price"),"3","购买龙币","1");
+			BaseResp<ProductOrders> baseResp1 = HttpClient.productBasicService.buyMoney(userid, number,userInfo.getUsername(),
+					map.get("paytype"), map.get("transaction_id"));
 			if(ResultUtil.isSuccess(baseResp1)){
-				baseResp1 = userMoneyDetailService.insertPublic(userid,"0",number,0);
+				BaseResp<Object> baseResp2 = userMoneyDetailService.insertPublic(userid,"0",number,0);
 				if(ResultUtil.isSuccess(baseResp1)){
 					return baseResp.initCodeAndDesp();
 				}else
@@ -96,7 +96,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	private boolean validateIOSBUY(String param, Map<String, String> map) {
 		boolean result = false;
 
-		String urlStr = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER_PRO");
+//		String urlStr = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER_PRO");
+		String urlStr = AppserviceConfig.ios_buyflower_pro;
 		byte bArr[] = param.getBytes();
 		JSONObject js = null;
 		try{
@@ -114,7 +115,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 				if (!Constant.IOS_DEV_BUYFLOWER.equals(status)) {
 					result = validateIOSBUYPro(param,map,js);
 				}else {
-					String urlStrTest = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER");
+//					String urlStrTest = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER");
+					String urlStrTest = AppserviceConfig.ios_buyflower;
 					String urlReturnTest = HttpUtils.postRequestForByte(urlStrTest, bArr);
 					JSONObject jsTest = JSONObject.fromObject(urlReturnTest);
 					logger.info("testIOSBuyFlower return json={}",jsTest.toString());
@@ -151,6 +153,7 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 				return false;
 		}
 		map.put("paytype", "3");
+		map.put("transaction_id", "");
 		return result;
 	}
 

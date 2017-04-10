@@ -169,13 +169,16 @@ public interface IProductBasicService {
 	 * 购买龙币---生成订单
 	 * @param userid 用户id
 	 * @param number 购买的龙币数量
+	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+     *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 	 * @auther yinxc
      * @desc  
      * @currentdate:2017年4月7日
 	 */
-	 @RequestLine("POST /order/buyMoney?userid={userid}&number={number}&username={username}")
+	 @RequestLine("POST /order/buyMoney?userid={userid}&number={number}&username={username}&paytype={paytype}&sign={sign}")
 	 BaseResp<ProductOrders> buyMoney(@Param("userid") long userid, @Param("number") Integer number, 
-			 @Param("username") String username);
+			 @Param("username") String username, @Param("paytype") String paytype,
+			 @Param("sign") String sign);
 	 
 	 /**
 	 * 再次兑换
