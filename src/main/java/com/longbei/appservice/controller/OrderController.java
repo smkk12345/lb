@@ -36,23 +36,25 @@ public class OrderController {
 	 * @Description: 购买龙币---生成订单
 	 * @param userid 用户id
 	 * @param number 购买的龙币数量
+	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+     *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 	 * @auther yinxc
      * @desc  
      * @currentdate:2017年4月7日
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/buyMoney", method = RequestMethod.POST)
-	public BaseResp<ProductOrders> buyMoney(String userid, String number) {
+	public BaseResp<ProductOrders> buyMoney(String userid, String number, String paytype) {
 		logger.info(userid + "购买 " + number + " 朵龙币，订单生成中....");
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, number)) {
+  		if (StringUtils.hasBlankParams(userid, number, paytype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = orderService.buyMoney(Long.parseLong(userid), Integer.parseInt(number));
+  			baseResp = orderService.buyMoney(Long.parseLong(userid), Integer.parseInt(number), paytype);
 		} catch (Exception e) {
-			logger.error("buyMoney userid = {}, number = {}", 
-					userid, number, e);
+			logger.error("buyMoney userid = {}, number = {}, paytype = {}", 
+					userid, number, paytype, e);
 		}
   		return baseResp;
 	}
@@ -303,9 +305,13 @@ public class OrderController {
 	
 	/**
     * @Title: http://ip:port/app_service/order/moneyExchangeFlower
-    * @Description: 用户龙币兑换鲜花
-    * @param @param userid 
+    * @Description: 用户龙币兑换鲜花并赠送
+    * @param @param userid 赠送人id
+    * @param @param friendid被赠送人id
     * @param @param number 鲜花数量
+    * @param @param improveid    进步id
+    * @param @param businessid  各类型对应的id
+    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  Data: 添加的鲜花记录
@@ -317,13 +323,15 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/moneyExchangeFlower")
-    public BaseResp<Object> moneyExchangeFlower(String userid, String number) {
+    public BaseResp<Object> moneyExchangeFlower(String userid, String number, String friendid, 
+    		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number));
+  			baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
+  					friendid, improveid, businesstype, businessid);
 		} catch (Exception e) {
 			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
 		}
@@ -332,9 +340,13 @@ public class OrderController {
 	
 	/**
     * @Title: http://ip:port/app_service/order/coinExchangeFlower
-    * @Description: 用户进步币兑换鲜花
-    * @param @param userid 
+    * @Description: 用户进步币兑换鲜花并赠送
+    * @param @param userid 赠送人id
+    * @param @param friendid被赠送人id
     * @param @param number 鲜花数量
+    * @param @param improveid    进步id
+    * @param @param businessid  各类型对应的id
+    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  Data: 添加的鲜花记录
@@ -346,13 +358,15 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/coinExchangeFlower")
-    public BaseResp<Object> coinExchangeFlower(String userid, String number) {
+    public BaseResp<Object> coinExchangeFlower(String userid, String number, String friendid, 
+    		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number));
+  			baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
+  					friendid, improveid, businesstype, businessid);
 		} catch (Exception e) {
 			logger.error("coinExchangeFlower userid = {}, number = {}", userid, number, e);
 		}

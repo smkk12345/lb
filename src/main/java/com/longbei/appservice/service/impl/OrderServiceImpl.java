@@ -53,18 +53,20 @@ public class OrderServiceImpl implements OrderService {
 	 * 购买龙币---生成订单
 	 * @param userid 用户id
 	 * @param number 购买的龙币数量
+	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+     *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 	 * @auther yinxc
      * @desc  
      * @currentdate:2017年4月7日
 	 */
 	@Override
-	public BaseResp<ProductOrders> buyMoney(long userid, Integer number) {
+	public BaseResp<ProductOrders> buyMoney(long userid, Integer number, String paytype) {
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
 			//获取用户手机号
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				baseResp = HttpClient.productBasicService.buyMoney(userid, number, userInfo.getUsername());
+				baseResp = HttpClient.productBasicService.buyMoney(userid, number, userInfo.getUsername(), paytype, "");
 			}
 		}catch (Exception e){
 			logger.error("buyMoney userid = {}, number = {}", userid, number, e);
