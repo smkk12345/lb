@@ -369,8 +369,10 @@ public class UserServiceImpl implements UserService {
 			}
 			else if (mobile.contains("1861207")){
 				HttpClient.alidayuService.sendMsg("18612073860", randomCode, operateName);
+			}else if(mobile.contains("1501158")){
+				HttpClient.alidayuService.sendMsg("15011587112", randomCode, operateName);
 			}
-			else if (mobile.contains("150115")){
+			else if (mobile.contains("1501151")){
 				HttpClient.alidayuService.sendMsg("15011516059", randomCode, operateName);
 			}
 			else if(mobile.contains("1851128")){
