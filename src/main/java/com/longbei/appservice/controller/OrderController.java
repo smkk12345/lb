@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserAddress;
 import com.longbei.appservice.service.OrderService;
@@ -51,12 +52,33 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = orderService.buyMoney(Long.parseLong(userid), Integer.parseInt(number), paytype);
+  			//人民币兑换龙币比例       
+  		    int yuantomoney = AppserviceConfig.yuantomoney;
+  		    //price 获取真实价格    已分为单位
+  		    int minute = Integer.parseInt(number)/yuantomoney*100;
+  		    String price = minute + "";
+  			int num = 0;
+  			if(!"3".equals(paytype) && !"4".equals(paytype)){
+  				num = getMoneyNum(Integer.parseInt(number));
+  			}else{
+  				num = Integer.parseInt(number);
+  			}
+  			baseResp = orderService.buyMoney(Long.parseLong(userid), num, paytype, price);
 		} catch (Exception e) {
 			logger.error("buyMoney userid = {}, number = {}, paytype = {}", 
 					userid, number, paytype, e);
 		}
   		return baseResp;
+	}
+	
+	private int getMoneyNum(int num){
+		 long xs = num/100 - 1;
+        double a = (xs*0.145) + 1;
+        long lastNum = (long)(num/100);
+        lastNum = lastNum*100;
+        Double giveFlower = lastNum * (a/100);
+        long giveNum = Math.round(giveFlower);
+        return giveNum>0?num+Integer.parseInt(giveNum+""):num;
 	}
 	
 	
@@ -304,14 +326,15 @@ public class OrderController {
 	}
 	
 	/**
-    * @Title: http://ip:port/app_service/order/moneyExchangeFlower
-    * @Description: 用户龙币兑换鲜花并赠送
+    * @Title: http://ip:port/app_service/order/exchangeFlower
+    * @Description: 用户兑换鲜花并赠送
     * @param @param userid 赠送人id
     * @param @param friendid被赠送人id
     * @param @param number 鲜花数量
     * @param @param improveid    进步id
     * @param @param businessid  各类型对应的id
-    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+    * @param @param businesstype  类型    0 零散进步   1 目标进步    2 榜  3圈子 4 教室
+    * @param @param payType 1:龙币兑换  2：进步币兑换
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  Data: 添加的鲜花记录
@@ -322,16 +345,23 @@ public class OrderController {
     * @currentdate:2017年3月21日
 	*/
 	@SuppressWarnings("unchecked")
-  	@RequestMapping(value = "/moneyExchangeFlower")
-    public BaseResp<Object> moneyExchangeFlower(String userid, String number, String friendid, 
-    		String improveid, String businesstype, String businessid) {
+  	@RequestMapping(value = "/exchangeFlower")
+    public BaseResp<Object> exchangeFlower(String userid, String number, String friendid, 
+    		String improveid, String businesstype, String businessid, String payType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, number)) {
+  		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
-  					friendid, improveid, businesstype, businessid);
+  			//payType 1:龙币兑换  2：进步币兑换
+  			if("1".equals(payType)){
+  				baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
+  	  					friendid, improveid, businesstype, businessid);
+  			}else{
+  				baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
+  	  					friendid, improveid, businesstype, businessid);
+  			}
+  			
 		} catch (Exception e) {
 			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
 		}

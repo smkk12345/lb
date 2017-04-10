@@ -56,6 +56,8 @@ public class ProductOrders {
     
     private String sign; //sign IOS内购交易唯一标识
     
+    private String price; //price 真实价格   以分为单位
+    
     private AppUserMongoEntity appUserMongoEntity; //用户信息----Userid
     
     private List<ProductOrderInfo> orderInfoList = new ArrayList<ProductOrderInfo>(); //订单详情
@@ -408,5 +410,13 @@ public class ProductOrders {
 
 	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
 		this.appUserMongoEntity = appUserMongoEntity;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 }

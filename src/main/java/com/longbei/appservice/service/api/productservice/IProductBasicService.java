@@ -175,10 +175,10 @@ public interface IProductBasicService {
      * @desc  
      * @currentdate:2017年4月7日
 	 */
-	 @RequestLine("POST /order/buyMoney?userid={userid}&number={number}&username={username}&paytype={paytype}&sign={sign}")
+	 @RequestLine("POST /order/buyMoney?userid={userid}&number={number}&username={username}&paytype={paytype}&sign={sign}&price={price}")
 	 BaseResp<ProductOrders> buyMoney(@Param("userid") long userid, @Param("number") Integer number, 
 			 @Param("username") String username, @Param("paytype") String paytype,
-			 @Param("sign") String sign);
+			 @Param("sign") String sign, @Param("price") String price);
 	 
 	 /**
 	 * 再次兑换

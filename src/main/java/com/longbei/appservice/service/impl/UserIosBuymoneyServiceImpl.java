@@ -74,16 +74,23 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		} else {
 			userIosBuymoney = userIosBuymoneyMapper.selectByProductid(productid);
 		}
-		int number = userIosBuymoney.getMoney() + userIosBuymoney.getMoney();
+		int number = userIosBuymoney.getMoney() + userIosBuymoney.getAppmoney();
 		map.put("addmoney", number+"");
 		map.put("price",userIosBuymoney.getPrice()+"");
 		try {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			
+			//人民币兑换龙币比例       
+  		    int yuantomoney = AppserviceConfig.yuantomoney;
+  		    //price 获取真实价格    已分为单位
+  		    int minute = userIosBuymoney.getMoney()/yuantomoney*100;
+  		    String price = minute + "";
+  		    
 			BaseResp<ProductOrders> baseResp1 = HttpClient.productBasicService.buyMoney(userid, number,userInfo.getUsername(),
-					map.get("paytype"), map.get("transaction_id"));
+					map.get("paytype"), map.get("transaction_id"), price);
 			if(ResultUtil.isSuccess(baseResp1)){
 				BaseResp<Object> baseResp2 = userMoneyDetailService.insertPublic(userid,"0",number,0);
-				if(ResultUtil.isSuccess(baseResp1)){
+				if(ResultUtil.isSuccess(baseResp2)){
 					return baseResp.initCodeAndDesp();
 				}else
 					return baseResp;
