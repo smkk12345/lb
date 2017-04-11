@@ -49,6 +49,7 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean updateAward(Award award) {
         try {
+            award.setUpdatetime(new Date());
             int res = awardMapper.updateByPrimaryKeySelective(award);
             if (res > 0){
                 return true;
@@ -139,6 +140,8 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean insertAwardClassify(AwardClassify awardClassify) {
         try {
+            awardClassify.setCreatetime(new Date());
+            awardClassify.setUpdatetime(new Date());
             int res = awardClassifyMapper.insertSelective(awardClassify);
             if (res > 0){
                 return true;
@@ -152,6 +155,7 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean updateAwardClassify(AwardClassify awardClassify) {
         try {
+            awardClassify.setUpdatetime(new Date());
             int res = awardClassifyMapper.updateByPrimaryKeySelective(awardClassify);
             if (res > 0){
                 return true;

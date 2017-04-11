@@ -14,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserFlowerDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserFlowerDetail;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -36,6 +38,8 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserImpCoinDetailService userImpCoinDetailService;
+	@Autowired
+	private ImproveService improveService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFlowerDetailServiceImpl.class);
 
@@ -183,13 +187,18 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 * @author yinxc
 	 * 龙币兑换鲜花
 	 * 2017年3月21日
-	 * param userid 
-	 * param number 鲜花数量 
+	 * @param @param  userid 
+	 * @param @param  number 鲜花数量
+	 * @param @param friendid被赠送人id
+     * @param @param improveid    进步id
+     * @param @param businessid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论 
 	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> moneyExchangeFlower(long userid, int number) {
+	public BaseResp<Object> moneyExchangeFlower(long userid, int number, String friendid, 
+    		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户龙币是否够用兑换
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
@@ -202,6 +211,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
 		reseResp = insertPublic(userid, "0", number, 0, 0);
+		//赠送
+		if(ResultUtil.isSuccess(reseResp)){
+			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+		}
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
 	}
@@ -210,13 +223,18 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 * @author yinxc
 	 * 进步币兑换鲜花
 	 * 2017年3月21日
-	 * param userid 
-	 * param number 鲜花数量 
+	 * @param @param  userid 
+	 * @param @param  number 鲜花数量
+	 * @param @param friendid被赠送人id
+     * @param @param improveid    进步id
+     * @param @param businessid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论 
 	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> coinExchangeFlower(long userid, int number) {
+	public BaseResp<Object> coinExchangeFlower(long userid, int number, String friendid, 
+    		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户进步币是否够用兑换
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
@@ -229,6 +247,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
 		reseResp = insertPublic(userid, "2", number, 0, 0);
+		//赠送
+		if(ResultUtil.isSuccess(reseResp)){
+			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+		}
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
 	}

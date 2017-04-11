@@ -36,7 +36,7 @@
   <select id="selectCountGoal" resultType="java.lang.Integer" >
     select count(*) 
     from improve_goal
-    where goalid=#{goalid} 
+    where businessid=#{goalid}
     and userid=#{userid}
   </select>
   
@@ -44,7 +44,7 @@
     select 
     <include refid="Base_Column_List" />
     from improve_goal
-    where goalid=#{goalid} 
+    where businessid=#{goalid}
     and ismainimp='1'
   </select>
   
