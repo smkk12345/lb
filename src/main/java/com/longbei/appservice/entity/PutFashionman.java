@@ -7,7 +7,7 @@ public class PutFashionman {
 
     private Long userid;//用户id
 
-    private String isfashionman;//是否是达人
+    private String isfashionman;//是否是达人 0.不是达人 1.是达人
 
     private Long rankid;//达人对应的榜单id
 

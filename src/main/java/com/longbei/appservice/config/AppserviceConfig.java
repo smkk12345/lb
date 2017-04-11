@@ -17,8 +17,8 @@ public class AppserviceConfig {
     public static String host_user_service;
     public static String host_outernet_service;
     public static String host_product_service;
-    
-    //人民币兑换龙币比例       
+
+    //人民币兑换龙币比例
     public static int yuantomoney;
     //龙币兑换花比例       
     public static int moneytoflower;

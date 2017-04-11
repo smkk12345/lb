@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.service.FindService;
@@ -35,7 +36,7 @@ public class FindServiceImpl implements FindService{
 
             }
             baseResp.setData(list);
-            return baseResp.initCodeAndDesp();
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("findNear error longitude={},latitude={}," +
                     "userid={},startNum={},endNum={}",longitude,latitude,userid,startNum,endNum,e);

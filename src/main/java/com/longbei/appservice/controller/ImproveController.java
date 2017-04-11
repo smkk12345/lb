@@ -540,8 +540,12 @@ public class ImproveController {
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+        int pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum > 0 && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
         try {
-            return improveService.selectCollect(userid, startNum, endNum);
+            return improveService.selectCollect(userid, startNum, pageSize);
         } catch (Exception e) {
             logger.error("selectCollect error userid={},msg={}", userid, e);
         }

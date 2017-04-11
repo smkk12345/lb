@@ -14,6 +14,8 @@ public class Award {
 
     private Integer awardcateid;//奖品类别id
 
+    private Integer isdel;
+
     private Double awardprice;//奖品价值
 
     private Integer awardlevel;//奖品对应等级
@@ -62,10 +64,20 @@ public class Award {
         return awardtitle;
     }
 
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
     /**
      * 奖品标题
      * @param awardtitle 奖品标题
      */
+
     public void setAwardtitle(String awardtitle) {
         this.awardtitle = awardtitle == null ? null : awardtitle.trim();
     }

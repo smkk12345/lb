@@ -294,16 +294,17 @@ public class RankController {
         return baseResp;
     }
 
-        /**
-         * 获取榜单的用户列表
-         * @url http://ip:port/app_service/rank/getWinningRankAwardUser
-         * @param rankid 用户id
-         * @param startNum
-         * @param endNum
-         * @return
-         */
-        @RequestMapping(value="getWinningRankAwardUser")
-        public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer endNum){
+    /**
+     * 获取榜单的用户列表
+     * @url http://ip:port/app_service/rank/getWinningRankAwardUser
+     * @param rankid
+     * @param userid 用户id
+     * @param startNum
+     * @param endNum
+     * @return
+     */
+    @RequestMapping(value="getWinningRankAwardUser")
+    public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
