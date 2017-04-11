@@ -290,6 +290,7 @@ public class AppUserController extends BaseController {
 
     /**
      * @Title:  http://ip:port/app_service/user/changePassword
+     * @Description: 修改密码
      * @param request userid  password  newpassword
      * @param response
      * @return
