@@ -1,5 +1,5 @@
 server:
-      port: 9090 #definded in application-osrad.yml
+      port: 9091 #definded in application-osrad.yml
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
@@ -14,7 +14,7 @@ ios_buyflower_pro: https://buy.itunes.apple.com/verifyReceipt
 
 spring:
     application:
-        name: app_service
+        name: appService
     cloud:
         config:
             enabled: true

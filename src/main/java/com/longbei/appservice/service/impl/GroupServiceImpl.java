@@ -15,7 +15,7 @@ import com.longbei.appservice.entity.SnsGroupMembers;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.GroupService;
 import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +45,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private UserMongoDao userMongoDao;
     @Autowired
     private UserMsgService userMsgService;
+    @Autowired
+    private IRongYunService iRongYunService;
 
     /**
      * 新建群组
@@ -88,7 +90,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
 
             //1.调用融云 创建群组
-            BaseResp rongyunResp = HttpClient.rongYunService.createGroup(userIdString,groupId,groupName);
+            BaseResp rongyunResp = iRongYunService.createGroup(userIdString,groupId,groupName);
             if(rongyunResp.getCode() != 0){
                 return baseResp.fail("系统异常");
             }
@@ -170,7 +172,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 
             if(StringUtils.isNotEmpty(groupName)){
                 //更新群组名称
-                BaseResp<Object> ryResult = HttpClient.rongYunService.updateGroupName(groupId,groupName);
+                BaseResp<Object> ryResult = iRongYunService.updateGroupName(groupId,groupName,"","");
                 if(ryResult.getCode() != 0){
                     return baseResp.fail();
                 }
@@ -573,7 +575,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroup == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_93,Constant.RTNINFO_SYS_93);
             }
-            BaseResp<Object> ryResult = HttpClient.rongYunService.dismissGroup(userId+"",groupId);
+            BaseResp<Object> ryResult = iRongYunService.dismissGroup(userId+"",groupId);
             if(ryResult.getCode() != 0){
                 return baseResp.fail("系统异常");
             }
@@ -807,7 +809,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(userIds == null || StringUtils.hasBlankParams(groupId,groupName)){
             return false;
         }
-        BaseResp<Object> baseResp = HttpClient.rongYunService.joinGroupMember(userIds,groupId,groupName);
+        BaseResp<Object> baseResp = iRongYunService.joinGroupMember(userIds,groupId,groupName);
         if(baseResp.getCode() == 0){
             return true;
         }
@@ -824,7 +826,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(userIds == null || userIds.length < 1 || StringUtils.isEmpty(groupId)){
             return false;
         }
-        BaseResp<Object> baseResp = HttpClient.rongYunService.quietGroup(userIds,groupId);
+        BaseResp<Object> baseResp = iRongYunService.quietGroup(userIds,groupId);
         if(baseResp.getCode() == 0){
             return true;
         }

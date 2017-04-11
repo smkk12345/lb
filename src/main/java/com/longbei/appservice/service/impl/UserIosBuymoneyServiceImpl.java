@@ -11,7 +11,7 @@ import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import com.longbei.pay.util.UtilDate;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -37,6 +37,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private IProductBasicService iProductBasicService;
 
     private static Logger logger = LoggerFactory.getLogger(UserIosBuymoneyServiceImpl.class);
 	
@@ -79,8 +81,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		map.put("price",userIosBuymoney.getPrice()+"");
 		try {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
-			BaseResp<ProductOrders> baseResp1 = HttpClient.productBasicService.buyMoney(userid, number,userInfo.getUsername(),
-					map.get("paytype"), map.get("transaction_id"));
+			BaseResp<ProductOrders> baseResp1 = iProductBasicService.buyMoney(userid, number,userInfo.getUsername(),
+					map.get("paytype"), map.get("transaction_id"),userIosBuymoney.getPrice()+"");
 			if(ResultUtil.isSuccess(baseResp1)){
 				BaseResp<Object> baseResp2 = userMoneyDetailService.insertPublic(userid,"0",number,0);
 				if(ResultUtil.isSuccess(baseResp1)){

@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.longbei.appservice.common.utils.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,8 +22,8 @@ public class AppUserMongoEntity {
 	private Double[] gispoint;
 
 	private String updatetime;
-	@JsonSerialize(using=ToStringSerializer.class)
-	private long userid;
+//	@JsonSerialize(using=ToStringSerializer.class)
+	private Long userid;
 	private String isfriend="0";
 	private String isfans="0";
 
@@ -108,6 +109,10 @@ public class AppUserMongoEntity {
 
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+
+	public void setUserid(long userid) {
+		this.userid = userid;
 	}
 
 }
