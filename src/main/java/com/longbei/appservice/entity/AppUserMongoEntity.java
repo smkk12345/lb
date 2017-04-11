@@ -110,4 +110,7 @@ public class AppUserMongoEntity {
 		this.sex = sex;
 	}
 
+	public void setUserid(String userid){
+		this.userid = userid != null? Long.parseLong(this.id):null;
+	}
 }

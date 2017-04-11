@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.config.AppserviceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,36 +68,39 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			}
 			boolean temp = insert(userMoneyDetail);
 			if (temp) {
+				//查询龙币兑换花的比例
+//				int moneytoflower = AppserviceConfig.moneytoflower;
 				//修改用户userInfo表---龙币总数
+//				userInfoMapper.updateMoneyAndFlowerByUserid(userid, -number*moneytoflower, number);
 //				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 //				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
 //				userInfo.setTotalmoney(allnum);
 //				userInfoMapper.updateByUseridSelective(userInfo);
 				
 				//先从redis里面取，如果存在，数据累加，减，之后修改表数据，   不存在存入redis
-				boolean result = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
-				if(result){
-					//存在
-					jedisKey(userid, userMoneyDetail.getNumber());
-				}else{
-					//不存在   数据库查找   存入redis
-					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-					//并发时，判断是否已经存在
-					boolean res = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
-					if(!res){
-						//不存在
-						springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
-						//递增
-						springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, userMoneyDetail.getNumber());
-						String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
-						//修改数据库数据
-						userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
-					}else{
-						//存在
-						jedisKey(userid, userMoneyDetail.getNumber());
-					}
-					
-				}
+//				boolean result = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
+//				if(result){
+//					//存在
+//					jedisKey(userid, userMoneyDetail.getNumber());
+//				}else{
+//					//不存在   数据库查找   存入redis
+//					UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//					//并发时，判断是否已经存在
+//					boolean res = springJedisDao.hasKey(Constant.RP_USER_MONEY_VALUE + userid);
+//					if(!res){
+//						//不存在
+//						springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, userInfo.getTotalcoin().toString(), 10);
+//						//递增
+//						springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, userMoneyDetail.getNumber());
+//						String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
+//						//修改数据库数据
+//						userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
+//					}else{
+//						//存在
+//						jedisKey(userid, userMoneyDetail.getNumber());
+//					}
+//
+//				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

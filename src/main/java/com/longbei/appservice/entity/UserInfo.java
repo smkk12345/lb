@@ -105,6 +105,8 @@ public class UserInfo {
 
     private String settings; //设置
 
+    private Integer givedflowers; //
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -737,5 +739,13 @@ public class UserInfo {
 	}
 	public void setDetailList(List<UserPlDetail> detailList) {
 		this.detailList = detailList;
+	}
+
+	public Integer getGivedflowers() {
+		return givedflowers;
+	}
+
+	public void setGivedflowers(Integer givedflowers) {
+		this.givedflowers = givedflowers;
 	}
 }

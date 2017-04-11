@@ -293,8 +293,11 @@
           <include refid="Base_Column_List" />
       from sns_group_members
       <where>
+          <if test="noQueryUserId != null">
+              userid != #{noQueryUserId}
+          </if>
           <if test="status != null">
-            status = #{status}
+            and status = #{status}
           </if>
         and groupid = #{groupId}
       </where>

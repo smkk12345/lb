@@ -32,7 +32,7 @@
   </select>
 
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
-    SELECT count(*) FROM award
+    SELECT count(1) FROM award
     where isdel=0
   </select>
 

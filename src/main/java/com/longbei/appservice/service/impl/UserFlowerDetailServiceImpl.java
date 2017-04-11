@@ -80,9 +80,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			boolean temp = insert(userFlowerDetail);
 			if (temp) {
 				reseResp.setData(userFlowerDetail);
+
 				//查询龙币兑换花的比例
 				int moneytoflower = AppserviceConfig.moneytoflower;
-				//花兑换进步币比例  
+				//花兑换进步币比例
 				int flowertocoin = AppserviceConfig.flowertocoin;
 				//修改user_info表用户总花，总龙币数
 				//origin  0:龙币兑换       1:赠与;  2:进步币兑换
@@ -90,15 +91,15 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -number*moneytoflower, number);
 					//添加一条龙币消费明细
 					//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
-					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币 
+					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
 					userMoneyDetailService.insertPublic(userid, "1", number*moneytoflower, 0);
 				}else if("1".equals(origin)){
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, -number);
 				}else if("2".equals(origin)){
 					userInfoMapper.updateCoinAndFlowerByUserid(userid, -number*flowertocoin, number);
 					//添加一条进步币消费明细
-					//origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
-					// 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
+					//origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物
+					// 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币
 					// 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
 					// 					11:取消订单返还龙币   12:兑换鲜花
 					userImpCoinDetailService.insertPublic(userid, "12", number*flowertocoin, 0, 0l);

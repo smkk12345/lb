@@ -23,7 +23,7 @@ public class SnsGroup {
 
     private Date updatetime;
 
-    private boolean needconfirm;//加群是否需要审核
+    private boolean needconfirm;//加群是否需要审核 0不需要验证 1需要验证
 
     private String notice;//群公告
 

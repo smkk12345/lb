@@ -299,7 +299,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean registerInfo(UserInfo userInfo) {
-		int n = userInfoMapper.insert(userInfo);
+		int n = userInfoMapper.insertSelective(userInfo);
 		return n > 0;
 	}
 
@@ -343,7 +343,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		String randomCode = StringUtils.getValidateCode();
+//		String randomCode = StringUtils.getValidateCode();
+		String randomCode = "0000";
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了

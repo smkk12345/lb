@@ -295,10 +295,10 @@ public interface ImproveService {
      * 获取用户收藏列表
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
-    BaseResp<Object> selectCollect(String userid,int startNum,int endNum);
+    BaseResp<Object> selectCollect(String userid,int startNum,int pageSize);
 
 
 

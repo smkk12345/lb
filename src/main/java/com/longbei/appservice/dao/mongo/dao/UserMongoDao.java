@@ -65,6 +65,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	}
 	
 	public AppUserMongoEntity getAppUser(String userid){
+		userid = userid.trim();
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
 			AppUserMongoEntity mongoUser = findOne(query);
@@ -207,7 +208,9 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		BasicDBObject basicDBObject = new BasicDBObject();
 		basicDBObject.append("gispoint", JSON.parse("{$near : ["+longitude+","+latitude+"]}"));
 
-		basicDBObject.append("sex",gender);
+		if(StringUtils.isNotEmpty(gender)){
+			basicDBObject.append("sex",gender);
+		}
 		DBCollection dbCollection = mongoTemplate.getDb().getCollection("appuser");
 		DBCursor dbCursor = dbCollection.find(basicDBObject).skip(count).limit(limit);
 		while (dbCursor.hasNext()) {

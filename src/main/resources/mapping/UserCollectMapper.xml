@@ -131,4 +131,16 @@
     WHERE  userid=#{userid} and cid=#{impid} and ctype=#{ctype}
   </delete>
 
+  <!-- 查询用户的收藏列表 -->
+  <select id="selectCollect" resultMap="BaseResultMap">
+      select 
+          <include refid="Base_Column_List" />
+      from user_collect
+      where
+        ctype = #{ctype}
+        and userid = #{userid}
+      order by createtime DESC
+      limit #{startNum},#{pageSize}
+  </select>
+
 </mapper>

@@ -684,7 +684,7 @@
     <if test="totalflower != 0">
       totalflower = totalflower + #{totalflower},
     </if>
-    <if test="totalmoney != 0">
+    <if test="totalcoin != 0">
       totalcoin = totalcoin + #{totalcoin}
     </if>
     WHERE 

@@ -560,8 +560,10 @@ public class Constant {
     public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
 
 	/****** JPUSH 消息的tag start ******/
-
+	//10开头的代表好友相关的通知
 	public static final String JPUSH_TAG_COUNT_1001 = "1001";//申请加好友通知
+	//11开头的代表群组相关的通知
+	public static final String JPUSH_TAG_COUNT_1101 = "1101";//申请加群 通知
 
 	/****** JPUSH 消息的tag end ******/
 
