@@ -37,7 +37,7 @@ public class Constant {
 	public static final String DEFAULT_PAGE_SIZE = "15"; //默认分页时每页显示条数
 
 
-
+	public static final String IOS_DEV_BUYFLOWER="21007";//IOS买花  走正式环境的验证返回21007表示现在使用沙盒环境
 
 	/**
 	 * 服务端返回代码  code  
@@ -560,8 +560,10 @@ public class Constant {
     public static final String USER_PRIVILEGE_ADD_CLASSROOM = "2";//
 
 	/****** JPUSH 消息的tag start ******/
-
+	//10开头的代表好友相关的通知
 	public static final String JPUSH_TAG_COUNT_1001 = "1001";//申请加好友通知
+	//11开头的代表群组相关的通知
+	public static final String JPUSH_TAG_COUNT_1101 = "1101";//申请加群 通知
 
 	/****** JPUSH 消息的tag end ******/
 
@@ -617,5 +619,27 @@ public class Constant {
 		createCircle
 	}
 
+	/**
+	 * 进步币支付
+	 */
+	public static final String 	PAY_TYPE_01 = "0";
+	/**
+	 * 支付宝支付
+	 */
+	public static final String 	PAY_TYPE_02 = "1";
+	/**
+	 * 微信支付
+	 */
+	public static final String 	PAY_TYPE_03 = "2";
+
+	/**
+	 * 内购测试帐号支付
+	 */
+	public static final String 	PAY_TYPE_04 = "3";
+
+	/**
+	 * 内购生产环境支付
+	 */
+	public static final String 	PAY_TYPE_05 = "4";
 
 }

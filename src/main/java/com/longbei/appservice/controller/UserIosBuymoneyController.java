@@ -1,7 +1,10 @@
 package com.longbei.appservice.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +49,21 @@ public class UserIosBuymoneyController {
         }
   		return baseResp;
     }
+
+	@RequestMapping(value = "buyIOSMoney")
+	public BaseResp<Map<String,String>> buyIOSMoney(String userid,
+													String productid,
+													String payloadData) {
+		BaseResp<Map<String,String>> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid,productid,payloadData)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = userIosBuymoneyService.buyIOSMoney(Long.parseLong(userid),productid,payloadData);
+		} catch (Exception e) {
+			logger.error("selectIOSMoney ", e);
+		}
+		return baseResp;
+	}
 	
 }

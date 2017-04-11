@@ -33,8 +33,8 @@ public interface IRongYunService {
      * @param groupName 群组名称
      * @return
      */
-    @RequestLine("GET /rongyun/updateGroupName?groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> updateGroupName(@Param("groupId") String groupId,@Param("groupName") String groupName);
+    @RequestLine("GET /rongyun/updateGroupName?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&groupId={groupId}&groupName={groupName}")
+    BaseResp<Object> updateGroupName(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("groupId") String groupId,@Param("groupName") String groupName);
 
     /**
      * 加入群组
@@ -44,7 +44,7 @@ public interface IRongYunService {
      * @return
      */
     @RequestLine("GET /rongyun/joinGroupMember?userIds={userIds}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> joinGroupMember(@Param("userIds") String[] userIds,@Param("groupId") String groupId,
+    BaseResp<Object> joinGroupMember(@Param("userIds") String userIds,@Param("groupId") String groupId,
                                      @Param("groupName")String groupName);
 
     /**
@@ -54,7 +54,7 @@ public interface IRongYunService {
      * @return
      */
     @RequestLine("GET /rongyun/quietGroup?userIds={userIds}&groupId={groupId}")
-    BaseResp<Object> quietGroup(@Param("userIds")String[] userIds,@Param("groupId")String groupId);
+    BaseResp<Object> quietGroup(@Param("userIds")String userIds,@Param("groupId")String groupId);
 
     @RequestLine("GET /rongyun/dismissGroup?userId={userId}&groupId={groupId}")
     BaseResp<Object> dismissGroup(@Param("userId") String userId,@Param("groupId") String groupId);

@@ -37,6 +37,11 @@ public class HomePicture {
     private String isup;
 
     /**
+     * 是否删除 0 - 未删除。 1- 已删除
+     */
+    private Integer isdel;
+
+    /**
      * 上线时间
      */
     private Date uptime;
@@ -134,6 +139,15 @@ public class HomePicture {
     public void setIsup(String isup) {
         this.isup = isup == null ? null : isup.trim();
     }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUptime() {

@@ -48,21 +48,31 @@ public interface UserFlowerDetailService {
 	/**
 	 * @author yinxc
 	 * 龙币兑换鲜花
-	 * 2017年3月21日
-	 * param userid 
-	 * param number 鲜花数量 
+	 * 2017年4月10日
+	 * @param @param  userid 
+	 * @param @param  number 鲜花数量
+	 * @param @param friendid被赠送人id
+     * @param @param improveid    进步id
+     * @param @param businessid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论 
 	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
 	 */
-	BaseResp<Object> moneyExchangeFlower(long userid, int number);
+	BaseResp<Object> moneyExchangeFlower(long userid, int number, String friendid, 
+    		String improveid, String businesstype, String businessid);
 	
 	/**
 	 * @author yinxc
 	 * 进步币兑换鲜花
-	 * 2017年3月21日
-	 * param userid 
-	 * param number 鲜花数量 
+	 * 2017年4月10日
+	 * @param @param  userid 
+	 * @param @param  number 鲜花数量
+	 * @param @param friendid被赠送人id
+     * @param @param improveid    进步id
+     * @param @param businessid  各类型对应的id
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论 
 	 * @desc 根据龙币兑换花，进步币比例(AppserviceConfig)，查询出number数量
 	 */
-	BaseResp<Object> coinExchangeFlower(long userid, int number);
+	BaseResp<Object> coinExchangeFlower(long userid, int number, String friendid, 
+    		String improveid, String businesstype, String businessid);
 	
 }

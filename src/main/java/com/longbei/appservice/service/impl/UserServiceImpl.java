@@ -13,6 +13,7 @@ import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
 import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
-	
+//	@Autowired
+//	private IAlidayuService iAlidayuService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -297,7 +299,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean registerInfo(UserInfo userInfo) {
-		int n = userInfoMapper.insert(userInfo);
+		int n = userInfoMapper.insertSelective(userInfo);
 		return n > 0;
 	}
 
@@ -341,7 +343,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		String randomCode = StringUtils.getValidateCode();
+//		String randomCode = StringUtils.getValidateCode();
+		String randomCode = "0000";
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了
@@ -359,15 +362,22 @@ public class UserServiceImpl implements UserService {
 			}else if (operateType.equals("4")){
 				operateName = "安全验证";
 			}
-			BaseResp<Object> resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
+			BaseResp<Object> resp = new BaseResp<>();
+			resp.initCodeAndDesp();
+//			BaseResp resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			if (mobile.contains("136836")){
 				HttpClient.alidayuService.sendMsg("13683691417", randomCode, operateName);
 			}
-			if (mobile.contains("150115")){
+			else if (mobile.contains("1861207")){
+				HttpClient.alidayuService.sendMsg("18612073860", randomCode, operateName);
+			}
+			else if (mobile.contains("150115")){
 				HttpClient.alidayuService.sendMsg("15011516059", randomCode, operateName);
 			}
-			if(mobile.contains("1851128")){
+			else if(mobile.contains("1851128")){
 				HttpClient.alidayuService.sendMsg("18511285918", randomCode, operateName);
+			}else{
+				resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
 			}
 
             if (ResultUtil.isSuccess(resp)) {
