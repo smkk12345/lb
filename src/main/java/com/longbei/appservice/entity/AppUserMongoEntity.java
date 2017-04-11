@@ -22,7 +22,7 @@ public class AppUserMongoEntity {
 
 	private String updatetime;
 	@JsonSerialize(using=ToStringSerializer.class)
-	private long userid;
+	private Long userid;
 	private String isfriend="0";
 	private String isfans="0";
 
@@ -111,6 +111,6 @@ public class AppUserMongoEntity {
 	}
 
 	public void setUserid(String userid){
-		this.userid = userid != null? Long.parseLong(this.id):null;
+		this.userid = this.id != null? Long.parseLong(this.id):userid != null?Long.parseLong(userid):null;
 	}
 }

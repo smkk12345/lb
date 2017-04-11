@@ -32,6 +32,7 @@ public class FindServiceImpl implements FindService{
                     Integer.parseInt(startNum),Integer.parseInt(endNum)-Integer.parseInt(startNum));
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
+                appuser.setUserid(appuser.getId());
                 //判断是否好友 是否关注 是否粉丝等等
 
             }
