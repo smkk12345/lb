@@ -8,6 +8,7 @@
     <result column="contenttype" property="contenttype" jdbcType="CHAR" />
     <result column="scannum" property="scannum" jdbcType="INTEGER" />
     <result column="isup" property="isup" jdbcType="CHAR" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
     <result column="uptime" property="uptime" jdbcType="TIMESTAMP" />
     <result column="downtime" property="downtime" jdbcType="TIMESTAMP" />
     <result column="sort" property="sort" jdbcType="VARCHAR" />
@@ -17,7 +18,7 @@
     <result column="href" property="href" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, picname, photos, contenttype, scannum, isup, uptime, downtime, sort, createtime, createuserid,href,
+    id, picname, photos, contenttype, scannum, isup, isdel, uptime, downtime, sort, createtime, createuserid,href,
     updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -29,34 +30,32 @@
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.HomePicture" resultType="java.lang.Integer">
     SELECT count(*) FROM homepicture
-    <where>
-      <if test="picname != null and picname != ''">
-        AND picname LIKE concat(concat('%',#{picname}),'%')
-      </if>
-      <if test="contenttype != null and contenttype != '-1'.toString()">
-        AND contenttype = #{contenttype}
-      </if>
-      <if test="isup != null and isup != '-1'.toString()">
-        AND isup = #{isup}
-      </if>
-    </where>
+    WHERE isdel=0
+    <if test="picname != null and picname != ''">
+      AND picname LIKE concat(concat('%',#{picname}),'%')
+    </if>
+    <if test="contenttype != null and contenttype != '-1'.toString()">
+      AND contenttype = #{contenttype}
+    </if>
+    <if test="isup != null and isup != '-1'.toString()">
+      AND isup = #{isup}
+    </if>
   </select>
 
   <select id="selectList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from homepicture
-    <where>
-      <if test="homePicture.picname != null and homePicture.picname != ''">
-        AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
-      </if>
-      <if test="homePicture.contenttype != null and homePicture.contenttype != '-1'.toString()">
-        AND contenttype = #{homePicture.contenttype}
-      </if>
-      <if test="homePicture.isup != null and homePicture.isup != '-1'.toString()">
-        AND isup = #{homePicture.isup}
-      </if>
-    </where>
+    WHERE isdel=0
+    <if test="homePicture.picname != null and homePicture.picname != ''">
+      AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
+    </if>
+    <if test="homePicture.contenttype != null and homePicture.contenttype != '-1'.toString()">
+      AND contenttype = #{homePicture.contenttype}
+    </if>
+    <if test="homePicture.isup != null and homePicture.isup != '-1'.toString()">
+      AND isup = #{homePicture.isup}
+    </if>
     ORDER BY sort DESC,createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
@@ -70,11 +69,11 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.HomePicture" >
     insert into homepicture (id, picname, photos, 
-      contenttype, scannum, isup, 
+      contenttype, scannum, isup, isdel,
       update, downdate, sort, 
       createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{picname,jdbcType=VARCHAR}, #{photos,jdbcType=VARCHAR}, 
-      #{contenttype,jdbcType=CHAR}, #{scannum,jdbcType=INTEGER}, #{isup,jdbcType=CHAR}, 
+      #{contenttype,jdbcType=CHAR}, #{scannum,jdbcType=INTEGER}, #{isup,jdbcType=CHAR}, #{isdel,jdbcType=INTEGER},
       #{update,jdbcType=TIMESTAMP}, #{downdate,jdbcType=TIMESTAMP}, #{sort,jdbcType=VARCHAR}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
@@ -98,6 +97,9 @@
       </if>
       <if test="isup != null" >
         isup,
+      </if>
+      <if test="isdel != null" >
+        isdel,
       </if>
       <if test="uptime != null" >
         uptime,
@@ -140,6 +142,9 @@
       <if test="isup != null" >
         #{isup,jdbcType=CHAR},
       </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
+      </if>
       <if test="uptime != null" >
         #{uptime,jdbcType=TIMESTAMP},
       </if>
@@ -181,6 +186,9 @@
       <if test="isup != null" >
         isup = #{isup,jdbcType=CHAR},
       </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
       <if test="uptime != null" >
         uptime = #{uptime,jdbcType=TIMESTAMP},
       </if>
@@ -209,6 +217,7 @@
       contenttype = #{contenttype,jdbcType=CHAR},
       scannum = #{scannum,jdbcType=INTEGER},
       isup = #{isup,jdbcType=CHAR},
+      isdel = #{isdel,jdbcType=INTEGER},
       update = #{update,jdbcType=TIMESTAMP},
       downdate = #{downdate,jdbcType=TIMESTAMP},
       sort = #{sort,jdbcType=VARCHAR},
