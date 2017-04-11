@@ -2045,7 +2045,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
         for (RankAwardRelease rankAward : rankAwards){
             Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award != null?award:null);
+            rankAward.setAward(award != null?award:new Award());
         }
         return rankAwards;
     }

@@ -208,7 +208,9 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		BasicDBObject basicDBObject = new BasicDBObject();
 		basicDBObject.append("gispoint", JSON.parse("{$near : ["+longitude+","+latitude+"]}"));
 
-		basicDBObject.append("sex",gender);
+		if(StringUtils.isNotEmpty(gender)){
+			basicDBObject.append("sex",gender);
+		}
 		DBCollection dbCollection = mongoTemplate.getDb().getCollection("appuser");
 		DBCursor dbCursor = dbCollection.find(basicDBObject).skip(count).limit(limit);
 		while (dbCursor.hasNext()) {

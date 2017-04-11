@@ -31,7 +31,7 @@
   </select>
 
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
-    SELECT count(*) FROM award
+    SELECT count(1) FROM award
   </select>
 
   <!--<select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">-->

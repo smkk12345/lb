@@ -18,7 +18,7 @@ public class SnsFriends {
 
     private String remark; //备注
 
-    private String ispublic;//是否公开
+    private String ispublic;//是否公开 0.不公开 1.公开
 
     private String isfans = "0";//是否关注   0：未关注   1：已关注
 

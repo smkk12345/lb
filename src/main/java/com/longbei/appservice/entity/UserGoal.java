@@ -20,11 +20,11 @@ public class UserGoal {
 
     private Date updatetime;
 
-    private String ispublic;
+    private String ispublic;//可见程度 0 私密 1 好友可见 2 全部可见
 
     private String ptype;
 
-    private String needwarn;
+    private String needwarn;//提醒 0不提醒 1提醒
 
     private String warntime;
 
