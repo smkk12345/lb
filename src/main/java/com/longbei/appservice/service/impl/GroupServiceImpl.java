@@ -824,15 +824,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(userIds == null || StringUtils.hasBlankParams(groupId,groupName)){
             return false;
         }
-<<<<<<< HEAD
-        BaseResp<Object> baseResp = iRongYunService.joinGroupMember(userIds,groupId,groupName);
-=======
         StringBuilder sb = new StringBuilder();
         for(String userId:userIds){
             sb.append(",").append(userId.trim());
         }
-        BaseResp<Object> baseResp = HttpClient.rongYunService.joinGroupMember(sb.toString().substring(1),groupId,groupName);
->>>>>>> cc75d39831d9805fc1acd0682707be2080fc82af
+        BaseResp<Object> baseResp = iRongYunService.joinGroupMember(sb.toString().substring(1),groupId,groupName);
         if(baseResp.getCode() == 0){
             return true;
         }

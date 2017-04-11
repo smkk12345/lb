@@ -51,7 +51,7 @@ public interface IRongYunService {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/rongyun/joinGroupMember")
-    BaseResp<Object> joinGroupMember(@RequestParam("userIds") String[] userIds,
+    BaseResp<Object> joinGroupMember(@RequestParam("userIds") String userIds,
                                      @RequestParam("groupId") String groupId,
                                      @RequestParam("groupName")String groupName);
 

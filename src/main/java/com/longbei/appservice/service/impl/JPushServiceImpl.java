@@ -3,7 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.service.JPushService;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service("jPushService")
 public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
 
+    private IJPushService iJPushService;
     /**
      * 发送push消息
      * @param status 消息表示
@@ -31,7 +32,7 @@ public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
         pushMessage.put("content",content);
         pushMessage.put("msgid",msgid);
         pushMessage.put("tag", Constant.JPUSH_TAG_COUNT_1001);
-        BaseResp<Object> baseResp = HttpClient.jPushService.messagePush(userId,title,content,pushMessage.toString());
+        BaseResp<Object> baseResp = iJPushService.messagePush(userId,title,content,pushMessage.toString());
         if(baseResp.getCode() == 0){
             return true;
         }
