@@ -304,8 +304,29 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean registerInfo(UserInfo userInfo) {
-		int n = userInfoMapper.insert(userInfo);
-		return n > 0;
+		userInfo.setCreatetime(new Date());
+		userInfo.setTotalcoin(0);
+		userInfo.setTotaldiamond(0);
+		userInfo.setTotalflower(0);
+		userInfo.setTotalmoney(0);
+		userInfo.setUpdatetime(new Date());
+		if(StringUtils.isBlank(userInfo.getSex())){
+			userInfo.setSex("0");
+		}
+		userInfo.setHcnickname("0");
+		userInfo.setPoint(0);
+		userInfo.setGrade(1);
+		userInfo.setCurpoint(0);
+		userInfo.setSchoolcertify("0");
+		userInfo.setJobcertify("0");
+		userInfo.setIsfashionman("0");
+		userInfo.setTotalimp(0);
+		userInfo.setTotallikes(0);
+		userInfo.setTotalfans(0);
+		userInfo.setGivedflowers(0);
+		userInfo.setSort(0);
+		int n = userInfoMapper.insertSelective(userInfo);
+		return n > 0 ? true : false;
 	}
 
 	/* (non-Javadoc)
@@ -348,7 +369,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		String randomCode = StringUtils.getValidateCode();
+//		String randomCode = StringUtils.getValidateCode();
+		String randomCode = "0000";
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了
@@ -484,8 +506,8 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
-		if(baseResp.getCode() == Constant.STATUS_SYS_00){String token = (String)baseResp.getData();
-
+		if(baseResp.getCode() == Constant.STATUS_SYS_00){
+			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
 			returnResp.setData(userInfo);
@@ -622,7 +644,7 @@ public class UserServiceImpl implements UserService {
 			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
 			map.put("pointDetail", ist);
 			map.put("levelDetail", levelDetail);
-			map.put("todayPoint",point);
+			map.put("todayPoint", point);
 			map.put("userPoint", userInfo.getCurpoint());
 //			map.put("",);
 			baseResp.setData(map);

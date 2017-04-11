@@ -62,7 +62,7 @@ public interface IRongYunService {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/rongyun/quietGroup")
-    BaseResp<Object> quietGroup(@RequestParam("userIds")String[] userIds,
+    BaseResp<Object> quietGroup(@RequestParam("userIds")String userIds,
                                 @RequestParam("groupId")String groupId);
 
     @RequestMapping(method = RequestMethod.GET, value = "/rongyun/dismissGroup")

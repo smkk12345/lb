@@ -70,7 +70,7 @@ public interface GroupService {
      * @param status 查询的状态
      * @return
      */
-    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize);
+    BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer pageSize);
 
     /**
      * 解散群

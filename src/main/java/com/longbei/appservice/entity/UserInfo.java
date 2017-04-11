@@ -105,6 +105,8 @@ public class UserInfo {
 
     private String settings; //设置
 
+    private Integer givedflowers; //
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -431,14 +433,14 @@ public class UserInfo {
     }
     /**
      * 所在区域
-     * @param city 所在区域
+     * @param  所在区域
      */
     public String getArea() {
 		return area;
 	}
     /**
      * 所在区域
-     * @param city 所在区域
+     * @param area 所在区域
      */
 	public void setArea(String area) {
 		this.area = area;
@@ -737,5 +739,13 @@ public class UserInfo {
 	}
 	public void setDetailList(List<UserPlDetail> detailList) {
 		this.detailList = detailList;
+	}
+
+	public Integer getGivedflowers() {
+		return givedflowers;
+	}
+
+	public void setGivedflowers(Integer givedflowers) {
+		this.givedflowers = givedflowers;
 	}
 }

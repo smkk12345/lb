@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.service.FindService;
@@ -31,11 +32,12 @@ public class FindServiceImpl implements FindService{
                     Integer.parseInt(startNum),Integer.parseInt(endNum)-Integer.parseInt(startNum));
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
+                appuser.setUserid(appuser.getId());
                 //判断是否好友 是否关注 是否粉丝等等
 
             }
             baseResp.setData(list);
-            return baseResp.initCodeAndDesp();
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("findNear error longitude={},latitude={}," +
                     "userid={},startNum={},endNum={}",longitude,latitude,userid,startNum,endNum,e);

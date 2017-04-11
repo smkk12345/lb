@@ -14,15 +14,15 @@ import com.longbei.appservice.entity.SnsGroup;
 import com.longbei.appservice.entity.SnsGroupMembers;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.GroupService;
+import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
-import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
 
@@ -47,6 +47,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private UserMsgService userMsgService;
     @Autowired
     private IRongYunService iRongYunService;
+    @Autowired
+    private JPushService jPushService;
 
     /**
      * 新建群组
@@ -77,10 +79,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             Set<String> userIdSet = new HashSet<String>();
             if(userIds != null && userIds.length > 0){
                 for(String userId:userIds){
-                    userIdSet.add(userId);
+                    userIdSet.add(userId.trim());
                 }
             }
-            userIdSet.add(mainGroupUserId);
+            userIdSet.add(mainGroupUserId.trim());
             String userIdString = userIdSet.toString();
             userIdString = userIdString.substring(1,userIdString.length()-1);
             String[] newUserIds = userIdString.split(",");
@@ -123,11 +125,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             snsGroupMembers.setCreatetime(new Date());
             snsGroupMembers.setUpdatetime(new Date());
             snsGroupMembers.setGroupid(groupId);
-            if(needConfirm){
-                snsGroupMembers.setStatus(0);
-            }else{
-                snsGroupMembers.setStatus(1);
-            }
+            snsGroupMembers.setStatus(1);//加群是否需要验证
             List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
             for(String tempUserId:newUserIds){
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
@@ -171,6 +169,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
 
             if(StringUtils.isNotEmpty(groupName)){
+                SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userId,groupId);
+                String userNickname = snsGroupMembers.getNickname();
+                if(StringUtils.isEmpty(userNickname)){
+                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
+                    userNickname = appUserMongoEntity.getNickname();
+                }
                 //更新群组名称
                 BaseResp<Object> ryResult = iRongYunService.updateGroupName(groupId,groupName,"","");
                 if(ryResult.getCode() != 0){
@@ -178,7 +182,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             Date updateDate = null;
-            if(StringUtils.isNotEmpty(notice)){
+            if(StringUtils.isNotEmpty(notice) || StringUtils.isNotEmpty(groupName)){
                 updateDate = new Date();
             }
             int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,updateDate);
@@ -254,8 +258,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
                 int status = 0;
                 for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                    userIdList.remove(snsGroupMembers.getUserid()+"");
                     if(snsGroupMembers.getStatus() == 1){
-                        userIdList.remove(snsGroupMembers.getUserid()+"");
                         continue;
                     }else{
                         if(snsGroup.getNeedconfirm() && snsGroupMembers.getStatus() == 0 && (invitationUserId == null || (invitationUserId != null && !invitationUserId.equals(snsGroup.getMainuserid())))){
@@ -264,9 +268,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 
                         if(!snsGroup.getNeedconfirm() || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
                             status = 1;
+                        }else{
+                            status = 0;
                         }
                         updateGroupMemberList.add(snsGroupMembers.getUserid()+"");
-                        userIdList.remove(snsGroupMembers.getUserid()+"");
                     }
                 }
                 if(updateGroupMemberList.size() > 0){
@@ -308,6 +313,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 newSnsGroupMember.setStatus(1);
                 boolean flag = insertRongYunGroupMember(userIdList.toArray(new String[]{}),snsGroup.getGroupid()+"",snsGroup.getGroupname());
                 if(!flag){
+                    logger.error("insert rongyun group members error groupid:{}",groupId);
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                     return baseResp.fail("系统异常");
                 }
             }else{
@@ -331,15 +338,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(newSnsGroupMember.getStatus() == 0){
                 String memo = "有用户申请加入群组:"+snsGroup.getGroupname()+",快去处理吧!";
                 boolean sendMessageFlag = this.userMsgService.sendMessage(true,snsGroup.getMainuserid(),null,"0","33",snsGroup.getGroupid(),memo,"5");
+                //JPush推送 消息
+                boolean pushFlag = this.jPushService.pushMessage("消息标识",snsGroup.getMainuserid()+"","用户加群申请",memo,snsGroup.getGroupid()+"",Constant.JPUSH_TAG_COUNT_1101);
             }
 
             Map<String,Object> insertMap = new HashMap<String,Object>();
             insertMap.put("snsGroupMembers",newSnsGroupMember);
             insertMap.put("userList",userList);
-            System.out.println("````````````````"+userList.size());
             int insertRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
             if(insertRow > 0){
-                insertGroupNum += userIdList.size();
+                if(newSnsGroupMember.getStatus() == 1){
+                    insertGroupNum += userIdList.size();
+                }
                 if(insertGroupNum > 0){
                     updateGroupCurrentNum(groupId,insertGroupNum);
                 }
@@ -525,7 +535,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Integer startNum,Integer pageSize) {
+    public BaseResp<Object> groupMemberList(String groupId, Long userId, Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -537,7 +547,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(status == 0 && !userId.equals(snsGroup.getMainuserid())){
                 return baseResp.fail("抱歉,您暂时无法查询群组成员列表");
             }
-            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status,startNum,pageSize);
+            Long noQueryUserId = null;
+            if(noQueryCurrentUser != null && noQueryCurrentUser){
+                noQueryUserId = userId;
+            }
+            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId,status,noQueryUserId,startNum,pageSize);
 
             if(startNum != null && startNum == 0 && status == 1 && snsGroupMembersList != null && snsGroupMembersList.size() > 0){
                 Integer count = this.snsGroupMembersMapper.groupMembersCount(groupId,status);
@@ -775,6 +789,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     public BaseResp<Object> groupDetail(Long groupId, Long userid) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
+            Map<String,Object> resultMap = new HashMap<String,Object>();
             SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(groupId+"",null);
             if(snsGroup == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -784,9 +799,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
             if(snsGroupMembers != null && snsGroupMembers.getStatus() != 4 && snsGroupMembers.getStatus() != 2){
                 status = snsGroupMembers.getStatus() == 0?1:2;
+                resultMap.put("nickname",snsGroupMembers.getNickname());
             }
             baseResp.setData(snsGroup);
-            Map<String,Object> resultMap = new HashMap<String,Object>();
             resultMap.put("status",status);
             baseResp.setExpandData(resultMap);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -809,7 +824,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(userIds == null || StringUtils.hasBlankParams(groupId,groupName)){
             return false;
         }
+<<<<<<< HEAD
         BaseResp<Object> baseResp = iRongYunService.joinGroupMember(userIds,groupId,groupName);
+=======
+        StringBuilder sb = new StringBuilder();
+        for(String userId:userIds){
+            sb.append(",").append(userId.trim());
+        }
+        BaseResp<Object> baseResp = HttpClient.rongYunService.joinGroupMember(sb.toString().substring(1),groupId,groupName);
+>>>>>>> cc75d39831d9805fc1acd0682707be2080fc82af
         if(baseResp.getCode() == 0){
             return true;
         }
@@ -826,7 +849,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         if(userIds == null || userIds.length < 1 || StringUtils.isEmpty(groupId)){
             return false;
         }
-        BaseResp<Object> baseResp = iRongYunService.quietGroup(userIds,groupId);
+        StringBuilder sb = new StringBuilder();
+        for(String userId:userIds){
+            sb.append(",").append(userId.trim());
+        }
+        BaseResp<Object> baseResp = iRongYunService.quietGroup(sb.toString().substring(1),groupId);
         if(baseResp.getCode() == 0){
             return true;
         }

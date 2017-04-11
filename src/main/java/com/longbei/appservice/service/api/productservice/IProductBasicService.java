@@ -196,6 +196,7 @@ public interface IProductBasicService {
 	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
 	 *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 	 * @auther yinxc
+<<<<<<< HEAD
 	 * @desc
 	 * @currentdate:2017年4月7日
 	 */
@@ -207,7 +208,7 @@ public interface IProductBasicService {
 									 @RequestParam("sign") String sign,
 									 @RequestParam("price") String price);
 
-	/**
+	 /**
 	 * 再次兑换
 	 * @author yinxc
 	 * @param @param userid

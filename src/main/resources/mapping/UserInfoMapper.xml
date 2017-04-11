@@ -298,46 +298,46 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="userid != null" >
+      <if test="userid != null and userid != ''" >
         userid,
       </if>
-      <if test="totalflower != null" >
+      <if test="totalflower != null and totalflower != ''" >
         totalflower,
       </if>
-      <if test="totaldiamond != null" >
+      <if test="totaldiamond != null and totaldiamond != ''" >
         totaldiamond,
       </if>
-      <if test="totalmoney != null" >
+      <if test="totalmoney != null and totalmoney != ''" >
         totalmoney,
       </if>
-      <if test="totalcoin != null" >
+      <if test="totalcoin != null and totalcoin != ''" >
         totalcoin,
       </if>
-      <if test="nickname != null" >
+      <if test="nickname != null and nickname != ''" >
         nickname,
       </if>
-      <if test="realname != null" >
+      <if test="realname != null and realname != ''" >
         realname,
       </if>
-      <if test="sex != null" >
+      <if test="sex != null and sex != ''" >
         sex,
       </if>
-      <if test="city != null" >
+      <if test="city != null and city != ''" >
         city,
       </if>
-      <if test="brief != null" >
+      <if test="brief != null and brief != ''" >
         brief,
       </if>
       <if test="birthday != null" >
         birthday,
       </if>
-      <if test="constellation != null" >
+      <if test="constellation != null and constellation != ''" >
         constellation,
       </if>
-      <if test="blood != null" >
+      <if test="blood != null and blood != ''" >
         blood,
       </if>
-      <if test="feeling != null" >
+      <if test="feeling != null and feeling != ''" >
         feeling,
       </if>
       <if test="updatetime != null" >
@@ -346,78 +346,78 @@
       <if test="createtime != null" >
         createtime,
       </if>
-      <if test="payword != null" >
+      <if test="payword != null and payword != ''" >
         payword,
       </if>
-      <if test="avatar != null" >
+      <if test="avatar != null and avatar != ''" >
         avatar,
       </if>
-      <if test="username != null" >
+      <if test="username != null and username != ''" >
         username,
       </if>
-      <if test="rcuserid != null" >
+      <if test="rcuserid != null and rcuserid != ''" >
         rcuserid,
       </if>
-      <if test="invitecode != null" >
+      <if test="invitecode != null and invitecode != ''" >
         invitecode,
       </if>
-      <if test="inviteuserid != null" >
+      <if test="inviteuserid != null and inviteuserid != ''" >
         inviteuserid,
       </if>
-      <if test="rytoken != null" >
+      <if test="rytoken != null and rytoken != ''" >
         rytoken,
       </if>
-      <if test="deviceindex != null" >
+      <if test="deviceindex != null and deviceindex != ''" >
         deviceindex,
       </if>
-      <if test="devicetype != null" >
+      <if test="devicetype != null and devicetype != ''" >
         devicetype,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="id != null and id != ''" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="userid != null" >
+      <if test="userid != null and userid != ''" >
         #{userid,jdbcType=BIGINT},
       </if>
-      <if test="totalflower != null" >
+      <if test="totalflower != null and totalflower != ''" >
         #{totalflower,jdbcType=INTEGER},
       </if>
-      <if test="totaldiamond != null" >
+      <if test="totaldiamond != null and totaldiamond != ''" >
         #{totaldiamond,jdbcType=INTEGER},
       </if>
-      <if test="totalmoney != null" >
+      <if test="totalmoney != null and totalmoney != ''" >
         #{totalmoney,jdbcType=INTEGER},
       </if>
-      <if test="totalcoin != null" >
+      <if test="totalcoin != null and totalcoin != ''" >
         #{totalcoin,jdbcType=INTEGER},
       </if>
-      <if test="nickname != null" >
+      <if test="nickname != null and nickname != ''" >
         #{nickname,jdbcType=VARCHAR},
       </if>
-      <if test="realname != null" >
+      <if test="realname != null and realname != ''" >
         #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null" >
+      <if test="sex != null and sex != ''" >
         #{sex,jdbcType=CHAR},
       </if>
-      <if test="city != null" >
+      <if test="city != null and city != ''" >
         #{city,jdbcType=VARCHAR},
       </if>
-      <if test="brief != null" >
+      <if test="brief != null and brief != ''" >
         #{brief,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=TIMESTAMP},
       </if>
-      <if test="constellation != null" >
+      <if test="constellation != null and constellation != ''" >
         #{constellation,jdbcType=VARCHAR},
       </if>
-      <if test="blood != null" >
+      <if test="blood != null and blood != ''" >
         #{blood,jdbcType=VARCHAR},
       </if>
-      <if test="feeling != null" >
+      <if test="feeling != null and feeling != ''" >
         #{feeling,jdbcType=VARCHAR},
       </if>
       <if test="updatetime != null" >
@@ -426,34 +426,31 @@
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="payword != null" >
+      <if test="payword != null and payword != ''" >
         #{payword,jdbcType=VARCHAR},
       </if>
-      <if test="avatar != null" >
+      <if test="avatar != null and avatar != ''" >
         #{avatar,jdbcType=VARCHAR},
       </if>
-      <if test="username != null" >
+      <if test="username != null and username != ''" >
         #{username,jdbcType=VARCHAR},
       </if>
-      <if test="rcuserid != null" >
+      <if test="rcuserid != null and rcuserid != ''" >
         #{rcuserid,jdbcType=BIGINT},
       </if>
-      <if test="invitecode != null" >
+      <if test="invitecode != null and invitecode != ''" >
         #{invitecode,jdbcType=VARCHAR},
       </if>
-      <if test="inviteuserid != null" >
+      <if test="inviteuserid != null and inviteuserid != ''" >
         #{inviteuserid,jdbcType=BIGINT},
-      </if>,
-      <if test="deviceindex != null" >
-        #{deviceindex,jdbcType=VARCHAR},
       </if>
-      <if test="rytoken != null" >
+      <if test="rytoken != null and rytoken != ''" >
         #{rytoken,jdbcType=VARCHAR},
       </if>
-      <if test="deviceindex != null" >
+      <if test="deviceindex != null and deviceindex != ''" >
         #{deviceindex,jdbcType=VARCHAR},
       </if>      
-      <if test="devicetype != null" >
+      <if test="devicetype != null and devicetype != ''" >
         #{devicetype,jdbcType=VARCHAR},
       </if>         
     </trim>
@@ -684,7 +681,7 @@
     <if test="totalflower != 0">
       totalflower = totalflower + #{totalflower},
     </if>
-    <if test="totalmoney != 0">
+    <if test="totalcoin != 0">
       totalcoin = totalcoin + #{totalcoin}
     </if>
     WHERE 

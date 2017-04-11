@@ -603,7 +603,9 @@
         award.id awardid,
         award.awardtitle awardnickname,
         rank_members.awardlevel,
-        count(1) awardrate
+        count(1) awardcount,
+        award.awardphotos awardphotos,
+        award.awardprice awardprice
     from
         rank_members,
         award
