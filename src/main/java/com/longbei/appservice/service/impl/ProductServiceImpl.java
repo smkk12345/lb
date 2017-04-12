@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 			Integer totalcoin = 0;
 			Map<String, Object> expandData = new HashMap<>();
 			if(null != userInfo){
-				level = userInfo.getGrade().toString();
+				level = userInfo.getGrade() + "";
 				totalcoin = userInfo.getTotalcoin();
 			}
 			
@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
 			String level = "";
 			UserInfo userInfo = getLevel(userid);
 			if(null != userInfo){
-				level = userInfo.getGrade().toString();
+				level = userInfo.getGrade() + "";
 				baseResp = HttpClient.productBasicService.list(userid, cateid, level, starttime, startNo, pageSize);
 			}
 		}catch (Exception e){

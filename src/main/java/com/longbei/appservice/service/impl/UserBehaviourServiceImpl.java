@@ -491,7 +491,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             //插入一条 等级升级消息  不升级就不插入这个表
             saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
             //推送一条消息
-            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade().toString());
+            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
             //mtype 0 系统消息      msgtype  18:升龙级
             levelMsg(userInfo.getUserid(), "18", remark);
         }catch (Exception e){
