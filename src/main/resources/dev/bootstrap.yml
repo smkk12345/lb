@@ -1,5 +1,5 @@
 server:
-      port: 9091 #definded in application-osrad.yml
+      port: 9090 #definded in application-osrad.yml
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
