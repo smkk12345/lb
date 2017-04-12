@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 			UserInfo userInfo = getLevel(userid);
 			if(null != userInfo){
 				level = userInfo.getGrade() + "";
-				baseResp = HttpClient.productBasicService.list(userid, cateid, level, starttime, startNo, pageSize);
+				baseResp = iProductBasicService.list(userid, cateid, level, starttime, startNo, pageSize);
 			}
 		}catch (Exception e){
 			logger.error("selectCategoryList cateid = {}, userid = {}, starttime = {}, startNo = {}, pageSize = {}", 
