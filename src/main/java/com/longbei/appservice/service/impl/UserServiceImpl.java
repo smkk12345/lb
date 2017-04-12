@@ -33,6 +33,7 @@ import com.longbei.appservice.service.UserService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
+import scala.collection.immutable.Stream;
 
 /**
  * 创建时间：2015-1-27 下午5:22:59
@@ -382,8 +383,19 @@ public class UserServiceImpl implements UserService {
             } else if (operateType.equals("1")) {
                 operateName = "修改密码";
             } else if (operateType.equals("2")) {
+				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
+				if(null != userInfo){
+				}else {
+					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_04,Constant.RTNINFO_SYS_04);
+				}
                 operateName = "找回密码";
             } else if (operateType.equals("3")){
+				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
+				if(null != userInfo){
+					baseResp.getExpandData().put("isregistered","1");
+				}else {
+					baseResp.getExpandData().put("isregistered","0");
+				}
 				operateName = "绑定手机号";
 			}else if (operateType.equals("4")){
 				operateName = "安全验证";
@@ -534,6 +546,9 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
+			if(StringUtils.hasBlankParams(password)){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_03, Constant.RTNINFO_SYS_03);
+			}
 			baseResp = checkSms(username,randomcode);
 			if(baseResp.getCode()!=Constant.STATUS_SYS_00){
 				return baseResp;
@@ -553,16 +568,23 @@ public class UserServiceImpl implements UserService {
 			}else{
 				//验证码是否正确
 				baseResp = checkSms(username,randomcode);
+//				if(baseResp.getCode()==Constant.STATUS_SYS_00){
+//					//免密码登陆
+//					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//					baseResp = iUserBasicService.gettokenWithoutPwd(username);
+//					return baseResp;
+//				}
 				//密码是否正确
-				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
-				if(baseResp.getCode()==Constant.STATUS_SYS_00||baseResp2.getCode()==Constant.STATUS_SYS_00){
+//				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
+				if(ResultUtil.isSuccess(baseResp)){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-					baseResp.setData(baseResp2.getData());
+					baseResp = iUserBasicService.gettokenWithoutPwd(username);
+					Long suserid = (Long) baseResp.getExpandData().get("userid");
+					iUserBasicService.bindingThird(openid, utype, suserid);
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
 				}
-				
 			}
 		}
 		return baseResp;
