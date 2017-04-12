@@ -12,7 +12,7 @@ import com.longbei.appservice.dao.mongo.dao.NewMessageTipDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -43,6 +43,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private NewMessageTipDao newMessageTipDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private IJPushService ijPushService;
+
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
     /**
@@ -97,7 +100,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("content","有用户申请加为好友");
                 pushMessage.put("msgid",newFriendAddAsk.getId());
                 pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-                HttpClient.jPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
+                ijPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
 
                 return baseResp.ok("申请添加好友成功,请等待好友审核~~");
             }
@@ -124,7 +127,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("content","有用户申请加为好友");
                 pushMessage.put("msgid",friendAddAsk.getId());
                 pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-                HttpClient.jPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
+                ijPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
                 return baseResp.ok("申请添加好友成功,请等待好友审核~~");
             }
             JSONArray jsonArray = friendAddAsk.getMessage();
@@ -150,7 +153,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("content","有用户申请加为好友");
             pushMessage.put("msgid",friendAddAsk.getId());
             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-            HttpClient.jPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
+            ijPushService.messagePush(friendId+"","申请加为好友","申请加为好友",pushMessage.toString());
             return baseResp.ok("申请添加好友成功,请等待好友审核~~");
         }catch(Exception e){
             logger.error("insert friendAddAsk userId:{} friendId:{}",userId,friendId);
@@ -203,7 +206,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("content","有用户回复了消息");
                 pushMessage.put("msgid",friendAddAsk.getId());
                 pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-                HttpClient.jPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
+                ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
 
                 return baseResp.ok("回复成功");
 //            }
@@ -305,7 +308,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("content","加好友申请被拒绝");
                 pushMessage.put("msgid",friendAddAsk.getId());
                 pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-                HttpClient.jPushService.messagePush(friendAddAsk.getSenderUserId()+"","加好友申请被拒绝","加好友申请被拒绝",pushMessage.toString());
+                ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","加好友申请被拒绝","加好友申请被拒绝",pushMessage.toString());
                 return new BaseResp<>().ok();
             }
             SnsFriends tempSnsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendAddAsk.getSenderUserId());
@@ -351,7 +354,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("content","同意了加好友申请");
             pushMessage.put("msgid",friendAddAsk.getId());
             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
-            HttpClient.jPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+            ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
             return new BaseResp<Object>().ok();
         }catch(Exception e){
             logger.error("update friendAddAsk status id:{} status:{} userId:{}",id,status,userId);

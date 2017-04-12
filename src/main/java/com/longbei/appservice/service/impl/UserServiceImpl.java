@@ -14,14 +14,15 @@ import com.longbei.appservice.entity.*;
 
 import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
+import com.longbei.appservice.service.api.outernetservice.IJPushService;
+import com.longbei.appservice.service.api.outernetservice.IRongYunService;
+import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.nativejdbc.OracleJdbc4NativeJdbcExtractor;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
@@ -29,7 +30,6 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.api.HttpClient;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -82,9 +82,15 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
-//	@Autowired
-//	private IAlidayuService iAlidayuService;
-	
+	@Autowired
+	private IAlidayuService iAlidayuService;
+	@Autowired
+	private IUserBasicService iUserBasicService;
+	@Autowired
+	private IRongYunService iRongYunService;
+	@Autowired
+	private IJPushService ijPushService;
+
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	
@@ -187,9 +193,8 @@ public class UserServiceImpl implements UserService {
 				userInfo.setInviteuserid(userInfo1.getUserid());
 			}
 		}
-		TokenReslut userToken;
 		try {
-			BaseResp<Object> tokenRtn = HttpClient.rongYunService.getRYToken(userid+"", username, "#");
+			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userid+"", username, "#");
 			if(!ResultUtil.isSuccess(tokenRtn)){
 				return reseResp;
 			}
@@ -331,7 +336,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> registerbasic(String username, String password,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
 		long userid = idGenerateService.getUniqueIdAsLong();
-		BaseResp<Object> baseResp = HttpClient.userBasicService.add(userid, username, password);
+		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
 		}
@@ -387,18 +392,20 @@ public class UserServiceImpl implements UserService {
 			resp.initCodeAndDesp();
 //			BaseResp resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			if (mobile.contains("136836")){
-				HttpClient.alidayuService.sendMsg("13683691417", randomCode, operateName);
+				iAlidayuService.sendMsg("13683691417", randomCode, operateName);
 			}
 			else if (mobile.contains("1861207")){
-				HttpClient.alidayuService.sendMsg("18612073860", randomCode, operateName);
+				iAlidayuService.sendMsg("18612073860", randomCode, operateName);
+			}else if(mobile.contains("1501158")){
+				iAlidayuService.sendMsg("15011587112", randomCode, operateName);
 			}
-			else if (mobile.contains("150115")){
-				HttpClient.alidayuService.sendMsg("15011516059", randomCode, operateName);
+			else if (mobile.contains("1501151")){
+				iAlidayuService.sendMsg("15011516059", randomCode, operateName);
 			}
 			else if(mobile.contains("1851128")){
-				HttpClient.alidayuService.sendMsg("18511285918", randomCode, operateName);
+				iAlidayuService.sendMsg("18511285918", randomCode, operateName);
 			}else{
-				resp = HttpClient.alidayuService.sendMsg(mobile, randomCode, operateName);
+				resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			}
 
             if (ResultUtil.isSuccess(resp)) {
@@ -474,9 +481,9 @@ public class UserServiceImpl implements UserService {
 		} else {
 			logger.debug("{}  验证码{} 正确", username, randomCode);
 			//修改密码
-			BaseResp<Object> baseResps = HttpClient.userBasicService.updatepwd(username, newpwd, newpwd);
+			BaseResp<Object> baseResps = iUserBasicService.updatepwd(username, newpwd, newpwd);
 			if(baseResps.getCode() == Constant.STATUS_SYS_00){
-				BaseResp<Object> baseResp1 = HttpClient.userBasicService.gettoken(username, newpwd);
+				BaseResp<Object> baseResp1 = iUserBasicService.gettoken(username, newpwd);
 				if(baseResp1.getCode() == Constant.STATUS_SYS_00){
 					String token = (String)baseResp1.getData();
 //					baseResp1.getExpandData().put("token", token);
@@ -497,7 +504,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
-		BaseResp<Object> baseResp = HttpClient.userBasicService.gettoken(username, password);
+		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			String token = (String)baseResp.getData();
@@ -524,7 +531,7 @@ public class UserServiceImpl implements UserService {
 			String utype, String openid,String inviteuserid,String deviceindex,
 			String devicetype,String randomcode,String avatar) {
 		
-		BaseResp<Object> baseResp = HttpClient.userBasicService.gettoken(username, password);
+		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			baseResp = checkSms(username,randomcode);
@@ -538,16 +545,16 @@ public class UserServiceImpl implements UserService {
 			}
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
-			HttpClient.userBasicService.bindingThird(openid, utype, suserid);
+			iUserBasicService.bindingThird(openid, utype, suserid);
 		}else{//手机号已经注册
-			baseResp = HttpClient.userBasicService.hasbindingThird(openid, utype, username);
+			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
 				return baseResp;
 			}else{
 				//验证码是否正确
 				baseResp = checkSms(username,randomcode);
 				//密码是否正确
-				BaseResp<Object> baseResp2 = HttpClient.userBasicService.gettoken(username, password);
+				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(baseResp.getCode()==Constant.STATUS_SYS_00||baseResp2.getCode()==Constant.STATUS_SYS_00){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp.setData(baseResp2.getData());
@@ -567,7 +574,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public BaseResp<Object> thirdlogin(String utype, String openid,String deviceindex) {
-		BaseResp<Object> baseResp = HttpClient.userBasicService.thirdlogin(openid,utype);
+		BaseResp<Object> baseResp = iUserBasicService.thirdlogin(openid,utype);
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			Object data = baseResp.getData();
 			JSONObject jsonObject = JSONObject.fromObject(data);
@@ -615,7 +622,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> changePassword(long userid, String pwd, String newpwd) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.userBasicService.updatepwdById(userid,pwd,newpwd);
+			baseResp = iUserBasicService.updatepwdById(userid,pwd,newpwd);
 		}catch (Exception e){
 			logger.error("changePassword error userid={},pwd={},newpwd={}",userid
 			,pwd,newpwd);

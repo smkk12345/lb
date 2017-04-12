@@ -2,23 +2,23 @@ package com.longbei.appservice.service.api.productservice;
 
 import com.longbei.appservice.common.BaseResp;
 
-import com.longbei.appservice.entity.ProductOrderInfo;
-import feign.Param;
-import feign.RequestLine;
-
-import java.util.List;
-import java.util.Map;
-
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+@FeignClient("productService")
+@RequestMapping("productService")
 public interface IProductCategoryService {
-    /**
-     * @Title: selectCategoryByCateId
-     * @Description: 查询单个商品类目详情
-     * @param @param cateId 商品类目id
-     * @auther IngaWu
-     * @currentdate:2017年3月19日
-     */
-    @RequestLine("POST /api/product/selectCategoryByCateId?cateId={cateId}")
-    BaseResp<Object> selectCategoryByCateId(@Param("cateId")String cateId);
+	/**
+	 * @Title: selectCategoryByCateId
+	 * @Description: 查询单个商品类目详情
+	 * @param @param cateId 商品类目id
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectCategoryByCateId")
+	BaseResp<Object> selectCategoryByCateId(@RequestParam("cateId")String cateId);
 
 	/**
 	 * @Title: roductCategories
@@ -26,7 +26,7 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	@RequestLine("POST /api/product/productCategories")
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/productCategories")
 	BaseResp<Object> productCategories();
 
 	/**
@@ -37,8 +37,11 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月29日
 	 */
-	@RequestLine("POST /api/product/selectCategory?parentid={parentid}&startNum={startNum}&pageSize={pageSize}")
-	BaseResp<Object> selectCategory(@Param("parentid") String parentid,@Param("startNum") String startNum,@Param("pageSize")String pageSize);
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectCategory"
+			,produces = MediaType.APPLICATION_JSON_VALUE)
+	BaseResp<Object> selectCategory(@RequestParam("parentid") String parentid,
+									@RequestParam("startNum") String startNum,
+									@RequestParam("pageSize")String pageSize);
 
 	/**
 	 * @Title: insertCategory
@@ -48,30 +51,32 @@ public interface IProductCategoryService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-    @RequestLine("POST /api/product/insertCategory?catename={catename}&parentid={parentid}")
-	BaseResp<Object> insertCategory(@Param("catename") String catename,
-									@Param("parentid") String parentid);
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/insertCategory")
+	BaseResp<Object> insertCategory(@RequestParam("catename") String catename,
+									@RequestParam("parentid") String parentid);
 
-    /**
-     * @Title: updateCategoryByCateId
-     * @param @param cateId 商品类目id
-     * @Description: 编辑商品类目的名称或排序号
-     * @param @param catename 商品类目名称
-     * @param @param sort 排序号
-     * @auther IngaWu
-     * @currentdate:2017年3月19日
-     */
-    @RequestLine("POST /api/product/updateCategoryByCateId?cateId={cateId}&catename={catename}&sort={sort}")
-    BaseResp<Object> updateCategoryByCateId(@Param("cateId")String cateId,@Param("catename")String catename,@Param("sort")String sort);
+	/**
+	 * @Title: updateCategoryByCateId
+	 * @param @param cateId 商品类目id
+	 * @Description: 编辑商品类目的名称或排序号
+	 * @param @param catename 商品类目名称
+	 * @param @param sort 排序号
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/updateCategoryByCateId")
+	BaseResp<Object> updateCategoryByCateId(@RequestParam("cateId")String cateId,
+											@RequestParam("catename")String catename,
+											@RequestParam("sort")String sort);
 
-    /**
-     * @Title:deleteCategoryByCateId
-     * @Description: 删除商品类目
-     * @param @param id 商品类目id
-     * @auther IngaWu
-     * @currentdate:2017年3月19日
-     */
-    @RequestLine("POST /api/product/deleteCategoryByCateId?cateId={cateId}")
-    BaseResp<Object> deleteCategoryByCateId(@Param("cateId")String cateId);
+	/**
+	 * @Title:deleteCategoryByCateId
+	 * @Description: 删除商品类目
+	 * @param @param id 商品类目id
+	 * @auther IngaWu
+	 * @currentdate:2017年3月19日
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/deleteCategoryByCateId")
+	BaseResp<Object> deleteCategoryByCateId(@RequestParam("cateId")String cateId);
 
 }

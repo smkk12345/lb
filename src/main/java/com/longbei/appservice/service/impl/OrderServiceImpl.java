@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.api.productservice.IProductBasicService;
+import com.longbei.appservice.service.api.productservice.IProductCategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,6 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.api.HttpClient;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -44,6 +45,10 @@ public class OrderServiceImpl implements OrderService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserMsgMapper userMsgMapper;
+	@Autowired
+	private IProductBasicService iProductBasicService;
+	@Autowired
+	private IProductCategoryService iProductCategoryService;
 
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
@@ -67,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
 			//获取用户手机号
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				baseResp = HttpClient.productBasicService.buyMoney(userid, number, userInfo.getUsername(), paytype, "", price);
+				baseResp = iProductBasicService.buyMoney(userid, number, userInfo.getUsername(), paytype, "", price);
 			}
 		}catch (Exception e){
 			logger.error("buyMoney userid = {}, number = {}", userid, number, e);
@@ -97,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_23);
 					return baseResp;
 				}
-				baseResp = HttpClient.productBasicService.buyOrder(userid, orderid);
+				baseResp = iProductBasicService.buyOrder(userid, orderid);
 				if(ResultUtil.isSuccess(baseResp)){
 					//调用product_service成功后    扣除进步币，龙币   
 					if(moneyprice != 0){
@@ -146,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 				String address = userAddress.getRegion() + userAddress.getAddress();
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
 				
-				baseResp = HttpClient.productBasicService.create(userid, userInfo.getUsername(), productidss, numberss, address, 
+				baseResp = iProductBasicService.create(userid, userInfo.getUsername(), productidss, numberss, address, 
 						userAddress.getReceiver(), userAddress.getMobile(), impiconprice, moneyprice, paytype, prices, otype, 
 						remark, userLevel.getDiscount().toString());
 			}
@@ -164,7 +169,7 @@ public class OrderServiceImpl implements OrderService {
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = "";
 			}
-			baseResp = HttpClient.productBasicService.list(userid, orderstatus, startNo, pageSize);
+			baseResp = iProductBasicService.list(userid, orderstatus, startNo, pageSize);
 		}catch (Exception e){
 			logger.error("list userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
 					userid, orderstatus, startNo, pageSize, e);
@@ -178,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<ProductOrders> get(Long userid, String orderid) {
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.get(userid, orderid);
+			baseResp = iProductBasicService.get(userid, orderid);
 		}catch (Exception e){
 			logger.error("get userid = {}, orderid = {}", userid, orderid, e);
 		}
@@ -192,7 +197,7 @@ public class OrderServiceImpl implements OrderService {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-				baseResp = HttpClient.productBasicService.exchange(userid, orderid, userLevel.getDiscount().toString());
+				baseResp = iProductBasicService.exchange(userid, orderid, userLevel.getDiscount().toString());
 			}
 		}catch (Exception e){
 			logger.error("exchange userid = {}, orderid = {}", userid, orderid, e);
@@ -204,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Object> updateOrderStatus(Long userid, String orderid, String orderstatus) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.updateOrderStatus(userid, orderid, orderstatus);
+			baseResp = iProductBasicService.updateOrderStatus(userid, orderid, orderstatus);
 			if(ResultUtil.isSuccess(baseResp)){
 				//orderstatus  订单状态   0：待付款   1：待发货   2：待收货  3：已完成    4：已取消(需要返还用户龙币和进步币)
 				if("4".equals(orderstatus)){
@@ -278,7 +283,7 @@ public class OrderServiceImpl implements OrderService {
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = null;
 			}
-			baseResp = HttpClient.productBasicService.adminlist(orderstatus, startNo, pageSize);
+			baseResp = iProductBasicService.adminlist(orderstatus, startNo, pageSize);
 		}catch (Exception e){
 			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
 					orderstatus, startNo, pageSize, e);
@@ -290,7 +295,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<ProductOrders> adminget(Long userid, String orderid) {
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.adminget(userid, orderid);
+			baseResp = iProductBasicService.adminget(userid, orderid);
 			if (!ResultUtil.isSuccess(baseResp)){
 	            return null;
 	        }
@@ -311,7 +316,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Object> updateOrdersIsexception(long userid, String orderid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.updateOrdersIsexception(orderid);
+			baseResp = iProductBasicService.updateOrdersIsexception(orderid);
 		}catch (Exception e){
 			logger.error("updateOrdersIsexception orderid = {}", orderid, e);
 		}
@@ -329,7 +334,7 @@ public class OrderServiceImpl implements OrderService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			//取消需要返还龙币，进步币
-			baseResp = HttpClient.productBasicService.updateOrdersIsdel(orderid);
+			baseResp = iProductBasicService.updateOrdersIsdel(orderid);
 		}catch (Exception e){
 			logger.error("updateOrdersIsdel orderid = {}", orderid, e);
 		}
@@ -340,7 +345,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Object> updateOrdersRemark(String orderid, String remark) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.updateOrdersRemark(orderid, remark);
+			baseResp = iProductBasicService.updateOrdersRemark(orderid, remark);
 		}catch (Exception e){
 			logger.error("updateOrdersRemark orderid = {}, remark = {}", 
 					orderid, remark, e);
@@ -360,7 +365,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Integer> selectCountOrders(String orderstatus) {
 		BaseResp<Integer> baseResp = new BaseResp<Integer>();
 		try{
-			baseResp = HttpClient.productBasicService.selectCountOrders(orderstatus);
+			baseResp = iProductBasicService.selectCountOrders(orderstatus);
 		}catch (Exception e){
 			logger.error("selectCountOrders orderstatus = {}", 
 					orderstatus, e);
@@ -373,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
 			String screatetime, String ecreatetime) {
 		BaseResp<Integer> baseResp = new BaseResp<Integer>();
 		try{
-			baseResp = HttpClient.productBasicService.selectCountSearchOrders(orderstatus, ordernum, username, 
+			baseResp = iProductBasicService.selectCountSearchOrders(orderstatus, ordernum, username, 
 					screatetime, ecreatetime);
 		}catch (Exception e){
 			logger.error("selectCountOrders orderstatus = {}", 
@@ -392,7 +397,7 @@ public class OrderServiceImpl implements OrderService {
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = null;
 			}
-			baseResp = HttpClient.productBasicService.searchList(orderstatus, ordernum, username, 
+			baseResp = iProductBasicService.searchList(orderstatus, ordernum, username, 
 					screatetime, ecreatetime, startNo, pageSize);
 		}catch (Exception e){
 			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
@@ -405,7 +410,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
 		try{
-			baseResp = HttpClient.productBasicService.exceptionlist(startNo, pageSize);
+			baseResp = iProductBasicService.exceptionlist(startNo, pageSize);
 		}catch (Exception e){
 			logger.error("exceptionlist startNo = {}, pageSize = {}", 
 					startNo, pageSize, e);
@@ -417,7 +422,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Object> updateDeliver(long userid, String orderid, String logisticscode, String logisticscompany) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.updateDeliver(orderid, logisticscode, logisticscompany);
+			baseResp = iProductBasicService.updateDeliver(orderid, logisticscode, logisticscompany);
 			BaseResp<ProductOrders> resResp = adminget(userid, orderid);
 			if(ResultUtil.isSuccess(resResp)){
 				ProductOrders productOrders = resResp.getData();
@@ -440,7 +445,7 @@ public class OrderServiceImpl implements OrderService {
 	public BaseResp<Integer> selectCountException() {
 		BaseResp<Integer> baseResp = new BaseResp<Integer>();
 		try{
-			baseResp = HttpClient.productBasicService.selectCountException();
+			baseResp = iProductBasicService.selectCountException();
 		}catch (Exception e){
 			logger.error("selectCountException ", e);
 		}
@@ -491,7 +496,7 @@ public class OrderServiceImpl implements OrderService {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try{
 			Date beforeDate = DateUtils.getBeforeDateTime(currentDate,Constant.AUTO_CONFIRM_RECEIPT);
-			BaseResp<List<ProductOrders>> baseOrderList = HttpClient.productBasicService.selectAutoReceiptOrder(beforeDate.getTime());
+			BaseResp<List<ProductOrders>> baseOrderList = iProductBasicService.selectAutoReceiptOrder(beforeDate.getTime());
 			if(baseOrderList.getCode() != 0){
 				return baseResp;
 			}
@@ -517,7 +522,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 
 			//修改订单状态
-			BaseResp<Object> updateResp = HttpClient.productBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
+			BaseResp<Object> updateResp = iProductBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
 
 			return baseResp.ok();
 		}catch(Exception e){

@@ -9,6 +9,7 @@ import com.longbei.appservice.entity.SysRuleCheckin;
 import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.SysSensitiveService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,8 @@ public class InitConfig implements CommandLineRunner {
     private Queue updatequeue;
     @Autowired
     private AddMessageReceiveService addMessageReceiveService;
+
+
 
     @Override
     public void run(String... strings) throws Exception {

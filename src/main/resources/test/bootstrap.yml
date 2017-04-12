@@ -24,3 +24,8 @@ eureka:
     serviceUrl:
         defaultZone: http://172.23.1.7:8080/eureka/
 
+feign:
+    httpclient:
+        enabled: true
+    hystrix:
+        enabled: false
