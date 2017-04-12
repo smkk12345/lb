@@ -295,7 +295,7 @@
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="id != null and id != ''" >
         id,
       </if>
       <if test="userid != null and userid != ''" >

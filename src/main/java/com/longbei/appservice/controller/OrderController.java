@@ -53,9 +53,9 @@ public class OrderController {
   		}
   		try {
   			//人民币兑换龙币比例       
-  		    int yuantomoney = AppserviceConfig.yuantomoney;
+  		    double yuantomoney = AppserviceConfig.yuantomoney;
   		    //price 获取真实价格    已分为单位
-  		    int minute = Integer.parseInt(number)/yuantomoney*100;
+  		    double minute = Integer.parseInt(number)*yuantomoney*100;
   		    String price = minute + "";
   			int num = 0;
   			if(!"3".equals(paytype) && !"4".equals(paytype)){
@@ -125,7 +125,7 @@ public class OrderController {
     * 				totalcoin---进步币总数
     * 				moneytocoin---龙币兑换进步币比例 1:10
     * 				flowertocoin---花兑换进步币比例  1:10
-    * 				moneytoflower---龙币兑换花比例 1:1  
+    * 				flowertomoney---花兑换龙币比例 1:1 
     * @currentdate:2017年3月31日
 	*/
 	@SuppressWarnings({ "unchecked" })
@@ -307,7 +307,7 @@ public class OrderController {
     * 				totalcoin---进步币总数
     * 				moneytocoin---龙币兑换进步币比例 1:10
     * 				flowertocoin---花兑换进步币比例  1:10
-    * 				moneytoflower---龙币兑换花比例 1:1
+    * 				flowertomoney---花兑换龙币比例 1:1
     * @currentdate:2017年3月21日
 	*/
 	@SuppressWarnings("unchecked")
@@ -361,7 +361,6 @@ public class OrderController {
   				baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
   	  					friendid, improveid, businesstype, businessid);
   			}
-  			
 		} catch (Exception e) {
 			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
 		}
@@ -386,22 +385,22 @@ public class OrderController {
     * 				totalflower---鲜花总数  
     * @currentdate:2017年3月28日
 	*/
-	@SuppressWarnings("unchecked")
-  	@RequestMapping(value = "/coinExchangeFlower")
-    public BaseResp<Object> coinExchangeFlower(String userid, String number, String friendid, 
-    		String improveid, String businesstype, String businessid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, number)) {
-  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-  		}
-  		try {
-  			baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 
-  					friendid, improveid, businesstype, businessid);
-		} catch (Exception e) {
-			logger.error("coinExchangeFlower userid = {}, number = {}", userid, number, e);
-		}
-  		return baseResp;
-	}
+//	@SuppressWarnings("unchecked")
+//  	@RequestMapping(value = "/coinExchangeFlower")
+//    public BaseResp<Object> coinExchangeFlower(String userid, String number, String friendid,
+//    		String improveid, String businesstype, String businessid) {
+//		BaseResp<Object> baseResp = new BaseResp<>();
+//  		if (StringUtils.hasBlankParams(userid, number)) {
+//  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+//  		}
+//  		try {
+//  			baseResp = userFlowerDetailService.coinExchangeFlower(Long.parseLong(userid), Integer.parseInt(number),
+//  					friendid, improveid, businesstype, businessid);
+//		} catch (Exception e) {
+//			logger.error("coinExchangeFlower userid = {}, number = {}", userid, number, e);
+//		}
+//  		return baseResp;
+//	}
 	
 
 }

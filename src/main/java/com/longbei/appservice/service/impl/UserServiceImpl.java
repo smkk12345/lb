@@ -512,6 +512,9 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
+			if(null != userInfo){
+				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_04);
+			}
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			if(deviceindex.equals(userInfo.getDeviceindex())){
 			}else{
