@@ -65,7 +65,7 @@ public class Constant_point {
     public static int LOTTERY = 1;//lottery 抽奖
 
     /**
-     * 无限制
+     * 邀请好友注册赠送的龙分
      */
     public static int INVITE_LEVEL1 = 50;
 

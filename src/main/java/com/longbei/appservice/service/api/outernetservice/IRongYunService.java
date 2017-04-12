@@ -43,8 +43,8 @@ public interface IRongYunService {
      * @param groupName
      * @return
      */
-    @RequestLine("GET /rongyun/joinGroupMember?userIds={userIds}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> joinGroupMember(@Param("userIds") String userIds,@Param("groupId") String groupId,
+    @RequestLine("GET /rongyun/joinGroupMember?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&targetUserDisplayNames={targetUserDisplayNames}&userIds={userIds}&groupId={groupId}&groupName={groupName}")
+    BaseResp<Object> joinGroupMember(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("targetUserDisplayNames")String targetUserDisplayNames,@Param("userIds") String userIds,@Param("groupId") String groupId,
                                      @Param("groupName")String groupName);
 
     /**
@@ -53,9 +53,27 @@ public interface IRongYunService {
      * @param groupId
      * @return
      */
-    @RequestLine("GET /rongyun/quietGroup?userIds={userIds}&groupId={groupId}")
-    BaseResp<Object> quietGroup(@Param("userIds")String userIds,@Param("groupId")String groupId);
+    @RequestLine("GET /rongyun/quietGroup?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&targetUserDisplayNames={targetUserDisplayNames}&userIds={userIds}&groupId={groupId}")
+    BaseResp<Object> quietGroup(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("targetUserDisplayNames")String targetUserDisplayNames,
+                                @Param("userIds")String userIds,@Param("groupId")String groupId);
 
-    @RequestLine("GET /rongyun/dismissGroup?userId={userId}&groupId={groupId}")
-    BaseResp<Object> dismissGroup(@Param("userId") String userId,@Param("groupId") String groupId);
+    /**
+     * 解散群组
+     * @param operatorNickname
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    @RequestLine("GET /rongyun/dismissGroup?operatorNickname={operatorNickname}&userId={userId}&groupId={groupId}")
+    BaseResp<Object> dismissGroup(@Param("operatorNickname")String operatorNickname,@Param("userId") String userId,@Param("groupId") String groupId);
+
+    /**
+     * 更改用户的群组昵称 发送融云的资料更改通知
+     * @param userId
+     * @param groupId
+     * @param nickName
+     * @return
+     */
+    @RequestLine("GET /rongyun/updateGroupMemberNickname?userId={userId}&groupId={groupId}&nickName={nickName}")
+    BaseResp updateGroupMemberNickname(@Param("userId")Long userId,@Param("groupId") String groupId,@Param("nickName") String nickName);
 }
