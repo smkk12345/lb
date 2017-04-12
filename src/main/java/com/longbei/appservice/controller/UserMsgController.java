@@ -206,7 +206,7 @@ public class UserMsgController extends BaseController {
 
 	/**
     * @Title: http://ip:port/app_service/userMsg/msgDelOther
-    * @Description: 清空用户类型消息(mtype,msgtype)       暂时未用
+    * @Description: 清空用户类型消息(mtype,msgtype) 
     * @param @param userid  
     * @param @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
 	*										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货

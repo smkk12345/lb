@@ -92,6 +92,10 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 					map.get("paytype"), map.get("transaction_id"), price);
 			if(ResultUtil.isSuccess(baseResp1)){
 				BaseResp<Object> baseResp2 = userMoneyDetailService.insertPublic(userid,"0",number,0);
+				//查询龙币兑换花的比例
+				int moneytoflower = AppserviceConfig.moneytoflower;
+				//修改用户userInfo表---龙币总数
+				userInfoMapper.updateMoneyAndFlowerByUserid(userid, number*moneytoflower, 0);
 				if(ResultUtil.isSuccess(baseResp2)){
 					return baseResp.initCodeAndDesp();
 				}else
