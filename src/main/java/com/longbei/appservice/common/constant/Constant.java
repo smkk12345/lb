@@ -285,7 +285,7 @@ public class Constant {
 	 */
 	public static final int APP_TOKEN_EXPIRE = 30*24*60*60;
 	
-	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms,/user/registerbasic,/user/thirdlogin,/user/thirdregister,/user/checkSms,/init";
+	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms,/user/registerbasic,/user/thirdlogin,/user/thirdregister,/user/checkSms,/init,/user/findPassword";
 
 	/**
 	 * 进步相关配置

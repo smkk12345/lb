@@ -290,6 +290,7 @@ public class AppUserController extends BaseController {
 
     /**
      * @Title:  http://ip:port/app_service/user/changePassword
+     * @Description: 修改密码
      * @param request userid  password  newpassword
      * @param response
      * @return
@@ -470,7 +471,7 @@ public class AppUserController extends BaseController {
             String devicetype = request.getParameter("devicetype");
     		//必传参数  类型 openid 密码 手机号  随机码
     		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
-    		if(StringUtils.hasBlankParams(utype,openid,password,username,randomcode,deviceindex)){
+    		if(StringUtils.hasBlankParams(utype,openid,username,randomcode,deviceindex)){
     			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     		}
     		//判断 手机号是否已经注册  未注册  是下面逻辑

@@ -4,7 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
@@ -20,12 +20,14 @@ public class TokenManager {
 
 	@Autowired
 	private SpringJedisDao springJedisDao;
+    @Autowired
+    private IUserBasicService iUserBasicService;
 	
 	private static Logger logger = LoggerFactory.getLogger(TokenManager.class);
 	
     private String getTokenFromTargetService(String servicename){
         if(Constant.SERVER_USER_SERVICE.equals(servicename)){
-            BaseResp<Object> baseResp = HttpClient.userBasicService.getServiceToken(Constant.SERVER_APP_SERVICE,12*30*24*3600*1000);
+            BaseResp<Object> baseResp = iUserBasicService.getServiceToken(Constant.SERVER_APP_SERVICE,12*30*24*3600*1000);
             if(baseResp.getCode() == Constant.STATUS_SYS_00){
                 return (String) baseResp.getData();
             }

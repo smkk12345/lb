@@ -11,7 +11,7 @@ import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.api.HttpClient;
+import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import com.longbei.pay.util.UtilDate;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -37,6 +37,8 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private IProductBasicService iProductBasicService;
 
     private static Logger logger = LoggerFactory.getLogger(UserIosBuymoneyServiceImpl.class);
 	
@@ -79,17 +81,22 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		map.put("price",userIosBuymoney.getPrice()+"");
 		try {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
-			
+
 			//人民币兑换龙币比例       
-  		    int yuantomoney = AppserviceConfig.yuantomoney;
+  		    double yuantomoney = AppserviceConfig.yuantomoney;
   		    //price 获取真实价格    已分为单位
-  		    int minute = userIosBuymoney.getMoney()/yuantomoney*100;
+  		    int minute = (int) (userIosBuymoney.getMoney()*yuantomoney*100);
   		    String price = minute + "";
   		    
-			BaseResp<ProductOrders> baseResp1 = HttpClient.productBasicService.buyMoney(userid, number,userInfo.getUsername(),
+			BaseResp<ProductOrders> baseResp1 = iProductBasicService.buyMoney(userid, number,userInfo.getUsername(),
 					map.get("paytype"), map.get("transaction_id"), price);
 			if(ResultUtil.isSuccess(baseResp1)){
 				BaseResp<Object> baseResp2 = userMoneyDetailService.insertPublic(userid,"0",number,0);
+				//查询花兑换龙币比例
+				double flowertomoney = AppserviceConfig.flowertomoney;
+				//修改用户userInfo表---龙币总数
+				int num = (int) (number*flowertomoney);
+				userInfoMapper.updateMoneyAndFlowerByUserid(userid, num, 0);
 				if(ResultUtil.isSuccess(baseResp2)){
 					return baseResp.initCodeAndDesp();
 				}else

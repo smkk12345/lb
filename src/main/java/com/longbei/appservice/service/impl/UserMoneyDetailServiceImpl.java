@@ -68,10 +68,6 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			}
 			boolean temp = insert(userMoneyDetail);
 			if (temp) {
-				//查询龙币兑换花的比例
-//				int moneytoflower = AppserviceConfig.moneytoflower;
-				//修改用户userInfo表---龙币总数
-//				userInfoMapper.updateMoneyAndFlowerByUserid(userid, -number*moneytoflower, number);
 //				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 //				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
 //				userInfo.setTotalmoney(allnum);
