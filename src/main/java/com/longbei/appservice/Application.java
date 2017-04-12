@@ -10,6 +10,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,8 +21,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableSwagger2
 @ServletComponentScan
 @EnableDiscoveryClient
-@EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.longbei.appservice.service.api"})
+@EnableFeignClients(basePackages =
+        {"com.longbei.appservice.service.api.outernetservice",
+                "com.longbei.appservice.service.api.userservice" ,
+                        "com.longbei.appservice.service.api.productservice"})
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
 

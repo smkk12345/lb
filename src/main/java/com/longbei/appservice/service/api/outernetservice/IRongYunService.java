@@ -1,19 +1,30 @@
 package com.longbei.appservice.service.api.outernetservice;
 
 import com.longbei.appservice.common.BaseResp;
-import feign.Param;
-import feign.RequestLine;
-import net.sf.json.JSONArray;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created by smkk on 17/2/15.
  */
+@FeignClient("outernetService")
+@RequestMapping("outernetService")
 public interface IRongYunService {
 
-    @RequestLine("GET /rongyun/getRYToken?userid={userid}&username={username}&portraitUri={portraitUri}")
-    BaseResp<Object> getRYToken(@Param("userid") String userid,
-                                 @Param("username") String username,
-                                 @Param("portraitUri") String portraitUri);
+    /**
+     * 获取融云的token
+     * @param userid
+     * @param username
+     * @param portraitUri
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/getRYToken")
+    BaseResp<Object> getRYToken(@RequestParam("userid") String userid,
+                                @RequestParam("username") String username,
+                                @RequestParam("portraitUri") String portraitUri);
 
     /**
      * 新建群组
@@ -22,10 +33,10 @@ public interface IRongYunService {
      * @param groupName 群组名称
      * @return
      */
-    @RequestLine("GET /rongyun/createGroup?userIdss={userIdss}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> createGroup(@Param("userIdss") String userIdss,
-                         @Param("groupId") Long groupId,
-                         @Param("groupName") String groupName);
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/createGroup")
+    BaseResp<Object> createGroup(@RequestParam("userIdss") String userIdss,
+                                 @RequestParam("groupId") Long groupId,
+                                 @RequestParam("groupName") String groupName);
 
     /**
      * 更新群组名称
@@ -33,8 +44,11 @@ public interface IRongYunService {
      * @param groupName 群组名称
      * @return
      */
-    @RequestLine("GET /rongyun/updateGroupName?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> updateGroupName(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("groupId") String groupId,@Param("groupName") String groupName);
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/updateGroupName")
+    BaseResp<Object> updateGroupName(@RequestParam("operatorUserId")String operatorUserId,
+                                     @RequestParam("operatorNickname")String operatorNickname,
+                                     @RequestParam("groupId") String groupId,
+                                     @RequestParam("groupName") String groupName);
 
     /**
      * 加入群组
@@ -43,9 +57,13 @@ public interface IRongYunService {
      * @param groupName
      * @return
      */
-    @RequestLine("GET /rongyun/joinGroupMember?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&targetUserDisplayNames={targetUserDisplayNames}&userIds={userIds}&groupId={groupId}&groupName={groupName}")
-    BaseResp<Object> joinGroupMember(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("targetUserDisplayNames")String targetUserDisplayNames,@Param("userIds") String userIds,@Param("groupId") String groupId,
-                                     @Param("groupName")String groupName);
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/joinGroupMember")
+    BaseResp<Object> joinGroupMember(@RequestParam("operatorUserId")String operatorUserId,
+                                     @RequestParam("operatorNickname")String operatorNickname,
+                                     @RequestParam("targetUserDisplayNames")String targetUserDisplayNames,
+                                     @RequestParam("userIds") String userIds,
+                                     @RequestParam("groupId") String groupId,
+                                     @RequestParam("groupName")String groupName);
 
     /**
      * 退出群组
@@ -53,9 +71,12 @@ public interface IRongYunService {
      * @param groupId
      * @return
      */
-    @RequestLine("GET /rongyun/quietGroup?operatorUserId={operatorUserId}&operatorNickname={operatorNickname}&targetUserDisplayNames={targetUserDisplayNames}&userIds={userIds}&groupId={groupId}")
-    BaseResp<Object> quietGroup(@Param("operatorUserId")String operatorUserId,@Param("operatorNickname")String operatorNickname,@Param("targetUserDisplayNames")String targetUserDisplayNames,
-                                @Param("userIds")String userIds,@Param("groupId")String groupId);
+    @RequestMapping(method=RequestMethod.GET,value="/rongyun/quietGroup")
+    BaseResp<Object> quietGroup(@RequestParam("operatorUserId")String operatorUserId,
+                                @RequestParam("operatorNickname")String operatorNickname,
+                                @RequestParam("targetUserDisplayNames")String targetUserDisplayNames,
+                                @RequestParam("userIds")String userIds,
+                                @RequestParam("groupId")String groupId);
 
     /**
      * 解散群组
@@ -64,8 +85,9 @@ public interface IRongYunService {
      * @param groupId
      * @return
      */
-    @RequestLine("GET /rongyun/dismissGroup?operatorNickname={operatorNickname}&userId={userId}&groupId={groupId}")
-    BaseResp<Object> dismissGroup(@Param("operatorNickname")String operatorNickname,@Param("userId") String userId,@Param("groupId") String groupId);
+    @RequestMapping(method = RequestMethod.GET,value="/rongyun/dismissGroup")
+    BaseResp<Object> dismissGroup(@RequestParam("operatorNickname")String operatorNickname,@RequestParam("userId") String userId,
+                                  @RequestParam("groupId") String groupId);
 
     /**
      * 更改用户的群组昵称 发送融云的资料更改通知
@@ -74,6 +96,9 @@ public interface IRongYunService {
      * @param nickName
      * @return
      */
-    @RequestLine("GET /rongyun/updateGroupMemberNickname?userId={userId}&groupId={groupId}&nickName={nickName}")
-    BaseResp updateGroupMemberNickname(@Param("userId")Long userId,@Param("groupId") String groupId,@Param("nickName") String nickName);
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/updateGroupMemberNickname")
+    BaseResp<Object> updateGroupMemberNickname(@RequestParam("userId")String userId,
+                                @RequestParam("groupId")String groupId,
+                                @RequestParam("nickName") String nickName);
+
 }

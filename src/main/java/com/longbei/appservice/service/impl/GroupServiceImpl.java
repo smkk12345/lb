@@ -16,13 +16,10 @@ import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.GroupService;
 import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.api.HttpClient;
-import com.netflix.discovery.converters.Auto;
-import net.sf.json.JSONArray;
+import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -48,6 +45,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private UserMongoDao userMongoDao;
     @Autowired
     private UserMsgService userMsgService;
+    @Autowired
+    private IRongYunService iRongYunService;
     @Autowired
     private JPushService jPushService;
 
@@ -93,7 +92,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
 
             //1.调用融云 创建群组
-            BaseResp rongyunResp = HttpClient.rongYunService.createGroup(userIdString,groupId,groupName);
+            BaseResp rongyunResp = iRongYunService.createGroup(userIdString,groupId,groupName);
             if(rongyunResp.getCode() != 0){
                 return baseResp.fail("系统异常");
             }
@@ -177,7 +176,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     userNickname = appUserMongoEntity.getNickname();
                 }
                 //更新群组名称
-                BaseResp<Object> ryResult = HttpClient.rongYunService.updateGroupName(userId+"",userNickname,groupId,groupName);
+                BaseResp<Object> ryResult = iRongYunService.updateGroupName(groupId,groupName,"","");
                 if(ryResult.getCode() != 0){
                     return baseResp.fail();
                 }
@@ -213,7 +212,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                 return baseResp.fail("抱歉,你无法修改用户昵称!");
             }
-            BaseResp rongyunBaseResp = HttpClient.rongYunService.updateGroupMemberNickname(userId,groupId,nickName);
+            BaseResp rongyunBaseResp = iRongYunService.updateGroupMemberNickname(userId+"",groupId,nickName);
             int row= snsGroupMembersMapper.updateSnsGroupMemberInfo(userId,groupId,nickName,null);
             if(row > 0){
                 return baseResp.ok();
@@ -635,7 +634,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
-            BaseResp<Object> ryResult = HttpClient.rongYunService.dismissGroup(appUserMongoEntity.getNickname(),userId+"",groupId);
+            BaseResp<Object> ryResult = iRongYunService.dismissGroup(appUserMongoEntity.getNickname(),userId+"",groupId);
             if(ryResult.getCode() != 0){
                 return baseResp.fail("系统异常");
             }
@@ -897,7 +896,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         for(String userId:userIds){
             sb.append(",").append(userId.trim());
         }
-        BaseResp<Object> baseResp = HttpClient.rongYunService.joinGroupMember(operatorUserId,operatorNickname,targetUserDisplayNames,sb.toString().substring(1),groupId,groupName);
+        BaseResp<Object> baseResp = iRongYunService.joinGroupMember(operatorUserId,operatorNickname,targetUserDisplayNames,sb.toString().substring(1),groupId,groupName);
         if(baseResp.getCode() == 0){
             return true;
         }
@@ -918,7 +917,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         for(String userId:userIds){
             sb.append(",").append(userId.trim());
         }
-        BaseResp<Object> baseResp = HttpClient.rongYunService.quietGroup(operatorUserId,operatorUserNickName,targetUserDisplayNames,sb.toString().substring(1),groupId);
+        BaseResp<Object> baseResp = iRongYunService.quietGroup(operatorUserId,operatorUserNickName,targetUserDisplayNames,sb.toString().substring(1),groupId);
         if(baseResp.getCode() == 0){
             return true;
         }

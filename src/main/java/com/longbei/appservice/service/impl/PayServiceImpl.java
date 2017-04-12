@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Map;
 
+import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.service.PayService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.api.HttpClient;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 import net.sf.json.JSONArray;
@@ -26,7 +26,9 @@ public class PayServiceImpl implements PayService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
-	
+	@Autowired
+	private IProductBasicService iProductBasicService;
+
 	private static Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 
 	
@@ -41,7 +43,7 @@ public class PayServiceImpl implements PayService {
 	public BaseResp<Object> wxPayMainPage(Long userid, String orderid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.wxPayMainPage(orderid);
+			baseResp = iProductBasicService.wxPayMainPage(orderid);
 		}catch (Exception e){
 			logger.error("wxPayMainPage orderid = {}", orderid, e);
 		}
@@ -61,7 +63,7 @@ public class PayServiceImpl implements PayService {
 	public BaseResp<Object> signature(Long userid, String orderid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.signature(userid, orderid);
+			baseResp = iProductBasicService.signature(userid, orderid);
 		}catch (Exception e){
 			logger.error("signature userid = {}, orderid = {}", userid, orderid, e);
 		}
@@ -79,7 +81,7 @@ public class PayServiceImpl implements PayService {
 	public BaseResp<Object> verifyali(Long userid, String orderType, Map<String, String> resMap) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.verifyali(orderType, resMap);
+			baseResp = iProductBasicService.verifyali(orderType, resMap);
 			//购买成功后，添加龙币----
 			if (ResultUtil.isSuccess(baseResp)){
 				insertMoney(baseResp, userid, Constant.USER_MONEY_BUY);
@@ -101,7 +103,7 @@ public class PayServiceImpl implements PayService {
 	public BaseResp<Object> verifywx(Long userid, String orderType, ResponseHandler resHandler) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = HttpClient.productBasicService.verifywx(orderType, resHandler);
+			baseResp = iProductBasicService.verifywx(orderType, resHandler);
 			//购买成功后，添加龙币----
 			if (ResultUtil.isSuccess(baseResp)){
 				insertMoney(baseResp, userid, Constant.USER_MONEY_BUY);
