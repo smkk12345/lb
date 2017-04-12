@@ -31,7 +31,7 @@ eureka:
 
   client:
     serviceUrl:
-        defaultZone: http://192.168.1.70:9999/eureka/,http://192.168.1.70:8888/eureka/
+        defaultZone: http://192.168.1.70:8888/eureka/,http://192.168.1.70:9999/eureka/
 
 service.user: http://localhost:8081/user_service
 service.outernet: http://localhost:8085/outernet_service
