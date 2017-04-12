@@ -43,6 +43,15 @@ public interface IUserBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/user/gettoken")
 	BaseResp<Object> gettoken(@RequestParam("username") String username,
 							  @RequestParam("password") String password);
+
+	/**
+	 * 获取token之通过手机号
+	 * @param username
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/user/gettokenWithoutPwd")
+	BaseResp<Object> gettokenWithoutPwd(@RequestParam("username") String username);
+
 	/**
 	 * @Title: getapitoken
 	 * @Description: service 之间api调用的令牌

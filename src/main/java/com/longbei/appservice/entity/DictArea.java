@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +11,7 @@ public class DictArea {
 	private Integer id;//地址id
 
     private String title;//地址名称
-
+//
 	private Date createtime;//创建时间
 
 	private Date updatetime;//更新时间
@@ -42,7 +45,8 @@ public class DictArea {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	public Date getCreatetime() {
 		return createtime;
 	}
@@ -50,7 +54,8 @@ public class DictArea {
 	public void setCreatetime(Date createtime) {
 		this.createtime = createtime;
 	}
-
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	public Date getUpdatetime() {
 		return updatetime;
 	}
