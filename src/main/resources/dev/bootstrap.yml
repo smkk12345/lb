@@ -14,7 +14,7 @@ ios_buyflower_pro: https://buy.itunes.apple.com/verifyReceipt
 
 spring:
     application:
-        name: app_service
+        name: appService
     cloud:
         config:
             enabled: true
@@ -36,3 +36,9 @@ eureka:
 service.user: http://localhost:8081/user_service
 service.outernet: http://localhost:8085/outernet_service
 service.product: http://localhost:8089/product_service
+
+feign:
+    httpclient:
+        enabled: true
+    hystrix:
+        enabled: false

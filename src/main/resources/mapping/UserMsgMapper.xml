@@ -128,10 +128,10 @@
   <delete id="deleteByMtypeAndMsgtype">
     delete from user_msg 
     where userid = #{userid} 
-    <if test="mtype != null" >
+    <if test="mtype != null and mtype != ''" >
     	and mtype = #{mtype} 
     </if> 
-    <if test="msgtype != null" >
+    <if test="msgtype != null and msgtype != ''" >
     	and msgtype = #{msgtype}  
     </if> 
   </delete>

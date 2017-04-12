@@ -12,21 +12,21 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserInfo {
-    private Integer id;
+    private int id;
 
     private Long userid;//用户id
 
-    private Integer totalflower;//花
+    private int totalflower;//花
 
-    private Integer totaldiamond;//钻石
+    private int totaldiamond;//钻石
 
-    private Integer totalmoney;//龙币
+    private int totalmoney;//龙币
 
-    private Integer totalcoin;//进步币
+    private int totalcoin;//进步币
 
-    private Integer totalimp;//总进步数
-    private Integer totallikes;//总赞
-    private Integer totalfans;//总粉丝数
+    private int totalimp;//总进步数
+    private int totallikes;//总赞
+    private int totalfans;//总粉丝数
 
     private String nickname;//昵称
 
@@ -81,15 +81,15 @@ public class UserInfo {
 
     private String isfriend = "0"; //是否是好友    0：不是   1：是
 
-    private Integer point;//龙分
+    private int point;//龙分
 
-    private Integer sgrade; //查询用
+    private int sgrade; //查询用
 
-    private Integer grade;//等级
+    private int grade;//等级
 
-    private Integer egrade; //查询用
+    private int egrade; //查询用
 
-    private Integer curpoint;//当前龙分
+    private int curpoint;//当前龙分
 
     private String schoolcertify; //学历认证
 
@@ -101,11 +101,11 @@ public class UserInfo {
 
     private Date downfashionmantime; //取消达人时间
 
-    private Integer sort; //排序
+    private int sort; //排序
 
     private String settings; //设置
 
-    private Integer givedflowers; //
+    private int givedflowers; //
 
     public String getJobcertify() {
         return jobcertify;
@@ -157,11 +157,11 @@ public class UserInfo {
         this.downfashionmantime = downfashionmantime;
     }
 
-    public Integer getSort() {
+    public int getSort() {
         return sort;
     }
 
-    public void setSort(Integer sort) {
+    public void setSort(int sort) {
         this.sort = sort;
     }
 
@@ -193,19 +193,19 @@ public class UserInfo {
         this.ecreatetime = ecreatetime;
     }
 
-    public Integer getSgrade() {
+    public int getSgrade() {
         return sgrade;
     }
 
-    public void setSgrade(Integer sgrade) {
+    public void setSgrade(int sgrade) {
         this.sgrade = sgrade;
     }
 
-    public Integer getEgrade() {
+    public int getEgrade() {
         return egrade;
     }
 
-    public void setEgrade(Integer egrade) {
+    public void setEgrade(int egrade) {
         this.egrade = egrade;
     }
 
@@ -218,27 +218,27 @@ public class UserInfo {
     		this.sex = sex;
     }
 
-    public void setCurpoint(Integer curpoint) {
+    public void setCurpoint(int curpoint) {
         this.curpoint = curpoint;
     }
 
-    public Integer getCurpoint() {
+    public int getCurpoint() {
         return curpoint;
     }
 
-    public void setGrade(Integer grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
 
-    public void setPoint(Integer point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 
-    public Integer getGrade() {
+    public int getGrade() {
         return grade;
     }
 
-    public Integer getPoint() {
+    public int getPoint() {
         return point;
     }
 
@@ -246,31 +246,31 @@ public class UserInfo {
      *
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setTotalfans(Integer totalfans) {
+    public void setTotalfans(int totalfans) {
         this.totalfans = totalfans;
     }
 
-    public void setTotalimp(Integer totalimp) {
+    public void setTotalimp(int totalimp) {
         this.totalimp = totalimp;
     }
 
-    public void setTotallikes(Integer totallikes) {
+    public void setTotallikes(int totallikes) {
         this.totallikes = totallikes;
     }
 
-    public Integer getTotalfans() {
+    public int getTotalfans() {
         return totalfans;
     }
 
-    public Integer getTotalimp() {
+    public int getTotalimp() {
         return totalimp;
     }
 
-    public Integer getTotallikes() {
+    public int getTotallikes() {
         return totallikes;
     }
 
@@ -278,7 +278,7 @@ public class UserInfo {
      *
      * @param id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -304,7 +304,7 @@ public class UserInfo {
      * @return totalflower 花
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getTotalflower() {
+    public int getTotalflower() {
         return totalflower;
     }
 
@@ -312,7 +312,7 @@ public class UserInfo {
      * 花
      * @param totalflower 花
      */
-    public void setTotalflower(Integer totalflower) {
+    public void setTotalflower(int totalflower) {
         this.totalflower = totalflower;
     }
 
@@ -321,7 +321,7 @@ public class UserInfo {
      * @return totaldiamond 钻石
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getTotaldiamond() {
+    public int getTotaldiamond() {
         return totaldiamond;
     }
 
@@ -329,7 +329,7 @@ public class UserInfo {
      * 钻石
      * @param totaldiamond 钻石
      */
-    public void setTotaldiamond(Integer totaldiamond) {
+    public void setTotaldiamond(int totaldiamond) {
         this.totaldiamond = totaldiamond;
     }
 
@@ -338,7 +338,7 @@ public class UserInfo {
      * @return totalmoney 龙币
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getTotalmoney() {
+    public int getTotalmoney() {
         return totalmoney;
     }
 
@@ -346,7 +346,7 @@ public class UserInfo {
      * 龙币
      * @param totalmoney 龙币
      */
-    public void setTotalmoney(Integer totalmoney) {
+    public void setTotalmoney(int totalmoney) {
         this.totalmoney = totalmoney;
     }
 
@@ -355,7 +355,7 @@ public class UserInfo {
      * @return totalcoin 进步币
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getTotalcoin() {
+    public int getTotalcoin() {
         return totalcoin;
     }
 
@@ -363,7 +363,7 @@ public class UserInfo {
      * 进步币
      * @param totalcoin 进步币
      */
-    public void setTotalcoin(Integer totalcoin) {
+    public void setTotalcoin(int totalcoin) {
         this.totalcoin = totalcoin;
     }
 
@@ -433,14 +433,14 @@ public class UserInfo {
     }
     /**
      * 所在区域
-     * @param city 所在区域
+     * @param  所在区域
      */
     public String getArea() {
 		return area;
 	}
     /**
      * 所在区域
-     * @param city 所在区域
+     * @param area 所在区域
      */
 	public void setArea(String area) {
 		this.area = area;
@@ -741,11 +741,11 @@ public class UserInfo {
 		this.detailList = detailList;
 	}
 
-	public Integer getGivedflowers() {
+	public int getGivedflowers() {
 		return givedflowers;
 	}
 
-	public void setGivedflowers(Integer givedflowers) {
+	public void setGivedflowers(int givedflowers) {
 		this.givedflowers = givedflowers;
 	}
 }
