@@ -214,10 +214,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectFansListByUserId(long userid, Integer startNum, Integer endNum) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum) {
+		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		try {
-			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
+			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
 			if(null != list && list.size()>0){
 				for (SnsFans snsFans : list) {
 					initMsgUserInfoByLikeuserid(snsFans);
@@ -233,6 +233,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 				}
 			}
 			baseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<>();
+			int ftypeCount = snsFansMapper.selectFansFtypeCount(userid, Integer.parseInt(ftype));
+			expandData.put("ftypeCount", ftypeCount);
+			baseResp.setExpandData(expandData);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectFansByUserid error and msg = {}",e);
@@ -377,6 +381,35 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
 		}catch(Exception e){
 			logger.error("select fashionMan user errror userId:{} startNum:{} pageSize:{} msg:{}",userId,startNum,pageSize,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 查询关注了likeuserId的用户列表
+	 * @param likeuserId 被关注用户id
+	 * @param queryUserInfo 是否查询关注者的用户信息
+	 * @param startNum 开始下标
+	 * @param pageSize 每页数量
+     * @return
+     */
+	@Override
+	public BaseResp<Object> selectFansListByLikeUserid(Long likeuserId,Boolean queryUserInfo, Integer startNum, Integer pageSize) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try{
+			if(queryUserInfo == null){
+				queryUserInfo = false;
+			}
+			List<SnsFans> fansList = this.snsFansMapper.selectFansByLikeUserid(likeuserId,startNum,pageSize);
+			if(queryUserInfo && fansList != null && fansList.size() > 0){
+				for(SnsFans snsFans :fansList){
+					snsFans.setAppUserMongoEntityLikeuserid(this.userMongoDao.getAppUser(snsFans.getUserid()+""));
+				}
+			}
+			baseResp.setData(fansList);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+			logger.error("select fans list by likeUserid error likeuserId:{} queryUserInfo:{} msg:{}",likeuserId,queryUserInfo,e);
 		}
 		return baseResp;
 	}

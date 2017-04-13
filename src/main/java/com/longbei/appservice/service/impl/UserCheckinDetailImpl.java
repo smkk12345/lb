@@ -247,11 +247,12 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	}
 
 	@Override
-	public BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, Integer yearmonth) {
+	public BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, String yearmonth) {
 		BaseResp<List<UserCheckinDetail>> reseResp = new BaseResp<>();
 		try {
 			int continuousday = 0;
 			List<UserCheckinDetail> list = userCheckinDetailMapper.selectDetailListByYearmonth(userid, yearmonth);
+
 			if (null != list && list.size() > 0) {
 				//获取redis中的连续签到天数
 				// 判断redis中是否存在 

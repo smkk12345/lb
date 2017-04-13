@@ -401,10 +401,7 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "line/list", method = RequestMethod.POST)
-    public BaseResp selectImproveLineListByUser
-    (String userid, String ptype, String ctype, String lastdate, String pagesize) {
-        logger.info("line/list selectImproveLineListByUser userid={},ptype={},ctype={},lastdate={},pagesize={}",
-                userid,ptype,ctype,lastdate,pagesize);
+    public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastdate, String pagesize) {
         if (StringUtils.hasBlankParams(userid, ctype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -417,6 +414,7 @@ public class ImproveController {
             logger.error("select improve line list is error:{}", e);
         }
         if (null == improves) {
+
             return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
         }
         BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);

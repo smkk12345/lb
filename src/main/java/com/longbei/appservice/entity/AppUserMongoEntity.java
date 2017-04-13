@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.data.annotation.Id;
@@ -46,8 +47,8 @@ public class AppUserMongoEntity {
 		return updatetime;
 	}
 
-	public long getUserid() {
-		return Long.parseLong(id);
+	public Long getUserid() {
+		return this.id != null?Long.parseLong(id):null;
 	}
 
 	public void setIsfriend(String isfriend) {
@@ -111,6 +112,6 @@ public class AppUserMongoEntity {
 	}
 
 	public void setUserid(String userid){
-		this.userid = this.id != null? Long.parseLong(this.id):userid != null?Long.parseLong(userid):null;
+		this.userid = this.id != null? Long.parseLong(this.id):null;
 	}
 }

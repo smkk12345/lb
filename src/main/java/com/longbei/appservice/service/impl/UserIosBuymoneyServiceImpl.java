@@ -66,7 +66,7 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		String paramStr = DecodesUtils.getFromBase64(payloadData);
 		logger.info("buyIOSFlower userid={},productid={}", userid, productid);
 		Map<String, String> map = new HashMap<String, String>();
-		if (!validateIOSBUY(param, map)) {
+		if (!validateIOSBUY(param, map, productid)) {
 			return baseResp;
 		}
 		UserIosBuymoney userIosBuymoney = null;
@@ -110,10 +110,9 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	}
 
 
-	private boolean validateIOSBUY(String param, Map<String, String> map) {
+	private boolean validateIOSBUY(String param, Map<String, String> map,String productid) {
 		boolean result = false;
 
-//		String urlStr = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER_PRO");
 		String urlStr = AppserviceConfig.ios_buyflower_pro;
 		byte bArr[] = param.getBytes();
 		JSONObject js = null;
@@ -130,7 +129,7 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 				String status = js.getString("status");
 				String bundle_id = "";
 				if (!Constant.IOS_DEV_BUYFLOWER.equals(status)) {
-					result = validateIOSBUYPro(param,map,js);
+					result = validateIOSBUYPro(param,map,js,productid);
 				}else {
 //					String urlStrTest = CustomizedPropertyConfigurer.getContextProperty("IOS_BUYFLOWER");
 					String urlStrTest = AppserviceConfig.ios_buyflower;
@@ -181,7 +180,7 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 	 * @param js
 	 * @return
 	 */
-	private boolean validateIOSBUYPro(String param, Map<String, String> map,JSONObject js){
+	private boolean validateIOSBUYPro(String param, Map<String, String> map,JSONObject js,String productid){
 		boolean result = false;
 		String status = js.getString("status");
 		if(!status.equals("0")){
@@ -202,19 +201,25 @@ public class UserIosBuymoneyServiceImpl implements UserIosBuymoneyService {
 		if(null == innapp||innapp.size()==0){
 			result = false;
 		}else{
-			JSONObject inappJs = JSONObject.fromObject(innapp.get(0));
-			String transaction_id = inappJs.getString("transaction_id");
-			String product_id = inappJs.getString("product_id");
-			map.put("product_id",product_id);
+			String transaction_id = null;
+			String product_id = null;
+			for (int i = 0; i < innapp.size(); i++) {
+				JSONObject inappJs = JSONObject.fromObject(innapp.get(i));
+				product_id = inappJs.getString("product_id");
+				if(productid.equals(product_id)){
+					transaction_id = inappJs.getString("transaction_id");
+					map.put("product_id",product_id);
+					map.put("transaction_id",transaction_id);
+					break;
+				}
+			}
 			//查询数据库中是否存在  不存在 成功
 //			Orders oldOrder = orderService.getByOrderSign(transaction_id);
 			if (null != null) {
 				map.put("status", Constant.STATUS_SYS_00+"");
 				map.put("rtnInfo", Constant.RTNINFO_SYS_00);
-				map.put("transaction_id",transaction_id);
 				return false;
 			}else{
-				map.put("transaction_id",transaction_id);
 				result = true;
 			}
 		}

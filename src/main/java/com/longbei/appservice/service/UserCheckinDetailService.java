@@ -39,7 +39,7 @@ public interface UserCheckinDetailService {
 	 * 2017年2月22日
 	 * return_type
 	 */
-	BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, Integer yearmonth);
+	BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, String yearmonth);
 	
 	/**
 	 * @author yinxc
