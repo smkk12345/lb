@@ -393,7 +393,17 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> selectFansListByLikeUserid(Long likeuserId,Boolean queryUserInfo, Integer startNum, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try{
-
+			if(queryUserInfo == null){
+				queryUserInfo = false;
+			}
+			List<SnsFans> fansList = this.snsFansMapper.selectFansByLikeUserid(likeuserId,startNum,pageSize);
+			if(queryUserInfo && fansList != null && fansList.size() > 0){
+				for(SnsFans snsFans :fansList){
+					snsFans.setAppUserMongoEntityLikeuserid(this.userMongoDao.getAppUser(snsFans.getUserid()+""));
+				}
+			}
+			baseResp.setData(fansList);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
 		}catch(Exception e){
 			logger.error("select fans list by likeUserid error likeuserId:{} queryUserInfo:{} msg:{}",likeuserId,queryUserInfo,e);
 		}

@@ -129,4 +129,15 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询关注了likeuserid的用户列表 -->
+  <select id="selectFansByLikeUserid" resultMap="BaseResultMap">
+      select 
+          <include refid="Base_Column_List"/>
+      from sns_fans
+      where likeuserid = #{likeuserId}
+      <if test="startNum != null and pageSize != null">
+          limit #{startNum},#{pageSize}
+      </if>
+  </select>
 </mapper>
