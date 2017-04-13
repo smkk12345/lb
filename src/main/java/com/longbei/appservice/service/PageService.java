@@ -5,6 +5,8 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 
+import java.util.List;
+
 /**
  * 页面相关操作
  *
@@ -74,7 +76,7 @@ public interface PageService {
      * @param pagesize
      * @return
      */
-    BaseResp<HomeRecommend> selectHomeRecommendList(Integer startno,Integer pagesize);
+    BaseResp<List<HomeRecommend>> selectHomeRecommendList(Integer startno, Integer pagesize);
 
 
     /**
