@@ -3,10 +3,16 @@ server:
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
-moneytoflower: 1
+
+#兑换比例    可谓小数
+#flowertomoney：花转换龙币比例
+flowertomoney: 1
+#龙币兑换进步币比例
 moneytocoin: 10
+#花兑换进步币比例
 flowertocoin: 10
-yuantomoney: 10
+#人民币兑换龙币比例
+yuantomoney: 0.1
 
 ios_buyflower: https://sandbox.itunes.apple.com/verifyReceipt
 
@@ -32,10 +38,6 @@ eureka:
   client:
     serviceUrl:
         defaultZone: http://192.168.1.70:8888/eureka/,http://192.168.1.70:9999/eureka/
-
-service.user: http://localhost:8081/user_service
-service.outernet: http://localhost:8085/outernet_service
-service.product: http://localhost:8089/product_service
 
 feign:
     httpclient:

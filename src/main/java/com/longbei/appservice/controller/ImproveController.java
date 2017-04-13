@@ -403,6 +403,8 @@ public class ImproveController {
     @RequestMapping(value = "line/list", method = RequestMethod.POST)
     public BaseResp selectImproveLineListByUser
     (String userid, String ptype, String ctype, String lastdate, String pagesize) {
+        logger.info("line/list selectImproveLineListByUser userid={},ptype={},ctype={},lastdate={},pagesize={}",
+                userid,ptype,ctype,lastdate,pagesize);
         if (StringUtils.hasBlankParams(userid, ctype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }

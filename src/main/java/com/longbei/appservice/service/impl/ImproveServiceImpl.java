@@ -901,8 +901,8 @@ public class ImproveServiceImpl implements ImproveService{
 
     //进步删除之后清理脏数据
     private void clearDirtyData(Improve improve){
-        int flower = improve.getFlowers().intValue();
-        int like = improve.getLikes().intValue();
+        int flower = improve.getFlowers();
+        int like = improve.getLikes();
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         switch (improve.getBusinesstype()){

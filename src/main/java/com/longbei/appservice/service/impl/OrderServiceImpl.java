@@ -474,7 +474,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
-			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);
+			expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
 			baseResp.setExpandData(expandData);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		}catch (Exception e){
