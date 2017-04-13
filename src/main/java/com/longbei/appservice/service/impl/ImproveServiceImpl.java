@@ -1051,36 +1051,40 @@ public class ImproveServiceImpl implements ImproveService{
         List<Improve> improves = new ArrayList<>();
 
         for (int i = 0; i < timeLines.size() ; i++){
-            TimeLine timeLine = timeLines.get(i);
-            TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
-            if (null == timeLineDetail){
-                continue;
-            }
-            Improve improve = new Improve();
-            improve.setImpid(timeLineDetail.getImproveId());
-            improve.setBrief(timeLineDetail.getBrief());
-            improve.setPickey(timeLineDetail.getPhotos());
-            improve.setFilekey(timeLineDetail.getFileKey());
-            improve.setSourcekey(timeLineDetail.getSourcekey());
-            improve.setItype(timeLineDetail.getItype());
-            improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
-            String businessType = timeLine.getBusinesstype();
-            if(StringUtils.isBlank(businessType)){
-                improve.setBusinesstype("0");
-            }else{
-                improve.setBusinesstype(businessType);
-            }
-            improve.setBusinessid(timeLine.getBusinessid());
-            improve.setPtype(timeLine.getPtype());
+            try {
+                TimeLine timeLine = timeLines.get(i);
+                TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+                if (null == timeLineDetail){
+                    continue;
+                }
+                Improve improve = new Improve();
+                improve.setImpid(timeLineDetail.getImproveId());
+                improve.setBrief(timeLineDetail.getBrief());
+                improve.setPickey(timeLineDetail.getPhotos());
+                improve.setFilekey(timeLineDetail.getFileKey());
+                improve.setSourcekey(timeLineDetail.getSourcekey());
+                improve.setItype(timeLineDetail.getItype());
+                improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+                String businessType = timeLine.getBusinesstype();
+                if(StringUtils.isBlank(businessType)){
+                    improve.setBusinesstype("0");
+                }else{
+                    improve.setBusinesstype(businessType);
+                }
+                improve.setBusinessid(timeLine.getBusinessid());
+                improve.setPtype(timeLine.getPtype());
 
-            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(timeLine.getUserid());
-            initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
-            improve.setAppUserMongoEntity(appUserMongoEntity);
+//            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(timeLine.getUserid());
+                initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                improve.setAppUserMongoEntity(timeLineDetail.getUser());
 
-            initImproveInfo(improve,Long.parseLong(userid));
-            //初始化 赞 花 数量
-            initImproveLikeAndFlower(improve);
-            improves.add(improve);
+                initImproveInfo(improve,Long.parseLong(userid));
+                //初始化 赞 花 数量
+                initImproveLikeAndFlower(improve);
+                improves.add(improve);
+            } catch (Exception e) {
+                logger.error("select time line userid={} list is error:",userid,e);
+            }
         }
         return improves;
     }
