@@ -25,7 +25,7 @@ public class TimeLine {
 	private String messagetype; // 1 -- improve 2 --- rank 3 --- old award 4 -- new award
 	private String ctype = "1";  //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
 	private String ptype; //十全十美
-	private String businesstype;
+	private String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
 	private Long businessid;
 	private Date createdate;
 

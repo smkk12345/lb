@@ -59,6 +59,18 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
     }
 
     /**
+     * 清空好友的加群申请列表
+     * @param userid
+     */
+    public void clearFriendAsk(Long userid) {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userid),
+                Criteria.where("receiveUserId").is(userid)));
+        mongoTemplate.remove(query,FriendAddAsk.class);
+    }
+
+    /**
      * 根据id获取用户的加好友信息
      * @param id
      * @return
@@ -138,4 +150,5 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         Query query = new Query(Criteria.where("id").is(id));
         return mongoTemplate.findOne(query,FriendAddAsk.class);
     }
+
 }

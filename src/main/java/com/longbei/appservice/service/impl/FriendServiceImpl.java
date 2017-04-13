@@ -438,6 +438,24 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     }
 
     /**
+     * 清空加好友的请求消息
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> clearFriendAsk(Long userid) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            this.friendMongoDao.clearFriendAsk(userid);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("clear friend ask error userid:{}",userid);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 更新用户的添加好友请求的新消息提示状态
      * @param userId 用户id
      * @param flag 更改的状态 true代表有新消息 false代表没有新消息

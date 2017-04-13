@@ -170,13 +170,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 
             if(StringUtils.isNotEmpty(groupName)){
                 SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userId,groupId);
+                if (snsGroupMembers == null) {
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                }
                 String userNickname = snsGroupMembers.getNickname();
                 if(StringUtils.isEmpty(userNickname)){
                     AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
                     userNickname = appUserMongoEntity.getNickname();
                 }
                 //更新群组名称
-                BaseResp<Object> ryResult = iRongYunService.updateGroupName(groupId,groupName,"","");
+                BaseResp<Object> ryResult = iRongYunService.updateGroupName(snsGroup.getMainuserid()+"",userNickname,groupId,groupName);
                 if(ryResult.getCode() != 0){
                     return baseResp.fail();
                 }
