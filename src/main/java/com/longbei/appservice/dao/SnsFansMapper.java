@@ -22,7 +22,27 @@ public interface SnsFansMapper {
     
     int deleteByUidAndLid(@Param("userid") long userid, @Param("likeuserid") long likeuserid);
     
-    List<SnsFans> selectFansByUserid(@Param("userid") long userid, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+    List<SnsFans> selectFansByUserid(@Param("userid") long userid,
+									 @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+
+	/**
+	 * @author yinxc
+	 * 获取用户粉丝;关注列表
+	 * @param @param userid
+	 * @param ftype 0:查询关注列表   1：粉丝列表
+	 * 2017年4月13日
+	 */
+	List<SnsFans> selectFansList(@Param("userid") long userid, @Param("ftype") int ftype,
+								 @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+
+	/**
+	 * @author yinxc
+	 * 获取用户粉丝;关注数量Count
+	 * @param @param userid
+	 * @param ftype 0:查询关注列表   1：粉丝列表
+	 * 2017年4月13日
+	 */
+	int selectFansFtypeCount(@Param("userid") long userid, @Param("ftype") int ftype);
     
     /**
 	 * @author yinxc

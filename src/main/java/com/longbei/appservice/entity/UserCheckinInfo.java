@@ -2,6 +2,8 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class UserCheckinInfo {
     private Integer id;
 
@@ -67,6 +69,7 @@ public class UserCheckinInfo {
      * 持续开始时间
      * @return starttime 持续开始时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getStarttime() {
         return starttime;
     }
@@ -83,6 +86,7 @@ public class UserCheckinInfo {
      * 持续结束时间
      * @return endtime 持续结束时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEndtime() {
         return endtime;
     }
@@ -99,6 +103,7 @@ public class UserCheckinInfo {
      * 
      * @return createtime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }

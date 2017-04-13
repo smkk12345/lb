@@ -214,10 +214,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年1月20日
 	 */
 	@Override
-	public BaseResp<Object> selectFansListByUserId(long userid, Integer startNum, Integer endNum) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum) {
+		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		try {
-			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
+			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
 			if(null != list && list.size()>0){
 				for (SnsFans snsFans : list) {
 					initMsgUserInfoByLikeuserid(snsFans);
@@ -233,6 +233,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 				}
 			}
 			baseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<>();
+			int ftypeCount = snsFansMapper.selectFansFtypeCount(userid, Integer.parseInt(ftype));
+			expandData.put("ftypeCount", ftypeCount);
+			baseResp.setExpandData(expandData);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectFansByUserid error and msg = {}",e);
