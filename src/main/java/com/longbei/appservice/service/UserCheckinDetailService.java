@@ -8,7 +8,10 @@
 */
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserCheckinDetail;
 
 /**
  * @author smkk
@@ -36,7 +39,7 @@ public interface UserCheckinDetailService {
 	 * 2017年2月22日
 	 * return_type
 	 */
-	BaseResp<Object> selectDetailListByYearmonth(long userid, Integer yearmonth);
+	BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, Integer yearmonth);
 	
 	/**
 	 * @author yinxc
