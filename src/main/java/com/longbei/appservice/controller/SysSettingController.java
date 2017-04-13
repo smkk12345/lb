@@ -87,5 +87,14 @@ public class SysSettingController {
         return "redirect:" + appUpdate.getUrl();
     }
 
+    /**
+     * @api http://localhost:9090/app_service/syssetting/getShareInfo
+     * 获取分享的相关信息
+     * @return
+     */
+    @RequestMapping(value="getShareInfo")
+    public BaseResp<Object> getShareInfo(){
+        return this.sysSettingService.getShareInfo();
+    }
 
 }

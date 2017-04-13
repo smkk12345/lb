@@ -124,4 +124,14 @@ public interface UserRelationService {
      * @return
      */
 	BaseResp<Object> selectFashionManUser(Long userId,Integer startNum, Integer pageSize);
+
+	/**
+	 * 查询关注了likeuserId的用户列表
+	 * @param likeuserId 被关注用户id
+	 * @param queryUserInfo 是否查询关注者的用户信息
+	 * @param startNum 开始下标
+	 * @param pageSize 每页数量
+     * @return
+     */
+	BaseResp<Object> selectFansListByLikeUserid(Long likeuserId,Boolean queryUserInfo, Integer startNum, Integer pageSize);
 }

@@ -2,6 +2,8 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SysAppupdateMapper;
 import com.longbei.appservice.dao.SysLongbeiinfoMapper;
@@ -13,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by smkk on 17/2/17.
@@ -112,6 +117,23 @@ public class SysSettingServiceImpl implements SysSettingService {
     public SysAppupdate selectRecentByKey(String ttype) {
         SysAppupdate app = sysAppupdateMapper.selectRecentByKey(ttype);
         return app;
+    }
+
+    /**
+     * 获取分享app的相关信息
+     * @return
+     */
+    @Override
+    public BaseResp<Object> getShareInfo() {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("point", Constant_point.INVITE_LEVEL1);//龙分
+        map.put("impIcon", Constant_Imp_Icon.INVITE_LEVEL1);//进步币
+        map.put("downloadUrl","http://www.baidu.com");
+
+        baseResp.setData(map);
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
 }

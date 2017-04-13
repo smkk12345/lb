@@ -209,7 +209,7 @@ public class SensitiveWord {
 		for (int i = beginIndex; i < txt.length(); i++) {
 			word = txt.charAt(i);
 			// 判断该字是否存在于敏感词库中
-			Object o = nowMap.get(word);
+//			Object o = nowMap.get(word);
 			nowMap = (Map) nowMap.get(word);
 			if (nowMap != null) {
 				matchFlag++;

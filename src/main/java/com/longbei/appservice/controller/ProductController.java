@@ -25,10 +25,9 @@ public class ProductController {
 	private ProductService productService;
 //	@Autowired
 //	private ProductCategoryService productCategoryService;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ProductController.class);
-	
-	
+
 	/**
     * @Title: http://ip:port/app_service/product/category
     * @Description: 获取商品类别
