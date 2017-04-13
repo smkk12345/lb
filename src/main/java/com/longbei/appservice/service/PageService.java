@@ -56,6 +56,7 @@ public interface PageService {
      * 添加首页推荐
      * @param homeRecommend
      * @return
+     * @author luye
      */
     BaseResp<Object> insertHomeRecommend(HomeRecommend homeRecommend);
 
@@ -66,6 +67,7 @@ public interface PageService {
      * @param pageno
      * @param pagesize
      * @return
+     * @author luye
      */
     BaseResp<Page<HomeRecommend>> selectHomeRecommendList(HomeRecommend homeRecommend,Integer pageno,Integer pagesize);
 
@@ -75,6 +77,7 @@ public interface PageService {
      * @param startno
      * @param pagesize
      * @return
+     * @author luye
      */
     BaseResp<List<HomeRecommend>> selectHomeRecommendList(Integer startno, Integer pagesize);
 
@@ -83,6 +86,7 @@ public interface PageService {
      * 更新首页推荐
      * @param homeRecommend
      * @return
+     * @author luye
      */
     BaseResp<Object> updateHomeRecommend(HomeRecommend homeRecommend);
 
