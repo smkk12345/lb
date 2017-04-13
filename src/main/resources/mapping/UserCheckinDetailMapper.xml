@@ -29,8 +29,11 @@
     select 
     <include refid="Base_Column_List" />
     from user_checkin_detail
-    where userid = #{userid} 
-    and yearmonth = #{yearmonth} 
+    where userid = #{userid}
+    <if test="yearmonth != null and yearmonth != ''" >
+      and yearmonth = #{yearmonth}
+    </if>
+    ORDER BY createtime DESC
   </select>
   
   <select id="selectCountByUserid" resultType="java.lang.Integer" >
