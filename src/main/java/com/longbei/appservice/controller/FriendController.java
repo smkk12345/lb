@@ -141,4 +141,20 @@ public class FriendController {
         return baseResp;
     }
 
+    /**
+     * 清空加好友的请求消息
+     * @api http://ip:port/app_service/friend/clearFriendAsk
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="clearFriendAsk")
+    public BaseResp<Object> clearFriendAsk(Long userid){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.friendService.clearFriendAsk(userid);
+        return baseResp;
+    }
+
 }

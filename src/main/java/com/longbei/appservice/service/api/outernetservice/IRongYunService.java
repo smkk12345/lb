@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("outernetService")
 public interface IRongYunService {
 
+    /**
+     * 获取融云的token
+     * @param userid
+     * @param username
+     * @param portraitUri
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/rongyun/getRYToken")
     BaseResp<Object> getRYToken(@RequestParam("userid") String userid,
                                 @RequestParam("username") String username,
@@ -51,7 +58,10 @@ public interface IRongYunService {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/rongyun/joinGroupMember")
-    BaseResp<Object> joinGroupMember(@RequestParam("userIds") String userIds,
+    BaseResp<Object> joinGroupMember(@RequestParam("operatorUserId")String operatorUserId,
+                                     @RequestParam("operatorNickname")String operatorNickname,
+                                     @RequestParam("targetUserDisplayNames")String targetUserDisplayNames,
+                                     @RequestParam("userIds") String userIds,
                                      @RequestParam("groupId") String groupId,
                                      @RequestParam("groupName")String groupName);
 
@@ -61,11 +71,34 @@ public interface IRongYunService {
      * @param groupId
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/quietGroup")
-    BaseResp<Object> quietGroup(@RequestParam("userIds")String userIds,
+    @RequestMapping(method=RequestMethod.GET,value="/rongyun/quietGroup")
+    BaseResp<Object> quietGroup(@RequestParam("operatorUserId")String operatorUserId,
+                                @RequestParam("operatorNickname")String operatorNickname,
+                                @RequestParam("targetUserDisplayNames")String targetUserDisplayNames,
+                                @RequestParam("userIds")String userIds,
                                 @RequestParam("groupId")String groupId);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/dismissGroup")
-    BaseResp<Object> dismissGroup(@RequestParam("userId") String userId,
+    /**
+     * 解散群组
+     * @param operatorNickname
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET,value="/rongyun/dismissGroup")
+    BaseResp<Object> dismissGroup(@RequestParam("operatorNickname")String operatorNickname,@RequestParam("userId") String userId,
                                   @RequestParam("groupId") String groupId);
+
+    /**
+     * 更改用户的群组昵称 发送融云的资料更改通知
+     * @param userId
+     * @param groupId
+     * @param nickName
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/rongyun/updateGroupMemberNickname")
+    BaseResp<Object> updateGroupMemberNickname(@RequestParam("userId")String userId,
+                                @RequestParam("groupId")String groupId,
+                                @RequestParam("nickName") String nickName);
+
 }

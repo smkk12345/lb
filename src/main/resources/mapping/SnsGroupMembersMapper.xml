@@ -296,6 +296,9 @@
           <if test="noQueryUserId != null">
               userid != #{noQueryUserId}
           </if>
+          <if test="keyword != null and keyword !=''">
+              and nickname like concat('%',concat(#{keyword},'%'))
+          </if>
           <if test="status != null">
             and status = #{status}
           </if>

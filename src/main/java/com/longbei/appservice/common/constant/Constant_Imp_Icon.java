@@ -33,6 +33,9 @@ public class Constant_Imp_Icon {
     public static int DAILY_ADDIMP_RANDOM = 1;//3-10 算法1
     public static int DAILY_ADDIMP_LIMIT = 3;//限制3次
 
+    /**
+     * 邀请好友注册赠送的进步币
+     */
     public static int INVITE_LEVEL1 = 10;
 
     //以下两类需要单独接口

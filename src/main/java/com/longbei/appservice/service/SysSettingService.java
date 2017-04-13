@@ -25,5 +25,9 @@ public interface SysSettingService {
      */
     SysAppupdate selectRecentByKey(String ttype);
 
-
+    /**
+     * 获取分享的相关信息
+     * @return
+     */
+    BaseResp<Object> getShareInfo();
 }

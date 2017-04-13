@@ -9,8 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import org.springframework.scheduling.annotation.EnableScheduling;

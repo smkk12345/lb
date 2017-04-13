@@ -48,5 +48,13 @@ public interface SnsFansMapper {
 	 * SnsFansMapper
 	 */
     List<String> selectListidByUidNum(@Param("userid") long userid, @Param("startNum") int startNum, @Param("endNum") int endNum);
-    
+
+	/**
+	 * 查询关注了likeuserId的用户列表
+	 * @param likeuserId 被关注人的用户id
+	 * @param startNum
+	 * @param pageSize
+     * @return
+     */
+	List<SnsFans> selectFansByLikeUserid(@Param("likeuserId")Long likeuserId,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 }
