@@ -65,6 +65,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	}
 	
 	public AppUserMongoEntity getAppUser(String userid){
+		logger.info("getAppUser userid={}",userid);
 		userid = userid.trim();
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {

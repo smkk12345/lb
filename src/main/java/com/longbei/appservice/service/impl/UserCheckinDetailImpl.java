@@ -247,8 +247,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	}
 
 	@Override
-	public BaseResp<Object> selectDetailListByYearmonth(long userid, Integer yearmonth) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, Integer yearmonth) {
+		BaseResp<List<UserCheckinDetail>> reseResp = new BaseResp<>();
 		try {
 			int continuousday = 0;
 			List<UserCheckinDetail> list = userCheckinDetailMapper.selectDetailListByYearmonth(userid, yearmonth);

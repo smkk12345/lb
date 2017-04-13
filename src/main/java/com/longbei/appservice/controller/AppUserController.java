@@ -131,16 +131,16 @@ public class AppUserController extends BaseController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
-    public BaseResp<Object> checkinDate(String userid, String yearmonth) {
-  		BaseResp<Object> baseResp = new BaseResp<>();
+    public BaseResp<List<UserCheckinDetail>> checkinDate(String userid, String yearmonth) {
+  		BaseResp<List<UserCheckinDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
   			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
-         } catch (Exception e) {
-             logger.error("checkinDate userid = {}, msg = {}", userid, e);
-         }
+        } catch (Exception e) {
+            logger.error("checkinDate userid = {}, yearmonth = {}", userid, yearmonth, e);
+        }
   		return baseResp;
     }
   	
@@ -213,7 +213,7 @@ public class AppUserController extends BaseController {
     /**
      * http://ip:port/appservice/user/sms
      * 短信验证
-     *  operateType 0 注册 1 修改密码 2 找回密码
+     *  operateType 0 注册 1 修改密码 2 找回密码 3 第三方绑定手机号 4 安全验证
      * @param response 
      * @return 正确返回 code 0 错误返回相应code 和 描述
      */
@@ -471,7 +471,7 @@ public class AppUserController extends BaseController {
             String devicetype = request.getParameter("devicetype");
     		//必传参数  类型 openid 密码 手机号  随机码
     		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
-    		if(StringUtils.hasBlankParams(utype,openid,password,username,randomcode,deviceindex)){
+    		if(StringUtils.hasBlankParams(utype,openid,username,randomcode,deviceindex)){
     			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     		}
     		//判断 手机号是否已经注册  未注册  是下面逻辑

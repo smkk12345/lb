@@ -32,9 +32,9 @@ public class Improve {
 
     protected String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
 
-    protected Integer likes = 0;//点赞数量
+    protected int likes = 0;//点赞数量
 
-    protected Integer flowers = 0;//花数量
+    protected int flowers = 0;//花数量
 
     protected Integer diamonds = 0;//钻石
 
@@ -365,7 +365,7 @@ public class Improve {
      * @return likes 点赞数量
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getLikes() {
+    public int getLikes() {
         return likes;
     }
 
@@ -381,7 +381,7 @@ public class Improve {
      * 点赞数量
      * @param likes 点赞数量
      */
-    public void setLikes(Integer likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
@@ -390,7 +390,7 @@ public class Improve {
      * @return flowers 花数量 
      */
     @JsonInclude(Include.ALWAYS)
-    public Integer getFlowers() {
+    public int getFlowers() {
         return flowers;
     }
 
@@ -398,7 +398,7 @@ public class Improve {
      * 花数量 
      * @param flowers 花数量 
      */
-    public void setFlowers(Integer flowers) {
+    public void setFlowers(int flowers) {
         this.flowers = flowers;
     }
 

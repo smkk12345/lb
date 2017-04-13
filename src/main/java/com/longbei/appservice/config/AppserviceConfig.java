@@ -19,13 +19,13 @@ public class AppserviceConfig {
     public static String host_product_service;
 
     //人民币兑换龙币比例
-    public static int yuantomoney;
-    //龙币兑换花比例       
-    public static int moneytoflower;
+    public static double yuantomoney;
+    //花兑换龙币比例
+    public static double flowertomoney;
     //龙币兑换进步币比例
-    public static int moneytocoin;
-    //花兑换进步币比例    
-    public static int flowertocoin;
+    public static double moneytocoin;
+    //花兑换进步币比例
+    public static double flowertocoin;
     
     public static String ios_buyflower;
     
@@ -46,22 +46,22 @@ public class AppserviceConfig {
     
     
     @Value("${yuantomoney}")
-	public void setYuantomoney(int yuantomoney) {
+	public void setYuantomoney(double yuantomoney) {
     	this.yuantomoney = yuantomoney;
 	}
     
-	@Value("${moneytoflower}")
-	public void setMoneytoflower(int moneytoflower) {
-    	this.moneytoflower = moneytoflower;
+	@Value("${flowertomoney}")
+	public void setFlowertomoney(double flowertomoney) {
+    	this.flowertomoney = flowertomoney;
 	}
 	
     @Value("${moneytocoin}")
-	public void setMoneytocoin(int moneytocoin) {
+	public void setMoneytocoin(double moneytocoin) {
     	this.moneytocoin = moneytocoin;
 	}
     
     @Value("${flowertocoin}")
-	public void setFlowertocoin(int flowertocoin) {
+	public void setFlowertocoin(double flowertocoin) {
     	this.flowertocoin = flowertocoin;
 	}
     

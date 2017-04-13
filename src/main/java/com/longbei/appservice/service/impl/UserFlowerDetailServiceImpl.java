@@ -18,6 +18,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserFlowerDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserFlowerDetail;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.ImproveService;
@@ -81,35 +82,36 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			if (temp) {
 				reseResp.setData(userFlowerDetail);
 
-				//查询龙币兑换花的比例
-				int moneytoflower = AppserviceConfig.moneytoflower;
+				//查询flowertomoney---花兑换龙币比例
+				double flowertomoney = AppserviceConfig.flowertomoney;
 				//花兑换进步币比例
-				int flowertocoin = AppserviceConfig.flowertocoin;
+				double flowertocoin = AppserviceConfig.flowertocoin;
 				//修改user_info表用户总花，总龙币数
 				//origin  0:龙币兑换       1:赠与;  2:进步币兑换
 				if("0".equals(origin)){
-					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -number*moneytoflower, number);
+					int num = (int) (number*flowertomoney);
+					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, number);
 					//添加一条龙币消费明细
 					//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
-					userMoneyDetailService.insertPublic(userid, "1", number*moneytoflower, 0);
+					userMoneyDetailService.insertPublic(userid, "1", num, 0);
 				}else if("1".equals(origin)){
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, -number);
 				}else if("2".equals(origin)){
-					userInfoMapper.updateCoinAndFlowerByUserid(userid, -number*flowertocoin, number);
+					int num = (int) (number*flowertocoin);
+					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, number);
 					//添加一条进步币消费明细
 					//origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物
 					// 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币
 					// 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
 					// 					11:取消订单返还龙币   12:兑换鲜花
-					userImpCoinDetailService.insertPublic(userid, "12", number*flowertocoin, 0, 0l);
+					userImpCoinDetailService.insertPublic(userid, "12", num, 0, 0l);
 				}
 				UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 				Map<String, Object> expandData = new HashMap<>();
 				if(null != userInfo){
 					expandData.put("totalmoney", userInfo.getTotalmoney());
 					expandData.put("totalcoin", userInfo.getTotalcoin());
-					expandData.put("totalflower", userInfo.getTotalflower());
 				}
 				reseResp.setExpandData(expandData);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -175,7 +177,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			expandData.put("yuantomoney", AppserviceConfig.yuantomoney);
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
-			expandData.put("moneytoflower", AppserviceConfig.moneytoflower);
+			expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -203,10 +205,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户龙币是否够用兑换
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
-		//查询龙币兑换花的比例
-		int moneytoflower = AppserviceConfig.moneytoflower;
+		//查询flowertomoney---花兑换龙币比例
+		double flowertomoney = AppserviceConfig.flowertomoney;
 		if(null != userInfo){
-			if(number*moneytoflower > userInfo.getTotalmoney()){
+			if(number*flowertomoney > userInfo.getTotalmoney()){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_23, Constant.RTNINFO_SYS_23);
 			}
 		}
@@ -215,6 +217,12 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+		}
+		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
+		if(null != improve){
+			Map<String, Object> expandData = reseResp.getExpandData();
+			expandData.put("totalflower", improve.getFlowers());
+			reseResp.setExpandData(expandData);
 		}
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
@@ -240,9 +248,9 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		//先判断用户进步币是否够用兑换
 		UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 		//花兑换进步币比例  
-		int flowertocoin = AppserviceConfig.flowertocoin;
+		double flowertocoin = AppserviceConfig.flowertocoin;
 		if(null != userInfo){
-			if(number*flowertocoin > userInfo.getTotalmoney()){
+			if(number*flowertocoin > userInfo.getTotalcoin()){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_24, Constant.RTNINFO_SYS_24);
 			}
 		}
@@ -251,6 +259,12 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+		}
+		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
+		if(null != improve){
+			Map<String, Object> expandData = reseResp.getExpandData();
+			expandData.put("totalflower", improve.getFlowers());
+			reseResp.setExpandData(expandData);
 		}
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
