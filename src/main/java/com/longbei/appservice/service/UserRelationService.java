@@ -9,9 +9,11 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.entity.SnsFriends;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smkk
@@ -95,7 +97,7 @@ public interface UserRelationService {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
-	public BaseResp<Object> selectFansListByUserId(long userid,Integer startNum,Integer endNum);
+	BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum);
 
 	/**
 	 * @author yinxc
@@ -104,7 +106,7 @@ public interface UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
+	BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc

@@ -20,7 +20,7 @@
     from sns_fans
     where userid = #{userid}
   </select>
-  
+
   <select id="selectListidByUidNum" resultType="java.lang.String">
     select 
     <include refid="Bid_Column_List" />
@@ -55,11 +55,39 @@
     select 
       <include refid="Base_Column_List" />
     from sns_fans
-    where userid = #{userid} 
-    order by createtime desc 
+    where userid = #{userid}
+    order by createtime desc
       <if test="startNum != null and endNum != null" >
         limit #{startNum,jdbcType=INTEGER},#{endNum,jdbcType=INTEGER}
       </if>
+  </select>
+
+  <select id="selectFansFtypeCount" resultType="java.lang.Integer">
+    SELECT count(*) from sns_fans
+    where 1=1
+    <if test="ftype == 0" >
+      AND userid = #{userid}
+    </if>
+    <if test="ftype == 1" >
+      AND likeuserid = #{userid}
+    </if>
+  </select>
+
+  <select id="selectFansList" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from sns_fans
+    where 1=1
+    <if test="ftype == 0" >
+      AND userid = #{userid}
+    </if>
+    <if test="ftype == 1" >
+      AND likeuserid = #{userid}
+    </if>
+    order by createtime desc
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

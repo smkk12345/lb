@@ -201,11 +201,11 @@ public class AddMessageReceiveService implements MessageListener{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineAttr(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectFansListByUserId(Long.parseLong(userid),0,0);
+        BaseResp<List<SnsFans>> baseResp = relationService.selectFansListByUserId(Long.parseLong(userid), "0", 0, 0);
         if(baseResp.getCode() != 0){
             return;
         }
-        List<SnsFans> snsFanses = (List<SnsFans>) baseResp.getData();
+        List<SnsFans> snsFanses = baseResp.getData();
         for (SnsFans friends : snsFanses) {
             timeLine.setId(MongoUtils.UUID());
             timeLine.setUserid(String.valueOf(friends.getUserid()));
