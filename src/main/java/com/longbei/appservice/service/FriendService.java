@@ -68,4 +68,10 @@ public interface FriendService extends BaseService{
      */
     String getNickName(Long userId, Long friendId);
 
+    /**
+     * 清空好友的加好友申请消息
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> clearFriendAsk(Long userid);
 }

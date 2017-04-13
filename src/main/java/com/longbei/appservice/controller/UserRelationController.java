@@ -8,6 +8,7 @@
 */
 package com.longbei.appservice.controller;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserRelationService;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smkk
@@ -126,7 +128,7 @@ public class UserRelationController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectListByUserId")
-	public BaseResp<Object> selectListByUserId(String userid,Integer startNum,Integer endNum,String updateTime){
+	public BaseResp<Object> selectListByUserId(String userid ,Integer startNum,Integer endNum,String updateTime){
 		logger.info("selectListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
@@ -261,22 +263,31 @@ public class UserRelationController extends BaseController {
 	}
 	/**
 	* @Title: http://ip:port/app_service/user/selectFansListByUserId
-	* @Description: 查询关注的人员列表  查询被关注的成员列表
+	* @Description: 查询关注的人员列表：粉丝列表
 	* @param @param userid
+	* @param ftype 0:查询关注列表   1：粉丝列表
 	* @param @param startNum endNum
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<Object> selectFansListByUserId(String userid, Integer startNum, Integer endNum){
+	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String ftype, Integer startNum, Integer endNum){
 		logger.info("selectFansListByUserId params userid={}",userid);
-		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(userid)) {
+		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(userid, ftype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
 		try {
-			return userRelationService.selectFansListByUserId(Long.parseLong(userid), startNum, endNum);
+			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+			if(null != startNum){
+				sNo = startNum.intValue();
+			}
+			if(null != endNum){
+				sSize = endNum.intValue();
+			}
+			return userRelationService.selectFansListByUserId(Long.parseLong(userid), ftype, sNo, sSize);
 		} catch (Exception e) {
 			logger.error("selectFansListByUserId error and msg={}",e);
 		}

@@ -201,6 +201,7 @@ public class GroupController {
     /**
      * 查询群成员
      * @url http://ip:port/app_service/group/groupMemberList
+     * @param keyword 搜索的群成员用户昵称
      * @param groupId 群组id
      * @param userId 用户id
      * @param status 查询群组成员的状态 1.代表查询加群成功的,已经在群中的群成员 0.代表查询待群主审核的群成员(仅限群主查询)
@@ -210,7 +211,7 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value="groupMemberList")
-    public BaseResp<Object> groupMemberList(String groupId,Long userId,Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer endNum){
+    public BaseResp<Object> groupMemberList(String keyword,String groupId,Long userId,Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isEmpty(groupId) || userId == null || status == null || (status != 0 && status != 1)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -226,7 +227,7 @@ public class GroupController {
                 pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
             }
         }
-        baseResp = this.groupService.groupMemberList(groupId,userId,status,noQueryCurrentUser,startNum,pageSize);
+        baseResp = this.groupService.groupMemberList(groupId,userId,status,keyword,noQueryCurrentUser,startNum,pageSize);
         return baseResp;
     }
 
@@ -338,6 +339,22 @@ public class GroupController {
             return  baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.groupService.groupDetail(groupId,userid);
+        return baseResp;
+    }
+
+    /**
+     * 查询用户在群组中的信息
+     * @param userid
+     * @param groupId
+     * @return
+     */
+    @RequestMapping(value="groupMemberDetail")
+    public BaseResp<Object> groupMemberDetail(Long userid,Long groupId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(userid == null || groupId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.groupService.groupMemberDetail(userid,groupId);
         return baseResp;
     }
 

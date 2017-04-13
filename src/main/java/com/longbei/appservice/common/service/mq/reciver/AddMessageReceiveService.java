@@ -198,7 +198,7 @@ public class AddMessageReceiveService implements MessageListener{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineAttr(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectFansListByUserId(Long.parseLong(userid),0,0);
+        BaseResp<Object> baseResp = relationService.selectFansListByLikeUserid(Long.parseLong(userid),false,null,null);
         if(baseResp.getCode() != 0){
             return;
         }

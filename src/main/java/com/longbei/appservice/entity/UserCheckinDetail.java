@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -53,6 +54,7 @@ public class UserCheckinDetail {
      * 签到日期
      * @return checkindate 签到日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCheckindate() {
         return checkindate;
     }
@@ -69,6 +71,7 @@ public class UserCheckinDetail {
      * 
      * @return createtime 
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
