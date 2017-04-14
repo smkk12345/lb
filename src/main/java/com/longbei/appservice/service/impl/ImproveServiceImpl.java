@@ -507,7 +507,8 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<Improve> selectRankImproveList(String userid, String rankid,String sift,String orderby, int pageNo, int pageSize) {
+    public List<Improve> selectRankImproveList(String userid, String rankid,String sift,
+                                               String orderby, int pageNo, int pageSize,String lastdate) {
         List<Improve> improves = null;
         try {
             switch (sift){
@@ -539,7 +540,8 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            improves = improveMapper.selectListByRank(rankid,orderby,flowerscore,likescore,pageNo,pageSize);
+            improves = improveMapper.selectListByRank(rankid,orderby,
+                    flowerscore,likescore,pageNo,pageSize,lastdate==null?null:DateUtils.parseDate(lastdate));
             initImproveListOtherInfo(userid,improves);
             initSortInfo(rank,improves);
             if(null == improves){

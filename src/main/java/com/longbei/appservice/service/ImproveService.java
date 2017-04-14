@@ -91,7 +91,8 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<Improve> selectRankImproveList(String userid,String rankid,String sift,String orderby,int pageNo,int pageSize);
+    List<Improve> selectRankImproveList(String userid,String rankid,String sift,
+                                        String orderby,int pageNo,int pageSize,String lastdate);
 
     /**
      *  榜中按时间排序
