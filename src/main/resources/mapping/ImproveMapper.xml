@@ -388,6 +388,9 @@
       AND ir.businessid = #{businessid}
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
+        <if test="lastdate != null">
+          AND createtime &lt; #{lastdate}
+        </if>
       </if>
     </where>
     <if test="orderby=='2'.toString() or orderby=='0'.toString()">
@@ -396,7 +399,15 @@
     <if test="orderby=='1'.toString()">
       ORDER BY sum(rm.flowers*#{flowerscore}+rm.likes*#{likescore}) desc
     </if>
-    limit #{startno},#{pagesize}
+    <choose>
+      <when test="orderby=='0'.toString()">
+        limit #{pagesize}
+      </when>
+      <otherwise>
+        limit #{startno},#{pagesize}
+      </otherwise>
+    </choose>
+
   </select>
 
 

@@ -33,7 +33,7 @@ public interface UserFlowerDetailMapper {
 	 * @author yinxc
 	 * 获取进步币明细列表
 	 * 2017年2月23日
-	 * return_type
+	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
 	 * UserImpCoinDetailMapper
 	 */
     List<UserFlowerDetail> selectListByOrigin(@Param("userid") long userid, @Param("origin") String origin, @Param("pageNo") int pageNo, 

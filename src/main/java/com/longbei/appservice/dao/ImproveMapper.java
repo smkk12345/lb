@@ -52,7 +52,8 @@ public interface ImproveMapper {
                                     @Param("flowerscore") int flowerscore,
                                     @Param("likescore") int likescore,
                                     @Param("startno")int startno,
-                                    @Param("pagesize")int pagesize
+                                    @Param("pagesize")int pagesize,
+                                    @Param("lastdate") Date lastdate
                             );
 
 

@@ -15,9 +15,12 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserFlowerDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserFlowerDetail;
 import com.longbei.appservice.entity.UserInfo;
@@ -25,6 +28,7 @@ import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("userFlowerDetailService")
 public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements UserFlowerDetailService {
@@ -41,6 +45,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	private UserImpCoinDetailService userImpCoinDetailService;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private UserRelationService userRelationService;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFlowerDetailServiceImpl.class);
 
@@ -75,7 +83,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				number = 0- number;
 			}
 			userFlowerDetail.setNumber(number);
-			//origin   来源，0:龙币兑换;  1:赠与;  2:进步币兑换
+			//origin   来源，0:龙币兑换;  1:赠与;  2:进步币兑换   3:被赠与
 			userFlowerDetail.setOrigin(origin);
 			userFlowerDetail.setUserid(userid);
 			boolean temp = insert(userFlowerDetail);
@@ -87,16 +95,16 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				//花兑换进步币比例
 				double flowertocoin = AppserviceConfig.flowertocoin;
 				//修改user_info表用户总花，总龙币数
-				//origin  0:龙币兑换       1:赠与;  2:进步币兑换
+				//origin  0:龙币兑换       1:赠与;  2:进步币兑换   3:被赠与
 				if("0".equals(origin)){
 					int num = (int) (number*flowertomoney);
-					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, number);
+					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, 0);
 					//添加一条龙币消费明细
 					//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
 					userMoneyDetailService.insertPublic(userid, "1", num, 0);
 				}else if("1".equals(origin)){
-					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, -number);
+					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, 0);
 				}else if("2".equals(origin)){
 					int num = (int) (number*flowertocoin);
 					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, number);
@@ -106,6 +114,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					// 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
 					// 					11:取消订单返还龙币   12:兑换鲜花
 					userImpCoinDetailService.insertPublic(userid, "12", num, 0, 0l);
+				}else if("3".equals(origin)){
+					//   3:被赠与
+					//被赠与用户，修改收到的花数量
+					userInfoMapper.updateMoneyAndFlowerByUserid(friendid, 0, number);
 				}
 				UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 				Map<String, Object> expandData = new HashMap<>();
@@ -163,6 +175,34 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		return reseResp;
 	}
+	
+	/**
+	 * @author yinxc
+	 * 获取鲜花明细列表
+	 * 2017年4月14日
+	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
+	 */
+	@Override
+	public BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo,
+			int pageSize) {
+		BaseResp<List<UserFlowerDetail>> reseResp = new BaseResp<>();
+		try {
+			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, origin, pageNo, pageSize);
+			if(null != list && list.size()>0){
+				for (UserFlowerDetail userFlowerDetail : list) {
+					//初始化用户信息
+					initFlowerUserInfoByUserid(userFlowerDetail, userid);
+				}
+			}
+			reseResp.setData(list);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectListByUserid userid = {}, pageNo = {}, pageSize = {}", 
+					userid, pageNo, pageSize, e);
+		}
+		return reseResp;
+	}
+
 
 	@Override
 	public BaseResp<Object> selectUserInfoByUserid(long userid) {
@@ -217,6 +257,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+			//赠送后，被赠与用户添加一条花的明细  赠与用户添加一条花明细
+			//origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
+			insertPublic(Long.parseLong(friendid), "3", number, Long.parseLong(improveid), userid);
+			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
@@ -259,6 +303,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
+			//赠送后，被赠与用户添加一条花的明细  赠与用户添加一条花明细
+			//origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
+			insertPublic(Long.parseLong(friendid), "3", number, Long.parseLong(improveid), userid);
+			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
@@ -270,5 +318,24 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		return reseResp;
 	}
 
+	
+	/**
+     * 初始化用户信息 ------Userid
+     */
+    private void initFlowerUserInfoByUserid(UserFlowerDetail userFlowerDetail, long userid){
+    	if(userFlowerDetail.getFriendid() != 0){
+    		//获取好友昵称
+    		String remark = userRelationService.selectRemark(userid, userFlowerDetail.getFriendid());
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userFlowerDetail.getFriendid()));
+            if(null != appUserMongoEntity){
+            	if(!StringUtils.isBlank(remark)){
+            		appUserMongoEntity.setNickname(remark);
+            	}
+            	userFlowerDetail.setAppUserMongoEntity(appUserMongoEntity);
+            }else{
+            	userFlowerDetail.setAppUserMongoEntity(new AppUserMongoEntity());
+            }
+    	}
+    }
 
 }

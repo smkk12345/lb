@@ -35,11 +35,17 @@ public interface UserCheckinDetailService {
 	
 	/**
 	 * @author yinxc
+	 * 获取签到规则
+	 */
+	BaseResp<Object> sysRuleCheckin();
+	
+	/**
+	 * @author yinxc
 	 * 根据年月获取签到详情记录
 	 * 2017年2月22日
 	 * return_type
 	 */
-	BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, String yearmonth);
+	BaseResp<Object> selectDetailListByYearmonth(long userid, String yearmonth);
 	
 	/**
 	 * @author yinxc
