@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.web.BaseController;
+import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,7 +28,7 @@ public class SysInitController extends BaseController{
         //十全十美菜单
         baseResp.getExpandData().put("perfectmenus",SysRulesCache.perfectTenList);
         //oss路径
-        baseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
+        baseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
         //多媒体前缀
 //        baseResp.getExpandData().put("mediapath",Constant.OSS_MEDIA);
         //初始化操作
