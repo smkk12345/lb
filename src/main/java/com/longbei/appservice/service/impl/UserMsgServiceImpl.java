@@ -5,6 +5,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -54,7 +55,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private CommentLowerMongoDao commentLowerMongoDao;
-	
+	@Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private UserSettingCommonService userSettingCommonService;
 	
@@ -550,10 +552,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 */
 	@Override
-	public BaseResp<Object> selectExceptList(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectExceptList(final long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
+			final List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
 			//0:关闭  1：开启
@@ -597,12 +599,23 @@ public class UserMsgServiceImpl implements UserMsgService {
 					}
 					//初始化消息中用户信息----friendid
 					initMsgUserInfoByFriendid(userMsg);
+					
+					//异步线程修改list消息为已读
+					threadPoolTaskExecutor.execute(
+	                    new Runnable() {
+	                        @Override
+	                        public void run() {
+	                            for (UserMsg userMsg : list) {
+	                            	userMsgMapper.updateIsreadByid(userMsg.getId(), userid);
+								}
+	                        }
+	                    });
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-//			else{
-//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
-//			}
+			else{
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
+			}
 			reseResp.setExpandData(expandData);
 			reseResp.setData(list);
 		} catch (Exception e) {
