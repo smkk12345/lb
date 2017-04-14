@@ -659,15 +659,15 @@
   <update id="updateMoneyAndFlowerByUserid">
     update user_info 
     set 
-    <if test="totalflower != 0">
-      totalflower = totalflower + #{totalflower},
+    <if test="givedflowers != 0">
+      givedflowers = givedflowers + #{givedflowers},
     </if>
     <if test="totalmoney != 0">
       totalmoney = totalmoney + #{totalmoney}
     </if>
     WHERE 
-    <if test="totalflower &lt; 0">
-      totalflower > ROUND(#{totalflower}) and
+    <if test="givedflowers &lt; 0">
+      givedflowers > ROUND(#{givedflowers}) and
     </if>
     <if test="totalmoney &lt; 0">
       totalmoney > ROUND(#{totalmoney}) and
