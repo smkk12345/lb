@@ -3,6 +3,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,12 @@ public class SysInitController extends BaseController{
         //十全十美菜单
         baseResp.getExpandData().put("perfectmenus",SysRulesCache.perfectTenList);
         //oss路径
-        baseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
+        if(StringUtils.isBlank(AppserviceConfig.oss_media)){
+            baseResp.getExpandData().put("osspath", "http://longbei0413-media-out.oss-cn-shanghai.aliyuncs.com/");
+        }else{
+            baseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
+        }
+
         //多媒体前缀
 //        baseResp.getExpandData().put("mediapath",Constant.OSS_MEDIA);
         //初始化操作
