@@ -640,7 +640,7 @@
       FROM rank
       WHERE 1=1
         <if test="ranktitle != null and ranktitle != ''" >
-          (AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+          AND (ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
           OR codeword = #{codeword})
         </if>
         <if test="rankbrief != null and rankbrief != ''" >
