@@ -106,6 +106,8 @@ public class ImproveServiceImpl implements ImproveService{
     private RankSortService rankSortService;
     @Autowired
     private RankMapper rankMapper;
+    @Autowired
+    private UserRelationService userRelationService;
 
     /**
      *  @author luye
@@ -1034,6 +1036,8 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             initImproveLikeAndFlower(improve);
+            //初始化进步用户信息
+            initImproveUserInfo(improve,Long.parseLong(userid));
             improves.add(improve);
         }
         return improves;
@@ -1162,7 +1166,10 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initFriendInfo(long userid,AppUserMongoEntity apuser){
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
-        if(null == snsFriends){
+        if(null != snsFriends){
+            if(!StringUtils.isBlank(snsFriends.getRemark())){
+                apuser.setNickname(snsFriends.getRemark());
+            }
             apuser.setIsfriend("0");
         }else{
             apuser.setIsfriend("1");
@@ -1208,8 +1215,18 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initImproveUserInfo(Improve improve,long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+        //获取好友昵称
+        String remark = userRelationService.selectRemark(userid, improve.getUserid());
+        if(null != appUserMongoEntity){
+            if(!StringUtils.isBlank(remark)){
+                appUserMongoEntity.setNickname(remark);
+            }
+            improve.setAppUserMongoEntity(appUserMongoEntity);
+        }else{
+            improve.setAppUserMongoEntity(new AppUserMongoEntity());
+        }
         initUserRelateInfo(userid,appUserMongoEntity);
-        improve.setAppUserMongoEntity(appUserMongoEntity);
+//        improve.setAppUserMongoEntity(appUserMongoEntity);
     }
 
     /**
