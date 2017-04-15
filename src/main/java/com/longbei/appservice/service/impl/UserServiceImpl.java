@@ -522,6 +522,18 @@ public class UserServiceImpl implements UserService {
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
+			if(StringUtils.isBlank(userInfo.getRytoken())){
+				try {
+					BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", username, "#");
+					if(ResultUtil.isSuccess(tokenRtn)){
+						userInfo.setRytoken((String)tokenRtn.getData());
+						userInfoMapper.updateByUseridSelective(userInfo);
+					}
+				}catch (Exception e){
+					logger.error("userid={},username={} getRYToken error",
+							userInfo.getUserid(),userInfo.getUsername(),e);
+				}
+			}
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null != userInfo){
