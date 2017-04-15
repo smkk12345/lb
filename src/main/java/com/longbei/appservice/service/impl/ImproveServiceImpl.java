@@ -1958,8 +1958,8 @@ public class ImproveServiceImpl implements ImproveService{
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        key = key.replace("longbeimp3/","");
-        key = key.replace("longbeimp4/","");
+        key = key.replace("longbei_mp3/","");
+        key = key.replace("longbei_vido/","");
         String[] filenameArr = key.split("_");
         if(filenameArr.length < 2){
             return baseResp;
