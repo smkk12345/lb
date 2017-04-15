@@ -3,7 +3,6 @@ package com.longbei.appservice.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.longbei.appservice.config.AppserviceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,15 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMoneyDetailMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMoneyDetail;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("userMoneyDetailService")
 public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
@@ -29,8 +29,10 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+//	@Autowired
+//	private SpringJedisDao springJedisDao;
 	@Autowired
-	private SpringJedisDao springJedisDao;
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMoneyDetailServiceImpl.class);
 
@@ -106,15 +108,15 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 		return reseResp;
 	}
 	
-	private void jedisKey(long userid, Integer number){
-		//存在
-		springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, number);
-		//重新设置过期时间---10秒
-		String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
-		springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, value, 10);
-		//修改数据库数据
-		userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
-	}
+//	private void jedisKey(long userid, Integer number){
+//		//存在
+//		springJedisDao.increment(Constant.RP_USER_MONEY_VALUE + userid, number);
+//		//重新设置过期时间---10秒
+//		String value = springJedisDao.get(Constant.RP_USER_MONEY_VALUE + userid);
+//		springJedisDao.set(Constant.RP_USER_MONEY_VALUE + userid, value, 10);
+//		//修改数据库数据
+//		userInfoMapper.updateTotalmoneyByUserid(userid, Integer.parseInt(value));
+//	}
 	
 	private boolean insert(UserMoneyDetail record){
 		int temp = userMoneyDetailMapper.insertSelective(record);
@@ -135,8 +137,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			if(null != list && list.size()>0){
 				for (UserMoneyDetail userMoneyDetail : list) {
 					//初始化用户信息
-//					initMsgUserInfoByFriendid(userMoneyDetail);
-					initMsgUserInfoByUserid(userMoneyDetail);
+					initMsgUserInfoByUserid(userMoneyDetail, userid);
 				}
 			}
 			reseResp.setData(list);
@@ -191,9 +192,20 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
     /**
      * 初始化用户龙币信息 ------Userid
      */
-   private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail){
-       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getUserid()));
-       userMoneyDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
+   private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail, long userid){
+	   if(userMoneyDetail.getFriendid() != 0){
+			//获取好友昵称
+			String remark = userRelationService.selectRemark(userid, userMoneyDetail.getFriendid());
+	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
+	       if(null != appUserMongoEntity){
+		       	if(!StringUtils.isBlank(remark)){
+		       		appUserMongoEntity.setNickname(remark);
+		       	}
+		       	userMoneyDetail.setAppUserMongoEntity(appUserMongoEntity);
+	       }else{
+	    	   userMoneyDetail.setAppUserMongoEntity(new AppUserMongoEntity());
+	       }
+		}
    }
 
 }

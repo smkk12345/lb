@@ -622,6 +622,7 @@ public class AppUserController extends BaseController {
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
+            record.setRealname(realname);
 			// 添加身份证验证 先判断是否验证过，已验证修改
 			baseResp = userIdcardService.insert(record);
 		} catch (Exception e) {

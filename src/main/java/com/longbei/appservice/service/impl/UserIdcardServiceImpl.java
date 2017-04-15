@@ -96,7 +96,7 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 			userIdcard.setRealname(userInfo.getRealname());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userIdcard);
-			reseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
+//			reseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
 		} catch (Exception e) {
 			logger.error("userSafety userid = {}, msg = {}", userid, e);
 		}
