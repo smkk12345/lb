@@ -131,19 +131,37 @@ public class AppUserController extends BaseController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
-    public BaseResp<List<UserCheckinDetail>> checkinDate(String userid, String yearmonth) {
-  		BaseResp<List<UserCheckinDetail>> baseResp = new BaseResp<>();
+    public BaseResp<Object> checkinDate(String userid, String yearmonth) {
+  		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), Integer.parseInt(yearmonth));
+  			baseResp = userCheckinDetailService.selectDetailListByYearmonth(Long.parseLong(userid), yearmonth);
         } catch (Exception e) {
             logger.error("checkinDate userid = {}, yearmonth = {}", userid, yearmonth, e);
         }
   		return baseResp;
     }
   	
+  	
+  	/**
+     * @Title: http://ip:port/appservice/user/sysRuleCheckin
+     * @Description: 用户每月签到规则
+     * @auther yinxc
+     * @currentdate:2017年4月13日
+     */
+//  	@RequestMapping(value = "sysRuleCheckin")
+//     @ResponseBody
+//     public BaseResp<Object> sysRuleCheckin() {
+//   		BaseResp<Object> baseResp = new BaseResp<>();
+//   		try {
+//   			baseResp = userCheckinDetailService.sysRuleCheckin();
+//   		} catch (Exception e) {
+//   			logger.error("sysRuleCheckin ", e);
+//   		}
+//   		return baseResp;
+//     }
   	
     
     /**
@@ -410,7 +428,7 @@ public class AppUserController extends BaseController {
     /**  http://ip:port/appservice/user/updateNickName
      * @param @param userid
      * @param @param nickname  sex   pl   isJump(boolean)
-     * @param @param invitecode  邀请人手机号
+     * @param @param inviteusername  邀请人手机号
      * @Title: thirdupdate
      * @Description: 第三方注册后，修改推荐人手机号及昵称，昵称数据库去重
      * @auther yinxc
@@ -419,11 +437,11 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateNickName")
     @ResponseBody
-    public BaseResp<Object> updateNickName(@RequestParam("userid") String userid, @RequestParam("nickname") String nickname,
+    public BaseResp<Object> updateNickName(String userid, String nickname,
     		String inviteusername,boolean isJump,String sex,String pl) {
 		//必传参数 userid nickname  isJump 0
-		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
-		if(StringUtils.hasBlankParams(userid,nickname)){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid, nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
         if(StringUtils.hasBlankParams(nickname)){
@@ -604,6 +622,7 @@ public class AppUserController extends BaseController {
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
+            record.setRealname(realname);
 			// 添加身份证验证 先判断是否验证过，已验证修改
 			baseResp = userIdcardService.insert(record);
 		} catch (Exception e) {

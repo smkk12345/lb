@@ -37,6 +37,14 @@ public interface UserFlowerDetailService {
 	 * UserImpCoinDetailMapper
 	 */
 	BaseResp<List<UserFlowerDetail>> selectListByUserid(long userid, int pageNo, int pageSize);
+
+	/**
+	 * @author yinxc
+	 * 获取鲜花明细列表
+	 * 2017年2月23日
+	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
+	 */
+	BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo, int pageSize);
 	
 	/**
 	 * @author yinxc

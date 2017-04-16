@@ -221,6 +221,7 @@ public class ImproveController {
      * @param sorttype 排序类型（ 0 - 成员动态 1 - 热度 2 - 时间）
      * @param startNo  开始条数
      * @param pageSize 页面显示条数
+     * @param lastdate 最后一条时间 在 sorttype=0 时使用
      * @return
      * @author:luye
      */
@@ -228,9 +229,14 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "rank/list", method = RequestMethod.POST)
     public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNo,
-                                          String pageSize) {
+                                          String pageSize,String lastdate) {
         if (StringUtils.hasBlankParams(userid, rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if ("0".equals(sorttype)){
+            if (StringUtils.isBlank(lastdate)){
+                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            }
         }
         if (StringUtils.isBlank(startNo)) {
             startNo = Constant.DEFAULT_START_NO;
@@ -241,7 +247,7 @@ public class ImproveController {
         List<Improve> improves = null;
         try {
             improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNo),
-                    Integer.parseInt(pageSize));
+                    Integer.parseInt(pageSize),lastdate);
 
         } catch (Exception e) {
             logger.error("select rank improve list is error:{}", e);

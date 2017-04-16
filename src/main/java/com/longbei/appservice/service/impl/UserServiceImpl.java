@@ -522,6 +522,18 @@ public class UserServiceImpl implements UserService {
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
+			if(StringUtils.isBlank(userInfo.getRytoken())){
+				try {
+					BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", username, "#");
+					if(ResultUtil.isSuccess(tokenRtn)){
+						userInfo.setRytoken((String)tokenRtn.getData());
+						userInfoMapper.updateByUseridSelective(userInfo);
+					}
+				}catch (Exception e){
+					logger.error("userid={},username={} getRYToken error",
+							userInfo.getUserid(),userInfo.getUsername(),e);
+				}
+			}
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null != userInfo){
@@ -567,7 +579,7 @@ public class UserServiceImpl implements UserService {
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
-			long uid = (Long)baseResp.getData();
+//			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
 				return baseResp;
 			}else{
@@ -582,14 +594,14 @@ public class UserServiceImpl implements UserService {
 				//密码是否正确
 //				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(ResultUtil.isSuccess(baseResp)){
+					UserInfo userInfo = userInfoMapper.getByUserName(username);
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
-					baseResp.getExpandData().put("userid", uid);
+					baseResp.getExpandData().put("userid", userInfo.getUserid());
 					baseResp.getExpandData().put("token", baseResp.getData());
-					UserInfo userInfo = userInfoMapper.selectByUserid(uid);
 					baseResp.setData(userInfo);
-					iUserBasicService.bindingThird(openid, utype, uid);
+					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);

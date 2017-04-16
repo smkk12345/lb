@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.config.AppserviceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 			userIdcard.setRealname(userInfo.getRealname());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userIdcard);
-			reseResp.getExpandData().put("osspath",Constant.OSS_MEDIA);
+			reseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
 		} catch (Exception e) {
 			logger.error("userSafety userid = {}, msg = {}", userid, e);
 		}

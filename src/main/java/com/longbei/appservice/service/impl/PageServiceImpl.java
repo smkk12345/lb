@@ -151,8 +151,21 @@ public class PageServiceImpl implements PageService{
     }
 
     @Override
-    public BaseResp<HomeRecommend> selectHomeRecommendList(Integer startno, Integer pagesize) {
-        return null;
+    public BaseResp<List<HomeRecommend>> selectHomeRecommendList(Integer startno, Integer pagesize) {
+        BaseResp<List<HomeRecommend>> baseResp = new BaseResp<>();
+        HomeRecommend homeRecommend = new HomeRecommend();
+        try {
+            List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,startno,pagesize);
+            for (HomeRecommend homeRecommend1 : homeRecommends){
+                Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                homeRecommend1.setRank(rank);
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(homeRecommends);
+        } catch (Exception e) {
+            logger.error("select homeRecmment list is error:",e);
+        }
+        return baseResp;
     }
 
     @Override

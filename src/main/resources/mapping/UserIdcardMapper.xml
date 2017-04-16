@@ -12,10 +12,11 @@
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="applydate" property="applydate" jdbcType="TIMESTAMP" />
+    <result column="realname" property="realname" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, idcard, validateemail, validateidcard, idcardimage, checkuserid, checkoption, 
-    checkdate, userid, applydate
+    checkdate, userid, applydate, realname
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -39,11 +40,11 @@
     insert into user_idcard (id, idcard, validateemail, 
       validateidcard, idcardimage, checkuserid, 
       checkoption, checkdate, userid, 
-      applydate)
+      applydate, realname)
     values (#{id,jdbcType=INTEGER}, #{idcard,jdbcType=VARCHAR}, #{validateemail,jdbcType=VARCHAR}, 
       #{validateidcard,jdbcType=CHAR}, #{idcardimage,jdbcType=VARCHAR}, #{checkuserid,jdbcType=BIGINT}, 
       #{checkoption,jdbcType=VARCHAR}, #{checkdate,jdbcType=TIMESTAMP}, #{userid,jdbcType=BIGINT}, 
-      #{applydate,jdbcType=TIMESTAMP})
+      #{applydate,jdbcType=TIMESTAMP}, #{realname})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserIdcard" >
     insert into user_idcard
@@ -78,6 +79,9 @@
       <if test="applydate != null" >
         applydate,
       </if>
+      <if test="realname != null" >
+        realname,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -110,6 +114,9 @@
       <if test="applydate != null" >
         #{applydate,jdbcType=TIMESTAMP},
       </if>
+      <if test="realname != null" >
+        #{realname},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserIdcard" >
@@ -139,6 +146,9 @@
       <if test="applydate != null" >
         applydate = #{applydate,jdbcType=TIMESTAMP},
       </if>
+      <if test="realname != null" >
+        realname = #{realname}
+      </if>
     </set>
     where userid = #{userid}
   </update>
@@ -152,7 +162,8 @@
       checkoption = #{checkoption,jdbcType=VARCHAR},
       checkdate = #{checkdate,jdbcType=TIMESTAMP},
       userid = #{userid,jdbcType=BIGINT},
-      applydate = #{applydate,jdbcType=TIMESTAMP}
+      applydate = #{applydate,jdbcType=TIMESTAMP},
+      realname = #{realname}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

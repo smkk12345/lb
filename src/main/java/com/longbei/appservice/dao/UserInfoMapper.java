@@ -83,7 +83,7 @@ public interface UserInfoMapper {
 	 * 2017年3月1日
 	 */
 	int updateMoneyAndFlowerByUserid(@Param("userid") long userid, @Param("totalmoney") Integer totalmoney, 
-			@Param("totalflower") Integer totalflower);
+			@Param("givedflowers") Integer givedflowers);
 	
 	/**
 	 * @author yinxc

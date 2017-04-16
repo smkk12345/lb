@@ -16,10 +16,6 @@ public class UserIdcard {
 
     private String idcardimage;
     
-    private String frontidcardimage;//正面
-    
-	private String oppositeidcardimage;//反面
-
     private Long checkuserid;
 
     private String checkoption;
@@ -31,6 +27,12 @@ public class UserIdcard {
     private Date applydate;
     
     private String realname;  //真实姓名
+
+    //---------------------扩展字段------------
+
+    private String frontidcardimage;//正面
+
+    private String oppositeidcardimage;//反面
 
     /**
      * 

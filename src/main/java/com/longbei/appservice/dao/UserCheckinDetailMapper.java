@@ -35,7 +35,7 @@ public interface UserCheckinDetailMapper {
 	 * return_type
 	 * UserCheckinDetailMapper
 	 */
-    List<UserCheckinDetail> selectDetailListByYearmonth(@Param("userid") long userid, @Param("yearmonth") Integer yearmonth);
+    List<UserCheckinDetail> selectDetailListByYearmonth(@Param("userid") long userid, @Param("yearmonth") String yearmonth);
     
     /**
 	 * @author yinxc

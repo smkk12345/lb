@@ -9,15 +9,28 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.entity.SnsFriends;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smkk
  * 用户关系接口
  */
 public interface UserRelationService {
+	
+	/**
+	* @Title: selectRemark 
+	* @Description: 获取好友备注信息
+	* @param @param userid
+	* @param @param friendid
+	* @param @return    设定文件 
+	* @return String    返回类型
+	 */
+	String selectRemark(long userid, long friendid);
+	
 	/**
 	* @Title: insertFriend
 	* @Description: 添加好友
@@ -91,11 +104,12 @@ public interface UserRelationService {
 	* @Title: selectFansListByUserId
 	* @Description: 获取关注列表
 	* @param @param userid
+	 * @param ftype 0:查询关注列表   1：粉丝列表
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
-	public BaseResp<Object> selectFansListByUserId(long userid,Integer startNum,Integer endNum);
+	BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum);
 
 	/**
 	 * @author yinxc
@@ -104,7 +118,7 @@ public interface UserRelationService {
 	 * return_type
 	 * UserRelationService
 	 */
-	public BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
+	BaseResp<Object> selectLocalListByUnameAndNname(long userid, String nickname, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc

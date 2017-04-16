@@ -53,6 +53,28 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Autowired
 	private UserBehaviourService userBehaviourService;
 	
+	
+	/**
+	* @Title: selectRemark 
+	* @Description: 获取好友备注信息
+	* @param @param userid
+	* @param @param friendid
+	* @param @return    设定文件 
+	* @return String    返回类型
+	 */
+	@Override
+	public String selectRemark(long userid, long friendid) {
+		//判断已关注者是否是好友关系
+		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
+		if(null != snsFriends){
+			if(!StringUtils.isBlank(snsFriends.getRemark())){
+				//好友备注
+				return snsFriends.getRemark();
+			}
+		}
+		return "";
+	}
+	
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#insertFriend(long, long)
 	 * 2017年1月20日
@@ -212,27 +234,47 @@ public class UserRelationServiceImpl implements UserRelationService {
 	/* smkk
 	 * @see com.longbei.appservice.service.UserRelationService#selectFansListByUserId(long, int, int)
 	 * 2017年1月20日
+	 * @param ftype 0:查询关注列表   1：粉丝列表
 	 */
 	@Override
-	public BaseResp<Object> selectFansListByUserId(long userid, Integer startNum, Integer endNum) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum) {
+		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		try {
-			List<SnsFans> list = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
+			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
 			if(null != list && list.size()>0){
 				for (SnsFans snsFans : list) {
-					initMsgUserInfoByLikeuserid(snsFans);
-//					if(null != userInfo){
-//						snsFans.setLikeNickname(userInfo.getNickname());
-//						snsFans.setLiekAvatar(userInfo.getAvatar());
-						//判断已关注者是否是好友关系
-						SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid());
-						if(null != snsFriends){
-							snsFans.setIsfriend("1");
+					if("1".equals(ftype)){
+						//1：粉丝列表
+						initMsgUserInfoByUserid(snsFans);
+						//判断是否已经关注
+						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getUserid());
+						if(null != fans){
+							snsFans.setIsfocus("1");
 						}
-//					}
+					}else{
+						initMsgUserInfoByLikeuserid(snsFans);
+						//判断是否已经是粉丝
+						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getLikeuserid());
+						if(null != fans){
+							snsFans.setIsfans("1");
+						}
+					}
+					//判断已关注者是否是好友关系
+					SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid());
+					if(null != snsFriends){
+						if(!StringUtils.isBlank(snsFriends.getRemark())){
+							//好友备注
+							snsFans.getAppUserMongoEntityLikeuserid().setNickname(snsFriends.getRemark());
+						}
+						snsFans.setIsfriend("1");
+					}
 				}
 			}
 			baseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<>();
+			int ftypeCount = snsFansMapper.selectFansFtypeCount(userid, Integer.parseInt(ftype));
+			expandData.put("ftypeCount", ftypeCount);
+			baseResp.setExpandData(expandData);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectFansByUserid error and msg = {}",e);
@@ -446,5 +488,11 @@ public class UserRelationServiceImpl implements UserRelationService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
         snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
     }
+
+	private void initMsgUserInfoByUserid(SnsFans snsFans){
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
+		snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+	}
+
 
 }

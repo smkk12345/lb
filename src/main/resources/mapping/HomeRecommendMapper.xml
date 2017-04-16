@@ -60,7 +60,7 @@
       sort, createtime,
       createuserid)
     values (#{id,jdbcType=INTEGER}, #{recommendtype,jdbcType=INTEGER}, #{businessid,jdbcType=BIGINT}, 
-      #{sort,jdbcType=INTEGER}, #{newTablecol,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{sort,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
       #{createuserid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.HomeRecommend" >

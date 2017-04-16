@@ -29,7 +29,7 @@ public class Constant {
 	public static final String OSS_IMG = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";
 	public static final String OSS_IMGSTYLE_300_300 = "?x-oss-process=image/resize,m_fill,w_300,h_300,limit_0/auto-orient,0/quality,q_85/watermark,text_6b6Z5p2v,type_d3F5LXplbmhlaQ,size_12,t_100,color_e7bc5d,g_se,y_10,x_10";//缩略图默认大小  _2o.jpg
 	public static final String OSS_CDN = "https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/";//图片路径 ＋／imgName。png
-	public static final String OSS_MEDIA = "http://longbei3-mp4-out.oss-cn-shanghai.aliyuncs.com/";
+//	public static final String OSS_MEDIA = "http://longbei3-mp4-out.oss-cn-shanghai.aliyuncs.com/";
 	public static final String WORKFLOW1 = "longbei3-mp3";
 	public static final String WORKFLOW2 = "longbei3-mp4";
 
@@ -599,6 +599,7 @@ public class Constant {
 	 *        4 送花
 	 *        5 被关注
 	 *        6 取消关注
+	 *        7 签到
 	 */
 	public enum UserSumType{
 		addedImprove,//发进步
@@ -607,7 +608,9 @@ public class Constant {
 		removedLike,//被取消赞
 		addedFlower,//被送花
 		addedFans,//被关注
-		removedFans//被移除关注
+		removedFans,//被移除关注
+		checkIn, //签到
+		giveFlower//送花
 	}
 
 	/**
