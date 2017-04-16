@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.UserMsg;
@@ -179,7 +180,7 @@ public interface UserMsgService {
 	 * 		 					              14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * isread 可为null  查全部
 	 */
-	int selectCountByType(long userid, String mtype, String msgtype, String isread);
+	Map<String,Object> selectCountByType(long userid, String mtype, String msgtype, String isread);
 	
 	/**
 	 * @author yinxc
@@ -195,9 +196,16 @@ public interface UserMsgService {
 	 * 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
 	 * 		 					              14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * isread 可为null  查全部
-	 * return_type  0:不显示   1：显示
+	 * return_type 返回未读消息的总数量 以及未读消息的最大消息时间
 	 */
-	int selectShowMyByMtype(long userid);
+	Map<String,Object> selectShowMyByMtype(long userid);
+
+	/**
+	 * 获取是否显示红点 0.不显示 1.显示红点
+	 * @param userid
+	 * @return
+     */
+	int selectCountShowMyByMtype(long userid);
 	
 	/**
 	 * @author yinxc
@@ -285,4 +293,11 @@ public interface UserMsgService {
      * @return
      */
 	boolean sendMessage(boolean isOnly,Long userId,Long friendId,String mType,String msgType,Long snsId,String remark,String gType);
+
+	/**
+	 * 获取添加好友申请的消息数量 和最大的createTime
+	 * @param userid
+	 * @return
+     */
+	Map<String,Object> selectAddFriendAskMsg(long userid);
 }

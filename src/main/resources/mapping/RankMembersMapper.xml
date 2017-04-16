@@ -138,13 +138,13 @@
   <!-- 查询中奖的用户和奖项 -->
   <select id="selectWinningRankAward" resultMap="BaseResultMap">
       select
-          rank_award.awardnickname,
+          rank_award_release.awardnickname,
           rank.rankid,
           rank_members.userid
-      from rank,rank_award,rank_members
-      where rank.rankid = rank_members.rankid
-        and rank_award.rankid = rank.rankid
-        and rank_members.awardid = rank_award.awardid
+      from rank inner join rank_award_release on rank_award_release.rankid = rank.rankid
+            inner join rank_members on rank.rankid = rank_members.rankid
+      where
+        rank_members.awardid = rank_award_release.awardid
         and rank_members.awardlevel = 2
         and rank_members.iswinning = 1
         and rank.isfinish = 5

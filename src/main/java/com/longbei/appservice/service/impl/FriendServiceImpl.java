@@ -295,7 +295,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public BaseResp<Object> updateFriendAddAskStatus(Long id, Integer status, Long userId) {
         try{
-            FriendAddAsk friendAddAsk = friendMongoDao.findByFriendAddAskId(id);
+            FriendAddAsk friendAddAsk = friendMongoDao.findFriendAddAskById(id);
             if(friendAddAsk == null || !userId.equals(friendAddAsk.getReceiveUserId())){
                 return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
@@ -374,7 +374,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     public BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
-            List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,startNo,pageSize);
+            List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,null,startNo,pageSize);
             if(list != null && list.size() > 0){
                 for(FriendAddAsk friendAddAsk:list){
                     if(friendAddAsk.getMessage() != null && friendAddAsk.getMessage().size() > 0){

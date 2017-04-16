@@ -83,13 +83,12 @@ public interface RankService extends BaseService{
     Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
     /**
      * 获取榜单列表 推荐的 针对app
-     * @param rank
-     * @param pageno
-     * @param pagesize
+     * @param startNo
+     * @param pageSize
      * @return
      * @author lixb
      */
-    BaseResp<List<Rank>> selectRankListForApp(Rank rank, int pageno, int pagesize,Boolean showAward);
+    BaseResp<List<Rank>> selectRankListForApp(Integer startNo,Integer pageSize);
 
     /**
      * 删除榜单 非线上

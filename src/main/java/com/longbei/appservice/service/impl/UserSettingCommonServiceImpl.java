@@ -118,6 +118,16 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 				for (UserSettingCommon userSettingCommon : list) {
 					map.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
 				}
+			}else{
+				map.put("is_acquaintance_look","1");
+				map.put("is_comment","1");
+				map.put("is_diamond","1");
+				map.put("is_flower","1");
+				map.put("is_like","1");
+				map.put("is_new_fans","1");
+				map.put("is_nick_search","1");
+				map.put("is_page_tool","1");
+				map.put("is_phone_search","1");
 			}
 		} catch (Exception e) {
 			logger.error("selectByUserid userid={},msg={}",userid,e);

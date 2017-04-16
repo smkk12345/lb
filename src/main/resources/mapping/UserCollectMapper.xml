@@ -137,10 +137,17 @@
           <include refid="Base_Column_List" />
       from user_collect
       where
-        ctype = #{ctype}
+        impstatus = 0
+        and ctype = #{ctype}
         and userid = #{userid}
       order by createtime DESC
       limit #{startNum},#{pageSize}
   </select>
 
+  <update id="deleteUserCollectImprove" parameterType="String">
+      update user_collect
+      set impstatus = 1
+      where ctype = #{ctype}
+          and cid = #{improveid}
+  </update>
 </mapper>

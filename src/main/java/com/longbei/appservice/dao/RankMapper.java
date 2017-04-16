@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.HomeRecommend;
 import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.Rank;
@@ -78,4 +79,5 @@ public interface RankMapper {
      * @return
      */
     List<Rank> selectWillEndRank(Map<String, Object> map);
+
 }

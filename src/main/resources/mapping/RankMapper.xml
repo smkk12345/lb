@@ -745,4 +745,5 @@
     where isup = 1 and endTime &lt;= #{currentTime}
     and isfinish = #{isfinish}
   </select>
+
 </mapper>

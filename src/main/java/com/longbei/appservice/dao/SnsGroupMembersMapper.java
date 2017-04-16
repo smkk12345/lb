@@ -105,4 +105,11 @@ public interface SnsGroupMembersMapper {
      * @return
      */
     int updateUserGroupOtherInfo(Map<String, Object> map);
+
+    /**
+     * 查询群组成员id list
+     * @param groupId
+     * @return
+     */
+    List<Long> selectGroupMemberIdList(@Param("groupId")Long groupId);
 }

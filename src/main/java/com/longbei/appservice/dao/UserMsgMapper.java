@@ -135,7 +135,18 @@ public interface UserMsgMapper {
 	 */
     int selectCountByType(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype, 
     		@Param("isread") String isread);
-    
+
+	/**
+	 * 查询消息的条数和最大的一条消息时间
+	 * @param userid
+	 * @param mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * @param msgtype
+	 * @param isread 可为null  查全部
+     * @return
+     */
+	Map<String,Object> selectCountAndMaxDatetimeByType(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype,
+													   @Param("isread") String isread);
+
     /**
 	 * @author yinxc
 	 * 根据mtype,msgtype获取不同类型消息List(对话消息-----已读，未读消息  0 未读  1 已读)
@@ -226,4 +237,11 @@ public interface UserMsgMapper {
 	 * @return
      */
 	int batchInsertUserMsgList(List<UserMsg> userMsgList);
+
+	/**
+	 * 查询用户消息的 总数量以及 最大的createTime
+	 * @param parameterMap
+	 * @return
+     */
+	Map<String,Object> selectUserMsgCountByMsgTypeList(Map<String, Object> parameterMap);
 }

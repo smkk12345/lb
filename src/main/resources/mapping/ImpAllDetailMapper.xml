@@ -31,7 +31,7 @@
        impid=#{impid}
       AND detailtype=#{detailtype}
       <if test="lastdate != null">
-        AND createtime &lt; #[lastdate]
+        AND createtime &lt; #{lastdate}
       </if>
     ORDER BY createtime DESC
       limit #{pagesize}

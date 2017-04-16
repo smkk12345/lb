@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 			expandData.put("flowernum", flowernum);
 			
 			//判断对话消息是否显示红点    0:不显示   1：显示
-			int showMsg = userMsgService.selectShowMyByMtype(userid);
+			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
 			//查询奖品数量----
 			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);

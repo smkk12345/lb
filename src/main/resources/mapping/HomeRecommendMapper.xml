@@ -6,13 +6,12 @@
     <result column="recommendtype" property="recommendtype" jdbcType="INTEGER" />
     <result column="businessid" property="businessid" jdbcType="BIGINT" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
-    <result column="new_tablecol" property="newTablecol" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="createuserid" property="createuserid" jdbcType="VARCHAR" />
     <result column="isdel" property="isdel" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, recommendtype, businessid, sort, new_tablecol, createtime, createuserid,isdel
+    id, recommendtype, businessid, sort, createtime, createuserid,isdel
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,7 +22,7 @@
 
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.HomeRecommend" resultType="java.lang.Integer">
-    SELECT count(*) FROM homerecommend
+    SELECT count(1) FROM homerecommend
     <where>
       isdel = '0'
       <if test="recommendtype != null and recommendtype!='-1'.toString()">
@@ -58,7 +57,7 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.HomeRecommend" >
     insert into homerecommend (id, recommendtype, businessid, 
-      sort, new_tablecol, createtime, 
+      sort, createtime,
       createuserid)
     values (#{id,jdbcType=INTEGER}, #{recommendtype,jdbcType=INTEGER}, #{businessid,jdbcType=BIGINT}, 
       #{sort,jdbcType=INTEGER}, #{newTablecol,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
@@ -78,9 +77,6 @@
       </if>
       <if test="sort != null" >
         sort,
-      </if>
-      <if test="newTablecol != null" >
-        new_tablecol,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -126,9 +122,6 @@
       </if>
       <if test="sort != null" >
         sort,
-      </if>
-      <if test="newTablecol != null" >
-        new_tablecol,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -177,9 +170,6 @@
       <if test="sort != null" >
         sort = #{sort,jdbcType=INTEGER},
       </if>
-      <if test="newTablecol != null" >
-        new_tablecol = #{newTablecol,jdbcType=VARCHAR},
-      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -197,7 +187,6 @@
     set recommendtype = #{recommendtype,jdbcType=INTEGER},
       businessid = #{businessid,jdbcType=BIGINT},
       sort = #{sort,jdbcType=INTEGER},
-      new_tablecol = #{newTablecol,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       createuserid = #{createuserid,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
