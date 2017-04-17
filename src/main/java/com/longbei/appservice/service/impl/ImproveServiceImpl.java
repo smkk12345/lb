@@ -13,6 +13,7 @@ import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -1970,9 +1971,15 @@ public class ImproveServiceImpl implements ImproveService{
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        String oldKey = key;
-        key = key.replace("longbei_mp3/","");
-        key = key.replace("longbei_vido/","");
+//        String oldKey = key;
+//        key = key.replace("longbei_mp3/","");
+//        key = key.replace("longbei_vido/","");
+        String sourceKey = key;
+        if(workflow.contains("mp3")){
+            sourceKey = "longbei_mp3/"+key;
+        }else{
+            sourceKey = "longbei_vido/"+key;
+        }
         String[] filenameArr = key.split("_");
         if(filenameArr.length < 2){
             return baseResp;
@@ -1987,9 +1994,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try{
             String tableName = getTableNameByBusinessType(type);
-            int n = improveMapper.updateMedia(oldKey,pickey,filekey,businessid,tableName);
+            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,businessid,tableName);
             if(n > 0){
-                timeLineDetailDao.updateImproveFileKey(oldKey,pickey,filekey);
+                timeLineDetailDao.updateImproveFileKey(sourceKey,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
