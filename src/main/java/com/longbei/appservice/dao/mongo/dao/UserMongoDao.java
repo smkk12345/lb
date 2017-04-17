@@ -2,6 +2,7 @@ package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.GPSUtils;
 import com.longbei.appservice.common.utils.LoggerUtil;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -125,6 +126,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		userMongoEntity.setUsername(userInfo.getUsername());
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());
+		userMongoEntity.setCreatetime(DateUtils.formatDateTime1(userInfo.getCreatetime()));
 		saveAppUserMongoEntity(userMongoEntity);
 		return userMongoEntity;
 	}

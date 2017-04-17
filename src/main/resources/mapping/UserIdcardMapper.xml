@@ -12,10 +12,12 @@
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="applydate" property="applydate" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, idcard, validateemail, validateidcard, idcardimage, checkuserid, checkoption, 
-    checkdate, userid, applydate
+    checkdate, userid, applydate,createtime,updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,7 +25,34 @@
     from user_idcard
     where id = #{id,jdbcType=INTEGER}
   </select>
-  
+
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT count(*) FROM user_idcard
+    where validateidcard='0'
+    <if test="useridcard.userids != null and userids.size() > 0">
+      AND userid IN
+      <foreach item="item" index="index" collection="useridcard.userids" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_idcard
+    where validateidcard='0'
+    <if test="useridcard.userids != null and userids.size() > 0">
+      AND userid IN
+      <foreach item="item" index="index" collection="useridcard.userids" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order BY applydate
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+
   <select id="selectByUserid" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -78,6 +107,9 @@
       <if test="applydate != null" >
         applydate,
       </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -110,6 +142,9 @@
       <if test="applydate != null" >
         #{applydate,jdbcType=TIMESTAMP},
       </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserIdcard" >
@@ -138,6 +173,9 @@
       </if>
       <if test="applydate != null" >
         applydate = #{applydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applydate != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where userid = #{userid}

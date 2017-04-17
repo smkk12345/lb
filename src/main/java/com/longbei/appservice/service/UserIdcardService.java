@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserIdcard;
 
 public interface UserIdcardService {
@@ -30,7 +31,7 @@ public interface UserIdcardService {
 	 * return_type
 	 * UserIdcardService
 	 */
-	BaseResp<Object> userSafety(long userid);
+	BaseResp<UserIdcard> userSafety(long userid);
 	
 	/**
 	 * @author yinxc
@@ -40,5 +41,15 @@ public interface UserIdcardService {
 	 * UserIdcardService
 	 */
 	BaseResp<Object> update(UserIdcard record);
+
+	/**
+	 * 获取用户实名认证信息列表
+	 * @param userIdcard
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @author luye
+	 */
+	BaseResp<Page<UserIdcard>> selectUserIdCardListPage(UserIdcard userIdcard,Integer pageno,Integer pagesize);
 	
 }
