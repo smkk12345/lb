@@ -26,9 +26,7 @@ public class UserImpCoinDetail {
 
     private Date updatetime;
     
-    private AppUserMongoEntity appUserMongoEntityUserid; //用户进步币信息----Userid
-	
-	private AppUserMongoEntity appUserMongoEntityFriendid; //用户进步币信息----Friendid
+    private AppUserMongoEntity appUserMongoEntity; //用户进步币信息----Friendid
 
     /**
      * 
@@ -157,19 +155,11 @@ public class UserImpCoinDetail {
         this.updatetime = updatetime;
     }
 
-	public AppUserMongoEntity getAppUserMongoEntityUserid() {
-		return appUserMongoEntityUserid;
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
 	}
 
-	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
-		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
-	}
-
-	public AppUserMongoEntity getAppUserMongoEntityFriendid() {
-		return appUserMongoEntityFriendid;
-	}
-
-	public void setAppUserMongoEntityFriendid(AppUserMongoEntity appUserMongoEntityFriendid) {
-		this.appUserMongoEntityFriendid = appUserMongoEntityFriendid;
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
 	}
 }

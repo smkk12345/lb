@@ -130,4 +130,11 @@ public interface GroupService {
      * @return
      */
     BaseResp<Object> groupMemberDetail(Long userid, Long groupId);
+
+    /**
+     * 查询群组成员的id
+     * @param groupId
+     * @return
+     */
+    BaseResp<Object> selectGroupMemberIdList(Long groupId);
 }

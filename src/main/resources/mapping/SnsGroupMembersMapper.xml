@@ -357,4 +357,11 @@
         where groupid = #{groupId}
             and userid = #{userId}
     </update>
+
+    <!-- 查询群组成员的用户id -->
+    <select id="selectGroupMemberIdList" resultType="Long">
+        select userid
+        from sns_group_members
+        where groupid = #{groupId}
+    </select>
 </mapper>

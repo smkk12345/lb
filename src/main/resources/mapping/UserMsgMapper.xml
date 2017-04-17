@@ -34,7 +34,7 @@
     from user_msg
     where userid = #{userid} 
     and mtype = 0 
-    order by isread asc,createtime desc 
+    order by createtime desc
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -60,7 +60,7 @@
     where userid = #{userid} 
     and mtype = 1 
     and msgtype = #{msgtype}  
-    order by isread asc,createtime desc 
+    order by createtime desc
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -74,7 +74,7 @@
     and mtype = 1 
     and isread = 0 
     and msgtype = #{msgtype}  
-    order by isread asc,createtime desc 
+    order by createtime desc
   </select>
   
   <select id="selectOtherList" resultMap="BaseResultMap">
@@ -88,7 +88,7 @@
     <if test="msgtype != null" >
     	and msgtype = #{msgtype}  
     </if> 
-    order by isread asc,createtime desc 
+    order by createtime desc
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -107,6 +107,24 @@
     	and isread = #{isread}
     </if> 
   </select>
+
+  <!-- 查询未读消息的条数以及最大的消息时间 -->
+  <select id="selectCountAndMaxDatetimeByType" resultType="Map">
+    SELECT
+      count(1) count,
+      max(createtime) maxtime
+    from user_msg
+    where userid = #{userid}
+      <if test="mtype != null and mtype != ''" >
+        and mtype = #{mtype}
+      </if>
+      <if test="msgtype != null and msgtype != ''" >
+        and msgtype = #{msgtype}
+      </if>
+      <if test="isread != null and isread != ''" >
+        and isread = #{isread}
+      </if>
+  </select>
   
   <select id="selectListByMtypeAndMsgtype" resultMap="BaseResultMap">
   	SELECT 
@@ -122,7 +140,7 @@
     <if test="isread != null" >
     	and isread = #{isread} 
     </if> 
-    order by isread asc,createtime desc 
+    order by createtime desc
   </select>
   
   <delete id="deleteByMtypeAndMsgtype">
@@ -524,4 +542,31 @@
         )
       </foreach>
   </insert>
+
+  <!-- 查询用户消息的 数量 以及 最大的createTime -->
+  <select id="selectUserMsgCountByMsgTypeList" parameterType="map" resultType="map">
+      SELECT
+          count(1) count,
+          max(createtime) maxtime
+      from
+          user_msg
+      <where>
+          <if test="msgtypelist != null">
+            msgtype in
+            <foreach open="(" collection="msgtypelist" item="msgT" separator="," close=")">
+              #{msgT}
+            </foreach>
+          </if>
+          <if test="mtype != null" >
+            and mtype = #{mtype}
+          </if>
+          <if test="msgtype != null" >
+            and msgtype = #{msgtype}
+          </if>
+          <if test="isread != null" >
+            and isread = #{isread}
+          </if>
+         and userid = #{userid}
+      </where>
+  </select>
 </mapper>

@@ -8,8 +8,10 @@
 package com.longbei.appservice.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,8 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +36,7 @@ import com.longbei.appservice.dao.UserCheckinInfoMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserCheckinDetailService;
-import com.longbei.appservice.service.UserImpCoinDetailService;
+//import com.longbei.appservice.service.UserImpCoinDetailService;
 
 /**
  * @author yinxc 签到 2017年2月22日 return_type UserCheckinDetailImpl
@@ -52,8 +56,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private SpringJedisDao springJedisDao;
-	@Autowired
-	private UserImpCoinDetailService userImpCoinDetailService;
+//	@Autowired
+//	private UserImpCoinDetailService userImpCoinDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserCheckinDetailImpl.class);
 
@@ -173,16 +177,16 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	 * void
 	 * UserCheckinDetailImpl
 	 */
-	private void insertUserImpCoinDetail(long userid, int number, String origin){
-//		UserImpCoinDetail detail = new UserImpCoinDetail();
-//		detail.setCreatetime(new Date());
-//		detail.setNumber(number);
-//		detail.setOrigin(Constant.USER_IMP_COIN_CHECK);
-//		detail.setUpdatetime(new Date());
-//		detail.setUserid(userid);
-//		userImpCoinDetailMapper.insertSelective(detail);
-		userImpCoinDetailService.insertPublic(userid, origin, number, 0, null);
-	}
+//	private void insertUserImpCoinDetail(long userid, int number, String origin){
+////		UserImpCoinDetail detail = new UserImpCoinDetail();
+////		detail.setCreatetime(new Date());
+////		detail.setNumber(number);
+////		detail.setOrigin(Constant.USER_IMP_COIN_CHECK);
+////		detail.setUpdatetime(new Date());
+////		detail.setUserid(userid);
+////		userImpCoinDetailMapper.insertSelective(detail);
+//		userImpCoinDetailService.insertPublic(userid, origin, number, 0, null);
+//	}
 	
 	/**
 	 * @author yinxc
@@ -245,10 +249,67 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		}
 		return reseResp;
 	}
-
+	
+	/**
+	 * @author yinxc
+	 * 获取签到规则
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<List<UserCheckinDetail>> selectDetailListByYearmonth(long userid, String yearmonth) {
-		BaseResp<List<UserCheckinDetail>> reseResp = new BaseResp<>();
+	public BaseResp<Object> sysRuleCheckin() {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Map<String,Object> map = new HashedMap();
+		List<String> list = getPointInfoPerDay();
+		map.put("ruleCheckin", list);
+		baseResp.setData(map);
+		return baseResp.initCodeAndDesp();
+	}
+
+	private List<String> getPointInfoPerDay(){
+		List<String> list = new ArrayList<>();
+		Map<Integer,SysRuleCheckin> sysRuleCheckinMap = SysRulesCache.sysRuleCheckinMap;
+		Iterator<Integer> iterator = sysRuleCheckinMap.keySet().iterator();
+		while (iterator.hasNext()){
+			Integer subKey = iterator.next();
+			SysRuleCheckin sysRuleCheckin = sysRuleCheckinMap.get(subKey);
+			int value = sysRuleCheckin.getAwardmoney();
+			String disStr = "";
+			switch (subKey){
+				case 1:
+					disStr = "签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 2:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 3:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 4:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 5:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 6:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				case 7:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
+					break;
+				default:
+					break;
+			}
+			list.add(disStr);
+		}
+		list.add("连续签到第7天开始,每天都能获得"+sysRuleCheckinMap.get(7).getAwardmoney()+
+				"个进步币,一旦中断就要从"+sysRuleCheckinMap.get(1).getAwardmoney()+"进步币开始咯~");
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> selectDetailListByYearmonth(long userid, String yearmonth) {
+		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			int continuousday = 0;
 			List<UserCheckinDetail> list = userCheckinDetailMapper.selectDetailListByYearmonth(userid, yearmonth);
@@ -266,14 +327,18 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			} else {
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_29, Constant.RTNINFO_SYS_29);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_29);
 			}
 			reseResp.getExpandData().put("continuousday", continuousday);
 			//共签到多少天
 			int count = userCheckinDetailMapper.selectCountByUserid(userid);
 			reseResp.getExpandData().put("allday", count);
-			reseResp.getExpandData().put("sysRuleCheckin", SysRulesCache.sysRuleCheckinMap);
-			reseResp.setData(list);
+			
+			Map<String,Object> map = new HashedMap();
+			List<String> checkinList = getPointInfoPerDay();
+			map.put("ruleCheckin", checkinList);
+			map.put("userCheckinDetailList", list);
+			reseResp.setData(map);
 		} catch (Exception e) {
 			logger.error("selectDetailListByYearmonth userid = {}, yearmonth = {}", userid, yearmonth, e);
 		}

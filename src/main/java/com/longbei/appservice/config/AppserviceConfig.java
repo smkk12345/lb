@@ -75,4 +75,10 @@ public class AppserviceConfig {
     	this.ios_buyflower_pro = ios_buyflower_pro;
 	}
 
+    public static String oss_media;
+
+    public void setOss_media(String oss_media) {
+        this.oss_media = oss_media;
+    }
+
 }

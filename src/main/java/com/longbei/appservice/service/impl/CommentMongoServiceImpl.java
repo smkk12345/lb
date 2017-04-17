@@ -33,6 +33,7 @@ import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
 
@@ -55,6 +56,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
@@ -73,7 +76,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			//获取十全十美类型---社交
 //			String pType = SysRulesCache.perfectTenMap.get(2);
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
-			initCommentUserInfoByUserid(comment);
+			initCommentUserInfoByUserid(comment, comment.getFriendid());
 			reseResp.setData(comment);
 			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", "2", null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -141,7 +144,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
-					initCommentUserInfoByUserid(comment);
+					initCommentUserInfoByUserids(comment);
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
 					comment.setLowerList(lowers);
 //					commentids += comment.getId() + ",";
@@ -175,11 +178,12 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					//初始化用户信息
-					initCommentUserInfoByUserid(comment);
+					initCommentUserInfoByUserid(comment, friendid);
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
 					//初始化用户信息
 					initCommentLowerUserInfoList(lowers);
 					comment.setLowerList(lowers);
+					
 					//判断是否点赞
 //					CommentLikes commentLikes = commentLikesMongoDao.selectCommentLikesByCommentid(comment.getId(), friendid);
 //					if(null != commentLikes){
@@ -328,9 +332,23 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     /**
      * 初始化消息中用户信息 ------Userid
      */
-    private void initCommentUserInfoByUserid(Comment comment){
+    private void initCommentUserInfoByUserid(Comment comment, String friendid){
+    	//获取好友昵称
+    	String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
-        comment.setAppUserMongoEntityUserid(appUserMongoEntity);
+        if(null != appUserMongoEntity){
+        	if(!StringUtils.isBlank(remark)){
+        		appUserMongoEntity.setNickname(remark);
+        	}
+        	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
+        }else{
+        	comment.setAppUserMongoEntityUserid(new AppUserMongoEntity());
+        }
+    }
+    
+    private void initCommentUserInfoByUserids(Comment comment){
+    	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
+    	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
 
 }

@@ -65,8 +65,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
-            logger.error("relevant Circle circleName:{} startNo:{} pageSize:{}",circleName,startNo,pageSize);
-            printException(e);
+            logger.error("relevant Circle circleName = {} startNo = {} pageSize = {}",
+            		circleName, startNo, pageSize, e);
+//            printException(e);
             return baseResp.fail("系统异常");
         }
 
@@ -108,8 +109,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
         }catch(Exception e){
-            logger.info("insert Circle error userId:{}",userId);
-            printExceptionAndRollBackTransaction(e);
+        	//TODO 用error
+            logger.error("insert Circle userId = {}", userId, e);
+//            printExceptionAndRollBackTransaction(e);
             return baseResp.fail("系统异常");
         }
 
@@ -129,8 +131,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return false;
         }catch(Exception e){
-            logger.info("insert Circle before check Circle title circleTitle:{}",circleTitle);
-            printException(e);
+            logger.error("checkCircleTitle circleTitle = {}",circleTitle, e);
+//            printException(e);
             return false;
         }
 
@@ -162,8 +164,10 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_81, Constant.RTNINFO_SYS_81);
         }catch(Exception e){
-            logger.error("update circle info circleId:{} userId:{} circlephotos:{} circlebrief:{} notice:{}",circleId,userId,circlephotos,circlebrief,circleNotice);
-            printException(e);
+        	//TODO 日志打印的方式比较奇怪
+            logger.error("updateCircleInfo circleId = {}, userId = {}, circlephotos = {}, circlebrief = {}, notice = {}", 
+            		circleId, userId, circlephotos, circlebrief, circleNotice, e);
+//            printException(e);
             return baseResp.fail("系统异常");
         }
     }
@@ -192,8 +196,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             baseResp.setData(circleMembersList);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-            logger.error("select CircleMember circleId:{} username:{} startNo:{} endNo:{}",circleId,username,startNo,pageSize);
-            printException(e);
+            logger.error("select CircleMember circleId:{} username:{} startNo:{} endNo:{}", 
+            		circleId, username, startNo, pageSize, e);
+//            printException(e);
             return baseResp.fail("系统异常");
         }
 
@@ -267,8 +272,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
         }catch(Exception e){
-            logger.error("insert circlemember circleId:{} userId:{}",circleId,userId);
-            printExceptionAndRollBackTransaction(e);
+            logger.error("insert circlemember circleId:{} userId:{}", circleId, userId, e);
+//            printExceptionAndRollBackTransaction(e);
             return baseResp.fail("系统异常");
         }
     }
@@ -285,10 +290,12 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             updateUserMsg.setIsdel("0");
             updateUserMsg.setIsread("0");
             int updateRow = userMsgMapper.updateByPrimaryKeySelective(updateUserMsg);
-            if(updateRow > 0){
-                return true;
-            }
-            return false;
+            //TODO 一句就好， return updateRow > 0;
+//            if(updateRow > 0){
+//                return true;
+//            }
+//            return false;
+            return updateRow > 0;
         }
         UserMsg userMsg = new UserMsg();
         userMsg.setCreatetime(new Date());
@@ -302,11 +309,14 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         userMsg.setIsread("0");
         userMsg.setMtype("2");
         int row = userMsgMapper.insertSelective(userMsg);
-        if(row > 0){
-            return true;
-        }else{
-            return false;
-        }
+        
+        // TODO 一句代替及好  return row > 0;
+//        if(row > 0){
+//            return true;
+//        }else{
+//            return false;
+//        }
+        return row > 0;
     }
 
     @Transactional
@@ -327,8 +337,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-            logger.error("remove CircleMember circleId:{} userId:{}",circleId,userId);
-            printExceptionAndRollBackTransaction(e);
+        	//TODO 没有把exception 打印出来
+            logger.error("removeCircleMembers circleId = {} userId = {}", circleId, userId, e);
+//            printExceptionAndRollBackTransaction(e);
             return baseResp.fail();
         }
 
@@ -354,8 +365,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-            logger.error("see circleMember datail circleId:{} userId:{}",circleId,userId);
-            e.printStackTrace();
+            logger.error("see circleMember datail circleId:{} userId:{}", circleId, userId, e);
+//            e.printStackTrace();
             return baseResp.fail();
         }
 
@@ -384,8 +395,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             baseResp.setData(circle);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-            logger.error("see circleDetail circleId:{}",circleId);
-            printException(e);
+            logger.error("see circleDetail circleId:{}", circleId, e);
+//            printException(e);
             return baseResp.fail();
         }
 
@@ -430,9 +441,10 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch(Exception e){
+        	//TODO 日志打印的应该不符合预期把
             logger.error("confirm insert circleMember userId:{} circleMembersId:{} confirmFlag:{}",
-                    userId,circleMembersId,confirmFlag);
-            printExceptionAndRollBackTransaction(e);
+                    userId, circleMembersId, confirmFlag, e);
+//            printExceptionAndRollBackTransaction(e);
             return baseResp.fail(Constant.RTNINFO_SYS_01);
         }
     }
@@ -442,8 +454,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         try{
             return circleMembersMapper.findCircleMembersId(circleId);
         }catch(Exception e){
-            logger.error("find CircleMember circleId:{}",circleId);
-            printException(e);
+        	//TODO 一次性打印日志就好啊， 分两次打印，而且第二次是打印到控制台的，不好追踪查看
+            logger.error("find CircleMember circleId:{}", circleId, e);
+//            printException(e);
             return new ArrayList<Long>();
         }
 

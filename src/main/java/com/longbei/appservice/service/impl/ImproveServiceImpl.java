@@ -13,6 +13,7 @@ import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -106,6 +107,8 @@ public class ImproveServiceImpl implements ImproveService{
     private RankSortService rankSortService;
     @Autowired
     private RankMapper rankMapper;
+    @Autowired
+    private UserRelationService userRelationService;
 
     /**
      *  @author luye
@@ -842,6 +845,9 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             if (isok){
+                //将收藏了该进步的用户进步状态修改为已删除
+                deleteUserCollectImprove("0",improveid);
+
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
@@ -852,6 +858,17 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return isok;
     }
+
+    /**
+     * 将收藏了进步的状态修改为已删除
+     * @param ctype 0.进步 1.其他
+     * @param improveid
+     */
+    private boolean deleteUserCollectImprove(String ctype, String improveid) {
+        int row = this.userCollectMapper.deleteUserCollectImprove(ctype,improveid);
+        return true;
+    }
+
     /**
      *  @author luye
      *  @desp 
@@ -1034,6 +1051,8 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             initImproveLikeAndFlower(improve);
+            //初始化进步用户信息
+            initImproveUserInfo(improve,Long.parseLong(userid));
             improves.add(improve);
         }
         return improves;
@@ -1162,7 +1181,10 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initFriendInfo(long userid,AppUserMongoEntity apuser){
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
-        if(null == snsFriends){
+        if(null != snsFriends){
+            if(!StringUtils.isBlank(snsFriends.getRemark())){
+                apuser.setNickname(snsFriends.getRemark());
+            }
             apuser.setIsfriend("0");
         }else{
             apuser.setIsfriend("1");
@@ -1208,8 +1230,18 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initImproveUserInfo(Improve improve,long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+        //获取好友昵称
+        String remark = userRelationService.selectRemark(userid, improve.getUserid());
+        if(null != appUserMongoEntity){
+            if(!StringUtils.isBlank(remark)){
+                appUserMongoEntity.setNickname(remark);
+            }
+            improve.setAppUserMongoEntity(appUserMongoEntity);
+        }else{
+            improve.setAppUserMongoEntity(new AppUserMongoEntity());
+        }
         initUserRelateInfo(userid,appUserMongoEntity);
-        improve.setAppUserMongoEntity(appUserMongoEntity);
+//        improve.setAppUserMongoEntity(appUserMongoEntity);
     }
 
     /**
@@ -1407,11 +1439,8 @@ public class ImproveServiceImpl implements ImproveService{
                         userCollect.getUserid()+"",
                         userCollect.getCtype(),
                         userCollect.getBusinessid());
-                //合法  再做初始化
-                if(improve.getIsdel().equals("1")&&improve.getIspublic().equals("1")){
-                    initImproveCommentInfo(improve);
-                    initImproveUserInfo(improve,Long.parseLong(userid));
-                }
+                initImproveCommentInfo(improve);
+                initImproveUserInfo(improve,Long.parseLong(userid));
                 resultList.add(improve);
             }
             baseResp.setData(resultList);
@@ -1825,6 +1854,7 @@ public class ImproveServiceImpl implements ImproveService{
         impAllDetail.setGiftnum(giftnum);
         impAllDetail.setDetailtype(detailtype);
         impAllDetail.setCreatetime(new Date());
+        impAllDetail.setStatus("0");
         int res = 0;
         try {
             res = impAllDetailMapper.insertSelective(impAllDetail);
@@ -1941,6 +1971,15 @@ public class ImproveServiceImpl implements ImproveService{
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+//        String oldKey = key;
+//        key = key.replace("longbei_mp3/","");
+//        key = key.replace("longbei_vido/","");
+        String sourceKey = key;
+        if(workflow.contains("mp3")){
+            sourceKey = "longbei_mp3/"+key;
+        }else{
+            sourceKey = "longbei_vido/"+key;
+        }
         String[] filenameArr = key.split("_");
         if(filenameArr.length < 2){
             return baseResp;
@@ -1955,9 +1994,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try{
             String tableName = getTableNameByBusinessType(type);
-            int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
+            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,businessid,tableName);
             if(n > 0){
-                timeLineDetailDao.updateImproveFileKey(key,pickey,filekey);
+                timeLineDetailDao.updateImproveFileKey(sourceKey,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){

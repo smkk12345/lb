@@ -131,8 +131,8 @@ public class AppUserController extends BaseController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
-    public BaseResp<List<UserCheckinDetail>> checkinDate(String userid, String yearmonth) {
-  		BaseResp<List<UserCheckinDetail>> baseResp = new BaseResp<>();
+    public BaseResp<Object> checkinDate(String userid, String yearmonth) {
+  		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -144,6 +144,24 @@ public class AppUserController extends BaseController {
   		return baseResp;
     }
   	
+  	
+  	/**
+     * @Title: http://ip:port/appservice/user/sysRuleCheckin
+     * @Description: 用户每月签到规则
+     * @auther yinxc
+     * @currentdate:2017年4月13日
+     */
+//  	@RequestMapping(value = "sysRuleCheckin")
+//     @ResponseBody
+//     public BaseResp<Object> sysRuleCheckin() {
+//   		BaseResp<Object> baseResp = new BaseResp<>();
+//   		try {
+//   			baseResp = userCheckinDetailService.sysRuleCheckin();
+//   		} catch (Exception e) {
+//   			logger.error("sysRuleCheckin ", e);
+//   		}
+//   		return baseResp;
+//     }
   	
     
     /**
@@ -604,6 +622,7 @@ public class AppUserController extends BaseController {
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
+            record.setRealname(realname);
 			// 添加身份证验证 先判断是否验证过，已验证修改
 			baseResp = userIdcardService.insert(record);
 		} catch (Exception e) {

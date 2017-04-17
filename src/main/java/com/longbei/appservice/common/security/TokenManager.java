@@ -45,6 +45,7 @@ public class TokenManager {
             //将token放入redis
             springJedisDao.set(Constant.SERVER_USER_SERVICE, token);
         }
+        //TODO 打印这样的日志意义有多大？
         logger.info("token is "+token);
         JSONObject tokenjson = JSONObject.fromObject(token);
         

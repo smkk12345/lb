@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -23,6 +26,12 @@ public class UserFlowerDetail {
     private String origin;//来源，0:龙币兑换;  1:赠与; 2:进步币兑换
 
     private Date drawdate;//获得时间
+    
+    
+    
+    //-------------扩展字段---------------
+    
+    private AppUserMongoEntity appUserMongoEntity; //friendid用户信息
 
     /**
      * 
@@ -163,6 +172,8 @@ public class UserFlowerDetail {
      * 获得时间
      * @return drawdate 获得时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date getDrawdate() {
         return drawdate;
     }
@@ -174,4 +185,12 @@ public class UserFlowerDetail {
     public void setDrawdate(Date drawdate) {
         this.drawdate = drawdate;
     }
+
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
+	}
 }

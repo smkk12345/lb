@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserImpCoinDetailMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -18,6 +19,8 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserImpCoinDetail;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import com.longbei.appservice.service.UserRelationService;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service("userImpCoinDetailService")
@@ -29,6 +32,8 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserRelationService userRelationService;
 //	@Autowired
 //	private SpringJedisDao springJedisDao;
 	
@@ -245,7 +250,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 				for (UserImpCoinDetail userImpCoinDetail : list) {
 					//初始化用户信息
 //					initMsgUserInfoByFriendid(userImpCoinDetail);
-					initMsgUserInfoByUserid(userImpCoinDetail);
+					initMsgUserInfoByUserid(userImpCoinDetail, userid);
 				}
 			}
 			reseResp.setData(list);
@@ -292,9 +297,20 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
     /**
      * 初始化用户进步币信息 ------Userid
      */
-    private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getUserid()));
-        userImpCoinDetail.setAppUserMongoEntityUserid(appUserMongoEntity);
+    private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail, long userid){
+    	if(userImpCoinDetail.getFriendid() != 0){
+			//获取好友昵称
+			String remark = userRelationService.selectRemark(userid, userImpCoinDetail.getFriendid());
+	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));
+	       if(null != appUserMongoEntity){
+		       	if(!StringUtils.isBlank(remark)){
+		       		appUserMongoEntity.setNickname(remark);
+		       	}
+		       	userImpCoinDetail.setAppUserMongoEntity(appUserMongoEntity);
+	       }else{
+	    	   userImpCoinDetail.setAppUserMongoEntity(new AppUserMongoEntity());
+	       }
+		}
     }
 
 	/**

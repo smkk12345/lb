@@ -2,9 +2,14 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
+import com.longbei.appservice.entity.*;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -21,15 +26,6 @@ import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Circle;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.CommentLower;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.SnsFans;
-import com.longbei.appservice.entity.SnsFriends;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserSettingCommonService;
 
@@ -54,12 +50,26 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private CommentLowerMongoDao commentLowerMongoDao;
-	
+	@Autowired
+	private FriendMongoDao friendMongoDao;
+	@Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private UserSettingCommonService userSettingCommonService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
-	
+
+	/**
+	 * 获取是否显示红点 0.不显示 1.显示红点
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public int selectCountShowMyByMtype(long userid){
+		Map<String,Object> resultMap = selectShowMyByMtype(userid);
+		long count = (long) resultMap.get("count");
+		return count > 0?1:0;
+	}
 	
 	/**
 	 * @author yinxc
@@ -70,59 +80,99 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type  0:不显示   1：显示
 	 */
 	@Override
-	public int selectShowMyByMtype(long userid) {
+	public Map<String,Object> selectShowMyByMtype(long userid) {
 		//键名称     新消息提醒    (新粉丝：is_new_fans
 		//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
+		Map<String,Object> resultMap = new HashMap<String,Object>();
 		try{
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
+			List<String> msgTypeList = new ArrayList<String>();
 			if(expandData.get("is_new_fans").toString().equals("1")){
 				//粉丝   打开提醒
-				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
-				if(temp > 0){
-					return temp;
-				}
+				msgTypeList.add(Constant.MSG_FANS_TYPE);
+//				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FANS_TYPE, "0");
+//				if(temp > 0){
+//					return temp;
+//				}
 			}
 			if(expandData.get("is_like").toString().equals("1")){
 				//点赞   打开提醒
-				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
-				if(temp > 0){
-					return temp;
-				}
+				msgTypeList.add(Constant.MSG_LIKE_TYPE);
+//				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_LIKE_TYPE, "0");
+//				if(temp > 0){
+//					return temp;
+//				}
 			}
 			if(expandData.get("is_flower").toString().equals("1")){
 				//献花   打开提醒
-				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FLOWER_TYPE, "0");
-				if(temp > 0){
-					return temp;
-				}
+				msgTypeList.add(Constant.MSG_FLOWER_TYPE);
+//				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_FLOWER_TYPE, "0");
+//				if(temp > 0){
+//					return temp;
+//				}
 			}
 //			if(expandData.get("is_diamond").toString().equals("1")){
 //				//钻石   打开提醒
+//				msgTypeList.add(Constant.MSG_DIAMOND_TYPE);
 //				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_DIAMOND_TYPE, "0");
 //				if(temp > 0){
 //					return temp;
 //				}
 //			}
 			// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
-			if(expandData.get("is_comment").toString().equals("1")){
-				//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
-				int temp = getShowComment(userid);
-				if(temp > 0){
-					return temp;
-				}
-			}
 			if(expandData.get("is_comment").toString().equals("2")){
 				//评论设置   打开提醒   ---所有人
-				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
-				if(temp > 0){
-					return temp;
-				}
+				msgTypeList.add(Constant.MSG_COMMENT_TYPE);
+//				int temp = selectPublicList(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+//				if(temp > 0){
+//					return temp;
+//				}
 			}
+			if(msgTypeList.size() == 0){
+				resultMap.put("count",0);
+				return resultMap;
+			}
+			Map<String,Object> parameterMap = new HashMap<String,Object>();
+			parameterMap.put("userid",userid);
+			parameterMap.put("mtype",Constant.MSG_DIALOGUE_TYPE);
+			parameterMap.put("msgtypelist",msgTypeList);
+			parameterMap.put("isread","0");
+			resultMap = this.userMsgMapper.selectUserMsgCountByMsgTypeList(parameterMap);
+
+			Date commentMaxDate = null;
+			if(expandData.get("is_comment").toString().equals("1")){
+				//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
+				commentMaxDate = getShowComment(userid);
+//				if(temp > 0){
+//					return temp;
+//				}
+			}
+			long count = (long)resultMap.get("count");
+			if(commentMaxDate == null){
+				if(count < 1){
+					resultMap.remove("maxtime");
+				}
+				return resultMap;
+			}
+			if(count < 1){
+				resultMap.put("count",1);
+				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
+				return resultMap;
+			}
+			Date maxtime = DateUtils.parseDate(resultMap.get("maxtime"));
+			count ++;
+			if(maxtime.getTime() > commentMaxDate.getTime()){
+				resultMap.put("maxtime",maxtime.getTime()/1000);
+			}else{
+				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
+			}
+			resultMap.put("count",count);
+			return resultMap;
 		}catch (Exception e){
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
-
-		return 0;
+		resultMap.put("count",0);
+		return resultMap;
 	}
 	
 	private int selectPublicList(long userid, String mtype, String msgtype, String isread){
@@ -133,7 +183,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return 0;
 	}
 	
-	private int getShowComment(long userid){
+	private Date getShowComment(long userid){
 		//获取好友   粉丝ids
 		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
 		List<String> fansList = snsFansMapper.selectListidByUid(userid);
@@ -144,11 +194,11 @@ public class UserMsgServiceImpl implements UserMsgService {
 			for (UserMsg userMsg : list) {
 				if(slist.contains(userMsg.getFriendid())){
 					//好友   粉丝    评论含有未读消息
-					return 1;
+					return userMsg.getCreatetime();
 				}
 			}
 		}
-		return 0;
+		return null;
 	}
 	
 	/**
@@ -449,6 +499,22 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return false;
 	}
 
+	/**
+	 * 获取添加好友的申请 消息数量和最大的createtime
+	 * @param userid
+	 * @return
+     */
+	@Override
+	public Map<String, Object> selectAddFriendAskMsg(long userid) {
+		List<FriendAddAsk> friendAddAskList = this.friendMongoDao.friendAddAskList(userid,false,null,null);
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		int count = friendAddAskList != null?friendAddAskList.size():0;
+		Date maxtime = (friendAddAskList != null && friendAddAskList.size() > 0)?friendAddAskList.get(0).getCreateDate():null;
+		resultMap.put("count",count);
+		resultMap.put("maxtime",maxtime.getTime()/1000);
+		return resultMap;
+	}
+
 	private boolean updateUserid(long userid, String mtype, String msgtype){
 		if(StringUtils.isBlank(msgtype)){
 			msgtype = null;
@@ -550,10 +616,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 */
 	@Override
-	public BaseResp<Object> selectExceptList(long userid, int startNum, int endNum) {
+	public BaseResp<Object> selectExceptList(final long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
+			final List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
 			//0:关闭  1：开启
@@ -597,12 +663,23 @@ public class UserMsgServiceImpl implements UserMsgService {
 					}
 					//初始化消息中用户信息----friendid
 					initMsgUserInfoByFriendid(userMsg);
+					
+					//异步线程修改list消息为已读
+					threadPoolTaskExecutor.execute(
+	                    new Runnable() {
+	                        @Override
+	                        public void run() {
+	                            for (UserMsg userMsg : list) {
+	                            	userMsgMapper.updateIsreadByid(userMsg.getId(), userid);
+								}
+	                        }
+	                    });
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-//			else{
-//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_28, Constant.RTNINFO_SYS_28);
-//			}
+			else{
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
+			}
 			reseResp.setExpandData(expandData);
 			reseResp.setData(list);
 		} catch (Exception e) {
@@ -850,14 +927,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 */
 	@Override
-	public int selectCountByType(long userid, String mtype, String msgtype, String isread) {
-		int temp = 0;
+	public Map<String,Object> selectCountByType(long userid, String mtype, String msgtype, String isread) {
+		Map<String,Object> map = new HashMap<String,Object>();
 		try {
-			temp = userMsgMapper.selectCountByType(userid, mtype, msgtype, isread);
+			map = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread);
+			long count = (long)map.get("count");
+			if(count > 0){
+
+			}
 		} catch (Exception e) {
 			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);
 		}
-		return temp;
+		return map;
 	}
 	
 	

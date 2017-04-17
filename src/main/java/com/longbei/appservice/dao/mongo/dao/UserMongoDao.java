@@ -42,7 +42,9 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		try {
 			save(user);
 		} catch (Exception e) {
-			logger.error("saveAppUserMongoEntity error and msg={}",e);
+			//TODO 这个loggerd的参数应该是有问题的，虽然也能工作
+			logger.error("saveAppUserMongoEntity user = {}", 
+					com.alibaba.fastjson.JSON.toJSON(user).toString(), e);
 		}
 	}
 	

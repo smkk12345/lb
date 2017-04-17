@@ -161,12 +161,12 @@
   <!-- 获取榜单的奖品 -->
   <select id="findRankAward" resultMap="BaseResultMap">
     select
-    awardid,
-    awardlevel,
-    awardnickname,
-    awardrate,
-    awardcount
-    from rank_award
+      awardid,
+      awardlevel,
+      awardnickname,
+      awardrate,
+      awardcount
+    from rank_award_release
     where rankid = #{rankid}
     order by awardlevel
   </select>

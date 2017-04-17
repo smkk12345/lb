@@ -17,10 +17,6 @@ public class UserIdcard {
 
     private String idcardimage;
     
-    private String frontidcardimage;//正面
-    
-	private String oppositeidcardimage;//反面
-
     private Long checkuserid;
 
     private String checkoption;
@@ -72,6 +68,11 @@ public class UserIdcard {
     public void setUser(AppUserMongoEntity user) {
         this.user = user;
     }
+    //---------------------扩展字段------------
+
+    private String frontidcardimage;//正面
+
+    private String oppositeidcardimage;//反面
 
     /**
      * 
