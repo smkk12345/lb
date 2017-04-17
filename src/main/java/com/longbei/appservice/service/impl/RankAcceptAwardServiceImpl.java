@@ -197,7 +197,7 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put("rankid",rankAcceptAward.getRankid());
                 map.put("ranktitle",rankAcceptAward.getRanktitle());
-                map.put("awardnickname",rankAcceptAward.getAwardnickname());
+                map.put("awardnickname",award.getAwardtitle());
                 map.put("endtime",rank.getEndtime());
                 map.put("awardphotos",award.getAwardphotos());
                 map.put("status",rankAcceptAward.getStatus());//奖品领取状态

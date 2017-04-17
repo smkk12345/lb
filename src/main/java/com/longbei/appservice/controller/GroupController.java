@@ -358,4 +358,19 @@ public class GroupController {
         return baseResp;
     }
 
+    /**
+     * 查询群组的所有userid
+     * @param groupId
+     * @return
+     */
+    @RequestMapping(value="selectGrupMemberIdList")
+    public BaseResp<Object> selectGrupMemberIdList(Long groupId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(groupId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.groupService.selectGroupMemberIdList(groupId);
+        return baseResp;
+    }
+
 }

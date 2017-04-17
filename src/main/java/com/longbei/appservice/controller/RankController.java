@@ -492,18 +492,17 @@ public class RankController {
      */
     @ResponseBody
     @RequestMapping(value = "selectRankListForApp")
-    public BaseResp<List<Rank>> selectRankListForApp(String startNo, String endNum){
+    public BaseResp<List<Rank>> selectRankListForApp(Integer startNo, Integer endNum){
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(startNo)){
-            startNo = Constant.DEFAULT_START_NO;
+        if(startNo == null || startNo < 0){
+            startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        if(StringUtils.isBlank(endNum)){
-            endNum = Constant.DEFAULT_PAGE_SIZE;
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNo){
+            pageSize = endNum - startNo;
         }
         try {
-            Rank r = new Rank();
-            r.setIsrecommend("1");
-            baseResp = rankService.selectRankListForApp(r,Integer.parseInt(startNo),Integer.parseInt(endNum),true);
+            baseResp = rankService.selectRankListForApp(startNo,pageSize);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }

@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 			expandData.put("flowernum", flowernum);
 			
 			//判断对话消息是否显示红点    0:不显示   1：显示
-			int showMsg = userMsgService.selectShowMyByMtype(userid);
+			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
 			//查询奖品数量----
 			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);
@@ -522,6 +522,18 @@ public class UserServiceImpl implements UserService {
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
 			UserInfo userInfo = userInfoMapper.getByUserName(username);
+			if(StringUtils.isBlank(userInfo.getRytoken())){
+				try {
+					BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", username, "#");
+					if(ResultUtil.isSuccess(tokenRtn)){
+						userInfo.setRytoken((String)tokenRtn.getData());
+						userInfoMapper.updateByUseridSelective(userInfo);
+					}
+				}catch (Exception e){
+					logger.error("userid={},username={} getRYToken error",
+							userInfo.getUserid(),userInfo.getUsername(),e);
+				}
+			}
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null != userInfo){

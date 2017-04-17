@@ -323,4 +323,12 @@ public class UserRelationController extends BaseController {
 	
 	//－－－－－－－－－－－sns_frined－end－－－－－－－－－－－－－-
 
+	/**
+	 *
+	 * @return
+     */
+	@RequestMapping(value="test")
+	public BaseResp<Object> test(){
+		return this.userRelationService.selectFansListByLikeUserid(Long.parseLong("17012211590782000"),false,null,null);
+	}
 }

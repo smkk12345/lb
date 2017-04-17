@@ -358,6 +358,7 @@ public class UserMsgController extends BaseController {
     * @param @param type 0 通知消息(系统消息)页面是否显示红点
 	* 		 			 1  获取"我的"页面是否显示红点
 	* 		 			 2:@我消息页面是否显示红点
+	 * 		 			 3: 添加好友申请 是否显示红点
 	* return_type  0:不显示   1：显示
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -367,19 +368,22 @@ public class UserMsgController extends BaseController {
   	@RequestMapping(value = "/isMsgRed")
     public BaseResp<Object> isMsgRed(String userid, String type) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		Map<String, Object> expandData = new HashMap<>();
   		if (StringUtils.hasBlankParams(userid, type)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
+			Map<String,Object> resultMap = new HashMap<String,Object>();
   			int temp = 0;
   			if("1".equals(type)){
   				//type 1   获取"我的"页面是否显示红点
-  				temp = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
-  			}else{
-  				userMsgService.selectCountByType(Long.parseLong(userid), type, null, "0");
+				resultMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
+  			}else if("3".equals(type)){
+				//获取添加好友的申请 消息数量和最大的createtime
+				resultMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
+			}else{
+  				resultMap = userMsgService.selectCountByType(Long.parseLong(userid), type, null, "0");
   			}
-  			expandData.put("isred", temp);
+			baseResp.setExpandData(resultMap);
   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("isMsgRed userid = {}, type = {}", userid, type, e);

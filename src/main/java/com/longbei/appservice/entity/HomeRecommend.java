@@ -39,11 +39,6 @@ public class HomeRecommend {
     private Integer sort;
 
     /**
-     * 
-     */
-    private String newTablecol;
-
-    /**
      * 创建日期  推荐日期
      */
     private Date createtime;
@@ -114,13 +109,6 @@ public class HomeRecommend {
         this.sort = sort;
     }
 
-    public String getNewTablecol() {
-        return newTablecol;
-    }
-
-    public void setNewTablecol(String newTablecol) {
-        this.newTablecol = newTablecol == null ? null : newTablecol.trim();
-    }
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")

@@ -76,8 +76,7 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
      * @return
      */
     public FriendAddAsk findFriendAddAskById(Long id) {
-        Criteria criteria = Criteria.where("id").is(id);
-        Query query = new Query(criteria);
+        Query query = new Query(Criteria.where("id").is(id));
         return mongoTemplate.findOne(query,FriendAddAsk.class);
     }
 
@@ -126,29 +125,30 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
     /**
      * 添加好友列表
      * @param userId
+     * @param isRead 是否已读 true代表已读 false代表未读
      * @param startNo
      * @param pageSize
      * @return
      */
-    public List<FriendAddAsk> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
+    public List<FriendAddAsk> friendAddAskList(Long userId,Boolean isRead, Integer startNo, Integer pageSize) {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId),
-                Criteria.where("receiveUserId").is(userId)));
-        query.with(new Sort(Sort.Direction.DESC,"createDate"));
-        query.skip(startNo);
-        query.limit(pageSize);
-        return mongoTemplate.find(query,FriendAddAsk.class);
-    }
+        if(isRead != null){
+            query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId).and("senderIsRead").is(isRead),
+                    Criteria.where("receiveUserId").is(userId).and("receiveIsRead").is(isRead)));
+        }else{
+            query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId),
+                    Criteria.where("receiveUserId").is(userId)));
+        }
 
-    /**
-     * 根据请求好友的id 获取信息
-     * @param id
-     * @return
-     */
-    public FriendAddAsk findByFriendAddAskId(Long id) {
-        Query query = new Query(Criteria.where("id").is(id));
-        return mongoTemplate.findOne(query,FriendAddAsk.class);
+        query.with(new Sort(Sort.Direction.DESC,"createDate"));
+        if(startNo != null && startNo > -1){
+            query.skip(startNo);
+        }
+        if(pageSize != null && pageSize > 0){
+            query.limit(pageSize);
+        }
+        return mongoTemplate.find(query,FriendAddAsk.class);
     }
 
 }

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -86,11 +87,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Autowired
     private SnsFriendsMapper snsFriendsMapper;
     @Autowired
-    private UserService userService;
-    @Autowired
     private DictAreaMapper dictAreaMapper;
     @Autowired
     private CommentMongoService commonMongoService;
+    @Resource
+    private HomeRecommendMapper homeRecommendMapper;
 
     /**
      *  @author luye
@@ -337,10 +338,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<List<Rank>> selectRankListForApp(Rank rank, int pageno, int pagesize, Boolean showAward) {
+    public BaseResp<List<Rank>> selectRankListForApp(Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
-        baseResp.setData(selectRankListByRank(rank,pageno,pagesize,showAward));
-        return baseResp.initCodeAndDesp();
+        try{
+            List<Rank> rankList = new ArrayList<Rank>();
+            HomeRecommend homeRecommend = new HomeRecommend();
+            homeRecommend.setIsdel("0");
+            homeRecommend.setRecommendtype(0);
+            List<HomeRecommend> homeRecommendList = this.homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            if(homeRecommend != null && homeRecommendList.size() > 0){
+                for(HomeRecommend homeRecommend1: homeRecommendList){
+                    Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
+                    if(awardList != null && awardList.size() > 0){
+                        rank.setRankAwards(awardList);
+                        rankList.add(rank);
+                    }
+                }
+            }
+            baseResp.setData(rankList);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select rank list for app error startNum:{} pageSize:{}",startNum,pageSize);
+            printException(e);
+        }
+        return baseResp;
     }
 
     /**

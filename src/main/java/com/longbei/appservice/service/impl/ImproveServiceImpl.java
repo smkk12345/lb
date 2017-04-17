@@ -844,6 +844,9 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             if (isok){
+                //将收藏了该进步的用户进步状态修改为已删除
+                deleteUserCollectImprove("0",improveid);
+
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
@@ -854,6 +857,17 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return isok;
     }
+
+    /**
+     * 将收藏了进步的状态修改为已删除
+     * @param ctype 0.进步 1.其他
+     * @param improveid
+     */
+    private boolean deleteUserCollectImprove(String ctype, String improveid) {
+        int row = this.userCollectMapper.deleteUserCollectImprove(ctype,improveid);
+        return true;
+    }
+
     /**
      *  @author luye
      *  @desp 
@@ -1424,11 +1438,8 @@ public class ImproveServiceImpl implements ImproveService{
                         userCollect.getUserid()+"",
                         userCollect.getCtype(),
                         userCollect.getBusinessid());
-                //合法  再做初始化
-                if(improve.getIsdel().equals("1")&&improve.getIspublic().equals("1")){
-                    initImproveCommentInfo(improve);
-                    initImproveUserInfo(improve,Long.parseLong(userid));
-                }
+                initImproveCommentInfo(improve);
+                initImproveUserInfo(improve,Long.parseLong(userid));
                 resultList.add(improve);
             }
             baseResp.setData(resultList);
@@ -1842,6 +1853,7 @@ public class ImproveServiceImpl implements ImproveService{
         impAllDetail.setGiftnum(giftnum);
         impAllDetail.setDetailtype(detailtype);
         impAllDetail.setCreatetime(new Date());
+        impAllDetail.setStatus("0");
         int res = 0;
         try {
             res = impAllDetailMapper.insertSelective(impAllDetail);
@@ -1958,6 +1970,8 @@ public class ImproveServiceImpl implements ImproveService{
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        key = key.replace("longbei_mp3/","");
+        key = key.replace("longbei_vido/","");
         String[] filenameArr = key.split("_");
         if(filenameArr.length < 2){
             return baseResp;

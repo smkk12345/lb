@@ -22,7 +22,7 @@
 
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.HomeRecommend" resultType="java.lang.Integer">
-    SELECT count(*) FROM homerecommend
+    SELECT count(1) FROM homerecommend
     <where>
       isdel = '0'
       <if test="recommendtype != null and recommendtype!='-1'.toString()">
