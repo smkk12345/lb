@@ -230,6 +230,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return rightNow.getActualMaximum(Calendar.DAY_OF_MONTH);//根据年月获取月份天数
 	}
 
+	/**
+	 * 获取date 当天的零点
+	 * @param date
+	 * @return
+     */
 	public static Date getDateStart(Date date) {
 		Date datetemp = date;
 		if (date == null) {
@@ -244,6 +249,11 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return datetemp;
 	}
 
+	/**
+	 * 获取date 当天的最大时间23点59分59秒
+	 * @param date
+	 * @return
+     */
 	public static Date getDateEnd(Date date) {
 		Date datetemp = date;
 		if (date == null) {

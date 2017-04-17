@@ -3,7 +3,6 @@ package com.longbei.appservice.dao;/**
  */
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
-import com.longbei.appservice.entity.ImproveCircle;
 import com.longbei.appservice.entity.TimeLine;
 import com.longbei.appservice.entity.TimeLineDetail;
 import org.springframework.data.domain.Sort;
@@ -98,4 +97,14 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.remove(query, TimeLineDetail.class);
     }
 
+    /**
+     * 获取用户从startDate 到 endDate之间发布的进步数量
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public List<Object> getUserImproveStatistic(Date startDate, Date endDate) {
+        Query query = new Query();
+        return null;
+    }
 }
