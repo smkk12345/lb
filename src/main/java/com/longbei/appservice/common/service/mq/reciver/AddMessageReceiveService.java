@@ -256,14 +256,16 @@ public class AddMessageReceiveService implements MessageListener{
             logger.info("onMessage sucess and msg={}",msg);
 
 //            System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
+            //TODO 连续二次重复的split没必要， 太浪费了； 消息大的话一堆的临时对象
+            String []content = msg.split(",");
             if (StringUtils.isBlank(msg)
                     || msg.indexOf(",") == -1
-                    || msg.split(",").length < 5
-                    || msg.split(",").length > 5){
+                    || content.length < 5
+                    || content.length > 5){
                 return;
             }
             //id,businesstype,businessid,userid,date
-            String []content = msg.split(",");
+            
             //提取消息中的内容
             String id = content[0];
             String businesstype = content[1];
@@ -276,6 +278,7 @@ public class AddMessageReceiveService implements MessageListener{
                 creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
             } catch (ParseException e) {
                 creatdate = new Date();
+                //TODO ,logger参数 试用错误
                 logger.error("string:{} to date is error:{}",date,e);
             }
             //保存时间线详情

@@ -517,7 +517,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
-		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
+		BaseResp<UserInfo> returnResp = new BaseResp<>();
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
@@ -530,8 +530,9 @@ public class UserServiceImpl implements UserService {
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			if(deviceindex.equals(userInfo.getDeviceindex())){
 			}else{
-				returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
+				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
 			}
+			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		}
 		return returnResp;
 	}
