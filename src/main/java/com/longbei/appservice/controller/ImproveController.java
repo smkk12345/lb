@@ -56,22 +56,22 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "line/daylist")
-    public BaseResp daylist(String userid, String ptype, String ctype, String lastdate, String pagesize) {
+    public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype, String lastdate, String pagesize) {
         if (StringUtils.hasBlankParams(userid, ctype, lastdate)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+        BaseResp<List<Improve>> baseres = new BaseResp<>();
         List<Improve> improves = null;
         try {
             improves = improveService.selectImproveListByUserDate(userid, ptype, ctype,
                     lastdate == null ? null : DateUtils.parseDate(lastdate),
                     Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
         } catch (Exception e) {
-            logger.error("line daylist userid = {}, ctype = {}, lastdate = {}, msg = {}", userid, ctype, lastdate, e);
+            logger.error("line daylist userid = {}, ctype = {}, lastdate = {}", userid, ctype, lastdate, e);
         }
         if (null == improves) {
-            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+            return new BaseResp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
     }

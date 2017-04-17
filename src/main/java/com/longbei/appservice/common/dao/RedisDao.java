@@ -38,7 +38,10 @@ public class RedisDao {
                         result = connection.del(keys[i].getBytes());
 
                     }
-                    logger.info("del {} from redis",keys);
+                    // TODO ,建议用if logger.IsDebugEnabled，这个地方适合用debug
+                    if(logger.isDebugEnabled()){
+                    	logger.debug("del {} from redis",keys);
+                    }
                     return result;
                 }
             });
@@ -62,7 +65,10 @@ public class RedisDao {
                     if (liveTime > 0) {
                         connection.expire(key, liveTime);
                     }
-                    logger.info("set key:{},value:{} with liveTime:{} to redis",key,value,liveTime);
+                 // TODO ,建议用if logger.IsDebugEnabled，这个地方适合用debug
+                    if(logger.isDebugEnabled()){
+                    	logger.debug("set key:{},value:{} with liveTime:{} to redis",key,value,liveTime);
+                    }
                     return 1L;
                 }
             });
@@ -80,7 +86,10 @@ public class RedisDao {
     public void set(String key, String value, long liveTime) {
         try {
             this.set(key.getBytes(), value.getBytes(), liveTime);
-            logger.info("set key:{},value:{} with liveTime:{} to redis",key,value,liveTime);
+         // TODO ,建议用if logger.IsDebugEnabled，这个地方适合用debug
+            if(logger.isDebugEnabled()){
+            	logger.debug("set key:{},value:{} with liveTime:{} to redis",key,value,liveTime);
+            }
         } catch (Exception e) {
             logger.error("set key:{},value:{} with liveTime:{} to redis is error : {}",key,value,liveTime,e);
         }
@@ -94,7 +103,10 @@ public class RedisDao {
     public void set(String key, String value) {
         try {
             this.set(key, value, 0L);
-            logger.info("set key:{},value:{}  to redis",key,value);
+         // TODO ,建议用if logger.IsDebugEnabled，这个地方适合用debug
+            if(logger.isDebugEnabled()){
+            	logger.debug("set key:{},value:{}  to redis",key,value);
+            }
         } catch (Exception e) {
             logger.error("set key:{},value:{} to redis is error : {}",key,value,e);
         }
@@ -118,7 +130,10 @@ public class RedisDao {
         return (String) redisTemplate.execute(new RedisCallback() {
             public String doInRedis(RedisConnection connection) throws DataAccessException {
                 try {
-                    logger.info("get from redis by key:{}",key);
+                	// TODO ,建议用if logger.IsDebugEnabled，这个地方适合用debug
+                	if(logger.isDebugEnabled()){
+                		logger.debug("get from redis by key:{}",key);
+                	}
                     return new String(connection.get(key.getBytes()), redisCode);
                 } catch (UnsupportedEncodingException e) {
                    logger.error("get from redis by key{} is erro {}",key,e);

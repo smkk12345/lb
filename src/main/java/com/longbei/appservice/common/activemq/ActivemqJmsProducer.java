@@ -35,8 +35,10 @@ public class ActivemqJmsProducer extends JmsGatewaySupport implements BaseJmsPro
 				message.setStringProperty("domainName", domainName);
 				message.setStringProperty("ids", ids);
 
-
-				logger.debug("send message to broker: {}", message.toString());
+				//TODO 先用if logger.isDebugEnabled
+				if (logger.isDebugEnabled()) {
+					logger.debug("send message to broker: {}", message.toString());
+				}
 
 				return message;
 			}
