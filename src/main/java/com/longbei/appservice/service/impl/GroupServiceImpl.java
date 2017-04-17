@@ -882,6 +882,25 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     /**
+     * 查询所有的群组成员 用户id
+     * @param groupId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectGroupMemberIdList(Long groupId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            List<Long> groupMemberIdList = this.snsGroupMembersMapper.selectGroupMemberIdList(groupId);
+            baseResp.setData(groupMemberIdList);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch (Exception e){
+            logger.error("select groupMember id list error groupId:{}",groupId);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 将用户加入到群组中,同步到融云
      * @param operatorUserId 操作人用户id
      * @param operatorNickname 操作人用户昵称

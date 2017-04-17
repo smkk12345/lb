@@ -30,4 +30,11 @@ public interface UserCollectMapper {
 
     List<UserCollect> selectCollect(@Param("userid")Long uerid,@Param("ctype")String ctype,@Param("startNum")int startNum,@Param("pageSize")int pageSize);
 
+    /**
+     * 修改收藏该进步的状态为已删除
+     * @param ctype
+     * @param improveid
+     * @return
+     */
+    int deleteUserCollectImprove(@Param("ctype")String ctype,@Param("improveid") String improveid);
 }

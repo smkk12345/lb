@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 			expandData.put("flowernum", flowernum);
 			
 			//判断对话消息是否显示红点    0:不显示   1：显示
-			int showMsg = userMsgService.selectShowMyByMtype(userid);
+			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
 			//查询奖品数量----
 			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);
@@ -517,7 +517,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<UserInfo> login(String username, String password,String deviceindex) {
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
-		BaseResp<UserInfo> returnResp = new BaseResp<>(baseResp.getCode(),baseResp.getRtnInfo());
+		BaseResp<UserInfo> returnResp = new BaseResp<>();
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
@@ -542,8 +542,11 @@ public class UserServiceImpl implements UserService {
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			if(deviceindex.equals(userInfo.getDeviceindex())){
 			}else{
-				returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
+				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
 			}
+			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} else  {
+			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 		}
 		return returnResp;
 	}
