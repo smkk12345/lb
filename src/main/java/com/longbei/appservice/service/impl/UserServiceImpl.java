@@ -545,6 +545,8 @@ public class UserServiceImpl implements UserService {
 				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
 			}
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} else  {
+			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 		}
 		return returnResp;
 	}
