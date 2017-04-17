@@ -1958,6 +1958,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        String oldKey = key;
         key = key.replace("longbei_mp3/","");
         key = key.replace("longbei_vido/","");
         String[] filenameArr = key.split("_");
@@ -1974,9 +1975,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try{
             String tableName = getTableNameByBusinessType(type);
-            int n = improveMapper.updateMedia(key,pickey,filekey,businessid,tableName);
+            int n = improveMapper.updateMedia(oldKey,pickey,filekey,businessid,tableName);
             if(n > 0){
-                timeLineDetailDao.updateImproveFileKey(key,pickey,filekey);
+                timeLineDetailDao.updateImproveFileKey(oldKey,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
