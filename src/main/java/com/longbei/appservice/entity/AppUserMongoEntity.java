@@ -22,12 +22,21 @@ public class AppUserMongoEntity {
 	private Double[] gispoint;
 
 	private String updatetime;
+	private String createtime;
 	@JsonSerialize(using=ToStringSerializer.class)
 	private Long userid;
 	private String isfriend="0";
 	private String isfans="0";
 
 	private int distance;
+
+	public String getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
+	}
 
 	public void setDistance(int distance) {
 		this.distance = distance;

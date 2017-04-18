@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.UserIdcard;
 
+import java.util.List;
+
 public interface UserIdcardMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,6 +18,11 @@ public interface UserIdcardMapper {
     int updateByPrimaryKeySelective(UserIdcard record);
 
     int updateByPrimaryKey(UserIdcard record);
+
+    int selectCount(@Param("useridcard") UserIdcard userIdcard);
+
+    List<UserIdcard> selectList(@Param("useridcard") UserIdcard userIdcard,
+                                @Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
     
     /**
 	 * @author yinxc
