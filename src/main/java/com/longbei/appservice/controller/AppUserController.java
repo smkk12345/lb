@@ -577,8 +577,8 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/userSafety")
 	@ResponseBody
-	public BaseResp<Object> userSafety(@RequestParam("userid") String userid) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public BaseResp<UserIdcard> userSafety(@RequestParam("userid") String userid) {
+		BaseResp<UserIdcard> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}

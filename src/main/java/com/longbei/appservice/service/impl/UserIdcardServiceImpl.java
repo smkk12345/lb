@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserIdcardService;
+
+import java.util.List;
 
 @Service("userIdcardService")
 public class UserIdcardServiceImpl implements UserIdcardService {
@@ -72,10 +75,10 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	 * UserIdcardService
 	 */
 	@Override
-	public BaseResp<Object> userSafety(long userid) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<UserIdcard> userSafety(long userid) {
+		BaseResp<UserIdcard> reseResp = new BaseResp<>();
 		try {
-			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			UserIdcard userIdcard = userIdcardMapper.selectByUserid(userid);
 			if(null != userIdcard){
 				String imgStr = userIdcard.getIdcardimage().replaceAll("&quot;", "");
@@ -94,7 +97,7 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 				userIdcard = new UserIdcard();
 				userIdcard.setValidateidcard("0");
 			}
-			userIdcard.setRealname(userInfo.getRealname());
+//			userIdcard.setRealname(userInfo.getRealname());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userIdcard);
 			reseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
@@ -123,4 +126,23 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 		return temp > 0 ? true : false;
 	}
 
+	@Override
+	public BaseResp<Page<UserIdcard>> selectUserIdCardListPage(UserIdcard userIdcard, Integer pageno, Integer pagesize) {
+
+		BaseResp<Page<UserIdcard>> baseResp = new BaseResp<>();
+		Page<UserIdcard> page = new Page<>(pageno,pagesize);
+
+		try {
+			int totalcount = userIdcardMapper.selectCount(userIdcard);
+			List<UserIdcard> userIdcards = userIdcardMapper.selectList(userIdcard,pagesize*(pageno-1),pagesize);
+			page.setTotalCount(totalcount);
+			page.setList(userIdcards);
+			baseResp = BaseResp.ok();
+			baseResp.setData(page);
+		} catch (Exception e) {
+			logger.error("select user id card list for pc is error:",e);
+		}
+
+		return baseResp;
+	}
 }

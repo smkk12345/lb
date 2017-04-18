@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,6 +29,45 @@ public class UserIdcard {
     
     private String realname;  //真实姓名
 
+    private Date createtime;
+
+    private Date updatetime;
+
+    private List<String> userids;
+
+    private AppUserMongoEntity user;
+
+    public List<String> getUserids() {
+        return userids;
+    }
+
+    public void setUserids(List<String> userids) {
+        this.userids = userids;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public AppUserMongoEntity getUser() {
+        return user;
+    }
+
+    public void setUser(AppUserMongoEntity user) {
+        this.user = user;
+    }
     //---------------------扩展字段------------
 
     private String frontidcardimage;//正面
