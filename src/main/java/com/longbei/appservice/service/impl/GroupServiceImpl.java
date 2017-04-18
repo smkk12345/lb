@@ -83,8 +83,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             userIdSet.add(mainGroupUserId.trim());
-            String userIdString = userIdSet.toString();
-            userIdString = userIdString.substring(1,userIdString.length()-1);
+            StringBuilder sb = new StringBuilder();
+            for(String tempId:userIdSet){
+                sb.append(",").append(tempId.trim());
+            }
+            String userIdString = sb.toString().substring(1);
             String[] newUserIds = userIdString.split(",");
 
             if(StringUtils.isEmpty(groupName)){
@@ -610,6 +613,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }else{
                 resultMap.put("isMainUser",false);
             }
+
+            if(status == 0 && snsGroupMembersList != null && snsGroupMembersList.size() > 0){
+                for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                    if(snsGroupMembers.getInviteuserid() != null){
+                        SnsGroupMembers snsGroupMembers1 = this.snsGroupMembersMapper.findByUserIdAndGroupId(snsGroupMembers.getInviteuserid(),groupId);
+                        if(snsGroupMembers1 != null){
+                            snsGroupMembers.setRemark(snsGroupMembers1.getNickname());
+                        }
+                    }
+                }
+            }
+
             resultMap.put("snsGroupMembersList",snsGroupMembersList);
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

@@ -1766,6 +1766,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankImage rankImage:rankImageList){
                 BaseResp baseResp1 = this.publishRankImage(rankImage);
             }
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("publish rank error currentDateTime:{}",currentDateTime);
             printException(e);
