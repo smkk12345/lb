@@ -13,11 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 
 @Service("userPlDetailService")
 public class UserPlDetailServiceImpl implements UserPlDetailService {
@@ -76,6 +72,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		try {
 			List<UserPlDetail> list = userPlDetailMapper.selectUserPerfectListByUserId(userid,startNum,pageSize);
 			baseResp.initCodeAndDesp();
+			baseResp.setData(new ArrayList<UserPlDetail>());
 			String photos;
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
