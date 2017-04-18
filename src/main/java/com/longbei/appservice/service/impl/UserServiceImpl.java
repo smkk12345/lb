@@ -629,13 +629,13 @@ public class UserServiceImpl implements UserService {
 
 			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-			if(userInfo.getDeviceindex().equals(deviceindex)){
+//			if(userInfo.getDeviceindex().equals(deviceindex)){
 				//token 放到redis中去
 				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 				baseResp.setData(userInfo);
-			}else{
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
-			}
+//			}else{
+//				baseResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
+//			}
 		}
 		return baseResp;
 	}
