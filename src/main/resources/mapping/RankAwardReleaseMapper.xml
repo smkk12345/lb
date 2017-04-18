@@ -58,12 +58,12 @@
   </delete>
   <insert id="insertBatch" parameterType="java.util.List">
     insert into rank_award_release (rankid, awardid,
-      awardlevel, awardrate,awardnickname,
+      awardlevel, awardrate,awardnickname,awardcount,
       createtime)
     values
     <foreach collection="list" item="award" index="index" separator="," >
       (#{award.rankid},#{award.awardid},#{award.awardlevel},#{award.awardrate},
-      #{award.awardnickname},#{award.createtime})
+      #{award.awardnickname},#{award.awardcount},#{award.createtime})
     </foreach>
   </insert>
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankAwardRelease" >

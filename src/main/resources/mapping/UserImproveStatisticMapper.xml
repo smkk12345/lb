@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserImproveStatisticMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserImproveStatistic" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="currentday" property="currentday" jdbcType="VARCHAR" />
+    <result column="improvecount" property="improvecount" jdbcType="INTEGER" />
+    <result column="likecount" property="likecount" jdbcType="INTEGER" />
+    <result column="flowercount" property="flowercount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid,improvecount,currentday,likecount,flowercount
+  </sql>
+
+  <insert id="batchInsertUserImproveStatistic" parameterType="list">
+      insert into user_improve_statistic(
+        userid,currentday
+        ,improvecount
+        ,likecount
+        ,flowercount
+      )VALUES
+      <foreach collection="userImproveList" separator="," item="userImproveStatistic">
+        (#{userImproveStatistic.userid},
+        #{userImproveStatistic.currentday}
+          <if test="userImproveStatistic.improvecount != null">
+              ,#{userImproveStatistic.improvecount}
+          </if>
+          <if test="userImproveStatistic.improvecount == null">
+              ,0
+          </if>
+          <if test="userImproveStatistic.likecount != null">
+              ,#{userImproveStatistic.likecount}
+          </if>
+          <if test="userImproveStatistic.likecount == null">
+              ,0
+          </if>
+          <if test="userImproveStatistic.flowercount != null">
+              ,#{userImproveStatistic.flowercount}
+          </if>
+          <if test="userImproveStatistic.flowercount == null">
+              ,0
+          </if>
+        )
+      </foreach>
+  </insert>
+
+    <!-- 更新用户的统计数据 -->
+    <update id="updateUserImproveStatic" parameterType="map">
+        update user_improve_statistic
+        <set>
+            <if test="likecount != null">
+                likecount = #{likecount}
+            </if>
+            <if test="flowercount != null">
+                ,flowercount = #{flowercount}
+            </if>
+        </set>
+        where userid=#{userid}
+            and currentday = #{currentday}
+    </update>
+</mapper>

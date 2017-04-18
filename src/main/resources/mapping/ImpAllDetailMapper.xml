@@ -182,4 +182,20 @@
       gtype = #{gtype,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 统计用户从startDate 到endDate 用户的点赞送花列表 -->
+  <select id="userStatistic" resultMap="BaseResultMap">
+    select
+        userid,
+        sum(giftnum) giftnum,
+        detailtype
+    from imp_all_detail
+    where (detailtype = 0 or detailtype = 1)
+    and createtime &lt; #{endDate}
+    and createtime > #{startDate}
+    and status = 1
+    group by userid,detailtype
+    order by userid,detailtype
+  </select>
+
 </mapper>

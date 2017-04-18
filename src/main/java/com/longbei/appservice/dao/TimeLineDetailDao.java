@@ -3,19 +3,25 @@ package com.longbei.appservice.dao;/**
  */
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
-import com.longbei.appservice.entity.ImproveCircle;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.TimeLine;
 import com.longbei.appservice.entity.TimeLineDetail;
+import com.longbei.appservice.entity.UserImproveStatistic;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.mapreduce.GroupBy;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 时间线详情mongo操作
@@ -99,4 +105,38 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.remove(query, TimeLineDetail.class);
     }
 
+    /**
+     * 获取用户从startDate 到 endDate之间发布的进步数量
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public List<UserImproveStatistic> getUserImproveStatistic(Date startDate, Date endDate) {
+        List<UserImproveStatistic> resultList = new ArrayList<UserImproveStatistic>();
+        try{
+            String currentDay = DateUtils.formatDate(startDate);
+            Criteria createtime = Criteria.where("createdate");
+//            createtime.gte(startDate);
+            createtime.lte(endDate);
+            GroupOperation groupOperation = Aggregation.group("user").count().as("count");
+            Aggregation agg = null;
+            agg = Aggregation.newAggregation(TimeLineDetail.class,Aggregation.match(createtime),groupOperation);
+            AggregationResults<Map> results =mongoTemplate.aggregate(agg,TimeLineDetail.class,Map.class);
+
+            for(Map map : results.getMappedResults()){
+                AppUserMongoEntity userMongoEntity = (AppUserMongoEntity) map.get("_id");
+                if(userMongoEntity == null){
+                    continue;
+                }
+                UserImproveStatistic userImproveStatistic = new UserImproveStatistic();
+                userImproveStatistic.setUserid(userMongoEntity.getUserid());
+                userImproveStatistic.setImprovecount((Integer) map.get("count"));
+                userImproveStatistic.setCurrentday(currentDay);
+                resultList.add(userImproveStatistic);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return resultList;
+    }
 }

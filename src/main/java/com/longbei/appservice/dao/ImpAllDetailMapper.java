@@ -32,4 +32,12 @@ public interface ImpAllDetailMapper {
     int updateByPrimaryKeySelective(ImpAllDetail record);
 
     int updateByPrimaryKey(ImpAllDetail record);
+
+    /**
+     * 查询用户从startDate 到endDate 的点赞和送花列表
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    List<ImpAllDetail> userStatistic(@Param("startDate")Date startDate,@Param("endDate") Date endDate);
 }

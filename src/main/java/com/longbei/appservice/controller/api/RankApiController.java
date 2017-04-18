@@ -682,6 +682,22 @@ public class RankApiController {
         return baseResp;
     }
 
+    /***
+     * 自动发布榜单
+     * @param currentTime
+     * @return
+     */
+    @RequestMapping(value="autoPublishRank")
+    public BaseResp<Object> autoPublishRank(Long currentTime){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        Date currentDateTime= new Date(currentTime);
+        baseResp = this.rankService.publishRank(currentDateTime);
+        return baseResp;
+    }
+
     /**
      * 获取整个榜单的排名
      * @url http://ip:port/app_service/rank/rankMemberSort
