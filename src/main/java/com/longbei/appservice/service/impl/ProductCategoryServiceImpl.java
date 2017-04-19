@@ -26,13 +26,23 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
 	@Override
 	public BaseResp<Object> productCategories(){
-		BaseResp<Object> baseResp = iProductCategoryService.productCategories();
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			baseResp = iProductCategoryService.productCategories();
+		} catch (Exception e) {
+			logger.error("select product category list is error:",e);
+		}
 		return baseResp;
 	}
 
 	@Override
 	public BaseResp<Object> selectCategory(String parentid,String startNum,String pageSize){
-		BaseResp<Object> baseResp = iProductCategoryService.selectCategory(parentid,startNum,pageSize);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			baseResp = iProductCategoryService.selectCategory(parentid,startNum,pageSize);
+		} catch (Exception e) {
+			logger.error("select product category list is error:",e);
+		}
 		return baseResp;
 	}
 

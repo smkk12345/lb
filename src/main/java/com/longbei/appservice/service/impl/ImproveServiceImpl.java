@@ -1989,7 +1989,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
             businessid = null;
         }
-        if(Constant.WORKFLOW2.equals(workflow)){
+        if(!workflow.contains("mp3")){
             pickey = "[\""+pickey+"\"]";
         }
         try{

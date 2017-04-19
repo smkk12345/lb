@@ -218,6 +218,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
 			expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
+			logger.info("selectUserInfoByUserid yuantomoney = {}, moneytocoin = {}, " +
+					"flowertocoin = {}, flowertomoney = {}",
+					AppserviceConfig.yuantomoney, AppserviceConfig.moneytocoin,
+					AppserviceConfig.flowertocoin, AppserviceConfig.flowertomoney);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

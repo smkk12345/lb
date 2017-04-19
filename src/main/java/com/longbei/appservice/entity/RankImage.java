@@ -186,6 +186,8 @@ public class RankImage {
         this.estarttime = estarttime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getSendtime() {
         return sendtime;
     }
@@ -194,6 +196,8 @@ public class RankImage {
         this.sendtime = sendtime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getEendtime() {
         return eendtime;
     }
@@ -695,6 +699,8 @@ public class RankImage {
      * 更新时间
      * @return updatetime 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }

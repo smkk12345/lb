@@ -15,6 +15,7 @@ import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import com.netflix.discovery.converters.Auto;
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
@@ -182,6 +183,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             RankImage rankImage = rankImageMapper.selectByRankImageId(rankimageid);
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
+            logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
             BaseResp<RankImage> baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
