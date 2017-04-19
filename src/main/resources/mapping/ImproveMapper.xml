@@ -355,17 +355,18 @@
     	<include refid="Base_Column_List" /> 
     </if>
     from ${tablename}
-    where
-     businessid = #{businessid}
-    <if test="ismainimp != null" >
-      AND ismainimp = #{ismainimp}
-    </if>
-    <if test="userid != null" >
-      AND userid = #{userid}
-    </if>
-    <if test="tablename == 'improve_classroom'" >
-      AND isresponded = 0 
-    </if>
+    <where>
+      <if test="ismainimp != null" >
+        ismainimp = #{ismainimp}
+      </if>
+      <if test="tablename == 'improve_classroom'" >
+        AND isresponded = 0
+      </if>
+      <if test="userid != null" >
+        AND userid = #{userid}
+      </if>
+      and businessid = #{businessid}
+    </where>
     <if test="orderby == null or orderby ==0">
         ORDER BY createtime DESC
       </if>

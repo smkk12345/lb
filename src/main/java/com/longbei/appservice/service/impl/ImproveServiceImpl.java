@@ -2028,9 +2028,10 @@ public class ImproveServiceImpl implements ImproveService{
                             improve.setBusinessEntity(rank.getPtype(),
                                     rank.getRanktitle(),
                                     rank.getRankinvolved(),
-                                    rank.getSstarttime(),
+                                    rank.getStarttime(),
                                     rank.getEndtime(),
-                                    sortnum,0);
+                                    sortnum,0,
+                                    rank.getRankphotos());
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -2045,7 +2046,7 @@ public class ImproveServiceImpl implements ImproveService{
                                 userGoal.getUpdatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount());
+                                userGoal.getIcount(),null);
                         break;
                     default:
                         break;
@@ -2222,7 +2223,7 @@ public class ImproveServiceImpl implements ImproveService{
                         userGoal.getUpdatetime(),
                         null,
                         0,
-                        userGoal.getIcount());
+                        userGoal.getIcount(),null);
             }
             baseResp.setData(list);
             return baseResp.initCodeAndDesp();

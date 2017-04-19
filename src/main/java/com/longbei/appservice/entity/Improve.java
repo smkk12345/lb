@@ -130,7 +130,8 @@ public class Improve {
                                   Date startdate,
                                   Date enddate,
                                   Integer sortnum,
-                                  Integer days) {
+                                  Integer days,
+                                  String photos) {
         this.businessEntity.setDays(days);
         this.businessEntity.setStartdate(startdate);
         this.businessEntity.setEnddate(enddate);
@@ -138,6 +139,7 @@ public class Improve {
         this.businessEntity.setInvolved(involved);
         this.businessEntity.setTitle(title);
         this.businessEntity.setSortnum(sortnum);
+        this.businessEntity.setPhotos(photos);
     }
 
     public BusinessEntity getBusinessEntity() {
@@ -644,6 +646,7 @@ public class Improve {
         private Date startdate;//
         private Integer sortnum;//排名
         private Integer days;//持续天数
+        private String photos;//图片
 
         public void setEnddate(Date enddate) {
             this.enddate = enddate;
@@ -701,6 +704,13 @@ public class Improve {
             return title;
         }
 
+        public String getPhotos() {
+            return photos;
+        }
+
+        public void setPhotos(String photos) {
+            this.photos = photos;
+        }
     }
 
 

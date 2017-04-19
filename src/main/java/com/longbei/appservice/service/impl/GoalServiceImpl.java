@@ -54,7 +54,7 @@ public class GoalServiceImpl implements GoalService {
         userGoal.setIcount(0);
         userGoal.setGoalid(idGenerateService.getUniqueIdAsLong());
         try{
-            int n = userGoalMapper.insert(userGoal);
+            int n = userGoalMapper.insertSelective(userGoal);
             if(n == 1){
             	baseResp.setData(userGoal);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

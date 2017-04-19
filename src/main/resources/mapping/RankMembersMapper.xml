@@ -629,6 +629,8 @@
         award
     where
         rank_members.awardid = award.id
+      and rank_members.checkstatus = 3
+      and rank_members.iswinning = 1
       and rank_members.rankid =#{rankid}
     order by rank_members.awardlevel
   </select>
