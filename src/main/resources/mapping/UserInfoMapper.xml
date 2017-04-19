@@ -663,8 +663,9 @@
       givedflowers = givedflowers + #{givedflowers},
     </if>
     <if test="totalmoney != 0">
-      totalmoney = totalmoney + #{totalmoney}
+      totalmoney = totalmoney + #{totalmoney},
     </if>
+    userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
       givedflowers > ROUND(#{givedflowers}) and
@@ -682,8 +683,9 @@
       totalflower = totalflower + #{totalflower},
     </if>
     <if test="totalcoin != 0">
-      totalcoin = totalcoin + #{totalcoin}
+      totalcoin = totalcoin + #{totalcoin},
     </if>
+    userid = #{userid}
     WHERE 
     <if test="totalflower &lt; 0">
       totalflower > ROUND(#{totalflower}) and
