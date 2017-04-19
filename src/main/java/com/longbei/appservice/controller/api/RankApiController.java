@@ -688,6 +688,7 @@ public class RankApiController {
      * @return
      */
     @RequestMapping(value="autoPublishRank")
+    @ResponseBody
     public BaseResp<Object> autoPublishRank(Long currentTime){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
