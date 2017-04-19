@@ -43,11 +43,5 @@ feign:
     httpclient:
         enabled: true
     hystrix:
-        enabled: true
-        command:
-            default:
-               execution:
-                  isolation:
-                      thread:
-                          timeoutInMilliseconds: 6000
+        enabled: false
 
