@@ -203,6 +203,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     private BaseResp publishRankImage(RankImage rankImage){
+        logger.info("publish rank image : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
         BaseResp baseResp = new BaseResp();
         String rankImageId = rankImage.getRankid()+"";
         rankImage.setRankAwards(selectRankAwardByRankid(rankImageId));
@@ -261,6 +262,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     private boolean updateRankAwardRelease(String rankimageid){
+        logger.info("update rank award release by rankid={}",rankimageid);
         List<RankAward> awards = null;
         try {
             awards = rankAwardMapper.selectListByRankid(rankimageid);
