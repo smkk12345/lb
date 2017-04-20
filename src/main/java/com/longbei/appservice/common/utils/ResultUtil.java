@@ -23,4 +23,11 @@ public class ResultUtil {
         return false;
     }
 
+    public static boolean fail(BaseResp baseResp){
+        if(BaseResp.SUCCESS != baseResp.getCode()){
+            return true;
+        }
+        return false;
+    }
+
 }

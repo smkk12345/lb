@@ -521,4 +521,9 @@ public interface IProductBasicService {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/order/updateOrderAutoConfirmReceipt")
 	BaseResp<Object> updateOrderAutoConfirmReceipt(@RequestParam("beforeDateTime")Long beforeDateTime);
+
+	@RequestMapping(method = RequestMethod.GET, value = "/new_wxpay/testWx")
+	void testWx();
+
+
 }
