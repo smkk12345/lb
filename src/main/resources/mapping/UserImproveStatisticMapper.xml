@@ -12,6 +12,14 @@
   <sql id="Base_Column_List" >
     id, userid,improvecount,currentday,likecount,flowercount
   </sql>
+  
+  <select id="selectByUseridAndCurrentday" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_improve_statistic
+    where userid = #{userid} 
+    and currentday = #{currentday} 
+  </select>
 
   <insert id="batchInsertUserImproveStatistic" parameterType="list">
       insert into user_improve_statistic(

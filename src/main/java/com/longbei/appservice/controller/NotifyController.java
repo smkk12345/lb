@@ -40,6 +40,7 @@ public class NotifyController {
   	@RequestMapping(value = "/verify/ali")
     public BaseResp<Object> ali(String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("/verify/ali userid = {}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -63,7 +64,8 @@ public class NotifyController {
   			resMap.put("buyer_email", request.getParameter("buyer_email"));
   			resMap.put("total_fee", request.getParameter("total_fee"));
   			resMap.put("body", request.getParameter("body"));
-  			
+			logger.info("/verify/ali userid = {}, resMap = {}, ",
+					userid, resMap);
   			//2：购买龙币
   			baseResp = payService.verifyali(Long.parseLong(userid), "2", resMap);
 		} catch (Exception e) {
@@ -84,6 +86,7 @@ public class NotifyController {
   	@RequestMapping(value = "/verify/wx")
     public BaseResp<Object> verifywx(String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("/verify/wx userid = {}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
