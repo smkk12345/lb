@@ -134,8 +134,15 @@ public class GoalController extends BaseController {
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(endNum != null && endNum > startNum){
+            pageSize = endNum - startNum;
+        }
         try{
-            baseResp = goalService.selectUserGoalList(Long.parseLong(userid),startNum,endNum);
+            baseResp = goalService.selectUserGoalList(Long.parseLong(userid),startNum,pageSize);
         }catch(Exception e){
             logger.error("goalService.list error and msg={}",e);
         }

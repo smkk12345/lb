@@ -7,6 +7,7 @@ import com.longbei.appservice.entity.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 榜单操作接口
@@ -443,4 +444,12 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid, Integer startNum, Integer pageSize);
+
+    /**
+     * 获取用户在榜中的排名
+     * @param userId
+     * @param businessId
+     * @return
+     */
+    Map<String,Object> getUserSortNumAndImproveCount(Long userId, Long businessId);
 }
