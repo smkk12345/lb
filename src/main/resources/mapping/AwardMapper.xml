@@ -25,7 +25,7 @@
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    a.id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
+    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
     a.createtime, a.updatetime
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     where a.id = #{id,jdbcType=INTEGER}
@@ -50,10 +50,10 @@
 
   <select id="selectAwardList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.Award">
     SELECT
-    a.id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
+    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
     a.createtime, a.updatetime,classifyname
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
-    WHERE isdel=0
+    WHERE a.isdel=0
     <if test="award.awardtitle != null">
       AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
     </if>
@@ -89,7 +89,7 @@
     awardclassify.classifytype classifytype
     from
     awardclassify,award
-    where isdel=0
+    where award.isdel=0
     and awardclassify.id = award.awardcateid
     and award.id = #{awardId}
   </select>
