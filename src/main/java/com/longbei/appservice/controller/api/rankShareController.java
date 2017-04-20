@@ -65,7 +65,7 @@ public class RankShareController {
     @RequestMapping(value="selectFashionMan")
     public BaseResp<Object> selectFashionMan(Long userid,Long rankId,Integer startNum,Integer endNum){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(rankId == null || userid == null){
+        if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if (startNum == null || startNum < 0){
@@ -237,8 +237,9 @@ public class RankShareController {
     @ResponseBody
     @RequestMapping(value = "selectListInRank")
     public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
-        if (StringUtils.hasBlankParams(curuserid,userid, rankid)) {
-            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if (StringUtils.hasBlankParams(userid, rankid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         if(null == startno){
             startno = 0;
@@ -248,11 +249,11 @@ public class RankShareController {
         }
         logger.info("inprove select userid={},impid={}", userid);
         try {
-            return improveService.selectListInRank(curuserid,userid,rankid,
-                    Constant.IMPROVE_RANK_TYPE,startno,pagesize);
+            return improveService.selectListInRank(curuserid,userid,rankid, Constant.IMPROVE_RANK_TYPE,
+                    startno,pagesize);
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, e);
         }
-        return null;
+        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
     }
 }

@@ -63,7 +63,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	* @return String    返回类型
 	 */
 	@Override
-	public String selectRemark(long userid, long friendid) {
+	public String selectRemark(Long userid, Long friendid) {
+		if(userid == null || friendid == null){
+			return null;
+		}
 		//判断已关注者是否是好友关系
 		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
 		if(null != snsFriends){

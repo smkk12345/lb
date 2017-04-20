@@ -140,7 +140,8 @@
       select
           rank_award_release.awardnickname,
           rank.rankid,
-          rank_members.userid
+          rank_members.userid,
+          rank.endtime
       from rank inner join rank_award_release on rank_award_release.rankid = rank.rankid
             inner join rank_members on rank.rankid = rank_members.rankid
       where

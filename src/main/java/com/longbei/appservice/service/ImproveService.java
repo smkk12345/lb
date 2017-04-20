@@ -337,7 +337,7 @@ public interface ImproveService {
      * 进步信息初始化
      * @param improve
      */
-    public void initImproveInfo(Improve improve,long userid);
+    public void initImproveInfo(Improve improve,Long userid);
 
     public int getPerDayImproveCount(long userid,String businesstype);
 

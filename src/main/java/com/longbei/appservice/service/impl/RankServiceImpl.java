@@ -1277,6 +1277,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         map.put("userid",appUserMongoEntity.getUserid());
                         map.put("avatar",appUserMongoEntity.getAvatar());
 
+                        if(userId == null){
+                            map.put("isfans",false);
+                            resultList.add(map);
+                            continue;
+                        }
+
                         //判断是否是好友
                         if(userId.equals(rankMembers.getUserid())){
                             map.put("isfans",true);
