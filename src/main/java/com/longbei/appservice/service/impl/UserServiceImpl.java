@@ -541,10 +541,10 @@ public class UserServiceImpl implements UserService {
 			}
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			String value = springJedisDao.get("userid&token&"+userInfo.getUserid());
-			if(deviceindex.equals(userInfo.getDeviceindex())){
-			}else{
-				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
-			}
+//			if(deviceindex.equals(userInfo.getDeviceindex())){
+//			}else{
+//				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
+//			}
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} else  {
 			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
