@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.service.*;
+import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +28,6 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserFlowerDetail;
 import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.UserFlowerDetailService;
-import com.longbei.appservice.service.UserImpCoinDetailService;
-import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.UserRelationService;
 
 @Service("userFlowerDetailService")
 public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements UserFlowerDetailService {
@@ -49,6 +48,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	private UserRelationService userRelationService;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
+	private PayService payService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFlowerDetailServiceImpl.class);
 
@@ -224,6 +227,16 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					AppserviceConfig.flowertocoin, AppserviceConfig.flowertomoney);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+						try {
+							payService.testWx();
+						}catch (Exception e){
+							e.printStackTrace();
+						}
+				}
+			});
 		} catch (Exception e) {
 			logger.error("selectUserInfoByUserid userid = {}", userid, e);
 		}
