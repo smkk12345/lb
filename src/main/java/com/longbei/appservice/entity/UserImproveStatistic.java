@@ -5,11 +5,11 @@ package com.longbei.appservice.entity;
  */
 public class UserImproveStatistic {
     private Integer id;
-    private Long userid;
-    private String currentday;
-    private Integer likecount;
-    private Integer improvecount;
-    private Integer flowercount;
+    private Long userid;//用户id
+    private String currentday;//统计的日期
+    private Integer likecount;//赞的数量
+    private Integer improvecount;//发表的进步数量
+    private Integer flowercount;//送花的数量
 
     public Long getUserid() {
         return userid;

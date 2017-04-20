@@ -203,6 +203,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     private BaseResp publishRankImage(RankImage rankImage){
+        logger.info("publish rank image : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
         BaseResp baseResp = new BaseResp();
         String rankImageId = rankImage.getRankid()+"";
         rankImage.setRankAwards(selectRankAwardByRankid(rankImageId));
@@ -261,6 +262,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     private boolean updateRankAwardRelease(String rankimageid){
+        logger.info("update rank award release by rankid={}",rankimageid);
         List<RankAward> awards = null;
         try {
             awards = rankAwardMapper.selectListByRankid(rankimageid);
@@ -1071,6 +1073,55 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+    /**
+     * 获取用户在榜中的排名
+     * @param userId
+     * @param rankId
+     * @return
+     */
+    @Override
+    public Map<String,Object> getUserSortNumAndImproveCount(Long userId, Long rankId) {
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        try{
+            int sortNum = 0;
+            int improveCount = 0;
+            //查询Rank
+            Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null){
+                resultMap.put("sortnum",sortNum);
+                resultMap.put("improveCount",improveCount);
+                return resultMap;
+            }
+            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
+            if(rankMembers == null || rankMembers.getStatus() != 1){
+                resultMap.put("sortnum",sortNum);
+                resultMap.put("improveCount",improveCount);
+                return resultMap;
+            }
+            if("0".equals(rank.getIsfinish())){
+                resultMap.put("sortnum",sortNum);
+                resultMap.put("improveCount",improveCount);
+                return resultMap;
+            }else if("1".equals(rank.getIsfinish())){
+                long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userId+"");
+                sortNum = Integer.parseInt(sort+"");
+            }else{
+                sortNum = rankMembers.getSortnum();
+            }
+            improveCount = rankMembers.getIcount();
+            resultMap.put("sortnum",sortNum);
+            resultMap.put("improveCount",improveCount);
+            return resultMap;
+        }catch(Exception e){
+            logger.error("get user sortnum error userId:{} rankId:{}",userId,rankId);
+            printException(e);
+        }
+        resultMap.put("sortnum",0);
+        resultMap.put("improveCount",0);
+        return resultMap;
+    }
+
     /**
      * 查询用户在榜单中的排名
      * @param rankId 榜单id
@@ -1435,16 +1486,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else{
                 sortNum = new Long(rankMembers.getSortnum());
             }
-            SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
-            if(snsFans != null){
-                resultMap.put("isfans",1);
+            if(currentUserId != null){
+                SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
+                if(snsFans != null){
+                    resultMap.put("isfans",1);
+                }else{
+                    resultMap.put("isfans",0);
+                }
+                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userid,currentUserId);
+                if(snsFriends != null && "0".equals(snsFriends.getIsdel())){
+                    resultMap.put("isFriends",1);
+                }else{
+                    resultMap.put("isFriends",0);
+                }
             }else{
                 resultMap.put("isfans",0);
-            }
-            SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userid,currentUserId);
-            if(snsFriends != null && "0".equals(snsFriends.getIsdel())){
-                resultMap.put("isFriends",1);
-            }else{
                 resultMap.put("isFriends",0);
             }
 
@@ -1996,6 +2052,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("ranktitle",rank.getRanktitle());
             resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
             resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
+            resultMap.put("rankImage",rank.getRankphotos());
 
             List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();//用于存放一等奖 二等奖
             //查询所有的中奖用户 按照中奖等级排列

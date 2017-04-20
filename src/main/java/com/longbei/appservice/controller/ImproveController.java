@@ -734,7 +734,7 @@ public class ImproveController {
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, impid, e);
         }
-        return null;
+        return new BaseResp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
     }
 
     /**
