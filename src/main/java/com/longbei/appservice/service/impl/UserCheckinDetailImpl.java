@@ -33,6 +33,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.UserCheckinDetailMapper;
 import com.longbei.appservice.dao.UserCheckinInfoMapper;
+import com.longbei.appservice.dao.UserImproveStatisticMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserCheckinDetailService;
@@ -56,6 +57,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private SpringJedisDao springJedisDao;
+	@Autowired
+	private UserImproveStatisticMapper userImproveStatisticMapper;
 //	@Autowired
 //	private UserImpCoinDetailService userImpCoinDetailService;
 
@@ -315,6 +318,18 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			List<UserCheckinDetail> list = userCheckinDetailMapper.selectDetailListByYearmonth(userid, yearmonth);
 
 			if (null != list && list.size() > 0) {
+				//获取签到是否已发进步状态  isimprove 0:没有发进步   1：已发进步
+				String isimprove = "0";
+				for (UserCheckinDetail userCheckinDetail : list) {
+					String currentday = DateUtils.formatDate(userCheckinDetail.getCheckindate(), "yyyy-MM-dd");
+					UserImproveStatistic userImproveStatistic = userImproveStatisticMapper.selectByUseridAndCurrentday(userid, 
+							currentday);
+					if(null != userImproveStatistic){
+						isimprove = "1";
+					}
+					userCheckinDetail.setIsimprove(isimprove);
+				}
+				
 				//获取redis中的连续签到天数
 				// 判断redis中是否存在 
 				boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,

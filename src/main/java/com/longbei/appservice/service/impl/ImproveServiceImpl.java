@@ -1186,7 +1186,12 @@ public class ImproveServiceImpl implements ImproveService{
     /**
      * 初始化用户关系信息
      */
-    private void initUserRelateInfo(long userid,AppUserMongoEntity apuser){
+    private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
+        if(userid == null){
+            apuser.setIsfans("0");
+            apuser.setIsfriend("0");
+            return ;
+        }
         if(userid == apuser.getUserid()){
             return;
         }
@@ -1203,15 +1208,15 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
-    private void initFriendInfo(long userid,AppUserMongoEntity apuser){
+    private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
         if(null != snsFriends){
             if(!StringUtils.isBlank(snsFriends.getRemark())){
                 apuser.setNickname(snsFriends.getRemark());
             }
-            apuser.setIsfriend("0");
-        }else{
             apuser.setIsfriend("1");
+        }else{
+            apuser.setIsfriend("0");
         }
     }
 
@@ -1252,7 +1257,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      * @author:luye
      */
-    private void initImproveUserInfo(Improve improve,long userid){
+    private void initImproveUserInfo(Improve improve,Long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
         //获取好友昵称
         String remark = userRelationService.selectRemark(userid, improve.getUserid());
@@ -1928,7 +1933,6 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private void initIsOptionForImprove(String userid,Improve improve){
-
 //        ImpAllDetail impAllDetail = new ImpAllDetail();
 //        impAllDetail.setUserid(Long.parseLong(userid));
 //        impAllDetail.setImpid(improve.getImpid());
@@ -2102,13 +2106,15 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/3/8 下午4:06
      *  @update 2017/3/8 下午4:06
      */
-    public void initImproveInfo(Improve improve,long userid) {
+    public void initImproveInfo(Improve improve,Long userid) {
         //初始化评论数
         initImproveCommentInfo(improve);
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
         //初始化是否 点赞 送花 送钻 收藏
-        initIsOptionForImprove(userid+"",improve);
+        if(userid != null){
+            initIsOptionForImprove(userid+"",improve);
+        }
         //初始化超级话题列表
         initTopicInfo(improve);
     }
@@ -2411,9 +2417,9 @@ public class ImproveServiceImpl implements ImproveService{
             List<Improve> list = baseResp.getData();
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
-                initImproveInfo(improve,Long.parseLong(curuserid));
+                initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
-                initImproveUserInfo(improve,Long.parseLong(curuserid));
+                initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
             }
         }
         return baseResp;

@@ -25,4 +25,7 @@ public interface UserImproveStatisticMapper {
      * @return
      */
     int updateUserImproveStatic(Map<String, Object> map);
+    
+    UserImproveStatistic selectByUseridAndCurrentday(@Param("userid") long userid, 
+    		@Param("currentday") String currentday);
 }

@@ -16,6 +16,10 @@ public class UserCheckinDetail {
     private Date createtime;
     
     private Integer yearmonth; //年月
+    
+    //---------------扩展字段-------------------
+    
+    private String isimprove = "0"; //签到是否已发进步状态  isimprove 0:没有发进步   1：已发进步
 
     /**
      * 
@@ -91,6 +95,15 @@ public class UserCheckinDetail {
 
 	public void setYearmonth(Integer yearmonth) {
 		this.yearmonth = yearmonth;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsimprove() {
+		return isimprove;
+	}
+
+	public void setIsimprove(String isimprove) {
+		this.isimprove = isimprove;
 	}
     
 }

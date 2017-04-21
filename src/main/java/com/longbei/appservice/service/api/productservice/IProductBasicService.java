@@ -12,7 +12,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-@FeignClient("productServiceYXC")
+@FeignClient("productService")
 @RequestMapping("productService")
 public interface IProductBasicService {
 
@@ -521,4 +521,9 @@ public interface IProductBasicService {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/order/updateOrderAutoConfirmReceipt")
 	BaseResp<Object> updateOrderAutoConfirmReceipt(@RequestParam("beforeDateTime")Long beforeDateTime);
+
+	@RequestMapping(method = RequestMethod.GET, value = "/new_wxpay/testWx")
+	void testWx();
+
+
 }
