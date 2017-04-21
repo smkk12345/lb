@@ -1232,7 +1232,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //对进步的评论数赋值
         String businessid = "";
-        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
+        if(improve.getBusinessid() == null
+                || StringUtils.isBlank(improve.getBusinessid().toString())
+                || improve.getBusinessid() == 0){
         	businessid = improve.getImpid().toString();
         }else{
         	businessid = improve.getBusinessid().toString();
