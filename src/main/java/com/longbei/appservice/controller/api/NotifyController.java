@@ -84,9 +84,9 @@ public class NotifyController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/verify/wx")
-    public BaseResp<Object> verifywx(String userid, 
+    public BaseResp<Object> verifywx(String userid, String price, 
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("/verify/wx userid = {}", userid);
+		logger.info("/verify/wx userid = {}, price = {}", userid, price);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -94,7 +94,7 @@ public class NotifyController {
   		try {
   			ResponseHandler resHandler = new ResponseHandler(request, response);
   			//2：购买龙币
-  			baseResp = payService.verifywx(Long.parseLong(userid), "2", resHandler);
+  			baseResp = payService.verifywx(Long.parseLong(userid), price, "2", resHandler);
 		} catch (Exception e) {
 			logger.error("verifywx userid = {}", userid, e);
 		}
