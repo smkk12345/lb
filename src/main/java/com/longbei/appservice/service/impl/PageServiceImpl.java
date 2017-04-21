@@ -68,7 +68,7 @@ public class PageServiceImpl implements PageService{
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {
-            logger.error("insert into homepicture is error:",e);
+            logger.error("update homepicture is error:",e);
         }
         return baseResp;
     }
@@ -81,7 +81,7 @@ public class PageServiceImpl implements PageService{
             baseResp = BaseResp.ok();
             baseResp.setData(homePicture);
         } catch (Exception e) {
-            logger.error("insert into homepicture is error:",e);
+            logger.error("select homepicture is error:",e);
         }
         return baseResp;
     }

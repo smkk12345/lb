@@ -20,7 +20,7 @@ ios_buyflower_pro: https://buy.itunes.apple.com/verifyReceipt
 
 spring:
     application:
-        name: app_service
+        name: appService
     cloud:
         config:
             enabled: true

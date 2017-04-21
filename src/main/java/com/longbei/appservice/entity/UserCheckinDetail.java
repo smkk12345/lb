@@ -75,7 +75,7 @@ public class UserCheckinDetail {
      * 
      * @return createtime 
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="dd")
     public Date getCreatetime() {
         return createtime;
     }

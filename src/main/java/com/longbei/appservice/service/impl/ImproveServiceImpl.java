@@ -1068,6 +1068,8 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
             improve.setUserid(timeLineDetail.getUser().getUserid());
+            improve.setBusinessid(timeLineDetail.getBusinessid());
+            improve.setBusinesstype(timeLineDetail.getBusinesstype());
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             initImproveLikeAndFlower(improve);
@@ -1232,10 +1234,12 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //对进步的评论数赋值
         String businessid = "";
-        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
-        	businessid = improve.getImpid().toString();
+
+        //businesstype 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
+        if(improve.getBusinesstype().equals("0")){
+            businessid = improve.getImpid().toString();
         }else{
-        	businessid = improve.getBusinessid().toString();
+            businessid = improve.getBusinessid().toString();
         }
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
                         (businessid, improve.getBusinesstype());

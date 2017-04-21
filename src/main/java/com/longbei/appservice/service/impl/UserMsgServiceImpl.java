@@ -67,7 +67,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public int selectCountShowMyByMtype(long userid){
 		Map<String,Object> resultMap = selectShowMyByMtype(userid);
-		long count = (long) resultMap.get("count");
+		int count = (Integer) resultMap.get("count");
 		return count > 0?1:0;
 	}
 	

@@ -82,10 +82,17 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		return reseResp;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> selectIsCheckIn(long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//先判断用户是否已签到
+			String date = DateUtils.getDate("yyyy-MM-dd");
+			UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectDetail(userid, date);
+			if(null != userCheckinDetail){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_30, Constant.RTNINFO_SYS_30);
+			}
 			String day = DateUtils.getDate("yyyyMMdd");
 			// 判断redis中是否存在 存在+1
 			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
