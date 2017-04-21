@@ -1022,6 +1022,26 @@ public class ImproveServiceImpl implements ImproveService{
         return false;
     }
 
+
+    @Override
+    public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid, Date lastdate, int pagesize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        try {
+            List<Improve> list = selectImproveListByUser(targetuserid,null,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
+            if (null != list && list.size() != 0){
+                for (Improve improve : list){
+                    //初始化是否 点赞 送花 送钻 收藏
+                    initIsOptionForImprove(userid+"",improve);
+                }
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("select other user improve targetuserid={} list is error:",targetuserid,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 获取我的进步列表(根据lastdate时间获取当天的进步列表)
      * @param userid  用户id
@@ -1047,7 +1067,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setItype(timeLineDetail.getItype());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
-
+            improve.setUserid(timeLineDetail.getUser().getUserid());
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             initImproveLikeAndFlower(improve);
@@ -1057,6 +1077,10 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return improves;
     }
+
+
+
+
 
     /**
      *  @author luye
@@ -1207,8 +1231,14 @@ public class ImproveServiceImpl implements ImproveService{
             return;
         }
         //对进步的评论数赋值
+        String businessid = "";
+        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
+        	businessid = improve.getImpid().toString();
+        }else{
+        	businessid = improve.getBusinessid().toString();
+        }
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-                        (String.valueOf(improve.getId()),Constant.COMMENT_SINGLE_TYPE);
+                        (businessid, improve.getBusinesstype());
         if (ResultUtil.isSuccess(baseResp)){
             improve.setCommentnum(baseResp.getData());
         } else {

@@ -114,7 +114,12 @@ public class PayServiceImpl implements PayService {
 		}
 		return baseResp;
 	}
-	
+
+	@Override
+	public void testWx() {
+		iProductBasicService.testWx();
+	}
+
 	/**
 	 * @author yinxc
 	 * 添加龙币明细
