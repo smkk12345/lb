@@ -720,7 +720,6 @@
     from rank
     where starttime &gt; #{beforeDate}
     and starttime &lt;= #{currentDate}
-    and isup = 1
     and isfinish = 1
   </select>
 
@@ -728,13 +727,13 @@
   <update id="handleStartRank" parameterType="map">
       update rank
       set isfinish = 1
-      where isup = 1 AND starttime &gt; #{beforeDate}
+      where starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
   </update>
 
   <!-- 查询榜单的所有地区 -->
   <select id="selectRankArea" resultType="Long">
-      select distinct rankscope from rank where isup = 1 and isdel = 0
+      select distinct rankscope from rank where isdel = 0
   </select>
 
   <!-- 查看将要结束的榜单 -->
@@ -742,7 +741,7 @@
     select
       <include refid="Base_Column_List" />
     from rank
-    where isup = 1 and endTime &lt;= #{currentTime}
+    where endTime &lt;= #{currentTime}
     and isfinish = #{isfinish}
   </select>
 
