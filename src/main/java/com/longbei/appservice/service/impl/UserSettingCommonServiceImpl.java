@@ -11,15 +11,21 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserSettingCommonMapper;
+import com.longbei.appservice.entity.UserBasic;
 import com.longbei.appservice.entity.UserSettingCommon;
 import com.longbei.appservice.service.UserSettingCommonService;
+import com.longbei.appservice.service.api.userservice.IUserBasicService;
 
 @Service("userSettingCommonService")
 public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
+	@Autowired
+	private IUserBasicService iUserBasicService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserSettingCommonServiceImpl.class);
 
@@ -101,6 +107,28 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 //				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 //			}
 			Map<String, Object> expandData = selectMapByUserid(userid);
+			//获取是否绑定qq,wx,wb  0:未绑定  1：绑定
+			String isqq = "0";
+			String iswx = "0";
+			String iswb = "0";
+			BaseResp<UserBasic> resp = iUserBasicService.selectUserByUserid(Long.parseLong(userid));
+			if(ResultUtil.isSuccess(resp)){
+				UserBasic userBasic = resp.getData();
+				if(null != userBasic){
+					if(!StringUtils.isBlank(userBasic.getQq())){
+						isqq = "1";
+					}
+					if(!StringUtils.isBlank(userBasic.getWx())){
+						iswx = "1";
+					}
+					if(!StringUtils.isBlank(userBasic.getWb())){
+						iswb = "1";
+					}
+				}
+			}
+			expandData.put("isqq", isqq);
+			expandData.put("iswx", iswx);
+			expandData.put("iswb", iswb);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

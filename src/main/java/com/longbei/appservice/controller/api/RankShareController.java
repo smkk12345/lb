@@ -144,6 +144,7 @@ public class RankShareController {
 
     /**
      * 进步详情
+     * @url http://ip:port/app_service/api/rankShare/improveDetail
      * @param userid
      * @param impid
      * @param businessid
@@ -198,7 +199,7 @@ public class RankShareController {
 
     /**
      * 获取 赞，花，钻 列表
-     *
+     * @url: http://ip:port/appservice/api/rankShare/lfdlist
      * @param impid    进步id
      * @param opttype  操作类型 0 -- 赞列表 1 -- 送花列表  2--送钻列表
      * @param pagesize 获取条数
@@ -227,6 +228,7 @@ public class RankShareController {
 
     /**
      * 查询单个用户在榜单中发布的进步列表
+     * @url: http://ip:port/appservice/api/rankShare/selectListInRank
      * @param curuserid
      * @param userid
      * @param rankid

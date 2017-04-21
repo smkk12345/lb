@@ -427,6 +427,38 @@ public class ImproveController {
         baseres.setData(improves);
         return baseres;
     }
+
+    /**
+     * 获取指定用户所发的全部进步
+     * @param userid  用户id
+     * @param targetuserid  所要查看的用户id
+     * @param lastdate 最后一条的时间
+     * @param pagesize 获取数据条数
+     * @return
+     * @author luye
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "line/targetuserlist", method = RequestMethod.POST)
+    public BaseResp<List<Improve>> selectOtherUserImproveList(String userid,String  targetuserid,
+                                                              String lastdate, String pagesize){
+        if (StringUtils.hasBlankParams(userid, targetuserid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        try {
+            baseResp = improveService.selectOtherImproveList(userid,targetuserid,
+                    lastdate == null ? null : DateUtils.parseDate(lastdate),
+                    Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
+        } catch (Exception e) {
+            logger.error("select improve line list is error:{}", e);
+        }
+        return baseResp;
+    }
+
+
+
+
     /**
      * 点赞
      */

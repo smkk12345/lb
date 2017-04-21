@@ -38,7 +38,7 @@
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankCard" resultType="java.lang.Integer">
     SELECT count(*) FROM  rankcard
-    WHERE  1=1
+    WHERE  isdel='0'
     <if test="adminname != null">
       AND adminname LIKE concat(concat('%',#{adminname}),'%')
     </if>

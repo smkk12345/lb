@@ -1,4 +1,4 @@
-package com.longbei.appservice.controller;
+package com.longbei.appservice.controller.api;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,14 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.PayService;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 @RestController
-@RequestMapping("/notify")
+@RequestMapping("api/notify")
 public class NotifyController {
 
 	@Autowired
@@ -36,15 +33,10 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/verify/ali")
-    public BaseResp<Object> ali(String userid, 
+    public String ali(String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("/verify/ali userid = {}", userid);
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
-  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-  		}
   		try {
   			Map<String, String> resMap = new HashMap<String, String>();
 
@@ -67,11 +59,13 @@ public class NotifyController {
 			logger.info("/verify/ali userid = {}, resMap = {}, ",
 					userid, resMap);
   			//2：购买龙币
-  			baseResp = payService.verifyali(Long.parseLong(userid), "2", resMap);
+			String result = payService.verifyali(Long.parseLong(userid), "2", resMap);
+			logger.info("/verify/ali result = {}", result);
+			return result;
 		} catch (Exception e) {
 			logger.error("verify/ali userid = {}", userid, e);
 		}
-  		return baseResp;
+  		return "fail";
 	}
 	
 	/**
@@ -82,23 +76,20 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/verify/wx")
-    public BaseResp<Object> verifywx(String userid, 
+    public String verifywx(String userid, String price, 
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("/verify/wx userid = {}", userid);
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
-  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-  		}
+		logger.info("/verify/wx userid = {}, price = {}", userid, price);
   		try {
   			ResponseHandler resHandler = new ResponseHandler(request, response);
   			//2：购买龙币
-  			baseResp = payService.verifywx(Long.parseLong(userid), "2", resHandler);
+  			String result = payService.verifywx(Long.parseLong(userid), price, "2", resHandler);
+  			logger.info("/verify/wx result = {}", result);
+  			return result;
 		} catch (Exception e) {
-			logger.error("verifywx userid = {}", userid, e);
+			logger.error("verifywx userid = {}, price = {}", userid, price, e);
 		}
-  		return baseResp;
+  		return "fail";
 	}
 	
 }

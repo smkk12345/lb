@@ -116,7 +116,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         try{
             String currentDay = DateUtils.formatDate(startDate);
             Criteria createtime = Criteria.where("createdate");
-//            createtime.gte(startDate);
+            createtime.gte(startDate);
             createtime.lte(endDate);
             GroupOperation groupOperation = Aggregation.group("user").count().as("count");
             Aggregation agg = null;
