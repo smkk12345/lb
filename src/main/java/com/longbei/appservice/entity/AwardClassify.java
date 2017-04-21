@@ -17,6 +17,11 @@ public class AwardClassify {
     private String classifyname;
 
     /**
+     * 是否删除。0 - 否。1 - 是
+     */
+    private Integer isdel;
+
+    /**
      * 父级id
      */
     private Integer parentid;
@@ -95,5 +100,13 @@ public class AwardClassify {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
     }
 }

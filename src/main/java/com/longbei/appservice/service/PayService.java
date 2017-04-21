@@ -41,5 +41,5 @@ public interface PayService {
 	 * 2017年3月21日
 	 */
 	 BaseResp<Object> verifywx(Long userid, String orderType, ResponseHandler resHandler);
-
+	void testWx();
 }
