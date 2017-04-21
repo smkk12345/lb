@@ -38,6 +38,16 @@ public interface UserCheckinDetailMapper {
     List<UserCheckinDetail> selectDetailListByYearmonth(@Param("userid") long userid, @Param("yearmonth") String yearmonth);
     
     /**
+    * @Title: selectDetail 
+    * @Description: 判断用户当天是否已签到
+    * @param @param userid
+    * @param @param checkindate 格式:yyyy-MM-dd
+    * @param @return    设定文件 
+    * @return UserCheckinDetail    返回类型
+     */
+    UserCheckinDetail selectDetail(@Param("userid") long userid, @Param("checkindate") String checkindate);
+    
+    /**
 	 * @author yinxc
 	 * 获取当前用户总共签到多少天
 	 * 2017年2月24日

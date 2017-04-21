@@ -36,6 +36,17 @@
     ORDER BY createtime DESC
   </select>
   
+  <select id="selectDetail" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_checkin_detail
+    where userid = #{userid}
+    <if test="checkindate != null and checkindate != ''" >
+      and checkindate LIKE concat(concat('%',#{checkindate}),'%')
+    </if>
+    
+  </select>
+  
   <select id="selectCountByUserid" resultType="java.lang.Integer" >
     select count(*) from user_checkin_detail
     where userid = #{userid} 
