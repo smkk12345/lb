@@ -562,6 +562,9 @@ public class Constant {
 	/****** JPUSH 消息的tag start ******/
 	//10开头的代表好友相关的通知
 	public static final String JPUSH_TAG_COUNT_1001 = "1001";//申请加好友通知
+	public static final String JPUSH_TAG_COUNT_1002 = "1002";//用户回复了添加好友的消息
+	public static final String JPUSH_TAG_COUNT_1003 = "1003";//加好友申请被拒绝
+	public static final String JPUSH_TAG_COUNT_1004 = "1004";//加好友申请被同意
 	//11开头的代表群组相关的通知
 	public static final String JPUSH_TAG_COUNT_1101 = "1101";//申请加群 通知
 

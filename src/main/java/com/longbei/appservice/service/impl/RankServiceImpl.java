@@ -91,8 +91,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private DictAreaMapper dictAreaMapper;
     @Autowired
     private CommentMongoService commonMongoService;
-    @Resource
+    @Autowired
     private HomeRecommendMapper homeRecommendMapper;
+    @Autowired
+    private RankCardMapper rankCardMapper;
 
     /**
      *  @author luye
@@ -2185,6 +2187,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
             if(removeCount > 0){
                 rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+            }
+
+            if(rank.getRankcardid() != null){
+                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(rank.getRankcateid());
+                if(rankCard != null){
+                    rank.setRankCard(rankCard);
+                }
             }
 
             if(userId != null){
