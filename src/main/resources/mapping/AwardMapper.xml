@@ -25,7 +25,7 @@
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    a.id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
+    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
     a.createtime, a.updatetime
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     where a.id = #{id,jdbcType=INTEGER}

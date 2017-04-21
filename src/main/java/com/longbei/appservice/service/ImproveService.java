@@ -240,6 +240,18 @@ public interface ImproveService {
      * @return
      */
     List<Improve> selectImproveListByUser(String userid,String ptype,String ctype, Date lastdate,int pagesize);
+
+
+    /**
+     * 获取指定用户所发的全部进步
+     * @param userid  用户id
+     * @param targetuserid  所要查看的用户id
+     * @param lastdate 最后一条的时间
+     * @param pagesize 获取数据条数
+     * @return
+     * @author luye
+     */
+    BaseResp<List<Improve>> selectOtherImproveList(String userid,String targetuserid,Date lastdate,int pagesize);
     
     /**
      * 获取我的进步列表(根据lastdate时间获取当天的进步列表)
