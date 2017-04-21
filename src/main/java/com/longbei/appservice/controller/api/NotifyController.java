@@ -1,4 +1,4 @@
-package com.longbei.appservice.controller;
+package com.longbei.appservice.controller.api;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import com.longbei.appservice.service.PayService;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
 @RestController
-@RequestMapping("/notify")
+@RequestMapping("api/notify")
 public class NotifyController {
 
 	@Autowired

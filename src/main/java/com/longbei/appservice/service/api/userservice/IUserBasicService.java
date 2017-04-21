@@ -2,6 +2,7 @@ package com.longbei.appservice.service.api.userservice;
 
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserBasic;
 
 import feign.Param;
 import feign.RequestLine;
@@ -117,5 +118,15 @@ public interface IUserBasicService {
 	BaseResp<Object> hasbindingThird(@RequestParam("openid") String openid,
 									 @RequestParam("utype") String utype,
 									 @RequestParam("username") String username);
+	
+	/**
+	* @Title: selectUserByUserid 
+	* @Description: 获取用户信息
+	* @param @param userid
+	* @param @return    设定文件 
+	* @return BaseResp<UserBasic>    返回类型
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/user/selectUserByUserid")
+	BaseResp<UserBasic> selectUserByUserid(@RequestParam("userid") long userid);
 
 }

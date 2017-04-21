@@ -1207,8 +1207,14 @@ public class ImproveServiceImpl implements ImproveService{
             return;
         }
         //对进步的评论数赋值
+        String businessid = "";
+        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
+        	businessid = improve.getImpid().toString();
+        }else{
+        	businessid = improve.getBusinessid().toString();
+        }
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-                        (String.valueOf(improve.getId()),Constant.COMMENT_SINGLE_TYPE);
+                        (businessid, improve.getBusinesstype());
         if (ResultUtil.isSuccess(baseResp)){
             improve.setCommentnum(baseResp.getData());
         } else {
