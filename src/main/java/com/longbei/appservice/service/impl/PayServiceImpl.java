@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.service.PayService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.pay.weixin.res.ResponseHandler;
@@ -22,8 +23,8 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
-//	@Autowired
-//	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private IProductBasicService iProductBasicService;
 
@@ -124,6 +125,8 @@ public class PayServiceImpl implements PayService {
 	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
 	 */
 	private void insertMoney(int buynum, Long userid, String origin){
+		//修改用户龙币数量
+		userInfoMapper.updateMoneyAndFlowerByUserid(userid, buynum, 0);
 //		Map<String, Object> expandData = baseResp.getExpandData();
 		//购买数量
 //		String buynums = (String) expandData.get("buynum");
