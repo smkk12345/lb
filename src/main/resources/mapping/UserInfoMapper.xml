@@ -84,10 +84,10 @@
       <if test="sex != null and sex != '-1'.toString()">
         AND sex = #{sex}
       </if>
-      <if test="sgrade != null and sgrade!='' and sgrade != '0'.toString()">
+      <if test="sgrade != null and sgrade!=0">
         AND grade &gt;= #{sgrade}
       </if>
-      <if test="egrade != null and egrade!='' and egrade != '0'.toString()">
+      <if test="egrade != null and egrade!=0">
         AND grade &lt; #{egrade}
       </if>
       <if test="screatetime != null">
@@ -116,10 +116,10 @@
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
       </if>
-      <if test="user.sgrade != null and user.sgrade!='' and user.sgrade != '0'.toString()">
+      <if test="user.sgrade != null and user.sgrade!=0">
         AND grade &gt;= #{user.sgrade}
       </if>
-      <if test="user.egrade != null and user.egrade!='' and user.egrade != '0'.toString()">
+      <if test="user.egrade != null and user.egrade!=0">
         AND grade &lt; #{user.egrade}
       </if>
       <if test="user.screatetime != null">
