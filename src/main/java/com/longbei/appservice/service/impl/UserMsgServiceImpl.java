@@ -549,6 +549,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 						appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 						appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+						userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

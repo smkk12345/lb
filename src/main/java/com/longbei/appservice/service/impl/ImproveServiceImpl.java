@@ -1531,6 +1531,8 @@ public class ImproveServiceImpl implements ImproveService{
                     //进步币明细  进步币总数
                     userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
                 }
+                //送花添加消息记录    msg
+                insertMsg(userid, friendid, impid, flowernum, businesstype);
                 return resp;
             }
         } catch (Exception e) {
@@ -1538,6 +1540,39 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_48,Constant.RTNINFO_SYS_48);
     }
+    
+    /**
+	 * @author yinxc
+	 * 添加送花消息
+	 * 2017年4月22日
+	 */
+	private void insertMsg(String userid, String friendid, String impid,
+            int flowernum, String businesstype){
+		UserMsg record = new UserMsg();
+		record.setUserid(Long.valueOf(friendid));
+		record.setCreatetime(new Date());
+		record.setFriendid(Long.valueOf(userid));
+		record.setGtype(businesstype);
+		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+		record.setMsgtype("3");
+		record.setSnsid(Long.valueOf(impid));
+		
+		String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
+		record.setRemark(remark);
+		record.setIsdel("0");
+		record.setIsread("0");
+		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+		// 送花 4 送钻石  5:粉丝  等等)
+		record.setMtype("1");
+		record.setNum(flowernum);
+		try {
+			userMsgMapper.insertSelective(record);
+		} catch (Exception e) {
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+		}
+	}
+    
+    
     /**
      *  @author luye
      *  @desp
