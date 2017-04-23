@@ -82,6 +82,16 @@ public interface RankService extends BaseService{
      * @author luye
      */
     Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
+
+    /**
+     * 获取榜单列表 （带人数、评论数排序）
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author IngaWu
+     */
+    Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved);
     /**
      * 获取榜单列表 推荐的 针对app
      * @param startNo

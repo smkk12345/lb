@@ -70,6 +70,27 @@ public class RankApiController {
     }
 
     /**
+     * 获取榜单列表（带人数、评论数排序）
+     * @param pageno  页码
+     * @param pagesize  条数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectlist2")
+    public BaseResp<Page<Rank>> selectRankList2(@RequestBody Rank rank,String pageno,String pagesize,String orderByInvolved){
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<Rank>> baseResp = new BaseResp<>();
+        try {
+            Page<Rank> page = rankService.selectRankList2(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),orderByInvolved);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("select rank list2 for adminservice is error:",e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 获取草稿榜单
      * @param pageno
      * @param pagesize

@@ -325,6 +325,29 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return page;
     }
 
+    /**
+     * 获取榜单列表 （带人数、评论数排序）
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author IngaWu
+     */
+    @Override
+    public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
+        Page<Rank> page = new Page<>(pageno,pagesize);
+        try {
+            int totalcount = rankMapper.selectListCount(rank);
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
+            page.setTotalCount(totalcount);
+            page.setList(ranks);
+        } catch (Exception e) {
+            logger.error("select rank list2 for adminservice is error:",e);
+        }
+        return page;
+    }
+
     private List<Rank> selectRankListByRank(Rank rank, int pageno, int pagesize, Boolean showAward){
         try{
             List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
