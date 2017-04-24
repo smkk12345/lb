@@ -98,9 +98,6 @@
       <if test="sort != null" >
         #{sort,jdbcType=INTEGER},
       </if>
-      <if test="newTablecol != null" >
-        #{newTablecol,jdbcType=VARCHAR},
-      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -141,9 +138,6 @@
         </if>
         <if test="sort != null" >
           #{sort,jdbcType=INTEGER},
-        </if>
-        <if test="newTablecol != null" >
-          #{newTablecol,jdbcType=VARCHAR},
         </if>
         <if test="createtime != null" >
           #{createtime,jdbcType=TIMESTAMP},

@@ -213,7 +213,7 @@ public class Award {
      * @return updatetime 更新时间
      */
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale = "UTC+8")
     public Date getUpdatetime() {
         return updatetime;
     }
