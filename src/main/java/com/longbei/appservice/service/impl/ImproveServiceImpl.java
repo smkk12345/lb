@@ -513,7 +513,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public List<Improve> selectRankImproveList(String userid, String rankid,String sift,
                                                String orderby, int pageNo, int pageSize,String lastdate) {
-        List<Improve> improves = null;
+        List<Improve> improves = new ArrayList<>();
         try {
             switch (sift){
                 //全部
