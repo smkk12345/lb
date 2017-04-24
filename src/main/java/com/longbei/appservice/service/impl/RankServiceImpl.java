@@ -418,7 +418,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
-            map.put("isup","1");
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("lastRankId",lastRankId);
@@ -506,7 +505,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
                 parameterMap.put("createuserid",userId);
                 parameterMap.put("status","1");
-                parameterMap.put("isup","1");
                 parameterMap.put("isdel","0");
                 parameterMap.put("startNum",startNum);
                 parameterMap.put("pageSize",pageSize);
@@ -1987,7 +1985,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> parameterMap = new HashMap<String,Object>();
             parameterMap.put("isfinish","5");
             parameterMap.put("isdel","0");
-            parameterMap.put("isup","1");
             parameterMap.put("startNum",startNum);
             parameterMap.put("pageSize",pageSize);
 
