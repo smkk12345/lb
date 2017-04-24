@@ -802,7 +802,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.ok();
             }
         } catch (Exception e) {
-            logger.error("insert rankMemeber error rankId:{} userId:{}",rankId,userId);
+            logger.error("insert rankMemeber error rankId:{} userId:{} error:",rankId,userId,e);
             //从redis中删除该用户
             printExceptionAndRollBackTransaction(e);
         }

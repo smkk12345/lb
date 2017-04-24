@@ -619,6 +619,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public BaseResp<Object> selectExceptList(final long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
+		logger.info("select except list: userid={} startnum={}",userid,startNum);
 		try {
 			final List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
