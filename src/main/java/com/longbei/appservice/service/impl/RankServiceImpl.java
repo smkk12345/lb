@@ -299,18 +299,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 RankAwardRelease rankAwardRelease = new RankAwardRelease();
                 try {
                     BeanUtils.copyProperties(rankAwardRelease,rankAward);
+
                 } catch (Exception e) {
                     logger.warn("copy rankaward to rankawardrelease is error:",e);
                     return false;
                 }
-                rankAwardReleases.add(rankAwardRelease);
+                try {
+                    rankAwardReleaseMapper.insertRankAwardRe(rankAwardRelease);
+                } catch (Exception e) {
+                    logger.error("insert batch rankawardrelease is error:",e);
+                }
             }
-            try {
-                rankAwardReleaseMapper.insertBatch(rankAwardReleases);
-                return true;
-            } catch (Exception e) {
-                logger.error("insert batch rankawardrelease is error:",e);
-            }
+            return true;
+
         }
         return false;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,7 +26,9 @@ public class AppUserMongoEntity {
 	private String createtime;
 	@JsonSerialize(using=ToStringSerializer.class)
 	private Long userid;
+	@Transient
 	private String isfriend="0";
+	@Transient
 	private String isfans="0";
 
 	private int distance;
