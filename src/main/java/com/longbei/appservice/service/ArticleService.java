@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Article;
+import com.longbei.appservice.entity.ArticleBusiness;
 
 /**
  * 文章相关操作
@@ -44,6 +45,13 @@ public interface ArticleService {
      * @return
      */
     BaseResp<Page<Article>> selectArticleListWithPage(Article article,Integer pageno,Integer pagesize);
+
+    /**
+     * 添加ArticleBusiness
+     * @param articleBusiness
+     * @return
+     */
+    boolean insertArticleBusiness(ArticleBusiness articleBusiness);
 
 
 }
