@@ -134,6 +134,9 @@
       <if test="improve.sourcekey != null" >
         sourcekey,
       </if>
+      <if test="improve.rankid != null" >
+        rankid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="improve.id != null" >
@@ -195,6 +198,9 @@
       </if>
       <if test="improve.sourcekey != null" >
         #{improve.sourcekey,jdbcType=VARCHAR},
+      </if>
+      <if test="improve.rankid != null" >
+        #{improve.rankid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -390,7 +396,7 @@
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
         <if test="lastdate != null">
-          AND createtime &lt; #{lastdate}
+          AND ir.createtime &lt; #{lastdate}
         </if>
       </if>
     </where>

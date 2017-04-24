@@ -63,6 +63,8 @@ public interface RankService extends BaseService{
      */
     BaseResp publishRankImage(String  rankImageid);
 
+    BaseResp<String> selectOwnRankIdsList(String userid);
+
     /**
      * 获取非线上榜单列表
      * @param rankImage
@@ -310,7 +312,8 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward);
+    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status,
+                                               Long lastRankId, Integer pageSize,Boolean showAward);
 
     /**
      * 查询和自己相关的榜单

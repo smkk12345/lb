@@ -346,6 +346,7 @@ public class ImproveServiceImpl implements ImproveService{
         int res = 0;
         try {
             //没有
+            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
             RankMembers rankMembers = new RankMembers();

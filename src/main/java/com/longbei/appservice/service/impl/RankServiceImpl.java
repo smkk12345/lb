@@ -252,6 +252,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return publishRankImage(rankImage);
     }
 
+    @Override
+    public BaseResp<String> selectOwnRankIdsList(String userid) {
+        BaseResp<String> baseResp = new BaseResp<>();
+        Map<String,Object> parameterMap = new HashMap<String,Object>();
+        parameterMap.put("userId",userid);
+        List<RankMembers> rankMembers = this.rankMembersMapper.selectRankMembers(parameterMap);
+        List<String> list = new ArrayList<>();
+        if(rankMembers != null && rankMembers.size() > 0){
+            for(RankMembers rankMembers1:rankMembers){
+                list.add(String.valueOf(rankMembers1.getRankid()));
+            }
+        }
+        String ids = StringUtils.join(list.toArray(),",");
+        baseResp.initCodeAndDesp();
+        baseResp.setData(null);
+        baseResp.getExpandData().put("ids",ids);
+        return baseResp;
+    }
+
     private boolean deleteRankAwardRelease(String rankid){
         boolean flag = true;
         try {
@@ -390,7 +409,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward) {
+    public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,
+                                                      Integer status, Long lastRankId, Integer pageSize,Boolean showAward) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
             Map<String,Object> map = new HashMap<String,Object>();

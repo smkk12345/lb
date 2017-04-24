@@ -236,7 +236,8 @@ public class ImproveController {
         }
         if ("0".equals(sorttype)){
             if (StringUtils.isBlank(lastdate)){
-                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+                lastdate = DateUtils.formatDateTime1(new Date());
+//                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
         }
         if (StringUtils.isBlank(startNo)) {

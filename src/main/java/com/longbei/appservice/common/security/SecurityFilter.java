@@ -165,7 +165,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				break;
 			}
 		}
-		logger.info("version = {},oldVersion={},result={}",newver,oldVersion,result);
+//		logger.info("version = {},oldVersion={},result={}",newver,oldVersion,result);
 		return result;
 	}
 
