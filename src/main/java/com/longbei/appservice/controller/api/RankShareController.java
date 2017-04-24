@@ -2,8 +2,10 @@ package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ImpAllDetail;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -257,5 +260,54 @@ public class RankShareController {
             logger.error("get improve detail  is error userid={},impid={} ", userid, e);
         }
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+    }
+
+    /**
+     * url: http://ip:port/app_service/api/rankShare/rank/list method: POST 获取进步列表(榜中)
+     *
+     * @param userid   用户id
+     * @param rankid   榜单id
+     * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
+     * @param sorttype 排序类型（ 0 - 成员动态 1 - 热度 2 - 时间）
+     * @param startNo  开始条数
+     * @param pageSize 页面显示条数
+     * @param lastdate 最后一条时间 在 sorttype=0 时使用
+     * @return
+     * @author:luye
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "rank/list", method = RequestMethod.POST)
+    public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNo,
+                                          String pageSize,String lastdate) {
+        if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if ("0".equals(sorttype)){
+            if (StringUtils.isBlank(lastdate)){
+                lastdate = DateUtils.formatDateTime1(new Date());
+//                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            }
+        }
+        if (StringUtils.isBlank(startNo)) {
+            startNo = Constant.DEFAULT_START_NO;
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        List<Improve> improves = null;
+        try {
+            improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNo),
+                    Integer.parseInt(pageSize),lastdate);
+
+        } catch (Exception e) {
+            logger.error("select rank improve list is error:{}", e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
     }
 }
