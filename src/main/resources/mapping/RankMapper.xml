@@ -795,6 +795,7 @@
       set isfinish = 1
       where starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
+          and isfinish = 0
   </update>
 
   <!-- 查询榜单的所有地区 -->

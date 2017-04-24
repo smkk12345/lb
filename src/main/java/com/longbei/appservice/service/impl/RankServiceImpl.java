@@ -1664,7 +1664,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> handleStartRank(Date currentDate) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,5);
+            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,50000);
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("beforeDate",beforeDate);
             map.put("currentDate",currentDate);
