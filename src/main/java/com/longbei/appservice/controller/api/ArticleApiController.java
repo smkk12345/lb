@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Article;
+import com.longbei.appservice.entity.ArticleBusiness;
 import com.longbei.appservice.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,20 @@ public class ArticleApiController {
             }
         } catch (NumberFormatException e) {
             logger.error("update article  is error:{}",e);
+        }
+        return baseResp;
+    }
+
+    @RequestMapping(value = "addBusiness")
+    public BaseResp addBusiness(@RequestBody ArticleBusiness articleBusiness){
+        BaseResp baseResp = new BaseResp<>();
+        try {
+            boolean flag = articleService.insertArticleBusiness(articleBusiness);
+            if (flag){
+                baseResp = BaseResp.ok();
+            }
+        } catch (NumberFormatException e) {
+            logger.error("add articleBusiness  is error:{}",e);
         }
         return baseResp;
     }

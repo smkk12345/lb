@@ -2,16 +2,15 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.dao.ArticleBusinessMapper;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.entity.Article;
-import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.ArticleBusiness;
 import com.longbei.appservice.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +29,9 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private ArticleBusinessMapper articleBusinessMapper;
 
     @Override
     public boolean insertArticle(Article article) {
@@ -87,6 +89,21 @@ public class ArticleServiceImpl implements ArticleService{
             logger.error("select article list with page is error:{}",e);
         }
         return baseResp;
+    }
+
+    @Override
+    public boolean insertArticleBusiness(ArticleBusiness articleBusiness) {
+        try {
+            articleBusiness.setCreatetime(new Date());
+            articleBusiness.setUpdatetime(new Date());
+            int res = articleBusinessMapper.insertSelective(articleBusiness);
+            if (res > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("insert articleBusiness is error:{}",e);
+        }
+        return false;
     }
 
 }
