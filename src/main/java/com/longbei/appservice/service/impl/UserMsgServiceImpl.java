@@ -5,6 +5,7 @@ import java.util.*;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.UserRelationService;
 import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,8 @@ public class UserMsgServiceImpl implements UserMsgService {
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private UserSettingCommonService userSettingCommonService;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
 
@@ -543,7 +546,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  )
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype()) && !"17".equals(userMsg.getMsgtype()) ){
-						initMsgUserInfoByFriendid(userMsg);
+						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
 						//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
@@ -664,7 +667,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 						userMsg.setRemark(remark);
 					}
 					//初始化消息中用户信息----friendid
-					initMsgUserInfoByFriendid(userMsg);
+					initMsgUserInfoByFriendid(userMsg, userid);
 					
 					//异步线程修改list消息为已读
 					threadPoolTaskExecutor.execute(
@@ -859,7 +862,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
 			likeMsg(userMsg);
 			//初始化消息中用户信息----friendid
-			initMsgUserInfoByFriendid(userMsg);
+			initMsgUserInfoByFriendid(userMsg, userid);
 			userMsg.setRemark(Constant.MSG_LIKE_MODEL);
 		}
 		return msgList;
@@ -955,10 +958,19 @@ public class UserMsgServiceImpl implements UserMsgService {
 	/**
      * 初始化消息中用户信息 ------Friendid
      */
-    private void initMsgUserInfoByFriendid(UserMsg userMsg){
+    private void initMsgUserInfoByFriendid(UserMsg userMsg, long userid){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
+			//获取好友昵称
+			String remark = userRelationService.selectRemark(userid, userMsg.getFriendid());
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
-            userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+			if(null != appUserMongoEntity){
+				if(!StringUtils.isBlank(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+				userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+			}else{
+				userMsg.setAppUserMongoEntityFriendid(new AppUserMongoEntity());
+			}
     	}
     }
 

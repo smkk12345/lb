@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -34,6 +35,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private MongoTemplate mongoTemplate1;
 
 	private static Logger logger = LoggerFactory.getLogger(UserMongoDao.class);
 
@@ -49,7 +52,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	}
 	
 	public AppUserMongoEntity updateAppUserMongoEntity(UserInfo user) {
-		Query query = Query.query(Criteria.where("userid").is(user.getUserid()));
+		Query query = Query.query(Criteria.where("_id").is(user.getUserid().toString()));
 		Update update = new Update();
 		if(!StringUtils.isBlank(user.getUsername())){
 			update.set("username", user.getUsername());
@@ -63,7 +66,13 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		if(!StringUtils.isBlank(user.getSex())){
 			update.set("sex", user.getSex());
 		}
-		AppUserMongoEntity mongoUser =  updateOne(query,update);
+		try {
+			mongoTemplate1.updateMulti(query, update, AppUserMongoEntity.class);
+		}catch (Exception e) {
+			logger.error("updateAppUserMongoEntity user = {}",
+					com.alibaba.fastjson.JSON.toJSON(user).toString(), e);
+		}
+		AppUserMongoEntity mongoUser =  getAppUser(user.getUserid().toString());
 		return mongoUser;
 	}
 	

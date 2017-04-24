@@ -300,6 +300,10 @@ public class UserServiceImpl implements UserService {
 		userMongoEntity.setUsername(userInfo.getUsername());
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());
+		userMongoEntity.setCreatetime(DateUtils.formatDateTime1(new Date()));
+		userMongoEntity.setUpdatetime(DateUtils.formatDateTime1(new Date()));
+		userMongoEntity.setUserid(String.valueOf(userInfo.getUserid()));
+		userMongoEntity.setAvatar(userInfo.getAvatar());
 		userMongoDao.save(userMongoEntity);
 		return true;
 	}
