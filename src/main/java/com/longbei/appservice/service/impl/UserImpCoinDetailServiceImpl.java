@@ -2,7 +2,9 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +177,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 //		userInfoMapper.updateTotalcoinByUserid(userid, Integer.parseInt(value));
 //	}
 
+	@SuppressWarnings("unchecked")
 	/**
 	 * @author yinxc
 	 * 获取我的钱包
@@ -186,9 +189,15 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-			reseResp.setData(userInfo);
-			//商城推荐
 			
+			Map<String, String> map = new HashedMap();
+			map.put("totalmoney", userInfo.getTotalmoney() + "");
+			map.put("totalcoin", userInfo.getTotalcoin() + "");
+			
+			//getMoneyUrl 查看获得财富的方式URL    
+			String getMoneyUrl = "";
+			map.put("getMoneyUrl", getMoneyUrl);
+			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectWallet userid = {}", userid, e);

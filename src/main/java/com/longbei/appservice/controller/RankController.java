@@ -164,6 +164,22 @@ public class RankController {
     }
 
     /**
+     * 获取用户的榜单id列表
+     * http://ip:port/app_service/rank/selectOwnRankList
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="selectOwnRankList")
+    public BaseResp<String> selectOwnRankIdsList(String userid){
+        BaseResp<String> baseResp = new BaseResp<String>();
+        if(StringUtils.isBlank(userid)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.selectOwnRankIdsList(userid);
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        return baseResp;
+    }
+    /**
      * 获取榜单详情
      * @url http://ip:port/app_service/rank/rankDetail
      * @param rankId
