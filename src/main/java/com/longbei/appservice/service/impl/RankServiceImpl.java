@@ -792,9 +792,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(row > 0 && rankMember.getStatus() == 1){
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
 
-                // 发送消息给榜主
-                String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
-                boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+                if ("2".equals(rank.getRanktype())){
+                    // 发2送消息给榜主
+                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+                    boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+                }
 
                 //往reids中放入初始化的排名值
                 boolean initRedisFlag = initRedisRankSort(rank,userId);
