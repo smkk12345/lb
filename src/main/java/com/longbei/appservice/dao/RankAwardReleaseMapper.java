@@ -18,7 +18,7 @@ public interface RankAwardReleaseMapper {
 
     int updateByPrimaryKeySelective(RankAwardRelease record);
 
-    int insertBatch(List<RankAwardRelease> rankAwards);
+    int insertRankAwardRe(@Param("rankaward") RankAwardRelease rankAward);
 
     int updateByPrimaryKey(RankAwardRelease record);
 
