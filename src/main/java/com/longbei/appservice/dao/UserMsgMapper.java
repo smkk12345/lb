@@ -45,7 +45,7 @@ public interface UserMsgMapper {
 	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
 	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 	 * return_type
-	 * UserMsgMapper
+	 *
 	 */
     int deleteByLikeUserid(@Param("userid") long userid, @Param("msgtype") String msgtype);
 

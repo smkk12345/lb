@@ -67,7 +67,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public int selectCountShowMyByMtype(long userid){
 		Map<String,Object> resultMap = selectShowMyByMtype(userid);
-		int count = (Integer) resultMap.get("count");
+		int count = Integer.parseInt(resultMap.get("count").toString());
 		return count > 0?1:0;
 	}
 	
@@ -147,7 +147,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 //					return temp;
 //				}
 			}
-			long count = (long)resultMap.get("count");
+			int count = Integer.parseInt(resultMap.get("count").toString());
 			if(commentMaxDate == null){
 				if(count < 1){
 					resultMap.remove("maxtime");
