@@ -310,6 +310,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     logger.error("insert batch rankawardrelease is error:",e);
                 }
             }
+            return true;
 
         }
         return false;
