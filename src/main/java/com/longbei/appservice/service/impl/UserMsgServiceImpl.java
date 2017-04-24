@@ -67,7 +67,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public int selectCountShowMyByMtype(long userid){
 		Map<String,Object> resultMap = selectShowMyByMtype(userid);
-		int count = (Integer) resultMap.get("count");
+		int count = Integer.parseInt(resultMap.get("count").toString());
 		return count > 0?1:0;
 	}
 	
@@ -147,7 +147,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 //					return temp;
 //				}
 			}
-			long count = (long)resultMap.get("count");
+			int count = Integer.parseInt(resultMap.get("count").toString());
 			if(commentMaxDate == null){
 				if(count < 1){
 					resultMap.remove("maxtime");
@@ -619,6 +619,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public BaseResp<Object> selectExceptList(final long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
+		logger.info("select except list: userid={} startnum={}",userid,startNum);
 		try {
 			final List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like

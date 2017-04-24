@@ -149,6 +149,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+            if(null == userLevel){
+                return baseResp.initCodeAndDesp();
+            }
             //加榜单个数
             if(privilegeType.equals(Constant.PrivilegeType.joinranknum)){
                 RankMembers rankMembers = new RankMembers();
