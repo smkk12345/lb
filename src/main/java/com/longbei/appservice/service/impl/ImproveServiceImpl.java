@@ -346,6 +346,7 @@ public class ImproveServiceImpl implements ImproveService{
         int res = 0;
         try {
             //没有
+            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
             RankMembers rankMembers = new RankMembers();
@@ -512,7 +513,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public List<Improve> selectRankImproveList(String userid, String rankid,String sift,
                                                String orderby, int pageNo, int pageSize,String lastdate) {
-        List<Improve> improves = null;
+        List<Improve> improves = new ArrayList<>();
         try {
             switch (sift){
                 //全部
@@ -1177,7 +1178,7 @@ public class ImproveServiceImpl implements ImproveService{
             //初始化评论数量
             initImproveCommentInfo(improve);
             //初始化进步用户信息
-            initImproveUserInfo(improve,Long.parseLong(userid));
+            initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
             //初始化是否 点赞 送花 送钻 收藏
@@ -1269,11 +1270,13 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initImproveUserInfo(Improve improve,Long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-        //获取好友昵称
-        String remark = userRelationService.selectRemark(userid, improve.getUserid());
         if(null != appUserMongoEntity){
-            if(!StringUtils.isBlank(remark)){
-                appUserMongoEntity.setNickname(remark);
+            if(userid != null){
+                //获取好友昵称
+                String remark = userRelationService.selectRemark(userid, improve.getUserid());
+                if(!StringUtils.isBlank(remark)){
+                    appUserMongoEntity.setNickname(remark);
+                }
             }
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
@@ -1978,6 +1981,13 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private void initIsOptionForImprove(String userid,Improve improve){
+        if(StringUtils.isEmpty(userid)){
+            improve.setHaslike("0");
+            improve.setHasflower("0");
+            improve.setHasdiamond("0");
+            improve.setHascollect("0");
+            return ;
+        }
 //        ImpAllDetail impAllDetail = new ImpAllDetail();
 //        impAllDetail.setUserid(Long.parseLong(userid));
 //        impAllDetail.setImpid(improve.getImpid());

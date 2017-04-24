@@ -63,6 +63,8 @@ public interface RankService extends BaseService{
      */
     BaseResp publishRankImage(String  rankImageid);
 
+    BaseResp<String> selectOwnRankIdsList(String userid);
+
     /**
      * 获取非线上榜单列表
      * @param rankImage
@@ -82,6 +84,16 @@ public interface RankService extends BaseService{
      * @author luye
      */
     Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward);
+
+    /**
+     * 获取榜单列表 （带人数、评论数排序）
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author IngaWu
+     */
+    Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved);
     /**
      * 获取榜单列表 推荐的 针对app
      * @param startNo
@@ -310,7 +322,8 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward);
+    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status,
+                                               Long lastRankId, Integer pageSize,Boolean showAward);
 
     /**
      * 查询和自己相关的榜单

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -236,7 +237,8 @@ public class ImproveController {
         }
         if ("0".equals(sorttype)){
             if (StringUtils.isBlank(lastdate)){
-                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+                lastdate = DateUtils.formatDateTime1(new Date());
+//                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
         }
         if (StringUtils.isBlank(startNo)) {
@@ -245,7 +247,7 @@ public class ImproveController {
         if (StringUtils.isBlank(pageSize)) {
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<Improve> improves = null;
+        List<Improve> improves = new ArrayList<>();
         try {
             improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNo),
                     Integer.parseInt(pageSize),lastdate);

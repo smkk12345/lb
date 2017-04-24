@@ -219,11 +219,11 @@
     blood, feeling, updatetime, createtime, avatar, username
   </sql>
   
-  <select id="selectByUserid" resultMap="BaseResultMap"  >
+  <select id="selectByUserid" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
     select 
     <include refid="Info_List" />
     from user_info
-    where userid = #{userid}
+    where userid = #{userid,jdbcType=BIGINT}
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >

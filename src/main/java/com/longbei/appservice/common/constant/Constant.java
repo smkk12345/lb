@@ -324,6 +324,11 @@ public class Constant {
 	public static final Integer DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM = 10;
 
 
+	public static final String RANK_TYEP_APP = "2";
+	public static final String RANK_TYEP_B = "1";
+	public static final String RANK_TYEP_C = "0";
+
+
 	/**
 	 * 进步时间线类型
 	 */
