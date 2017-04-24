@@ -131,8 +131,9 @@ public class Rank {
 
     private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
 
-    //--------
+    private RankCard rankCard;//榜主名片
 
+    //--------
 
     public String getIshomerecommend() {
         return ishomerecommend;
@@ -219,7 +220,13 @@ public class Rank {
         this.eendtime = eendtime;
     }
 
+    public RankCard getRankCard() {
+        return rankCard;
+    }
 
+    public void setRankCard(RankCard rankCard) {
+        this.rankCard = rankCard;
+    }
 
     public String getJoinlastday() {
         return joinlastday;

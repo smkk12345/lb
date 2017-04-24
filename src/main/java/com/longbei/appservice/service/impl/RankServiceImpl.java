@@ -91,8 +91,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private DictAreaMapper dictAreaMapper;
     @Autowired
     private CommentMongoService commonMongoService;
-    @Resource
+    @Autowired
     private HomeRecommendMapper homeRecommendMapper;
+    @Autowired
+    private RankCardMapper rankCardMapper;
 
     /**
      *  @author luye
@@ -250,6 +252,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return publishRankImage(rankImage);
     }
 
+    @Override
+    public BaseResp<String> selectOwnRankIdsList(String userid) {
+        BaseResp<String> baseResp = new BaseResp<>();
+        Map<String,Object> parameterMap = new HashMap<String,Object>();
+        parameterMap.put("userId",userid);
+        List<RankMembers> rankMembers = this.rankMembersMapper.selectRankMembers(parameterMap);
+        List<String> list = new ArrayList<>();
+        if(rankMembers != null && rankMembers.size() > 0){
+            for(RankMembers rankMembers1:rankMembers){
+                list.add(String.valueOf(rankMembers1.getRankid()));
+            }
+        }
+        String ids = StringUtils.join(list.toArray(),",");
+        baseResp.initCodeAndDesp();
+        baseResp.setData(null);
+        baseResp.getExpandData().put("ids",ids);
+        return baseResp;
+    }
+
     private boolean deleteRankAwardRelease(String rankid){
         boolean flag = true;
         try {
@@ -323,6 +344,29 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return page;
     }
 
+    /**
+     * 获取榜单列表 （带人数、评论数排序）
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author IngaWu
+     */
+    @Override
+    public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
+        Page<Rank> page = new Page<>(pageno,pagesize);
+        try {
+            int totalcount = rankMapper.selectListCount(rank);
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
+            page.setTotalCount(totalcount);
+            page.setList(ranks);
+        } catch (Exception e) {
+            logger.error("select rank list2 for adminservice is error:",e);
+        }
+        return page;
+    }
+
     private List<Rank> selectRankListByRank(Rank rank, int pageno, int pagesize, Boolean showAward){
         try{
             List<Rank> ranks = rankMapper.selectListWithPage(rank,(pageno-1)*pagesize,pagesize);
@@ -388,7 +432,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status, Long lastRankId, Integer pageSize,Boolean showAward) {
+    public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,
+                                                      Integer status, Long lastRankId, Integer pageSize,Boolean showAward) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
             Map<String,Object> map = new HashMap<String,Object>();
@@ -416,7 +461,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
-            map.put("isup","1");
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("lastRankId",lastRankId);
@@ -504,7 +548,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
                 parameterMap.put("createuserid",userId);
                 parameterMap.put("status","1");
-                parameterMap.put("isup","1");
                 parameterMap.put("isdel","0");
                 parameterMap.put("startNum",startNum);
                 parameterMap.put("pageSize",pageSize);
@@ -1621,7 +1664,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> handleStartRank(Date currentDate) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,5);
+            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,500000);
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("beforeDate",beforeDate);
             map.put("currentDate",currentDate);
@@ -1985,7 +2028,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> parameterMap = new HashMap<String,Object>();
             parameterMap.put("isfinish","5");
             parameterMap.put("isdel","0");
-            parameterMap.put("isup","1");
             parameterMap.put("startNum",startNum);
             parameterMap.put("pageSize",pageSize);
 
@@ -2185,6 +2227,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
             if(removeCount > 0){
                 rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+            }
+
+            if(rank.getRankcardid() != null){
+                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(rank.getRankcateid());
+                if(rankCard != null){
+                    rank.setRankCard(rankCard);
+                }
             }
 
             if(userId != null){

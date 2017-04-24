@@ -172,6 +172,72 @@
       limit #{startno},#{pagesize}
     </if>
   </select>
+
+  <select id="selectListWithPage2" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rank
+    WHERE 1=1
+    <if test="rank.ranktitle != null and rank.ranktitle != ''" >
+      AND ranktitle LIKE concat(concat('%',#{rank.ranktitle}),'%')
+    </if>
+    <if test="rank.rankbrief != null and rank.rankbrief != ''" >
+      AND rankbrief LIKE concat(concat('%',#{rank.rankbrief}),'%')
+    </if>
+    <if test="rank.ptype != null and rank.ptype != '-1'.toString()" >
+      AND ptype = #{rank.ptype}
+    </if>
+    <if test="rank.ranktype != null and rank.ranktype != '-1'.toString()" >
+      AND ranktype = #{rank.ranktype}
+    </if>
+    <if test="rank.isfinish != null and rank.isfinish != '-1'.toString()" >
+      AND isfinish = #{rank.isfinish}
+    </if>
+    <if test="rank.sstarttime != null" >
+      AND starttime &gt;= #{rank.sstarttime}
+    </if>
+    <if test="rank.estarttime != null" >
+      AND starttime &lt; #{rank.estarttime}
+    </if>
+    <if test="rank.rankscope != null  and rank.rankscope != '-1'.toString()" >
+      AND rankscope = #{rank.rankscope}
+    </if>
+    <if test="rank.isup != null" >
+      AND isup = #{rank.isup}
+    </if>
+    <if test="rank.isdel != null" >
+      AND isdel = #{rank.isdel}
+    </if>
+    <if test="rank.sourcetype != null  and rank.sourcetype != '-1'.toString()" >
+      AND sourcetype = #{rank.sourcetype}
+    </if>
+    <if test="rank.createuserid != null" >
+      AND createuserid = #{rank.createuserid}
+    </if>
+    <if test="rank.ishomerecommend != null" >
+      AND ishomerecommend = #{rank.ishomerecommend}
+    </if>
+    <if test="rank.isrecommend != null" >
+      AND isrecommend = #{rank.isrecommend}
+    </if>
+    <choose>
+      <when test="rank.isrecommend=='1'.toString()">
+        ORDER BY weight DESC ,createtime DESC
+      </when>
+      <when test="orderByInvolved=='0'.toString()">
+        ORDER BY rankinvolved ASC
+      </when>
+      <when test="orderByInvolved=='1'.toString()">
+        ORDER BY rankinvolved DESC
+      </when>
+      <otherwise>
+        ORDER BY createtime DESC
+      </otherwise>
+    </choose>
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from rank
     where rankid = #{rankid,jdbcType=INTEGER}
@@ -729,6 +795,7 @@
       set isfinish = 1
       where starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
+          and isfinish = 0
   </update>
 
   <!-- 查询榜单的所有地区 -->

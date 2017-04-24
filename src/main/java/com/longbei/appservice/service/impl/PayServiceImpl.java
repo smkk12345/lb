@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.PayService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.pay.weixin.res.ResponseHandler;
@@ -77,17 +79,33 @@ public class PayServiceImpl implements PayService {
 	 * 2017年3月20日
 	 */
 	@Override
-	public BaseResp<Object> verifyali(Long userid, String orderType, Map<String, String> resMap) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public String verifyali(Long userid, String orderType, Map<String, String> resMap) {
 		try{
-			Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
-			insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
-			baseResp = iProductBasicService.verifyali(orderType, resMap);
+			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
+			if(ResultUtil.isSuccess(resp)){
+				ProductOrders productOrders = resp.getData();
+				if(null != productOrders){
+					if (!"0".equals(productOrders.getOrderstatus())) {
+						return "success";                                                               
+					}else{
+						Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
+						//添加龙币
+						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
+						BaseResp<Object> baseResp = iProductBasicService.verifyali(orderType, resMap);
+						if(ResultUtil.isSuccess(baseResp)){
+							return "success"; 
+						}
+					}
+				}else{
+					logger.info(resMap.get("out_trade_no") + "--支付失败，不存在的订单");
+					return "fail";
+				}
+			}
 		}catch (Exception e){
 			logger.error("verifyali userid = {}, orderType = {}, resMap = {}", 
 					userid, orderType, JSONArray.fromObject(resMap).toString(), e);
 		}
-		return baseResp;
+		return "fail";
 	}
 	
 	/**
@@ -97,18 +115,36 @@ public class PayServiceImpl implements PayService {
 	 * 2017年3月21日
 	 */
 	@Override
-	public BaseResp<Object> verifywx(Long userid, String orderType, String price, ResponseHandler resHandler) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+	public String verifywx(Long userid, String orderType, String price, ResponseHandler resHandler) {
 		try{
-			//购买成功后，添加龙币----
-			Double total_fee = Double.parseDouble(price)/AppserviceConfig.yuantomoney;
-			insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
-			baseResp = iProductBasicService.verifywx(orderType, resHandler);
+			String out_trade_no = resHandler.getSmap().get("out_trade_no").toString();
+			logger.info("verifywx out_trade_no = {}", out_trade_no);
+			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(out_trade_no);
+			if(ResultUtil.isSuccess(resp)){
+				ProductOrders productOrders = resp.getData();
+				if(null != productOrders){
+					if (!"0".equals(productOrders.getOrderstatus())) {
+						return "success";                                                               
+					}else{
+						//购买成功后，添加龙币----
+						Double total_fee = Double.parseDouble(price)/AppserviceConfig.yuantomoney;
+						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
+						BaseResp<Object> baseResp = iProductBasicService.verifywx(orderType, resHandler);
+						if(ResultUtil.isSuccess(baseResp)){
+							return "success"; 
+						}
+					}
+				}else{
+					logger.info(out_trade_no + "--支付失败，不存在的订单");
+					return "fail";
+				}
+			}
+			
 		}catch (Exception e){
 			logger.error("verifywx userid = {}, orderType = {}, price = {}, resHandler.smap = {}", 
 					userid, orderType, price, JSONArray.fromObject(resHandler.getSmap()).toString(), e);
 		}
-		return baseResp;
+		return "fail";
 	}
 
 	@Override

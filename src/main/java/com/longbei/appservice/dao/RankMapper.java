@@ -31,6 +31,19 @@ public interface RankMapper {
     List<Rank> selectListWithPage(@Param("rank") Rank rank,
                                        @Param("startno")Integer startno,
                                        @Param("pagesize")Integer pagesize);
+    /**
+     * 获取榜单列表 （带人数、评论数排序）
+     * @param rank
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author IngaWu
+     */
+    List<Rank> selectListWithPage2(@Param("rank") Rank rank,
+                                  @Param("startno")Integer startno,
+                                  @Param("pagesize")Integer pagesize,
+                                  @Param("orderByInvolved") String orderByInvolved);
+
 
     int selectListCount(Rank rank);
 

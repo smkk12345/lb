@@ -7,8 +7,8 @@ import com.longbei.appservice.entity.Article;
 /**
  * 文章相关操作
  *
- * @author luye
- * @create 2017-03-24 下午2:20
+ * @author lichaochao
+ * @create 2017-04-21
  **/
 public interface ArticleService {
 
@@ -17,7 +17,15 @@ public interface ArticleService {
      * @param article
      * @return
      */
-    BaseResp<Object> insertActicle(Article article);
+    boolean insertArticle(Article article);
+
+
+    /**
+     * 获取文章
+     * @param articleid
+     * @return
+     */
+    BaseResp<Article> getArticle(String articleid);
 
 
     /**
@@ -25,7 +33,7 @@ public interface ArticleService {
      * @param article
      * @return
      */
-    BaseResp<Object> updateActicle(Article article);
+    boolean updateArticle(Article article);
 
 
     /**
@@ -35,7 +43,7 @@ public interface ArticleService {
      * @param pagesize
      * @return
      */
-    BaseResp<Page<Article>> selectActicleList(Article article,Integer pageno,Integer pagesize);
+    BaseResp<Page<Article>> selectArticleListWithPage(Article article,Integer pageno,Integer pagesize);
 
 
 }

@@ -205,7 +205,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("userid",receiveUserId);
                 pushMessage.put("content","有用户回复了消息");
                 pushMessage.put("msgid",friendAddAsk.getId());
-                pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
+                pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1002);
                 ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
 
                 return baseResp.ok("回复成功");
@@ -307,7 +307,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 pushMessage.put("userid",friendAddAsk.getSenderUserId());
                 pushMessage.put("content","加好友申请被拒绝");
                 pushMessage.put("msgid",friendAddAsk.getId());
-                pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
+                pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1003);
                 ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","加好友申请被拒绝","加好友申请被拒绝",pushMessage.toString());
                 return new BaseResp<>().ok();
             }
@@ -353,7 +353,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("userid",friendAddAsk.getSenderUserId());
             pushMessage.put("content","同意了加好友申请");
             pushMessage.put("msgid",friendAddAsk.getId());
-            pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1001);
+            pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
             ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
             return new BaseResp<Object>().ok();
         }catch(Exception e){

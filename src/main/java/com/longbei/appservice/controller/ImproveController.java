@@ -66,6 +66,7 @@ public class ImproveController {
             improves = improveService.selectImproveListByUserDate(userid, ptype, ctype,
                     lastdate == null ? null : DateUtils.parseDate(lastdate),
                     Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
+            baseres.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
             logger.error("line daylist userid = {}, ctype = {}, lastdate = {}", userid, ctype, lastdate, e);
         }
@@ -235,7 +236,8 @@ public class ImproveController {
         }
         if ("0".equals(sorttype)){
             if (StringUtils.isBlank(lastdate)){
-                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+                lastdate = DateUtils.formatDateTime1(new Date());
+//                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
         }
         if (StringUtils.isBlank(startNo)) {

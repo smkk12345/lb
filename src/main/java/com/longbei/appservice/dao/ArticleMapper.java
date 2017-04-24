@@ -1,6 +1,12 @@
 package com.longbei.appservice.dao;
 
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Article;
+import com.longbei.appservice.entity.Award;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ArticleMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +22,10 @@ public interface ArticleMapper {
     int updateByPrimaryKeyWithBLOBs(Article record);
 
     int updateByPrimaryKey(Article record);
+
+    int selectArticleCount(@Param("article") Article article);
+
+    List<Article> selectArticleList(@Param("article") Article article,
+                                              @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
+
 }

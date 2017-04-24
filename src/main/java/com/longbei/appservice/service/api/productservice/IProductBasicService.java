@@ -177,6 +177,15 @@ public interface IProductBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/order/get")
 	BaseResp<ProductOrders> get(@RequestParam("userid") Long userid,
 								@RequestParam("orderid") String orderid);
+	
+	/**
+	 * 订单详情
+	 * @author yinxc
+	 * @param @param orderid 订单业务id
+	 * 2017年3月17日
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/order/getOrder")
+	BaseResp<ProductOrders> getOrder(@RequestParam("ordernum") String ordernum);
 
 	/**
 	 * @author yinxc
@@ -196,7 +205,6 @@ public interface IProductBasicService {
 	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
 	 *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
 	 * @auther yinxc
-<<<<<<< HEAD
 	 * @desc
 	 * @currentdate:2017年4月7日
 	 */
