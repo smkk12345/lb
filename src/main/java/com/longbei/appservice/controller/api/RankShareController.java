@@ -47,13 +47,13 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Rank> rankDetail(Long userid, String rankId){
+    public BaseResp<Rank> rankDetail(String rankId){
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
-        if(StringUtils.isEmpty(rankId) || userid == null){
+        if(StringUtils.isEmpty(rankId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
+        baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,true);
         return baseResp;
     }
 
@@ -269,7 +269,6 @@ public class RankShareController {
      * @param rankid   榜单id
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param sorttype 排序类型（ 0 - 成员动态 1 - 热度 2 - 时间）
-     * @param startNo  开始条数
      * @param pageSize 页面显示条数
      * @param lastdate 最后一条时间 在 sorttype=0 时使用
      * @return
@@ -277,7 +276,7 @@ public class RankShareController {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
-    @RequestMapping(value = "rank/list", method = RequestMethod.POST)
+    @RequestMapping(value = "rank/list")
     public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNo,
                                           String pageSize,String lastdate) {
         if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {

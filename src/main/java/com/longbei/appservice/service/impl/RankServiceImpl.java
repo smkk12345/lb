@@ -2238,14 +2238,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             if(rank.getRankcardid() != null){
-                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(rank.getRankcateid());
+                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
                     rank.setRankCard(rankCard);
                 }
             }
 
+            int userRankMemberStatus = 0;//可参榜ß
             if(userId != null){
-                int userRankMemberStatus = 0;//可参榜
                 if("5".equals(rank.getIsfinish())){
                     userRankMemberStatus = 4;//榜已结束 查看
                 }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
@@ -2273,9 +2273,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfollow",false);
                 }
-
-                resultMap.put("userRankMemberStatus",userRankMemberStatus);
             }
+            resultMap.put("userRankMemberStatus",userRankMemberStatus);
+
             //加载评论数
             BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"2");
             if(commentResp.getCode() == 0){
