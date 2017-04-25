@@ -511,8 +511,9 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<Improve> selectRankImproveList(String userid, String rankid,String sift,String orderby, int pageNo, int pageSize,String lastdate) {
-        List<Improve> improves = null;
+    public List<Improve> selectRankImproveList(String userid, String rankid,String sift,
+                                               String orderby, int pageNo, int pageSize,String lastdate) {
+        List<Improve> improves = new ArrayList<>();
         try {
             switch (sift){
                 //全部

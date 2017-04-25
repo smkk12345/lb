@@ -118,6 +118,7 @@ public class Constant {
 	public static final int STATUS_SYS_611 = -611;
 	public static final int STATUS_SYS_612 = -612;
 	public static final int STATUS_SYS_613 = -613;
+	public static final int STATUS_SYS_614 = -614;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -229,7 +230,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_611 = "抱歉,您暂时无法领奖,详情请联系客服";
 	public static final String RTNINFO_SYS_612 = "榜主不可退榜";
 	public static final String RTNINFO_SYS_613 = "榜不存在";
-
+	public static final String RTNINFO_SYS_614 = "当前系统正忙或您已经关注了该榜单!";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
@@ -322,6 +323,11 @@ public class Constant {
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
 
 	public static final Integer DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM = 10;
+
+
+	public static final String RANK_TYEP_APP = "2";
+	public static final String RANK_TYEP_B = "1";
+	public static final String RANK_TYEP_C = "0";
 
 
 	/**

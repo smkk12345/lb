@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import scala.collection.immutable.Stream;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -471,7 +472,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if(showAward != null && showAward){
                         initRankAward(rank1);
                     }
-                    rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
+                    if (Constant.RANK_TYEP_APP.equals(rank1.getRanktype())){
+                        rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
+                    }
                 }
             }
             baseResp.setData(ranks);
@@ -760,9 +763,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
                 }
 
-                //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
-                String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
-                boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+
+                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+                    //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
+                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+                    boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"2");
+
+                }
 
                 //初始化redis的排名
                 boolean redisInitFlag = initRedisRankSort(rank,userId);
@@ -2226,7 +2233,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rankSortService.checkRankEnd(rank);
             if(queryCreateUser != null && queryCreateUser){
-                rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
+                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+                    rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
+                }
             }
             if(queryAward != null && queryAward){
                 rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
