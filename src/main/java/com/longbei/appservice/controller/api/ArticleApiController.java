@@ -122,4 +122,20 @@ public class ArticleApiController {
         return baseResp;
     }
 
+    @RequestMapping(value = "deleteBusiness/{articleid}")
+    BaseResp deleteArticleBusinessByArticleId(@PathVariable("articleid") String articleid){
+        BaseResp baseResp = new BaseResp<>();
+        try {
+            boolean flag = articleService.deleteArticleBusinessByArticleId(articleid);
+            if (flag){
+                baseResp = BaseResp.ok();
+            }
+        } catch (NumberFormatException e) {
+            logger.error("delete articleBusiness  is error:{}",e);
+        }
+        return baseResp;
+    }
+
+
+
 }

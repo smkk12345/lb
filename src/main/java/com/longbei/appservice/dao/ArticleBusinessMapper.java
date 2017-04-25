@@ -7,6 +7,8 @@ import java.util.List;
 public interface ArticleBusinessMapper {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteArticleBusinessByArticleId(String articleid);
+
     int insert(ArticleBusiness record);
 
     int insertSelective(ArticleBusiness record);

@@ -114,4 +114,8 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <delete id="deleteArticleBusinessByArticleId" parameterType="java.lang.String">
+    delete from article_business
+    where articleid = #{articleid,jdbcType=VARCHAR}
+  </delete>
 </mapper>
