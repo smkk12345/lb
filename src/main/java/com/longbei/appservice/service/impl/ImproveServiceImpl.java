@@ -2094,9 +2094,9 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
-            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
             if(null != improve){
-                initImproveInfo(improve,improve.getUserid());
+                initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 improve.setAppUserMongoEntity(appUserMongoEntity);
                 initUserRelateInfo(improve.getUserid(),appUserMongoEntity);
@@ -2106,8 +2106,17 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_RANK_TYPE:
                         {
-                        Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
+                            Rank rank = rankService.selectByRankid(improve.getBusinessid());
                             int sortnum = 0;
+                            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                            if("0".equals(rank.getIsfinish())){
+
+                            }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
+                                long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
+                                sortnum = Integer.parseInt(s+"");
+                            }else{
+                                sortnum = rankMembers.getSortnum();
+                            }
                             improve.setBusinessEntity(rank.getPtype(),
                                     rank.getRanktitle(),
                                     rank.getRankinvolved(),
@@ -2167,9 +2176,7 @@ public class ImproveServiceImpl implements ImproveService{
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
         //初始化是否 点赞 送花 送钻 收藏
-        if(userid != null){
-            initIsOptionForImprove(userid+"",improve);
-        }
+        initIsOptionForImprove(userid != null?userid+"":null,improve);
         //初始化超级话题列表
         initTopicInfo(improve);
     }
