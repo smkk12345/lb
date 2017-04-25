@@ -184,22 +184,23 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/questionsList
     * @Description: 获取教室提问答疑列表
     * @param @param classroomid  教室id
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> questionsList(String classroomid, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, startNo, pageSize);
+  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("questionsList classroomid = {}, startNo = {}, pageSize = {}", classroomid, startNo, pageSize, e);
+  			logger.error("questionsList classroomid = {}, startNum = {}, pageSize = {}",
+					classroomid, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -256,22 +257,23 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/coursesList
     * @Description: 获取课程列表
     * @param @param classroomid
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesList")
-    public BaseResp<Object> coursesList(String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> coursesList(String classroomid, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
+  			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("coursesList classroomid = {}, startNo = {}, pageSize = {}", classroomid, startNo, pageSize, e);
+  			logger.error("coursesList classroomid = {}, startNum = {}, pageSize = {}",
+					classroomid, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -352,16 +354,16 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomMembers")
-    public BaseResp<Object> selectRoomMembers(String classroomid, int startNo, int pageSize) {
+    public BaseResp<Object> selectRoomMembers(String classroomid, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
+  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectRoomMembers classroomid = {}, startNo = {}, pageSize = {}", 
-  					classroomid, startNo, pageSize, e);
+  			logger.error("selectRoomMembers classroomid = {}, startNum = {}, pageSize = {}",
+  					classroomid, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -373,23 +375,23 @@ public class ClassroomController {
 	* @param @param ptype 十全十美类型    可为null---获取我创建的教室
 	* 				0：学习    1：运动   2：社交   3：艺术   4：生活   
 	* 				5：公益    6：文学    7：劳动   8：修养   9：健康
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectCreateRoom")
-    public BaseResp<Object> selectCreateRoom(String userid, String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectCreateRoom(String userid, String ptype, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomService.selectListByUserid(Long.parseLong(userid), ptype, startNo, pageSize);
+  			baseResp = classroomService.selectListByUserid(Long.parseLong(userid), ptype, startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectCreateRoom userid = {}, ptype = {}, startNo = {}, pageSize = {}", 
-  					userid, ptype, startNo, pageSize, e);
+  			logger.error("selectCreateRoom userid = {}, ptype = {}, startNum = {}, pageSize = {}",
+  					userid, ptype, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -398,23 +400,23 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/selectInsertRoom
     * @Description: 获取我加入的教室
     * @param @param userid
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectInsertRoom")
-    public BaseResp<Object> selectInsertRoom(String userid, int startNo, int pageSize) {
+    public BaseResp<Object> selectInsertRoom(String userid, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomService.selectInsertByUserid(Long.parseLong(userid), startNo, pageSize);
+  			baseResp = classroomService.selectInsertByUserid(Long.parseLong(userid), startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectInsertRoom userid = {}, startNo = {}, pageSize = {}", 
-  					userid, startNo, pageSize, e);
+  			logger.error("selectInsertRoom userid = {}, startNum = {}, pageSize = {}",
+  					userid, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -426,23 +428,23 @@ public class ClassroomController {
 	* @param @param ptype 十全十美类型    可为null---教室标题搜索
 	* 				0：学习    1：运动   2：社交   3：艺术   4：生活   
 	* 				5：公益    6：文学    7：劳动   8：修养   9：健康
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomSearch")
-    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(keyword)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomService.selectListByPtype(ptype, keyword, startNo, pageSize);
+  			baseResp = classroomService.selectListByPtype(ptype, keyword, startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectRoomSearch keyword = {}, ptype = {}, startNo = {}, pageSize = {}", 
-  					keyword, ptype, startNo, pageSize, e);
+  			logger.error("selectRoomSearch keyword = {}, ptype = {}, startNum = {}, pageSize = {}",
+  					keyword, ptype, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -458,17 +460,17 @@ public class ClassroomController {
 	*/
  	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectClassroomList")
-    public BaseResp<Object> selectClassroomList(String userid, int startNo, int pageSize) {
+    public BaseResp<Object> selectClassroomList(String userid, int startNum, int pageSize) {
   		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", startNo, pageSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", startNum, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}", 
-  					userid, startNo, pageSize, e);
+  			logger.error("selectClassroomList userid = {}, startNum = {}, pageSize = {}",
+  					userid, startNum, pageSize, e);
   		}
   		return baseResp;
     }
@@ -479,7 +481,7 @@ public class ClassroomController {
      * @param @param userid 
      * @param @param classroomid 教室业务id
      * @param @param sift  筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
-     * @param @param startNo   pageSize
+     * @param @param startNum   pageSize
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年3月6日
@@ -487,18 +489,18 @@ public class ClassroomController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersList")
     public BaseResp<Object> classroomMembersList(String userid, String classroomid, String sift, 
-    		 int startNo, int pageSize) {
+    		 int startNum, int pageSize) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, startNum, pageSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
-   			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}", 
-   					userid, classroomid, sift, startNo, pageSize, e);
+   			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNum = {}, pageSize = {}",
+   					userid, classroomid, sift, startNum, pageSize, e);
    		}
    		return baseResp;
     }
@@ -510,7 +512,7 @@ public class ClassroomController {
      * @param @param classroomid 教室业务id
      * @param @param sift  筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param @param type 0:按时间排序   1:热度
-     * @param @param startNo   pageSize
+     * @param @param startNum   pageSize
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年3月6日
@@ -519,18 +521,18 @@ public class ClassroomController {
  	@RequestMapping(value = "classroomMembersDateList")
     public BaseResp<Object> classroomMembersDateList(String userid, String classroomid, String sift, 
     		 String type, 
-    		 int startNo, int pageSize) {
+    		 int startNum, int pageSize) {
    		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid, sift, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, startNum, pageSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
-   			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}", 
-   					userid, classroomid, sift, type, startNo, pageSize, e);
+   			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNum = {}, pageSize = {}",
+   					userid, classroomid, sift, type, startNum, pageSize, e);
    		}
    		return baseResp;
     }

@@ -58,14 +58,14 @@ public class ProductController {
     * @param @param userid 用户id
     * @param @param cateid 商品类别id(获取全部的时候 cateid=1)
     * @param @param starttime 上架时间    为null查全部  
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年3月15日
 	*/
   	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/list")
-    public BaseResp<List<ProductBasic>> list(String userid, String cateid, String starttime, Integer startNo, Integer pageSize) {
+    public BaseResp<List<ProductBasic>> list(String userid, String cateid, String starttime, Integer startNum, Integer pageSize) {
 		BaseResp<List<ProductBasic>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, cateid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -73,8 +73,8 @@ public class ProductController {
   		try {
   			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
   			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-  			if(null != startNo){
-  				sNo = startNo.intValue();
+  			if(null != startNum){
+  				sNo = startNum.intValue();
   			}
   			if(null != pageSize){
   				sSize = pageSize.intValue();
@@ -113,7 +113,7 @@ public class ProductController {
 		}
   		return baseResp;
 	}
-	
+
 	/**
     * @Title: http://ip:port/app_service/product/addCart
     * @Description: 添加商品到购物车
@@ -193,14 +193,14 @@ public class ProductController {
     * @Title: http://ip:port/app_service/product/getCart
     * @Description: 获取购物车
     * @param @param userid 用户id
-    * @param @param startNo  pageSize
+    * @param @param startNum  pageSize
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年3月15日
 	*/
 	@SuppressWarnings({ "unchecked"})
   	@RequestMapping(value = "/getCart")
-    public BaseResp<List<ProductCart>> getCart(String userid, Integer startNo, Integer pageSize) {
+    public BaseResp<List<ProductCart>> getCart(String userid, Integer startNum, Integer pageSize) {
 		BaseResp<List<ProductCart>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -208,16 +208,16 @@ public class ProductController {
   		try {
   			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
   			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-  			if(null != startNo){
-  				sNo = startNo.intValue();
+  			if(null != startNum){
+  				sNo = startNum.intValue();
   			}
   			if(null != pageSize){
   				sSize = pageSize.intValue();
   			}
   			baseResp = productService.getCart(Long.parseLong(userid), sNo, sSize);
 		} catch (Exception e) {
-			logger.error("getCart userid = {}, startNo = {}, pageSize = {}", 
-					userid, startNo, pageSize, e);
+			logger.error("getCart userid = {}, startNum = {}, pageSize = {}",
+					userid, startNum, pageSize, e);
 		}
   		return baseResp;
 	}
