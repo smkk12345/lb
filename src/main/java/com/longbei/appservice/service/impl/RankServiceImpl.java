@@ -1382,6 +1382,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         Map<String,Object> resultMap = new HashMap<String,Object>();
         try{
+            Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
             if(rankMember == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -1401,23 +1405,29 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             //已领奖
             if(rankMember.getAcceptaward() != null && !"0".equals(rankMember.getAcceptaward())){
+                RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
+                if(rankAcceptAward == null){
+                    logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
+                    return baseResp.fail("系统异常");
+                }
+                Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
+                rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
                 if(award.getAwardClassify().getClassifytype() == 3){//实物
-                    RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
-                    if(rankAcceptAward == null){
-                        logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
-                        return baseResp.fail("系统异常");
-                    }
-                    Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
-                    rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
                     rankAcceptAwardMap.put("reciverusername",rankAcceptAward.getReciverusername());//收货人姓名
                     rankAcceptAwardMap.put("reciveruseraddr",rankAcceptAward.getReciveruseraddr());//收货人地址
                     rankAcceptAwardMap.put("reciverusertel",rankAcceptAward.getReciverusertel());//收货人电话
-                    rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
-
-                    resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 }
+                rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
+
+                resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 resultMap.put("award",award);
                 resultMap.put("rankMember",rankMember);
+
+                Map<String,Object> rankResultMap = new HashMap<String,Object>();
+                rankResultMap.put("ranktitle",rank.getRanktitle());
+                rankResultMap.put("ptype",rank.getPtype());
+                resultMap.put("rank",rankResultMap);
+
                 baseResp.setData(resultMap);
 
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -2250,14 +2260,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             if(rank.getRankcardid() != null){
-                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(rank.getRankcateid());
+                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
                     rank.setRankCard(rankCard);
                 }
             }
 
+            int userRankMemberStatus = 0;//可参榜ß
             if(userId != null){
-                int userRankMemberStatus = 0;//可参榜
                 if("5".equals(rank.getIsfinish())){
                     userRankMemberStatus = 4;//榜已结束 查看
                 }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
@@ -2285,9 +2295,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfollow",false);
                 }
-
-                resultMap.put("userRankMemberStatus",userRankMemberStatus);
             }
+            resultMap.put("userRankMemberStatus",userRankMemberStatus);
+
             //加载评论数
             BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"2");
             if(commentResp.getCode() == 0){

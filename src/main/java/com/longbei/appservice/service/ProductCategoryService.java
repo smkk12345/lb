@@ -53,11 +53,11 @@ public interface ProductCategoryService {
     BaseResp<Object> updateCategoryByCateId(String cateId,String catename,String sort);
 
     /**
-     * @Title:deleteCategoryByCateId
+     * @Title:removeCategoryByCateId
      * @Description: 删除商品类目
      * @param @param id 商品类目id
      * @auther IngaWu
      * @currentdate:2017年3月19日
      */
-    BaseResp<Object> deleteCategoryByCateId(String cateId);
+    BaseResp<Object> removeCategoryByCateId(String cateId);
 }

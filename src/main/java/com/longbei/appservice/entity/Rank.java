@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -380,7 +381,7 @@ public class Rank {
         this.companybrief = companybrief;
     }
 
-
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public Long getRankid() {
         return rankid;
     }
