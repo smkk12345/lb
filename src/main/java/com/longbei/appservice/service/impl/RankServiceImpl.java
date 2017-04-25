@@ -220,6 +220,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("copy rankimage to rank is error:{}",e);
         }
         try {
+            rank.setIsfinish(null);
             Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
             int res = 0;
             boolean flag = updateRankAwardRelease(rankImageId);
