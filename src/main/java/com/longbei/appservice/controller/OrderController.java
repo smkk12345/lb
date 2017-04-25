@@ -126,6 +126,7 @@ public class OrderController {
     * 				moneytocoin---龙币兑换进步币比例 1:10
     * 				flowertocoin---花兑换进步币比例  1:10
     * 				flowertomoney---花兑换龙币比例 1:1 
+    *  				yuantomoney---人民币兑换龙币比例 1:10
     * @currentdate:2017年3月31日
 	*/
 	@SuppressWarnings({ "unchecked" })
@@ -187,7 +188,7 @@ public class OrderController {
     * @param @param userid 
     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
 	* 						为null   则查全部 
-    * @param @param startNo  pageSize
+    * @param @param startNum  pageSize
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -195,12 +196,12 @@ public class OrderController {
 	*/
 	@SuppressWarnings({ "unchecked" })
   	@RequestMapping(value = "/list")
-    public BaseResp<List<ProductOrders>> list(String userid, String orderstatus, Integer startNo, Integer pageSize) {
+    public BaseResp<List<ProductOrders>> list(String userid, String orderstatus, Integer startNum, Integer pageSize) {
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
 		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-		if(null != startNo){
-			sNo = startNo.intValue();
+		if(null != startNum){
+			sNo = startNum.intValue();
 		}
 		if(null != pageSize){
 			sSize = pageSize.intValue();
@@ -211,8 +212,8 @@ public class OrderController {
   		try {
   			baseResp = orderService.list(Long.parseLong(userid), orderstatus, sNo, sSize);
 		} catch (Exception e) {
-			logger.error("list userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
-					userid, orderstatus, startNo, pageSize, e);
+			logger.error("list userid = {}, orderstatus = {}, startNum = {}, pageSize = {}",
+					userid, orderstatus, startNum, pageSize, e);
 		}
   		return baseResp;
 	}
@@ -308,6 +309,7 @@ public class OrderController {
     * 				moneytocoin---龙币兑换进步币比例 1:10
     * 				flowertocoin---花兑换进步币比例  1:10
     * 				flowertomoney---花兑换龙币比例 1:1
+    * 				yuantomoney---人民币兑换龙币比例 1:10
     * @currentdate:2017年3月21日
 	*/
 	@SuppressWarnings("unchecked")

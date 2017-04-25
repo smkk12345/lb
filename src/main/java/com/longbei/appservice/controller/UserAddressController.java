@@ -37,7 +37,7 @@ public class UserAddressController extends BaseController {
     * @Description: 收货地址管理
     * @param @param userid
 	* @param @param startNum
-    * @param @param endNum
+    * @param @param pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年1月16日
@@ -45,7 +45,7 @@ public class UserAddressController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "list")
 	@ResponseBody
-	public BaseResp<Object> list(String userid, Integer startNum, Integer endNum) {
+	public BaseResp<Object> list(String userid, Integer startNum, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -56,8 +56,8 @@ public class UserAddressController extends BaseController {
   			if(null != startNum){
   				sNo = startNum.intValue();
   			}
-  			if(null != endNum){
-  				sSize = endNum.intValue();
+  			if(null != pageSize){
+  				sSize = pageSize.intValue();
   			}
 			baseResp = userAddressService.selectByUserId(Long.parseLong(userid), sNo, sSize);
 		} catch (Exception e) {
