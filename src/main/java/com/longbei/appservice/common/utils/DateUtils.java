@@ -439,7 +439,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 			return null;
 		}
 		Long current = currentDate.getTime();
-		return new Date(current - (min * 60 * 1000));
+		return new Date(current - (Long.parseLong(min+"") * 60 * 1000));
 	}
 
 	/**

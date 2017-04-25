@@ -220,6 +220,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("copy rankimage to rank is error:{}",e);
         }
         try {
+            rank.setIsfinish(null);
             Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
             int res = 0;
             boolean flag = updateRankAwardRelease(rankImageId);
@@ -1682,9 +1683,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             Date beforeDate = DateUtils.getBeforeDateTime(currentDate,500000);
             Map<String,Object> map = new HashMap<String,Object>();
-            map.put("beforeDate",beforeDate);
-            map.put("currentDate",currentDate);
+            map.put("beforeDate",DateUtils.formatDate(beforeDate,"yyyy-MM-dd HH:mm:ss"));
+            map.put("currentDate",DateUtils.formatDate(currentDate,"yyyy-MM-dd HH:mm:ss"));
             int row = this.rankMapper.handleStartRank(map);
+            logger.info("handleStartRank beforeDate={},currentDate={},updatetCount={}",beforeDate,currentDate,row);
             return baseResp.ok();
         }catch(Exception e){
             logger.error("handle start rank error currentDate:{]",currentDate);
