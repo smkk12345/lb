@@ -77,14 +77,14 @@ public class GoalController extends BaseController {
      */
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "list")
-    public BaseResp<Object> list(String userid,Integer startNum,Integer endNum){
+    public BaseResp<Object> list(String userid,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<>();
-        logger.info("goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        logger.info("goal list userid={},startNum={},pageSize={}",userid,startNum,pageSize);
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try{
-            baseResp = goalService.list(Long.parseLong(userid),startNum,endNum);
+            baseResp = goalService.list(Long.parseLong(userid),startNum,pageSize);
         }catch(Exception e){
             logger.error("goalService.list error and msg={}",e);
         }
@@ -97,19 +97,19 @@ public class GoalController extends BaseController {
      * @param userid 
      * @param goalid 目标id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "goallist")
-    public BaseResp<List<Improve>> list(String userid, String goalid, Integer startNum,Integer endNum){
+    public BaseResp<List<Improve>> list(String userid, String goalid, Integer startNum,Integer pageSize){
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
-        logger.info("goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        logger.info("goal list userid={},startNum={},pageSize={}",userid,startNum,pageSize);
         if(StringUtils.hasBlankParams(userid, goalid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try{
-            baseResp = goalService.selectListByGoalid(Long.parseLong(userid), Long.parseLong(goalid), startNum, endNum);
+            baseResp = goalService.selectListByGoalid(Long.parseLong(userid), Long.parseLong(goalid), startNum, pageSize);
         }catch(Exception e){
             logger.error("goalService.list error and msg={}",e);
         }
@@ -128,18 +128,17 @@ public class GoalController extends BaseController {
      */
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "userGoalList")
-    public BaseResp<List<UserGoal>> userGoalList(String userid,Integer startNum,Integer endNum){
+    public BaseResp<List<UserGoal>> userGoalList(String userid,Integer startNum,Integer pageSize){
         BaseResp<List<UserGoal>> baseResp = new BaseResp<>();
-        logger.info("user goal list userid={},startNum={},endNum={}",userid,startNum,endNum);
+        logger.info("user goal list userid={},startNum={},endNum={}",userid,startNum,pageSize);
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try{
             baseResp = goalService.selectUserGoalList(Long.parseLong(userid),startNum,pageSize);

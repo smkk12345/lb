@@ -208,11 +208,11 @@ public class GroupController {
      * @param status 查询群组成员的状态 1.代表查询加群成功的,已经在群中的群成员 0.代表查询待群主审核的群成员(仅限群主查询)
      * @param noQueryCurrentUser 是否查询当前登录用户 false或不传该参数则代表查询userid,true代表不查询userid的用户
      * @param startNum 可不传 不传该参数，则代表获取所有的群成员 不分页
-     * @param endNum 可不传
+     * @param pageSize 可不传
      * @return
      */
     @RequestMapping(value="groupMemberList")
-    public BaseResp<Object> groupMemberList(String keyword,String groupId,Long userId,Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer endNum){
+    public BaseResp<Object> groupMemberList(String keyword,String groupId,Long userId,Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isEmpty(groupId) || userId == null || status == null || (status != 0 && status != 1)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -220,14 +220,10 @@ public class GroupController {
         if(startNum != null && startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = null;
-        if(startNum != null && endNum != null){
-            if(endNum > startNum){
-                pageSize = endNum - startNum;
-            }else {
-                pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-            }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
+
         baseResp = this.groupService.groupMemberList(groupId,userId,status,keyword,noQueryCurrentUser,startNum,pageSize);
         return baseResp;
     }
@@ -270,24 +266,21 @@ public class GroupController {
      * @url http://ip:port/app_service/group/groupList
      * @param userId 当前登录用户id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @param updateTime 上次更新用户群列表的时间
      * @return
      */
     @RequestMapping(value="groupList")
-    public BaseResp<Object> groupList(Long userId,Integer startNum,Integer endNum,String updateTime){
+    public BaseResp<Object> groupList(Long userId,Integer startNum,Integer pageSize,String updateTime){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        Integer pageSize = null;
         if(startNum != null && startNum < 0){
             startNum = 0;
         }
-        if(startNum != null && (endNum == null || endNum < startNum)){
+        if(null == pageSize){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        }else if(startNum != null){
-            pageSize = endNum - startNum;
         }
 
         Date updateDate = null;
@@ -299,7 +292,7 @@ public class GroupController {
             }
         }
 
-        baseResp = this.groupService.goupListByUser(userId,startNum,endNum,updateDate);
+        baseResp = this.groupService.goupListByUser(userId,startNum,pageSize,updateDate);
         return baseResp;
     }
 
@@ -310,7 +303,7 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value="searchGroup")
-    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer endNum){
+    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.isEmpty(keyword)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -318,10 +311,10 @@ public class GroupController {
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
+
         baseResp = this.groupService.searchGroup(keyword,startNum,pageSize);
         return baseResp;
     }

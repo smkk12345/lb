@@ -27,19 +27,19 @@ public class SuperTopicController {
      * topic/list
      * 获取超级话题列表
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value = "/list")
-    public BaseResp<Object> list(int startNum,int endNum) {
+    public BaseResp<Object> list(int startNum,int pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(endNum == 0){
+        if(pageSize == 0){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp  = superTopicService.selectSuerTopicList(startNum,endNum);
+            baseResp  = superTopicService.selectSuerTopicList(startNum,pageSize);
         } catch (Exception e) {
-            logger.error("list startNum = {},endNum={} ", startNum,endNum, e);
+            logger.error("list startNum = {},pageSize={} ", startNum,pageSize, e);
         }
         return baseResp;
     }
@@ -49,19 +49,19 @@ public class SuperTopicController {
      * @param topicId
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value = "/selectImprovesById")
-    public BaseResp<Object> selectImprovesById(String topicId,String userid,int startNum,int endNum){
+    public BaseResp<Object> selectImprovesById(String topicId,String userid,int startNum,int pageSize){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(topicId,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try{
-            baseResp = superTopicService.selectImprovesByTopicId(Long.parseLong(userid),Long.parseLong(topicId),startNum,endNum);
+            baseResp = superTopicService.selectImprovesByTopicId(Long.parseLong(userid),Long.parseLong(topicId),startNum,pageSize);
         }catch (Exception e){
-            logger.error("selectImprovesById startNum = {},endNum={},topicid={},userid={} ", startNum,endNum,topicId,userid, e);
+            logger.error("selectImprovesById startNum = {},endNum={},topicid={},userid={} ", startNum,pageSize,topicId,userid, e);
         }
         return baseResp;
     }

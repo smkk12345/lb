@@ -2296,10 +2296,10 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int endNum) {
+    public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<Improve> list = improveMapper.selectGoalMainImproveList(userid,startNum,endNum);
+            List<Improve> list = improveMapper.selectGoalMainImproveList(userid,startNum,pageSize);
             for (Improve improve:list) {
                 UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getGoalid());
                 improve.setBusinessEntity(userGoal.getPtype(),
@@ -2313,7 +2313,7 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp.setData(list);
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
-            logger.error("selectGoalMainImproveList userid={},startNum={},endNum={}",userid,startNum,endNum,e);
+            logger.error("selectGoalMainImproveList userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
         }
         return baseResp;
     }

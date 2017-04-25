@@ -65,13 +65,13 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectImpCoinDetail
     * @Description: 获取进步币明细
     * @param @param userid
-    * @param @param startNo   pageSize
+    * @param @param startNum   pageSize
     * @auther yinxc
     * @currentdate:2017年2月25日
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectImpCoinDetail")
-    public BaseResp<Object> selectImpCoinDetail(String userid, Integer startNo, Integer pageSize) {
+    public BaseResp<Object> selectImpCoinDetail(String userid, Integer startNum, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -79,15 +79,15 @@ public class MoneyController {
   		try {
   			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
   			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-  			if(null != startNo){
-  				sNo = startNo.intValue();
+  			if(null != startNum){
+  				sNo = startNum.intValue();
   			}
   			if(null != pageSize){
   				sSize = pageSize.intValue();
   			}
   			baseResp = userImpCoinDetailService.selectListByUserid(Long.parseLong(userid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectImpCoinDetail userid = {}, startNo = {}, pageSize = {}", userid, startNo, pageSize, e);
+            logger.error("selectImpCoinDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }
@@ -106,7 +106,7 @@ public class MoneyController {
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectMoneyDetail")
-    public BaseResp<Object> selectMoneyDetail(String userid, Integer startNo, Integer pageSize) {
+    public BaseResp<Object> selectMoneyDetail(String userid, Integer startNum, Integer pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -114,15 +114,15 @@ public class MoneyController {
   		try {
   			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
   			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-  			if(null != startNo){
-  				sNo = startNo.intValue();
+  			if(null != startNum){
+  				sNo = startNum.intValue();
   			}
   			if(null != pageSize){
   				sSize = pageSize.intValue();
   			}
   			baseResp = userMoneyDetailService.selectListByUserid(Long.parseLong(userid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectMoneyDetail userid = {}, startNo = {}, pageSize = {}", userid, startNo, pageSize, e);
+            logger.error("selectMoneyDetail userid = {}, startNo = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }
@@ -138,7 +138,7 @@ public class MoneyController {
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectFlowerDetail")
-    public BaseResp<List<UserFlowerDetail>> selectFlowerDetail(String userid, Integer startNo, Integer pageSize) {
+    public BaseResp<List<UserFlowerDetail>> selectFlowerDetail(String userid, Integer startNum, Integer pageSize) {
 		BaseResp<List<UserFlowerDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -146,8 +146,8 @@ public class MoneyController {
   		try {
   			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
   			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-  			if(null != startNo){
-  				sNo = startNo.intValue();
+  			if(null != startNum){
+  				sNo = startNum.intValue();
   			}
   			if(null != pageSize){
   				sSize = pageSize.intValue();
@@ -155,7 +155,7 @@ public class MoneyController {
   			//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
   			baseResp = userFlowerDetailService.selectListByUseridAndOrigin(Long.parseLong(userid), "3", sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectMoneyDetail userid = {}, startNo = {}, pageSize = {}", userid, startNo, pageSize, e);
+            logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }

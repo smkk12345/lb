@@ -33,20 +33,20 @@ public interface GoalService {
      * 获取用户目标列表
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
-    BaseResp<Object> list(long userid,int startNum,int endNum);
+    BaseResp<Object> list(long userid,int startNum,int pageSize);
     
     /**
      * 单个目标进步列表
      * @param userid
      * @param goalid 目标id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
-    BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int endNum);
+    BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int pageSize);
     
     /**
      * 获取目标列表
