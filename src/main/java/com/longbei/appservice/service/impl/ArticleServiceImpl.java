@@ -6,9 +6,7 @@ import com.longbei.appservice.dao.ArticleBusinessMapper;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
-import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ArticleService;
-import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +27,11 @@ public class ArticleServiceImpl implements ArticleService{
 
     private static Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
-
     @Autowired
     private ArticleMapper articleMapper;
 
     @Autowired
     private ArticleBusinessMapper articleBusinessMapper;
-
-    @Autowired
-    private RankService rankService;
 
     @Override
     public boolean insertArticle(Article article) {

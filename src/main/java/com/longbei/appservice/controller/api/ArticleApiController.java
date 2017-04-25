@@ -5,7 +5,6 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
-import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +139,5 @@ public class ArticleApiController {
         }
         return baseResp;
     }
-
-
 
 }
