@@ -131,4 +131,17 @@ public class ArticleServiceImpl implements ArticleService{
         return baseResp;
     }
 
+    @Override
+    public boolean deleteArticleBusinessByArticleId(String articleid) {
+        try {
+            int res = articleBusinessMapper.deleteArticleBusinessByArticleId(articleid);
+            if (res > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("update article is error:{}",e);
+        }
+        return false;
+    }
+
 }

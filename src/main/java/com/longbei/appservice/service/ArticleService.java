@@ -64,5 +64,12 @@ public interface ArticleService {
      */
     BaseResp<List<Rank>> selectArticleBusinessList(String articleid);
 
+    /**
+     * 删除ArticleBusiness By ArticleId
+     * @param articleid
+     * @return
+     */
+    boolean deleteArticleBusinessByArticleId(String articleid);
+
 
 }
