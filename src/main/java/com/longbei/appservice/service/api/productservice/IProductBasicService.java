@@ -12,7 +12,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-@FeignClient("productService")
+@FeignClient("productServiceLY")
 @RequestMapping("productService")
 public interface IProductBasicService {
 
@@ -382,7 +382,7 @@ public interface IProductBasicService {
 	 * @currentdate:2017年3月22日
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectProductByProductId")
-	BaseResp<Object> selectProductByProductId(@RequestParam("productId")String productId);
+	BaseResp<ProductBasic> selectProductByProductId(@RequestParam("productId")String productId);
 
 
 	//--------------------------------adminservice调用-------------------------------------
