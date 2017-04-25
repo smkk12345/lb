@@ -4,6 +4,9 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
+import com.longbei.appservice.entity.Rank;
+
+import java.util.List;
 
 /**
  * 文章相关操作
@@ -52,6 +55,14 @@ public interface ArticleService {
      * @return
      */
     boolean insertArticleBusiness(ArticleBusiness articleBusiness);
+
+
+    /**
+     * 查询ArticleBusiness list by articleid
+     * @param articleid
+     * @return
+     */
+    BaseResp<List<Rank>> selectArticleBusinessList(String articleid);
 
 
 }

@@ -5,6 +5,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 文章接口
@@ -72,6 +75,7 @@ public class ArticleApiController {
             boolean flag = articleService.insertArticle(article);
             if (flag){
                 baseResp = BaseResp.ok();
+                baseResp.setData(article.getId());
             }
         } catch (NumberFormatException e) {
             logger.error("add article  is error:{}",e);
@@ -103,6 +107,17 @@ public class ArticleApiController {
             }
         } catch (NumberFormatException e) {
             logger.error("add articleBusiness  is error:{}",e);
+        }
+        return baseResp;
+    }
+
+    @RequestMapping(value = "getBusiness/{articleid}")
+    BaseResp<List<Rank>> getArticleBussiness(@PathVariable("articleid") String articleid){
+        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        try {
+            baseResp = articleService.selectArticleBusinessList(articleid);
+        } catch (NumberFormatException e) {
+            logger.error("get articleBusiness list with page is error:{}",e);
         }
         return baseResp;
     }

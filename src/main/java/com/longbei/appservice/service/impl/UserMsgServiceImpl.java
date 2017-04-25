@@ -192,7 +192,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		List<String> fansList = snsFansMapper.selectListidByUid(userid);
 		List<String> slist = selectListid(userid, friendList, fansList);
 		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
-		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid, Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
+				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
 		if(null != list && list.size()>0){
 			for (UserMsg userMsg : list) {
 				if(slist.contains(userMsg.getFriendid())){
@@ -469,7 +470,8 @@ public class UserMsgServiceImpl implements UserMsgService {
      * @return
      */
 	@Override
-	public boolean sendMessage(boolean isOnly, Long userId, Long friendId, String mType, String msgType, Long snsId, String remark, String gType) {
+	public boolean sendMessage(boolean isOnly, Long userId, Long friendId,
+							   String mType, String msgType, Long snsId, String remark, String gType) {
 		if(isOnly){
 			//先查询是否有该类型的 消息 根据接收人userid, msytype 业务id snsId
 			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
@@ -545,7 +547,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  )
 				for (UserMsg userMsg : list) {
-					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype()) && !"17".equals(userMsg.getMsgtype()) ){
+					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
+							&& !"17".equals(userMsg.getMsgtype()) ){
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
 						//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
@@ -647,7 +650,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				for (UserMsg userMsg : list) {
 					if(userMsg.getMsgtype().equals(Constant.MSG_COMMENT_TYPE)){
 						//拼接 1 评论消息List
-						userMsg = msgComment(userid, userMsg);
+						msgComment(userid, userMsg);
 						if(StringUtils.isBlank(userMsg.getRemark())){
 							//获取评论内容
 							CommentLower commentLower = commentLowerMongoDao.selectCommentLowerByid(Long.toString(userMsg.getSnsid()));
@@ -657,12 +660,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 						}
 					}else if(userMsg.getMsgtype().equals(Constant.MSG_FLOWER_TYPE)){
 						//拼接 3 送花消息List
-						userMsg = msgFlowerAndDiamond(userMsg);
+						msgFlowerAndDiamond(userMsg);
 						String remark = Constant.MSG_FLOWER_MODEL.replace("n", userMsg.getNum().toString());
 						userMsg.setRemark(remark);
 					}else{
 						//拼接  5:送钻石消息List
-						userMsg = msgFlowerAndDiamond(userMsg);
+						msgFlowerAndDiamond(userMsg);
 						String remark = Constant.MSG_DIAMOND_MODEL.replace("n", userMsg.getNum().toString());
 						userMsg.setRemark(remark);
 					}
@@ -700,10 +703,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private UserMsg msgFlowerAndDiamond(UserMsg userMsg){
+	private void msgFlowerAndDiamond(UserMsg userMsg){
 		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步送花消息
 		likeMsg(userMsg);
-		return userMsg;
 	}
 	
 	/**
@@ -713,10 +715,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private UserMsg msgComment(long userid, UserMsg userMsg){
+	private void msgComment(long userid, UserMsg userMsg){
 		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
 		commentMsg(userMsg);
-		return userMsg;
 	}
 	
 	/**
@@ -795,7 +796,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if (null != list && list.size()>0) {
 				if(msgtype.equals(Constant.MSG_LIKE_TYPE)){
 					//2 点赞    拼接获取点赞消息记录展示字段List
-					list = msgLike(userid, list);
+					msgLike(userid, list);
 				}
 				if(msgtype.equals(Constant.MSG_FANS_TYPE)){
 					//5:粉丝   拼接获取粉丝消息记录展示字段List
@@ -830,10 +831,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 					//含有    未读
 					snsFans.setIsread("0");
 				}
-				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
-				if(null != appUserMongoEntity){
-					
-				}
+//				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
+//				if(null != appUserMongoEntity){
+//
+//				}
 				//判断当前用户是否已关注
 				SnsFans fans = snsFansMapper.selectByUidAndLikeid(snsFans.getLikeuserid(), userid);
 				if(null != fans){
@@ -856,8 +857,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private List<UserMsg> msgLike(long userid, List<UserMsg> list){
-		List<UserMsg> msgList = new ArrayList<UserMsg>();
+	private void msgLike(long userid, List<UserMsg> list){
 		for (UserMsg userMsg : list) {
 			//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
 			likeMsg(userMsg);
@@ -865,7 +865,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			initMsgUserInfoByFriendid(userMsg, userid);
 			userMsg.setRemark(Constant.MSG_LIKE_MODEL);
 		}
-		return msgList;
 	}
 	
 	/**
