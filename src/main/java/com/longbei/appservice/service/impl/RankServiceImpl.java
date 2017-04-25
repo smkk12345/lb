@@ -436,7 +436,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     @Override
     public BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,
-                                                      Integer status, Long lastRankId, Integer pageSize,Boolean showAward) {
+                                                      Integer status, String lastDate,Integer startNo, Integer pageSize,Boolean showAward) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
             Map<String,Object> map = new HashMap<String,Object>();
@@ -464,9 +464,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
+            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
+                Date tempLastDate = DateUtils.parseDate(lastDate);
+                map.put("lastDate",tempLastDate);
+            }else if(startNo != null){
+                map.put("startNum",startNo);
+            }
+            map.put("sstatus",status);
             map.put("ispublic","0");
             map.put("isdel","0");
-            map.put("lastRankId",lastRankId);
             map.put("pageSize",pageSize);
             List<Rank> ranks = rankMapper.selectRankList(map);
             if(ranks != null && ranks.size() > 0){
