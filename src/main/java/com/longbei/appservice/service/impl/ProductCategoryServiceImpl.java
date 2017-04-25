@@ -72,12 +72,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> deleteCategoryByCateId(String cateId) {
+	public BaseResp<Object> removeCategoryByCateId(String cateId) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			baseResp = iProductCategoryService.deleteCategoryByCateId(cateId);
+			baseResp = iProductCategoryService.removeCategoryByCateId(cateId);
 		} catch (Exception e) {
-			logger.error("deleteCategoryByCateId error and msg={}",e);
+			logger.error("removeCategoryByCateId error and msg={}",e);
 		}
 		return baseResp;
 	}

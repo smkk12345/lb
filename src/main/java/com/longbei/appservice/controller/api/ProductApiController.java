@@ -144,25 +144,25 @@ public class ProductApiController {
 	}
 
 	/**
-	 * @Title:  http://ip:port/app_service/product/deleteCategoryByCateId
+	 * @Title:  http://ip:port/app_service/product/removeCategoryByCateId
 	 * @Description: 删除商品类目
 	 * @param @param cateId 商品类目id
 	 * @param @param 正确返回 code 0 错误返回相应code 和 描述
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	@RequestMapping(value = "/deleteCategoryByCateId")
-	public BaseResp<Object> deleteCategoryByCateId(String cateId) {
-		logger.info("deleteCategoryByCateId and cateId={}",cateId);
+	@RequestMapping(value = "/removeCategoryByCateId")
+	public BaseResp<Object> removeCategoryByCateId(String cateId) {
+		logger.info("removeCategoryByCateId and cateId={}",cateId);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(cateId)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = productCategoryService.deleteCategoryByCateId(cateId);
+			baseResp = productCategoryService.removeCategoryByCateId(cateId);
 			return baseResp;
 		} catch (Exception e) {
-			logger.error("deleteCategoryByCateId and cateId={}",cateId,e);
+			logger.error("removeCategoryByCateId and cateId={}",cateId,e);
 		}
 		return baseResp;
 	}

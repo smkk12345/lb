@@ -7,8 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-@FeignClient("productService")
-@RequestMapping("productService")
+@FeignClient("productServicewcy")
+@RequestMapping("product_service")
 public interface IProductCategoryService {
 	/**
 	 * @Title: selectCategoryByCateId
@@ -70,13 +70,13 @@ public interface IProductCategoryService {
 											@RequestParam("sort")String sort);
 
 	/**
-	 * @Title:deleteCategoryByCateId
+	 * @Title:removeCategoryByCateId
 	 * @Description: 删除商品类目
 	 * @param @param id 商品类目id
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/api/product/deleteCategoryByCateId")
-	BaseResp<Object> deleteCategoryByCateId(@RequestParam("cateId")String cateId);
+	@RequestMapping(method = RequestMethod.POST, value = "/api/product/removeCategoryByCateId")
+	BaseResp<Object> removeCategoryByCateId(@RequestParam("cateId")String cateId);
 
 }
