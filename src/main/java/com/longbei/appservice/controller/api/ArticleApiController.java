@@ -112,12 +112,17 @@ public class ArticleApiController {
     }
 
     @RequestMapping(value = "getBusiness/{articleid}")
-    BaseResp<List<Rank>> getArticleBussiness(@PathVariable("articleid") String articleid){
-        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+    BaseResp<List<ArticleBusiness>> getArticleBussiness(@PathVariable("articleid") String articleid){
+        BaseResp<List<ArticleBusiness>> baseResp = new BaseResp<>();
+
+        if (StringUtils.isEmpty(articleid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
         try {
             baseResp = articleService.selectArticleBusinessList(articleid);
+
         } catch (NumberFormatException e) {
-            logger.error("get articleBusiness list with page is error:{}",e);
+            logger.error("get articleBusiness list is error:{}",e);
         }
         return baseResp;
     }
