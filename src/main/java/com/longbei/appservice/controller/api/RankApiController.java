@@ -661,6 +661,7 @@ public class RankApiController {
     @RequestMapping(value="handleStartRank")
     public BaseResp<Object> handleStartRank(Long currentTime){
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        logger.info("handleStartRank currentTime={}",currentTime);
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
