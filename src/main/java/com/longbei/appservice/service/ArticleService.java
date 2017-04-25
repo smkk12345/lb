@@ -62,7 +62,7 @@ public interface ArticleService {
      * @param articleid
      * @return
      */
-    BaseResp<List<Rank>> selectArticleBusinessList(String articleid);
+    BaseResp<List<ArticleBusiness>> selectArticleBusinessList(String articleid);
 
     /**
      * 删除ArticleBusiness By ArticleId

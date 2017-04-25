@@ -350,9 +350,9 @@ public class ProductApiController {
 	 * @currentdate:2017年3月22日
 	 */
 	@RequestMapping(value = "/selectProductByProductId")
-	public BaseResp<Object> selectProductByProductId(String productId) {
+	public BaseResp<ProductBasic> selectProductByProductId(String productId) {
 		logger.info("selectProductByProductId and productId={}",productId);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<ProductBasic> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(productId)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}

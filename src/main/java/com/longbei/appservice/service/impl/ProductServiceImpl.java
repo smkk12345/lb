@@ -249,8 +249,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public BaseResp<Object> selectProductByProductId(String productId) {
-		BaseResp<Object> baseResp = new BaseResp<Object>();
+	public BaseResp<ProductBasic> selectProductByProductId(String productId) {
+		BaseResp<ProductBasic> baseResp = new BaseResp<ProductBasic>();
 		try {
 			baseResp = iProductBasicService.selectProductByProductId(productId);
 		}

@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.service.UserBusinessConcernService;
@@ -33,6 +34,8 @@ public class UserBusinessConcernServiceImpl extends BaseServiceImpl implements U
             int row = this.userBusinessConcernMapper.insertUserBusinessConcern(userBusinessConcern);
             if(row > 0){
                 return baseResp.ok();
+            }else{
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_614,Constant.RTNINFO_SYS_614);
             }
         }catch(Exception e){
             logger.error("insert userBusinessConcern error userBusinessConcern:{}",userBusinessConcernMapper.toString());

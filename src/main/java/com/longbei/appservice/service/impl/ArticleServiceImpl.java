@@ -113,18 +113,12 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public BaseResp<List<Rank>> selectArticleBusinessList(String articleid) {
-        BaseResp<List<Rank>> baseResp = new BaseResp<>();
-        List<Rank> ranks = new ArrayList<>();
+    public BaseResp<List<ArticleBusiness>> selectArticleBusinessList(String articleid) {
+        BaseResp<List<ArticleBusiness>> baseResp = new BaseResp<>();
         List<ArticleBusiness> businessList = new ArrayList<>();
         try {
             businessList = articleBusinessMapper.selectArticleBusinessList(articleid);
-            for(ArticleBusiness articleBusiness:businessList){
-                Long rankId = articleBusiness.getBusinessid();
-                Rank rank = rankService.selectByRankid(rankId);
-                ranks.add(rank);
-            }
-            baseResp.setData(ranks);
+            baseResp.setData(businessList);
         } catch (Exception e) {
             logger.error("select articleBusiness list is error:{}",e);
         }

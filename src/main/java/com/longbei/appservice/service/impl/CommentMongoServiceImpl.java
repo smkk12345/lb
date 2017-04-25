@@ -333,13 +333,15 @@ public class CommentMongoServiceImpl implements CommentMongoService {
      * 初始化消息中用户信息 ------Userid
      */
     private void initCommentUserInfoByUserid(Comment comment, String friendid){
-    	//获取好友昵称
-    	String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
         if(null != appUserMongoEntity){
-        	if(!StringUtils.isBlank(remark)){
-        		appUserMongoEntity.setNickname(remark);
-        	}
+			if(StringUtils.isNotEmpty(friendid)){
+				//获取好友昵称
+				String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
+				if(StringUtils.isNotEmpty(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+			}
         	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
         }else{
         	comment.setAppUserMongoEntityUserid(new AppUserMongoEntity());
