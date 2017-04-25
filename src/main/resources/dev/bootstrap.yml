@@ -21,7 +21,6 @@ ios_buyflower_pro: https://buy.itunes.apple.com/verifyReceipt
 spring:
     jackson:
         time-zone: GMT+8
-        date-format: yyyy-MM-dd HH:mm:ss
     application:
         name: appService
     cloud:
