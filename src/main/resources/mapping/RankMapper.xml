@@ -712,8 +712,16 @@
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
         </if>
-        <if test="lastRankId != null">
-            and id > #{lastRankId}
+        <if test="sstatus != null and sstatus != 0 and lastDate != null">
+          <if test="sstatus == 1">
+             and starttime &lt;= #{lastDate}
+          </if>
+          <if test="sstatus == 2">
+              and starttime &gt; #{lastDate}
+          </if>
+          <if test="sstatus == 3">
+              and endtime &gt; #{lastDate}
+          </if>
         </if>
         <if test="minEndDate != null">
             and endtime &gt; #{minEndDate}
@@ -730,6 +738,9 @@
         <if test="rankscope != null" >
           AND rankscope = #{rankscope}
         </if>
+        <if test="ispublic != null" >
+          AND ispublic = #{ispublic}
+        </if>
         <if test="isup != null" >
           AND isup = #{isup}
         </if>
@@ -741,9 +752,6 @@
         </if>
         <if test="isfinish != null and isfinish == 2">
           and isfinish > 1
-        </if>
-        <if test="ispublic != null" >
-          AND ispublic = #{ispublic}
         </if>
         <if test="sourcetype != null" >
           AND sourcetype = #{sourcetype}
@@ -768,7 +776,7 @@
           order by starttime DESC
         </if>
         <if test="orderByType == null or orderByType == ''">
-            order by id desc
+          order by starttime DESC
         </if>
 
         <if test="startNum != null">

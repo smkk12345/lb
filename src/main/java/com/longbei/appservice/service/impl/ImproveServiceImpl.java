@@ -1175,6 +1175,9 @@ public class ImproveServiceImpl implements ImproveService{
             return;
         }
         for (Improve improve : improves){
+            if(improve == null){
+                continue;
+            }
             //初始化评论数量
             initImproveCommentInfo(improve);
             //初始化进步用户信息
