@@ -165,5 +165,5 @@ public interface ProductService {
 	 * @auther IngaWu
 	 * @currentdate:2017年3月22日
 	 */
-	BaseResp<Object> selectProductByProductId(String productId);
+	BaseResp<ProductBasic> selectProductByProductId(String productId);
 }

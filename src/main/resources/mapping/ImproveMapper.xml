@@ -398,6 +398,7 @@
         <if test="lastdate != null">
           AND ir.createtime &lt; #{lastdate}
         </if>
+        group by ir.userid
       </if>
     </where>
     <if test="orderby=='2'.toString() or orderby=='0'.toString()">

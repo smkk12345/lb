@@ -2,17 +2,19 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.dao.ArticleBusinessMapper;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.entity.Article;
-import com.longbei.appservice.entity.Award;
+import com.longbei.appservice.entity.ArticleBusiness;
+import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ArticleService;
+import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +32,12 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private ArticleBusinessMapper articleBusinessMapper;
+
+    @Autowired
+    private RankService rankService;
 
     @Override
     public boolean insertArticle(Article article) {
@@ -87,6 +95,53 @@ public class ArticleServiceImpl implements ArticleService{
             logger.error("select article list with page is error:{}",e);
         }
         return baseResp;
+    }
+
+    @Override
+    public boolean insertArticleBusiness(ArticleBusiness articleBusiness) {
+        try {
+            articleBusiness.setCreatetime(new Date());
+            articleBusiness.setUpdatetime(new Date());
+            int res = articleBusinessMapper.insertSelective(articleBusiness);
+            if (res > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("insert articleBusiness is error:{}",e);
+        }
+        return false;
+    }
+
+    @Override
+    public BaseResp<List<Rank>> selectArticleBusinessList(String articleid) {
+        BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        List<Rank> ranks = new ArrayList<>();
+        List<ArticleBusiness> businessList = new ArrayList<>();
+        try {
+            businessList = articleBusinessMapper.selectArticleBusinessList(articleid);
+            for(ArticleBusiness articleBusiness:businessList){
+                Long rankId = articleBusiness.getBusinessid();
+                Rank rank = rankService.selectByRankid(rankId);
+                ranks.add(rank);
+            }
+            baseResp.setData(ranks);
+        } catch (Exception e) {
+            logger.error("select articleBusiness list is error:{}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public boolean deleteArticleBusinessByArticleId(String articleid) {
+        try {
+            int res = articleBusinessMapper.deleteArticleBusinessByArticleId(articleid);
+            if (res > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("update article is error:{}",e);
+        }
+        return false;
     }
 
 }

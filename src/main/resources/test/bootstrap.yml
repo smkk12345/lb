@@ -19,6 +19,8 @@ ios_buyflower: https://sandbox.itunes.apple.com/verifyReceipt
 ios_buyflower_pro: https://buy.itunes.apple.com/verifyReceipt
 
 spring:
+    jackson:
+        time-zone: GMT+8
     application:
         name: appService
     cloud:
