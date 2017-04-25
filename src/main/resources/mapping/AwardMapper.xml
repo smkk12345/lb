@@ -17,6 +17,7 @@
     <association property="awardClassify" javaType="com.longbei.appservice.entity.AwardClassify">
       <id property="id" column="awardcateid"/>
       <result property="classifyname" column="classifyname"/>
+      <result property="classifytype" column="classifytype"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >

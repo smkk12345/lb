@@ -4,13 +4,11 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
-import com.longbei.appservice.entity.Rank;
 
 import java.util.List;
 
 /**
  * 文章相关操作
- *
  * @author lichaochao
  * @create 2017-04-21
  **/
@@ -58,11 +56,11 @@ public interface ArticleService {
 
 
     /**
-     * 查询ArticleBusiness list by articleid
+     * 查询ArticleBusiness list By ArticleId
      * @param articleid
      * @return
      */
-    BaseResp<List<Rank>> selectArticleBusinessList(String articleid);
+    BaseResp<List<ArticleBusiness>> selectArticleBusinessList(String articleid);
 
     /**
      * 删除ArticleBusiness By ArticleId
@@ -70,6 +68,5 @@ public interface ArticleService {
      * @return
      */
     boolean deleteArticleBusinessByArticleId(String articleid);
-
 
 }

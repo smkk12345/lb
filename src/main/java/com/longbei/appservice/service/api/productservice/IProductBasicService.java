@@ -382,7 +382,7 @@ public interface IProductBasicService {
 	 * @currentdate:2017年3月22日
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectProductByProductId")
-	BaseResp<Object> selectProductByProductId(@RequestParam("productId")String productId);
+	BaseResp<ProductBasic> selectProductByProductId(@RequestParam("productId")String productId);
 
 
 	//--------------------------------adminservice调用-------------------------------------

@@ -12,7 +12,7 @@ public interface RankCardMapper {
 
     int insertSelective(RankCard record);
 
-    RankCard selectByPrimaryKey(Integer id);
+    RankCard selectByPrimaryKey(@Param("id") Integer id);
 
     List<RankCard> selectList(@Param("rankcard") RankCard rankCard,
                               @Param("startno") Integer startno,@Param("pagesize") Integer pagesize);

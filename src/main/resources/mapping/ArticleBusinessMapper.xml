@@ -118,4 +118,10 @@
     delete from article_business
     where articleid = #{articleid,jdbcType=VARCHAR}
   </delete>
+  <select id="selectArticleBusinessList" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from article_business
+    where articleid = #{articleid,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -8,17 +8,17 @@ import java.util.Date;
 public class RankAwardRelease {
     private Integer id;
 
-    private String rankid;
+    private String rankid;//榜单id
 
-    private String awardid;
+    private String awardid;//奖品的id
 
-    private Integer awardlevel;
+    private Integer awardlevel;//奖品等级 1 2 3
 
-    private Double awardrate;
+    private Double awardrate;//获奖的人数
 
     private Integer awardcount;
 
-    private String awardnickname;
+    private String awardnickname;//奖品的名称 特等奖 一等奖 优秀奖
 
     private Date createtime;
 
