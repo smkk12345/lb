@@ -145,12 +145,13 @@ public class RankController {
      * @param pType 十全十美分类
      * @param rankscope 地区
      * @param status 状态筛选 0.推荐 1.进行中 2.将开始 3.已结束
-     * @param lastRankId 最后一个榜单id
+     * @param lastDate 最后一个榜单的时间 lastDate是当status != 0时,需要传该参数
+     * @param startNum 开始的下标 startNo是当status == 0时,需要传该参数
      * @param pageSize
      * @return
      */
     @RequestMapping(value="selectRankList")
-    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,Long lastRankId,Integer pageSize){
+    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,String lastDate,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(pageSize == null || pageSize < 0){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
@@ -158,7 +159,7 @@ public class RankController {
         if(status == null){
             status = 0;
         }
-        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,status,lastRankId,pageSize,true);
+        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,status,lastDate,startNum,pageSize,true);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
     }
