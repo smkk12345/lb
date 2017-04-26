@@ -19,6 +19,7 @@ public interface ImproveMapper {
     int insertSelective(@Param("improve") Improve improve,@Param("tablename") String tablename);
 
     Improve selectByPrimaryKey(@Param("impid")Long impid,
+                               @Param("businessid") String businessid,
                                @Param("tablename")String tablename,
                                @Param("isdel")String isdel,
                                @Param("ispublic")String ispublic);
