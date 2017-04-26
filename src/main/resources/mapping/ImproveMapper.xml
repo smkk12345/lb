@@ -393,11 +393,11 @@
     <where>
       rm.status = '1'
       AND ir.businessid = #{businessid}
+      <if test="lastdate != null">
+        AND ir.createtime &lt; #{lastdate}
+      </if>
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
-        <if test="lastdate != null">
-          AND ir.createtime &lt; #{lastdate}
-        </if>
         group by ir.userid
       </if>
     </where>
