@@ -34,7 +34,7 @@ public interface CommentMongoService {
      * @param itypeid  各类型对应的id
 	 * CommentMongoDao
 	 */
-	BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype, int startNo,
+	BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype, String impid, int startNo,
 			int pageSize);
 	
 	/**
@@ -46,7 +46,7 @@ public interface CommentMongoService {
      * @param itypeid  各类型对应的id
 	 * CommentMongoDao
 	 */
-	BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String itypeid, String itype);
+	BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String itypeid, String itype, String impid);
 	
 	/**
 	 * @author yinxc
@@ -74,6 +74,6 @@ public interface CommentMongoService {
      * @param itypeid  各类型对应的id
 	 * CommentMongoDao
 	 */
-	BaseResp<Integer> selectCommentCountSum(String itypeid, String itype);
+	BaseResp<Integer> selectCommentCountSum(String itypeid, String itype, String impid);
 	
 }

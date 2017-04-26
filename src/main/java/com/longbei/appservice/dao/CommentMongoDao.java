@@ -80,11 +80,17 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public List<Comment> selectCommentByItypeid(String businessid, String businesstype){
+	public List<Comment> selectCommentByItypeid(String businessid, String businesstype, String impid){
 		List<Comment> list = null;
 		try {
-			Query query = Query.query(Criteria.where("businessid").is(businessid)
-					.and("businesstype").is(businesstype));
+			Criteria criteria  = Criteria.where("businesstype").is(businesstype);
+			if (!StringUtils.isBlank(impid)) {
+				criteria = criteria.and("impid").is(impid);
+			}
+			if (!StringUtils.isBlank(businessid)) {
+				criteria = criteria.and("businessid").is(businessid);
+			}
+			Query query = Query.query(criteria);
 			list = mongoTemplate1.find(query,Comment.class);
 		} catch (Exception e) {
 			logger.error("selectCommentByItypeid businessid = {}, businesstype = {}", businessid, businesstype, e);

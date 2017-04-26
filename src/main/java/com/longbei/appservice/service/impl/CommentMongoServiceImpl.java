@@ -22,7 +22,6 @@ import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Comment;
@@ -30,9 +29,9 @@ import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLikes;
 import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
@@ -49,7 +48,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	@Autowired
 	private CommentLikesMongoDao commentLikesMongoDao;
 	@Autowired
-	private UserMsgMapper userMsgMapper;
+	private UserMsgService userMsgService;
 	@Autowired
 	private UserMongoDao userMongoDao;
 	@Autowired
@@ -70,9 +69,15 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			//添加评论总数
 			insertCount(comment);
 			//businesstype类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-			if("0".equals(comment.getBusinesstype()) || "1".equals(comment.getBusinesstype())){
+			// 10：榜中微进步  11 圈子中微进步  12 教室中微进步
+			if(!"2".equals(comment.getBusinesstype()) && !"3".equals(comment.getBusinesstype()) 
+					&& !"4".equals(comment.getBusinesstype())){
 				//添加评论消息
-				insertMsg(comment);
+				//msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+				userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
+						comment.getImpid(), comment.getBusinesstype(), 
+						comment.getBusinessid(), comment.getContent(), "1", "1", 0);
+//				insertMsg(comment);
 			}
 
 			//添加评论---    +积分
@@ -96,29 +101,29 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	 * return_type
 	 * CommentMongoServiceImpl
 	 */
-	private void insertMsg(Comment comment){
-		UserMsg record = new UserMsg();
-		if(!StringUtils.isBlank(comment.getFriendid())){
-			record.setUserid(Long.valueOf(comment.getFriendid()));
-		}
-		record.setCreatetime(new Date());
-		record.setFriendid(Long.valueOf(comment.getUserid()));
-		record.setGtype(comment.getBusinesstype());
-		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
-		record.setMsgtype("1");
-		record.setSnsid(Long.valueOf(comment.getBusinessid()));
-		record.setRemark(comment.getContent());
-		record.setIsdel("0");
-		record.setIsread("0");
-		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
-		// 送花 4 送钻石  5:粉丝  等等)
-		record.setMtype("1");
-		try {
-			userMsgMapper.insertSelective(record);
-		} catch (Exception e) {
-			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
-		}
-	}
+//	private void insertMsg(Comment comment){
+//		UserMsg record = new UserMsg();
+//		if(!StringUtils.isBlank(comment.getFriendid())){
+//			record.setUserid(Long.valueOf(comment.getFriendid()));
+//		}
+//		record.setCreatetime(new Date());
+//		record.setFriendid(Long.valueOf(comment.getUserid()));
+//		record.setGtype(comment.getBusinesstype());
+//		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+//		record.setMsgtype("1");
+//		record.setSnsid(Long.valueOf(comment.getBusinessid()));
+//		record.setRemark(comment.getContent());
+//		record.setIsdel("0");
+//		record.setIsread("0");
+//		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+//		// 送花 4 送钻石  5:粉丝  等等)
+//		record.setMtype("1");
+//		try {
+//			userMsgMapper.insertSelective(record);
+//		} catch (Exception e) {
+//			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+//		}
+//	}
 	
 	private void insert(Comment comment){
 		try {
@@ -173,7 +178,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 	
 	@Override
-	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype,
+	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype, 
+			String impid, 
 			int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		Map<String, Object> expandData = new HashMap<>();
@@ -186,7 +192,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 					initCommentUserInfoByUserid(comment, friendid);
 					List<CommentLower> lowers = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
 					//初始化用户信息
-					initCommentLowerUserInfoList(lowers);
+					initCommentLowerUserInfoList(lowers, friendid);
 					comment.setLowerList(lowers);
 					
 					//判断是否点赞
@@ -195,7 +201,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //						comment.setIsaddlike("1");
 //					}
 				}
-				BaseResp<Integer> resp = selectCommentCountSum(businessid, businesstype);
+				BaseResp<Integer> resp = selectCommentCountSum(businessid, businesstype, impid);
 				//获取评论总数
 				if (ResultUtil.isSuccess(resp)){
 					commentNum = resp.getData();
@@ -215,10 +221,11 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 	
 	@Override
-	public BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String businessid, String businesstype) {
+	public BaseResp<Object> selectCommentHotListByItypeidAndFid(String friendid, String businessid, 
+			String businesstype, String impid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype);
+			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype, impid);
 			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -294,10 +301,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 
 	@Override
-	public BaseResp<Integer> selectCommentCountSum(String businessid, String businesstype) {
+	public BaseResp<Integer> selectCommentCountSum(String businessid, String businesstype, String impid) {
 		BaseResp<Integer> reseResp = new BaseResp<Integer>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype);
+			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype, impid);
 			//获取评论总数
 			int zong = 0;
 			if(null != list && list.size()>0){
@@ -318,16 +325,31 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     /**
      * 初始化消息中用户信息 ------List
      */
-    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers, String friendid){
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
     				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-        	        commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+    				//获取好友昵称
+    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
+    						Long.parseLong(commentLower.getSeconduserid()));
+    				if(!StringUtils.isBlank(remark)){
+    					commentLower.setSecondNickname(remark);
+    				}else{
+    					commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+    				}
     			}
 				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
 					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-					commentLower.setFirstNickname(appUserMongo.getNickname());
+					//获取好友昵称
+    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
+    						Long.parseLong(commentLower.getFirstuserid()));
+    				if(!StringUtils.isBlank(remark)){
+    					commentLower.setFirstNickname(remark);
+    				}else{
+    					commentLower.setFirstNickname(appUserMongo.getNickname());
+    				}
+//					commentLower.setFirstNickname(appUserMongo.getNickname());
 				}
 			}
     	}
