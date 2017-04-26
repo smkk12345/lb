@@ -1,7 +1,6 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +20,14 @@ import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserCardMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.UserCard;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
+import com.longbei.appservice.service.UserMsgService;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -39,7 +37,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Autowired
 	private ClassroomMembersMapper classroomMembersMapper;
 	@Autowired
-	private UserMsgMapper userMsgMapper;
+	private UserMsgService userMsgService;
 	@Autowired
 	private UserCardMapper userCardMapper;
 	@Autowired
@@ -74,7 +72,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			//获取评论总数
 			int commentNum = 0;
 			BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-					(String.valueOf(classroomid),Constant.COMMENT_CLASSROOM_TYPE);
+					(String.valueOf(classroomid), Constant.COMMENT_CLASSROOM_TYPE, "");
 			if (ResultUtil.isSuccess(baseResp)){
 				commentNum = baseResp.getData();
 	        }
@@ -389,6 +387,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> updateClassnoticeByClassroomid(long classroomid, long userid, String classnotice, String ismsg) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			boolean temp = updateClassnotice(classroomid, classnotice);
 			if (temp) {
 				if("1".equals(ismsg)){
@@ -396,11 +395,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
 					if(null != list && list.size()>0){
 						for (ClassroomMembers classroomMembers : list) {
-							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
+							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您";
+							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+//							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+//							//snsid---教室业务id
+//							// gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
+//							//mtype 0 系统消息  1 对话消息   2:@我消息
+							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
+									"", "4", classroomid + "", remark, "2", "14", 0);
+//							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
 						}
 					}
 				}
-				Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 				reseResp.setData(classroom);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -418,29 +424,29 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * 每个成员添加消息
 	 * 2017年3月2日
 	 */
-	private void addMsg(long classroomid, long userid, String classnotice, long friendid){
-		//添加消息
-		UserMsg record = new UserMsg();
-		record.setFriendid(userid);
-		record.setUserid(friendid);
-		//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
-		//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
-		record.setMsgtype("14");
-		//snsid---教室业务id
-		record.setSnsid(classroomid);
-		record.setRemark(classnotice);
-		//isdel 消息假删  0 未删 1 假删
-		record.setIsdel("0");
-		//isread 0 未读  1 已读
-		record.setIsread("0");
-		record.setCreatetime(new Date());
-		// gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
-		record.setGtype("4");
-		//mtype 0 系统消息  1 对话消息   2:@我消息
-		record.setMtype("2");
-		record.setNum(0);
-		userMsgMapper.insertSelective(record);
-	}
+//	private void addMsg(long classroomid, long userid, String classnotice, long friendid){
+//		//添加消息
+//		UserMsg record = new UserMsg();
+//		record.setFriendid(userid);
+//		record.setUserid(friendid);
+//		//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+//		//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+//		record.setMsgtype("14");
+//		//snsid---教室业务id
+//		record.setSnsid(classroomid);
+//		record.setRemark(classnotice);
+//		//isdel 消息假删  0 未删 1 假删
+//		record.setIsdel("0");
+//		//isread 0 未读  1 已读
+//		record.setIsread("0");
+//		record.setCreatetime(new Date());
+//		// gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
+//		record.setGtype("4");
+//		//mtype 0 系统消息  1 对话消息   2:@我消息
+//		record.setMtype("2");
+//		record.setNum(0);
+//		userMsgMapper.insertSelective(record);
+//	}
 	
 	private boolean updateClassnotice(long classroomid, String classnotice){
 		int temp = classroomMapper.updateClassnoticeByClassroomid(classroomid, classnotice);

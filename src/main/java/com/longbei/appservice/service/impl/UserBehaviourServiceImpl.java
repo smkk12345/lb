@@ -14,6 +14,8 @@ import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import com.longbei.appservice.service.UserMsgService;
+
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     @Autowired
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
-    private UserMsgMapper userMsgMapper;
+    private UserMsgService userMsgService;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
@@ -476,7 +478,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             String remark = Constant.MSG_USER_PL_LEVEL_MODEL.replace("n", level + "");
             remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
             //mtype 0 系统消息      msgtype  19：十全十美升级
-            levelMsg(userInfo.getUserid(), "19", remark);
+            userMsgService.insertMsg("0", userInfo.getUserid().toString(), 
+            		"", "6", "", remark, "0", "19", 0);
+//            levelMsg(userInfo.getUserid(), "19", remark);
         }catch (Exception e){
             logger.error("subLevelUpAsyn error and msg = {}",e);
         }
@@ -496,7 +500,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             //推送一条消息
             String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
             //mtype 0 系统消息      msgtype  18:升龙级
-            levelMsg(userInfo.getUserid(), "18", remark);
+            userMsgService.insertMsg("0", userInfo.getUserid().toString(), 
+            		"", "6", "", remark, "0", "18", 0);
+//            levelMsg(userInfo.getUserid(), "18", remark);
         }catch (Exception e){
             logger.error("levelUpAsyn error and msg = {}",e);
         }
@@ -507,19 +513,19 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 	 * 等级升降级添加消息
 	 * 2017年3月8日
 	 */
-    private void levelMsg(long userid, String msgtype, String remark){
-    	UserMsg userMsg = new UserMsg();
-        userMsg.setUserid(userid);
-        userMsg.setMtype("0");
-        userMsg.setMsgtype(msgtype);
-        userMsg.setRemark(remark);
-        userMsg.setIsdel("0");
-        userMsg.setIsread("0");
-        //gtype  0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
-        userMsg.setGtype("6");
-        userMsg.setCreatetime(new Date());
-        userMsgMapper.insertSelective(userMsg);
-    }
+//    private void levelMsg(long userid, String msgtype, String remark){
+//    	UserMsg userMsg = new UserMsg();
+//        userMsg.setUserid(userid);
+//        userMsg.setMtype("0");
+//        userMsg.setMsgtype(msgtype);
+//        userMsg.setRemark(remark);
+//        userMsg.setIsdel("0");
+//        userMsg.setIsread("0");
+//        //gtype  0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+//        userMsg.setGtype("6");
+//        userMsg.setCreatetime(new Date());
+//        userMsgMapper.insertSelective(userMsg);
+//    }
 
     /**
      *  进步币发生变化
