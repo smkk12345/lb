@@ -329,7 +329,7 @@ public class Constant {
 	public static final String RANK_TYEP_B = "1";
 	public static final String RANK_TYEP_C = "0";
 
-
+	public static final String PUBLISH_BG_KEY = "publishbg";
 	/**
 	 * 进步时间线类型
 	 */

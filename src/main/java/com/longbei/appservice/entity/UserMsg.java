@@ -46,6 +46,8 @@ public class UserMsg {
 	private String isread;// 0 未读 1 已读
 
 	private String gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+	
+	private Long gtypeid;  //榜id  教室id 圈子id
 
 	private Integer num;  //送花  送钻石   个数
 	
@@ -310,6 +312,15 @@ public class UserMsg {
 
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Long getGtypeid() {
+		return gtypeid;
+	}
+
+	public void setGtypeid(Long gtypeid) {
+		this.gtypeid = gtypeid;
 	}
 
 	//	public String getImpPickey() {

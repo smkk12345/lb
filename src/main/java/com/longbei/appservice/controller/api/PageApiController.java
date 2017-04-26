@@ -182,7 +182,37 @@ public class PageApiController {
     }
 
 
+    /**
+     * 保存或更新一键发布背景图
+     * @param pic
+     * @return
+     */
+    @RequestMapping("updatepublishbg")
+    public BaseResp<Object> saveOrUpdatePublishBg(String pic){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.saveOrUpdatePublishBg(pic);
+        } catch (Exception e) {
+            logger.error("save or update publishbg is error:",e);
+        }
+        return baseResp;
+    }
 
+
+    /**
+     * 获取一键发布背景图
+     * @return
+     */
+    @RequestMapping("publishbgdetail")
+    public BaseResp<String> selectPublishBg(){
+        BaseResp<String> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectPublishBg();
+        } catch (Exception e) {
+            logger.error("select publishbg is error:",e);
+        }
+        return baseResp;
+    }
 
 
 

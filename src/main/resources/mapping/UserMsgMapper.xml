@@ -11,12 +11,14 @@
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="isread" property="isread" jdbcType="CHAR" />
     <result column="gtype" property="gtype" jdbcType="CHAR" />
+    <result column="gtypeid" property="gtypeid" />
     <result column="mtype" property="mtype" jdbcType="CHAR" />
     <result column="num" property="num" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, mtype, num, createtime
+    id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, 
+    gtypeid, mtype, num, createtime
   </sql>
   <sql id="Fid_Column_List" >
     friendid
@@ -177,11 +179,11 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
     insert into user_msg (userid, friendid,
       msgtype, snsid, remark, 
-      isdel, isread, gtype, mtype, num, createtime,updatetime
+      isdel, isread, gtype, gtypeid, mtype, num, createtime,updatetime
       )
     values ( #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT},
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
-      #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{mtype,jdbcType=CHAR}, 
+      #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{gtypeid}, #{mtype,jdbcType=CHAR}, 
       #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},#{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -214,6 +216,9 @@
       </if>
       <if test="gtype != null" >
         gtype,
+      </if>
+      <if test="gtypeid != null" >
+        gtypeid,
       </if>
       <if test="mtype != null" >
         mtype,
@@ -252,6 +257,9 @@
       </if>
       <if test="gtype != null" >
         #{gtype,jdbcType=CHAR},
+      </if>
+      <if test="gtypeid != null" >
+        #{gtypeid},
       </if>
       <if test="mtype != null" >
         #{mtype,jdbcType=CHAR},
@@ -292,6 +300,9 @@
       <if test="gtype != null" >
         gtype = #{gtype,jdbcType=CHAR},
       </if>
+      <if test="gtypeid != null" >
+        gtypeid = #{gtypeid},
+      </if>
       <if test="mtype != null" >
         mtype = #{mtype,jdbcType=CHAR},
       </if>
@@ -315,6 +326,7 @@
       isdel = #{isdel,jdbcType=CHAR},
       isread = #{isread,jdbcType=CHAR},
       gtype = #{gtype,jdbcType=CHAR},
+      gtypeid = #{gtypeid},
       mtype = #{mtype,jdbcType=CHAR},
       num = #{num,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP},

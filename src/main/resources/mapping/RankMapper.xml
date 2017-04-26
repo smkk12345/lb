@@ -524,9 +524,6 @@
       <if test="ranklimite != null" >
         ranklimite = #{ranklimite,jdbcType=INTEGER},
       </if>
-      <if test="rankinvolved != null" >
-        rankinvolved = #{rankinvolved,jdbcType=INTEGER},
-      </if>
       <if test="rankscope != null" >
         rankscope = #{rankscope,jdbcType=CHAR},
       </if>

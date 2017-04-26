@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.SysCommon;
+import org.apache.ibatis.annotations.Param;
 
 public interface SysCommonMapper {
     int deleteByPrimaryKey(Integer id);
@@ -11,7 +12,11 @@ public interface SysCommonMapper {
 
     SysCommon selectByPrimaryKey(Integer id);
 
+    SysCommon selectByKey(@Param("key") String key);
+
     int updateByPrimaryKeySelective(SysCommon record);
+
+    int updateByKey(SysCommon record);
 
     int updateByPrimaryKey(SysCommon record);
 }

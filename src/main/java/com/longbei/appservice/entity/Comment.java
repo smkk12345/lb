@@ -24,7 +24,10 @@ public class Comment {
 	private String content;    //评论内容
 	private String createtime; //评论时间
 	private String businesstype;      //类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+											//5 榜中微进步评论  6 圈子中微进步评论  7 教室中微进步评论
 	private String businessid;    //各类型对应的id
+	
+	private String impid; //进步id
 	@Transient
 	private List<CommentLower> lowerList = new ArrayList<>();
 	@Transient
@@ -122,6 +125,14 @@ public class Comment {
 
 	public void setAppUserMongoEntityUserid(AppUserMongoEntity appUserMongoEntityUserid) {
 		this.appUserMongoEntityUserid = appUserMongoEntityUserid;
+	}
+
+	public String getImpid() {
+		return impid;
+	}
+
+	public void setImpid(String impid) {
+		this.impid = impid;
 	}
 	
 }
