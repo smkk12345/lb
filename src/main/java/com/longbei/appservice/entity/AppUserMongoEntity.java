@@ -24,6 +24,7 @@ public class AppUserMongoEntity {
 
 	private String updatetime;
 	private String createtime;
+	private String brief;
 	@JsonSerialize(using=ToStringSerializer.class)
 	private Long userid;
 	@Transient
@@ -121,6 +122,14 @@ public class AppUserMongoEntity {
 
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+
+	public void setBrief(String brief) {
+		this.brief = brief;
+	}
+
+	public String getBrief() {
+		return brief;
 	}
 
 	public void setUserid(String userid){

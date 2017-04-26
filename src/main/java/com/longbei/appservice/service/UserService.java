@@ -27,6 +27,8 @@ public interface UserService {
 	 * 2017年3月8日
 	 */
 	BaseResp<Object> selectByUserid(long userid);
+
+	UserInfo selectJustInfo(long userid);
 	
 	/**
 	 * 注册
@@ -206,5 +208,5 @@ public interface UserService {
 	 */
 	BaseResp<List<UserSettingMenu>> selectMenuByUid(long userid);
 
-
+	BaseResp<Object> updateBg(long userid,String bg);
 }

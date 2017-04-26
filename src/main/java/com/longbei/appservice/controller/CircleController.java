@@ -154,11 +154,12 @@ public class CircleController {
             userMsg.setCreatetime(new Date());
             userMsg.setFriendid(Long.parseLong(userId));
             userMsg.setMsgtype("11");
-            userMsg.setSnsid(new Long(circleId));
+//            userMsg.setSnsid(new Long(circleId));
             userMsg.setRemark("圈子系统公告更新了,请及时关注圈子动态哦!");
             userMsg.setIsdel("0");
             userMsg.setIsread("0");
             userMsg.setGtype("3");
+            userMsg.setGtypeid(new Long(circleId));
             userMsg.setMtype("2");
 
             //通知所有用户

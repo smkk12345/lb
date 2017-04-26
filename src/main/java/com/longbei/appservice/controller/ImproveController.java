@@ -9,6 +9,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.SysSensitiveService;
+import com.longbei.appservice.service.impl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class ImproveController {
     private ImpComplaintsService impComplaintsService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private UserServiceImpl userService;
 
 
     /**
@@ -419,16 +422,21 @@ public class ImproveController {
             improves = improveService.selectImproveListByUser(userid, ptype, ctype,
                     lastDate == null ? null : DateUtils.parseDate(lastDate),
                     Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
+            BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+            baseres.setData(improves);
+
+            if(StringUtils.isBlank(lastDate)&&ctype.equals("1")){
+                UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+                baseres.getExpandData().put("totalimp",userInfo.getTotalimp());
+            }
+            return baseres;
         } catch (Exception e) {
             logger.error("select improve line list is error:{}", e);
         }
         if (null == improves) {
-
             return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
-        baseres.setData(improves);
-        return baseres;
+        return BaseResp.fail();
     }
 
     /**
