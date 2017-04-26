@@ -55,6 +55,10 @@ public class ProductBasic {
     private Integer startNum;  //分页起始值
 
     private Integer pageSize;  // 每页显示条数
+    
+    private String productcatetitle;//商品类别名称
+    
+    private String[] photos; //商品图片
     //-----------------------------------------------------------
 
 
@@ -380,4 +384,20 @@ public class ProductBasic {
     public void setLowimpicon(Long lowimpicon) {//最低进步币要求
         this.lowimpicon = lowimpicon;
     }
+
+	public String getProductcatetitle() {
+		return productcatetitle;
+	}
+
+	public void setProductcatetitle(String productcatetitle) {
+		this.productcatetitle = productcatetitle;
+	}
+
+	public String[] getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(String[] photos) {
+		this.photos = photos;
+	}
 }
