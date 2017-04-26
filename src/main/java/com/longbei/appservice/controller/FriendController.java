@@ -117,26 +117,25 @@ public class FriendController {
      * @url http://ip:port/app_service/friend/friendAddAskList
      * @param userid 用户id
      * @param startNum 开始下标
-     * @param endNum 结束下标
+     * @param pageSize 结束下标
      * @return
      */
     @SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value="friendAddAskList")
-    public BaseResp<Object> friendAddAskList(Long userid,Integer startNum,Integer endNum){
-        logger.info("see friendAddAsk list userId:{} startNum:{} endNum:{}",userid,startNum,endNum);
+    public BaseResp<Object> friendAddAskList(Long userid,String startNum,String pageSize){
+        logger.info("see friendAddAsk list userId:{} startNum:{} endNum:{}",userid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.fail("参数错误");
         }
-        if(startNum == null){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        if(StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
 
-        baseResp = friendService.friendAddAskList(userid,startNum,pageSize);
+        baseResp = friendService.friendAddAskList(userid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
 
         return baseResp;
     }

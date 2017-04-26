@@ -25,11 +25,12 @@
     <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="publishawardtype" property="publishawardtype" jdbcType="VARCHAR" />
+    <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, rankid, userid, acceptdate, confirmacceptdate, awardlevel, awardid, status, reciverusername, 
     reciverusertel, reciveruseraddr, logisticscompany, logisticsnum, dispatchdate, remarker, 
-    handleuserid, createdate,username,ranktitle,awardcateid,receivecode,sortnum,publishawardtype
+    handleuserid, createdate,username,ranktitle,awardcateid,receivecode,sortnum,publishawardtype,awardnickname
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -368,6 +369,27 @@
       <if test="createdate != null" >
         createdate,
       </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="ranktitle != null" >
+        ranktitle,
+      </if>
+      <if test="awardcateid != null" >
+        awardcateid,
+      </if>
+      <if test="receivecode != null" >
+        receivecode,
+      </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
+      <if test="publishawardtype != null" >
+        publishawardtype,
+      </if>
+      <if test="awardnickname != null" >
+        awardnickname,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -421,6 +443,27 @@
       <if test="createdate != null" >
         #{createdate,jdbcType=TIMESTAMP},
       </if>
+      <if test="username != null" >
+        #{username},
+      </if>
+      <if test="ranktitle != null" >
+        #{ranktitle},
+      </if>
+      <if test="awardcateid != null" >
+        #{awardcateid},
+      </if>
+      <if test="receivecode != null" >
+        #{receivecode},
+      </if>
+      <if test="sortnum != null" >
+        #{sortnum},
+      </if>
+      <if test="publishawardtype != null" >
+        #{publishawardtype},
+      </if>
+      <if test="awardnickname != null" >
+        #{awardnickname},
+      </if>
     </trim>
   </insert>
   <update id="updateByRankidAndUseridSelective" parameterType="com.longbei.appservice.entity.RankAcceptAward" >
@@ -465,7 +508,7 @@
       </if>
     </set>
     where
-    rankid = #{rankid,jdbcType=BIGINT} AND  userid = #{userid,jdbcType=BIGINT},
+    rankid = #{rankid,jdbcType=BIGINT} AND  userid = #{userid,jdbcType=BIGINT}
 
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.RankAcceptAward" >

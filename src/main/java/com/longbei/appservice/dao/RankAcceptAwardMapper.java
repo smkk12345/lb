@@ -11,8 +11,6 @@ public interface RankAcceptAwardMapper {
 
     int insert(RankAcceptAward record);
 
-    int insertBatch(List<RankAcceptAward> acceptAwards);
-
     int insertSelective(RankAcceptAward record);
 
     RankAcceptAward selectByPrimaryKey(Integer id);

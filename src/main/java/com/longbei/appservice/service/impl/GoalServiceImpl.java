@@ -69,16 +69,16 @@ public class GoalServiceImpl implements GoalService {
      * 用户所有的目标进步列表
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<Object> list(long userid, int startNum, int endNum) {
+    public BaseResp<Object> list(long userid, int startNum, int pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            baseResp = improveService.selectGoalMainImproveList(userid,startNum,endNum);
+            baseResp = improveService.selectGoalMainImproveList(userid,startNum,pageSize);
         }catch (Exception e){
-            logger.error("list error userid={},startNum={},endNum={}",userid,startNum,endNum,e);
+            logger.error("list error userid={},startNum={},endNum={}",userid,startNum,pageSize,e);
         }
         return baseResp;
     }
@@ -88,16 +88,16 @@ public class GoalServiceImpl implements GoalService {
      * @param userid
      * @param goalid 目标id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int endNum) {
+    public BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int pageSize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try{
-            baseResp = improveService.selectBusinessImproveList(userid + "", goalid + "", "1", startNum,endNum);
+            baseResp = improveService.selectBusinessImproveList(userid + "", goalid + "", "1", startNum,pageSize);
         }catch (Exception e){
-            logger.error("list error userid={},startNum={},endNum={}",userid,startNum,endNum,e);
+            logger.error("list error userid={},startNum={},endNum={}",userid,startNum,pageSize,e);
         }
         return baseResp;
     }
