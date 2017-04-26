@@ -48,8 +48,8 @@ public class ImproveController {
      * @param userid   用户id
      * @param ptype    十全十美id  不传时查所有
      * @param ctype    0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
-     * @param lastdate 当天日期
-     * @param pagesize 显示条数
+     * @param lastDate 当天日期
+     * @param pageSize 显示条数
      * @return
      * @Description: 获取参数lastdate当天的用户进步列表
      * @author yinxc
@@ -57,19 +57,19 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "line/daylist")
-    public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype, String lastdate, String pagesize) {
-        if (StringUtils.hasBlankParams(userid, ctype, lastdate)) {
+    public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype, String lastDate, String pageSize) {
+        if (StringUtils.hasBlankParams(userid, ctype, lastDate)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         BaseResp<List<Improve>> baseres = new BaseResp<>();
         List<Improve> improves = null;
         try {
             improves = improveService.selectImproveListByUserDate(userid, ptype, ctype,
-                    lastdate == null ? null : DateUtils.parseDate(lastdate),
-                    Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
+                    lastDate == null ? null : DateUtils.parseDate(lastDate),
+                    Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
             baseres.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
-            logger.error("line daylist userid = {}, ctype = {}, lastdate = {}", userid, ctype, lastdate, e);
+            logger.error("line daylist userid = {}, ctype = {}, lastdate = {}", userid, ctype, lastDate, e);
         }
         if (null == improves) {
             return new BaseResp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_43);
@@ -221,7 +221,7 @@ public class ImproveController {
      * @param rankid   榜单id
      * @param sift 筛选类型 （ 0 - 全部 1 - 关注 2 - 好友 3 - 熟人）
      * @param sorttype 排序类型（ 0 - 成员动态 1 - 热度 2 - 时间）
-     * @param startNo  开始条数
+     * @param startNum  开始条数
      * @param pageSize 页面显示条数
      * @param lastDate 最后一条时间 在 sorttype=0 时使用
      * @return
@@ -230,7 +230,7 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "rank/list", method = RequestMethod.POST)
-    public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNo,
+    public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNum,
                                           String pageSize,String lastDate) {
         if (StringUtils.hasBlankParams(userid, rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -241,15 +241,15 @@ public class ImproveController {
 //                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
         }
-        if (StringUtils.isBlank(startNo)) {
-            startNo = Constant.DEFAULT_START_NO;
+        if (StringUtils.isBlank(startNum)) {
+            startNum = Constant.DEFAULT_START_NO;
         }
         if (StringUtils.isBlank(pageSize)) {
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         List<Improve> improves = new ArrayList<>();
         try {
-            improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNo),
+            improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNum),
                     Integer.parseInt(pageSize),lastDate);
 
         } catch (Exception e) {
@@ -269,7 +269,7 @@ public class ImproveController {
      * @param userid   用户id
      * @param circleid 圈子中id
      * @param sorttype 排序类型 0 - 默认 1 - 动态 2 - 时间）
-     * @param startNo  分页开始条数
+     * @param startNum  分页开始条数
      * @param pageSize 分页每页显示条数
      * @return
      * @author:luye
@@ -279,12 +279,12 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "circle/list", method = RequestMethod.POST)
     public BaseResp selectCircleImproveList(String userid, String circleid, String sorttype, String sift,
-                                            String startNo, String pageSize) {
+                                            String startNum, String pageSize) {
         if (StringUtils.hasBlankParams(userid, circleid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(startNo)) {
-            startNo = Constant.DEFAULT_START_NO;
+        if (StringUtils.isBlank(startNum)) {
+            startNum = Constant.DEFAULT_START_NO;
         }
         if (StringUtils.isBlank(pageSize)) {
             pageSize = Constant.DEFAULT_PAGE_SIZE;
@@ -292,12 +292,12 @@ public class ImproveController {
         List<Improve> improves = null;
         try {
             if ("1".equals(sorttype)) {
-                improves = improveService.selectCircleImproveList(userid, circleid, sift, null, Integer.parseInt(startNo),
+                improves = improveService.selectCircleImproveList(userid, circleid, sift, null, Integer.parseInt(startNum),
                         Integer.parseInt(pageSize));
 
             } else {
                 improves = improveService.selectCircleImproveListByDate(userid, circleid, sift, null,
-                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+                        Integer.parseInt(startNum), Integer.parseInt(pageSize));
             }
         } catch (Exception e) {
             logger.error("select circle improve list is error:{}", e);
@@ -362,7 +362,7 @@ public class ImproveController {
      *
      * @param userid   用户id
      * @param goalid   目标id
-     * @param startNo  分页开始条数
+     * @param startNum  分页开始条数
      * @param pageSize 分页每页显示条数
      * @return
      * @author:luye
@@ -371,19 +371,19 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "goal/list", method = RequestMethod.POST)
-    public BaseResp selectGoalImproveList(String userid, String goalid, String startNo, String pageSize) {
+    public BaseResp selectGoalImproveList(String userid, String goalid, String startNum, String pageSize) {
         if (StringUtils.hasBlankParams(userid, goalid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(startNo)) {
-            startNo = Constant.DEFAULT_START_NO;
+        if (StringUtils.isBlank(startNum)) {
+            startNum = Constant.DEFAULT_START_NO;
         }
         if (StringUtils.isBlank(pageSize)) {
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         List<Improve> improves = null;
         try {
-            improves = improveService.selectGoalImproveList(userid, goalid, null, Integer.parseInt(startNo),
+            improves = improveService.selectGoalImproveList(userid, goalid, null, Integer.parseInt(startNum),
                     Integer.parseInt(pageSize));
         } catch (Exception e) {
             logger.error("select goal improve list is error:{}", e);
@@ -402,23 +402,23 @@ public class ImproveController {
      * @param userid   用户id
      * @param ptype    十全十美id
      * @param ctype    0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
-     * @param lastdate 最后一条日期
-     * @param pagesize 显示条数
+     * @param lastDate 最后一条日期
+     * @param pageSize 显示条数
      * @return
      * @author luye
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "line/list", method = RequestMethod.POST)
-    public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastdate, String pagesize) {
+    public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastDate, String pageSize) {
         if (StringUtils.hasBlankParams(userid, ctype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         List<Improve> improves = null;
         try {
             improves = improveService.selectImproveListByUser(userid, ptype, ctype,
-                    lastdate == null ? null : DateUtils.parseDate(lastdate),
-                    Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
+                    lastDate == null ? null : DateUtils.parseDate(lastDate),
+                    Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
         } catch (Exception e) {
             logger.error("select improve line list is error:{}", e);
         }
@@ -435,8 +435,8 @@ public class ImproveController {
      * 获取指定用户所发的全部进步
      * @param userid  用户id
      * @param targetuserid  所要查看的用户id
-     * @param lastdate 最后一条的时间
-     * @param pagesize 获取数据条数
+     * @param lastDate 最后一条的时间
+     * @param pageSize 获取数据条数
      * @return
      * @author luye
      */
@@ -444,15 +444,15 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "line/targetuserlist", method = RequestMethod.POST)
     public BaseResp<List<Improve>> selectOtherUserImproveList(String userid,String  targetuserid,
-                                                              String lastdate, String pagesize){
+                                                              String lastDate, String pageSize){
         if (StringUtils.hasBlankParams(userid, targetuserid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             baseResp = improveService.selectOtherImproveList(userid,targetuserid,
-                    lastdate == null ? null : DateUtils.parseDate(lastdate),
-                    Integer.parseInt(pagesize == null ? Constant.DEFAULT_PAGE_SIZE : pagesize));
+                    lastDate == null ? null : DateUtils.parseDate(lastDate),
+                    Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
         } catch (Exception e) {
             logger.error("select improve line list is error:{}", e);
         }
@@ -570,21 +570,21 @@ public class ImproveController {
      *
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "selectCollect")
-    public BaseResp<Object> selectCollect(String userid, int startNum, int endNum) {
+    public BaseResp<Object> selectCollect(String userid, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        int pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum > 0 && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
+
         try {
             return improveService.selectCollect(userid, startNum, pageSize);
         } catch (Exception e) {
@@ -718,27 +718,27 @@ public class ImproveController {
      * @param userid   用户id
      * @param impid    进步id
      * @param opttype  操作类型 0 -- 赞列表 1 -- 送花列表  2--送钻列表
-     * @param pagesize 获取条数
-     * @param lastdate 最后一条时间 （初次获取可以为null）
+     * @param pageSize 获取条数
+     * @param lastDate 最后一条时间 （初次获取可以为null）
      * @return
      * @author luye
      */
     @RequestMapping(value = "lfdlist")
     @ResponseBody
     public BaseResp<List<ImpAllDetail>> getImproveLFDList(String userid, String impid,
-                                                          String opttype, String pagesize, String lastdate) {
+                                                          String opttype, String pageSize, String lastDate) {
 
         BaseResp<List<ImpAllDetail>> baseResp = new BaseResp<>();
-        if (StringUtils.hasBlankParams(userid, impid, opttype, pagesize)) {
+        if (StringUtils.hasBlankParams(userid, impid, opttype, pageSize)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         Date tempLastDate = null;
-        if(StringUtils.isNotEmpty(lastdate)){
-            tempLastDate = new Date(Long.parseLong(lastdate));
+        if(StringUtils.isNotEmpty(lastDate)){
+            tempLastDate = new Date(Long.parseLong(lastDate));
         }
         try {
             baseResp = improveService.selectImproveLFDList(impid, opttype,
-                    Integer.parseInt(pagesize), tempLastDate);
+                    Integer.parseInt(pageSize), tempLastDate);
 
         } catch (Exception e) {
             logger.error("get improve all detail list is error:{}", e);
@@ -775,27 +775,27 @@ public class ImproveController {
     /**
      * 获取进步推荐列表
      * @param userid 用户id
-     * @param startno 开始条数
-     * @param pagesize 每页显示条数
+     * @param startNum 开始条数
+     * @param pageSize 每页显示条数
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "recommendlist")
-    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startno,String pagesize) {
+    public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startNum,String pageSize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid)) {
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             return baseResp;
         }
-        if (StringUtils.isBlank(startno)) {
-            startno = "1";
+        if (StringUtils.isBlank(startNum)) {
+            startNum = "1";
         }
-        if (StringUtils.isBlank(pagesize)) {
-            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
-            baseResp = improveService.selectRecommendImproveList(userid, Integer.parseInt(startno),
-                    Integer.parseInt(pagesize));
+            baseResp = improveService.selectRecommendImproveList(userid, Integer.parseInt(startNum),
+                    Integer.parseInt(pageSize));
         } catch (Exception e) {
             logger.error("select recommend improve list for app is error:", e);
         }
@@ -807,27 +807,27 @@ public class ImproveController {
      * @param curuserid
      * @param userid
      * @param rankid
-     * @param startno
-     * @param pagesize
+     * @param startNum
+     * @param pageSize
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectListInRank")
-    public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startno,Integer pagesize) {
+    public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startNum,Integer pageSize) {
 
         if (StringUtils.hasBlankParams(curuserid,userid, rankid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if(null == startno){
-            startno = 0;
+        if(null == startNum){
+            startNum = 0;
         }
-        if(null == pagesize){
-            pagesize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         logger.info("inprove select userid={},impid={}", userid);
         try {
             return improveService.selectListInRank(curuserid,userid,rankid,
-                    Constant.IMPROVE_RANK_TYPE,startno,pagesize);
+                    Constant.IMPROVE_RANK_TYPE,startNum,pageSize);
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, e);
         }

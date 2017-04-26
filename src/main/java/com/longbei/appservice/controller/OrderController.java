@@ -1,6 +1,8 @@
 package com.longbei.appservice.controller;
 
 import java.util.List;
+
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,7 @@ public class OrderController {
   				num = Integer.parseInt(number);
   			}
   			baseResp = orderService.buyMoney(Long.parseLong(userid), num, paytype, price);
+			logger.info("buyMoney success and baseResp={}", JSONObject.fromObject(baseResp).toString());
 		} catch (Exception e) {
 			logger.error("buyMoney userid = {}, number = {}, paytype = {}", 
 					userid, number, paytype, e);

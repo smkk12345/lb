@@ -23,13 +23,13 @@ public class FindServiceImpl implements FindService{
     private UserMongoDao userMongoDao;
 
     @Override
-    public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String endNum) {
+    public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
 
         try {
             List<AppUserMongoEntity> list = userMongoDao.findNear(
                     Double.parseDouble(longitude),Double.parseDouble(latitude),50.00,gender,
-                    Integer.parseInt(startNum),Integer.parseInt(endNum)-Integer.parseInt(startNum));
+                    Integer.parseInt(startNum),Integer.parseInt(pageSize));
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
                 //判断是否好友 是否关注 是否粉丝等等
@@ -39,7 +39,7 @@ public class FindServiceImpl implements FindService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("findNear error longitude={},latitude={}," +
-                    "userid={},startNum={},endNum={}",longitude,latitude,userid,startNum,endNum,e);
+                    "userid={},startNum={},endNum={}",longitude,latitude,userid,startNum,pageSize,e);
         }
         return baseResp;
     }

@@ -87,8 +87,7 @@ public class MoneyController {
   			}
   			baseResp = userImpCoinDetailService.selectListByUserid(Long.parseLong(userid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectImpCoinDetail userid = {}, startNum = {}, pageSize = {}",
-					userid, startNum, pageSize, e);
+            logger.error("selectImpCoinDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }
@@ -101,7 +100,7 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectMoneyDetail
     * @Description: 获取龙币明细
     * @param @param userid
-    * @param @param startNum   pageSize
+    * @param @param startNo   pageSize
     * @auther yinxc
     * @currentdate:2017年2月27日
     */
@@ -123,8 +122,7 @@ public class MoneyController {
   			}
   			baseResp = userMoneyDetailService.selectListByUserid(Long.parseLong(userid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}",
-					userid, startNum, pageSize, e);
+            logger.error("selectMoneyDetail userid = {}, startNo = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }
@@ -134,7 +132,7 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectFlowerDetail
     * @Description: 获取用户收到的鲜花明细
     * @param @param userid
-    * @param @param startNum   pageSize
+    * @param @param startNo   pageSize
     * @auther yinxc
     * @currentdate:2017年4月14日
     */
@@ -157,8 +155,7 @@ public class MoneyController {
   			//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
   			baseResp = userFlowerDetailService.selectListByUseridAndOrigin(Long.parseLong(userid), "3", sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}",
-					userid, startNum, pageSize, e);
+            logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
   		return baseResp;
     }

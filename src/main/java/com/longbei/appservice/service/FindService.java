@@ -12,8 +12,8 @@ public interface FindService {
      * @param latitude
      * @param userid
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
-    public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String endNum);
+    public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String pageSize);
 }
