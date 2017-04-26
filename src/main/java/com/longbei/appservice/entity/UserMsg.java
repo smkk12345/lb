@@ -37,7 +37,7 @@ public class UserMsg {
 							//32：创建的龙榜/教室/圈子被选中推荐
 							//32：创建的龙榜/教室/圈子被选中推荐 33.榜主/群主接收申请消息 34.加入的榜获奖通知 35.群主收到的加群申请
 	  						//40：订单已取消 41 榜中进步下榜
-	private Long snsid;// 业务id
+	private Long snsid;// 进步id
 
 	private String remark;// 可能会有一些说明
 
@@ -45,7 +45,8 @@ public class UserMsg {
 
 	private String isread;// 0 未读 1 已读
 
-	private String gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+	private String gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
+							//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
 	
 	private Long gtypeid;  //榜id  教室id 圈子id
 

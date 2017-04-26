@@ -378,6 +378,9 @@
           <if test="userMsg.gtype != null">
             gtype,
           </if>
+          <if test="userMsg.gtypeid != null">
+            gtypeid,
+          </if>
           <if test="userMsg.mtype != null">
             mtype,
           </if>
@@ -412,6 +415,9 @@
               </if>
               <if test="userMsg.gtype != null">
                 #{userMsg.gtype},
+              </if>
+              <if test="userMsg.gtypeid != null">
+                #{userMsg.gtypeid},
               </if>
               <if test="userMsg.mtype != null">
                 #{userMsg.mtype},
@@ -472,6 +478,7 @@
       isdel,
       isread,
       gtype,
+      gtypeid,
       mtype,
       num,
       createtime,
@@ -525,6 +532,12 @@
             #{userMsg.gtype},
           </if>
           <if test="userMsg.gtype == null">
+            0,
+          </if>
+          <if test="userMsg.gtypeid != null">
+            #{userMsg.gtypeid},
+          </if>
+          <if test="userMsg.gtypeid == null">
             0,
           </if>
           <if test="userMsg.mtype != null">

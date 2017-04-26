@@ -3,10 +3,10 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.CircleMembersMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
@@ -36,9 +36,6 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
     @Autowired
     private UserMsgService userMsgService;
-
-    @Autowired
-    private UserMsgMapper userMsgMapper;
 
     @Autowired
     private FriendService friendService;
@@ -289,7 +286,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             updateUserMsg.setId(tempUserMsg.getId());
             updateUserMsg.setIsdel("0");
             updateUserMsg.setIsread("0");
-            int updateRow = userMsgMapper.updateByPrimaryKeySelective(updateUserMsg);
+            int updateRow = userMsgService.updateByPrimaryKeySelective(updateUserMsg);
             //TODO 一句就好， return updateRow > 0;
 //            if(updateRow > 0){
 //                return true;
@@ -297,18 +294,25 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 //            return false;
             return updateRow > 0;
         }
-        UserMsg userMsg = new UserMsg();
-        userMsg.setCreatetime(new Date());
-        userMsg.setUserid(userId);
-        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
-        userMsg.setGtype("3");
-        userMsg.setMsgtype("11");
-        userMsg.setSnsid(circleId);
-        userMsg.setRemark("有新的成员申请加入圈子,快去进行审核吧!");
-        userMsg.setIsdel("0");
-        userMsg.setIsread("0");
-        userMsg.setMtype("2");
-        int row = userMsgMapper.insertSelective(userMsg);
+//        UserMsg userMsg = new UserMsg();
+//        userMsg.setCreatetime(new Date());
+//        userMsg.setUserid(userId);
+//        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+//        userMsg.setGtype("3");
+//        userMsg.setMsgtype("11");
+//        userMsg.setSnsid(circleId);
+//        userMsg.setRemark("有新的成员申请加入圈子,快去进行审核吧!");
+//        userMsg.setIsdel("0");
+//        userMsg.setIsread("0");
+//        userMsg.setMtype("2");
+        BaseResp<Object> baseResp = userMsgService.insertMsg(Constant.SQUARE_USER_ID, userId.toString(), 
+        		"", "3", circleId.toString(), 
+        		"有新的成员申请加入圈子,快去进行审核吧!", "2", "11", 0);
+        if(ResultUtil.isSuccess(baseResp)){
+        	return true;
+        }
+        return false;
+//        int row = userMsgMapper.insertSelective(userMsg);
         
         // TODO 一句代替及好  return row > 0;
 //        if(row > 0){
@@ -316,7 +320,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 //        }else{
 //            return false;
 //        }
-        return row > 0;
+//        return row > 0;
     }
 
     @Transactional
@@ -387,7 +391,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
             //获取圈子的评论数量
             circle.setCommentCount(0);
-            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3");
+            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3", "");
             if(result.getCode() == 0){
                 circle.setCommentCount(result.getData());
             }
