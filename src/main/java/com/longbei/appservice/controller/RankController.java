@@ -115,11 +115,11 @@ public class RankController {
      * @param rankId 榜单id
      * @param sortType 排序的方式 0:综合排序 1:赞 2:花
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value="rankMemberSort")
-    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer endNum){
+    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -130,9 +130,8 @@ public class RankController {
         if(startNum == null || startNum < 1){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(pageSize == null){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
         return baseResp;
@@ -218,11 +217,11 @@ public class RankController {
      * @url http://ip:port/app_service/rank/selectFashionMan
      * @param rankId 榜单id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value="selectFashionMan")
-    public BaseResp<Object> selectFashionMan(Long userid,Long rankId,Integer startNum,Integer endNum){
+    public BaseResp<Object> selectFashionMan(Long userid,Long rankId,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -230,10 +229,10 @@ public class RankController {
         if (startNum == null || startNum < 0){
             startNum =Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
+
         baseResp = this.rankService.selectFashionMan(userid,rankId,startNum,pageSize);
         return baseResp;
     }
@@ -294,18 +293,17 @@ public class RankController {
      * 查询获奖公示
      * @url http://ip:port/app_service/rank/rankAwardList
      * @param startNum 开始下标
-     * @param endNum 结束下标
+     * @param pageSize 结束下标
      * @return
      */
     @RequestMapping(value="rankAwardList")
-    public BaseResp<Object> rankAwardList(Integer startNum,Integer endNum){
+    public BaseResp<Object> rankAwardList(Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.rankService.rankAwardList(startNum,pageSize);
         return baseResp;
@@ -317,19 +315,18 @@ public class RankController {
      * @param rankid
      * @param userid 用户id
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value="getWinningRankAwardUser")
-    public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer endNum){
+    public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         startNum = (startNum == null || startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.rankService.getWinningRankAwardUser(rankid,userid,startNum,pageSize);
         return baseResp;
@@ -357,11 +354,11 @@ public class RankController {
      * @param userid
      * @param searchType 1.我参与的 2.我关注的 3.我创建的
      * @param startNum
-     * @param endNum
+     * @param pageSize
      * @return
      */
     @RequestMapping(value="selectOwnRank")
-    public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,Integer startNum,Integer endNum){
+    public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -372,9 +369,8 @@ public class RankController {
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.rankService.selectownRank(userid,searchType,startNum,pageSize);
         return baseResp;
@@ -503,23 +499,23 @@ public class RankController {
     /**
      * url: http://ip:port/app_service/rank/selectRankListForApp
      * @ 首页推荐的龙榜列表
-     * @param startNo
-     * @param endNum
+     * @param startNum
+     * @param pageSize
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectRankListForApp")
-    public BaseResp<List<Rank>> selectRankListForApp(Integer startNo, Integer endNum){
+    public BaseResp<List<Rank>> selectRankListForApp(Integer startNum, Integer pageSize){
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
-        if(startNo == null || startNo < 0){
-            startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNo){
-            pageSize = endNum - startNo;
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
+
         try {
-            baseResp = rankService.selectRankListForApp(startNo,pageSize);
+            baseResp = rankService.selectRankListForApp(startNum,pageSize);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }
@@ -533,15 +529,14 @@ public class RankController {
      * @param startNum
      */
     @RequestMapping(value="userRankAcceptAwardList")
-    public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer endNum){
+    public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         startNum = (startNum == null|| startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNum != null && endNum > startNum){
-            pageSize = endNum - startNum;
+        if(null == pageSize){
+             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(userid,startNum,pageSize);
         return baseResp;

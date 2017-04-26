@@ -52,14 +52,14 @@ public class UserRelationController extends BaseController {
 	 */
 	 @SuppressWarnings("unchecked")
      @RequestMapping(value = "searchLongRange")
-	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int endNum){
+	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int pageSize){
 		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
 		 try {
-			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, endNum);
+			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, pageSize);
 		 } catch (Exception e) {
 			 logger.error("searchLongRange userid = {}, nickname = {}, msg = {}", userid, nickname, e);
 		 }
@@ -128,35 +128,33 @@ public class UserRelationController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectListByUserId")
-	public BaseResp<Object> selectListByUserId(String userid ,Integer startNum,Integer endNum,String updateTime){
+	public BaseResp<Object> selectListByUserId(String userid ,Integer startNum,Integer pageSize,String updateTime){
 		logger.info("selectListByUserId params userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-		Integer pageSize = null;
 		if(startNum != null && startNum < 0){
 			startNum = 0;
 		}
-		if(startNum != null && (endNum == null || endNum < startNum)){
+		if(null == pageSize){
 			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-		}else if(startNum != null){
-			pageSize = endNum - startNum;
 		}
+
 
 		Date updateDate = null;
 		if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
 			try{
 				updateDate = DateUtils.formatDate(updateTime,null);
 			}catch (Exception e){
-				logger.error("select friend list by userId userId:{} startNum:{} endNum:{} updateTime;{}",userid,startNum,endNum,updateTime);
+				logger.error("select friend list by userId userId:{} startNum:{} pageSize:{} updateTime;{}",userid,startNum,pageSize,updateTime);
 				updateDate = null;
 			}
 		}
 		try {
 			return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, pageSize,updateDate);
 		} catch (Exception e) {
-			logger.error("selectListByUserId userid = {}, startNum = {}, endNum = {}", userid, startNum, endNum, e);
+			logger.error("selectListByUserId userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
 		}
 		return baseResp;
 	}
@@ -266,13 +264,13 @@ public class UserRelationController extends BaseController {
 	* @Description: 查询关注的人员列表：粉丝列表
 	* @param @param userid
 	* @param ftype 0:查询关注列表   1：粉丝列表
-	* @param @param startNum endNum
+	* @param @param startNum pageSize
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String ftype, Integer startNum, Integer endNum){
+	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String ftype, Integer startNum, Integer pageSize){
 		logger.info("selectFansListByUserId params userid={}",userid);
 		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, ftype)) {
@@ -284,8 +282,8 @@ public class UserRelationController extends BaseController {
 			if(null != startNum){
 				sNo = startNum.intValue();
 			}
-			if(null != endNum){
-				sSize = endNum.intValue();
+			if(null != pageSize){
+				sSize = pageSize.intValue();
 			}
 			return userRelationService.selectFansListByUserId(Long.parseLong(userid), ftype, sNo, sSize);
 		} catch (Exception e) {
@@ -299,11 +297,11 @@ public class UserRelationController extends BaseController {
 	 * @url http://ip:port/app_service/user/selectFashionManUser
 	 * @param userid
 	 * @param startNum 开始页码
-	 * @param endNum 结束页码
+	 * @param pageSize 结束页码
      * @return
      */
 	@RequestMapping(value = "selectFashionManUser")
-	public BaseResp<Object> selectFashionManUser(Long userid,Integer startNum,Integer endNum ){
+	public BaseResp<Object> selectFashionManUser(Long userid,Integer startNum,Integer pageSize ){
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		if(userid == null){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -311,9 +309,8 @@ public class UserRelationController extends BaseController {
 		if(startNum == null || startNum < 0){
 			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
 		}
-		Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-		if(endNum != null && endNum > startNum){
-			pageSize = endNum - startNum;
+		if(null == pageSize){
+			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
 		}
 		baseResp = this.userRelationService.selectFashionManUser(userid,startNum,pageSize);
 		return baseResp;

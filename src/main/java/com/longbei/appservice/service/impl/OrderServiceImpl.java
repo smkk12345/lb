@@ -8,7 +8,6 @@ import java.util.Map;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.api.productservice.IProductBasicService;
-import com.longbei.appservice.service.api.productservice.IProductCategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,12 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserAddressMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
+import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -44,11 +44,13 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
-	private UserMsgMapper userMsgMapper;
+	private UserMsgService userMsgService;
 	@Autowired
 	private IProductBasicService iProductBasicService;
 	@Autowired
-	private IProductCategoryService iProductCategoryService;
+	private UserRelationService userRelationService;
+//	@Autowired
+//	private IProductCategoryService iProductCategoryService;
 
 	private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
@@ -229,7 +231,9 @@ public class OrderServiceImpl implements OrderService {
 			  				//msgtype 40：订单已取消
 			  				//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
 			  				//mtype 0 系统消息
-			  				insertMsg(userid, "40", productOrders.getOrderid(), "订单已取消", "7", "0");
+//			  				insertMsg(userid, "40", productOrders.getOrderid(), "订单已取消", "7", "0");
+			  				userMsgService.insertMsg("0", userid + "", productOrders.getOrderid(), "7", productOrders.getOrderid(), 
+									"订单已取消", "0", "40", 0);
 	  					}
 	  				}
 	  				
@@ -258,23 +262,23 @@ public class OrderServiceImpl implements OrderService {
 	* @param @param mtype    设定文件 
 	* @return void    返回类型 
 	*/
-	private void insertMsg(long userid, String msgtype, String snsid, String remark, String gtype, String mtype){
-		//推送消息
-		UserMsg userMsg = new UserMsg();
-		userMsg.setFriendid(0l);
-		userMsg.setUserid(userid);
-		userMsg.setMsgtype(msgtype);
-		userMsg.setSnsid(Long.parseLong(snsid));
-		userMsg.setRemark(remark);
-		userMsg.setIsdel("0");
-		userMsg.setIsread("0");
-		userMsg.setCreatetime(new Date());
-		//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
-		userMsg.setGtype(gtype);
-		//mtype 0 系统消息  1 对话消息  2:@我消息
-		userMsg.setMtype(mtype);
-		userMsgMapper.insertSelective(userMsg);
-	}
+//	private void insertMsg(long userid, String msgtype, String snsid, String remark, String gtype, String mtype){
+//		//推送消息
+//		UserMsg userMsg = new UserMsg();
+//		userMsg.setFriendid(0l);
+//		userMsg.setUserid(userid);
+//		userMsg.setMsgtype(msgtype);
+//		userMsg.setSnsid(Long.parseLong(snsid));
+//		userMsg.setRemark(remark);
+//		userMsg.setIsdel("0");
+//		userMsg.setIsread("0");
+//		userMsg.setCreatetime(new Date());
+//		//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+//		userMsg.setGtype(gtype);
+//		//mtype 0 系统消息  1 对话消息  2:@我消息
+//		userMsg.setMtype(mtype);
+//		userMsgMapper.insertSelective(userMsg);
+//	}
 
 	@Override
 	public BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize) {
@@ -301,7 +305,7 @@ public class OrderServiceImpl implements OrderService {
 	        }
 	        ProductOrders productOrders = baseResp.getData();
 	        if(null != productOrders){
-	        	initMsgUserInfoByUserid(productOrders);
+	        	initMsgUserInfoByUserid(productOrders, userid);
 	        }
 	        baseResp.setData(productOrders);
 	        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -431,7 +435,9 @@ public class OrderServiceImpl implements OrderService {
 	  				//msgtype 24：订单已发货
 	  				//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
 	  				//mtype 0 系统消息
-	  				insertMsg(userid, "24", productOrders.getOrderid(), "订单已发货", "7", "0");
+					userMsgService.insertMsg("0", userid + "", productOrders.getOrderid(), "7", productOrders.getOrderid(), 
+							"订单已发货", "0", "24", 0);
+//	  				insertMsg(userid, "24", productOrders.getOrderid(), "订单已发货", "7", "0");
 				}
 			}
 		}catch (Exception e){
@@ -492,6 +498,7 @@ public class OrderServiceImpl implements OrderService {
 	 * @param currentDate
 	 * @return
      */
+	@SuppressWarnings({ "unchecked", "static-access" })
 	@Override
 	public BaseResp<Object> autoConfirmReceipt(Date currentDate) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -507,24 +514,27 @@ public class OrderServiceImpl implements OrderService {
 			}
 
 			for(ProductOrders productOrders:orderList){
-				UserMsg userMsg = new UserMsg();
-				userMsg.setCreatetime(new Date());
-				userMsg.setUpdatetime(new Date());
-				userMsg.setIsdel("0");
-				userMsg.setIsread("0");
-				userMsg.setRemark("您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!");
-				userMsg.setMtype("0");
-				userMsg.setMsgtype("25");
-				userMsg.setGtype("7");
-				userMsg.setSnsid(Long.parseLong(productOrders.getOrderid()));
-				userMsg.setUserid(Long.parseLong(productOrders.getUserid()));
-				userMsg.setFriendid(new Long(Constant.SQUARE_USER_ID));
-				this.userMsgMapper.insertSelective(userMsg);
+//				UserMsg userMsg = new UserMsg();
+//				userMsg.setCreatetime(new Date());
+//				userMsg.setUpdatetime(new Date());
+//				userMsg.setIsdel("0");
+//				userMsg.setIsread("0");
+//				userMsg.setRemark("您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!");
+//				userMsg.setMtype("0");
+//				userMsg.setMsgtype("25");
+//				userMsg.setGtype("7");
+//				userMsg.setSnsid(Long.parseLong(productOrders.getOrderid()));
+//				userMsg.setUserid(Long.parseLong(productOrders.getUserid()));
+//				userMsg.setFriendid(new Long(Constant.SQUARE_USER_ID));
+//				this.userMsgMapper.insertSelective(userMsg);
+				userMsgService.insertMsg(Constant.SQUARE_USER_ID, productOrders.getUserid(), productOrders.getOrderid(), "7", 
+						productOrders.getOrderid(), "您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!", 
+						"0", "25", 0);
 			}
 
 			//修改订单状态
-			BaseResp<Object> updateResp = iProductBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
-
+//			BaseResp<Object> updateResp = iProductBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
+			iProductBasicService.updateOrderAutoConfirmReceipt(beforeDate.getTime());
 			return baseResp.ok();
 		}catch(Exception e){
 			logger.error("order auto confirm receipt error currentDate:{} msg:{}",currentDate,e);
@@ -535,9 +545,22 @@ public class OrderServiceImpl implements OrderService {
 	/**
      * 初始化消息中用户信息 ------Userid
      */
-    private void initMsgUserInfoByUserid(ProductOrders productOrders){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
-        productOrders.setAppUserMongoEntity(appUserMongoEntity);
+    private void initMsgUserInfoByUserid(ProductOrders productOrders, long userid){
+    	if(!StringUtils.hasBlankParams(productOrders.getUserid())){
+    		//获取好友昵称
+    		String remark = userRelationService.selectRemark(userid, Long.parseLong(productOrders.getUserid()));
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
+            if(null != appUserMongoEntity){
+				if(!StringUtils.isBlank(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+				productOrders.setAppUserMongoEntity(appUserMongoEntity);
+			}else{
+				productOrders.setAppUserMongoEntity(new AppUserMongoEntity());
+			}
+            
+    	}
+    	
     }
 
 }

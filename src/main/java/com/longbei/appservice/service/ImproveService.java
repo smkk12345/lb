@@ -394,7 +394,7 @@ public interface ImproveService {
                                                 String businesstype,Integer startno,Integer pagesize);
 
 
-    BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int endNum);
+    BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int pageSize);
 
     /**
      * 删除目标 修改目标中的进步状态

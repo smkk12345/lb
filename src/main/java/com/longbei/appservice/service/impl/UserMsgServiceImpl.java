@@ -6,7 +6,9 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserRelationService;
-import com.netflix.discovery.converters.Auto;
+
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,68 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
+	
+	
+	
+	/**
+	 * @author yinxc
+	 * 添加消息封装
+	 * @param userid 消息推送者id
+	 * @param friendid 消息接受者id
+	 * @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+	 *									22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+	 *									25:订单发货N天后自动确认收货    26：实名认证审核结果
+	 *									27:工作认证审核结果      28：学历认证审核结果
+	 *									29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+	 *									32：创建的龙榜/教室/圈子被选中推荐  
+	 *									40：订单已取消 41 榜中进步下榜)
+	 *				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
+	 *				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
+	 *						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 2017年4月26日
+	 */
+	@Override
+	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
+			String businessid, String remark, String mtype, String msgtype, int num) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			UserMsg record = new UserMsg();
+			if(!StringUtils.isBlank(friendid)){
+				record.setUserid(Long.valueOf(friendid));
+			}
+			record.setCreatetime(new Date());
+			record.setFriendid(Long.valueOf(userid));
+			record.setGtype(businesstype);
+			//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+			record.setMsgtype(msgtype);
+			if(!StringUtils.isBlank(businessid)){
+				record.setGtypeid(Long.valueOf(businessid));
+			}else{
+				record.setGtypeid(0l);
+			}
+			if(!StringUtils.isBlank(impid)){
+				record.setSnsid(Long.valueOf(impid));
+			}else{
+				record.setSnsid(0l);
+			}
+			record.setRemark(remark);
+			record.setIsdel("0");
+			record.setIsread("0");
+			record.setNum(num);
+			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+			// 送花 4 送钻石  5:粉丝  等等)
+			record.setMtype(mtype);
+			try {
+				userMsgMapper.insertSelective(record);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			} catch (Exception e) {
+				logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+			}
+		} catch (Exception e) {
+			logger.error("insertMsg userid = {}", userid, e);
+		}
+		return reseResp;
+	}
 
 	/**
 	 * 获取是否显示红点 0.不显示 1.显示红点
@@ -178,13 +242,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return resultMap;
 	}
 	
-	private int selectPublicList(long userid, String mtype, String msgtype, String isread){
-		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid, mtype, msgtype, isread);
-		if(null != list && list.size()>0){
-			return 1;
-		}
-		return 0;
-	}
+//	private int selectPublicList(long userid, String mtype, String msgtype, String isread){
+//		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid, mtype, msgtype, isread);
+//		if(null != list && list.size()>0){
+//			return 1;
+//		}
+//		return 0;
+//	}
 	
 	private Date getShowComment(long userid){
 		//获取好友   粉丝ids
@@ -296,8 +360,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return temp > 0 ? true : false;
 	}
 
-	@Override
-	public BaseResp<Object> insertSelective(UserMsg record) {
+	private BaseResp<Object> insertSelective(UserMsg record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			boolean temp = insert(record);
@@ -952,6 +1015,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 		List<String> list = userMsgMapper.selectIdByMsgtypeList(userid, msgtype);
 		return list;
 	}
+	
+
+	@Override
+	public int updateByPrimaryKeySelective(UserMsg record) {
+		int temp = userMsgMapper.updateByPrimaryKeySelective(record);
+		return temp;
+	}
 
 	//------------------------公用方法，初始化消息中用户信息------------------------------------------
 	/**
@@ -972,6 +1042,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
     	}
     }
+
 
     /**
      * 初始化消息中用户信息 ------Userid
