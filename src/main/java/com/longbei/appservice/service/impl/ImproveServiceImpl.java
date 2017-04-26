@@ -481,22 +481,22 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             switch (businesstype){
                 case Constant.IMPROVE_SINGLE_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_RANK,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_RANK,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CIRCLE,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_GOAL_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
                     break;
                 default:
-                    improve = improveMapper.selectByPrimaryKey(impid,Constant_table.IMPROVE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE,isdel,ispublic);
                     break;
             }
 
@@ -2550,7 +2550,7 @@ public class ImproveServiceImpl implements ImproveService{
                     return baseResp;
                 }
             }
-            Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),
+            Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),businessid,
                     getSourecTableNameByBusinessType(businesstype),"0",null);
             if (null == improve){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_55,Constant.RTNINFO_SYS_55);

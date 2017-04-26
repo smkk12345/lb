@@ -793,11 +793,11 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private void commentMsg(UserMsg userMsg){
 		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中      
 		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE,null,null);
 			impItype(improve, userMsg);
 		}else if("1".equals(userMsg.getGtype())){
 			//1 目标中  进步评论消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_GOAL,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_GOAL,null,null);
 			impItype(improve, userMsg);
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   评论消息   获取榜图片
@@ -940,23 +940,23 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private void likeMsg(UserMsg userMsg){
 		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
 		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),null, Constant_table.IMPROVE,null,null);
 			impItype(improve, userMsg);
 		}else if("1".equals(userMsg.getGtype())){
 			//1 目标中  进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_GOAL,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_GOAL,null,null);
 			impItype(improve, userMsg);
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_RANK,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_RANK,null,null);
 			impItype(improve, userMsg);
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_CIRCLE,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CIRCLE,null,null);
 			impItype(improve, userMsg);
 		}else{
 			//4 教室中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_CLASSROOM,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CLASSROOM,null,null);
 			impItype(improve, userMsg);
 		}
 	}
