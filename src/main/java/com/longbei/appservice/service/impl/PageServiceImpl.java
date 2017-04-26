@@ -2,13 +2,16 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.HomePictureMapper;
 import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.dao.SysCommonMapper;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.SysCommon;
 import com.longbei.appservice.service.PageService;
 import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
@@ -36,6 +39,8 @@ public class PageServiceImpl implements PageService{
     private HomeRecommendMapper homeRecommendMapper;
     @Autowired
     private RankMapper rankMapper;
+    @Autowired
+    private SysCommonMapper sysCommonMapper;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -101,6 +106,22 @@ public class PageServiceImpl implements PageService{
             baseResp.setData(page);
         } catch (Exception e) {
             logger.error("select home pic list is error:",e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<List<HomePicture>> selectHomePicList() {
+        BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
+        try {
+            HomePicture homePicture = new HomePicture();
+            homePicture.setIsup("1");
+            List<HomePicture> homePictures = homePictureMapper.selectList(homePicture,null,null);
+            baseResp = BaseResp.ok();
+            baseResp.setData(homePictures);
+        } catch (Exception e) {
+            logger.error("select home pic list for app is error:",e);
         }
         return baseResp;
     }
@@ -186,6 +207,45 @@ public class PageServiceImpl implements PageService{
             logger.error("update homerecommend is error:",e);
         }
         return baseResp;
+    }
 
+
+    @Override
+    public BaseResp<Object> saveOrUpdatePublishBg(String pickey) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.PUBLISH_BG_KEY);
+            SysCommon sysCommon1 = new SysCommon();
+            sysCommon1.setKey(Constant.PUBLISH_BG_KEY);
+            sysCommon1.setInfo(pickey);
+            int res = 0;
+            if (null == sysCommon){
+                res = sysCommonMapper.insertSelective(sysCommon1);
+            } else {
+                res = sysCommonMapper.updateByKey(sysCommon1);
+            }
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("save or update publisbg is error:",e);
+        }
+
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<String> selectPublishBg() {
+        BaseResp<String> baseResp = new BaseResp<>();
+        try {
+            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.PUBLISH_BG_KEY);
+            if (null != sysCommon){
+                baseResp = BaseResp.ok();
+                baseResp.setData(sysCommon.getInfo());
+            }
+        } catch (Exception e) {
+            logger.error("select publishbg is error:",e);
+        }
+        return baseResp;
     }
 }
