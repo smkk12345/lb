@@ -107,6 +107,8 @@ public class UserInfo {
 
     private int givedflowers; //
 
+    private String defaultbg;//背景图片
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -748,4 +750,12 @@ public class UserInfo {
 	public void setGivedflowers(int givedflowers) {
 		this.givedflowers = givedflowers;
 	}
+
+    public void setDefaultbg(String defaultbg) {
+        this.defaultbg = defaultbg;
+    }
+
+    public String getDefaultbg() {
+        return defaultbg;
+    }
 }

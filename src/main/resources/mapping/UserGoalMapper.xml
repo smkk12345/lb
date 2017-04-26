@@ -96,6 +96,9 @@
       <if test="goalid != null" >
         goalid,
       </if>
+      <if test="ptype != null" >
+        ptype,
+    </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -124,6 +127,9 @@
       </if>
       <if test="goalid != null" >
         #{goalid},
+      </if>
+      <if test="ptype != null" >
+        #{ptype},
       </if>
     </trim>
   </insert>

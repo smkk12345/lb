@@ -137,5 +137,6 @@ public interface UserInfoMapper {
 
 
 
-
+	int updateBg(@Param("userid") long userid,
+				 @Param("bg") String bg);
 }

@@ -57,6 +57,9 @@ public class FindController extends BaseController {
 
         BaseResp<Object> baseResp = new BaseResp<>();
         String radius = "50";
+        if(StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
         if(StringUtils.hasBlankParams(longitude,latitude,userid,startNum,pageSize)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }else{

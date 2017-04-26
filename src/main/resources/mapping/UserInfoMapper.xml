@@ -45,6 +45,7 @@
     <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
     <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="defaultbg" property="defaultbg"/>
 
   </resultMap>
 
@@ -53,13 +54,13 @@
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
     hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
-    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sort
+    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sort,defaultbg
   </sql>
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, 
-    avatar, username, curpoint, point, grade
+    avatar, username, curpoint, point, grade,defaultbg
   </sql>
   
   <select id="selectInfoMore" resultMap="BaseResultMap"  >
@@ -216,7 +217,8 @@
   
   <sql id="Info_List" >
     id, userid, nickname, realname, sex, city, area, brief, birthday, constellation, 
-    blood, feeling, updatetime, createtime, avatar, username
+    blood, feeling, updatetime, createtime, avatar, username,totalimp,totalflower,totalmoney,
+    totalcoin,totalimp,totallikes,totalfans,defaultbg
   </sql>
   
   <select id="selectByUserid" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
@@ -694,6 +696,14 @@
       totalcoin > ROUND(#{totalcoin}) and
     </if>
     userid = #{userid}
+  </update>
+
+  <update id="updateBg">
+    update user_info
+    set
+      defaultbg=#{bg}
+    WHERE
+      userid = #{userid}
   </update>
 
 </mapper>
