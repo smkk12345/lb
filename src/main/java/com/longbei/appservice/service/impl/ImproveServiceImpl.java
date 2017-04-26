@@ -1353,6 +1353,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }
 
             }
+            //添加评论消息---点赞
+            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
             return baseResp.initCodeAndDesp();
@@ -1361,6 +1363,39 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
+    
+    /**
+	 * @author yinxc
+	 * 添加评论消息---点赞
+	 * 2017年2月10日
+	 */
+	private void insertLikeMsg(String userid, String friendid, String impid, String businesstype, String businessid){
+		UserMsg record = new UserMsg();
+		if(!StringUtils.isBlank(friendid)){
+			record.setUserid(Long.valueOf(friendid));
+		}
+		record.setCreatetime(new Date());
+		record.setFriendid(Long.valueOf(userid));
+		record.setGtype(businesstype);
+		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+		record.setMsgtype("2");
+		if(!StringUtils.isBlank(businessid)){
+			record.setSnsid(Long.valueOf(businessid));
+		}else{
+			record.setSnsid(Long.valueOf(impid));
+		}
+		record.setRemark(Constant.MSG_LIKE_MODEL);
+		record.setIsdel("0");
+		record.setIsread("0");
+		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+		// 送花 4 送钻石  5:粉丝  等等)
+		record.setMtype("1");
+		try {
+			userMsgMapper.insertSelective(record);
+		} catch (Exception e) {
+			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+		}
+	}
 
     /**
      *  @author luye

@@ -49,10 +49,12 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     @Override
     public boolean insertAcceptAwardInfoBatch(List<RankAcceptAward> rankAcceptAwards) {
         int res = 0;
-        try {
-            res = rankAcceptAwardMapper.insertBatch(rankAcceptAwards);
-        } catch (Exception e) {
-            logger.error("insert batch rank accept award is error:",e);
+        for (RankAcceptAward rankAcceptAward : rankAcceptAwards){
+            try {
+                res = rankAcceptAwardMapper.insertSelective(rankAcceptAward);
+            } catch (Exception e) {
+                logger.error("insert batch rank accept award is error:",e);
+            }
         }
         return res > 0;
     }
@@ -80,6 +82,8 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
             for (RankAcceptAward rankAcceptAward1 : rankAcceptAwards){
                 rankAcceptAward1.setAppUserMongoEntity(userMongoDao.getAppUser
                         (String.valueOf(rankAcceptAward1.getUserid())));
+                rankAcceptAward1.setAwardtitle
+                        (awardMapper.selectByPrimaryKey(rankAcceptAward1.getAwardid()).getAwardtitle());
             }
             page.setTotalCount(totalcount);
             page.setList(rankAcceptAwards);
@@ -103,6 +107,8 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 if (null != award){
                     acceptAward.setAwardtitle(award.getAwardtitle());
                 }
+                String uid = String.valueOf(acceptAward.getUserid());
+                acceptAward.setAppUserMongoEntity(userMongoDao.getAppUser(uid));
             }
             baseResp = BaseResp.ok();
             baseResp.setData(acceptAward);

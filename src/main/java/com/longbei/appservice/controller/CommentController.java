@@ -177,7 +177,7 @@ public class CommentController extends BaseController {
      public BaseResp<Object> addComment(String userid, String friendid, 
     		String businessid, String businesstype, String content) {
  		BaseResp<Object> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(userid, friendid, businessid, businesstype)) {
+ 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {
