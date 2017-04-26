@@ -318,12 +318,12 @@ public interface RankService extends BaseService{
      * @param rankTitle
      * @param pType
      * @param rankscope
-     * @param lastRankId
+     * @param lastDate
      * @param pageSize
      * @return
      */
     BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status,
-                                               Long lastRankId, Integer pageSize,Boolean showAward);
+                                               String lastDate,Integer startNo, Integer pageSize,Boolean showAward);
 
     /**
      * 查询和自己相关的榜单

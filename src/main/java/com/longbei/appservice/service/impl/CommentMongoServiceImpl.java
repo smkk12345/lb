@@ -69,9 +69,12 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			comment = commentMongoDao.selectCommentByItypeid(comment.getItypeid(), comment.getItype());
 			//添加评论总数
 			insertCount(comment);
-			//添加评论消息
-			insertMsg(comment);
-			
+			//businesstype类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+			if("0".equals(comment.getBusinesstype()) || "1".equals(comment.getBusinesstype())){
+				//添加评论消息
+				insertMsg(comment);
+			}
+
 			//添加评论---    +积分
 			//获取十全十美类型---社交
 //			String pType = SysRulesCache.perfectTenMap.get(2);
@@ -95,7 +98,9 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	 */
 	private void insertMsg(Comment comment){
 		UserMsg record = new UserMsg();
-		record.setUserid(Long.valueOf(comment.getFriendid()));
+		if(!StringUtils.isBlank(comment.getFriendid())){
+			record.setUserid(Long.valueOf(comment.getFriendid()));
+		}
 		record.setCreatetime(new Date());
 		record.setFriendid(Long.valueOf(comment.getUserid()));
 		record.setGtype(comment.getBusinesstype());
@@ -333,13 +338,15 @@ public class CommentMongoServiceImpl implements CommentMongoService {
      * 初始化消息中用户信息 ------Userid
      */
     private void initCommentUserInfoByUserid(Comment comment, String friendid){
-    	//获取好友昵称
-    	String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
         if(null != appUserMongoEntity){
-        	if(!StringUtils.isBlank(remark)){
-        		appUserMongoEntity.setNickname(remark);
-        	}
+			if(StringUtils.isNotEmpty(friendid)){
+				//获取好友昵称
+				String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
+				if(StringUtils.isNotEmpty(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+			}
         	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
         }else{
         	comment.setAppUserMongoEntityUserid(new AppUserMongoEntity());

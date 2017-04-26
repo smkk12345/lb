@@ -1,9 +1,6 @@
 package com.longbei.appservice.dao;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Article;
-import com.longbei.appservice.entity.Award;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

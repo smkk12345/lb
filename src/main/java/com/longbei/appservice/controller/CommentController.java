@@ -110,7 +110,7 @@ public class CommentController extends BaseController {
     * @param @param userid   当前访问者商户id
 	* @param @param businessid  各类型对应的id
     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-    * @param @param startNo
+    * @param @param startNum
     * @param @param pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -120,13 +120,13 @@ public class CommentController extends BaseController {
 	@RequestMapping(value = "/commentList")
     @ResponseBody
     public BaseResp<Object> commentList(String userid, String businessid, String businesstype,
-    		int startNo, int pageSize) {
+    		int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(userid, businessid, businesstype, startNo, pageSize);
+			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(userid, businessid, businesstype, startNum, pageSize);
 		} catch (Exception e) {
 			logger.error("commentList businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
@@ -177,7 +177,7 @@ public class CommentController extends BaseController {
      public BaseResp<Object> addComment(String userid, String friendid, 
     		String businessid, String businesstype, String content) {
  		BaseResp<Object> baseResp = new BaseResp<>();
- 		if (StringUtils.hasBlankParams(userid, friendid, businessid, businesstype)) {
+ 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
  		try {

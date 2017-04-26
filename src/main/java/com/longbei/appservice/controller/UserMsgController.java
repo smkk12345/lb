@@ -29,7 +29,7 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgSystemList
     * @Description: 获取系统消息---(分页)
     * @param @param userid  
-    * @param @param startNum   endNum
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日
@@ -37,13 +37,13 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgSystemList")
     public BaseResp<Object> msgSystemList(String userid, 
-    		int startNum, int endNum) {
+    		int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.selectByUserid(Long.parseLong(userid), startNum, endNum);
+  			baseResp = userMsgService.selectByUserid(Long.parseLong(userid), startNum, pageSize);
 		} catch (Exception e) {
 			logger.error("msgSystemList userid = {}", userid, e);
 		}
@@ -54,7 +54,7 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgOtherList
     * @Description: 获取@我消息---(分页)
     * @param @param userid  
-    * @param @param startNum   endNum
+    * @param @param startNum   pageSize
     * @param @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
 	*										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 	*										25:订单发货N天后自动确认收货    26：实名认证审核结果   
@@ -72,13 +72,13 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgOtherList")
     public BaseResp<Object> msgOtherList(String userid, String mtype, String msgtype, 
-    		int startNum, int endNum) {
+    		int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.selectOtherList(Long.parseLong(userid), mtype, msgtype, startNum, endNum);
+  			baseResp = userMsgService.selectOtherList(Long.parseLong(userid), mtype, msgtype, startNum, pageSize);
 		} catch (Exception e) {
 			logger.error("msgOtherList userid = {}", userid, e);
 		}
@@ -89,7 +89,7 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgLikeList
     * @Description: 获取对话---点赞和粉丝消息列表(分页)(对话消息)
     * @param @param userid  
-    * @param @param startNum   endNum
+    * @param @param startNum   pageSize
     * @param @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
 	*										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 	*										25:订单发货N天后自动确认收货    26：实名认证审核结果   
@@ -107,13 +107,13 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgLikeList")
     public BaseResp<Object> msgLikeList(String userid, String msgtype, 
-    		int startNum, int endNum) {
+    		int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.selectLikeList(Long.parseLong(userid), msgtype, startNum, endNum);
+  			baseResp = userMsgService.selectLikeList(Long.parseLong(userid), msgtype, startNum, pageSize);
 		} catch (Exception e) {
 			logger.error("msgLikeList userid = {}", userid, e);
 		}
@@ -124,7 +124,7 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgDialogueList
     * @Description: 获取对话消息列表(分页)(对话消息-----除赞消息,粉丝消息)
     * @param @param userid  
-    * @param @param startNum   endNum
+    * @param @param startNum   pageSize
     * @param @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
 	*										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 	*										25:订单发货N天后自动确认收货    26：实名认证审核结果   
@@ -141,13 +141,13 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDialogueList")
     public BaseResp<Object> msgDialogueList(String userid, 
-    		int startNum, int endNum) {
+    		int startNum, int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			baseResp = userMsgService.selectExceptList(Long.parseLong(userid), startNum, endNum);
+  			baseResp = userMsgService.selectExceptList(Long.parseLong(userid), startNum, pageSize);
 		} catch (Exception e) {
 			logger.error("msgDialogueList userid = {}", userid, e);
 		}
@@ -158,7 +158,7 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/msgList
     * @Description: 获取系统消息列表(分页)(系统消息)
     * @param @param userid  
-    * @param @param startNum   endNum
+    * @param @param startNum   pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
     * @currentdate:2017年2月8日

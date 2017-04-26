@@ -472,6 +472,7 @@ public class OrderServiceImpl implements OrderService {
 				expandData.put("totalmoney", userInfo.getTotalmoney());
 				expandData.put("totalcoin", userInfo.getTotalcoin());
 			}
+			expandData.put("yuantomoney", AppserviceConfig.yuantomoney);
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
 			expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
