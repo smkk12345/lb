@@ -22,6 +22,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scala.collection.immutable.Stream;
@@ -96,6 +97,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private HomeRecommendMapper homeRecommendMapper;
     @Autowired
     private RankCardMapper rankCardMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      *  @author luye
@@ -1272,6 +1275,75 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     /**
+     * 更改榜单的加榜验证 或 公告
+     * @param rankId
+     * @param userid 当前登录用户id
+     * @param needConfirm 加榜是否需要验证 该参数不可与notice参数同事传入
+     * @param notice 公告内容
+     * @param noticeUser 更改公告是否需要通知用户
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateRankInfo(Long rankId, Long userid, Boolean needConfirm, final String notice, Boolean noticeUser) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            final Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null || !userid.equals(rank.getCreateuserid())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_615,Constant.RTNINFO_SYS_615);
+            }
+            Rank updateRank = new Rank();
+            updateRank.setRankid(rank.getRankid());
+            if(needConfirm != null){
+                updateRank.setNeedConfirm(needConfirm);
+            }else if(StringUtils.isNotEmpty(notice)){
+                updateRank.setNotice(notice);
+            }
+            int row = this.rankMapper.updateSymbolByRankId(updateRank);
+            if(row > 0 && StringUtils.isNotEmpty(notice) && noticeUser != null && noticeUser){
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("rankId",rankId);
+                map.put("status","1");
+                final List<RankMembers> rankMembersList= this.rankMembersMapper.selectRankMembers(map);
+                if(rankMembersList != null && rankMembersList.size() > 0){
+                    //通知所有用户
+                    threadPoolTaskExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                String messageContent = "\"" + rank.getRanktitle() + "\"龙榜更新了公告:"+notice;
+                                List<Long> userIdList = new ArrayList<Long>();
+                                for(RankMembers rankMembers:rankMembersList){
+                                    userIdList.add(rankMembers.getUserid());
+                                }
+                                UserMsg userMsg = new UserMsg();
+                                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                                userMsg.setMtype("0");//系统消息
+                                userMsg.setMsgtype("42");
+                                userMsg.setSnsid(rank.getRankid());
+                                userMsg.setGtypeid(rank.getRankid());
+                                userMsg.setRemark(messageContent);
+                                userMsg.setGtype("10");
+                                userMsg.setCreatetime(new Date());
+                                userMsg.setUpdatetime(new Date());
+                                userMsg.setIsdel("0");
+                                userMsg.setIsread("0");
+                                userMsgService.batchInsertUserMsg(userIdList,userMsg);
+                            }catch (Exception e){
+                                logger.error("update rank info notice user error msg:{}",e);
+                            }
+                        }
+                    });
+                }
+            }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("update rank info error rankId:{} userid:{} needConfirm:{} notice:{} noticeUser:{}",rankId,userid,needConfirm,notice,noticeUser);
+            printException(e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 榜单的成员排名列表
      * @param rankId 榜单id
      * @param sortType 排序的类型
@@ -2252,6 +2324,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardCount = 0;
                             awardLevel = rankAwardRelease.getAwardlevel();
                         }
+                        awardMap.put("awardtitle",rankAwardRelease.getAward().getAwardtitle());
                         awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
                         awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
                         awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());

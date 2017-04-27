@@ -331,27 +331,36 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
-    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-    				//获取好友昵称
-    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
-    						Long.parseLong(commentLower.getSeconduserid()));
-    				if(!StringUtils.isBlank(remark)){
-    					commentLower.setSecondNickname(remark);
-    				}else{
-    					commentLower.setSecondNickname(appUserMongoEntity.getNickname());
-    				}
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+						commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+					}else{
+						//获取好友昵称
+						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
+								Long.parseLong(commentLower.getSeconduserid()));
+						if(StringUtils.isNotEmpty(remark)){
+							commentLower.setSecondNickname(remark);
+						}else{
+							AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+							commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+						}
+					}
     			}
 				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
-					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-					//获取好友昵称
-    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
-    						Long.parseLong(commentLower.getFirstuserid()));
-    				if(!StringUtils.isBlank(remark)){
-    					commentLower.setFirstNickname(remark);
-    				}else{
-    					commentLower.setFirstNickname(appUserMongo.getNickname());
-    				}
-//					commentLower.setFirstNickname(appUserMongo.getNickname());
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+						commentLower.setFirstNickname(appUserMongo.getNickname());
+					}else{
+						//获取好友昵称
+						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
+								Long.parseLong(commentLower.getFirstuserid()));
+						if(StringUtils.isNotEmpty(remark)){
+							commentLower.setFirstNickname(remark);
+						}else{
+							AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+							commentLower.setFirstNickname(appUserMongo.getNickname());
+						}
+					}
 				}
 			}
     	}

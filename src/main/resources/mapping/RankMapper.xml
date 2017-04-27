@@ -681,6 +681,12 @@
       <if test="weight != null" >
         weight = #{weight},
       </if>
+      <if test="needConfirm != null" >
+        needConfirm = #{needConfirm},
+      </if>
+      <if test="notice != null" >
+        notice = #{notice},
+      </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>

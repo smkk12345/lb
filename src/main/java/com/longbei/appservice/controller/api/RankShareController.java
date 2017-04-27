@@ -57,7 +57,16 @@ public class RankShareController {
     public void rankDetail(String rankId, HttpServletResponse response,String callback){
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId)){
-//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            try{
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                PrintWriter out = response.getWriter();
+                response.setContentType("text/javascript;charset=UTF-8");
+                out.print(callback+"("+JSONObject.fromObject(baseResp).toString()+")");
+                out.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return;
         }
 
         baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,true);
