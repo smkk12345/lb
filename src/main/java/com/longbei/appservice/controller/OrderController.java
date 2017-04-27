@@ -105,11 +105,18 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			if(StringUtils.isBlank(moneyprice) || "0".equals(moneyprice)){
+			if(StringUtils.isBlank(moneyprice) || "0".equals(moneyprice)){
   				moneyprice = "0";
-  			}
-  			baseResp = orderService.buyOrder(Long.parseLong(userid), orderid, 
-  					Integer.parseInt(impiconprice), Integer.parseInt(moneyprice));
+  			}else{
+				if(moneyprice.indexOf(".0") != -1){
+					moneyprice = moneyprice.substring(0, moneyprice.length()-2);
+				}
+			}
+			if(impiconprice.indexOf(".0") != -1){
+				impiconprice = impiconprice.substring(0, impiconprice.length()-2);
+			}
+  			baseResp = orderService.buyOrder(Long.parseLong(userid), orderid,
+					Integer.parseInt(impiconprice), Integer.parseInt(moneyprice));
 		} catch (Exception e) {
 			logger.error("buyOrder userid = {}, orderid = {}, impiconprice = {}, moneyprice = {}", 
 					userid, orderid, impiconprice, moneyprice, e);
@@ -167,10 +174,10 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/create")
-    public BaseResp<Object> create(String userid, String productidss, String numberss, String prices, 
+    public BaseResp<ProductOrders> create(String userid, String productidss, String numberss, String prices,
     		String addressid, String impiconprice, String moneyprice, String paytype, 
     		String otype, String remark) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
   				impiconprice, paytype, prices, otype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

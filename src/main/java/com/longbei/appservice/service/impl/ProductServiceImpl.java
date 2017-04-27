@@ -141,7 +141,13 @@ public class ProductServiceImpl implements ProductService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		Map<String, Object> expandData = new HashMap<>();
 		try{
-			BaseResp<List<ProductCart>> resp = iProductBasicService.getCart(userid, 0, 1);
+			BaseResp<List<ProductCart>> resp = new BaseResp<>();
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(null != userInfo){
+				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+				resp = iProductBasicService.getCart(userid, userLevel.getDiscount(), 0, 1);
+			}
+//			BaseResp<List<ProductCart>> resp = iProductBasicService.getCart(userid, 0, 1);
 			String isempty = "0";
 			if(ResultUtil.isSuccess(resp)){
 				List<ProductCart> list = resp.getData();
@@ -163,7 +169,12 @@ public class ProductServiceImpl implements ProductService {
 	public BaseResp<List<ProductCart>> getCart(Long userid, int startNo, int pageSize) {
 		BaseResp<List<ProductCart>> baseResp = new BaseResp<>();
 		try{
-			baseResp = iProductBasicService.getCart(userid, startNo, pageSize);
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(null != userInfo){
+				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+				baseResp = iProductBasicService.getCart(userid, userLevel.getDiscount(), startNo, pageSize);
+//				baseResp = iProductBasicService.getProduct(userid, productid, );
+			}
 		}catch (Exception e){
 			logger.error("getCart userid = {}, startNo = {}, pageSize = {}", 
 					userid, startNo, pageSize, e);

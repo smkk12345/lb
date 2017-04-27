@@ -667,11 +667,11 @@ public class Improve {
         public void setStartdate(Date startdate) {
             this.startdate = startdate;
         }
-
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         public Date getEnddate() {
             return enddate;
         }
-
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         public Date getStartdate() {
             return startdate;
         }

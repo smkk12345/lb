@@ -51,7 +51,7 @@ public interface OrderService {
      * @param remark 备注
      * @param discount 用户等级所享受的折扣
 	 */
-	 BaseResp<Object> create(Long userid, String productidss, 
+	 BaseResp<ProductOrders> create(Long userid, String productidss,
 			 String numberss, String addressid, 
 			 String impiconprice, String moneyprice, String paytype, String prices, 
 			 String otype, String remark);

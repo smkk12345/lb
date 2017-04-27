@@ -1579,6 +1579,11 @@ public class ImproveServiceImpl implements ImproveService{
                 //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
                 //送分  送进步币
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
+                //送花添加消息记录    msg
+                String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
+                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+                //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
                 //用户龙分变化
                 BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
                 if(ResultUtil.isSuccess(resp)){
@@ -1586,11 +1591,6 @@ public class ImproveServiceImpl implements ImproveService{
                     //进步币明细  进步币总数
                     userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
                 }
-                //送花添加消息记录    msg
-                String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
-                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
 //                insertMsg(userid, friendid, impid, flowernum, businesstype);
                 return resp;
             }
@@ -2189,13 +2189,14 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_GOAL_TYPE:
                         UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+
                         improve.setBusinessEntity(userGoal.getPtype(),
                                 userGoal.getGoaltag(),
                                 0,
-                                userGoal.getUpdatetime(),
+                                userGoal.getCreatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount(),null,userGoal.getIcount());
+                                userGoal.getIcount(),improve.getPickey(),userGoal.getIcount());
                         break;
                     default:
                         break;
