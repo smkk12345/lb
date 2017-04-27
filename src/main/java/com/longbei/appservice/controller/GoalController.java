@@ -108,6 +108,9 @@ public class GoalController extends BaseController {
         if(StringUtils.hasBlankParams(userid, goalid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
         try{
             baseResp = goalService.selectListByGoalid(Long.parseLong(userid), Long.parseLong(goalid), startNum, pageSize);
         }catch(Exception e){

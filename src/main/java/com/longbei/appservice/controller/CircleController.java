@@ -160,7 +160,9 @@ public class CircleController {
             userMsg.setIsread("0");
             userMsg.setGtype("3");
             userMsg.setGtypeid(new Long(circleId));
-            userMsg.setMtype("2");
+            //gtype  0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+            userMsg.setMtype("11");
 
             //通知所有用户
             List<Long> userIdList = circleService.findCircleMemberId(circleId);

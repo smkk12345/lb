@@ -792,8 +792,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * UserMsgServiceImpl
 	 */
 	private void commentMsg(UserMsg userMsg){
-		//gtype  0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-		//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
+		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		if("0".equals(userMsg.getGtype())){
 			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE,null,null);
 			impItype(improve, userMsg);
@@ -802,19 +802,22 @@ public class UserMsgServiceImpl implements UserMsgService {
 			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_GOAL,null,null);
 			impItype(improve, userMsg);
 		}else if("2".equals(userMsg.getGtype())){
-			//2 榜中   评论消息   获取榜图片
-			userMsg = impRankItype(userMsg, userMsg.getGtype());
+			//2 榜中   进步点赞消息
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_RANK,null,null);
+			impItype(improve, userMsg);
 		}else if("3".equals(userMsg.getGtype())){
-			//3圈子中      评论消息   获取圈子图片
-			userMsg = impRankItype(userMsg, userMsg.getGtype());
+			//3圈子中      进步点赞消息
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CIRCLE,null,null);
+			impItype(improve, userMsg);
+		}else if("4".equals(userMsg.getGtype())){
+			//4 教室中   进步点赞消息
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CLASSROOM,null,null);
+			impItype(improve, userMsg);
 		}else if("10".equals(userMsg.getGtype())){
 			//2 榜中   评论消息   获取榜图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}else if("11".equals(userMsg.getGtype())){
 			//3圈子中      评论消息   获取圈子图片
-			userMsg = impRankItype(userMsg, userMsg.getGtype());
-		}else if("12".equals(userMsg.getGtype())){
-			//4 教室中   评论消息    获取教室图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}else{
 			//4 教室中   评论消息    获取教室图片
@@ -933,7 +936,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	private void msgLike(long userid, List<UserMsg> list){
 		for (UserMsg userMsg : list) {
-			//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
+			//针对进步点赞消息
+			//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 			likeMsg(userMsg);
 			//初始化消息中用户信息----friendid
 			initMsgUserInfoByFriendid(userMsg, userid);
@@ -949,9 +954,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * UserMsgServiceImpl
 	 */
 	private void likeMsg(UserMsg userMsg){
-		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
-		//gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-		//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
+		//针对进步点赞消息
+		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		if("0".equals(userMsg.getGtype())){
 			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),null, Constant_table.IMPROVE,null,null);
 			impItype(improve, userMsg);
@@ -966,18 +971,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
 			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CIRCLE,null,null);
-			impItype(improve, userMsg);
-		}else if("10".equals(userMsg.getGtype())){
-			//2 榜中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_RANK,null,null);
-			impItype(improve, userMsg);
-		}else if("11".equals(userMsg.getGtype())){
-			//3圈子中      进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_CIRCLE,null,null);
-			impItype(improve, userMsg);
-		}else if("12".equals(userMsg.getGtype())){
-			//4 教室中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_CLASSROOM,null,null);
 			impItype(improve, userMsg);
 		}else{
 			//4 教室中   进步点赞消息

@@ -367,6 +367,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             //通知群主审核
             if(newSnsGroupMember.getStatus() == 0){
                 String memo = "有用户申请加入群组:"+snsGroup.getGroupname()+",快去处理吧!";
+                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+    			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 boolean sendMessageFlag = this.userMsgService.sendMessage(true,snsGroup.getMainuserid(),null,"0","35",snsGroup.getGroupid(),memo,"5");
                 //JPush推送 消息
                 boolean pushFlag = this.jPushService.pushMessage("消息标识",snsGroup.getMainuserid()+"","用户加群申请",memo,snsGroup.getGroupid()+"",Constant.JPUSH_TAG_COUNT_1101);
@@ -479,6 +481,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setFriendid(snsGroup.getMainuserid());
             userMsg.setMtype("0");
             userMsg.setMsgtype("17");
+            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
             userMsg.setGtype("5");
 //            userMsg.setSnsid(snsGroup.getGroupid());
             userMsg.setGtypeid(snsGroup.getGroupid());

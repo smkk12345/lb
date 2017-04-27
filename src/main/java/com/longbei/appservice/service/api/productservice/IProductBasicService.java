@@ -101,6 +101,7 @@ public interface IProductBasicService {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/product/getCart")
 	BaseResp<List<ProductCart>> getCart(@RequestParam("userid") Long userid,
+										@RequestParam("discount") double discount,
 										@RequestParam("startNo") int startNo,
 										@RequestParam("pageSize") int pageSize);
 
@@ -138,7 +139,7 @@ public interface IProductBasicService {
 	 * @param discount 用户等级所享受的折扣
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/order/create")
-	BaseResp<Object> create(@RequestParam("userid") Long userid,
+	BaseResp<ProductOrders> create(@RequestParam("userid") Long userid,
 							@RequestParam("username") String username,
 							@RequestParam("productidss") String productidss,
 							@RequestParam("numberss") String numberss,

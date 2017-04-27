@@ -141,10 +141,10 @@ public class OrderServiceImpl implements OrderService {
 //	}
 
 	@Override
-	public BaseResp<Object> create(Long userid, String productidss, String numberss, String addressid, 
+	public BaseResp<ProductOrders> create(Long userid, String productidss, String numberss, String addressid,
 			String impiconprice, String moneyprice, String paytype, String prices, String otype,
 			String remark) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
@@ -229,7 +229,8 @@ public class OrderServiceImpl implements OrderService {
 							}
 							//推送消息
 			  				//msgtype 40：订单已取消
-			  				//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+							//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 			  				//mtype 0 系统消息
 //			  				insertMsg(userid, "40", productOrders.getOrderid(), "订单已取消", "7", "0");
 			  				userMsgService.insertMsg("0", userid + "", "", "7", productOrders.getOrderid(), 
@@ -433,7 +434,8 @@ public class OrderServiceImpl implements OrderService {
 				if(null != productOrders){
 					//推送消息
 	  				//msgtype 24：订单已发货
-	  				//gtype   0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统
+					//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 	  				//mtype 0 系统消息
 					userMsgService.insertMsg("0", userid + "", "", "7", productOrders.getOrderid(), 
 							"订单已发货", "0", "24", 0);
@@ -527,6 +529,8 @@ public class OrderServiceImpl implements OrderService {
 //				userMsg.setUserid(Long.parseLong(productOrders.getUserid()));
 //				userMsg.setFriendid(new Long(Constant.SQUARE_USER_ID));
 //				this.userMsgMapper.insertSelective(userMsg);
+				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, productOrders.getUserid(), "", "7", 
 						productOrders.getOrderid(), "您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!", 
 						"0", "25", 0);
