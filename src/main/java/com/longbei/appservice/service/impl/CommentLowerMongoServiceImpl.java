@@ -1,6 +1,5 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,25 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Comment;
 import com.longbei.appservice.entity.CommentCount;
 import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.CommentLowerMongoService;
 import com.longbei.appservice.service.UserBehaviourService;
-
-import net.sf.json.JSONObject;
+import com.longbei.appservice.service.UserMsgService;
 
 @Service("commentLowerMongoService")
 public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
@@ -39,7 +34,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	@Autowired
 	private CommentMongoDao commentMongoDao;
 	@Autowired
-	private UserMsgMapper userMsgMapper;
+	private UserMsgService userMsgService;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
 	@Autowired
@@ -57,7 +52,14 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			//修改主评论条数
 			updateCountSizeInsert(commentLower.getCommentid());
 			//添加评论消息
-			insertMsg(commentLower);
+			Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
+			if(null != comment){
+				
+			}
+			userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+					comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
+					commentLower.getContent(), "1", "1", 0);
+//			insertMsg(commentLower);
 			
 			//添加子评论---    +积分
 			//获取十全十美类型---社交
@@ -77,31 +79,31 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	 * 添加评论消息
 	 * 2017年2月10日
 	 */
-	private void insertMsg(CommentLower commentLower){
-		UserMsg record = new UserMsg();
-		record.setUserid(Long.valueOf(commentLower.getSeconduserid()));
-		record.setCreatetime(new Date());
-		record.setFriendid(Long.valueOf(commentLower.getFirstuserid()));
-		//itype 类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论  itypeid
-		Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
-		if(null != comment){
-			record.setGtype(comment.getBusinesstype());
-			record.setSnsid(Long.valueOf(comment.getBusinessid()));
-		}
-		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
-		record.setMsgtype("1");
-		record.setRemark(commentLower.getContent());
-		record.setIsdel("0");
-		record.setIsread("0");
-		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
-		// 送花 4 送钻石  5:粉丝  等等)
-		record.setMtype("1");
-		try {
-			userMsgMapper.insertSelective(record);
-		} catch (Exception e) {
-			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
-		}
-	}
+//	private void insertMsg(CommentLower commentLower){
+//		UserMsg record = new UserMsg();
+//		record.setUserid(Long.valueOf(commentLower.getSeconduserid()));
+//		record.setCreatetime(new Date());
+//		record.setFriendid(Long.valueOf(commentLower.getFirstuserid()));
+//		//itype 类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论  itypeid
+//		Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
+//		if(null != comment){
+//			record.setGtype(comment.getBusinesstype());
+//			record.setSnsid(Long.valueOf(comment.getBusinessid()));
+//		}
+//		//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+//		record.setMsgtype("1");
+//		record.setRemark(commentLower.getContent());
+//		record.setIsdel("0");
+//		record.setIsread("0");
+//		// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+//		// 送花 4 送钻石  5:粉丝  等等)
+//		record.setMtype("1");
+//		try {
+//			userMsgMapper.insertSelective(record);
+//		} catch (Exception e) {
+//			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+//		}
+//	}
 	
 	private void insert(CommentLower commentLower){
 		commentLowerMongoDao.insertCommentLower(commentLower);

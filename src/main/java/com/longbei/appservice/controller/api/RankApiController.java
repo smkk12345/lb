@@ -750,4 +750,15 @@ public class RankApiController {
         return baseResp;
     }
 
+    @RequestMapping("checkdetaillist")
+    public BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid){
+        BaseResp<List<RankCheckDetail>> baseResp = new BaseResp<>();
+        try {
+            baseResp = rankService.selectRankCheckDetailList(rankid);
+        } catch (Exception e) {
+            logger.error("select rank rankid={} checkdetail list is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
 }

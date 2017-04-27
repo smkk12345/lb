@@ -858,21 +858,24 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
         }
-        UserMsg userMsg = new UserMsg();
-        userMsg.setUserid(userId);
-        if(friendId != null){
-            userMsg.setFriendid(friendId);
-        }
-        userMsg.setMsgtype(msgType);
-        userMsg.setSnsid(Long.parseLong(snsId+""));
-        userMsg.setRemark(remark);
-        userMsg.setGtype(gType);
-        userMsg.setMtype("2");//@我消息 榜的消息 都属于@我消息
-        userMsg.setCreatetime(new Date());
-        userMsg.setIsdel("0");
-        userMsg.setIsread("0");
-
-        BaseResp<Object> insertResult = this.userMsgService.insertSelective(userMsg);
+//        UserMsg userMsg = new UserMsg();
+//        userMsg.setUserid(userId);
+//        if(friendId != null){
+//            userMsg.setFriendid(friendId);
+//        }
+//        userMsg.setMsgtype(msgType);
+//        userMsg.setSnsid(Long.parseLong(snsId+""));
+//        userMsg.setRemark(remark);
+//        userMsg.setGtype(gType);
+//        userMsg.setMtype("2");//@我消息 榜的消息 都属于@我消息
+//        userMsg.setCreatetime(new Date());
+//        userMsg.setIsdel("0");
+//        userMsg.setIsread("0");
+//
+//        BaseResp<Object> insertResult = this.userMsgService.insertSelective(userMsg);
+        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(), 
+        		"", gType, 
+        		snsId+"", remark, "2", msgType, 0);
         if(insertResult.getCode() == 0){
             return true;
         }
@@ -1074,9 +1077,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 UserMsg userMsg = new UserMsg();
                 userMsg.setFriendid(rank.getCreateuserid());
                 userMsg.setMsgtype("17");
-                userMsg.setSnsid(rank.getRankid());
+//                userMsg.setSnsid(rank.getRankid());
                 userMsg.setRemark(remark);
                 userMsg.setGtype("2");
+                userMsg.setGtypeid(rank.getRankid());
                 userMsg.setMtype("2");//@我消息 榜的消息 都属于@我消息
                 userMsg.setCreatetime(new Date());
                 userMsg.setIsdel("0");
@@ -1244,6 +1248,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
 
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid) {
+        BaseResp<List<RankCheckDetail>> baseResp = new BaseResp<>();
+        try {
+            List<RankCheckDetail> list = rankCheckDetailMapper.selectList(rankid);
+            baseResp = BaseResp.ok();
+            baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("select rank rankid={} checkdetail is error:",rankid,e);
+        }
         return baseResp;
     }
 
@@ -1673,7 +1691,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
                 userMsg.setMtype("0");
                 userMsg.setMsgtype("20");
-                userMsg.setSnsid(rank.getRankid());
+//                userMsg.setSnsid(rank.getRankid());
+                userMsg.setGtypeid(rank.getRankid());
                 userMsg.setRemark("您关注的榜已经开始了,快去参榜吧!");
                 userMsg.setGtype("2");
                 userMsg.setMtype("0");//系统消息
@@ -1730,19 +1749,23 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
                 //将状态改成已确认收货,发消息给该用户
-                UserMsg userMsg = new UserMsg();
-                userMsg.setCreatetime(new Date());
-                userMsg.setUpdatetime(new Date());
-                userMsg.setUserid(rankAcceptAward.getUserid());
-                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
-                userMsg.setMtype("0");//系统消息
-                userMsg.setMsgtype("25");
-                userMsg.setSnsid(rankAcceptAward.getRankid());
-                userMsg.setGtype("2");
-                userMsg.setIsdel("0");
-                userMsg.setIsread("0");
-                userMsg.setRemark("由于您长时间未确认收货,系统已为您自动确认收货!");
-                BaseResp baseResp1 = this.userMsgService.insertSelective(userMsg);
+//                UserMsg userMsg = new UserMsg();
+//                userMsg.setCreatetime(new Date());
+//                userMsg.setUpdatetime(new Date());
+//                userMsg.setUserid(rankAcceptAward.getUserid());
+//                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+//                userMsg.setMtype("0");//系统消息
+//                userMsg.setMsgtype("25");
+//                userMsg.setSnsid(rankAcceptAward.getRankid());
+//                userMsg.setGtype("2");
+//                userMsg.setIsdel("0");
+//                userMsg.setIsread("0");
+//                userMsg.setRemark("由于您长时间未确认收货,系统已为您自动确认收货!");
+//                BaseResp baseResp1 = this.userMsgService.insertSelective(userMsg);
+            	String remark = "由于您长时间未确认收货,系统已为您自动确认收货!";
+            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankAcceptAward.getUserid().toString(), 
+            			"", "2", rankAcceptAward.getRankid().toString(), 
+            			remark, "0", "25", 0);
             }
             //系统同意修改确认收货状态
             int row = this.rankAcceptAwardService.updateRankAwardStatus(currentDate);
@@ -2019,11 +2042,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         userMsg.setMtype("0");
         userMsg.setMsgtype("34");
         userMsg.setGtype("2");
+        userMsg.setGtypeid(rank.getRankid());
         userMsg.setIsdel("0");
         userMsg.setIsread("0");
         userMsg.setCreatetime(new Date());
         userMsg.setUpdatetime(new Date());
-        userMsg.setSnsid(rank.getRankid());
+//        userMsg.setSnsid(rank.getRankid());
         userMsg.setRemark(remark);
         return userMsg;
     }
@@ -2044,7 +2068,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         userMsg.setIsread("0");
         userMsg.setCreatetime(new Date());
         userMsg.setUpdatetime(new Date());
-        userMsg.setSnsid(rank.getRankid());
+//        userMsg.setSnsid(rank.getRankid());
+        userMsg.setGtypeid(rank.getRankid());
         userMsg.setRemark(remark);
         return userMsg;
     }
@@ -2361,7 +2386,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("userRankMemberStatus",userRankMemberStatus);
 
             //加载评论数
-            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"2");
+            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"2", "");
             if(commentResp.getCode() == 0){
                 resultMap.put("commentCount",commentResp.getData());
             }else{

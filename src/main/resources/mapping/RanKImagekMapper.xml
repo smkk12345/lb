@@ -316,13 +316,13 @@
       <if test="autotime != null" >
         autotime,
       </if>
-      <if test="joinlastday != null" >
+      <if test="joinlastday != null and joinlastday != ''" >
         joinlastday,
       </if>
-      <if test="maximprovenum != null" >
+      <if test="maximprovenum != null  and maximprovenum != ''" >
         maximprovenum,
       </if>
-      <if test="minimprovenum != null" >
+      <if test="minimprovenum != null   and minimprovenum != ''" >
         minimprovenum,
       </if>
       <if test="ischeck != null" >
@@ -444,13 +444,13 @@
       <if test="autotime != null" >
         #{autotime},
       </if>
-      <if test="joinlastday != null" >
+      <if test="joinlastday != null and  joinlastday != ''" >
         #{joinlastday},
       </if>
-      <if test="maximprovenum != null" >
+      <if test="maximprovenum != null and  maximprovenum != ''" >
         #{maximprovenum},
       </if>
-      <if test="minimprovenum != null" >
+      <if test="minimprovenum != null and  minimprovenum != ''" >
         #{minimprovenum},
       </if>
       <if test="ischeck != null" >

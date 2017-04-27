@@ -8,7 +8,7 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, key, info, remark
+    id, `key`, info, remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -16,6 +16,14 @@
     from sys_common
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_common
+    where `key` = #{key}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_common
     where id = #{id,jdbcType=INTEGER}
@@ -33,7 +41,7 @@
         id,
       </if>
       <if test="key != null" >
-        key,
+        `key`,
       </if>
       <if test="info != null" >
         info,
@@ -71,6 +79,19 @@
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByKey" parameterType="com.longbei.appservice.entity.SysCommon" >
+    update sys_common
+    <set >
+      <if test="info != null" >
+        info = #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where `key` = #{key}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysCommon" >
     update sys_common

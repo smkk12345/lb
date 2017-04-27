@@ -143,14 +143,14 @@ public class SuperTopicServiceImpl implements SuperTopicService {
             return;
         }
         //对进步的评论数赋值
-        String businessid = "";
-        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
-        	businessid = improve.getImpid().toString();
-        }else{
-        	businessid = improve.getBusinessid().toString();
-        }
+//        String businessid = "";
+//        if(StringUtils.isBlank(improve.getBusinessid().toString()) || improve.getBusinessid() == 0){
+//        	businessid = improve.getImpid().toString();
+//        }else{
+//        	businessid = improve.getBusinessid().toString();
+//        }
         BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-                        (businessid, improve.getBusinesstype());
+                        (improve.getBusinessid().toString(), improve.getBusinesstype(), improve.getImpid().toString());
         if (ResultUtil.isSuccess(baseResp)){
             improve.setCommentnum(baseResp.getData());
         } else {

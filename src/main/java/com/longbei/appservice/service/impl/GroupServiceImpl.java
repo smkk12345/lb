@@ -480,7 +480,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setMtype("0");
             userMsg.setMsgtype("17");
             userMsg.setGtype("5");
-            userMsg.setSnsid(snsGroup.getGroupid());
+//            userMsg.setSnsid(snsGroup.getGroupid());
+            userMsg.setGtypeid(snsGroup.getGroupid());
             userMsg.setIsdel("0");
             userMsg.setIsread("0");
             userMsg.setCreatetime(new Date());

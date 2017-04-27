@@ -171,8 +171,14 @@ public class UserServiceImpl implements UserService {
 		}
 		return reseResp;
 	}
-	
-	
+
+	@Override
+	public UserInfo selectJustInfo(long userid) {
+		UserInfo userInfo = userInfoMapper.selectByUserid(userid);
+		return userInfo;
+	}
+
+
 	public BaseResp<Object> register(Long userid,String username,
 			String nickname,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
@@ -954,6 +960,16 @@ public class UserServiceImpl implements UserService {
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
 			logger.error("selectDefaultMenu error ",e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateBg(long userid, String bg) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		int n = userInfoMapper.updateBg(userid,bg);
+		if(n == 1){
+			baseResp.initCodeAndDesp();
 		}
 		return baseResp;
 	}

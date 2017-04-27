@@ -1386,4 +1386,22 @@ public class AppUserController extends BaseController {
         }
         return userService.selectMenuByUid(Long.parseLong(userid));
     }
+
+    /**
+     * http://server_ip:port/app_service/user/updateBg
+     * @param userid   用户id
+     * @param bg  新的背景图片
+     * @return
+     */
+    @RequestMapping(value = "/updateBg")
+    @ResponseBody
+    public BaseResp<Object> updateBg(String userid,String bg) {
+        BaseResp<List<UserSettingMenu>> baseResp = new BaseResp<>();
+        logger.info("updateBg userid={},bg = {}", userid,bg);
+        if(StringUtils.hasBlankParams(userid,bg)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return userService.updateBg(Long.parseLong(userid),bg);
+    }
+
 }

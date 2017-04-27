@@ -52,6 +52,15 @@ public interface PageService {
     BaseResp<Page<HomePicture>> selectHomePageList(HomePicture homePicture,Integer pageno,Integer pagesize);
 
 
+
+    /**
+     * 查询轮播图列表(app)
+     * @return
+     * @author luye
+     */
+    BaseResp<List<HomePicture>> selectHomePicList();
+
+
     /**
      * 添加首页推荐
      * @param homeRecommend
@@ -91,10 +100,17 @@ public interface PageService {
     BaseResp<Object> updateHomeRecommend(HomeRecommend homeRecommend);
 
 
+    /**
+     * 保存或更新一键发布背景图
+     * @param pickey
+     * @return
+     */
+    BaseResp<Object> saveOrUpdatePublishBg(String pickey);
 
-
-
-
-
+    /**
+     * 获取一键发布背景图
+     * @return
+     */
+    BaseResp<String> selectPublishBg();
 
 }
