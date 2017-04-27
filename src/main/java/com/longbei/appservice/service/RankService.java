@@ -251,6 +251,7 @@ public interface RankService extends BaseService{
     /**
      * 改变榜单isfinish状态
      * @param rank
+     * @param isUpdateRank 是否需要更新榜单
      * @return
      */
     BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank);
@@ -305,6 +306,13 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize);
+
+    /**
+     * 查询单条榜单的获奖公示
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> onlyRankAward(Long rankid);
 
     /**
      * 获取榜单获奖详情
@@ -465,7 +473,6 @@ public interface RankService extends BaseService{
      * @return
      */
     Map<String,Object> getUserSortNumAndImproveCount(Long userId, Long businessId);
-
 
     /**
      * 获取榜单审核记录

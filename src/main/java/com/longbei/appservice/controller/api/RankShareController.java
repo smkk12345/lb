@@ -4,6 +4,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.web.JsonDateValueProcessor;
+import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.ImpAllDetail;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
@@ -11,14 +13,19 @@ import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import com.netflix.discovery.converters.Auto;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +34,7 @@ import java.util.Map;
 /**
  * Created by wangyongzhi 17/4/19.
  */
-@RestController
+@Controller
 @RequestMapping(value = "api/rankShare",produces = "application/json")
 public class RankShareController {
 
@@ -47,14 +54,27 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Rank> rankDetail(String rankId){
+    public void rankDetail(String rankId, HttpServletResponse response,String callback){
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
         baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,true);
-        return baseResp;
+
+        try{
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/javascript;charset=UTF-8");
+            JsonConfig jsonConfig = new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Long.class,new JsonLongValueProcessor());
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor());
+            JSONObject jsonObject = JSONObject.fromObject(baseResp,jsonConfig);
+            out.print(callback+"("+jsonObject.toString()+")");
+            out.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+//        return baseResp;
     }
 
     /**
@@ -64,6 +84,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="selectFashionMan")
+    @ResponseBody
     public BaseResp<Object> selectFashionMan(Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null){
@@ -83,6 +104,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankMemberSort")
+    @ResponseBody
     public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
@@ -104,6 +126,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankAwardDetail")
+    @ResponseBody
     public BaseResp<Object> rankAwardDetail(Long rankid){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
@@ -120,6 +143,7 @@ public class RankShareController {
      * @param rankId 榜单id
      * @return
      */
+    @ResponseBody
     @RequestMapping(value="selectRankMemberDetail")
     public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -137,20 +161,20 @@ public class RankShareController {
      * @param  businesstype 进步的类型 0.独立进步 1.目标 2.榜 3.圈子 4.教室 5.教室批复作业
      * @return
      */
+    @ResponseBody
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping(value = "improveDetail")
-    public BaseResp select(String impid,String businesstype) {
+    public BaseResp select(String impid,String businesstype,String businessid) {
         BaseResp<Improve> baseResp = new BaseResp<Improve>();
         if (StringUtils.hasBlankParams(impid,businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp =improveService.select(null, impid, businesstype, null);
+            baseResp =improveService.select(null, impid, businesstype, businessid);
             Improve improve = baseResp.getData();
             Long userid = improve.getUserid();
-            Long businessid = improve.getBusinessid();
             //查看该用户在榜中发布的所有进步数量 以及 排名
-            Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,businessid);
+            Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
             baseResp.setExpandData(resultMap);
             return baseResp;
         } catch (Exception e) {
@@ -168,6 +192,7 @@ public class RankShareController {
      * @auther yxc
      * @currentdate:2017年1月22日
      */
+    @ResponseBody
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commentList")
     public BaseResp<Object> commentList(String impid,String businesstype) {
@@ -239,6 +264,7 @@ public class RankShareController {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping(value = "rank/list")
+    @ResponseBody
     public BaseResp selectRankImproveList(String rankid, String sorttype, String sift) {
         if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
