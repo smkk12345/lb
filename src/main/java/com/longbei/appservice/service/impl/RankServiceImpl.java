@@ -450,7 +450,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(status != 0 && StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
             }
-            if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankSortService)){
+            if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankscope) && !"-1".equals(rankscope)){
                 map.put("rankscope",rankscope);
             }
             if(status == 0){//推荐的
@@ -717,9 +717,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             //查看口令是否正确
-//            if("1".equals(rank.getRanktype()) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
-//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_61,Constant.RTNINFO_SYS_61);
-//            }
+            if("1".equals(rank.getRanktype()) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_61,Constant.RTNINFO_SYS_61);
+            }
             if("1".equals(rank.getIsrealname())){
                 UserIdcard userIdCard = this.userIdcardService.selectByUserid(userId+"");
                 if(!"2".equals(userIdCard.getValidateidcard())){
@@ -891,6 +891,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("rankId",rankId);
         map.put("lastUpdateTime",DateUtils.getBeforeDateTime(new Date(),RankMembers.maxHour*60));
+
+        //查询出可以挤走的用户id
+        Long
 
         int row = this.rankMembersMapper.removeOverTimeRankMember(map);
         if(row > 0){
