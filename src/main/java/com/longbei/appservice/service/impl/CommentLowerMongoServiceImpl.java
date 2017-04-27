@@ -54,11 +54,12 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			//添加评论消息
 			Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 			if(null != comment){
-				
+				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+				userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+						comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
+						commentLower.getContent(), "1", "1", 0);
 			}
-			userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
-					comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
-					commentLower.getContent(), "1", "1", 0);
 //			insertMsg(commentLower);
 			
 			//添加子评论---    +积分

@@ -15,7 +15,7 @@ public class UserMsg {
 
 	private Long friendid;
 
-	private String mtype; 	// 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+	private String mtype; 	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 												//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 												//25:订单发货N天后自动确认收货    26：实名认证审核结果
 												//27:工作认证审核结果      28：学历认证审核结果
@@ -45,8 +45,8 @@ public class UserMsg {
 
 	private String isread;// 0 未读 1 已读
 
-	private String gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-							//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
+	private String gtype; //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+									//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 	
 	private Long gtypeid;  //榜id  教室id 圈子id
 

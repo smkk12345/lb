@@ -173,8 +173,8 @@ public class ImproveServiceImpl implements ImproveService{
                     	//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)  
 //                		//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //                		//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
-                    	//gtype  0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-						//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
+                    	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+            			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                     	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), improve.getImpid().toString(), 
                     			"13", businessid, "批复作业", "2", "12", 0);
 //                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
@@ -1364,19 +1364,9 @@ public class ImproveServiceImpl implements ImproveService{
 
             }
             //添加评论消息---点赞
-            String gtype = "";
-            //gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-			//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
-            if("2".equals(businesstype)){
-            	gtype = "10";
-            }else if("3".equals(businesstype)){
-            	gtype = "11";
-            }else if("4".equals(businesstype)){
-            	gtype = "12";
-            }else{
-            	gtype = businesstype;
-            }
-            userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, gtype, businessid, 
+            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+            userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
             		Constant.MSG_LIKE_MODEL, "1", "2", 0);
 //            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
             baseResp.getExpandData().put("haslike","1");
@@ -1598,19 +1588,9 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 //送花添加消息记录    msg
                 String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
-                String gtype = "";
-                //gtype; // 0:零散 1:目标中 2:榜中  3:圈子中 4.教室中 5:龙群  6:龙级  7:订单  8:认证 9：系统 
-    			//10：榜中微进步  11 圈子中微进步  12 教室中微进步  13:教室批复作业
-                if("2".equals(businesstype)){
-                	gtype = "10";
-                }else if("3".equals(businesstype)){
-                	gtype = "11";
-                }else if("4".equals(businesstype)){
-                	gtype = "12";
-                }else{
-                	gtype = businesstype;
-                }
-                userMsgService.insertMsg(userid, friendid, impid, gtype, businessid, remark, "1", "3", 0);
+                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
 //                insertMsg(userid, friendid, impid, flowernum, businesstype);
                 return resp;
             }
@@ -2596,7 +2576,9 @@ public class ImproveServiceImpl implements ImproveService{
 //            userMsg.setGtype("2");
 //            userMsg.setCreatetime(new Date());
 //            userMsgMapper.insertSelective(userMsg);
-            userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "2", businessid, "榜中下榜", "0", "41", 0);
+            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+            userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, "榜中下榜", "0", "41", 0);
             if (res > 0){
                 baseResp = BaseResp.ok();
             }
