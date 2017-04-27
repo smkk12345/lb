@@ -2196,7 +2196,8 @@ public class ImproveServiceImpl implements ImproveService{
                                     rank.getStarttime(),
                                     rank.getEndtime(),
                                     sortnum,0,
-                                    rank.getRankphotos());
+                                    rank.getRankphotos(),
+                                    rankMembers.getIcount());
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -2211,7 +2212,7 @@ public class ImproveServiceImpl implements ImproveService{
                                 userGoal.getUpdatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount(),null);
+                                userGoal.getIcount(),null,userGoal.getIcount());
                         break;
                     default:
                         break;
@@ -2388,7 +2389,7 @@ public class ImproveServiceImpl implements ImproveService{
                         userGoal.getUpdatetime(),
                         null,
                         0,
-                        userGoal.getIcount(),null);
+                        userGoal.getIcount(),null,userGoal.getIcount());
             }
             baseResp.setData(list);
             return baseResp.initCodeAndDesp();
