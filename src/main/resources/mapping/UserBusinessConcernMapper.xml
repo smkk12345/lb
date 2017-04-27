@@ -31,8 +31,8 @@
           <include refid="Base_Column_List" />
         from user_business_concern
         <where>
-            <if test="userId != null">
-                userid = #{userId}
+            <if test="userid != null">
+                userid = #{userid}
             </if>
             <if test="businessType != null">
                 and businesstype = #{businessType}

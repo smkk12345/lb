@@ -567,6 +567,9 @@ public class ImproveServiceImpl implements ImproveService{
     private void initSortInfo(Rank rank,List<Improve> improves){
         if(rank.getIsfinish().equals("1")){//进行中
             for (Improve improve : improves){
+                if(improve == null){
+                    continue;
+                }
                 Long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rank.getRankid(),String.valueOf(improve.getUserid()));
                 improve.setSortnum(sort.intValue());
             }
@@ -2176,7 +2179,8 @@ public class ImproveServiceImpl implements ImproveService{
                                     rank.getStarttime(),
                                     rank.getEndtime(),
                                     sortnum,0,
-                                    rank.getRankphotos());
+                                    rank.getRankphotos(),
+                                    rankMembers.getIcount());
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -2191,7 +2195,7 @@ public class ImproveServiceImpl implements ImproveService{
                                 userGoal.getUpdatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount(),null);
+                                userGoal.getIcount(),null,userGoal.getIcount());
                         break;
                     default:
                         break;
@@ -2368,7 +2372,7 @@ public class ImproveServiceImpl implements ImproveService{
                         userGoal.getUpdatetime(),
                         null,
                         0,
-                        userGoal.getIcount(),null);
+                        userGoal.getIcount(),null,userGoal.getIcount());
             }
             baseResp.setData(list);
             return baseResp.initCodeAndDesp();
