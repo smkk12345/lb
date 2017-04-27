@@ -893,12 +893,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         map.put("lastUpdateTime",DateUtils.getBeforeDateTime(new Date(),RankMembers.maxHour*60));
 
         //查询出可以挤走的用户id
-        Long
+        Long userid = this.rankMembersMapper.removeOverTimeRankMemberUserId(rankId);
+        if(userid == null){
+            return false;
+        }
+        Map<String,Object> paraMap = new HashMap<String,Object>();
+        paraMap.put("rankId",rankId);
+        paraMap.put("userId",userid);
+        paraMap.put("status",2);
+        paraMap.put("updateTime",new Date());
 
-        int row = this.rankMembersMapper.removeOverTimeRankMember(map);
+        int row = this.rankMembersMapper.updateRank(paraMap);
         if(row > 0){
             //入榜人数减1
             boolean updateRankMemberCount = updateRankMemberCount(rankId,-1);
+            //删除reids中榜单的该用户排名
+            boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userid+"");
             return updateRankMemberCount;
         }
         return false;

@@ -670,6 +670,21 @@
     )
   </update>
 
+    <!-- 移除超时未发布进步的榜成员 -->
+    <update id="removeOverTimeRankMemberUserId" parameterType="map" >
+        select
+          temp.userid
+        from
+          rank_members temp
+        where
+          temp.updatetime &lt; #{lastUpdateTime}
+        and temp.status = 1
+        and temp.icount = 0
+        and temp.rankid = #{rankId}
+        order by temp.updatetime
+        limit 1
+    </update>
+
     <!-- 获取榜单的中奖用户 -->
     <select id="getWinningRankAwardUser" resultMap="BaseResultMap">
         select

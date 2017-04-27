@@ -480,4 +480,5 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid);
+
 }
