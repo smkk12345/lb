@@ -46,6 +46,9 @@ public class RankCard {
      */
     private Date updatetime;
 
+    /** 榜主名片的地址 */
+    private String rankCardUrl;
+
     public Integer getId() {
         return id;
     }
@@ -112,5 +115,13 @@ public class RankCard {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public String getRankCardUrl() {
+        return rankCardUrl;
+    }
+
+    public void setRankCardUrl(Integer rankCardId) {
+        this.rankCardUrl = "www.baidu.com?rankCardId="+rankCardId;
     }
 }

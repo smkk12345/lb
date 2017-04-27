@@ -310,6 +310,22 @@ public class RankController {
     }
 
     /**
+     * 查询单个榜单的获奖公示
+     * @url http://ip:port/app_service/rank/onlyRankAward
+     * @param rankid
+     * @return
+     */
+    @RequestMapping(value="onlyRankAward")
+    public BaseResp<Object> onlyRankAward(Long rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(rankid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.onlyRankAward(rankid);
+        return baseResp;
+    }
+
+    /**
      * 获取榜单的用户列表
      * @url http://ip:port/app_service/rank/getWinningRankAwardUser
      * @param rankid
