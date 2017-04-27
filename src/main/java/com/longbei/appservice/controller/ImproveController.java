@@ -414,6 +414,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "line/list", method = RequestMethod.POST)
     public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastDate, String pageSize) {
+        Long s = System.currentTimeMillis();
         if (StringUtils.hasBlankParams(userid, ctype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -429,6 +430,8 @@ public class ImproveController {
                 UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
                 baseres.getExpandData().put("totalimp",userInfo.getTotalimp());
             }
+            Long e = System.currentTimeMillis();
+            logger.info("select timeline list need time={}",e-s);
             return baseres;
         } catch (Exception e) {
             logger.error("select improve line list is error:{}", e);

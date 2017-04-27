@@ -465,4 +465,12 @@ public interface RankService extends BaseService{
      * @return
      */
     Map<String,Object> getUserSortNumAndImproveCount(Long userId, Long businessId);
+
+
+    /**
+     * 获取榜单审核记录
+     * @param rankid
+     * @return
+     */
+    BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid);
 }

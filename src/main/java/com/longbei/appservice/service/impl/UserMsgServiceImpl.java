@@ -969,15 +969,15 @@ public class UserMsgServiceImpl implements UserMsgService {
 			impItype(improve, userMsg);
 		}else if("10".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_RANK,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_RANK,null,null);
 			impItype(improve, userMsg);
 		}else if("11".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_CIRCLE,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_CIRCLE,null,null);
 			impItype(improve, userMsg);
 		}else if("12".equals(userMsg.getGtype())){
 			//4 教室中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(), Constant_table.IMPROVE_CLASSROOM,null,null);
+			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()),  Constant_table.IMPROVE_CLASSROOM,null,null);
 			impItype(improve, userMsg);
 		}else{
 			//4 教室中   进步点赞消息

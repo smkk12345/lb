@@ -1248,6 +1248,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+
+    @Override
+    public BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid) {
+        BaseResp<List<RankCheckDetail>> baseResp = new BaseResp<>();
+        try {
+            List<RankCheckDetail> list = rankCheckDetailMapper.selectList(rankid);
+            baseResp = BaseResp.ok();
+            baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("select rank rankid={} checkdetail is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 榜单的成员排名列表
      * @param rankId 榜单id

@@ -483,7 +483,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             switch (businesstype){
                 case Constant.IMPROVE_SINGLE_TYPE:
-                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,null,Constant_table.IMPROVE,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_RANK,isdel,ispublic);
