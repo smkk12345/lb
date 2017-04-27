@@ -46,6 +46,8 @@ public class ProductBasic {
     private Integer goodsCount; //购物车提交时带的该商品数量
 
     private Long lowimpicon; //最低进步币要求
+    
+    private String productrule;  //商品规则
 
 
     // -------------------------按条件查询商品列表属性--------------------
@@ -399,5 +401,13 @@ public class ProductBasic {
 
 	public void setPhotos(String[] photos) {
 		this.photos = photos;
+	}
+
+	public String getProductrule() {
+		return productrule;
+	}
+
+	public void setProductrule(String productrule) {
+		this.productrule = productrule;
 	}
 }

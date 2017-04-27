@@ -305,8 +305,10 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 //        userMsg.setIsdel("0");
 //        userMsg.setIsread("0");
 //        userMsg.setMtype("2");
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         BaseResp<Object> baseResp = userMsgService.insertMsg(Constant.SQUARE_USER_ID, userId.toString(), 
-        		"", "3", circleId.toString(), 
+        		"", "11", circleId.toString(), 
         		"有新的成员申请加入圈子,快去进行审核吧!", "2", "11", 0);
         if(ResultUtil.isSuccess(baseResp)){
         	return true;

@@ -399,10 +399,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 //							//snsid---教室业务id
-//							// gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中
+//							//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "4", classroomid + "", remark, "2", "14", 0);
+									"", "12", classroomid + "", remark, "2", "14", 0);
 //							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
 						}
 					}
