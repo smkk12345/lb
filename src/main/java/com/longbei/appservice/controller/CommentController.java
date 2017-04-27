@@ -109,8 +109,8 @@ public class CommentController extends BaseController {
     * @Description: 查看最新评论列表
     * @param @param userid   当前访问者商户id
 	* @param @param businessid  各类型对应的id
-    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-	* 										10：榜中微进步  11 圈子中微进步  12 教室中微进步
+    * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+	* 										10：榜评论  11 圈子评论  12 教室评论
 	* @param @param impid  进步id  可为null
     * @param @param startNum
     * @param @param pageSize
@@ -141,8 +141,8 @@ public class CommentController extends BaseController {
      * @Description: 查看热门评论列表(5条)
      * @param @param userid   当前访问者商户id
  	 * @param @param businessid  各类型对应的id
-     * @param @param businesstype  类型   0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-	 * 										10：榜中微进步  11 圈子中微进步  12 教室中微进步
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+	* 										10：榜评论  11 圈子评论  12 教室评论
 	 * @param @param impid  进步id  可为null
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
@@ -169,8 +169,8 @@ public class CommentController extends BaseController {
      * @Description: 添加主评论
      * @param @param userid  评论者id
      * @param @param friendid 被评论商户id
-     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-	 * 										10：榜中微进步  11 圈子中微进步  12 教室中微进步
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+	 * 										10：榜评论  11 圈子评论  12 教室评论
      * @param @param businessid  各类型对应的id
      * @param @param impid  进步id  可为null
      * @param @param content
@@ -297,7 +297,8 @@ public class CommentController extends BaseController {
    	/**
      * @Title: http://ip:port/appservice/comment/selectCommentCountSum
      * @Description: 查看评论总数
-     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+	 * 										10：榜评论  11 圈子评论  12 教室评论
      * @param @param businessid  各类型对应的id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc

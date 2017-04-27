@@ -115,6 +115,13 @@ public interface RankMembersMapper {
     int removeOverTimeRankMember(Map<String, Object> map);
 
     /**
+     * 查询可以挤走的榜单用户id
+     * @param rankId
+     * @return
+     */
+    Long removeOverTimeRankMemberUserId(Long rankId);
+
+    /**
      * 查询中奖的用户
      * @return
      */
@@ -128,4 +135,5 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> getWinningRankAwardUser(@Param("rankid") Long rankid,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
 }

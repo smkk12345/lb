@@ -389,9 +389,13 @@
     ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
     ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
-    FROM improve_rank ir JOIN rank_members rm ON ir.businessid=rm.rankid
+    FROM improve_rank ir
+      JOIN rank_members rm
+        ON ir.businessid=rm.rankid
+          and rm.userid = ir.userid
     <where>
       rm.status = '1'
+      and ir.isdel = 0
       AND ir.businessid = #{businessid}
       <if test="lastdate != null">
         AND ir.createtime &lt; #{lastdate}
@@ -405,7 +409,7 @@
       ORDER BY ir.createtime DESC
     </if>
     <if test="orderby=='1'.toString()">
-      ORDER BY sum(rm.flowers*#{flowerscore}+rm.likes*#{likescore}) desc
+      ORDER BY rm.flowers*#{flowerscore}+rm.likes*#{likescore} desc
     </if>
     <choose>
       <when test="orderby=='0'.toString()">

@@ -171,11 +171,13 @@ public class RankShareController {
         }
         try {
             baseResp =improveService.select(null, impid, businesstype, businessid);
-            Improve improve = baseResp.getData();
-            Long userid = improve.getUserid();
-            //查看该用户在榜中发布的所有进步数量 以及 排名
-            Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
-            baseResp.setExpandData(resultMap);
+            if(!"0".equals(businesstype) && !"5".equals(businesstype)){
+                Improve improve = baseResp.getData();
+                Long userid = improve.getUserid();
+                //查看该用户在榜中发布的所有进步数量 以及 排名
+                Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
+                baseResp.setExpandData(resultMap);
+            }
             return baseResp;
         } catch (Exception e) {
             logger.error("get improve detail  is error impid={} msg={}", impid, e);
@@ -186,8 +188,10 @@ public class RankShareController {
     /**
      * @Title: http://ip:port/appservice/api/rankShare/commentList
      * @Description: 查看最新评论列表
-     * @param @param businessid  各类型对应的id
-     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * @param businessid  各类型对应的id
+     * @param businesstype  类型  0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * 										10：榜中微进步  11 圈子中微进步  12 教室中微进步
+     * @param impid 进步id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
      * @currentdate:2017年1月22日
@@ -195,13 +199,13 @@ public class RankShareController {
     @ResponseBody
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commentList")
-    public BaseResp<Object> commentList(String impid,String businesstype) {
+    public BaseResp<Object> commentList(String impid,String businesstype,String businessid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(impid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, impid, businesstype, "", 0, 15);
+            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, businessid, businesstype, impid, 0, 15);
         } catch (Exception e) {
             logger.error("commentList businessid = {}, businesstype = {}", impid, businesstype, e);
         }

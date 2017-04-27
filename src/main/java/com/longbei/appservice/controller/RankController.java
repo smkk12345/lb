@@ -326,7 +326,7 @@ public class RankController {
     }
 
     /**
-     * 获取榜单的用户列表
+     * 获取榜单的中奖用户列表
      * @url http://ip:port/app_service/rank/getWinningRankAwardUser
      * @param rankid
      * @param userid 用户id
@@ -557,6 +557,5 @@ public class RankController {
         baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(userid,startNum,pageSize);
         return baseResp;
     }
-
 
 }
