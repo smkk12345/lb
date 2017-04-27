@@ -68,12 +68,14 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			comment = commentMongoDao.selectCommentByItypeid(comment.getItypeid(), comment.getItype());
 			//添加评论总数
 			insertCount(comment);
-			//businesstype类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-			// 10：榜中微进步  11 圈子中微进步  12 教室中微进步
-			if(!"2".equals(comment.getBusinesstype()) && !"3".equals(comment.getBusinesstype()) 
-					&& !"4".equals(comment.getBusinesstype())){
+			//businesstype 类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+			// 					10：榜评论  11 圈子评论  12 教室评论
+			if(!"10".equals(comment.getBusinesstype()) && !"11".equals(comment.getBusinesstype()) 
+					&& !"12".equals(comment.getBusinesstype())){
 				//添加评论消息
 				//msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
 						comment.getImpid(), comment.getBusinesstype(), 
 						comment.getBusinessid(), comment.getContent(), "1", "1", 0);
