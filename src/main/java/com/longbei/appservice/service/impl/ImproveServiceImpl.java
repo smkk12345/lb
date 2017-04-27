@@ -2209,13 +2209,14 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_GOAL_TYPE:
                         UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+
                         improve.setBusinessEntity(userGoal.getPtype(),
                                 userGoal.getGoaltag(),
                                 0,
-                                userGoal.getUpdatetime(),
+                                userGoal.getCreatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount(),null,userGoal.getIcount());
+                                userGoal.getIcount(),improve.getPickey(),userGoal.getIcount());
                         break;
                     default:
                         break;
