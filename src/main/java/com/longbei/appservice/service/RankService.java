@@ -498,4 +498,5 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> rankCardDetail(String rankCardId);
+
 }
