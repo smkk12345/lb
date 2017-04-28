@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Issue;
+import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -13,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/issue")
@@ -151,7 +152,6 @@ public class IssueApiController {
 	}
 
 
-
 	@RequestMapping(value = "selectByIssueIdH5")
 	public String selectByIssueIdH5(String issueId,HttpServletRequest request){
 		BaseResp<Issue> baseResp = new BaseResp<Issue>();
@@ -167,9 +167,9 @@ public class IssueApiController {
 
 	@RequestMapping(value = "selectIssueTypesH5")
 	public String selectIssueTypesH5(HttpServletRequest request){
-		BaseResp<Object> baseResp = new BaseResp<Object>();
+		BaseResp<List<IssueClassify>> baseResp = new BaseResp<List<IssueClassify>>();
 		String callback = request.getParameter("callback");
-		baseResp = issueService.selectIssueTypesH5();
+		baseResp = issueService.selectIssueClassifyList();
 		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
 		return callback + "("+jsonObjectStr+")";
 	}
@@ -191,4 +191,21 @@ public class IssueApiController {
 
 	}
 
+	/**
+	 * 获取帮助中心类型列表
+	 * @title selectIssueClassifyList
+	 * @author IngaWu
+	 * @currentdate:2017年4月28日
+	 */
+	@RequestMapping(value = "selectIssueClassifyList")
+	public BaseResp<List<IssueClassify>> selectIssueClassifyList(){
+		BaseResp<List<IssueClassify>> baseResp =new BaseResp<List<IssueClassify>>();
+		try {
+			baseResp = issueService.selectIssueClassifyList();
+			return baseResp;
+		} catch (NumberFormatException e) {
+			logger.error("selectIssueClassifyList for adminservice error",e);
+		}
+		return baseResp;
+	}
 }
