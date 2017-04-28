@@ -12,8 +12,8 @@ public class IssueClassify implements Serializable {
 
     private Integer id;
     private String typeid;//类型id
-    private String typeTitle;//类型名称
-    private Integer contentCount;//内容条数
+    private String typetitle;//类型名称
+    private Integer contentcount;//内容条数
     private String createtime;//创建时间
     private String updatetime;//修改时间
 
@@ -25,12 +25,20 @@ public class IssueClassify implements Serializable {
         this.id = id;
     }
 
-    public String getTypeTitle() {
-        return typeTitle;
+    public void setContentcount(Integer contentcount) {
+        this.contentcount = contentcount;
     }
 
-    public void setTypeTitle(String typeTitle) {
-        this.typeTitle = typeTitle;
+    public Integer getContentcount() {
+        return contentcount;
+    }
+
+    public void setTypetitle(String typetitle) {
+        this.typetitle = typetitle;
+    }
+
+    public String getTypetitle() {
+        return typetitle;
     }
 
     public String getTypeid() {
@@ -57,22 +65,14 @@ public class IssueClassify implements Serializable {
         this.updatetime = updatetime;
     }
 
-    public void setContentCount(Integer contentCount) {
-        this.contentCount = contentCount;
-    }
-
-    public Integer getContentCount() {
-        return contentCount;
-    }
-
     public IssueClassify() {
     }
 
-    public IssueClassify(Integer id, String typeid, String typeTitle, Integer contentCount, String createtime, String updatetime) {
+    public IssueClassify(Integer id, String typeid, String typetitle, Integer contentcount, String createtime, String updatetime) {
         this.id = id;
         this.typeid = typeid;
-        this.typeTitle = typeTitle;
-        this.contentCount = contentCount;
+        this.typetitle = typetitle;
+        this.contentcount = contentcount;
         this.createtime = createtime;
         this.updatetime = updatetime;
     }
