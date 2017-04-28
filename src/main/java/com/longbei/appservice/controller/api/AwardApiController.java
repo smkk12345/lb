@@ -6,6 +6,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.AwardClassify;
 import com.longbei.appservice.service.AwardService;
+import feign.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +178,18 @@ public class AwardApiController {
         }
         return baseResp;
     }
+
+    @RequestMapping(value = "classify/hasawards/{classifyid}")
+    boolean hasAwards(@PathVariable("classifyid") String classifyid){
+        boolean flag =false;
+        try {
+            flag = awardService.hasAwards(classifyid);
+        } catch (NumberFormatException e) {
+            logger.error("has awards under classifyid is error:{}",e);
+        }
+        return flag;
+    }
+
 
     @RequestMapping(value = "classify/update")
     public BaseResp updateAwardClassify(@RequestBody AwardClassify awardClassify){
