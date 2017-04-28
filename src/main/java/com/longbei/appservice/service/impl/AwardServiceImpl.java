@@ -6,10 +6,12 @@ import com.longbei.appservice.dao.AwardMapper;
 import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.AwardClassify;
 import com.longbei.appservice.service.AwardService;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.Int;
 
 import java.util.Date;
 import java.util.List;
@@ -162,6 +164,19 @@ public class AwardServiceImpl implements AwardService {
             }
         } catch (Exception e) {
             logger.error("update awardclassify is error:{}",e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasAwards(String classifyid) {
+        try {
+            int res = awardMapper.awardCountsUnderClassify(Integer.parseInt(classifyid));
+            if (res > 0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("select awardCounts UnderClassify is error:{}",e);
         }
         return false;
     }

@@ -2,6 +2,7 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Award;
 import org.apache.ibatis.annotations.Param;
+import scala.Int;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public interface AwardMapper {
                                 @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
 
     int selectAwardCount(@Param("award") Award award);
+
+    int awardCountsUnderClassify(@Param("classifyid") Integer classifyid);
 
     /**
      * 查询奖品 和 奖品分类

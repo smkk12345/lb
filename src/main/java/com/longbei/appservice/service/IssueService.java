@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Issue;
+import com.longbei.appservice.entity.IssueClassify;
 
 
 import java.util.List;
@@ -53,4 +54,12 @@ public interface IssueService {
 	 * @currentdate:2017年4月26日
 	 */
 	BaseResp<Object> insertIssue(Issue issue);
+
+	/**
+	 * 获取帮助中心类型列表
+	 * @title selectIssueClassifyList
+	 * @author IngaWu
+	 * @currentdate:2017年4月28日
+	 */
+	BaseResp<List<IssueClassify>> selectIssueClassifyList();
 }

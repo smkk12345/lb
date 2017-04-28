@@ -6,6 +6,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.IssueMapper;
 import com.longbei.appservice.entity.Issue;
+import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -100,6 +102,21 @@ public class IssueServiceImpl implements IssueService{
         return baseResp;
     }
 
-
+    public BaseResp<List<IssueClassify>> selectIssueClassifyList(){
+        BaseResp<List<IssueClassify>> baseResp =new BaseResp<List<IssueClassify>>();
+        try {
+            List<IssueClassify> classifyList = new ArrayList<IssueClassify>(){
+                {
+                add(new IssueClassify(0,"0","关于龙进步",8,"2017-04-27 12:25:30","2017-04-29 15:25:30"));
+                add(new IssueClassify(1,"1","关于龙榜",10,"2017-04-26 11:25:30","2017-04-28 10:25:30"));
+                }
+            };
+            baseResp.setData(classifyList);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baseResp;
+    }
 
 }
