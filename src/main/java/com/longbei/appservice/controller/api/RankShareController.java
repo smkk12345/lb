@@ -323,4 +323,52 @@ public class RankShareController {
         }
         return  baseResp;
     }
+
+    /**
+     * 获取目标中的进步
+     * @url http://ip:port/app_service/api/rankShare/goal/list
+     * @param goalid   目标id
+     * @author:luye
+     * @date 2017/2/4
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "goal/list")
+    public BaseResp selectGoalImproveList(String goalid) {
+        if (StringUtils.hasBlankParams(goalid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        String startNum = Constant.DEFAULT_START_NO;
+        String pageSize = Constant.DEFAULT_PAGE_SIZE;
+        List<Improve> improves = null;
+        try {
+            improves = improveService.selectGoalImproveList(null, goalid, null, Integer.parseInt(startNum),
+                    Integer.parseInt(pageSize));
+        } catch (Exception e) {
+            logger.error("select goal improve list is error:{}", e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+    /***
+     * 榜主名片
+     * @url http://ip:port/app_service/api/rankShare/rankCardDetail
+     * @param rankCardId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="rankCardDetail")
+    public BaseResp<Object> rankCardDetail(String rankCardId){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankCardId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = rankService.rankCardDetail(rankCardId);
+        return baseResp;
+    }
 }
