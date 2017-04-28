@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Issue;
+import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/issue")
@@ -143,6 +146,24 @@ public class IssueApiController {
 			return baseResp;
 		} catch (Exception e) {
 			logger.error("insertIssue for adminservice issue:{}", JSON.toJSONString(issue),e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 获取帮助中心类型列表
+	 * @title selectIssueClassifyList
+	 * @author IngaWu
+	 * @currentdate:2017年4月28日
+	 */
+	@RequestMapping(value = "selectIssueClassifyList")
+	public BaseResp<List<IssueClassify>> selectIssueClassifyList(){
+		BaseResp<List<IssueClassify>> baseResp =new BaseResp<List<IssueClassify>>();
+		try {
+			baseResp = issueService.selectIssueClassifyList();
+			return baseResp;
+		} catch (NumberFormatException e) {
+			logger.error("selectIssueClassifyList for adminservice error",e);
 		}
 		return baseResp;
 	}
