@@ -9,7 +9,9 @@ import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.ImpAllDetail;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.CommentMongoService;
+import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import com.netflix.discovery.converters.Auto;
@@ -46,6 +48,8 @@ public class RankShareController {
     private ImproveService improveService;
     @Autowired
     private CommentMongoService commentMongoService;
+    @Autowired
+    private GoalService goalService;
 
     /**
      * 获取榜单详情
@@ -294,5 +298,29 @@ public class RankShareController {
         BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
         baseres.setData(improves);
         return baseres;
+    }
+
+    /**
+     * @Title: http://ip:port/app_service/api/rankShare/getGoalDetail
+     * @Description: 获取目标详情
+     * @param @param goalid 目标id
+     * @auther yinxc
+     * @currentdate:2017年4月8日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "goalDetail")
+    @ResponseBody
+    public BaseResp<UserGoal> goalDetail(String goalid){
+        BaseResp<UserGoal> baseResp = new BaseResp<>();
+        logger.info("getGoalDetail goalid = {}", goalid);
+        if(StringUtils.hasBlankParams(goalid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try{
+            baseResp = goalService.selectUserGoal(null, Long.parseLong(goalid));
+        }catch(Exception e){
+            logger.error("getGoalDetail goalid = {}", goalid, e);
+        }
+        return  baseResp;
     }
 }
