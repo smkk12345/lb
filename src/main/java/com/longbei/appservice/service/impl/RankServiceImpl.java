@@ -231,6 +231,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if ("1".equals(rankImage.getRanktype())){
                         rank.setJoincode(codeDao.getCode(null));
                     }
+                    Date starttime = rank.getStarttime();
+                    if (new Date().getTime() >= starttime.getTime()){
+                        rank.setIsfinish("1");
+                    }
                     res = rankMapper.insertSelective(rank);
                 }
                 if (res > 0){
@@ -396,7 +400,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             HomeRecommend homeRecommend = new HomeRecommend();
             homeRecommend.setIsdel("0");
             homeRecommend.setRecommendtype(0);
-            List<HomeRecommend> homeRecommendList = this.homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
             if(homeRecommend != null && homeRecommendList.size() > 0){
                 for(HomeRecommend homeRecommend1: homeRecommendList){
                     Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());

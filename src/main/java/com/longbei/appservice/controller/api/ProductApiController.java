@@ -57,12 +57,14 @@ public class ProductApiController {
 	 */
 	@RequestMapping(value = "/productCategories")
 	public BaseResp<Object> productCategories() {
+		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			return productCategoryService.productCategories();
+			baseResp =  productCategoryService.productCategories();
+
 		} catch (Exception e) {
 			logger.error("productCategories error",e);
 		}
-		return null;
+		return baseResp;
 	}
 
 	/**
