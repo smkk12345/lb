@@ -153,7 +153,6 @@
       limit 0,6
   </select>
 
-
   <!--<select id="selectRankAcceptAwardCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">-->
     <!--SELECT-->
       <!--count(*)-->
@@ -622,21 +621,12 @@
       select
         rank_members.userid,
         rank_members.awardlevel,
-        rank_members.awardid,
-        award.awardprice,
-        award.awardphotos,
-        rank_award_release.awardnickname,
-        award.awardtitle awardtitle
+        rank_members.awardid
     from
         rank_members
-        rank_award_release
-        award
     where
-        rank_members.awardid = award.id
-      and rank_award_release.rankid= rank_members.rankid
-	  and rank_award_release.awardid = award.id
+      rank_members.iswinning = 1
       and rank_members.checkstatus = 3
-      and rank_members.iswinning = 1
       and rank_members.rankid =#{rankid}
     order by rank_members.awardlevel
   </select>
@@ -699,6 +689,8 @@
             and checkstatus = 3
             and rankid = #{rankid}
         order by awardlevel
-        limit #{startNum},#{pageSize}
+        <if test="startNum != null">
+            limit #{startNum},#{pageSize}
+        </if>
     </select>
 </mapper>

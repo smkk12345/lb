@@ -152,7 +152,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	public BaseResp<Object> selectCommentListByItypeid(String businessid, String businesstype, int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(null,businessid, businesstype, startNo, pageSize);
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -187,7 +187,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		Map<String, Object> expandData = new HashMap<>();
 		int commentNum = 0;
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(impid,businessid, businesstype, startNo, pageSize);
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					//初始化用户信息

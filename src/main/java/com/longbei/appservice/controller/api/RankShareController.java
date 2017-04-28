@@ -323,6 +323,37 @@ public class RankShareController {
     }
 
     /**
+     * 获取目标中的进步
+     * @url http://ip:port/app_service/api/rankShare/goal/list
+     * @param goalid   目标id
+     * @author:luye
+     * @date 2017/2/4
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "goal/list")
+    public BaseResp selectGoalImproveList(String goalid) {
+        if (StringUtils.hasBlankParams(goalid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        String startNum = Constant.DEFAULT_START_NO;
+        String pageSize = Constant.DEFAULT_PAGE_SIZE;
+        List<Improve> improves = null;
+        try {
+            improves = improveService.selectGoalImproveList(null, goalid, null, Integer.parseInt(startNum),
+                    Integer.parseInt(pageSize));
+        } catch (Exception e) {
+            logger.error("select goal improve list is error:{}", e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+    /**
      * 帮主名片
      * @param rankCardId
      * @param request
@@ -332,7 +363,7 @@ public class RankShareController {
     @RequestMapping(value = "rankCard")
     @ResponseBody
     public String rankCard(String rankCardId,HttpServletRequest request){
-        BaseResp<RankCard> baseResp = new BaseResp<>();
+        BaseResp<Object> baseResp = new BaseResp<>();
         logger.info("rankCard rankCardId = {}", rankCardId);
         String callback = request.getParameter("callback");
         if(StringUtils.hasBlankParams(rankCardId)){
@@ -340,13 +371,12 @@ public class RankShareController {
             return callback + "("+ JSONObject.fromObject(baseResp).toString()+")";
         }
         try{
-            baseResp = rankService.rankCard(rankCardId);
+            baseResp = rankService.rankCardDetail(rankCardId);
         }catch(Exception e){
             logger.error("rankCard rankCardId = {}", rankCardId, e);
         }
         String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
         return callback + "("+jsonObjectStr+")";
     }
-
 
 }

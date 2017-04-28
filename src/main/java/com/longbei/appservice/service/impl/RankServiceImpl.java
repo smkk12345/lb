@@ -794,7 +794,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //初始化redis的排名
                 boolean redisInitFlag = initRedisRankSort(rank,userId);
 
-                return baseResp.ok("入榜成功!");
+                Map<String,Object> expandData = new HashMap<String,Object>();
+                expandData.put("status",status);
+                baseResp.setData(expandData);
+
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,status==1?"入榜成功":"入榜申请已提交,正在等待榜主审核");
             }
             BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
             if(!ResultUtil.isSuccess(baseResp1)){
@@ -816,28 +820,24 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMember.setStatus(1);
             }
             int row = rankMembersMapper.insertSelective(rankMember);
+            if(row > 0 && Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+                // 发送消息给榜主
+                String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
+                try {
+                    boolean sendMsgFlag = sendUserMsg(true, rank.getCreateuserid(), userId, "17", rank.getRankid(), remark, "10");
+                } catch (Exception e) {
+                    logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
+                }
+            }
             if(row > 0 && rankMember.getStatus() == 1){
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
-
-                if ("2".equals(rank.getRanktype())) {
-                    // 发送消息给榜主
-                    String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
-                    try {
-                    	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-    					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                        boolean sendMsgFlag = sendUserMsg(true, rank.getCreateuserid(), userId, "17", rank.getRankid(), remark, "10");
-                    } catch (Exception e) {
-                        logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",
-                                rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
-                    }
-                }
-
-
-                    //往reids中放入初始化的排名值
+                //往reids中放入初始化的排名值
                 boolean initRedisFlag = initRedisRankSort(rank,userId);
-
-                return baseResp.ok();
             }
+            Map<String,Object> expandData = new HashMap<String,Object>();
+            expandData.put("status",rankMember.getStatus());
+            baseResp.setExpandData(expandData);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,rankMember.getStatus() == 1?"入榜成功":"入榜申请已提交,正在等待榜主审核");
         } catch (Exception e) {
             logger.error("insert rankMemeber error rankId:{} userId:{} error:",rankId,userId,e);
             //从redis中删除该用户
@@ -1347,16 +1347,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    /**
+     * 查询榜主名片详情
+     * @param rankCardId
+     * @return
+     */
     @Override
-    public BaseResp<RankCard> rankCard(String rankCardId) {
-        BaseResp<RankCard> baseResp = new BaseResp<>();
+    public BaseResp<Object> rankCardDetail(String rankCardId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            RankCard rankCard = rankCardMapper.selectByPrimaryKey(Integer.parseInt(rankCardId));
-            baseResp.initCodeAndDesp();
+            RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rankCardId));
             baseResp.setData(rankCard);
-            return baseResp;
-        }catch (Exception e){
-            logger.error("selectByPrimaryKey error and rankCardId={}",rankCardId,e);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select rankCard detail error rankCardId:{}",rankCardId);
+            printException(e);
         }
         return baseResp;
     }
@@ -2325,14 +2330,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();//用于存放一等奖 二等奖
             //查询所有的中奖用户 按照中奖等级排列
-            List<RankAwardRelease> rankAwardList = this.rankMembersMapper.rankMemberAwardList(rankid);
-            if(rankAwardList != null && rankAwardList.size() > 0){
+            List<RankMembers> rankMemberses = this.rankMembersMapper.getWinningRankAwardUser(rankid,null,null);
+            if(rankMemberses != null && rankMemberses.size() > 0){
                 Integer awardLevel = -1;
                 Integer awardCount = 0;
                 Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
                 List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
-                for(RankAwardRelease rankAwardRelease:rankAwardList){
-                    if(awardLevel != rankAwardRelease.getAwardlevel()){
+                for(RankMembers rankMembers:rankMemberses){
+                    if(awardLevel != rankMembers.getAwardlevel()){
                         if(awards.size() > 0){
                             awardMap.put("awardcount",awardCount);
                             awardMap.put("awardMembers",awards);
@@ -2340,15 +2345,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardMap = new HashMap<String,Object>();
                             awards = new ArrayList<Map<String,Object>>();
                             awardCount = 0;
-                            awardLevel = rankAwardRelease.getAwardlevel();
+                            awardLevel = rankMembers.getAwardlevel();
                         }
-                        awardMap.put("awardtitle",rankAwardRelease.getAward().getAwardtitle());
+                        Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                        RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankMembers.getRankAward().getAwardid()+"");
+                        awardMap.put("awardtitle",award.getAwardtitle());
                         awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
-                        awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
-                        awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
+                        awardMap.put("awardphotos",award.getAwardphotos());
+                        awardMap.put("awardprice",award.getAwardprice());
                     }
-                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
-                    RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankid,rankAwardRelease.getUserid());
+                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
 
                     Map<String,Object> userDetail = new HashMap<String,Object>();
                     if(appUserMongoEntity != null){
@@ -2363,6 +2369,45 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 awardMap.put("awardcount",awardCount);
                 awardMap.put("awardMembers",awards);
                 awardList.add(awardMap);
+
+//            List<RankAwardRelease> rankAwardList = this.rankMembersMapper.rankMemberAwardList(rankid);
+//            if(rankAwardList != null && rankAwardList.size() > 0){
+//                Integer awardLevel = -1;
+//                Integer awardCount = 0;
+//                Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
+//                List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
+//                for(RankAwardRelease rankAwardRelease:rankAwardList){
+//                    if(awardLevel != rankAwardRelease.getAwardlevel()){
+//                        if(awards.size() > 0){
+//                            awardMap.put("awardcount",awardCount);
+//                            awardMap.put("awardMembers",awards);
+//                            awardList.add(awardMap);
+//                            awardMap = new HashMap<String,Object>();
+//                            awards = new ArrayList<Map<String,Object>>();
+//                            awardCount = 0;
+//                            awardLevel = rankAwardRelease.getAwardlevel();
+//                        }
+//                        awardMap.put("awardtitle",rankAwardRelease.getAward().getAwardtitle());
+//                        awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
+//                        awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
+//                        awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
+//                    }
+//                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
+//                    RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankid,rankAwardRelease.getUserid());
+//
+//                    Map<String,Object> userDetail = new HashMap<String,Object>();
+//                    if(appUserMongoEntity != null){
+//                        userDetail.put("usernickname",appUserMongoEntity.getNickname());//用户昵称
+//                        userDetail.put("avatar",appUserMongoEntity.getAvatar());
+//                    }
+//                    userDetail.put("likes",rankMembers.getLikes());//赞的数量
+//                    userDetail.put("flowers",rankMembers.getFlowers());//花的数量
+//                    awards.add(userDetail);
+//                    awardCount ++;
+//                }
+//                awardMap.put("awardcount",awardCount);
+//                awardMap.put("awardMembers",awards);
+//                awardList.add(awardMap);
             }
             resultMap.put("awardList",awardList);
             baseResp.setData(resultMap);
@@ -2499,6 +2544,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("commentCount",commentResp.getData());
             }else{
                 resultMap.put("commentCount","0");
+            }
+
+            //将入榜口令给过滤掉
+            if(userId == null || !userId.equals(rank.getCreateuserid())){
+                rank.setJoincode(null);
             }
 
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
