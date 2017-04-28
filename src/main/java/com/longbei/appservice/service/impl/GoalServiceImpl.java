@@ -144,7 +144,7 @@ public class GoalServiceImpl implements GoalService {
      * @return
      */
 	@Override
-	public BaseResp<UserGoal> selectUserGoal(long userid, long goalid) {
+	public BaseResp<UserGoal> selectUserGoal(Long userid, long goalid) {
 		BaseResp<UserGoal> baseResp = new BaseResp<>();
         try{
         	UserGoal userGoal = userGoalMapper.selectByGoalId(goalid);
