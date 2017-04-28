@@ -81,4 +81,11 @@ public class AppserviceConfig {
         this.oss_media = oss_media;
     }
 
+    public static String longbei_helper;
+
+    public void setLongbei_helper(String longbei_helper){
+        this.longbei_helper = longbei_helper;
+    }
+
+
 }

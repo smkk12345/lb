@@ -6,10 +6,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.JsonDateValueProcessor;
 import com.longbei.appservice.common.web.JsonLongValueProcessor;
-import com.longbei.appservice.entity.ImpAllDetail;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.UserGoal;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -323,4 +321,32 @@ public class RankShareController {
         }
         return  baseResp;
     }
+
+    /**
+     * 帮主名片
+     * @param rankCardId
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "rankCard")
+    @ResponseBody
+    public String rankCard(String rankCardId,HttpServletRequest request){
+        BaseResp<RankCard> baseResp = new BaseResp<>();
+        logger.info("rankCard rankCardId = {}", rankCardId);
+        String callback = request.getParameter("callback");
+        if(StringUtils.hasBlankParams(rankCardId)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return callback + "("+ JSONObject.fromObject(baseResp).toString()+")";
+        }
+        try{
+            baseResp = rankService.rankCard(rankCardId);
+        }catch(Exception e){
+            logger.error("rankCard rankCardId = {}", rankCardId, e);
+        }
+        String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+        return callback + "("+jsonObjectStr+")";
+    }
+
+
 }

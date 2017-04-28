@@ -186,9 +186,23 @@ public class IssueApiController {
 		issue.setTypeid(typeId);
 		Page<Issue> page = issueService.selectIssueList(issue,1,15);
 		baseResp.setData(page);
+		baseResp.initCodeAndDesp();
+		baseResp.getExpandData().put("title",getTitleByType(typeId));
 		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
 		return callback + "("+jsonObjectStr+")";
+	}
 
+
+	private String getTitleByType(String typeId){
+		BaseResp<List<IssueClassify>> baseResp =issueService.selectIssueClassifyList();
+		List<IssueClassify> list = baseResp.getData();
+		for (int i = 0; i < list.size(); i++) {
+			IssueClassify iss = list.get(i);
+			if(iss.getTypeid().equals(typeId)){
+				return iss.getTypetitle();
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -208,4 +222,19 @@ public class IssueApiController {
 		}
 		return baseResp;
 	}
+
+	@RequestMapping(value = "hotIssueList")
+	public String hotIssueList(HttpServletRequest request){
+		BaseResp<Page<Issue>> baseResp = new BaseResp<Page<Issue>>();
+		String callback = request.getParameter("callback");
+		Issue issue = new Issue();
+		issue.setIshot("1");
+		Page<Issue> page = issueService.selectIssueList(issue,1,100);
+		baseResp.setData(page);
+		baseResp.initCodeAndDesp();
+		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+		return callback + "("+jsonObjectStr+")";
+	}
+
+
 }

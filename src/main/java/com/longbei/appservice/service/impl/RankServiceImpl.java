@@ -1347,6 +1347,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<RankCard> rankCard(String rankCardId) {
+        BaseResp<RankCard> baseResp = new BaseResp<>();
+        try{
+            RankCard rankCard = rankCardMapper.selectByPrimaryKey(Integer.parseInt(rankCardId));
+            baseResp.initCodeAndDesp();
+            baseResp.setData(rankCard);
+            return baseResp;
+        }catch (Exception e){
+            logger.error("selectByPrimaryKey error and rankCardId={}",rankCardId,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 榜单的成员排名列表
      * @param rankId 榜单id
