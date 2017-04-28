@@ -4,6 +4,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.web.JsonDateValueProcessor;
+import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.ImpAllDetail;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
@@ -11,14 +13,19 @@ import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import com.netflix.discovery.converters.Auto;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +34,7 @@ import java.util.Map;
 /**
  * Created by wangyongzhi 17/4/19.
  */
-@RestController
+@Controller
 @RequestMapping(value = "api/rankShare",produces = "application/json")
 public class RankShareController {
 
@@ -47,14 +54,36 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankDetail")
-    public BaseResp<Rank> rankDetail(String rankId){
+    public void rankDetail(String rankId, HttpServletResponse response,String callback){
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            try{
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                PrintWriter out = response.getWriter();
+                response.setContentType("text/javascript;charset=UTF-8");
+                out.print(callback+"("+JSONObject.fromObject(baseResp).toString()+")");
+                out.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return;
         }
 
         baseResp = this.rankService.selectRankDetailByRankid(null,rankId,true,true);
-        return baseResp;
+
+        try{
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/javascript;charset=UTF-8");
+            JsonConfig jsonConfig = new JsonConfig();
+            jsonConfig.registerJsonValueProcessor(Long.class,new JsonLongValueProcessor());
+            jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor());
+            JSONObject jsonObject = JSONObject.fromObject(baseResp,jsonConfig);
+            out.print(callback+"("+jsonObject.toString()+")");
+            out.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+//        return baseResp;
     }
 
     /**
@@ -64,6 +93,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="selectFashionMan")
+    @ResponseBody
     public BaseResp<Object> selectFashionMan(Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null){
@@ -83,6 +113,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankMemberSort")
+    @ResponseBody
     public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
@@ -104,6 +135,7 @@ public class RankShareController {
      * @return
      */
     @RequestMapping(value="rankAwardDetail")
+    @ResponseBody
     public BaseResp<Object> rankAwardDetail(Long rankid){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
@@ -120,6 +152,7 @@ public class RankShareController {
      * @param rankId 榜单id
      * @return
      */
+    @ResponseBody
     @RequestMapping(value="selectRankMemberDetail")
     public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId){
         BaseResp<Object> baseResp = new BaseResp<Object>();
@@ -137,21 +170,23 @@ public class RankShareController {
      * @param  businesstype 进步的类型 0.独立进步 1.目标 2.榜 3.圈子 4.教室 5.教室批复作业
      * @return
      */
+    @ResponseBody
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping(value = "improveDetail")
-    public BaseResp select(String impid,String businesstype) {
+    public BaseResp select(String impid,String businesstype,String businessid) {
         BaseResp<Improve> baseResp = new BaseResp<Improve>();
         if (StringUtils.hasBlankParams(impid,businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp =improveService.select(null, impid, businesstype, null);
-            Improve improve = baseResp.getData();
-            Long userid = improve.getUserid();
-            Long businessid = improve.getBusinessid();
-            //查看该用户在榜中发布的所有进步数量 以及 排名
-            Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,businessid);
-            baseResp.setExpandData(resultMap);
+            baseResp =improveService.select(null, impid, businesstype, businessid);
+            if(!"0".equals(businesstype) && !"5".equals(businesstype)){
+                Improve improve = baseResp.getData();
+                Long userid = improve.getUserid();
+                //查看该用户在榜中发布的所有进步数量 以及 排名
+                Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
+                baseResp.setExpandData(resultMap);
+            }
             return baseResp;
         } catch (Exception e) {
             logger.error("get improve detail  is error impid={} msg={}", impid, e);
@@ -162,21 +197,24 @@ public class RankShareController {
     /**
      * @Title: http://ip:port/appservice/api/rankShare/commentList
      * @Description: 查看最新评论列表
-     * @param @param businessid  各类型对应的id
-     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * @param businessid  各类型对应的id
+     * @param businesstype  类型  0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
+     * 										10：榜中微进步  11 圈子中微进步  12 教室中微进步
+     * @param impid 进步id
      * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
      * @auther yxc
      * @currentdate:2017年1月22日
      */
+    @ResponseBody
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commentList")
-    public BaseResp<Object> commentList(String impid,String businesstype) {
+    public BaseResp<Object> commentList(String impid,String businesstype,String businessid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(impid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, impid, businesstype, "", 0, 15);
+            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, businessid, businesstype, impid, 0, 15);
         } catch (Exception e) {
             logger.error("commentList businessid = {}, businesstype = {}", impid, businesstype, e);
         }
@@ -239,6 +277,7 @@ public class RankShareController {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping(value = "rank/list")
+    @ResponseBody
     public BaseResp selectRankImproveList(String rankid, String sorttype, String sift) {
         if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

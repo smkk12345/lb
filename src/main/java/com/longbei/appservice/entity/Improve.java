@@ -103,7 +103,7 @@ public class Improve {
 
     private List<ImproveTopic> improveTopicList = null;//超级话题
 
-    private BusinessEntity businessEntity = new BusinessEntity();
+    private BusinessEntity businessEntity = null;
 
     private String isrecommend; //是否推荐 0 - 否 1 - 是
 
@@ -131,7 +131,9 @@ public class Improve {
                                   Date enddate,
                                   Integer sortnum,
                                   Integer days,
-                                  String photos) {
+                                  String photos,
+                                  Integer icount) {
+        this.businessEntity = new BusinessEntity();
         this.businessEntity.setDays(days);
         this.businessEntity.setStartdate(startdate);
         this.businessEntity.setEnddate(enddate);
@@ -140,6 +142,7 @@ public class Improve {
         this.businessEntity.setTitle(title);
         this.businessEntity.setSortnum(sortnum);
         this.businessEntity.setPhotos(photos);
+        this.businessEntity.setIcount(icount);
     }
 
     public BusinessEntity getBusinessEntity() {
@@ -647,6 +650,15 @@ public class Improve {
         private Integer sortnum;//排名
         private Integer days;//持续天数
         private String photos;//图片
+        private Integer icount;//进步总条数
+
+        public Integer getIcount() {
+            return icount;
+        }
+
+        public void setIcount(Integer icount) {
+            this.icount = icount;
+        }
 
         public void setEnddate(Date enddate) {
             this.enddate = enddate;
@@ -655,11 +667,11 @@ public class Improve {
         public void setStartdate(Date startdate) {
             this.startdate = startdate;
         }
-
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         public Date getEnddate() {
             return enddate;
         }
-
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         public Date getStartdate() {
             return startdate;
         }

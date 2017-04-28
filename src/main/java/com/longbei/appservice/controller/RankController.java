@@ -310,7 +310,23 @@ public class RankController {
     }
 
     /**
-     * 获取榜单的用户列表
+     * 查询单个榜单的获奖公示
+     * @url http://ip:port/app_service/rank/onlyRankAward
+     * @param rankid
+     * @return
+     */
+    @RequestMapping(value="onlyRankAward")
+    public BaseResp<Object> onlyRankAward(Long rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(rankid == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.onlyRankAward(rankid);
+        return baseResp;
+    }
+
+    /**
+     * 获取榜单的中奖用户列表
      * @url http://ip:port/app_service/rank/getWinningRankAwardUser
      * @param rankid
      * @param userid 用户id
@@ -542,5 +558,23 @@ public class RankController {
         return baseResp;
     }
 
+    /**
+     * 更改榜单的加榜验证 或 公告
+     * @param rankId
+     * @param userid 当前登录用户id
+     * @param needConfirm 加榜是否需要验证 该参数不可与notice参数同事传入
+     * @param notice 公告内容
+     * @param noticeUser 更改公告是否需要通知用户
+     * @return
+     */
+    @RequestMapping(value="updateRankInfo")
+    public BaseResp<Object> updateRankInfo(Long rankId,Long userid,Boolean needConfirm,String notice,Boolean noticeUser){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankId == null || userid == null || (needConfirm != null && StringUtils.isNotEmpty(notice)) || (needConfirm == null && StringUtils.isEmpty(notice))){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        baseResp = this.rankService.updateRankInfo(rankId,userid,needConfirm,notice,noticeUser);
+        return baseResp;
+    }
 
 }
