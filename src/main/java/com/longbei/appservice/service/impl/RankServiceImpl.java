@@ -22,6 +22,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scala.collection.immutable.Stream;
@@ -96,6 +97,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private HomeRecommendMapper homeRecommendMapper;
     @Autowired
     private RankCardMapper rankCardMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      *  @author luye
@@ -230,6 +233,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 } else {
                     if ("1".equals(rankImage.getRanktype())){
                         rank.setJoincode(codeDao.getCode(null));
+                    }
+                    Date starttime = rank.getStarttime();
+                    if (new Date().getTime() >= starttime.getTime()){
+                        rank.setIsfinish("1");
                     }
                     res = rankMapper.insertSelective(rank);
                 }
@@ -396,7 +403,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             HomeRecommend homeRecommend = new HomeRecommend();
             homeRecommend.setIsdel("0");
             homeRecommend.setRecommendtype(0);
-            List<HomeRecommend> homeRecommendList = this.homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
             if(homeRecommend != null && homeRecommendList.size() > 0){
                 for(HomeRecommend homeRecommend1: homeRecommendList){
                     Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
@@ -1267,6 +1274,75 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.setData(list);
         } catch (Exception e) {
             logger.error("select rank rankid={} checkdetail is error:",rankid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 更改榜单的加榜验证 或 公告
+     * @param rankId
+     * @param userid 当前登录用户id
+     * @param needConfirm 加榜是否需要验证 该参数不可与notice参数同事传入
+     * @param notice 公告内容
+     * @param noticeUser 更改公告是否需要通知用户
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateRankInfo(Long rankId, Long userid, Boolean needConfirm, final String notice, Boolean noticeUser) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            final Rank rank = this.rankMapper.selectRankByRankid(rankId);
+            if(rank == null || !userid.equals(rank.getCreateuserid())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_615,Constant.RTNINFO_SYS_615);
+            }
+            Rank updateRank = new Rank();
+            updateRank.setRankid(rank.getRankid());
+            if(needConfirm != null){
+                updateRank.setNeedConfirm(needConfirm);
+            }else if(StringUtils.isNotEmpty(notice)){
+                updateRank.setNotice(notice);
+            }
+            int row = this.rankMapper.updateSymbolByRankId(updateRank);
+            if(row > 0 && StringUtils.isNotEmpty(notice) && noticeUser != null && noticeUser){
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("rankId",rankId);
+                map.put("status","1");
+                final List<RankMembers> rankMembersList= this.rankMembersMapper.selectRankMembers(map);
+                if(rankMembersList != null && rankMembersList.size() > 0){
+                    //通知所有用户
+                    threadPoolTaskExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                String messageContent = "\"" + rank.getRanktitle() + "\"龙榜更新了公告:"+notice;
+                                List<Long> userIdList = new ArrayList<Long>();
+                                for(RankMembers rankMembers:rankMembersList){
+                                    userIdList.add(rankMembers.getUserid());
+                                }
+                                UserMsg userMsg = new UserMsg();
+                                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                                userMsg.setMtype("0");//系统消息
+                                userMsg.setMsgtype("42");
+                                userMsg.setSnsid(rank.getRankid());
+                                userMsg.setGtypeid(rank.getRankid());
+                                userMsg.setRemark(messageContent);
+                                userMsg.setGtype("10");
+                                userMsg.setCreatetime(new Date());
+                                userMsg.setUpdatetime(new Date());
+                                userMsg.setIsdel("0");
+                                userMsg.setIsread("0");
+                                userMsgService.batchInsertUserMsg(userIdList,userMsg);
+                            }catch (Exception e){
+                                logger.error("update rank info notice user error msg:{}",e);
+                            }
+                        }
+                    });
+                }
+            }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("update rank info error rankId:{} userid:{} needConfirm:{} notice:{} noticeUser:{}",rankId,userid,needConfirm,notice,noticeUser);
+            printException(e);
         }
         return baseResp;
     }
@@ -2252,6 +2328,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardCount = 0;
                             awardLevel = rankAwardRelease.getAwardlevel();
                         }
+                        awardMap.put("awardtitle",rankAwardRelease.getAward().getAwardtitle());
                         awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
                         awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
                         awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());

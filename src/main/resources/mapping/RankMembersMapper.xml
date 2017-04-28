@@ -536,7 +536,8 @@
       from
         rank_members
       <where>
-        rankId = #{rankId}
+            status = 1
+          and rankId = #{rankId}
       </where>
       <if test="sortType == 1">
         order by likes desc
@@ -624,12 +625,16 @@
         rank_members.awardid,
         award.awardprice,
         award.awardphotos,
-        award.awardtitle awardnickname
+        rank_award_release.awardnickname,
+        award.awardtitle awardtitle
     from
-        rank_members,
+        rank_members
+        rank_award_release
         award
     where
         rank_members.awardid = award.id
+      and rank_award_release.rankid= rank_members.rankid
+	  and rank_award_release.awardid = award.id
       and rank_members.checkstatus = 3
       and rank_members.iswinning = 1
       and rank_members.rankid =#{rankid}
