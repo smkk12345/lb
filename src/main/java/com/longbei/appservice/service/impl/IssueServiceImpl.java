@@ -8,13 +8,16 @@ import com.longbei.appservice.dao.IssueMapper;
 import com.longbei.appservice.entity.Issue;
 import com.longbei.appservice.service.IssueService;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service("issueService")
 public class IssueServiceImpl implements IssueService{
@@ -97,6 +100,22 @@ public class IssueServiceImpl implements IssueService{
         } catch (Exception e) {
             logger.error("insertIssue error and msg={}",e);
         }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> selectIssueTypesH5() {
+        BaseResp baseResp = new BaseResp();
+        List<Map<String,String>> list = new ArrayList<Map<String,String>>(){{
+            add(new HashedMap(){{put("id","1");put("title","关于微进步");}});
+            add(new HashedMap(){{put("id","2");put("title","关于教室");}});
+            add(new HashedMap(){{put("id","3");put("title","关于进步圈");}});
+            add(new HashedMap(){{put("id","4");put("title","关于目标");}});
+            add(new HashedMap(){{put("id","5");put("title","关于进步花");}});
+            add(new HashedMap(){{put("id","6");put("title","关于个人认证");}});
+        }};
+        baseResp.initCodeAndDesp();
+        baseResp.setData(list);
         return baseResp;
     }
 
