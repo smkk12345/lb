@@ -77,8 +77,26 @@ public class AppserviceConfig {
 
     public static String oss_media;
 
+    @Value("${oss_media}")
     public void setOss_media(String oss_media) {
         this.oss_media = oss_media;
+    }
+
+    /**
+     * h5页面  帮助中心  分享  帮主名片片
+     * add  by smkk
+     */
+    public static String h5_helper;
+    public static String h5_rankcard;
+
+    @Value("${h5.helper}")
+    public void setH5_helper(String h5_helper){
+        this.h5_helper = h5_helper;
+    }
+
+    @Value("${h5.rankcard}")
+    public void setH5_rankCard(String h5_rankcard){
+        this.h5_rankcard = h5_rankcard;
     }
 
 }

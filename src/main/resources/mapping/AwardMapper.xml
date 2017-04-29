@@ -37,6 +37,11 @@
     where isdel=0
   </select>
 
+  <select id="awardCountsUnderClassify" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT count(1) FROM award
+    WHERE awardcateid = #{classifyid}
+  </select>
+
   <!--<select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">-->
     <!--SELECT count(*)-->
     <!--FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id-->

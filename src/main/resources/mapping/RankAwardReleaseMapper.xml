@@ -15,6 +15,7 @@
       <result column="awardprice" property="awardprice" jdbcType="DOUBLE" />
       <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
       <result column="awardtype" property="awardtype" jdbcType="VARCHAR" />
+      <result column="awardtitle" property="awardtitle" jdbcType="VARCHAR" />
     </association>
   </resultMap>
   <sql id="Base_Column_List" >

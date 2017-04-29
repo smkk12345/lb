@@ -152,7 +152,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	public BaseResp<Object> selectCommentListByItypeid(String businessid, String businesstype, int startNo, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(null,businessid, businesstype, startNo, pageSize);
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -187,7 +187,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		Map<String, Object> expandData = new HashMap<>();
 		int commentNum = 0;
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(impid,businessid, businesstype, startNo, pageSize);
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					//初始化用户信息
@@ -331,27 +331,36 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     	if(null != lowers && lowers.size()>0){
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
-    				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-    				//获取好友昵称
-    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
-    						Long.parseLong(commentLower.getSeconduserid()));
-    				if(!StringUtils.isBlank(remark)){
-    					commentLower.setSecondNickname(remark);
-    				}else{
-    					commentLower.setSecondNickname(appUserMongoEntity.getNickname());
-    				}
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+						commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+					}else{
+						//获取好友昵称
+						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
+								Long.parseLong(commentLower.getSeconduserid()));
+						if(StringUtils.isNotEmpty(remark)){
+							commentLower.setSecondNickname(remark);
+						}else{
+							AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+							commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+						}
+					}
     			}
 				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
-					AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-					//获取好友昵称
-    				String remark = userRelationService.selectRemark(Long.parseLong(friendid), 
-    						Long.parseLong(commentLower.getFirstuserid()));
-    				if(!StringUtils.isBlank(remark)){
-    					commentLower.setFirstNickname(remark);
-    				}else{
-    					commentLower.setFirstNickname(appUserMongo.getNickname());
-    				}
-//					commentLower.setFirstNickname(appUserMongo.getNickname());
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+						commentLower.setFirstNickname(appUserMongo.getNickname());
+					}else{
+						//获取好友昵称
+						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
+								Long.parseLong(commentLower.getFirstuserid()));
+						if(StringUtils.isNotEmpty(remark)){
+							commentLower.setFirstNickname(remark);
+						}else{
+							AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+							commentLower.setFirstNickname(appUserMongo.getNickname());
+						}
+					}
 				}
 			}
     	}

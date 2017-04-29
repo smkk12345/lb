@@ -54,6 +54,7 @@ public interface AwardService {
 
     boolean updateAwardClassify(AwardClassify awardClassify);
 
+    boolean hasAwards(String classifyid);
 
     boolean deleteAwardClassify(Integer id);
 

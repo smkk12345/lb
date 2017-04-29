@@ -38,8 +38,10 @@
     <result column="ischeck" property="ischeck" jdbcType="CHAR" />
     <result column="isgroup" property="isgroup" jdbcType="CHAR" />
     <result column="rankcardid" property="rankcardid" jdbcType="VARCHAR" />
+    <result column="notice" property="notice" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="needConfirm" property="needConfirm" jdbcType="CHAR" />
     <result column="sponsornum" property="sponsornum" jdbcType="INTEGER" />
     <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
@@ -54,7 +56,7 @@
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
-    sponsormoney,rankrule,isrecommend,weight,ishomerecommend
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm
   </sql>
   <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -680,6 +682,12 @@
       </if>
       <if test="weight != null" >
         weight = #{weight},
+      </if>
+      <if test="needConfirm != null" >
+        needConfirm = #{needConfirm},
+      </if>
+      <if test="notice != null" >
+        notice = #{notice},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
