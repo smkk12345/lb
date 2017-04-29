@@ -171,7 +171,12 @@ public class OrderServiceImpl implements OrderService {
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = "";
 			}
-			baseResp = iProductBasicService.list(userid, orderstatus, startNo, pageSize);
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(null != userInfo){
+				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+				baseResp = iProductBasicService.list(userid, orderstatus, userLevel.getDiscount().toString(), startNo, pageSize);
+			}
+			
 		}catch (Exception e){
 			logger.error("list userid = {}, orderstatus = {}, startNo = {}, pageSize = {}", 
 					userid, orderstatus, startNo, pageSize, e);
