@@ -781,6 +781,7 @@ public class ImproveController {
             if(ResultUtil.isSuccess(baseResp)){
                 baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_improve_detail);
             }
+            return baseResp;
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, impid, e);
         }

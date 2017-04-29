@@ -93,6 +93,7 @@ public class AppserviceConfig {
     public static String h5_share_rank_award;
     public static String h5_share_rank_improve;
     public static String h5_share_goal_detail;
+    public static String h5_agreementurl;
 
     @Value("${h5.helper}")
     public void setH5_helper(String h5_helper){
@@ -123,6 +124,8 @@ public class AppserviceConfig {
     public void setH5_share_goal_detail(String h5_share_goal_detail){
         this.h5_share_goal_detail = h5_share_goal_detail;
     }
-
-
+    @Value("${h5.agreementurl}")
+    public void setH5_agreementurl(String h5_agreementurl){
+        this.h5_agreementurl = h5_agreementurl;
+    }
 }
