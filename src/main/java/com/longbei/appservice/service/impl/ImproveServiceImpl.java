@@ -1593,14 +1593,15 @@ public class ImproveServiceImpl implements ImproveService{
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
                 //用户龙分变化
-                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
-                if(ResultUtil.isSuccess(resp)){
-                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
-                    //进步币明细  进步币总数
-                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
-                }
+//                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
+//                if(ResultUtil.isSuccess(resp)){
+//                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
+//                    //进步币明细  进步币总数
+//                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
+//                }
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
 //                insertMsg(userid, friendid, impid, flowernum, businesstype);
-                return resp;
+                return baseResp;
             }
         } catch (Exception e) {
             logger.error("add flower is error:{}",e);
