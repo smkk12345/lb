@@ -88,6 +88,11 @@ public class AppserviceConfig {
      */
     public static String h5_helper;
     public static String h5_rankcard;
+    public static String h5_share_improve_detail;
+    public static String h5_share_rank_detail;
+    public static String h5_share_rank_award;
+    public static String h5_share_rank_improve;
+    public static String h5_share_goal_detail;
 
     @Value("${h5.helper}")
     public void setH5_helper(String h5_helper){
@@ -98,5 +103,26 @@ public class AppserviceConfig {
     public void setH5_rankCard(String h5_rankcard){
         this.h5_rankcard = h5_rankcard;
     }
+    @Value("${h5.share.improve.detail}")
+    public void setH5_share_improve_detail(String h5_share_improve_detail){
+        this.h5_share_improve_detail = h5_share_improve_detail;
+    }
+    @Value("${h5.share.rank.detail}")
+    public void setH5_share_rank_detail(String h5_share_rank_detail){
+        this.h5_share_rank_detail = h5_share_rank_detail;
+    }
+    @Value("${h5.share.rank.award}")
+    public void setH5_share_rank_award(String h5_share_rank_award){
+        this.h5_share_rank_award = h5_share_rank_award;
+    }
+    @Value("${h5.share.rank.improve}")
+    public void setH5_share_rank_improve(String h5_share_rank_improve){
+        this.h5_share_rank_improve = h5_share_rank_improve;
+    }
+    @Value("${h5.share.goal.detail}")
+    public void setH5_share_goal_detail(String h5_share_goal_detail){
+        this.h5_share_goal_detail = h5_share_goal_detail;
+    }
+
 
 }

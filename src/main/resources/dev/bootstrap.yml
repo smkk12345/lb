@@ -54,11 +54,11 @@ h5:
   rankcard: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/rank-master.html
   share:
     improve:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
+      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/improve-detail.html
     rank:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
-      award: http://localhost:7777/share_service/html/apptpl/help-index.html
-      improve: http://localhost:7777/share_service/html/apptpl/help-index.html
+      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-detail.html
+      award: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-award.html
+      improve: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-improve.html
     goal:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
+      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/goal-detail.html
 
