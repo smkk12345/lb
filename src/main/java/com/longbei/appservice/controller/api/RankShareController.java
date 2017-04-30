@@ -6,10 +6,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.JsonDateValueProcessor;
 import com.longbei.appservice.common.web.JsonLongValueProcessor;
-import com.longbei.appservice.entity.ImpAllDetail;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.UserGoal;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -323,4 +321,62 @@ public class RankShareController {
         }
         return  baseResp;
     }
+
+    /**
+     * 获取目标中的进步
+     * @url http://ip:port/app_service/api/rankShare/goal/list
+     * @param goalid   目标id
+     * @author:luye
+     * @date 2017/2/4
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @ResponseBody
+    @RequestMapping(value = "goal/list")
+    public BaseResp selectGoalImproveList(String goalid) {
+        if (StringUtils.hasBlankParams(goalid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        String startNum = Constant.DEFAULT_START_NO;
+        String pageSize = Constant.DEFAULT_PAGE_SIZE;
+        List<Improve> improves = null;
+        try {
+            improves = improveService.selectGoalImproveList(null, goalid, null, Integer.parseInt(startNum),
+                    Integer.parseInt(pageSize));
+        } catch (Exception e) {
+            logger.error("select goal improve list is error:{}", e);
+        }
+        if (null == improves) {
+            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+        }
+        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+        baseres.setData(improves);
+        return baseres;
+    }
+
+    /**
+     * 帮主名片
+     * @param rankCardId
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "rankCard")
+    @ResponseBody
+    public String rankCard(String rankCardId,HttpServletRequest request){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("rankCard rankCardId = {}", rankCardId);
+        String callback = request.getParameter("callback");
+        if(StringUtils.hasBlankParams(rankCardId)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return callback + "("+ JSONObject.fromObject(baseResp).toString()+")";
+        }
+        try{
+            baseResp = rankService.rankCardDetail(rankCardId);
+        }catch(Exception e){
+            logger.error("rankCard rankCardId = {}", rankCardId, e);
+        }
+        String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+        return callback + "("+jsonObjectStr+")";
+    }
+
 }

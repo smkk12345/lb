@@ -370,6 +370,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 						//已关注
 						userInfo.setIslike("1");
 					}
+					SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, userInfo.getUserid());
+					if(null != fans){
+						userInfo.setIsfans("1");
+					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{

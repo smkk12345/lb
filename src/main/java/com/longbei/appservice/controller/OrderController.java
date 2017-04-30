@@ -141,7 +141,7 @@ public class OrderController {
 	*/
 	@SuppressWarnings({ "unchecked" })
   	@RequestMapping(value = "/selectAddressIsdefault")
-    public BaseResp<UserAddress> list(String userid) {
+    public BaseResp<UserAddress> selectAddressIsdefault(String userid) {
 		BaseResp<UserAddress> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

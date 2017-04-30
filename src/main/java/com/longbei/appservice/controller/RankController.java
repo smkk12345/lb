@@ -4,7 +4,9 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankAcceptAwardService;
@@ -193,6 +195,9 @@ public class RankController {
         }
 
         baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
+        if(ResultUtil.isSuccess(baseResp)){
+            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_detail);
+        }
         return baseResp;
     }
 
@@ -361,6 +366,9 @@ public class RankController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.rankService.rankAwardDetail(rankid,userid);
+        if(ResultUtil.isSuccess(baseResp)){
+            baseResp.getExpandData().put("shareurl",AppserviceConfig.h5_share_rank_award);
+        }
         return baseResp;
     }
 
@@ -443,6 +451,9 @@ public class RankController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,currentUserId);
+        if(ResultUtil.isSuccess(baseResp)){
+            baseResp.getExpandData().put("shareurl",AppserviceConfig.h5_share_rank_improve);
+        }
         return baseResp;
     }
 

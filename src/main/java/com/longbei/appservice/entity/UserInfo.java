@@ -80,6 +80,8 @@ public class UserInfo {
     private String islike = "0";//是否关注   0：未关注   1：已关注
 
     private String isfriend = "0"; //是否是好友    0：不是   1：是
+    
+    private String isfans = "0"; //是否是粉丝    0：不是   1：是
 
     private int point;//龙分
 
@@ -758,4 +760,13 @@ public class UserInfo {
     public String getDefaultbg() {
         return defaultbg;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getIsfans() {
+		return isfans;
+	}
+
+	public void setIsfans(String isfans) {
+		this.isfans = isfans;
+	}
 }

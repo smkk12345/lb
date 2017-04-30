@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -122,6 +123,6 @@ public class RankCard {
     }
 
     public void setRankCardUrl(Integer rankCardId) {
-        this.rankCardUrl = "www.baidu.com?rankCardId="+rankCardId;
+        this.rankCardUrl = AppserviceConfig.h5_rankcard+"?rankCardId="+rankCardId;
     }
 }

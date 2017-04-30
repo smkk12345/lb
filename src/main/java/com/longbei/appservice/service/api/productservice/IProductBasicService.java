@@ -167,6 +167,7 @@ public interface IProductBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/order/list")
 	BaseResp<List<ProductOrders>> list(@RequestParam("userid") Long userid,
 									   @RequestParam("orderstatus") String orderstatus,
+									   @RequestParam("discount") String discount, 
 									   @RequestParam("startNo") int startNo,
 									   @RequestParam("pageSize") int pageSize);
 

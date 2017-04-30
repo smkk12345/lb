@@ -34,7 +34,10 @@ public class SysInitController extends BaseController{
         }else{
             baseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
         }
-
+        //帮助中心url
+        baseResp.getExpandData().put("helperurl",AppserviceConfig.h5_helper);
+        //协议
+        baseResp.getExpandData().put("agreementurl",AppserviceConfig.h5_agreementurl);
         //多媒体前缀
 //        baseResp.getExpandData().put("mediapath",Constant.OSS_MEDIA);
         //初始化操作
