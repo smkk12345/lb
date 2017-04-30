@@ -53,10 +53,6 @@ public class ProductBasic {
     // -------------------------按条件查询商品列表属性--------------------
 
     private Long productpoint1; //兑换商品所需币1
-
-    private Integer startNum;  //分页起始值
-
-    private Integer pageSize;  // 每页显示条数
     
     private String productcatetitle;//商品类别名称
     
@@ -354,22 +350,6 @@ public class ProductBasic {
      */
     public void setProductpoint1(Long productpoint1) {
         this.productpoint1 = productpoint1;
-    }
-
-    public Integer getStartNum() {
-        return startNum;
-    }
-
-    public void setStartNum(Integer startNum) {
-        this.startNum = startNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
     }
 
     /**

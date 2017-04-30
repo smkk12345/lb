@@ -1,6 +1,8 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.ProductBasic;
@@ -172,12 +174,6 @@ public class ProductApiController {
 	/**
 	 * @Title: http://ip:port/app_service/product/selectProductList
 	 * @Description: 按条件查询商品列表
-	 * @param @param productId 商品id
-	 * @param @param productcate 商品类目
-	 * @param @param productname 商品名称
-	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
-	 * @param @param productpoint 兑换商品所需币
-	 * @param @param productpoint1 兑换商品所需币1
 	 * @param @param startNum分页起始值
 	 * @param @param pageSize每页显示条数
 	 * @auther IngaWu
@@ -185,94 +181,45 @@ public class ProductApiController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/selectProductList")
-	public BaseResp<Object> selectProductList(@RequestBody ProductBasic productBasic, String startNum, String pageSize) {
+	public BaseResp<Page<ProductBasic>> selectProductList(@RequestBody ProductBasic productBasic, String startNum, String pageSize) {
 		logger.info("selectProductList and productBasic={},startNum={},pageSize={}",
-				productBasic,startNum,pageSize);
-		if(!StringUtils.isBlank(startNum)) {
-			productBasic.setStartNum(Integer.parseInt(startNum));
-		}else if (StringUtils.isBlank(startNum)){
-			productBasic.setStartNum(0);
+				JSON.toJSONString(productBasic),startNum,pageSize);
+		if (StringUtils.isBlank(startNum)){
+			startNum = Constant.DEFAULT_START_NO;
 		}
-		if(!StringUtils.isBlank(pageSize)) {
-			productBasic.setPageSize(Integer.parseInt(pageSize));
-		}else if(StringUtils.isBlank(pageSize)) {
-			productBasic.setPageSize(15);
+		if (StringUtils.isBlank(pageSize)){
+			pageSize = Constant.DEFAULT_PAGE_SIZE;
 		}
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<Page<ProductBasic>> baseResp = new BaseResp<>();
 		try {
-			baseResp = productService.selectProductList(productBasic,startNum,pageSize);
-			return baseResp;
+			 baseResp= productService.selectProductList(productBasic,startNum,pageSize);
 		} catch (Exception e) {
 			logger.error("selectProductList and productBasic={},startNum={},pageSize={}",
-					productBasic,startNum,pageSize,e);
+					JSON.toJSONString(productBasic),startNum,pageSize,e);
 		}
 		return baseResp;
 	}
 
 	/**
-	 * @Title: http://ip:port/product_service/product/selectListCount
-	 * @Description: 查询商品列表总数
-	 * @auther IngaWu
-	 * @currentdate:2017年3月31日
-	 */
-	@SuppressWarnings("unchecked")
-	@ResponseBody
-	@RequestMapping(value = "/selectListCount")
-	public int selectListCount(@RequestBody ProductBasic productBasic) {
-		int total =0;
-		try {
-			total = productService.selectListCount(productBasic);
-			if(total>0){
-				return  total;
-			}
-		} catch (Exception e) {
-			logger.error("selectListCount error and msg={}",e);
-		}
-		return 0;
-	}
-
-
-	/**
 	 * @Title: http://ip:port/app_service/product/updateProductByProductId
 	 * @Description: 编辑商品详情
-	 * @param @param productId 商品id
-	 * @param @param productcate 商品类目
-	 * @param @param productname 商品名称
-	 * @param @param productbriefphotos 商品缩略图
-	 * @param @param productprice 市场价格
-	 * @param @param productpoint 兑换商品所需币
-	 * @param @param lowimpicon 最低进步币要求
-	 * @param @param productbrief 商品规格
-	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
-	 * @param @param productdetail 商品详情
 	 * @param @param 正确返回 code 0 错误返回相应code 和 描述
 	 * @auther IngaWu
 	 * @currentdate:2017年3月20日
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateProductByProductId")
-	public BaseResp<Object> updateProductByProductId(String productId,String productcate,String productname,String productbriefphotos,
-													 String productprice,String productpoint, String lowimpicon, String productbrief,String enabled,String productdetail) {
-		logger.info("updateProductByProductId and productId={},productcate={},productname={},productbriefphotos={}, productprice={}," +
-						"productpoint={},lowimpicon={},productbrief={},enabled={},productdetail={}",
-				productId,productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled,productdetail);
+	public BaseResp<Object> updateProductByProductId(@RequestBody ProductBasic productBasic) {
+		logger.info("updateProductByProductId and productBasic:{}", JSON.toJSONString(productBasic));
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(productId,productcate, productname,productbriefphotos, productprice,
-				productpoint,lowimpicon,productbrief,enabled)){
+		if(StringUtils.isBlank(String.valueOf(productBasic.getId()))){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = productService.updateProductByProductId(productId,productcate, productname,productbriefphotos,
-					productprice, productpoint,lowimpicon,productbrief,enabled,productdetail);
-			return baseResp;
+			baseResp = productService.updateProductByProductId(productBasic);
 		} catch (Exception e) {
-			logger.error("updateProductByProductId and productId={},productcate={},productname={},productbriefphotos={}, productprice={}," +
-							"productpoint={},lowimpicon={},productbrief={},enabled={},productdetail={}",
-					productId,productcate, productname,productbriefphotos, productprice,
-					productpoint,lowimpicon,productbrief,enabled,productdetail,e);
-		}
+			logger.error("updateProductByProductId and productBasic:{}", JSON.toJSONString(productBasic),e);
 
+		}
 		return baseResp;
 	}
 
