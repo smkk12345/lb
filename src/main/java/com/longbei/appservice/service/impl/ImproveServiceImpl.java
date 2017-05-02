@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
@@ -345,7 +346,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean insertImproveForRank(Improve improve) {
-
+        logger.info("insert improve fro rank rankid={}",improve.getBusinessid());
         if(!insertImproveFilter(improve,Constant.IMPROVE_RANK_TYPE)){
             return false;
         }
@@ -353,9 +354,12 @@ public class ImproveServiceImpl implements ImproveService{
         int res = 0;
         try {
             //没有
-            improve.setRankid(idGenerateService.getUniqueIdAsLong());
+//            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
+            logger.info("update rank main improve");
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_RANK);
+            logger.info("insert imporve = {} ", JSON.toJSONString(improve));
+            logger.info("insert imrpve for rank is result={}",res);
             RankMembers rankMembers = new RankMembers();
             rankMembers.setRankid(improve.getBusinessid());
             rankMembers.setUserid(improve.getUserid());
