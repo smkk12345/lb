@@ -87,6 +87,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
 			String businessid, String remark, String mtype, String msgtype, int num) {
 		BaseResp<Object> reseResp = new BaseResp<>();
+		if (StringUtils.isBlank(friendid)){
+			return reseResp;
+		}
 		try {
 			UserMsg record = new UserMsg();
 			if(!StringUtils.isBlank(friendid)){
