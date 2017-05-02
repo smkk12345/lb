@@ -1167,7 +1167,7 @@ public class ImproveServiceImpl implements ImproveService{
             case Constant.IMPROVE_GOAL_TYPE:
                 break;
             case Constant.IMPROVE_RANK_TYPE:
-                Rank rank = rankMapper.selectRankByRankid(improve.getRankid());
+                Rank rank = rankMapper.selectRankByRankid(improve.getBusinessid());
                 if(null != rank){
                     if(rank.getIsfinish().equals("0")){
                         return true;
