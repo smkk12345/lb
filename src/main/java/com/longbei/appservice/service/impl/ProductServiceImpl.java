@@ -202,6 +202,7 @@ public class ProductServiceImpl implements ProductService {
 		BaseResp<Page<ProductBasic>> baseResp = new BaseResp<Page<ProductBasic>>();
 		try {
 			baseResp = iProductBasicService.selectProductList(productBasic,startNum,pageSize);
+			logger.info("select product list result:{}",baseResp);
 		} catch (Exception e) {
 			logger.error("selectProductList error and msg={}",e);
 		}

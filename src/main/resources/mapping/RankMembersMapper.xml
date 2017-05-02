@@ -113,6 +113,9 @@
             #{item.id}
           </foreach>
         </if>
+        <if test="rankmember.userid != null">
+            and userid=#{rankmember.userid}
+        </if>
         AND status = '1'
         <if test="rankmember.rankid != null">
           and rankid=#{rankmember.rankid}
