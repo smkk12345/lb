@@ -257,7 +257,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveSingle(Improve improve) {
 
-        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_SINGLE_TYPE)){
+        if(!insertImproveFilter(improve,Constant.IMPROVE_SINGLE_TYPE)){
             return false;
         }
         int res = 0;
@@ -286,7 +286,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForCircle(Improve improve) {
 
-        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_CIRCLE_TYPE)){
+        if(!insertImproveFilter(improve,Constant.IMPROVE_CIRCLE_TYPE)){
             return false;
         }
         int res = 0;
@@ -315,7 +315,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForClassroom(Improve improve) {
 
-        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_CLASSROOM_TYPE)){
+        if(!insertImproveFilter(improve,Constant.IMPROVE_CLASSROOM_TYPE)){
             return false;
         }
         int res = 0;
@@ -346,7 +346,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForRank(Improve improve) {
 
-        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_RANK_TYPE)){
+        if(!insertImproveFilter(improve,Constant.IMPROVE_RANK_TYPE)){
             return false;
         }
 
@@ -387,7 +387,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForGoal(Improve improve) {
 
-        if(!insertImproveFilter(improve.getUserid(),Constant.IMPROVE_GOAL_TYPE)){
+        if(!insertImproveFilter(improve,Constant.IMPROVE_GOAL_TYPE)){
             return false;
         }
         int res = 0;
@@ -1150,13 +1150,13 @@ public class ImproveServiceImpl implements ImproveService{
     /**
      * 能否发布进步过滤
      * @author:luye
-     * @param userid
+     * @param improve
      * @param improvetype
      * @return
      * @author:luye
      * @date update 02月10日
      */
-    private boolean insertImproveFilter(Long userid,String improvetype){
+    private boolean insertImproveFilter(Improve improve,String improvetype){
         switch (improvetype){
             case Constant.IMPROVE_SINGLE_TYPE:
                 break;
@@ -1167,6 +1167,14 @@ public class ImproveServiceImpl implements ImproveService{
             case Constant.IMPROVE_GOAL_TYPE:
                 break;
             case Constant.IMPROVE_RANK_TYPE:
+                Rank rank = rankMapper.selectRankByRankid(improve.getRankid());
+                if(null != rank){
+                    if(rank.getIsfinish().equals("0")){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }
                 break;
             default:
                 break;
@@ -1585,14 +1593,15 @@ public class ImproveServiceImpl implements ImproveService{
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
                 //用户龙分变化
-                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
-                if(ResultUtil.isSuccess(resp)){
-                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
-                    //进步币明细  进步币总数
-                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
-                }
+//                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
+//                if(ResultUtil.isSuccess(resp)){
+//                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
+//                    //进步币明细  进步币总数
+//                    userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
+//                }
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
 //                insertMsg(userid, friendid, impid, flowernum, businesstype);
-                return resp;
+                return baseResp;
             }
         } catch (Exception e) {
             logger.error("add flower is error:{}",e);

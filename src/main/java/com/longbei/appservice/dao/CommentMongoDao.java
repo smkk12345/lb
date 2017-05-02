@@ -51,11 +51,14 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public List<Comment> selectCommentListByItypeid(String businessid, String businesstype, int startNo,
+	public List<Comment> selectCommentListByItypeid(String impid,String businessid, String businesstype, int startNo,
 			int pageSize){
 		Criteria criteria  = Criteria.where("businesstype").is(businesstype);
-		if (!StringUtils.isBlank(businessid)) {
+		if (StringUtils.isNotEmpty(businessid)) {
 			criteria = criteria.and("businessid").is(businessid);
+		}
+		if(StringUtils.isNotEmpty(impid)){
+			criteria = criteria.and("impid").is(impid);
 		}
 //		if (date != null) {
 //			criteria = criteria.and("createdate").lte(date); 

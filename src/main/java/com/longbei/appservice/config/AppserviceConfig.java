@@ -77,8 +77,55 @@ public class AppserviceConfig {
 
     public static String oss_media;
 
+    @Value("${oss_media}")
     public void setOss_media(String oss_media) {
         this.oss_media = oss_media;
     }
 
+    /**
+     * h5页面  帮助中心  分享  帮主名片片
+     * add  by smkk
+     */
+    public static String h5_helper;
+    public static String h5_rankcard;
+    public static String h5_share_improve_detail;
+    public static String h5_share_rank_detail;
+    public static String h5_share_rank_award;
+    public static String h5_share_rank_improve;
+    public static String h5_share_goal_detail;
+    public static String h5_agreementurl;
+
+    @Value("${h5.helper}")
+    public void setH5_helper(String h5_helper){
+        this.h5_helper = h5_helper;
+    }
+
+    @Value("${h5.rankcard}")
+    public void setH5_rankCard(String h5_rankcard){
+        this.h5_rankcard = h5_rankcard;
+    }
+    @Value("${h5.share.improve.detail}")
+    public void setH5_share_improve_detail(String h5_share_improve_detail){
+        this.h5_share_improve_detail = h5_share_improve_detail;
+    }
+    @Value("${h5.share.rank.detail}")
+    public void setH5_share_rank_detail(String h5_share_rank_detail){
+        this.h5_share_rank_detail = h5_share_rank_detail;
+    }
+    @Value("${h5.share.rank.award}")
+    public void setH5_share_rank_award(String h5_share_rank_award){
+        this.h5_share_rank_award = h5_share_rank_award;
+    }
+    @Value("${h5.share.rank.improve}")
+    public void setH5_share_rank_improve(String h5_share_rank_improve){
+        this.h5_share_rank_improve = h5_share_rank_improve;
+    }
+    @Value("${h5.share.goal.detail}")
+    public void setH5_share_goal_detail(String h5_share_goal_detail){
+        this.h5_share_goal_detail = h5_share_goal_detail;
+    }
+    @Value("${h5.agreementurl}")
+    public void setH5_agreementurl(String h5_agreementurl){
+        this.h5_agreementurl = h5_agreementurl;
+    }
 }

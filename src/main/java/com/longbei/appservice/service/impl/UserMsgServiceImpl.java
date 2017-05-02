@@ -725,13 +725,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 					}else if(userMsg.getMsgtype().equals(Constant.MSG_FLOWER_TYPE)){
 						//拼接 3 送花消息List
 						msgFlowerAndDiamond(userMsg);
-						String remark = Constant.MSG_FLOWER_MODEL.replace("n", userMsg.getNum().toString());
-						userMsg.setRemark(remark);
+//						String remark = Constant.MSG_FLOWER_MODEL.replace("n", userMsg.getNum().toString());
+//						userMsg.setRemark(remark);
 					}else{
 						//拼接  5:送钻石消息List
 						msgFlowerAndDiamond(userMsg);
-						String remark = Constant.MSG_DIAMOND_MODEL.replace("n", userMsg.getNum().toString());
-						userMsg.setRemark(remark);
+//						String remark = Constant.MSG_DIAMOND_MODEL.replace("n", userMsg.getNum().toString());
+//						userMsg.setRemark(remark);
 					}
 					//初始化消息中用户信息----friendid
 					initMsgUserInfoByFriendid(userMsg, userid);

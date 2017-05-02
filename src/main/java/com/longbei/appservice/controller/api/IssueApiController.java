@@ -8,14 +8,15 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Issue;
 import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -67,7 +68,7 @@ public class IssueApiController {
 	public BaseResp<Object> updateIssueByIssueId(@RequestBody Issue issue) {
 		logger.info("updateIssueByIssueId for adminservice issue:{}", JSON.toJSONString(issue));
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(String.valueOf(issue.getId()),issue.getContent(),issue.getTitle(),issue.getIshot(),issue.getTypeid())){
+		if(StringUtils.isBlank(String.valueOf(issue.getId()))){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
@@ -150,6 +151,60 @@ public class IssueApiController {
 		return baseResp;
 	}
 
+
+	@RequestMapping(value = "selectByIssueIdH5")
+	public String selectByIssueIdH5(String issueId,HttpServletRequest request){
+		BaseResp<Issue> baseResp = new BaseResp<Issue>();
+		String callback = request.getParameter("callback");
+		if(StringUtils.hasBlankParams(issueId)){
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			return callback + "("+ JSONObject.fromObject(baseResp).toString()+")";
+		}
+		baseResp = issueService.selectIssueByIssueId(Integer.parseInt(issueId));
+		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+		return callback + "("+jsonObjectStr+")";
+	}
+
+	@RequestMapping(value = "selectIssueTypesH5")
+	public String selectIssueTypesH5(HttpServletRequest request){
+		BaseResp<List<IssueClassify>> baseResp = new BaseResp<List<IssueClassify>>();
+		String callback = request.getParameter("callback");
+		baseResp = issueService.selectIssueClassifyList();
+		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+		return callback + "("+jsonObjectStr+")";
+	}
+
+	@RequestMapping(value = "selectListByTypeH5")
+	public String selectListByTypeH5(String typeId,HttpServletRequest request){
+		BaseResp<Page<Issue>> baseResp = new BaseResp<Page<Issue>>();
+		String callback = request.getParameter("callback");
+		if(StringUtils.hasBlankParams(typeId)){
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			return callback + "("+ JSONObject.fromObject(baseResp).toString()+")";
+		}
+		Issue issue = new Issue();
+		issue.setTypeid(typeId);
+		Page<Issue> page = issueService.selectIssueList(issue,1,15);
+		baseResp.setData(page);
+		baseResp.initCodeAndDesp();
+		baseResp.getExpandData().put("title",getTitleByType(typeId));
+		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+		return callback + "("+jsonObjectStr+")";
+	}
+
+
+	private String getTitleByType(String typeId){
+		BaseResp<List<IssueClassify>> baseResp =issueService.selectIssueClassifyList();
+		List<IssueClassify> list = baseResp.getData();
+		for (int i = 0; i < list.size(); i++) {
+			IssueClassify iss = list.get(i);
+			if(iss.getTypeid().equals(typeId)){
+				return iss.getTypetitle();
+			}
+		}
+		return "";
+	}
+
 	/**
 	 * 获取帮助中心类型列表
 	 * @title selectIssueClassifyList
@@ -167,4 +222,19 @@ public class IssueApiController {
 		}
 		return baseResp;
 	}
+
+	@RequestMapping(value = "hotIssueList")
+	public String hotIssueList(HttpServletRequest request){
+		BaseResp<Page<Issue>> baseResp = new BaseResp<Page<Issue>>();
+		String callback = request.getParameter("callback");
+		Issue issue = new Issue();
+		issue.setIshot("1");
+		Page<Issue> page = issueService.selectIssueList(issue,1,100);
+		baseResp.setData(page);
+		baseResp.initCodeAndDesp();
+		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+		return callback + "("+jsonObjectStr+")";
+	}
+
+
 }

@@ -63,7 +63,7 @@ public interface GoalService {
      * @param goalid 目标id
      * @return
      */
-    BaseResp<UserGoal> selectUserGoal(long userid, long goalid);
+    BaseResp<UserGoal> selectUserGoal(Long userid, long goalid);
 
     /**
      * 更新目标title

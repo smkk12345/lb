@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
@@ -770,13 +771,17 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "select")
     public BaseResp select(String userid, String impid, String businesstype, String businessid) {
-
+        BaseResp baseResp = new BaseResp();
         if (StringUtils.hasBlankParams(userid, impid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         logger.info("inprove select userid={},impid={}", userid, impid);
         try {
-            return improveService.select(userid, impid, businesstype, businessid);
+            baseResp = improveService.select(userid, impid, businesstype, businessid);
+            if(ResultUtil.isSuccess(baseResp)){
+                baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_improve_detail);
+            }
+            return baseResp;
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, impid, e);
         }
