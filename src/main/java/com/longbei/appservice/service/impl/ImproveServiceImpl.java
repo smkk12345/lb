@@ -1017,7 +1017,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+        Improve improve = selectImprove((Long.parseLong(improveid)),userid,Constant.IMPROVE_GOAL_TYPE,goalid,null,null);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
