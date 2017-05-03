@@ -309,6 +309,10 @@ public class Constant {
 	public static final String IMPROVE_LIST_FRIEND = "2";  //好友
 	public static final String IMPROVE_LIST_ACQUAINTANCE = "3";  //熟人
 
+	public static final String IMPROVE_ISPUBLIC_0 = "0";//私密
+	public static final String IMPROVE_ISPUBLIC_1 = "1";//好友可见
+	public static final String IMPROVE_ISPUBLIC_2 = "2";//公开
+
 	/**
 	 * 进步明细类型（赞，花，钻）
 	 */
