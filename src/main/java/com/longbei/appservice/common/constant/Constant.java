@@ -327,6 +327,7 @@ public class Constant {
 
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
+	public static final String IMPROVE_FLOWER = "2"; //送花
 
 	public static final Integer DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM = 10;
 

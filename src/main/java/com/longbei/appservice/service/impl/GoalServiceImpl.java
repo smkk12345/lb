@@ -184,7 +184,7 @@ public class GoalServiceImpl implements GoalService {
 				userGoal.setPickey(improve.getPickey());
 			}else{
 				//2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
-				userGoal.setPickey(improve.getFilekey());
+				userGoal.setPickey(improve.getPickey());
 			}
 			userGoal.setItype(improve.getItype());
             userGoal.setStarttime(improve.getCreatetime());
