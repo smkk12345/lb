@@ -1017,7 +1017,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+        Improve improve = selectImprove((Long.parseLong(improveid)),userid,Constant.IMPROVE_GOAL_TYPE,goalid,null,null);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
@@ -1143,7 +1144,7 @@ public class ImproveServiceImpl implements ImproveService{
 
                 initImproveInfo(improve,Long.parseLong(userid));
                 //初始化 赞 花 数量
-                initImproveLikeAndFlower(improve);
+//                initImproveLikeAndFlower(improve);
                 improves.add(improve);
             } catch (Exception e) {
                 logger.error("select time line userid={} list is error:",userid,e);
@@ -1371,6 +1372,8 @@ public class ImproveServiceImpl implements ImproveService{
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                         userInfo.getAvatar())  ;
 
+                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
+
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
@@ -1457,6 +1460,7 @@ public class ImproveServiceImpl implements ImproveService{
                 removeLikeToImproveForRedis(impid,userid);
                 //mongo
                 removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
+                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),-1);
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
@@ -1596,7 +1600,7 @@ public class ImproveServiceImpl implements ImproveService{
             if (res > 0){
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
-
+                timeLineDetailDao.updateImproveFlower(businesstype,Long.valueOf(impid),flowernum);
                 //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
                 //送分  送进步币
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));

@@ -120,7 +120,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
     }
 
     /**
-     * 查询 赞，花，钻 数
+     * 查询 赞数
      * @param impid
      * @param optype 0 赞 1 花  2 钻
      * @return
@@ -132,6 +132,9 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
         return count;
     }
+
+
+
 
     /**
      *  是否做过操作

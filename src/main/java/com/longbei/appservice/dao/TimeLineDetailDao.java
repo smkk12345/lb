@@ -40,6 +40,22 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
     }
 
+    public void updateImproveLike(String businesstype,Long impid,Integer num){
+        Criteria criteria = Criteria.where("businesstype").is(businesstype).and("improveId").is(impid);
+        Query query = new Query(criteria);
+        Update update = new Update();
+        update.inc("likes",num);
+        mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
+    }
+
+    public void updateImproveFlower(String businesstype,Long impid,Integer num){
+        Criteria criteria = Criteria.where("businesstype").is(businesstype).and("improveId").is(impid);
+        Query query = new Query(criteria);
+        Update update = new Update();
+        update.inc("flowers",num);
+        mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
+    }
+
     public Long selectRecommendImproveCount(String brief,List<String> userids, Date lastdate){
         Criteria criteria = Criteria.where("isrecommend").is("1");
         if (null != userids && userids.size() != 0){
