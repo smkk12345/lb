@@ -268,11 +268,11 @@ public class UserServiceImpl implements UserService {
 	private void initUserUserSettingCommon(long userid){
 		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
 		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", new Date(), new Date());
-		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "0", "点赞", new Date(), new Date());
+		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "1", "点赞", new Date(), new Date());
 		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", new Date(), new Date());
 		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
 		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
-		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "0", "允许通过此手机号搜到我", new Date(), new Date());
+		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", new Date(), new Date());
 		list.add(common);
 		list.add(common2);
 		list.add(common3);
@@ -687,6 +687,7 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> userlevel(long userid,int grade) {
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -695,10 +696,49 @@ public class UserServiceImpl implements UserService {
 			UserLevel userLevel = userLevelMapper.selectByGrade(grade);
 			Map<String,Object> map = new HashedMap();
 			map.put("userLevel",userLevel);
-			List<String> ist = getPointInfoPerDay(userid);
+			int point = 0;
+			Map<String,Object> returnmap = getPointInfoPerDay(userid, point);
+			List<String> ist = new ArrayList<String>();
+			if(!returnmap.isEmpty()){
+				ist = (List<String>) returnmap.get("list");
+				point = (Integer) returnmap.get("point");
+			}
 			List<String> levelDetail = getPointInfoLevel(userid, userLevel);
-			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
+//			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+//			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
+			map.put("pointDetail", ist);
+			map.put("levelDetail", levelDetail);
+			map.put("todayPoint",point);
+			map.put("userPoint", userInfo.getCurpoint());
+//			map.put("",);
+			baseResp.setData(map);
+			return baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("selectByGrade error grade={}",grade,e);
+		}
+		return baseResp;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> selectUserlevel(long userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+			Map<String,Object> map = new HashedMap();
+			map.put("userLevel",userLevel);
+			int point = 0;
+			Map<String,Object> returnmap = getPointInfoPerDay(userid, point);
+			List<String> ist = new ArrayList<String>();
+			if(!returnmap.isEmpty()){
+				ist = (List<String>) returnmap.get("list");
+				point = (Integer) returnmap.get("point");
+			}
+			List<String> levelDetail = getPointInfoLevel(userid, userLevel);
+//			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+//			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
 			map.put("pointDetail", ist);
 			map.put("levelDetail", levelDetail);
 			map.put("todayPoint", point);
@@ -707,7 +747,7 @@ public class UserServiceImpl implements UserService {
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
-			logger.error("selectByGrade error grade={}",grade,e);
+			logger.error("selectUserlevel userid = {}", userid, e);
 		}
 		return baseResp;
 	}
@@ -732,7 +772,8 @@ public class UserServiceImpl implements UserService {
 		return list;
 	}
 
-	private List<String> getPointInfoPerDay(long userid){
+	private Map<String, Object> getPointInfoPerDay(long userid, int point){
+		Map<String, Object> returnmap = new HashMap<String, Object>();
 		String key = Constant.RP_USER_PERDAY+"sum"+userid;
 		List<String> list = new ArrayList<>();
 		if(springJedisDao.hasKey(key)){
@@ -746,48 +787,63 @@ public class UserServiceImpl implements UserService {
 				switch (operateType){
 					case "NEW_REGISTER":
 						disStr = "注册成功+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "NEW_LOGIN_QQ":
 						disStr = "绑定QQ成功+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "NEW_LOGIN_WX":
 						disStr = "绑定微信成功+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "NEW_LOGIN_WB":
 						disStr = "绑定微博成功+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "NEW_CERTIFY_USERCARD":
 						disStr = "完成实名认证+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "NEW_USERINFO":
 						disStr = "完善个人信息+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_CHECKIN":
 						disStr = "签到成功+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_SHARE":
 						disStr = "分享+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "INVITE_LEVEL1":
 						disStr = "邀请好友注册+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_ADDFRIEND":
 						disStr = "添加好友+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_FUN":
 						disStr = "关注他人+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_COMMENT":
 						disStr = "与他人评论互动+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_ADDIMP":
 						disStr = "发微进步+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_ADDRANK":
 						disStr = "加入龙榜+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					case "DAILY_ADDCLASSROOM":
 						disStr = "加入教室+"+value+"分";
+						point += Integer.parseInt(value);
 						break;
 					default:
 						break;
@@ -795,7 +851,9 @@ public class UserServiceImpl implements UserService {
 				list.add(disStr);
 			}
 		}
-		return list;
+		returnmap.put("list", list);
+		returnmap.put("point", point);
+		return returnmap;
 	}
 
 

@@ -2,6 +2,7 @@ package com.longbei.appservice.common.service.mq.reciver;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.activemq.ActivemqJmsConsumer;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.MongoUtils;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -128,18 +129,34 @@ public class AddMessageReceiveService implements MessageListener{
         timeLine.setBusinesstype(improve.getBusinesstype());
         timeLine.setPtype(improve.getPtype());
         timeLine.setBusinessid(improve.getBusinessid());
-        //广场
-        insertTimeLinePublic(timeLine);
-        //我的
-        insertTimeLineSelf(timeLine,userid);
-        //动态
-        insertTimeLineDyn(timeLine,userid);
-        //好友
-        insertTimeLineFriend(timeLine,userid);
-        //关注
-        insertTimeLineAttr(timeLine,userid);
-        //熟人
-        insertTimeLineAcq(timeLine,userid);
+        switch (improve.getIspublic()){
+            case Constant.IMPROVE_ISPUBLIC_2:
+                //广场
+                insertTimeLinePublic(timeLine);
+                //我的
+                insertTimeLineSelf(timeLine,userid);
+                //动态
+                insertTimeLineDyn(timeLine,userid);
+                //好友
+                insertTimeLineFriend(timeLine,userid);
+                //关注
+                insertTimeLineAttr(timeLine,userid);
+                //熟人
+                insertTimeLineAcq(timeLine,userid);
+                break;
+            case Constant.IMPROVE_ISPUBLIC_0:
+                //我的
+                insertTimeLineSelf(timeLine,userid);
+                break;
+            default:
+                //我的
+                insertTimeLineSelf(timeLine,userid);
+                //动态
+                insertTimeLineDyn(timeLine,userid);
+                //好友
+                insertTimeLineFriend(timeLine,userid);
+                break;
+        }
     }
 
     /**

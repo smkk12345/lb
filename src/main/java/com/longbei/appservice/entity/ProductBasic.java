@@ -55,7 +55,7 @@ public class ProductBasic {
     private Long productpoint1; //兑换商品所需币1
     
     private String productcatetitle;//商品类别名称
-    
+
     private String[] photos; //商品图片
     //-----------------------------------------------------------
 
