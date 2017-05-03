@@ -2222,30 +2222,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                     resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                     resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
-
-                    List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rank.getRankid());
-
-                    if(rankAwardList != null && rankAwardList.size() > 0){
-                        List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();
-                        int rankAwardCount = 0;//整个榜单的获奖总数
-                        for(RankAwardRelease rankAwardRelease:rankAwardList){
-                            Map<String,Object> awardMap = new HashMap<String,Object>();
-                            AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
-                            if(appUserMongoEntity != null){
-                                awardMap.put("nickname",appUserMongoEntity.getNickname());
-                            }
-
-                            awardMap.put("awardtitle",rankAwardRelease.getAwardnickname());
-                            awardMap.put("awardlevel",rankAwardRelease.getAwardlevel());
-                            awardMap.put("awardcount",rankAwardRelease.getAwardcount());
-                            awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
-                            awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
-                            awardList.add(awardMap);
-                            rankAwardCount += rankAwardRelease.getAwardcount();
-                        }
-                        resultMap.put("rankawardcount",rankAwardCount);
-                        resultMap.put("rankawardList",awardList);
-                    }
+                    initAwardResultMap(resultMap,rank.getRankid());
                     resultList.add(resultMap);
                 }
                 baseResp.setData(resultList);
@@ -2275,32 +2252,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                 resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                 resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
-
-                List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rank.getRankid());
-
-                if(rankAwardList != null && rankAwardList.size() > 0){
-                    List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();
-                    int rankAwardCount = 0;//整个榜单的获奖总数
-                    for(RankAwardRelease rankAwardRelease:rankAwardList){
-                        Map<String,Object> awardMap = new HashMap<String,Object>();
-                        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
-                        if(appUserMongoEntity != null){
-                            awardMap.put("nickname",appUserMongoEntity.getNickname());
-                        }
-
-                        awardMap.put("awardtitle",rankAwardRelease.getAwardnickname());
-                        awardMap.put("awardlevel",rankAwardRelease.getAwardlevel());
-                        awardMap.put("awardcount",rankAwardRelease.getAwardcount());
-                        awardMap.put("awardphotos",rankAwardRelease.getAward().getAwardphotos());
-                        awardMap.put("awardprice",rankAwardRelease.getAward().getAwardprice());
-                        awardList.add(awardMap);
-                        rankAwardCount += rankAwardRelease.getAwardcount();
-                    }
-                    resultMap.put("rankawardcount",rankAwardCount);
-                    resultMap.put("rankawardList",awardList);
-                }
+                initAwardResultMap(resultMap,rank.getRankid());
             }
-
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -2308,6 +2261,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
         return baseResp;
+    }
+
+    private void initAwardResultMap(Map<String,Object> resultMap,Long rankid){
+        List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rankid);
+
+        if(rankAwardList != null && rankAwardList.size() > 0){
+            List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();
+            int rankAwardCount = 0;//整个榜单的获奖总数
+            for(RankAwardRelease rankAwardRelease:rankAwardList){
+                Map<String,Object> awardMap = new HashMap<String,Object>();
+                AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
+                if(appUserMongoEntity != null){
+                    awardMap.put("nickname",appUserMongoEntity.getNickname());
+                }
+                Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAwardRelease.getAwardid()));
+                if(null != award){
+                    awardMap.put("awardtitle",award.getAwardtitle());
+                    awardMap.put("awardlevel",award.getAwardlevel());
+                    awardMap.put("awardphotos",award.getAwardphotos());
+                    awardMap.put("awardprice",award.getAwardprice());
+                }
+                awardMap.put("awardcount",rankAwardRelease.getAwardcount());
+                awardList.add(awardMap);
+                rankAwardCount += rankAwardRelease.getAwardcount();
+            }
+            resultMap.put("rankawardcount",rankAwardCount);
+            resultMap.put("rankawardList",awardList);
+        }
     }
 
     /**

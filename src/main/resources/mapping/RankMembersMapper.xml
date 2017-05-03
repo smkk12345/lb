@@ -604,17 +604,19 @@
   <select id="selectAwardMemberList" parameterType="LONG" resultMap="com.longbei.appservice.dao.RankAwardReleaseMapper.BaseResultMap">
     select
         userid ,
-        award.id awardid,
-        award.awardtitle awardnickname,
+        rank_members.awardid,
+--         award.awardtitle awardnickname,
         rank_members.awardlevel,
-        count(1) awardcount,
-        award.awardphotos awardphotos,
-        award.awardprice awardprice
+        count(1) awardcount
+--         award.awardphotos awardphotos,
+--         award.awardprice awardprice
     from
-        rank_members,
-        award
-    where award.id= rank_members.awardid
-      and iswinning = 1
+        rank_members
+--         award
+    where
+--     award.id= rank_members.awardid
+--       and
+       iswinning = 1
       and rankid = #{rankid}
     group by awardlevel
     order by awardlevel

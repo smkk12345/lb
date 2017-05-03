@@ -232,6 +232,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 				DBObject result = dbCursor.next();
 				JSONObject jsonObject = JSONObject.fromObject(result);
 				AppUserMongoEntity appUserMongoEntity = (AppUserMongoEntity)JSONObject.toBean(jsonObject,AppUserMongoEntity.class);
+				appUserMongoEntity.setId(jsonObject.get("_id").toString());
 				int d = (int) GPSUtils.computeDistance(longitude, latitude,
 						appUserMongoEntity.getGispoint()[0], appUserMongoEntity.getGispoint()[1]);
 				appUserMongoEntity.setDistance(d);

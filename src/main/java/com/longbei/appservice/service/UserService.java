@@ -166,6 +166,13 @@ public interface UserService {
 	BaseResp<Object> userlevel(long userid,int grade);
 
 	/**
+	 * 获取用户等级特权
+	 * @param userid
+	 * @return
+	 */
+	BaseResp<Object> selectUserlevel(long userid);
+
+	/**
 	 * 更改用户信息
 	 * @param userid
 	 * @param longitude
