@@ -48,7 +48,7 @@ feign:
 
 h5:
   hostname: 47.93.36.156
-  port: 8080
+  port: 8090
   helper: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-index.html
   rankcard: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/rank-master.html
   share:
