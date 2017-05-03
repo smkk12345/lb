@@ -99,6 +99,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private RankCardMapper rankCardMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private CommentMongoService commentMongoService;
 
     /**
      *  @author luye
@@ -369,6 +371,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
+            for (Rank rank1 : ranks){
+                BaseResp<Integer> integerBaseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank.getRankid()), "2", null);
+                rank1.setCommentCount(integerBaseResp.getData());
+            }
             page.setTotalCount(totalcount);
             page.setList(ranks);
         } catch (Exception e) {

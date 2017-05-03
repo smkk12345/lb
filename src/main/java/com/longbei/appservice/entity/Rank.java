@@ -134,7 +134,18 @@ public class Rank {
 
     private RankCard rankCard;//榜主名片
 
+    private Integer commentCount; //评论数
+
     //--------
+
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
 
     public String getIshomerecommend() {
         return ishomerecommend;
