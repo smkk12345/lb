@@ -150,8 +150,8 @@ public class ImproveController {
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype, String businessid, String ptype, String ispublic, String itype, String pimpid) {
         logger.info(
-                "insertImprove brief:{}," + "pickey:{},filekey:{},businesstype:{},ptype:{}," + "ispublic:{},itype:{}",
-                brief, pickey, filekey, businesstype, ptype, ispublic, itype);
+                "insertImprove brief:{}," + "pickey:{},filekey:{},businesstype:{},businessid={},ptype:{}," + "ispublic:{},itype:{}",
+                brief, pickey, filekey, businesstype,businessid, ptype, ispublic, itype);
         if (StringUtils.hasBlankParams(userid, businesstype, ptype, ispublic, itype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -781,6 +781,7 @@ public class ImproveController {
             if(ResultUtil.isSuccess(baseResp)){
                 baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_improve_detail);
             }
+            return baseResp;
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, impid, e);
         }

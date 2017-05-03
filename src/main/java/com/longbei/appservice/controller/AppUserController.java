@@ -725,11 +725,11 @@ public class AppUserController extends BaseController {
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}
-        if (StringUtils.isBlank(startNum)) {
-             startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-             pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
     		baseResp = userSchoolService.selectSchoolList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
@@ -837,11 +837,11 @@ public class AppUserController extends BaseController {
     	if(StringUtils.isBlank(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
     	}
-        if (StringUtils.isBlank(startNum)) {
-            startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-            pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
     	try {
     		baseResp = userJobService.selectJobList(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
@@ -1018,11 +1018,11 @@ public class AppUserController extends BaseController {
     public BaseResp<List<DictArea>> selectCityList(String pid,String startNum,String pageSize) {
         logger.info("selectCityList and pid={},startNum={},pageSize={}",pid,startNum,pageSize);
         BaseResp<List<DictArea>> baseResp = new BaseResp<>();
-        if (StringUtils.isBlank(startNum)) {
-            startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-            pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
             baseResp = dictAreaService.selectCityList(pid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
@@ -1136,11 +1136,11 @@ public class AppUserController extends BaseController {
     public BaseResp<Object> selectSponsorList(String bid,String startNum,String pageSize) {
         logger.info("selectSponsorList and bid={},startNum={},pageSize={}",bid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if (StringUtils.isBlank(startNum)) {
-            startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-            pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
             baseResp = userSponsorService.selectSponsorList(Long.parseLong(bid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
@@ -1243,14 +1243,14 @@ public class AppUserController extends BaseController {
         if(StringUtils.isBlank(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(startNum)) {
-            startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-            pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
-            baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
+            baseResp = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),Integer.parseInt(startNum),Integer.parseInt(pageSize));
             return baseResp;
         } catch (Exception e) {
             logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
@@ -1356,11 +1356,11 @@ public class AppUserController extends BaseController {
         if(StringUtils.hasBlankParams(userid,ptype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(startNum)) {
-            startNum = "0";
+        if (StringUtils.isBlank(startNum)){
+            startNum = Constant.DEFAULT_START_NO;
         }
-        if (StringUtils.isBlank(pageSize)) {
-            pageSize = "15";
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
             baseResp = userPointDetailService.selectPointListByUseridAndPtype(Long.parseLong(userid),ptype,Integer.parseInt(startNum),Integer.parseInt(pageSize));

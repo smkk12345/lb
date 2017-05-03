@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
 import com.longbei.pay.weixin.res.ResponseHandler;
 
@@ -289,56 +290,29 @@ public interface IProductBasicService {
 	BaseResp<Object> verifywx(@RequestParam("orderType") String orderType,
 							  ResponseHandler resHandler);
 
-
 	/**
-	 * @Title: selectProductList
+	 * @Title: http://ip:port/app_service/product/selectProductList
 	 * @Description: 按条件查询商品列表
+	 * @param @param startNum分页起始值
+	 * @param @param pageSize每页显示条数
 	 * @auther IngaWu
 	 * @currentdate:2017年3月19日
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectProductList")
 	@Headers("Content-Type: application/json")
-	BaseResp<Object> selectProductList(ProductBasic productBasic,
-									   @RequestParam("startNum") String startNum,
-									   @RequestParam("pageSize") String pageSize);
-
-	/**
-	 * @Title: selectListCount
-	 * @Description: 查询商品列表总数
-	 * @auther IngaWu
-	 * @currentdate:2017年3月30日
-	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/api/product/selectListCount")
-	@Headers("Content-Type: application/json")
-	int selectListCount(ProductBasic productBasic);
+	BaseResp<Page<ProductBasic>> selectProductList(ProductBasic productBasic,
+												   @RequestParam("startNum") String startNum,
+												   @RequestParam("pageSize") String pageSize);
 
 	/**
 	 * @Title: updateProductByProductId
 	 * @Description: 编辑商品详情
-	 * @param @param productId 商品id
-	 * @param @param productcate 商品类目
-	 * @param @param productname 商品名称
-	 * @param @param productbriefphotos 商品缩略图
-	 * @param @param productprice 市场价格
-	 * @param @param productpoint 兑换商品所需币
-	 * @param @param lowimpicon 最低进步币要求
-	 * @param @param productbrief 商品规格
-	 * @param @param enabled 商品是否下架 0:已下架  1：未下架
-	 * @param @param productdetail 商品详情
 	 * @auther IngaWu
 	 * @currentdate:2017年3月20日
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/api/product/updateProductByProductId")
-	BaseResp<Object> updateProductByProductId(@RequestParam("productId")String productId,
-											  @RequestParam("productcate")String productcate,
-											  @RequestParam("productname")String productname,
-											  @RequestParam("productbriefphotos")String productbriefphotos,
-											  @RequestParam("productprice")String productprice,
-											  @RequestParam("productpoint")String productpoint,
-											  @RequestParam("lowimpicon") String lowimpicon,
-											  @RequestParam("productbrief")String productbrief,
-											  @RequestParam("enabled")String enabled,
-											  @RequestParam("productdetail")String productdetail);
+    @RequestMapping(method = RequestMethod.POST, value = "/api/product/updateProductByProductId")
+	@Headers("Content-Type: application/json")
+		BaseResp<Object> updateProductByProductId(ProductBasic productBasic);
 
 	/**
 	 * @Title: insertProduct

@@ -522,6 +522,7 @@
       </if>
       <if test="rankdetail != null" >
         rankdetail = #{rankdetail,jdbcType=VARCHAR},
+        rankdetail = #{rankdetail,jdbcType=VARCHAR},
       </if>
       <if test="ranklimite != null" >
         ranklimite = #{ranklimite,jdbcType=INTEGER},

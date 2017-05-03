@@ -68,7 +68,7 @@ public class IssueApiController {
 	public BaseResp<Object> updateIssueByIssueId(@RequestBody Issue issue) {
 		logger.info("updateIssueByIssueId for adminservice issue:{}", JSON.toJSONString(issue));
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(String.valueOf(issue.getId()),issue.getContent(),issue.getTitle(),issue.getIshot(),issue.getTypeid())){
+		if(StringUtils.isBlank(String.valueOf(issue.getId()))){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
