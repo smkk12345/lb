@@ -604,7 +604,7 @@
   <select id="selectAwardMemberList" parameterType="LONG" resultMap="com.longbei.appservice.dao.RankAwardReleaseMapper.BaseResultMap">
     select
         userid ,
---         award.id awardid,
+        rank_members.awardid,
 --         award.awardtitle awardnickname,
         rank_members.awardlevel,
         count(1) awardcount
