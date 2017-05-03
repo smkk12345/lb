@@ -479,4 +479,13 @@ public interface ImproveService {
      */
     BaseResp<Object> removeImproveFromBusiness(String impid,String businessid,String businesstype);
 
+    /**
+     * smkk
+     * @param impid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    public int updateMemberSumInfo(String impid,String businesstype,String businessid,String type,int count);
+
 }

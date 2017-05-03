@@ -215,7 +215,7 @@ public class ImproveController {
             logger.error("remove improve is error:{}", e);
         }
         logger.info("remove improve fail");
-        return new BaseResp(Constant.STATUS_SYS_42, Constant.RTNINFO_SYS_42);
+        return new BaseResp(Constant.STATUS_SYS_47, Constant.RTNINFO_SYS_47);
     }
 
     /**

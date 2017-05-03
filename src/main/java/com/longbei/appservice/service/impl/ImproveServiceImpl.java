@@ -1017,7 +1017,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+        Improve improve = selectImprove((Long.parseLong(improveid)),userid,Constant.IMPROVE_GOAL_TYPE,goalid,null,null);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
@@ -1952,13 +1953,29 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        String tableName = getTableNameByBusinessType(businesstype);
-        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_ADD,businessid,tableName);
+        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
         afterAddOrRemoveLike(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int updateMemberSumInfo(String impid,String businesstype,String businessid,String type,int count){
+        String tableName = getTableNameByBusinessType(businesstype);
+        int res = 0;
+        switch (type){
+            case Constant.IMPROVE_LIKE_ADD:
+                res = improveMapper.updateLikes(impid,type,businessid,tableName);
+                break;
+            case Constant.IMPROVE_LIKE_CANCEL:
+                res = improveMapper.updateLikes(impid,type,businessid,tableName);
+                break;
+            case Constant.IMPROVE_FLOWER:
+                res = improveMapper.updateFlower(impid,count,businessid,tableName);
+        }
+        return res;
     }
 
     private void afterAddOrRemoveLike(Improve improve,int count,String otype){
@@ -2001,7 +2018,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_CANCEL,businessid,getTableNameByBusinessType(businesstype));
+        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
         afterAddOrRemoveLike(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
