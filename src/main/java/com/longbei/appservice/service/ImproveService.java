@@ -486,6 +486,14 @@ public interface ImproveService {
      * @param businessid
      * @return
      */
-    public int updateMemberSumInfo(String impid,String businesstype,String businessid,String type,int count);
+    int updateMemberSumInfo(String impid,String businesstype,String businessid,String type,int count);
+
+    /**
+     * 点赞  送花同步到menber表中
+     * @param improve
+     * @param count
+     * @param otype
+     */
+    void afterImproveInfoChange(Improve improve,int count,String otype);
 
 }

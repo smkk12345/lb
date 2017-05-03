@@ -1939,7 +1939,7 @@ public class ImproveServiceImpl implements ImproveService{
             return false;
         }
         res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
-        afterAddOrRemoveLike(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        afterImproveInfoChange(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }
@@ -1958,39 +1958,44 @@ public class ImproveServiceImpl implements ImproveService{
                 res = improveMapper.updateLikes(impid,type,businessid,tableName);
                 break;
             case Constant.IMPROVE_FLOWER:
-                res = improveMapper.updateFlower(impid,count,businessid,tableName);
+//                res = rankMembersMapper.updateRankImproveCount();
         }
         return res;
     }
 
-    private void afterAddOrRemoveLike(Improve improve,int count,String otype){
+    @Override
+    public void afterImproveInfoChange(Improve improve,int count,String otype){
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         try{
             switch (improve.getBusinesstype()){
                 case Constant.IMPROVE_GOAL_TYPE:
-                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                    improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
-                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                    improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
                     //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                    if(count>0){
-                        rankSortService.updateRankSortScore(improve.getBusinessid(),
-                                improve.getUserid(),Constant.OperationType.like,count);
-                    }else{
-                        rankSortService.updateRankSortScore(improve.getBusinessid(),
-                                improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                    Constant.OperationType type =  Constant.OperationType.like;
+                    int icount = count;
+                    if(otype.equals(Constant.MONGO_IMPROVE_LFD_OPT_LIKE)){
+                        if(count>0){
+                            type = Constant.OperationType.like;
+                        }else{
+                            type = Constant.OperationType.cancleLike;
+                            icount = -icount;
+                        }
+                    }else if(otype.equals(Constant.MONGO_IMPROVE_LFD_OPT_FLOWER)){
+                        type = Constant.OperationType.flower;
                     }
-
+                    rankSortService.updateRankSortScore(improve.getBusinessid(),
+                            improve.getUserid(),type,icount);
                     break;
                 default:
-
                     break;
             }
         }catch (Exception e){
             logger.error("afterAddOrRemoveLike error ",e);
         }
     }
-
 
     /**
      *  @author luye
@@ -2004,7 +2009,7 @@ public class ImproveServiceImpl implements ImproveService{
             return false;
         }
         res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
-        afterAddOrRemoveLike(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        afterImproveInfoChange(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }

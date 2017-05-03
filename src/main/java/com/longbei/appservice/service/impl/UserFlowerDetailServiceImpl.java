@@ -281,7 +281,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
-			improveService.updateMemberSumInfo(improveid,businesstype,businessid,Constant.IMPROVE_FLOWER,number);
+			improveService.afterImproveInfoChange(improve,number,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
 			Map<String, Object> expandData = reseResp.getExpandData();
 			expandData.put("totalflower", improve.getFlowers());
 			reseResp.setExpandData(expandData);
@@ -330,7 +330,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
-			improveService.updateMemberSumInfo(improveid,businesstype,businessid,Constant.IMPROVE_FLOWER,number);
+			improveService.afterImproveInfoChange(improve,number,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
 			Map<String, Object> expandData = reseResp.getExpandData();
 			expandData.put("totalflower", improve.getFlowers());
 			reseResp.setExpandData(expandData);
