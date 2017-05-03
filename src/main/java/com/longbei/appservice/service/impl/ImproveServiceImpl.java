@@ -1316,8 +1316,23 @@ public class ImproveServiceImpl implements ImproveService{
         }else{
             improve.setAppUserMongoEntity(new AppUserMongoEntity());
         }
+        if ("2".equals(improve.getBusinesstype())){
+            initRankImproveTotalLikeAndFlower(improve);
+        }
+
         initUserRelateInfo(userid,appUserMongoEntity);
 //        improve.setAppUserMongoEntity(appUserMongoEntity);
+    }
+
+
+    private void initRankImproveTotalLikeAndFlower(Improve improve){
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId
+                (improve.getBusinessid(),improve.getUserid());
+        if (null == improve.getAppUserMongoEntity()){
+            improve.setAppUserMongoEntity(new AppUserMongoEntity());
+        }
+        improve.getAppUserMongoEntity().setTotallikes(rankMembers.getLikes());
+        improve.getAppUserMongoEntity().setTotalflowers(rankMembers.getFlowers());
     }
 
     /**
