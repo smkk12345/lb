@@ -681,8 +681,8 @@
   <update id="updateCoinAndFlowerByUserid">
     update user_info 
     set 
-    <if test="totalflower != 0">
-      totalflower = totalflower + #{totalflower},
+    <if test="givedflowers != 0">
+      givedflowers = givedflowers + #{givedflowers},
     </if>
     <if test="totalcoin != 0">
       totalcoin = totalcoin + #{totalcoin},
