@@ -177,6 +177,9 @@ public class OrderController {
     public BaseResp<ProductOrders> create(String userid, String productidss, String numberss, String prices,
     		String addressid, String impiconprice, String moneyprice, String paytype, 
     		String otype, String remark) {
+		logger.info("create userid = {}, productidss= {}, numberss = {}, addressid = {}, prices = {}, impiconprice = {},"
+				+ " moneyprice = {}, remark = {}", 
+				userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark);
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
   				impiconprice, paytype, prices, otype)) {
@@ -360,6 +363,9 @@ public class OrderController {
   	@RequestMapping(value = "/exchangeFlower")
     public BaseResp<Object> exchangeFlower(String userid, String number, String friendid, 
     		String improveid, String businesstype, String businessid, String payType) {
+		logger.info("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
+				+ " businesstype = {}, businessid = {}, payType = {}", 
+				userid, number, friendid, improveid, businesstype, businessid, payType);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -374,7 +380,9 @@ public class OrderController {
   	  					friendid, improveid, businesstype, businessid);
   			}
 		} catch (Exception e) {
-			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
+			logger.error("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
+					+ " businesstype = {}, businessid = {}, payType = {}", 
+					userid, number, friendid, improveid, businesstype, businessid, payType, e);
 		}
   		return baseResp;
 	}

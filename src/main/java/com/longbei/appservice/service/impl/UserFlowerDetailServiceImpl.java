@@ -103,14 +103,16 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					int num = (int) (number*flowertomoney);
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, 0);
 					//修改被赠送人收到的礼物
-					userInfoMapper.updateCoinAndFlowerByUserid(friendid, 0, number);
+					userInfoMapper.updateMoneyAndFlowerByUserid(friendid, 0, number);
 					//添加一条龙币消费明细
 					//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
 					userMoneyDetailService.insertPublic(userid, "1", num, 0);
-				}else if("1".equals(origin)){
-					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, 0);
-				}else if("2".equals(origin)){
+				}
+//				else if("1".equals(origin)){
+//					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, 0);
+//				}
+				else if("2".equals(origin)){
 					int num = (int) (number*flowertocoin);
 					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, 0);
 					//修改被赠送人收到的礼物

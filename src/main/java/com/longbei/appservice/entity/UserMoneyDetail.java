@@ -11,7 +11,7 @@ public class UserMoneyDetail {
 
     private Long userid;
 
-    private String origin;//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+    private String origin;//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用龙币
 	 						//3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币 
 
     private Integer number;//数量

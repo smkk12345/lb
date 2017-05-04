@@ -5,6 +5,7 @@ import java.util.*;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
@@ -23,7 +24,6 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
-import com.longbei.appservice.dao.ImproveMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
@@ -38,7 +38,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Autowired
 	private UserMsgMapper userMsgMapper;
 	@Autowired
-	private ImproveMapper improveMapper;
+	private ImproveService improveService;
 	@Autowired
 	private UserMongoDao userMongoDao;
 	@Autowired
@@ -798,24 +798,24 @@ public class UserMsgServiceImpl implements UserMsgService {
 		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE,null,null);
-			impItype(improve, userMsg);
+			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 		}else if("1".equals(userMsg.getGtype())){
 			//1 目标中  进步评论消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_GOAL,null,null);
-			impItype(improve, userMsg);
+			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_RANK,null,null);
-			impItype(improve, userMsg);
+			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CIRCLE,null,null);
-			impItype(improve, userMsg);
+			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 		}else if("4".equals(userMsg.getGtype())){
 			//4 教室中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CLASSROOM,null,null);
-			impItype(improve, userMsg);
+			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 		}else if("10".equals(userMsg.getGtype())){
 			//2 榜中   评论消息   获取榜图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
@@ -958,28 +958,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	private void likeMsg(UserMsg userMsg){
 		//针对进步点赞消息
-		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),null, Constant_table.IMPROVE,null,null);
-			impItype(improve, userMsg);
-		}else if("1".equals(userMsg.getGtype())){
-			//1 目标中  进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_GOAL,null,null);
-			impItype(improve, userMsg);
-		}else if("2".equals(userMsg.getGtype())){
-			//2 榜中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_RANK,null,null);
-			impItype(improve, userMsg);
-		}else if("3".equals(userMsg.getGtype())){
-			//3圈子中      进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CIRCLE,null,null);
-			impItype(improve, userMsg);
-		}else{
-			//4 教室中   进步点赞消息
-			Improve improve = improveMapper.selectByPrimaryKey(userMsg.getSnsid(),String.valueOf(userMsg.getGtypeid()), Constant_table.IMPROVE_CLASSROOM,null,null);
-			impItype(improve, userMsg);
-		}
+		Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+		userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 	}
 	
 	/**
@@ -989,22 +971,22 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private void impItype(Improve improve, UserMsg userMsg){
-		if(null != improve){
-			//itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
-			if("0".equals(improve.getItype())){
-				//0 文字进步   brief --- 说明
-				userMsg.setImpPicFilekey(improve.getBrief());
-			}else if("1".equals(improve.getItype())){
-				//1 图片进步   pickey --- 图片的key
-				userMsg.setImpPicFilekey(improve.getPickey());
-			}else{
-				//2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
-				userMsg.setImpPicFilekey(improve.getFilekey());
-			}
-			userMsg.setImpItype(improve.getItype());
-		}
-	}
+//	private void impItype(Improve improve, UserMsg userMsg){
+//		if(null != improve){
+//			//itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+//			if("0".equals(improve.getItype())){
+//				//0 文字进步   brief --- 说明
+//				userMsg.setImpPicFilekey(improve.getBrief());
+//			}else if("1".equals(improve.getItype())){
+//				//1 图片进步   pickey --- 图片的key
+//				userMsg.setImpPicFilekey(improve.getPickey());
+//			}else{
+//				//2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
+//				userMsg.setImpPicFilekey(improve.getFilekey());
+//			}
+//			userMsg.setImpItype(improve.getItype());
+//		}
+//	}
 
 	/**
 	 * @author yinxc

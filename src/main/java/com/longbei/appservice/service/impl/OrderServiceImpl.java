@@ -148,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(Integer.parseInt(addressid));
+				UserAddress userAddress = userAddressMapper.selectByIdAndUserid(Integer.parseInt(addressid), userid);
 				//省市+详细地址
 				String address = userAddress.getRegion() + userAddress.getAddress();
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
@@ -158,8 +158,9 @@ public class OrderServiceImpl implements OrderService {
 						remark, userLevel.getDiscount().toString());
 			}
 		}catch (Exception e){
-			logger.error("create userid = {}, productidss= {}, numberss = {}, prices = {}", 
-					userid, productidss, numberss, prices, e);
+			logger.error("create userid = {}, productidss= {}, numberss = {}, addressid = {}, prices = {}, impiconprice = {},"
+					+ " moneyprice = {}, remark = {}", 
+					userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark, e);
 		}
 		return baseResp;
 	}
