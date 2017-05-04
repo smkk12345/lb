@@ -668,6 +668,7 @@
     UPDATE ${tablename} set ismainimp='1'
     where ${field}=#{businessid}
     and userid=#{userid}
+    AND isdel='0'
     order by updatetime desc limit 1
   </update>
 
