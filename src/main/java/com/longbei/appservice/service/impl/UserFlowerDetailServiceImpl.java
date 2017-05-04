@@ -281,6 +281,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
+			improveService.afterImproveInfoChange(improve,number,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
 			Map<String, Object> expandData = reseResp.getExpandData();
 			expandData.put("totalflower", improve.getFlowers());
 			reseResp.setExpandData(expandData);
@@ -288,7 +289,9 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		return reseResp;
 	}
-	
+
+
+
 	/**
 	 * @author yinxc
 	 * 进步币兑换鲜花
@@ -327,6 +330,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
+			improveService.afterImproveInfoChange(improve,number,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
 			Map<String, Object> expandData = reseResp.getExpandData();
 			expandData.put("totalflower", improve.getFlowers());
 			reseResp.setExpandData(expandData);

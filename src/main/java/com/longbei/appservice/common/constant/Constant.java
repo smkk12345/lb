@@ -207,6 +207,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_44 = "获取进步列表成功";
 	public static final String RTNINFO_SYS_45 = "你没有为该进步点过赞";
 	public static final String RTNINFO_SYS_46 = "删除进步成功";
+	public static final String RTNINFO_SYS_47 = "删除进步失败";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
 
@@ -327,6 +328,7 @@ public class Constant {
 
 	public static final String IMPROVE_LIKE_ADD = "0"; //点赞
 	public static final String IMPROVE_LIKE_CANCEL = "1"; //取消赞
+	public static final String IMPROVE_FLOWER = "2"; //送花
 
 	public static final Integer DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM = 10;
 

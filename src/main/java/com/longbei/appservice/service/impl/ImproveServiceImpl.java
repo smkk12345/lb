@@ -1017,7 +1017,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeGoalImprove(String userid, String goalid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
+        Improve improve = selectImprove((Long.parseLong(improveid)),userid,Constant.IMPROVE_GOAL_TYPE,goalid,null,null);
         try {
             res = improveGoalMapper.remove(userid,goalid,improveid);
         } catch (Exception e) {
@@ -1143,7 +1144,7 @@ public class ImproveServiceImpl implements ImproveService{
 
                 initImproveInfo(improve,Long.parseLong(userid));
                 //初始化 赞 花 数量
-                initImproveLikeAndFlower(improve);
+//                initImproveLikeAndFlower(improve);
                 improves.add(improve);
             } catch (Exception e) {
                 logger.error("select time line userid={} list is error:",userid,e);
@@ -1316,8 +1317,23 @@ public class ImproveServiceImpl implements ImproveService{
         }else{
             improve.setAppUserMongoEntity(new AppUserMongoEntity());
         }
+        if ("2".equals(improve.getBusinesstype())){
+            initRankImproveTotalLikeAndFlower(improve);
+        }
+
         initUserRelateInfo(userid,appUserMongoEntity);
 //        improve.setAppUserMongoEntity(appUserMongoEntity);
+    }
+
+
+    private void initRankImproveTotalLikeAndFlower(Improve improve){
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId
+                (improve.getBusinessid(),improve.getUserid());
+        if (null == improve.getAppUserMongoEntity()){
+            improve.setAppUserMongoEntity(new AppUserMongoEntity());
+        }
+        improve.getAppUserMongoEntity().setTotallikes(rankMembers.getLikes());
+        improve.getAppUserMongoEntity().setTotalflowers(rankMembers.getFlowers());
     }
 
     /**
@@ -1370,6 +1386,8 @@ public class ImproveServiceImpl implements ImproveService{
                 //mongo
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                         userInfo.getAvatar())  ;
+
+                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
 
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
@@ -1457,6 +1475,7 @@ public class ImproveServiceImpl implements ImproveService{
                 removeLikeToImproveForRedis(impid,userid);
                 //mongo
                 removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
+                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),-1);
                 //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                     circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
@@ -1596,7 +1615,7 @@ public class ImproveServiceImpl implements ImproveService{
             if (res > 0){
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
-
+                timeLineDetailDao.updateImproveFlower(businesstype,Long.valueOf(impid),flowernum);
                 //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
                 //送分  送进步币
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
@@ -1934,43 +1953,64 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        String tableName = getTableNameByBusinessType(businesstype);
-        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_ADD,businessid,tableName);
-        afterAddOrRemoveLike(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+        afterImproveInfoChange(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }
         return false;
     }
 
-    private void afterAddOrRemoveLike(Improve improve,int count,String otype){
+    @Override
+    public int updateMemberSumInfo(String impid,String businesstype,String businessid,String type,int count){
+        String tableName = getTableNameByBusinessType(businesstype);
+        int res = 0;
+        switch (type){
+            case Constant.IMPROVE_LIKE_ADD:
+                res = improveMapper.updateLikes(impid,type,businessid,tableName);
+                break;
+            case Constant.IMPROVE_LIKE_CANCEL:
+                res = improveMapper.updateLikes(impid,type,businessid,tableName);
+                break;
+            case Constant.IMPROVE_FLOWER:
+//                res = rankMembersMapper.updateRankImproveCount();
+        }
+        return res;
+    }
+
+    @Override
+    public void afterImproveInfoChange(Improve improve,int count,String otype){
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         try{
             switch (improve.getBusinesstype()){
                 case Constant.IMPROVE_GOAL_TYPE:
-                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
+                    improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"goalid");
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
-                    improveMapper.updateSourceLike(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
+                    improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName,"rankid");
                     //修改排名信息 Long rankId, Long userId, Constant.OperationType operationType,Integer num
-                    if(count>0){
-                        rankSortService.updateRankSortScore(improve.getBusinessid(),
-                                improve.getUserid(),Constant.OperationType.like,count);
-                    }else{
-                        rankSortService.updateRankSortScore(improve.getBusinessid(),
-                                improve.getUserid(),Constant.OperationType.cancleLike,-count);
+                    Constant.OperationType type =  Constant.OperationType.like;
+                    int icount = count;
+                    if(otype.equals(Constant.MONGO_IMPROVE_LFD_OPT_LIKE)){
+                        if(count>0){
+                            type = Constant.OperationType.like;
+                        }else{
+                            type = Constant.OperationType.cancleLike;
+                            icount = -icount;
+                        }
+                    }else if(otype.equals(Constant.MONGO_IMPROVE_LFD_OPT_FLOWER)){
+                        type = Constant.OperationType.flower;
                     }
-
+                    rankSortService.updateRankSortScore(improve.getBusinessid(),
+                            improve.getUserid(),type,icount);
                     break;
                 default:
-
                     break;
             }
         }catch (Exception e){
             logger.error("afterAddOrRemoveLike error ",e);
         }
     }
-
 
     /**
      *  @author luye
@@ -1983,8 +2023,8 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = improveMapper.updateLikes(impid,Constant.IMPROVE_LIKE_CANCEL,businessid,getTableNameByBusinessType(businesstype));
-        afterAddOrRemoveLike(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+        afterImproveInfoChange(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
         }
