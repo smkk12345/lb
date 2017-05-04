@@ -171,7 +171,7 @@ public interface ImproveMapper {
 
     List<Improve> selectGoalMainImproveList(@Param("userid") long userid,@Param("startNum") int startNum,@Param("endNum") int endNum);
 
-    int delGoalToImprove(@Param("goalid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);
+    int delGoalToImprove(@Param("businessid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);
 
     /**
      * 更新主进步为非主进步

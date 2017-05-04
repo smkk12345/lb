@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -49,6 +50,7 @@ public class RankController {
      */
     @RequestMapping(value="insertRankMember")
     public BaseResp<Object> insertRankMember(Long userid,Long rankId,String codeword){
+        logger.info("userid={},rankId={},codeword={}",userid,rankId,codeword);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -66,6 +68,7 @@ public class RankController {
      */
     @RequestMapping(value="removeRankMember")
     public BaseResp<Object> removeRankMember(Long userid,Long rankId){
+        logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -85,6 +88,7 @@ public class RankController {
      */
     @RequestMapping(value="auditRankMember")
     public BaseResp<Object> auditRankMember(Long[] userIds,Long rankId,Integer status){
+        logger.info("userIds={},rankId={},status={}", JSON.toJSONString(userIds),rankId,status);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userIds == null || userIds.length < 1 || rankId == null || status == null || (status != 1 && status != 2)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -102,6 +106,7 @@ public class RankController {
      */
     @RequestMapping(value="ownRankSort")
     public BaseResp<Object> ownRankSort(Long rankId,Long userid){
+        logger.info("rankId={},userid={}",rankId,userid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -122,6 +127,7 @@ public class RankController {
      */
     @RequestMapping(value="rankMemberSort")
     public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer pageSize){
+        logger.info("rankId={},sortType={},startNum={},pageSize={}",rankId,sortType,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -153,6 +159,7 @@ public class RankController {
      */
     @RequestMapping(value="selectRankList")
     public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,String lastDate,Integer startNum,Integer pageSize){
+        logger.info("rankTitle={},pType={},rankscope={},status={},lastDate={},startNum={},pageSize={}",rankTitle,pType,rankscope,status,lastDate,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(pageSize == null || pageSize < 0){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
@@ -173,6 +180,7 @@ public class RankController {
      */
     @RequestMapping(value="selectOwnRankList")
     public BaseResp<String> selectOwnRankIdsList(String userid){
+        logger.info("userid={}",userid);
         BaseResp<String> baseResp = new BaseResp<String>();
         if(StringUtils.isBlank(userid)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -189,6 +197,7 @@ public class RankController {
      */
     @RequestMapping(value="rankDetail")
     public BaseResp<Rank> rankDetail(Long userid,String rankId){
+        logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId) || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -209,6 +218,7 @@ public class RankController {
      */
     @RequestMapping(value="selectRankAward")
     public BaseResp<Object> selectRankAward(Long rankId){
+        logger.info("rankId={}",rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -227,6 +237,7 @@ public class RankController {
      */
     @RequestMapping(value="selectFashionMan")
     public BaseResp<Object> selectFashionMan(Long userid,Long rankId,Integer startNum,Integer pageSize){
+        logger.info("userid={},rankId={},startNum={},pageSize={}",userid,rankId,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -251,6 +262,7 @@ public class RankController {
      */
     @RequestMapping(value="acceptAward")
     public BaseResp<Object> acceptAward(Long userid,Long rankId){
+        logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -269,6 +281,7 @@ public class RankController {
      */
     @RequestMapping(value="acceptRealAard")
     public BaseResp<Object> acceptRealAard(Long userid,Long rankId,Integer addressId){
+        logger.info("userid={},rankId={},addressId={}",userid,rankId,addressId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null || addressId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -286,6 +299,7 @@ public class RankController {
      */
     @RequestMapping(value="rankAwardConfirmReceipt")
     public BaseResp<Object> rankAwardConfirmReceipt(Long userid,Long rankId){
+        logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -303,6 +317,7 @@ public class RankController {
      */
     @RequestMapping(value="rankAwardList")
     public BaseResp<Object> rankAwardList(Integer startNum,Integer pageSize){
+        logger.info("startNum={},pageSize={}",startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -322,6 +337,7 @@ public class RankController {
      */
     @RequestMapping(value="onlyRankAward")
     public BaseResp<Object> onlyRankAward(Long rankid){
+        logger.info("rankid={}",rankid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -341,6 +357,7 @@ public class RankController {
      */
     @RequestMapping(value="getWinningRankAwardUser")
     public BaseResp<Object> getWinningRankAwardUser(Long rankid,Long userid,Integer startNum,Integer pageSize){
+        logger.info("rankid={},userid={},startNum={},pageSize={}",rankid,userid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -361,6 +378,7 @@ public class RankController {
      */
     @RequestMapping(value="rankAwardDetail")
     public BaseResp<Object> rankAwardDetail(Long rankid,Long userid){
+        logger.info("rankid={},userid={}",rankid,userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -383,6 +401,7 @@ public class RankController {
      */
     @RequestMapping(value="selectOwnRank")
     public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,Integer startNum,Integer pageSize){
+        logger.info("userid={},searchType={},startNum={},pageSize={}",userid,searchType,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -410,6 +429,7 @@ public class RankController {
      */
     @RequestMapping(value="insertUserBusinessConcern")
     public BaseResp<Object> insertUserBusinessConcern(Long userid,Integer businessType,Long businessId){
+        logger.info("userid={},businessType={},businessId={}",userid,businessType,businessId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || businessType == null || businessId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -428,6 +448,7 @@ public class RankController {
      */
     @RequestMapping(value="deleteUserBusinessConcern")
     public BaseResp<Object> deleteUserBusinessConcern(Long userid,Integer businessType,Long businessId){
+        logger.info("userid={},businessType={},businessId={}",userid,businessType,businessId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || businessType == null || businessId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -446,6 +467,7 @@ public class RankController {
      */
     @RequestMapping(value="selectRankMemberDetail")
     public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId,Long currentUserId){
+        logger.info("userid={},rankId={},currentUserId={}",userid,rankId,currentUserId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || currentUserId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -533,6 +555,7 @@ public class RankController {
     @ResponseBody
     @RequestMapping(value = "selectRankListForApp")
     public BaseResp<List<Rank>> selectRankListForApp(Integer startNum, Integer pageSize){
+        logger.info("startNum={},pageSize={}",startNum,pageSize);
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -557,6 +580,7 @@ public class RankController {
      */
     @RequestMapping(value="userRankAcceptAwardList")
     public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer pageSize){
+        logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -580,6 +604,7 @@ public class RankController {
      */
     @RequestMapping(value="updateRankInfo")
     public BaseResp<Object> updateRankInfo(Long rankId,Long userid,Boolean needConfirm,String notice,Boolean noticeUser){
+        logger.info("rankId={},userid={},needConfirm={},notice={},noticeUser={}",rankId,userid,needConfirm,notice,noticeUser);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null || userid == null || (needConfirm != null && StringUtils.isNotEmpty(notice)) || (needConfirm == null && StringUtils.isEmpty(notice))){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
