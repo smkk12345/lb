@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	private UserIdcardMapper userIdcardMapper;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserIdcardServiceImpl.class);
 	
@@ -81,14 +84,15 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 //			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			UserIdcard userIdcard = userIdcardMapper.selectByUserid(userid);
 			if(null != userIdcard){
+				userIdcard.setUser(userMongoDao.getAppUser(String.valueOf(userid)));
 				String imgStr = userIdcard.getIdcardimage().replaceAll("&quot;", "");
 				if(imgStr.indexOf("[") != -1){
 					imgStr = imgStr.substring(1, imgStr.length()-1);
 				}
 				String[] imgArr = imgStr.split(",");
 				if (imgArr.length == 2) {
-					userIdcard.setFrontidcardimage(Constant.OSS_CDN + imgArr[0]);
-					userIdcard.setOppositeidcardimage(Constant.OSS_CDN + imgArr[1]);
+					userIdcard.setFrontidcardimage(imgArr[0]);
+					userIdcard.setOppositeidcardimage(imgArr[1]);
                 } else {
                 	userIdcard.setFrontidcardimage(imgStr);
                 	userIdcard.setOppositeidcardimage(imgStr);
@@ -135,6 +139,9 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 		try {
 			int totalcount = userIdcardMapper.selectCount(userIdcard);
 			List<UserIdcard> userIdcards = userIdcardMapper.selectList(userIdcard,pagesize*(pageno-1),pagesize);
+			for (UserIdcard userIdcard1 : userIdcards){
+				userIdcard1.setUser(userMongoDao.getAppUser(String.valueOf(userIdcard1.getUserid())));
+			}
 			page.setTotalCount(totalcount);
 			page.setList(userIdcards);
 			baseResp = BaseResp.ok();

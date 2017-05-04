@@ -636,6 +636,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         RankImage rankImage = new RankImage();
         rankImage.setRankid(rankCheckDetail.getRankid());
         rankImage.setCheckstatus(rankCheckDetail.getCheckstatus());
+        rankCheckDetail.setCreatetime(new Date());
         boolean flag = updateRankImageSymbol(rankImage);
         if (flag) {
             int res = 0;

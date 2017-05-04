@@ -25,6 +25,8 @@ public interface UserAddressMapper {
 
     UserAddress selectByPrimaryKey(Integer id);
     
+    UserAddress selectByIdAndUserid(@Param("id") int id, @Param("userid") long userid);
+    
     /**
 	 * @author yinxc
 	 * 获取默认状态的收货地址

@@ -79,5 +79,29 @@ public class UserIdCardApiController {
         return baseResp;
     }
 
+    /**
+     * 添加审核结果
+     * @param userid
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = "checksubmit")
+    public BaseResp<Object> submitCheck(String userid,
+                                        String status){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid,status)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        UserIdcard userIdcard = new UserIdcard();
+        userIdcard.setUserid(Long.parseLong(userid));
+        userIdcard.setValidateidcard(status);
+        try {
+            baseResp  = userIdcardService.update(userIdcard);
+        } catch (Exception e) {
+            logger.error("submit useridcard check is error:",e);
+        }
+        return baseResp;
+    }
+
 
 }

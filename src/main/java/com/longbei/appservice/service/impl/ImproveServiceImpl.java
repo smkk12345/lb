@@ -1128,6 +1128,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFilekey(timeLineDetail.getFileKey());
                 improve.setSourcekey(timeLineDetail.getSourcekey());
                 improve.setItype(timeLineDetail.getItype());
+                improve.setLikes(timeLineDetail.getLikes());
+                improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                 String businessType = timeLine.getBusinesstype();

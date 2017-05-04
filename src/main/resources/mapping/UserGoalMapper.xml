@@ -26,14 +26,15 @@
     select 
     <include refid="Base_Column_List" />
     from user_goal
-    where goalid = #{goalid}
+    where goalid = #{goalid} and isdel='0'
   </select>
   
   <select id="selectUserGoalList" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from user_goal
-    where userid = #{userid} 
+    where userid = #{userid}
+    and isdel='0'
     order by createtime desc 
     <if test="endNum != 0" >
       LIMIT #{startNum},#{endNum}
