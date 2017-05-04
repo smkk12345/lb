@@ -22,6 +22,11 @@ public interface RankMembersMapper {
 
     int selectCount(RankMembers rankMembers);
 
+
+    String getRankImproveCount(@Param("rankid") String rankid);
+
+
+
     List<RankMembers> selectList(@Param("rankmember") RankMembers rankMembers,
                                  @Param("order") String order,
                                  @Param("startno") Integer startno,

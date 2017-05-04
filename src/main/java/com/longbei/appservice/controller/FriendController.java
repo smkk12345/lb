@@ -148,6 +148,7 @@ public class FriendController {
      */
     @RequestMapping(value="clearFriendAsk")
     public BaseResp<Object> clearFriendAsk(Long userid){
+        logger.info("userid:{}",userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

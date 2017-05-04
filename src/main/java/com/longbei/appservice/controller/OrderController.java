@@ -177,6 +177,9 @@ public class OrderController {
     public BaseResp<ProductOrders> create(String userid, String productidss, String numberss, String prices,
     		String addressid, String impiconprice, String moneyprice, String paytype, 
     		String otype, String remark) {
+		logger.info("create userid = {}, productidss= {}, numberss = {}, addressid = {}, prices = {}, impiconprice = {},"
+				+ " moneyprice = {}, remark = {}", 
+				userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark);
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
   				impiconprice, paytype, prices, otype)) {

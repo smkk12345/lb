@@ -374,6 +374,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (Rank rank1 : ranks){
                 BaseResp<Integer> integerBaseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank.getRankid()), "2", null);
                 rank1.setCommentCount(integerBaseResp.getData());
+                String icount = rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()));
+                rank1.setIcount(StringUtils.isBlank(icount)?0:Integer.parseInt(icount));
             }
             page.setTotalCount(totalcount);
             page.setList(ranks);
@@ -1372,6 +1374,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Integer> getRankImproveCount(String rankid) {
+        return null;
     }
 
     /**

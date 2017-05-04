@@ -689,8 +689,8 @@
     </if>
     userid = #{userid}
     WHERE 
-    <if test="totalflower &lt; 0">
-      totalflower > ROUND(#{totalflower}) and
+    <if test="givedflowers &lt; 0">
+      givedflowers > ROUND(#{givedflowers}) and
     </if>
     <if test="totalcoin &lt; 0">
       totalcoin > ROUND(#{totalcoin}) and
