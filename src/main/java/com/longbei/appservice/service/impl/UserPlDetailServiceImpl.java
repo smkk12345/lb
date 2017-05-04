@@ -90,5 +90,17 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		}
 		return baseResp;
 	}
-	
+
+	@Override
+	public Integer insertUserPlDetail (UserPlDetail userPlDetail){
+		try{
+			int n = userPlDetailMapper.insertSelective(userPlDetail);
+			if (n>0)
+				return n;
+		}catch(Exception e){
+			logger.error("userPlDetailMapper.insertUserPlDetail error and msg={}",e);
+		}
+		return 0;
+	}
+
 }

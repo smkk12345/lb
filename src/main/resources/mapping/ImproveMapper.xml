@@ -680,7 +680,7 @@
     and userid=#{userid}
   </update>
 
-  <update id="updateSourceLike">
+  <update id="updateSourceData">
     update ${tablename}
     SET <if test="operatetype == '0'.toString()">
         likes = likes + #{icount}

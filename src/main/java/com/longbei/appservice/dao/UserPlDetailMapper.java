@@ -23,6 +23,15 @@ public interface UserPlDetailMapper {
 
     int updateScorce(UserPlDetail record);
 
+    /**
+     * @Title: updateUserPLDetailToplevel
+     * @Description: 更新是否最高级
+     * @return boolean 返回类型
+     * @auther IngaWu
+     * @currentdate:2017年5月3日
+     */
+    int updateUserPLDetailToplevel(UserPlDetail record);
+
 
 
 }
