@@ -48,7 +48,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/buyMoney", method = RequestMethod.POST)
 	public BaseResp<ProductOrders> buyMoney(String userid, String number, String paytype) {
-		logger.info(userid + "购买 " + number + " 朵龙币，订单生成中....");
+		logger.info(userid + "购买 " + number + " 龙币，订单生成中....");
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, paytype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -100,6 +100,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/buyOrder")
     public BaseResp<Object> buyOrder(String userid, String orderid, String impiconprice, String moneyprice) {
+		logger.info("userid={},orderid={},impiconprice={},moneyprice={}", userid,orderid,impiconprice,moneyprice);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid, impiconprice)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -142,6 +143,7 @@ public class OrderController {
 	@SuppressWarnings({ "unchecked" })
   	@RequestMapping(value = "/selectAddressIsdefault")
     public BaseResp<UserAddress> selectAddressIsdefault(String userid) {
+		logger.info("userid={}", userid);
 		BaseResp<UserAddress> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -175,11 +177,12 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/create")
     public BaseResp<ProductOrders> create(String userid, String productidss, String numberss, String prices,
-    		String addressid, String impiconprice, String moneyprice, String paytype, 
-    		String otype, String remark) {
-		logger.info("create userid = {}, productidss= {}, numberss = {}, addressid = {}, prices = {}, impiconprice = {},"
-				+ " moneyprice = {}, remark = {}", 
-				userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark);
+    		String addressid, String impiconprice, String moneyprice, String paytype, String otype, String remark) {
+		
+		logger.info("create userid = {}, productidss= {}, numberss = {}, prices = {}, addressid = {}, impiconprice = {},"
+				+ " moneyprice = {}, paytype = {}, otype = {} remark = {}",
+				userid, productidss, numberss,  prices, addressid, impiconprice, moneyprice, paytype, otype, remark);
+
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
   				impiconprice, paytype, prices, otype)) {
@@ -210,6 +213,7 @@ public class OrderController {
 	@SuppressWarnings({ "unchecked" })
   	@RequestMapping(value = "/list")
     public BaseResp<List<ProductOrders>> list(String userid, String orderstatus, Integer startNum, Integer pageSize) {
+		logger.info("userid={},orderstatus={},startNum={},pageSize={}", userid,orderstatus,startNum,pageSize);
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<>();
 		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
 		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
@@ -244,6 +248,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/get")
     public BaseResp<ProductOrders> get(String userid, String orderid) {
+		logger.info("userid={},orderid={}", userid,orderid);
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -269,6 +274,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/exchange")
     public BaseResp<Object> exchange(String userid, String orderid) {
+		logger.info("userid={},orderid={}", userid,orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -295,6 +301,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrderStatus")
     public BaseResp<Object> updateOrderStatus(String userid, String orderid, String orderstatus) {
+		logger.info("userid={},orderid={},orderstatus={}", userid,orderid,orderstatus);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid, orderstatus)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -328,6 +335,7 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/getUserInfoCoin")
     public BaseResp<Object> getUserInfoCoin(String userid) {
+		logger.info("userid={}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -363,6 +371,9 @@ public class OrderController {
   	@RequestMapping(value = "/exchangeFlower")
     public BaseResp<Object> exchangeFlower(String userid, String number, String friendid, 
     		String improveid, String businesstype, String businessid, String payType) {
+		logger.info("create userid = {}, number= {}, friendid = {}, improveid = {}, businesstype = {}, businessid = {},payType = {}",
+				userid, number, friendid,  improveid, businesstype, businessid, payType);
+
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
