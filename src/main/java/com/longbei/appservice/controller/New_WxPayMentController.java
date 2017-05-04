@@ -40,6 +40,7 @@ public class New_WxPayMentController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/wxPayMainPage")
     public BaseResp<Object> wxPayMainPage(String userid, String orderid) {
+		logger.info("userid={},orderid={}",userid,orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

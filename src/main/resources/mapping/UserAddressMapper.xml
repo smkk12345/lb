@@ -168,7 +168,8 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} 
+    and userid = #{userid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserAddress" >
     update user_address 
@@ -181,7 +182,8 @@
       isdel = #{isdel,jdbcType=CHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} 
+    and userid = #{userid}
   </update>
   
   <update id="updateIsdefaultByAddressId">

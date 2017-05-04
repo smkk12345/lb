@@ -2251,7 +2251,7 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
-            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));

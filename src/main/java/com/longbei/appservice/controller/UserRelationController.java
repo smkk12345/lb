@@ -53,7 +53,7 @@ public class UserRelationController extends BaseController {
 	 @SuppressWarnings("unchecked")
      @RequestMapping(value = "searchLongRange")
 	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int pageSize){
-		 logger.info("seachLongRange params userid={},nickname={}",userid,nickname);
+		 logger.info("seachLongRange params userid={},nickname={},startNum={},pageSize={}",userid,nickname,startNum,pageSize);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -79,7 +79,7 @@ public class UserRelationController extends BaseController {
 	 @SuppressWarnings("unchecked")
      @RequestMapping(value = "searchLocal")
 	 public BaseResp<Object> searchLocal(String userid, String nickname, int startNum, int endNum){
-		 logger.info("searchLocal params userid={},nickname={}",userid,nickname);
+		 logger.info("searchLocal params userid={},nickname={},startNum={},endNum={}",userid,nickname,startNum,endNum);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -129,7 +129,7 @@ public class UserRelationController extends BaseController {
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectListByUserId")
 	public BaseResp<Object> selectListByUserId(String userid ,Integer startNum,Integer pageSize,String updateTime){
-		logger.info("selectListByUserId params userid={}",userid);
+		logger.info("userid={},startNum={},pageSize={},updateTime={}",userid,startNum,pageSize,updateTime);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -271,7 +271,7 @@ public class UserRelationController extends BaseController {
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectFansListByUserId")
 	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String ftype, Integer startNum, Integer pageSize){
-		logger.info("selectFansListByUserId params userid={}",userid);
+		logger.info("userid={},ftype={}startNum={},pageSize={}",userid,ftype,startNum,pageSize);
 		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, ftype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -302,6 +302,7 @@ public class UserRelationController extends BaseController {
      */
 	@RequestMapping(value = "selectFashionManUser")
 	public BaseResp<Object> selectFashionManUser(Long userid,Integer startNum,Integer pageSize ){
+		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		if(userid == null){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
