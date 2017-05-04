@@ -110,7 +110,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("updateByPrimaryKeySelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("updateByPrimaryKeySelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}

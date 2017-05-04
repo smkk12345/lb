@@ -371,9 +371,9 @@ public class OrderController {
   	@RequestMapping(value = "/exchangeFlower")
     public BaseResp<Object> exchangeFlower(String userid, String number, String friendid, 
     		String improveid, String businesstype, String businessid, String payType) {
-		logger.info("create userid = {}, number= {}, friendid = {}, improveid = {}, businesstype = {}, businessid = {},payType = {}",
-				userid, number, friendid,  improveid, businesstype, businessid, payType);
-
+		logger.info("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
+				+ " businesstype = {}, businessid = {}, payType = {}", 
+				userid, number, friendid, improveid, businesstype, businessid, payType);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -388,7 +388,9 @@ public class OrderController {
   	  					friendid, improveid, businesstype, businessid);
   			}
 		} catch (Exception e) {
-			logger.error("moneyExchangeFlower userid = {}, number = {}", userid, number, e);
+			logger.error("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
+					+ " businesstype = {}, businessid = {}, payType = {}", 
+					userid, number, friendid, improveid, businesstype, businessid, payType, e);
 		}
   		return baseResp;
 	}
