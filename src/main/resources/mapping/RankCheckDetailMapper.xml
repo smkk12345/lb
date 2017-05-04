@@ -20,6 +20,15 @@
     from rankcheckdetail
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rankcheckdetail
+    where rankid = #{rankid}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from rankcheckdetail
     where id = #{id,jdbcType=INTEGER}
