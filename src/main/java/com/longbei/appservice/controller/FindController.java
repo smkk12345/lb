@@ -63,7 +63,7 @@ public class FindController extends BaseController {
         if(StringUtils.hasBlankParams(longitude,latitude,userid,startNum,pageSize)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }else{
-            logger.info("near longitude={},latitude={},radius={},userid={}",longitude,latitude,radius,userid);
+            logger.info("near longitude={},latitude={},radius={},userid={},startNum={},pageSize={},sex={}",longitude,latitude,radius,userid,startNum,pageSize,sex);
             baseResp = findService.near(longitude,latitude,userid,sex,startNum,pageSize);
         }
         try {
