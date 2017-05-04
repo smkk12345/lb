@@ -863,7 +863,6 @@ public class ImproveServiceImpl implements ImproveService{
             if (isok){
                 //将收藏了该进步的用户进步状态修改为已删除
                 deleteUserCollectImprove("0",improveid);
-
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
@@ -917,7 +916,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
+        Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {
@@ -1597,15 +1597,16 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> addFlower(String userid,String friendid, String impid,
                                       int flowernum,String businesstype,String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         //判断龙币是否充足
-        BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
-        if (!ResultUtil.isSuccess(baseResp)){
-            return baseResp;
-        }
+//        BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
+//        if (!ResultUtil.isSuccess(baseResp)){
+//            return baseResp;
+//        }
 
         //消耗龙币
-        userMoneyDetailService.insertPublic(Long.parseLong(userid),
-                Constant.USER_MONEY_GIFT,flowernum*Constant.FLOWER_PRICE,-1);
+//        userMoneyDetailService.insertPublic(Long.parseLong(userid),
+//                Constant.USER_MONEY_GIFT,flowernum*Constant.FLOWER_PRICE,-1);
 
         //扣除龙币成功
         try {
@@ -2015,6 +2016,36 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
+    @Override
+    public String getFirstPhotos(Improve improve) {
+        String photos = "";
+        if(null != improve){
+            //itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+            if("0".equals(improve.getItype())){
+                //0 文字进步   brief --- 说明
+                photos = improve.getBrief();
+            }else if("1".equals(improve.getItype())){
+                //1 图片进步   pickey --- 图片的key
+                photos = firstPhotos(improve.getPickey());
+            }else{
+                //2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
+                photos = firstPhotos(improve.getPickey());
+            }
+        }
+        return null;
+    }
+
+    private String firstPhotos(String photos){
+        if(!StringUtils.isBlank(photos)){
+            JSONArray jsonArray = JSONArray.fromObject(photos);
+            if(jsonArray.size()>0){
+                photos = jsonArray.getString(0);
+            }else
+                photos = null;
+        }
+        return photos;
+    }
+
     /**
      *  @author luye
      *  @desp 删除 点赞明细（mysql）
@@ -2089,10 +2120,15 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private void initLikeFlowerDiamondInfo(Improve improve){
-        Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-        List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-        improve.setLfdcount(count);
-        improve.setImproveLFDs(improveLFDs);
+        try{
+            Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+            improve.setLfdcount(count);
+            improve.setImproveLFDs(improveLFDs);
+        }catch (Exception e){
+            logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
+        }
+
     }
 
     /**
