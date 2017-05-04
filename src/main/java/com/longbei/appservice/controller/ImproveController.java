@@ -62,6 +62,8 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "line/daylist")
     public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype, String lastDate, String pageSize) {
+        logger.info("userid={},ptype={},ctype={},lastDate={},pageSize={}",userid, ptype,ctype,lastDate,pageSize);
+
         if (StringUtils.hasBlankParams(userid, ctype, lastDate)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -101,8 +103,7 @@ public class ImproveController {
     @RequestMapping(value = "addImpComplaints")
     public BaseResp<ImpComplaints> addImpComplaints(String userid, String friendid, String impid, 
     		String content, String businessid, String contenttype, String businesstype) {
-        logger.info("addImpComplaints userid={},impid={},content={},contenttype={},businesstype={}", userid, impid, content,
-                contenttype, businesstype);
+        logger.info("addImpComplaints userid={},friendid={},impid={},content={},businessid={},contenttype={},businesstype={}", userid,friendid,impid, content, businessid,contenttype, businesstype);
         BaseResp<ImpComplaints> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, friendid, impid, contenttype, businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -149,9 +150,9 @@ public class ImproveController {
     @RequestMapping(value = "insert")
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype, String businessid, String ptype, String ispublic, String itype, String pimpid) {
-        logger.info(
-                "insertImprove brief:{}," + "pickey:{},filekey:{},businesstype:{},businessid={},ptype:{}," + "ispublic:{},itype:{}",
-                brief, pickey, filekey, businesstype,businessid, ptype, ispublic, itype);
+        logger.info("userid={},brief={},pickey={},filekey={},businesstype={},businessid={},ptype={},ispublic={},itype={},pimpid={}",
+                userid,brief,pickey, filekey, businesstype,businessid, ptype,ispublic,itype,pimpid);
+
         if (StringUtils.hasBlankParams(userid, businesstype, ptype, ispublic, itype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -196,8 +197,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "remove", method = RequestMethod.POST)
     public BaseResp<Object> removeImprove(String userid, String improveid, String businesstype, String businessid) {
-        logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}", userid, improveid,
-                businesstype, businessid);
+        logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}", userid, improveid, businesstype, businessid);
         if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -236,6 +236,8 @@ public class ImproveController {
     @RequestMapping(value = "rank/list", method = RequestMethod.POST)
     public BaseResp selectRankImproveList(String userid, String rankid, String sorttype, String sift, String startNum,
                                           String pageSize,String lastDate) {
+        logger.info("userid={},rankid={},sorttype={},sift={},startNum={},pageSize={},lastDate={}",
+                userid,rankid,sorttype, sift, startNum,pageSize, lastDate);
         if (StringUtils.hasBlankParams(userid, rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -284,6 +286,7 @@ public class ImproveController {
     @RequestMapping(value = "circle/list", method = RequestMethod.POST)
     public BaseResp selectCircleImproveList(String userid, String circleid, String sorttype, String sift,
                                             String startNum, String pageSize) {
+        logger.info("userid={},circleid={},sorttype={},sift={},startNum={},pageSize={}", userid,circleid,sorttype, sift, startNum,pageSize);
         if (StringUtils.hasBlankParams(userid, circleid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -331,6 +334,7 @@ public class ImproveController {
     @RequestMapping(value = "classroom/list", method = RequestMethod.POST)
     public BaseResp selectClassroomImproveList(String userid, String classroomid, String sorttype, String sift,
                                                String startNo, String pageSize) {
+        logger.info("userid={},classroomid={},sorttype={},sift={},startNo={},pageSize={}", userid,classroomid,sorttype, sift, startNo,pageSize);
         if (StringUtils.hasBlankParams(userid, classroomid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -376,6 +380,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "goal/list", method = RequestMethod.POST)
     public BaseResp selectGoalImproveList(String userid, String goalid, String startNum, String pageSize) {
+        logger.info("userid={},goalid={},startNum={},pageSize={}", userid,goalid,startNum,pageSize);
         if (StringUtils.hasBlankParams(userid, goalid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -415,6 +420,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "line/list", method = RequestMethod.POST)
     public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastDate, String pageSize) {
+        logger.info("userid={},ptype={},ctype={},lastDate={},pageSize={}", userid,ptype,ctype,lastDate,pageSize);
         Long s = System.currentTimeMillis();
         if (StringUtils.hasBlankParams(userid, ctype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -457,6 +463,7 @@ public class ImproveController {
     @RequestMapping(value = "line/targetuserlist", method = RequestMethod.POST)
     public BaseResp<List<Improve>> selectOtherUserImproveList(String userid,String  targetuserid,
                                                               String lastDate, String pageSize){
+        logger.info("userid={},targetuserid={},lastDate={},lastDate={},pageSize={}", userid,targetuserid,lastDate,lastDate,pageSize);
         if (StringUtils.hasBlankParams(userid, targetuserid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -540,6 +547,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "collectImp")
     BaseResp<Object> collectImp(String userid, String improveid, String businesstype, String businessid) {
+        logger.info("userid={},improveid={},businesstype={},businessid={}", userid,improveid,businesstype,businessid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -565,6 +573,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "removeCollect")
     BaseResp<Object> removeCollect(String userid, String improveid, String businesstype) {
+        logger.info("userid={},improveid={},businesstype={}", userid,improveid,businesstype);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -589,6 +598,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "selectCollect")
     public BaseResp<Object> selectCollect(String userid, Integer startNum, Integer pageSize) {
+        logger.info("userid={},startNum={},pageSize={}", userid,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -619,8 +629,8 @@ public class ImproveController {
      */
     @RequestMapping(value = "addorcancellike")
     @ResponseBody
-    public BaseResp<Object> addLikeForImprove(String userid, String improveid,
-                                              String businesstype, String businessid, String opttype) {
+    public BaseResp<Object> addLikeForImprove(String userid, String improveid, String businesstype, String businessid, String opttype) {
+        logger.info("userid={},improveid={},businesstype={},businessid={},opttype={}", userid,improveid,businesstype,businessid,opttype);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, businesstype, opttype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -655,7 +665,7 @@ public class ImproveController {
     @RequestMapping(value = "cancellike")
     @ResponseBody
     public BaseResp<Object> cancelLikeForImprove(String userid, String improveid, String businesstype, String businessid) {
-
+        logger.info("userid={},improveid={},businesstype={},businessid={}", userid,improveid,businesstype,businessid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, businesstype, businessid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -683,7 +693,7 @@ public class ImproveController {
     @ResponseBody
     public BaseResp<Object> addFlowerForImprove(String userid, String friendid, String improveid, String flowernum,
                                                 String businesstype, String businessid) {
-        logger.info("add flower userid={} improveid={} flowernum={}", userid, improveid, flowernum);
+        logger.info("userid={},friendid={},improveid={},flowernum={},businesstype={},businessid={}", userid,friendid,improveid,flowernum,businesstype,businessid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, flowernum, businesstype, businessid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -711,7 +721,7 @@ public class ImproveController {
     @ResponseBody
     public BaseResp<Object> addDiamondForImprove(String userid, String friendid, String improveid,
                                                  String diamondnum, String businesstype, String businessid) {
-        logger.info("add diamond userid={} improveid={} diamondmun={}", userid, improveid, diamondnum);
+        logger.info("userid={},friendid={},improveid={},diamondnum={},businesstype={},businessid={}", userid,friendid,improveid,diamondnum,businesstype,businessid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, diamondnum, businesstype, businessid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -739,7 +749,7 @@ public class ImproveController {
     @ResponseBody
     public BaseResp<List<ImpAllDetail>> getImproveLFDList(String userid, String impid,
                                                           String opttype, String pageSize, String lastDate) {
-
+        logger.info("userid={},impid={},opttype={},pageSize={},lastDate={}", userid,impid,opttype,pageSize,lastDate);
         BaseResp<List<ImpAllDetail>> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, impid, opttype, pageSize)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -771,6 +781,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "select")
     public BaseResp select(String userid, String impid, String businesstype, String businessid) {
+        logger.info("userid={},impid={},businesstype={},businessid={}", userid,impid,businesstype,businessid);
         BaseResp baseResp = new BaseResp();
         if (StringUtils.hasBlankParams(userid, impid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -798,6 +809,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "recommendlist")
     public BaseResp<List<Improve>> selectRecommendImproveList(String userid,String startNum,String pageSize) {
+        logger.info("userid={},startNum={},pageSize={}", userid,startNum,pageSize);
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid)) {
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -830,7 +842,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "selectListInRank")
     public BaseResp selectListInRank(String curuserid,String userid, String rankid, Integer startNum,Integer pageSize) {
-
+        logger.info("curuserid={},userid={},rankid={},startNum={},pageSize={}", curuserid,userid,rankid,startNum,pageSize);
         if (StringUtils.hasBlankParams(curuserid,userid, rankid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
