@@ -46,6 +46,7 @@
     from improve_goal
     where businessid=#{goalid}
     and ismainimp='1'
+    and isdel='0'
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
