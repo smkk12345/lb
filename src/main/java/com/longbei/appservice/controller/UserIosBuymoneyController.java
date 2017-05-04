@@ -54,6 +54,8 @@ public class UserIosBuymoneyController {
 	public BaseResp<Map<String,String>> buyIOSMoney(String userid,
 													String productid,
 													String payloadData) {
+		logger.info("userid = {}, productid = {}, payloadData = {}", userid, productid, payloadData);
+
 		BaseResp<Map<String,String>> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid,productid,payloadData)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
