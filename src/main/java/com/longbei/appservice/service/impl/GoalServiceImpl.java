@@ -3,12 +3,14 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ImproveGoalMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
+import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,15 +183,28 @@ public class GoalServiceImpl implements GoalService {
 				userGoal.setPickey(improve.getBrief());
 			}else if("1".equals(improve.getItype())){
 				//1 图片进步   pickey --- 图片的key
-				userGoal.setPickey(improve.getPickey());
+                String photos = getFirstPhotos(improve.getPickey());
+                userGoal.setPickey(photos);
 			}else{
 				//2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
-				userGoal.setPickey(improve.getPickey());
+                String photos = getFirstPhotos(improve.getPickey());
+				userGoal.setPickey(photos);
 			}
 			userGoal.setItype(improve.getItype());
             userGoal.setStarttime(improve.getCreatetime());
 		}
 	}
+
+	private String getFirstPhotos(String photos){
+        if(!StringUtils.isBlank(photos)){
+            JSONArray jsonArray = JSONArray.fromObject(photos);
+            if(jsonArray.size()>0){
+                photos = jsonArray.getString(0);
+            }else
+                photos = null;
+        }
+        return photos;
+    }
 
     /**
      * 更新目标title

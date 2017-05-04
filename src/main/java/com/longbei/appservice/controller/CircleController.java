@@ -50,6 +50,7 @@ public class CircleController {
      */
     @RequestMapping(value="relevantCircle")
     public BaseResp<Object> relevantCircle(String circleName,Integer startNo,Integer endNo){
+        logger.info("circleName={},startNo={},endNo={}",circleName,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(circleName)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -84,7 +85,8 @@ public class CircleController {
     @RequestMapping(value="insertCircle")
     public BaseResp<Object> insertCircle(String userId,String circleTitle,String circlephotos,String circlebrief,
                                          String ptype,Boolean ispublic,Boolean needconfirm,Boolean creategoup){
-        logger.info("insert Circle userId:{} circleTitle:{} circlephotos:{} circlebrief:{}",0,circleTitle,circlephotos,circlebrief);
+        logger.info("insert Circle userId:{} circleTitle:{} circlephotos:{} circlebrief:{} ptype:{} ispublic:{} needconfirm:{} creategoup:{}",
+                userId,circleTitle,circlephotos,circlebrief,ptype,ispublic,needconfirm,creategoup);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(userId,circleTitle,circlephotos,circlebrief,ptype)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -126,6 +128,7 @@ public class CircleController {
      */
     @RequestMapping(value="updateCircleInfo")
     public BaseResp<Object> updateCircleInfo(Integer circleId,String userId,String circlephotos,String circlebrief){
+        logger.info("circleId={},userId={},circlephotos={},circlebrief={}",circleId,userId,circlephotos,circlebrief);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || StringUtils.hasBlankParams(userId,circlephotos,circlebrief)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -144,6 +147,7 @@ public class CircleController {
      */
     @RequestMapping(value="updateCircleNotice")
     public BaseResp<Object> updateCircleNotice(Integer circleId,String userId,String circleNotice,Boolean isNotice){
+        logger.info("circleId={},userId={},circleNotice={},isNotice={}",circleId,userId,circleNotice,isNotice);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || StringUtils.hasBlankParams(userId,circleNotice)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -207,6 +211,7 @@ public class CircleController {
      */
     @RequestMapping(value="selectCircleMemberBaseInfo")
     public BaseResp<Object> selectCircleMemberBaseInfo(Long circleId,Integer startNo,Integer endNo){
+        logger.info("circleId={},startNo={},endNo={}",circleId,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -271,6 +276,7 @@ public class CircleController {
      */
     @RequestMapping(value="circleMemberDetail")
     public BaseResp<Object> circleMemberDetail(Long circleId,Long userId,Long currentUserId){
+        logger.info("circleId={},userId={},currentUserId={}",circleId,userId,currentUserId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -293,6 +299,7 @@ public class CircleController {
      */
     @RequestMapping(value="circleMemberImprove")
     public BaseResp<Object> circleMemberImprove(Long circleId,Long userId,Long currentUserId,Integer startNo,Integer endNo){
+        logger.info("circleId={},userId={},currentUserId={},startNo={},endNo={}",circleId,userId,currentUserId,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -317,6 +324,7 @@ public class CircleController {
      */
     @RequestMapping(value="circleDetail")
     public BaseResp<Object> circleDetail(Long circleId){
+        logger.info("circleId={}",circleId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -338,6 +346,7 @@ public class CircleController {
      */
     @RequestMapping(value="improveCircleList")
     public BaseResp<Object> improveCircleList(String circleId,String userId,String orderby,Integer startNo,Integer endNo){
+        logger.info("circleId={},userId={},orderby={},startNo={},endNo={}",circleId,userId,orderby,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(circleId,userId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -366,6 +375,7 @@ public class CircleController {
      */
     @RequestMapping(value="confirmInsertCircleMember")
     public BaseResp<Object> confirmInsertCircleMember(Long userId,Integer circleMembersId,Boolean confirmFlag){
+        logger.info("userId={},circleMembersId={},confirmFlag={}",userId,circleMembersId,confirmFlag);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userId == null || circleMembersId == null || confirmFlag == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

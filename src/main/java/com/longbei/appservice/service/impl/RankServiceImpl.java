@@ -782,6 +782,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> map = new HashMap<>();
                 map.put("userId",userId);
                 map.put("rankId",rankId);
+                map.put("status",status);
                 map.put("initRankMember",initRankMember);
                 int updateRankMemberRow = this.rankMembersMapper.updateRank(map);
 
@@ -1699,7 +1700,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
             if(rankMembers == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Long sortNum = null;
-            if(rankMembers.getSortnum() == null){
+            if(rankMembers.getSortnum() == null||rankMembers.getSortnum() == 0){
                 sortNum = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userid+"");
             }else{
                 sortNum = new Long(rankMembers.getSortnum());
