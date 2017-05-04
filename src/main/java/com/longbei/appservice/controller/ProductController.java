@@ -40,6 +40,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/category")
     public BaseResp<List<ProductCategory>> category(String userid) {
+		logger.info("category userid = {}", userid);
 		BaseResp<List<ProductCategory>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -66,6 +67,8 @@ public class ProductController {
   	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/list")
     public BaseResp<List<ProductBasic>> list(String userid, String cateid, String starttime, Integer startNum, Integer pageSize) {
+		logger.info("selectCategoryList cateid = {}, userid = {}, starttime = {}, startNum = {}, pageSize = {}",
+				cateid, userid, starttime, startNum, pageSize);
 		BaseResp<List<ProductBasic>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, cateid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -102,6 +105,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/getProduct")
     public BaseResp<ProductBasic> getProduct(String userid, String productid) {
+		logger.info("userid = {},productid = {}", userid,productid);
 		BaseResp<ProductBasic> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -128,6 +132,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/addCart")
     public BaseResp<Object> addCart(String userid, String productid, String productcount, String enabled) {
+		logger.info("userid = {}, productid = {}, productcount = {}, enabled = {}", userid, productid, productcount, enabled);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productid, productcount, enabled)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -153,6 +158,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/removeCart")
     public BaseResp<Object> removeCart(String userid, String ids) {
+		logger.info("userid = {}, ids = {}", userid, ids);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, ids)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -177,6 +183,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/clearCart")
     public BaseResp<Object> clearCart(String userid) {
+		logger.info("userid = {}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -201,6 +208,7 @@ public class ProductController {
 	@SuppressWarnings({ "unchecked"})
   	@RequestMapping(value = "/getCart")
     public BaseResp<List<ProductCart>> getCart(String userid, Integer startNum, Integer pageSize) {
+		logger.info("userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize);
 		BaseResp<List<ProductCart>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -234,6 +242,7 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateCartProductcount")
     public BaseResp<Object> updateCartProductcount(String id, String productcount) {
+		logger.info("id = {}, productcount = {}", id, productcount);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
   		if (StringUtils.hasBlankParams(id, productcount)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -259,6 +268,7 @@ public class ProductController {
 	@SuppressWarnings({ "unchecked"})
   	@RequestMapping(value = "/emptyCart")
     public BaseResp<Object> emptyCart(String userid) {
+		logger.info("userid = {}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

@@ -32,6 +32,7 @@ public class SuperTopicController {
      */
     @RequestMapping(value = "/list")
     public BaseResp<Object> list(int startNum,int pageSize) {
+        logger.info("startNum = {}, pageSize = {}", startNum, pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(pageSize == 0){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -54,6 +55,7 @@ public class SuperTopicController {
      */
     @RequestMapping(value = "/selectImprovesById")
     public BaseResp<Object> selectImprovesById(String topicId,String userid,int startNum,int pageSize){
+        logger.info("topicId = {}, userid = {}, startNum = {}, pageSize = {}", topicId, userid, startNum, pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(topicId,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
