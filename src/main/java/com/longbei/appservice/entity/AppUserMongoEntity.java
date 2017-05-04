@@ -31,8 +31,28 @@ public class AppUserMongoEntity {
 	private String isfriend="0";
 	@Transient
 	private String isfans="0";
+	@Transient
+	private Integer totallikes;
+	@Transient
+	private Integer totalflowers;
 
 	private int distance;
+
+	public Integer getTotallikes() {
+		return totallikes;
+	}
+
+	public void setTotallikes(Integer totallikes) {
+		this.totallikes = totallikes;
+	}
+
+	public Integer getTotalflowers() {
+		return totalflowers;
+	}
+
+	public void setTotalflowers(Integer totalflowers) {
+		this.totalflowers = totalflowers;
+	}
 
 	public String getCreatetime() {
 		return createtime;

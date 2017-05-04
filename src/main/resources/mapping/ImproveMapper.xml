@@ -633,7 +633,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM improve_goal
-    where userid=#{userid} and ismainimp = '1'
+    where userid=#{userid} and ismainimp = '1' and isdel = '0'
     ORDER BY createtime DESC
     <if test="endNum > 0">
       limit #{startNum},#{endNum}
@@ -642,7 +642,7 @@
 
   <update id="delGoalToImprove">
     UPDATE improve_goal
-    set isbusinessdel = '1'
+    set isdel = '1'
     where userid=#{userid}
     and businessid=#{businessid}
     and businesstype=#{businesstype}
@@ -680,7 +680,7 @@
     and userid=#{userid}
   </update>
 
-  <update id="updateSourceLike">
+  <update id="updateSourceData">
     update ${tablename}
     SET <if test="operatetype == '0'.toString()">
         likes = likes + #{icount}
@@ -706,7 +706,7 @@
 
   <update id="removeImproveFromBusiness" >
     UPDATE ${tablename}
-    SET isbusinessdel = 1
+    SET isdel = '1'
     WHERE businessid=#{businessid} and impid=#{impid}
   </update>
 

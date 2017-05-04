@@ -2,6 +2,7 @@ package com.longbei.appservice.service;
 
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.entity.UserPlDetail;
 
 
 import java.util.Date;
@@ -28,4 +29,11 @@ public interface UserPlDetailService {
 	 */
 	BaseResp<Object> selectUserPerfectListByUserId(long userid,int startNum,int pageSize);
 
+	/**
+	 * @Title: insertUserPlDetail
+	 * @Description: 添加用户十全十美的信息
+	 * @auther IngaWu
+	 * @currentdate:2017年5月3日
+	 */
+	Integer insertUserPlDetail (UserPlDetail userPlDetail);
 }

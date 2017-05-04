@@ -7,12 +7,13 @@
     <result column="leve" property="leve" jdbcType="INTEGER" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="perfectname" property="perfectname" jdbcType="VARCHAR" />
+    <result column="toplevel" property="toplevel" jdbcType="CHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="scorce" property="scorce" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column" >
-    id, userid, leve, ptype, perfectname, createtime, updatetime, scorce
+    id, userid, leve, ptype, perfectname, toplevel, createtime, updatetime, scorce
   </sql>
   <select id="selectUserPlDetailById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -62,6 +63,9 @@
       <if test="perfectname != null" >
         perfectname,
       </if>
+      <if test="toplevel != null" >
+        toplevel,
+      </if>
       <if test="createtime != null" >
         createtime,
       </if>
@@ -88,6 +92,9 @@
       <if test="perfectname != null" >
         #{perfectname,jdbcType=VARCHAR},
       </if>
+      <if test="toplevel != null" >
+        #{toplevel,jdbcType=CHAR},
+      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -105,9 +112,24 @@
     <if test="scorce != null" >
       scorce = scorce + #{scorce,jdbcType=VARCHAR},
     </if>
+    <if test="toplevel != null" >
+      toplevel = #{toplevel,jdbcType=CHAR},
+    </if>
+    <if test="updatetime != null" >
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+    </if>
   </set>
   where userid = #{userid,jdbcType=BIGINT} and ptype=#{ptype,jdbcType=CHAR} and leve=#{leve,jdbcType=INTEGER}
 </update>
+  <update id="updateUserPLDetailToplevel" parameterType="com.longbei.appservice.entity.UserPlDetail">
+    UPDATE user_pl_detail
+    <set >
+      <if test="toplevel != null" >
+        toplevel = #{toplevel,jdbcType=CHAR},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=BIGINT} and ptype=#{ptype,jdbcType=CHAR}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserPlDetail" >
     update user_pl_detail
     <set >

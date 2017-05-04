@@ -83,7 +83,8 @@ public class AppUserController extends BaseController {
   	@RequestMapping(value = "infoMore")
     @ResponseBody
     public BaseResp<UserInfo> infoMore(String userid, String friendid) {
-   		BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
+        logger.info("userid={},friendid={}",userid,friendid);
+        BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
    		if (StringUtils.hasBlankParams(userid, friendid)) {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -107,7 +108,8 @@ public class AppUserController extends BaseController {
   	@RequestMapping(value = "info")
     @ResponseBody
     public BaseResp<Object> info(String userid, String friendid) {
-   		BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("userid={},friendid={}",userid,friendid);
+        BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, friendid)) {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -132,7 +134,8 @@ public class AppUserController extends BaseController {
  	@RequestMapping(value = "checkinDate")
     @ResponseBody
     public BaseResp<Object> checkinDate(String userid, String yearmonth) {
-  		BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("userid={},yearmonth={}",userid,yearmonth);
+        BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, yearmonth)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -175,7 +178,8 @@ public class AppUserController extends BaseController {
 	@RequestMapping(value = "init")
     @ResponseBody
     public BaseResp<Object> init(@RequestParam("userid") String userid) {
- 		BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("userid={}",userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -211,7 +215,7 @@ public class AppUserController extends BaseController {
         String randomCode = request.getParameter("randomCode");
         String deviceindex = request.getParameter("deviceindex");
         String devicetype = request.getParameter("devicetype");
-        logger.info("register params username={},password={}", username, password);
+        logger.info("registerbasic params username={},password={},inviteuserid={},randomCode={},deviceindex={},devicetype={}", username, password,inviteuserid,randomCode,deviceindex,devicetype);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(username, password, randomCode,deviceindex)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -265,7 +269,7 @@ public class AppUserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/checkSms")
     public BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype) {
-        logger.info("checkSms params mobile={},random={}", mobile, random);
+        logger.info("checkSms params mobile={},random={},deviceindex={},devicetype={}", mobile, random,deviceindex,devicetype);
         if(StringUtils.hasBlankParams(mobile,random,deviceindex)){
     			return new BaseResp<>(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -348,7 +352,7 @@ public class AppUserController extends BaseController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String deviceindex = request.getParameter("deviceindex");
-        logger.info("login username={},password={}", username, password);
+        logger.info("login username={},password={},deviceindex={}", username, password,deviceindex);
         BaseResp<UserInfo> baseResp = new BaseResp<>(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
         if (StringUtils.hasBlankParams(username, password,deviceindex)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -439,7 +443,8 @@ public class AppUserController extends BaseController {
     @ResponseBody
     public BaseResp<Object> updateNickName(String userid, String nickname,
     		String inviteusername,boolean isJump,String sex,String pl) {
-		//必传参数 userid nickname  isJump 0
+        logger.info("userid={},nickname={},inviteusername={},isJump={},sex={},pl={}", userid, nickname,inviteusername,isJump, sex,inviteusername);
+        //必传参数 userid nickname  isJump 0
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid, nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -457,7 +462,7 @@ public class AppUserController extends BaseController {
     		    baseResp = userService.updateNickName(userid, nickname, inviteusername,sex,pl);
             }
 		} catch (Exception e) {
-			logger.error("thirdupdate error and msg = {}",e);
+			logger.error("updateNickName error and msg = {}",e);
 		}
         return baseResp;
     }
@@ -487,7 +492,10 @@ public class AppUserController extends BaseController {
     		String inviteuserid = request.getParameter("inviteusername");
     		String deviceindex = request.getParameter("deviceindex");
             String devicetype = request.getParameter("devicetype");
-    		//必传参数  类型 openid 密码 手机号  随机码
+        logger.info("login utype={},openid={},password={},username={},avatar={},sex={},randomcode={},inviteuserid={},deviceindex={},devicetype={}",
+                utype, openid,password,username,avatar,sex,randomcode,inviteuserid,deviceindex,devicetype);
+
+        //必传参数  类型 openid 密码 手机号  随机码
     		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
     		if(StringUtils.hasBlankParams(utype,openid,username,randomcode,deviceindex)){
     			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -498,7 +506,7 @@ public class AppUserController extends BaseController {
         		baseResp = userService.registerthird(username,password,utype,openid,inviteuserid,
         				deviceindex,devicetype,randomcode,avatar);	
 		} catch (Exception e) {
-			logger.error("registerthird error and msg = {}",e);
+			logger.error("thirdregister error and msg = {}",e);
 		}
     		return baseResp;
     }
@@ -518,7 +526,7 @@ public class AppUserController extends BaseController {
         String utype = request.getParameter("utype");
         String openid = request.getParameter("openid");
         String deviceindex = request.getParameter("deviceindex");
-        logger.info("thirdlogin utype={},openid={}", utype, openid);
+        logger.info("thirdlogin utype={},openid={},deviceindex={}", utype, openid,deviceindex);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(utype, openid,deviceindex)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -545,7 +553,8 @@ public class AppUserController extends BaseController {
     @RequestMapping(value = "/addFeedback")
     @ResponseBody
     public BaseResp<Object> addFeedback(@RequestParam("userid") String userid, String content, String photos) {
-    	BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("addFeedback userid={},content={},photos={}", userid, content,photos);
+        BaseResp<Object> baseResp = new BaseResp<>();
     	if (StringUtils.hasBlankParams(userid, content, photos)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -578,7 +587,8 @@ public class AppUserController extends BaseController {
 	@RequestMapping(value = "/userSafety")
 	@ResponseBody
 	public BaseResp<UserIdcard> userSafety(@RequestParam("userid") String userid) {
-		BaseResp<UserIdcard> baseResp = new BaseResp<>();
+        logger.info("userid={}", userid);
+        BaseResp<UserIdcard> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
@@ -604,7 +614,8 @@ public class AppUserController extends BaseController {
 	public BaseResp<Object> applyIdCardValidate(@RequestParam("userid") String userid,
 			@RequestParam("realname") String realname, @RequestParam("idcard") String idcard,
 			@RequestParam("idcardimage") String idcardimage) {
-		BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("userid={},realname={},idcard={},idcardimage={}", userid, realname,idcard,idcardimage);
+        BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, realname, idcard, idcardimage)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
@@ -1163,6 +1174,7 @@ public class AppUserController extends BaseController {
     @RequestMapping(value = "/updateSponsornumAndSponsormoney")
     @ResponseBody
     public BaseResp<Object> updateSponsornumAndSponsormoney(String rankid) {
+        logger.info("updateSponsornumAndSponsormoney and rankid={}",rankid);
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             boolean n = rankService.updateSponsornumAndSponsormoney(Long.parseLong(rankid));
@@ -1171,7 +1183,7 @@ public class AppUserController extends BaseController {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00 );
             }
         } catch (Exception e) {
-            logger.error("updateSponsornumAndSponsormoney",e);
+            logger.error("updateSponsornumAndSponsormoney and rankid={}",rankid,e);
         }
         return baseResp;
     }
@@ -1289,6 +1301,7 @@ public class AppUserController extends BaseController {
     @RequestMapping(value = "/userlevel")
     @ResponseBody
     public BaseResp<Object> userlevel(String userid) {
+        logger.info("userid={}",userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

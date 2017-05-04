@@ -21,10 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -36,7 +33,7 @@ import java.util.Map;
  * @author smkk
  *
  */
-@Controller
+@RestController
 @RequestMapping(value = "/api/rank")
 public class RankApiController {
 
@@ -750,6 +747,11 @@ public class RankApiController {
         return baseResp;
     }
 
+    /**
+     * 获取榜单审核记录
+     * @param rankid
+     * @return
+     */
     @RequestMapping("checkdetaillist")
     public BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid){
         BaseResp<List<RankCheckDetail>> baseResp = new BaseResp<>();

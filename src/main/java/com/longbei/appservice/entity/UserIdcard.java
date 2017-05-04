@@ -3,8 +3,10 @@ package com.longbei.appservice.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserIdcard {
     private Integer id;
@@ -45,6 +47,8 @@ public class UserIdcard {
         this.userids = userids;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -53,6 +57,8 @@ public class UserIdcard {
         this.createtime = createtime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -194,6 +200,8 @@ public class UserIdcard {
      * 
      * @return checkdate 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCheckdate() {
         return checkdate;
     }
@@ -226,6 +234,8 @@ public class UserIdcard {
      * 
      * @return applydate 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getApplydate() {
         return applydate;
     }

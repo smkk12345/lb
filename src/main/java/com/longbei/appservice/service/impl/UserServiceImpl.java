@@ -30,6 +30,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
+import com.longbei.appservice.service.UserPlDetailService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -91,6 +92,8 @@ public class UserServiceImpl implements UserService {
 	private IRongYunService iRongYunService;
 	@Autowired
 	private IJPushService ijPushService;
+	@Autowired
+	private UserPlDetailService userPlDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -227,7 +230,44 @@ public class UserServiceImpl implements UserService {
 		} else {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
+		try {
+			initUserPerfectTen(userid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return reseResp;
+	}
+
+	/**
+	 * @Title: initUserPerfectTen
+	 * @Description: 初始化用户十全十美信息
+	 * @param userid
+	 * @return boolean 返回类型
+	 * @auther IngaWu
+	 * @currentdate:2017年5月3日
+	 */
+	public boolean initUserPerfectTen(long userid){
+		Integer sum = 0;
+		Integer i;
+		Date date = new Date();
+		for(i = 0 ;i < 10; i++) {
+			UserPlDetail userPlDetail = new UserPlDetail();
+			userPlDetail.setUserid(userid);
+			userPlDetail.setPtype(i.toString());
+			userPlDetail.setToplevel("0");
+			userPlDetail.setCreatetime(date);
+			Integer n = null;
+			try {
+				n = userPlDetailService.insertUserPlDetail(userPlDetail);
+			} catch (Exception e) {
+				logger.error("initUserPerfectTen error and msg = {}",e);
+			}
+			sum = sum + n;
+		}
+        if(sum == 10){
+			return true;
+		}
+		return false;
 	}
 
 	/**

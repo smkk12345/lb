@@ -378,6 +378,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
                     updateToUserPLDetail(userInfo,iPoint,pType,level);
                 }else{//升级
+                    updateUserPLDetailToplevel(userInfo.getUserid(),pType);
                     saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
                     springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
@@ -411,6 +412,31 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     /**
+     * @Title: updateUserPLDetailToplevel
+     * @Description: 更新是否最高级
+     * @param userid
+     * @param @return
+     * @return boolean 返回类型
+     * @auther IngaWu
+     * @currentdate:2017年5月3日
+     */
+    public boolean updateUserPLDetailToplevel(long userid,String pType){
+        UserPlDetail userPlDetail = new UserPlDetail();
+        userPlDetail.setUserid(userid);
+        userPlDetail.setPtype(pType);
+        userPlDetail.setToplevel("1");
+        try{
+            int n = userPlDetailMapper.updateUserPLDetailToplevel(userPlDetail);
+            if (n>0)
+                return true;
+        }catch(Exception e){
+            logger.error("updateUserPLDetailToplevel error and msg={}",e);
+        }
+
+        return false;
+    }
+
+    /**
      * 更新当前分数  通过level ptype userid  累加 scorce
      * @param userInfo
      * @param iPoint
@@ -423,6 +449,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         userPlDetail.setUserid(userInfo.getUserid());
         userPlDetail.setPtype(pType);
         userPlDetail.setLeve(level);
+        userPlDetail.setToplevel("1");
+        userPlDetail.setUpdatetime(new Date());
         try{
             int n = userPlDetailMapper.updateScorce(userPlDetail);
             if (n>0)
