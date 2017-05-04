@@ -96,8 +96,8 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 				return reseResp.fail("系统异常");
 			}
 			//2.给用户增加进步币
-			int updateRow = this.userInfoMapper.updateUserCoin(userid,number);
-			if(updateRow > 0){
+//			int updateRow = this.userInfoMapper.updateUserCoin(userid,number);
+//			if(updateRow > 0){
 				record.setOrigin(origin);
 				record.setFriendid(friendid);
 				record.setUserid(userid);
@@ -106,12 +106,12 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 				if(!temp){
 					flag = false;
 				}
-			}else{
-				flag = false;
-			}
-			if(flag){
-				return reseResp.ok();
-			}
+//			}else{
+//				flag = false;
+//			}
+//			if(flag){
+//				return reseResp.ok();
+//			}
 		}catch(Exception e){
 			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}",
 					userid, origin, number, impid, friendid, e);
