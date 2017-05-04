@@ -91,7 +91,7 @@ public interface UserInfoMapper {
 	 * 2017年3月1日
 	 */
 	int updateCoinAndFlowerByUserid(@Param("userid") long userid, @Param("totalcoin") Integer totalcoin, 
-			@Param("totalflower") Integer totalflower);
+			@Param("givedflowers") Integer givedflowers);
 
 	/**
 	 * 查询系统推荐的达人

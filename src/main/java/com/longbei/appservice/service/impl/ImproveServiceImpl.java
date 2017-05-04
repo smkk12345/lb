@@ -1594,15 +1594,16 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> addFlower(String userid,String friendid, String impid,
                                       int flowernum,String businesstype,String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         //判断龙币是否充足
-        BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
-        if (!ResultUtil.isSuccess(baseResp)){
-            return baseResp;
-        }
+//        BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
+//        if (!ResultUtil.isSuccess(baseResp)){
+//            return baseResp;
+//        }
 
         //消耗龙币
-        userMoneyDetailService.insertPublic(Long.parseLong(userid),
-                Constant.USER_MONEY_GIFT,flowernum*Constant.FLOWER_PRICE,-1);
+//        userMoneyDetailService.insertPublic(Long.parseLong(userid),
+//                Constant.USER_MONEY_GIFT,flowernum*Constant.FLOWER_PRICE,-1);
 
         //扣除龙币成功
         try {
