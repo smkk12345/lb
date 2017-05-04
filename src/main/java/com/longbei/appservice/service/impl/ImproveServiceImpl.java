@@ -862,7 +862,6 @@ public class ImproveServiceImpl implements ImproveService{
             if (isok){
                 //将收藏了该进步的用户进步状态修改为已删除
                 deleteUserCollectImprove("0",improveid);
-
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
@@ -916,7 +915,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
         int res = 0;
-        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
+        Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
+//        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
         try {
             res = improveRankMapper.remove(userid,rankid,improveid);
         } catch (Exception e) {

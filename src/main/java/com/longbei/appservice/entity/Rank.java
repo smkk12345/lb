@@ -88,7 +88,7 @@ public class Rank {
 
     private String maximprovenum; //每人每日最多可更新微进步
 
-    private String minimprovenum; //每人每日最多可更新微进步
+    private String minimprovenum; //每人每日至少需更新微进步
 
     private String ischeck;  //本榜获奖名单开启人工审核 0 - 不开 1 - 开
 
