@@ -1262,6 +1262,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
+            }else{
+//                int n = rank.get
+                baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+5+"条微进步！");
             }
 
             baseResp.setData(rankMembers);
