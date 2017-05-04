@@ -258,7 +258,7 @@
 
   <update id="remove" parameterType="String">
     UPDATE improve_rank
-    SET isdel = '1',ismainimp = 0
+    SET isdel = '1',ismainimp ='0'
     WHERE
           businessid=#{rankid}
         <if test="improveid != null">
