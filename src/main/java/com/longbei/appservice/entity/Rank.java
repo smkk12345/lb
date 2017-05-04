@@ -82,6 +82,7 @@ public class Rank {
 
     private String sourcetype;  //来源类型。0 运营端创建   1  b端创建 2 app用户创建。
 
+    private Integer icount; //榜中进步数
 
     //-------
     private String joinlastday; //入榜截止天数
@@ -399,6 +400,14 @@ public class Rank {
 
     public void setRankid(Long rankid) {
         this.rankid = rankid;
+    }
+
+    public Integer getIcount() {
+        return icount;
+    }
+
+    public void setIcount(Integer icount) {
+        this.icount = icount;
     }
 
     /**
