@@ -21,6 +21,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1127,6 +1128,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFilekey(timeLineDetail.getFileKey());
                 improve.setSourcekey(timeLineDetail.getSourcekey());
                 improve.setItype(timeLineDetail.getItype());
+                improve.setLikes(timeLineDetail.getLikes());
+                improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                 String businessType = timeLine.getBusinesstype();
@@ -2251,14 +2254,21 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_GOAL_TYPE:
                         UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
-
+                        String photos = improve.getPickey();
+                        if(!StringUtils.isBlank(photos)){
+                            JSONArray jsonArray = JSONArray.fromObject(photos);
+                            if(jsonArray.size()>0){
+                                photos = jsonArray.getString(0);
+                            }else
+                                photos = null;
+                        }
                         improve.setBusinessEntity(userGoal.getPtype(),
                                 userGoal.getGoaltag(),
                                 0,
                                 userGoal.getCreatetime(),
                                 null,
                                 0,
-                                userGoal.getIcount(),improve.getPickey(),userGoal.getIcount());
+                                userGoal.getIcount(),photos,userGoal.getIcount());
                         break;
                     default:
                         break;
