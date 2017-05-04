@@ -499,4 +499,12 @@ public interface RankService extends BaseService{
      */
     BaseResp<Object> rankCardDetail(String rankCardId);
 
+
+    /**
+     * 获取榜单中进步数
+     * @param rankid
+     * @return
+     */
+    BaseResp<Integer> getRankImproveCount(String rankid);
+
 }
