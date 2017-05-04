@@ -80,6 +80,7 @@ public class SysSettingController {
      */
     @RequestMapping("downloadApp")
     public String testdownload(String appType) {
+        logger.info("appTypee={}",appType);
         if(org.apache.commons.lang3.StringUtils.isBlank(appType)){
             return "";
         }
