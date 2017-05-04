@@ -54,8 +54,7 @@ public class GoalController extends BaseController {
         if(StringUtils.hasBlankParams(userid,goaltag,ptype,ispublic)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        logger.info("goalService insert userid={},goaltag={}," +
-                "ptype={},ispublic={},needwarn={},warntime={},week={}",userid,goaltag,ptype,ispublic,needwarn,warntime,week);
+        logger.info(" userid={},goaltag={},ptype={},ispublic={},needwarn={},warntime={},week={}",userid,goaltag,ptype,ispublic,needwarn,warntime,week);
         long lUserid = Long.parseLong(userid);
         try{
             if(StringUtils.isBlank(warntime)){
@@ -106,7 +105,7 @@ public class GoalController extends BaseController {
 	@RequestMapping(value = "goallist")
     public BaseResp<List<Improve>> list(String userid, String goalid, Integer startNum,Integer pageSize){
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
-        logger.info("goal list userid={},startNum={},pageSize={}",userid,startNum,pageSize);
+        logger.info("goal list userid={},goalid={},startNum={},pageSize={}",userid,goalid,startNum,pageSize);
         if(StringUtils.hasBlankParams(userid, goalid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -193,7 +192,7 @@ public class GoalController extends BaseController {
 	@RequestMapping(value="updateTtitle")
     public BaseResp<UserGoal> updateTitle(String goalid,String goaltag){
         BaseResp<UserGoal> baseResp = new BaseResp<>();
-        logger.info("updateTtitle goalid = {}, title = {}", goalid, goaltag);
+        logger.info("updateTtitle goalid = {}, goaltag = {}", goalid, goaltag);
         if(StringUtils.hasBlankParams(goalid,goaltag)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -212,7 +211,7 @@ public class GoalController extends BaseController {
     @RequestMapping(value="delGoal")
 	public BaseResp<Object> delGoal(String goalid,String userid, String gtype){
         BaseResp<Object> baseResp = new BaseResp<>();
-        logger.info("delGoal goalid = {}, userid = {}", goalid, userid);
+        logger.info("delGoal goalid = {}, userid = {}, gtype ={}", goalid, userid, gtype);
         if(StringUtils.hasBlankParams(goalid, userid, gtype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

@@ -58,8 +58,8 @@ public class CommentController extends BaseController {
   	@RequestMapping(value = "/decreaseCommentLikes")
     @ResponseBody
     public BaseResp<Object> decreaseCommentLikes(String commentid, String friendid) {
-    	
-  		BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("commentid={},friendid={}",commentid,friendid);
+		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(friendid, commentid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -85,8 +85,8 @@ public class CommentController extends BaseController {
   	@RequestMapping(value = "/addCommentLikes")
     @ResponseBody
     public BaseResp<Object> addCommentLikes(String userid, String commentid, String friendid) {
-    	
-  		BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("userid={},commentid={}，friendid={}",userid,commentid,friendid);
+		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, friendid, commentid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -123,6 +123,7 @@ public class CommentController extends BaseController {
     @ResponseBody
     public BaseResp<Object> commentList(String userid, String businessid, String businesstype, String impid,
     		int startNum, int pageSize) {
+		logger.info("userid={},businessid={}，businesstype={},impid={},startNum={}，pageSize={}",userid,businessid,businesstype,impid,startNum,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -152,7 +153,8 @@ public class CommentController extends BaseController {
  	@RequestMapping(value = "/commentHotList")
     @ResponseBody
     public BaseResp<Object> commentHotList(String userid, String businessid, String businesstype, String impid) {
-    	BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("userid={},businessid={}，businesstype={},impid={}",userid,businessid,businesstype,impid);
+		BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
@@ -183,7 +185,8 @@ public class CommentController extends BaseController {
      @ResponseBody
      public BaseResp<Object> addComment(String userid, String friendid, 
     		String businessid, String businesstype, String content, String impid) {
- 		BaseResp<Object> baseResp = new BaseResp<>();
+		 logger.info("userid={},friendid={}，businessid={},businesstype={},content={}，impid={}",userid,friendid,businessid,businesstype,content,impid);
+		 BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
@@ -221,8 +224,8 @@ public class CommentController extends BaseController {
     @ResponseBody
     public BaseResp<Object> addCommentLower(String firstuserid, String commentid, 
     		String seconduserid, String content, String status) {
-    	
-  		BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("firstuserid={},commentid={}，seconduserid={},content={},status={}",firstuserid,commentid,seconduserid,content,status);
+		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(firstuserid, seconduserid, commentid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -256,8 +259,8 @@ public class CommentController extends BaseController {
  	@RequestMapping(value = "/deleteCommentLower")
    @ResponseBody
    public BaseResp<Object> deleteCommentLower(String id) {
-   	
- 		BaseResp<Object> baseResp = new BaseResp<>();
+	   logger.info("id={}",id);
+	   BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(id)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
@@ -281,7 +284,7 @@ public class CommentController extends BaseController {
 	@RequestMapping(value = "/deleteComment")
 	@ResponseBody
 	public BaseResp<Object> deleteComment(String commentid) {
-	  	
+		logger.info("commentid={}",commentid);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(commentid)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -308,8 +311,8 @@ public class CommentController extends BaseController {
  	@RequestMapping(value = "/selectCommentCountSum")
  	@ResponseBody
  	public BaseResp<Integer> selectCommentCountSum(String businesstype, String businessid, String impid) {
- 	  	
- 		BaseResp<Integer> baseResp = new BaseResp<>();
+		logger.info("businesstype={},businessid={}，impid={}",businesstype,businessid,impid);
+		BaseResp<Integer> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(businesstype, businessid)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}

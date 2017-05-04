@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -36,6 +37,7 @@ public class GroupController {
      */
     @RequestMapping(value="createGroup")
     public BaseResp<Object> createGroup(String userIds,String mainGroupUserId,Integer type,Long typeId,String groupName,Boolean needConfirm){
+        logger.info("userIds={},mainGroupUserId={},type={},typeId={},groupName={},needConfirm={}",userIds,mainGroupUserId,type,typeId,groupName,needConfirm);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(mainGroupUserId == null || groupName.length() > 30){
             return baseResp.fail("参数错误");
@@ -58,6 +60,7 @@ public class GroupController {
      */
     @RequestMapping(value="updateGroupName")
     public BaseResp<Object> updateGroupName(Long userId,String groupId,String groupName){
+        logger.info("userId={},groupId={},groupName={}",userId,groupId,groupName);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userId == null || StringUtils.hasBlankParams(groupId,groupName)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -77,6 +80,7 @@ public class GroupController {
      */
     @RequestMapping("updateGroupNeedConfirm")
     public BaseResp<Object> updateGroupNeedConfirm(Long userId,String groupId,Boolean needConfirm){
+        logger.info("userId={},groupId={},needConfirm={}",userId,groupId,needConfirm);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || StringUtils.isEmpty(groupId) || needConfirm == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -97,6 +101,7 @@ public class GroupController {
      */
     @RequestMapping(value="updateUserGroupOtherInfo")
     public BaseResp<Object> updateUserGroupOtherInfo(Long userid,Long groupId,Integer topStatus,Integer disturbStatus){
+        logger.info("userid={},groupId={},topStatus={},disturbStatus={}",userid,groupId,topStatus,disturbStatus);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || groupId == null || (topStatus != null && disturbStatus != null) ||
                 (topStatus == null && disturbStatus == null)){
@@ -116,6 +121,7 @@ public class GroupController {
      */
     @RequestMapping(value="updateGroupNotice")
     public BaseResp<Object> updateGroupNotice(Long userId,String groupId,String notice){
+        logger.info("userId={},groupId={},notice={}",userId,groupId,notice);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || StringUtils.hasBlankParams(groupId,notice) || notice.length() > 100){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -134,6 +140,7 @@ public class GroupController {
      */
     @RequestMapping(value="updateGroupMemberNickName")
     public BaseResp<Object> updateGroupMemberNickName(Long userId,String groupId,String nickName){
+        logger.info("userId={},groupId={},nickName={}",userId,groupId,nickName);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || StringUtils.hasBlankParams(groupId,nickName)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -154,6 +161,7 @@ public class GroupController {
      */
     @RequestMapping(value="insertGroupMember")
     public BaseResp<Object> insertGroupMember(String[] userIds,Long invitationUserId,String groupId,String remark){
+        logger.info("userIds={},invitationUserId={},groupId={},remark={}",JSON.toJSONString(userIds),invitationUserId,groupId,remark);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userIds == null || StringUtils.isEmpty(groupId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -173,6 +181,7 @@ public class GroupController {
      */
     @RequestMapping(value="batchUpdateGroupMember")
     public BaseResp<Object> batchUpdateGroupMember(String[] userIds,String groupId,Long currentUserId,Integer status){
+        logger.info("userIds={},groupId={},currentUserId={},status={}",JSON.toJSONString(userIds),groupId,currentUserId,status);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userIds == null || userIds.length < 1 || currentUserId == null || StringUtils.isEmpty(groupId) || status == null || status > 2 || status < 1){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -191,6 +200,7 @@ public class GroupController {
      */
     @RequestMapping(value="quietGroup")
     public BaseResp<Object> quietGroup(String[] userIds,String groupId,Long currentUserId){
+        logger.info("userIds={},groupId={},currentUserId={}",JSON.toJSONString(userIds),groupId,currentUserId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userIds == null || userIds.length < 1 || currentUserId == null || StringUtils.isEmpty(groupId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -213,6 +223,7 @@ public class GroupController {
      */
     @RequestMapping(value="groupMemberList")
     public BaseResp<Object> groupMemberList(String keyword,String groupId,Long userId,Integer status,Boolean noQueryCurrentUser,Integer startNum,Integer pageSize){
+        logger.info("keyword={},groupId={},userId={},status={},noQueryCurrentUser={},startNum={},pageSize={}", keyword,groupId,userId,status,noQueryCurrentUser,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isEmpty(groupId) || userId == null || status == null || (status != 0 && status != 1)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -237,6 +248,7 @@ public class GroupController {
      */
     @RequestMapping(value="dismissGroup")
     public BaseResp<Object> dismissGroup(Long userId,String groupId){
+        logger.info("userId={},groupId={}",userId,groupId);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null || StringUtils.isEmpty(groupId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -255,6 +267,7 @@ public class GroupController {
      */
     @RequestMapping(value="updateGroupMainUser")
     public BaseResp<Object> updateGroupMainUser(Long userId,Long currentUserId,String groupId){
+        logger.info("userId={},groupId={},currentUserId={}",userId,groupId,currentUserId);
         if(userId == null || currentUserId == null || StringUtils.isEmpty(groupId)){
             return new BaseResp<Object>(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -272,6 +285,7 @@ public class GroupController {
      */
     @RequestMapping(value="groupList")
     public BaseResp<Object> groupList(Long userId,Integer startNum,Integer pageSize,String updateTime){
+        logger.info("userId={},startNum={},pageSize={},updateTime={}", userId,startNum,pageSize,updateTime);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -304,6 +318,7 @@ public class GroupController {
      */
     @RequestMapping(value="searchGroup")
     public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize){
+        logger.info("keyword={},startNum={},pageSize={}", keyword,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.isEmpty(keyword)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -328,6 +343,7 @@ public class GroupController {
      */
     @RequestMapping(value="groupDetail")
     public BaseResp<Object> groupDetail(Long groupId,Long userid){
+        logger.info("groupId={},userid={}",groupId,userid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(groupId == null || userid == null){
             return  baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -344,6 +360,7 @@ public class GroupController {
      */
     @RequestMapping(value="groupMemberDetail")
     public BaseResp<Object> groupMemberDetail(Long userid,Long groupId){
+        logger.info("userid={},groupId={}",userid,groupId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || groupId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -359,6 +376,7 @@ public class GroupController {
      */
     @RequestMapping(value="selectGrupMemberIdList")
     public BaseResp<Object> selectGrupMemberIdList(Long groupId){
+        logger.info("groupId={}",groupId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(groupId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

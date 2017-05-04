@@ -374,6 +374,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (Rank rank1 : ranks){
                 BaseResp<Integer> integerBaseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank.getRankid()), "2", null);
                 rank1.setCommentCount(integerBaseResp.getData());
+                String icount = rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()));
+                rank1.setIcount(StringUtils.isBlank(icount)?0:Integer.parseInt(icount));
             }
             page.setTotalCount(totalcount);
             page.setList(ranks);
@@ -780,6 +782,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> map = new HashMap<>();
                 map.put("userId",userId);
                 map.put("rankId",rankId);
+                map.put("status",status);
                 map.put("initRankMember",initRankMember);
                 int updateRankMemberRow = this.rankMembersMapper.updateRank(map);
 
@@ -1373,6 +1376,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Integer> getRankImproveCount(String rankid) {
+        return null;
+    }
+
     /**
      * 榜单的成员排名列表
      * @param rankId 榜单id
@@ -1692,7 +1700,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
             if(rankMembers == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Long sortNum = null;
-            if(rankMembers.getSortnum() == null){
+            if(rankMembers.getSortnum() == null||rankMembers.getSortnum() == 0){
                 sortNum = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userid+"");
             }else{
                 sortNum = new Long(rankMembers.getSortnum());
