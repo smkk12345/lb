@@ -24,6 +24,14 @@
     where id = #{id,jdbcType=INTEGER} and isdel = '0'
   </select>
   
+  <select id="selectByIdAndUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where id = #{id} and isdel = '0' 
+    and userid = #{userid} 
+  </select>
+  
   <select id="selectDefaultAddressByUserid" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

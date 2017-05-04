@@ -278,6 +278,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private List<String> getPointInfoPerDay(){
 		List<String> list = new ArrayList<>();
 		Map<Integer,SysRuleCheckin> sysRuleCheckinMap = SysRulesCache.sysRuleCheckinMap;
+		logger.info("getPointInfoPerDay sysRuleCheckinMap = {}", sysRuleCheckinMap);
 		Iterator<Integer> iterator = sysRuleCheckinMap.keySet().iterator();
 		while (iterator.hasNext()){
 			Integer subKey = iterator.next();

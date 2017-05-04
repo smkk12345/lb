@@ -102,6 +102,8 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				if("0".equals(origin)){
 					int num = (int) (number*flowertomoney);
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, 0);
+					//修改被赠送人收到的礼物
+					userInfoMapper.updateCoinAndFlowerByUserid(friendid, 0, number);
 					//添加一条龙币消费明细
 					//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 					// 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
@@ -110,7 +112,9 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, 0);
 				}else if("2".equals(origin)){
 					int num = (int) (number*flowertocoin);
-					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, number);
+					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, 0);
+					//修改被赠送人收到的礼物
+					userInfoMapper.updateCoinAndFlowerByUserid(friendid, 0, number);
 					//添加一条进步币消费明细
 					//origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物
 					// 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币
