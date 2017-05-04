@@ -13,6 +13,8 @@ public class UserPlDetail {
 
     private String perfectname;//十全十美名字 缓存下
 
+    private String toplevel;//0非最高级 1最高级
+
     private Date createtime;
 
     private Date updatetime;
@@ -166,5 +168,13 @@ public class UserPlDetail {
      */
     public void setScorce(Integer scorce) {
         this.scorce = scorce;
+    }
+
+    public void setToplevel(String toplevel) {
+        this.toplevel = toplevel;
+    }
+
+    public String getToplevel() {
+        return toplevel;
     }
 }
