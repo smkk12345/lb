@@ -2015,6 +2015,36 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
+    @Override
+    public String getFirstPhotos(Improve improve) {
+        String photos = "";
+        if(null != improve){
+            //itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
+            if("0".equals(improve.getItype())){
+                //0 文字进步   brief --- 说明
+                photos = improve.getBrief();
+            }else if("1".equals(improve.getItype())){
+                //1 图片进步   pickey --- 图片的key
+                photos = firstPhotos(improve.getPickey());
+            }else{
+                //2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
+                photos = firstPhotos(improve.getPickey());
+            }
+        }
+        return null;
+    }
+
+    private String firstPhotos(String photos){
+        if(!StringUtils.isBlank(photos)){
+            JSONArray jsonArray = JSONArray.fromObject(photos);
+            if(jsonArray.size()>0){
+                photos = jsonArray.getString(0);
+            }else
+                photos = null;
+        }
+        return photos;
+    }
+
     /**
      *  @author luye
      *  @desp 删除 点赞明细（mysql）
@@ -2089,10 +2119,15 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private void initLikeFlowerDiamondInfo(Improve improve){
-        Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-        List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-        improve.setLfdcount(count);
-        improve.setImproveLFDs(improveLFDs);
+        try{
+            Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+            improve.setLfdcount(count);
+            improve.setImproveLFDs(improveLFDs);
+        }catch (Exception e){
+            logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
+        }
+
     }
 
     /**

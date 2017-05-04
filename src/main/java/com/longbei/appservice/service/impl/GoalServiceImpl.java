@@ -125,7 +125,10 @@ public class GoalServiceImpl implements GoalService {
         			if(userGoal.getIcount() != 0){
         				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
         				//拼接pickey
-        				impItype(improve, userGoal);
+                        String photo = improveService.getFirstPhotos(improve);
+                        userGoal.setPickey(photo);
+                        userGoal.setItype(improve.getItype());
+                        userGoal.setStarttime(improve.getCreatetime());
         			}
 				}
         		baseResp.setData(list);
@@ -157,7 +160,10 @@ public class GoalServiceImpl implements GoalService {
     			if(userGoal.getIcount() != 0){
     				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
     				//拼接pickey
-    				impItype(improve, userGoal);
+                    String photo = improveService.getFirstPhotos(improve);
+                    userGoal.setPickey(photo);
+                    userGoal.setItype(improve.getItype());
+                    userGoal.setStarttime(improve.getCreatetime());
     			}
         		baseResp.setData(userGoal);
         	}else{
@@ -169,42 +175,6 @@ public class GoalServiceImpl implements GoalService {
         }
         return baseResp;
 	}
-    
-    /**
-	 * @author yinxc
-	 * itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
-	 * 2017年4月7日
-	 */
-	private void impItype(Improve improve, UserGoal userGoal){
-		if(null != improve){
-			//itype类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
-			if("0".equals(improve.getItype())){
-				//0 文字进步   brief --- 说明
-				userGoal.setPickey(improve.getBrief());
-			}else if("1".equals(improve.getItype())){
-				//1 图片进步   pickey --- 图片的key
-                String photos = getFirstPhotos(improve.getPickey());
-                userGoal.setPickey(photos);
-			}else{
-				//2 视频进步 3 音频进步 4 文件    filekey --- 文件key  视频文件  音频文件 普通文件
-                String photos = getFirstPhotos(improve.getPickey());
-				userGoal.setPickey(photos);
-			}
-			userGoal.setItype(improve.getItype());
-            userGoal.setStarttime(improve.getCreatetime());
-		}
-	}
-
-	private String getFirstPhotos(String photos){
-        if(!StringUtils.isBlank(photos)){
-            JSONArray jsonArray = JSONArray.fromObject(photos);
-            if(jsonArray.size()>0){
-                photos = jsonArray.getString(0);
-            }else
-                photos = null;
-        }
-        return photos;
-    }
 
     /**
      * 更新目标title

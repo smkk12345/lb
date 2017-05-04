@@ -496,4 +496,11 @@ public interface ImproveService {
      */
     void afterImproveInfoChange(Improve improve,int count,String otype);
 
+    /**
+     * 获取进步的第一张图片
+     * @param improve
+     * @return
+     */
+    String getFirstPhotos(Improve improve);
+
 }
