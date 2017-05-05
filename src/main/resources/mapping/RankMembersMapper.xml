@@ -552,7 +552,7 @@
         order by flowers desc,createtime asc
       </if>
       <if test="sortType == 0">
-          order by sortnum asc
+          order by sortnum asc,createtime asc
       </if>
       <if test="startNum != null">
           limit #{startNum},#{pageSize}

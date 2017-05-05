@@ -943,14 +943,14 @@ public class ImproveServiceImpl implements ImproveService{
         switch (improve.getBusinesstype()){
             case Constant.IMPROVE_GOAL_TYPE:
                 if(improve.getIsmainimp().equals("1")){
-                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"goalid");
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"businessid");
                 }
                 //更新赞 花
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"goalid");
                 break;
             case Constant.IMPROVE_RANK_TYPE:
                 if(improve.getIsmainimp().equals("1")){
-                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"rankid");
+                    improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"businessid");
                 }
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");

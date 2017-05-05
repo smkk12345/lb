@@ -76,6 +76,20 @@ public class HomePicture {
      */
     private String href;
 
+    /**
+     * 轮播图类型 0 - 首页轮播图。1 - 商城轮播图
+     */
+    private String type;
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Long getCreateuserid() {
         return createuserid;
     }
