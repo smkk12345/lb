@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 	
 
 	@Override
-	public BaseResp<UserInfo> selectInfoMore(long userid) {
+	public BaseResp<UserInfo> selectInfoMore(long userid,long lookid) {
 		BaseResp<UserInfo> reseResp = new BaseResp<UserInfo>();
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
@@ -132,7 +132,16 @@ public class UserServiceImpl implements UserService {
 				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
 			}
 			expandData.put("flowernum", flowernum);
-			
+			if(lookid != 0){
+				SnsFriends snsFriends = userRelationService.selectByUidAndFid(userid,lookid);
+				if(null != snsFriends){
+					userInfo.setIsfriend("1");
+				}
+				SnsFans snsFans = userRelationService.selectByUidAndFanid(lookid,userid);
+				if(null != snsFans){
+					userInfo.setIsfans("1");
+				}
+			}
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);

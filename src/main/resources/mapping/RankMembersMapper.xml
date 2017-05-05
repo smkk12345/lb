@@ -546,10 +546,10 @@
           and rankId = #{rankId}
       </where>
       <if test="sortType == 1">
-        order by likes desc
+        order by likes desc,createtime asc
       </if>
       <if test="sortType == 2">
-        order by flowers desc
+        order by flowers desc,createtime asc
       </if>
       <if test="sortType == 0">
           order by sortnum asc

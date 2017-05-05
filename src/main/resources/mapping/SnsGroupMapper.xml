@@ -196,9 +196,7 @@
         <if test="needConfirm != null">
           needconfirm = #{needConfirm},
         </if>
-        <if test="notice != null">
           notice = #{notice}
-        </if>
       </set>
       where groupId = #{groupId}
   </update>

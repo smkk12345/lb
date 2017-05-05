@@ -70,7 +70,14 @@ public interface UserRelationService {
 	 * SnsFriendsService
 	 */
 	SnsFriends selectByUidAndFid(long userid, long friendid);
-	
+
+	/**
+	 * 获取粉丝信息
+	 * @param userid
+	 * @param fansid
+	 * @return
+	 */
+	SnsFans selectByUidAndFanid(long userid,long fansid);
 	/**
 	 * @author yinxc
 	 * 修改好友备注信息

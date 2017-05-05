@@ -89,7 +89,7 @@ public class AppUserController extends BaseController {
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
-   			baseResp = userService.selectInfoMore(Long.parseLong(friendid));
+   			baseResp = userService.selectInfoMore(Long.parseLong(friendid),Long.parseLong(userid));
         } catch (Exception e) {
         	logger.error("infoMore userid = {}, friendid = {}", userid, friendid, e);
         }

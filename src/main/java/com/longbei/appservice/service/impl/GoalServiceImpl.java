@@ -124,6 +124,9 @@ public class GoalServiceImpl implements GoalService {
 //        			userGoal.setGoalCount(goalCount);
         			if(userGoal.getIcount() != 0){
         				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
+                        if(null == improve){
+                            continue;
+                        }
         				//拼接pickey
                         String photo = improveService.getFirstPhotos(improve);
                         userGoal.setPickey(photo);
