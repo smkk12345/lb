@@ -114,6 +114,7 @@ public class Constant {
 	public static final int STATUS_SYS_67 = -67;
 	public static final int STATUS_SYS_68 = -68;
 	public static final int STATUS_SYS_69 = -69;
+	public static final int STATUS_SYS_70 = -70;
 	public static final int STATUS_SYS_610 = -610;
 	public static final int STATUS_SYS_611 = -611;
 	public static final int STATUS_SYS_612 = -612;
@@ -228,6 +229,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_67 = "该榜单还未结束!";
 	public static final String RTNINFO_SYS_68 = "该榜单还未开始";
 	public static final String RTNINFO_SYS_69 = "非常抱歉,该榜单已结束";
+	public static final String RTNINFO_SYS_70 = "榜单已经结束，无法退出";
 	public static final String RTNINFO_SYS_610 = "抱歉,参榜人数已达榜最大限制人数!";
 	public static final String RTNINFO_SYS_611 = "抱歉,您暂时无法领奖,详情请联系客服";
 	public static final String RTNINFO_SYS_612 = "榜主不可退榜";

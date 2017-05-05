@@ -102,6 +102,7 @@ public class RankController {
      * @url http://ip:port/app_service/rank/ownRankSort
      * @param rankId
      * @param userid
+     * @paramsortType 0 或者 不传 返回综合排名  1 花排名  2 赞排名
      * @return
      */
     @RequestMapping(value="ownRankSort")
@@ -606,7 +607,7 @@ public class RankController {
     public BaseResp<Object> updateRankInfo(Long rankId,Long userid,Boolean needConfirm,String notice,Boolean noticeUser){
         logger.info("rankId={},userid={},needConfirm={},notice={},noticeUser={}",rankId,userid,needConfirm,notice,noticeUser);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(rankId == null || userid == null || (needConfirm != null && StringUtils.isNotEmpty(notice)) || (needConfirm == null && StringUtils.isEmpty(notice))){
+        if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.rankService.updateRankInfo(rankId,userid,needConfirm,notice,noticeUser);

@@ -60,7 +60,7 @@ public class AppUserApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userService.selectInfoMore(Long.parseLong(userid));
+            baseResp = userService.selectInfoMore(Long.parseLong(userid),0);
         } catch (Exception e) {
             logger.error("userDetail userid = {}", userid, e);
         }

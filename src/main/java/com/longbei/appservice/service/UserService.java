@@ -19,7 +19,7 @@ public interface UserService {
 	 * 个人中心
 	 * 2017年3月9日
 	 */
-	BaseResp<UserInfo> selectInfoMore(long userid);
+	BaseResp<UserInfo> selectInfoMore(long userid,long lookid);
 	
 	/**
 	 * @author yinxc
