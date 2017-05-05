@@ -109,9 +109,9 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 //			}else{
 //				flag = false;
 //			}
-//			if(flag){
-//				return reseResp.ok();
-//			}
+			if(flag){
+				return reseResp.ok();
+			}
 		}catch(Exception e){
 			logger.error("insertPublic userid = {}, origin = {}, number = {}, impid = {}, friendid = {}",
 					userid, origin, number, impid, friendid, e);

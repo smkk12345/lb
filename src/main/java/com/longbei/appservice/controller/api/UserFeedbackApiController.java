@@ -3,8 +3,11 @@ package com.longbei.appservice.controller.api;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.entity.ImpComplaints;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.service.UserFeedbackService;
+import com.longbei.appservice.service.UserMsgService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class UserFeedbackApiController {
 
     @Autowired
     private UserFeedbackService userFeedbackService;
+    
+    @Autowired
+    private UserMsgService userMsgService;
 
     /**
      * 意见反馈列表
@@ -80,5 +86,31 @@ public class UserFeedbackApiController {
         }
         return baseResp;
     }
+    
+    /**
+    * @Title: insertMsg 
+    * @Description: 后台反馈回复添加消息
+    * @param @param userid
+    * @param @param friendid
+    * @param @param businessid
+    * @param @param remark
+    * @param @return    设定文件 
+    * @return BaseResp<Object>    返回类型
+     */
+    @RequestMapping(value = "/insertMsg")
+    public BaseResp<Object> insertMsg(String friendid, 
+    		String businessid, String remark) {
+    	logger.info("insertMsg friendid = {}, businessid = {}, remark = {}", 
+				friendid, businessid, remark);
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = userMsgService.insertMsg(Constant.SQUARE_USER_ID, 
+  					friendid, "", "14", businessid, remark, "0", "43", 0);
+		} catch (Exception e) {
+			logger.error("insertMsg friendid = {}, businessid = {}, remark = {}", 
+					friendid, businessid, remark, e);
+		}
+  		return baseResp;
+	}
 
 }

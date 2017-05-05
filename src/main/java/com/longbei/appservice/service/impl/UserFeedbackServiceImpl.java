@@ -15,6 +15,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.service.UserFeedbackService;
+import com.longbei.appservice.service.UserMsgService;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,8 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 	private UserFeedbackMapper userFeedbackMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private UserMsgService userMsgService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFeedbackServiceImpl.class);
 	
@@ -81,6 +84,13 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 			userFeedback.setDealtime(new Date());
 			int res = userFeedbackMapper.updateByPrimaryKeySelective(userFeedback);
 			if (res > 0){
+				userFeedback = userFeedbackMapper.selectByPrimaryKey(userFeedback.getId());
+				if("2".equals(userFeedback.getStatus())){
+					//后台回复反馈信息   添加通知消息
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, 
+							userFeedback.getUserid().toString(), "", "14", userFeedback.getId().toString(), 
+							userFeedback.getCheckoption(), "0", "43", 0);
+				}
 				return true;
 			}
 		} catch (Exception e) {
