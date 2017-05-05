@@ -31,7 +31,7 @@ public class UserAddress {
     }
 
     public UserAddress(long userid, String region, String address, String isdefault, String mobile, String receiver,
-    		String isdel, Date createtime, Date updatetime) {
+    		String isdel) {
 		super();
 		this.userid = userid;
 		this.region = region;
@@ -40,8 +40,6 @@ public class UserAddress {
 		this.mobile = mobile;
 		this.receiver = receiver;
 		this.isdel = isdel;
-		this.createtime = createtime;
-		this.updatetime = updatetime;
 	}
 
 	/**

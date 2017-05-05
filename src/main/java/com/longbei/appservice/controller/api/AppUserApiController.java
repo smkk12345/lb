@@ -11,10 +11,7 @@ import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +30,20 @@ public class AppUserApiController {
     private UserLevelService userLevelService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
+
+    @RequestMapping(value = "login",method = RequestMethod.POST)
+    public BaseResp<UserInfo> login(String username,String password){
+        BaseResp<UserInfo> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(username, password)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userService.login(username,password);
+        } catch (Exception e) {
+            logger.error("pc login is error:",e);
+        }
+        return baseResp;
+    }
 
 
     /**
