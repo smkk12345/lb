@@ -1,7 +1,5 @@
 package com.longbei.appservice.controller;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +89,7 @@ public class UserAddressController extends BaseController {
 		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
+		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0");
 		try {
 			baseResp = userAddressService.insertSelective(record);
 		} catch (Exception e) {
@@ -127,7 +125,7 @@ public class UserAddressController extends BaseController {
 		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault, id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0", new Date(), new Date());
+		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0");
 		record.setId(Integer.parseInt(id));
 		try {
 			baseResp = userAddressService.updateByPrimaryKeySelective(record);
