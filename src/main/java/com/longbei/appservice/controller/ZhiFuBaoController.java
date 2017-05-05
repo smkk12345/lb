@@ -33,6 +33,7 @@ public class ZhiFuBaoController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/signature")
     public BaseResp<Object> signature(String userid, String orderid) {
+		logger.info("userid={},orderid={}",userid,orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

@@ -46,6 +46,7 @@ public class UserAddressController extends BaseController {
 	@RequestMapping(value = "list")
 	@ResponseBody
 	public BaseResp<Object> list(String userid, Integer startNum, Integer pageSize) {
+		logger.info("userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.isBlank(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -84,6 +85,8 @@ public class UserAddressController extends BaseController {
 	@ResponseBody
 	public BaseResp<Object> add(@RequestParam("userid") String userid, String receiver, String mobile, 
 			String region, String address, String isdefault) {
+		logger.info("userid = {}, receiver = {}, mobile = {}, region = {}, address = {}, isdefault = {}",
+				    userid, receiver,mobile, region, address,isdefault);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -116,6 +119,10 @@ public class UserAddressController extends BaseController {
 	@ResponseBody
 	public BaseResp<Object> update(@RequestParam("userid") String userid, String id, String receiver, 
 			String mobile, String region, String address, String isdefault) {
+
+		logger.info("userid = {}, id = {}, receiver = {}, mobile = {}, region = {}, address = {}, isdefault = {}",
+				userid, id, receiver,mobile, region, address,isdefault);
+
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid, receiver, mobile, region, address, isdefault, id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -144,6 +151,7 @@ public class UserAddressController extends BaseController {
 	@RequestMapping(value = "updateIsdefault")
 	@ResponseBody
 	public BaseResp<Object> updateIsdefault(@RequestParam("userid") String userid, String id, String isdefault) {
+		logger.info("userid = {}, id = {}, isdefault = {}", userid, id, isdefault);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(userid, id, isdefault)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -170,6 +178,7 @@ public class UserAddressController extends BaseController {
 	@RequestMapping(value = "remove")
 	@ResponseBody
 	public BaseResp<Object> remove(@RequestParam("userid") String userid, @RequestParam("id") String id) {
+		logger.info("userid = {}, id = {}", userid, id);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(id)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

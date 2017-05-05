@@ -1262,6 +1262,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
+            }else{
+//                int n = rank.get
+                baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+5+"条微进步！");
             }
 
             baseResp.setData(rankMembers);
@@ -1545,7 +1548,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 logger.error("query award null awardId:{}",rankMember.getAwardid());
                 return baseResp.fail("系统异常");
             }
-
+            Map<String,Object> rankResultMap = new HashMap<String,Object>();
+            rankResultMap.put("ranktitle",rank.getRanktitle());
+            rankResultMap.put("ptype",rank.getPtype());
+            resultMap.put("rank",rankResultMap);
             //已领奖
             if(rankMember.getAcceptaward() != null && !"0".equals(rankMember.getAcceptaward())){
                 RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
@@ -1565,12 +1571,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 resultMap.put("award",award);
                 resultMap.put("rankMember",rankMember);
-
-                Map<String,Object> rankResultMap = new HashMap<String,Object>();
-                rankResultMap.put("ranktitle",rank.getRanktitle());
-                rankResultMap.put("ptype",rank.getPtype());
-                resultMap.put("rank",rankResultMap);
-
                 baseResp.setData(resultMap);
 
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -2772,6 +2772,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankAcceptAward.setRankid(Long.parseLong(rankid));
                 rankAcceptAward.setUserid(rkmember.getUserid());
                 rankAcceptAward.setReceivecode(rkmember.getReceivecode());
+                if(null == rkmember.getRankAward()){
+                    continue;
+//                    rkmember.setRankAward(rankAwardMapper.selectRankAwardByRankIdAndAwardId(rkmember.getRankid(),rkmember.getAwardid()));
+                }
                 rankAcceptAward.setAwardlevel(rkmember.getRankAward().getAwardlevel());
                 rankAcceptAward.setAwardid(Integer.parseInt(rkmember.getRankAward().getAwardid()));
                 rankAcceptAward.setSortnum(rkmember.getSortnum());

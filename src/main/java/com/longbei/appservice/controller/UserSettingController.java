@@ -50,7 +50,8 @@ public class UserSettingController extends BaseController {
 	@RequestMapping(value = "/commonlist")
     @ResponseBody
     public BaseResp<Object> commonlist(@RequestParam("userid") String userid) {
-    	BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("userid={}",userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.hasBlankParams(userid)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     	}
@@ -84,7 +85,8 @@ public class UserSettingController extends BaseController {
     @ResponseBody
     public BaseResp<Object> updateCommonBykey(@RequestParam("userid") String userid, @RequestParam("key") String key, 
     		@RequestParam("value") String value) {
-    	BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("userid={},key={},value={}",userid,key,value);
+		BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.hasBlankParams(userid,key,value)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     	}
@@ -115,7 +117,8 @@ public class UserSettingController extends BaseController {
 	@RequestMapping(value = "/updatekeys")
     @ResponseBody
     public BaseResp<Object> updatekeys(@RequestParam("userid") String userid, @RequestParam("value") String value) {
-    	BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("userid={},value={}",userid,value);
+		BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.hasBlankParams(userid, value)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
     	}

@@ -36,8 +36,8 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgSystemList")
-    public BaseResp<Object> msgSystemList(String userid, 
-    		int startNum, int pageSize) {
+    public BaseResp<Object> msgSystemList(String userid, int startNum, int pageSize) {
+		logger.info("userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -71,8 +71,8 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgOtherList")
-    public BaseResp<Object> msgOtherList(String userid, String mtype, String msgtype, 
-    		int startNum, int pageSize) {
+    public BaseResp<Object> msgOtherList(String userid, String mtype, String msgtype, int startNum, int pageSize) {
+		logger.info("userid = {}, mtype = {}, msgtype = {}, startNum = {}, pageSize = {}", userid, mtype, msgtype, startNum, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -106,8 +106,8 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgLikeList")
-    public BaseResp<Object> msgLikeList(String userid, String msgtype, 
-    		int startNum, int pageSize) {
+    public BaseResp<Object> msgLikeList(String userid, String msgtype, int startNum, int pageSize) {
+		logger.info("userid = {},  msgtype = {}, startNum = {}, pageSize = {}", userid, msgtype, startNum, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -140,8 +140,8 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDialogueList")
-    public BaseResp<Object> msgDialogueList(String userid, 
-    		int startNum, int pageSize) {
+    public BaseResp<Object> msgDialogueList(String userid, int startNum, int pageSize) {
+		logger.info("userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -192,6 +192,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDel")
     public BaseResp<Object> msgDel(String id, String userid) {
+		logger.info("id = {}, userid = {}", id, userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id, userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -224,6 +225,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelOther")
     public BaseResp<Object> msgDelOther(String userid, String mtype, String msgtype) {
+		logger.info("userid = {}, mtype = {}, msgtype = {}", userid, mtype, msgtype);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -256,6 +258,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelMtype")
     public BaseResp<Object> msgDelMtype(String userid, String mtype) {
+		logger.info("userid = {}, mtype = {}", userid, mtype);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -282,6 +285,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgDelLike")
     public BaseResp<Object> msgDelLike(String userid, String msgtype) {
+		logger.info("userid = {}, msgtype = {}", userid, msgtype);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, msgtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -306,6 +310,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgUpdIsread")
     public BaseResp<Object> msgUpdIsread(String id, String userid) {
+		logger.info("id = {}, userid = {}", id, userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -339,6 +344,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/msgUpdAllIsread")
     public BaseResp<Object> msgUpdAllIsread(String userid, String mtype, String msgtype) {
+		logger.info("userid = {}, mtype = {}, msgtype = {}", userid, mtype, msgtype);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, mtype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -367,6 +373,7 @@ public class UserMsgController extends BaseController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/isMsgRed")
     public BaseResp<Object> isMsgRed(String userid, String type) {
+		logger.info("userid = {}", userid, type);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, type)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

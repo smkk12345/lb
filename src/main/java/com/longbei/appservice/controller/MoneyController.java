@@ -48,6 +48,7 @@ public class MoneyController {
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectWallet")
     public BaseResp<Object> selectWallet(@RequestParam("userid") String userid) {
+		logger.info("userid={}",userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -72,6 +73,7 @@ public class MoneyController {
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectImpCoinDetail")
     public BaseResp<Object> selectImpCoinDetail(String userid, Integer startNum, Integer pageSize) {
+		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -107,6 +109,7 @@ public class MoneyController {
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectMoneyDetail")
     public BaseResp<Object> selectMoneyDetail(String userid, Integer startNum, Integer pageSize) {
+		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -139,6 +142,7 @@ public class MoneyController {
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectFlowerDetail")
     public BaseResp<List<UserFlowerDetail>> selectFlowerDetail(String userid, Integer startNum, Integer pageSize) {
+		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
 		BaseResp<List<UserFlowerDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

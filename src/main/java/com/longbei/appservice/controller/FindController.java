@@ -54,16 +54,16 @@ public class FindController extends BaseController {
     public void near(HttpServletRequest request,HttpServletResponse response,String longitude, String latitude,
                          String userid, String startNum,
                          String pageSize,String sex) {
-
-        BaseResp<Object> baseResp = new BaseResp<>();
         String radius = "50";
+        logger.info("near longitude={},latitude={},radius={},userid={},startNum={},pageSize={},sex={}",
+                     longitude,latitude,radius,userid,startNum,pageSize,sex);
+        BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isBlank(pageSize)){
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         if(StringUtils.hasBlankParams(longitude,latitude,userid,startNum,pageSize)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }else{
-            logger.info("near longitude={},latitude={},radius={},userid={},startNum={},pageSize={},sex={}",longitude,latitude,radius,userid,startNum,pageSize,sex);
             baseResp = findService.near(longitude,latitude,userid,sex,startNum,pageSize);
         }
         try {
