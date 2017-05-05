@@ -16,9 +16,10 @@
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="createuserid" property="createuserid" jdbcType="VARCHAR" />
     <result column="href" property="href" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, picname, photos, contenttype, scannum, isup, isdel, uptime, downtime, sort, createtime, createuserid,href,
+    id, picname, photos, contenttype, scannum, isup, isdel, uptime, downtime, sort, createtime, createuserid,href,type,
     updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -47,6 +48,9 @@
     <include refid="Base_Column_List" />
     from homepicture
     WHERE isdel=0
+    <if test="homePicture.type != null and homePicture.type != ''">
+      AND type = #{homePicture.type}
+    </if>
     <if test="homePicture.picname != null and homePicture.picname != ''">
       AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
     </if>
@@ -122,6 +126,9 @@
       <if test="href != null" >
         href,
       </if>
+      <if test="type != null" >
+        type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -166,6 +173,9 @@
       <if test="href != null" >
         #{href},
       </if>
+      <if test="type != null" >
+        #{type},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.HomePicture" >
@@ -206,6 +216,9 @@
       </if>
       <if test="href != null" >
         href = #{href},
+      </if>
+      <if test="type != null" >
+        type = #{type},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
