@@ -58,7 +58,7 @@ public interface PageService {
      * @return
      * @author luye
      */
-    BaseResp<List<HomePicture>> selectHomePicList();
+    BaseResp<List<HomePicture>> selectHomePicList(String type);
 
 
     /**

@@ -2497,6 +2497,8 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             int res = improveMapper.delGoalToImprove(goalId,userId,Constant.IMPROVE_GOAL_TYPE);
             if(res>0){
+                timeLineDetailDao.deleteImproveByBusinessid(String.valueOf(goalId),
+                        Constant.IMPROVE_GOAL_TYPE,String.valueOf(userId));
                 return baseResp.initCodeAndDesp();
             }
         }catch (Exception e){
