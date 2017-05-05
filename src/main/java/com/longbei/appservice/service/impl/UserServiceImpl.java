@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 	
 
 	@Override
-	public BaseResp<UserInfo> selectInfoMore(long userid) {
+	public BaseResp<UserInfo> selectInfoMore(long userid,long lookid) {
 		BaseResp<UserInfo> reseResp = new BaseResp<UserInfo>();
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
@@ -132,7 +132,16 @@ public class UserServiceImpl implements UserService {
 				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
 			}
 			expandData.put("flowernum", flowernum);
-			
+			if(lookid != 0){
+				SnsFriends snsFriends = userRelationService.selectByUidAndFid(userid,lookid);
+				if(null != snsFriends){
+					userInfo.setIsfriend("1");
+				}
+				SnsFans snsFans = userRelationService.selectByUidAndFanid(lookid,userid);
+				if(null != snsFans){
+					userInfo.setIsfans("1");
+				}
+			}
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
@@ -602,10 +611,35 @@ public class UserServiceImpl implements UserService {
 		return returnResp;
 	}
 
+
+	@Override
+	public BaseResp<UserInfo> login(String username, String password) {
+		BaseResp<UserInfo> baseResp = new BaseResp<>();
+		BaseResp<Object> baseRespLogin = null;
+		try {
+			baseRespLogin = iUserBasicService.gettoken(username, password);
+		} catch (Exception e) {
+			logger.error("pc login is error:",e);
+			return baseResp;
+		}
+		if (ResultUtil.isSuccess(baseRespLogin)){
+			try {
+				UserInfo userInfo = userInfoMapper.getByUserName(username);
+				baseResp.initCodeAndDesp(baseRespLogin.getCode(),baseRespLogin.getRtnInfo());
+				baseResp.setData(userInfo);
+			} catch (Exception e) {
+				logger.error("select userinfo by usernam={} is error:",username,e);
+			}
+		} else {
+			baseResp.initCodeAndDesp(baseRespLogin.getCode(),baseRespLogin.getRtnInfo());
+		}
+		return baseResp;
+	}
+
 	/* smkk
-	 * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 * 2017年1月17日
-	 */
+         * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+         * 2017年1月17日
+         */
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> registerthird(String username, String password, 

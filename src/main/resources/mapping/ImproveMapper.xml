@@ -410,7 +410,7 @@
       ORDER BY ir.createtime DESC
     </if>
     <if test="orderby=='1'.toString()">
-      ORDER BY rm.flowers*#{flowerscore}+rm.likes*#{likescore} desc
+      ORDER BY ir.flowers*#{flowerscore}+ir.likes*#{likescore} desc
     </if>
     <choose>
       <when test="orderby=='0'.toString()">

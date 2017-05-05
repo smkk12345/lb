@@ -123,7 +123,7 @@ public class GroupController {
     public BaseResp<Object> updateGroupNotice(Long userId,String groupId,String notice){
         logger.info("userId={},groupId={},notice={}",userId,groupId,notice);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(userId == null || StringUtils.hasBlankParams(groupId,notice) || notice.length() > 100){
+        if(userId == null || StringUtils.hasBlankParams(groupId) || notice.length() > 100){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = this.groupService.updateGroupInfo(userId,groupId,null,null,notice);
@@ -370,6 +370,7 @@ public class GroupController {
     }
 
     /**
+     * group/selectGrupMemberIdList
      * 查询群组的所有userid
      * @param groupId
      * @return

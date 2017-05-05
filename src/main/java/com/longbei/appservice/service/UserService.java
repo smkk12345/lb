@@ -19,7 +19,7 @@ public interface UserService {
 	 * 个人中心
 	 * 2017年3月9日
 	 */
-	BaseResp<UserInfo> selectInfoMore(long userid);
+	BaseResp<UserInfo> selectInfoMore(long userid,long lookid);
 	
 	/**
 	 * @author yinxc
@@ -101,6 +101,15 @@ public interface UserService {
 	* @currentdate:2017年1月16日
 	*/
 	BaseResp<UserInfo> login(String username, String password,String deviceindex);
+
+	/**
+	 * login for pc
+	 * @param username
+	 * @param password
+	 * @return
+	 * @auther luye
+	 */
+	BaseResp<UserInfo> login(String username, String password);
 	/**
 	* @Title: registerthird
 	* @Description: TODO

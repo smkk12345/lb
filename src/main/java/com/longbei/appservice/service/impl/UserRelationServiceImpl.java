@@ -292,6 +292,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 	}
 
 	@Override
+	public SnsFans selectByUidAndFanid(long userid, long fansid) {
+		SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid,fansid);
+		return snsFans;
+	}
+
+	@Override
 	public BaseResp<Object> updateRemarkByUidAndFid(long userid, long friendid, String remark) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {

@@ -363,5 +363,6 @@
         select userid
         from sns_group_members
         where groupid = #{groupId}
+        and status = '1'
     </select>
 </mapper>

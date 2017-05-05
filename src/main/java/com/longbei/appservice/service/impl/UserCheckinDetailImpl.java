@@ -91,7 +91,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			String date = DateUtils.getDate("yyyy-MM-dd");
 			UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectDetail(userid, date);
 			if(null != userCheckinDetail){
-				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_30, Constant.RTNINFO_SYS_30);
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
 			String day = DateUtils.getDate("yyyyMMdd");
 			// 判断redis中是否存在 存在+1
@@ -329,6 +329,9 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				//获取签到是否已发进步状态  isimprove 0:没有发进步   1：已发进步
 				String isimprove = "0";
 				for (UserCheckinDetail userCheckinDetail : list) {
+					@SuppressWarnings("deprecation")
+					String day = userCheckinDetail.getCreatetime().getDate() + "";
+					userCheckinDetail.setDay(day);;
 					String currentday = DateUtils.formatDate(userCheckinDetail.getCheckindate(), "yyyy-MM-dd");
 					UserImproveStatistic userImproveStatistic = userImproveStatisticMapper.selectByUseridAndCurrentday(userid, 
 							currentday);

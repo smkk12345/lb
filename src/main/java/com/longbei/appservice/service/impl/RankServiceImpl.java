@@ -952,25 +952,28 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(userId.equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
             }
+            if(rank.getIsfinish().equals("0")||rank.getIsfinish().equals("1")){
+                //1.更改rankMember的状态
+                Map<String,Object> updateMap = new HashMap<String,Object>();
+                updateMap.put("rankId",rankId);
+                updateMap.put("userId",userId);
+                updateMap.put("status","2");
+                updateMap.put("updateTime",new Date());
+                int updateRow = this.rankMembersMapper.updateRank(updateMap);
+                if(updateRow < 1){
+                    return baseResp.fail("退榜失败");
+                }
+                //2.更改用户在该榜单中发布的进步的状态
+                int removeRow = improveRankMapper.updateImproveRanStatus(userId+"",rankId+"",null,"1");
 
-            //1.更改rankMember的状态
-            Map<String,Object> updateMap = new HashMap<String,Object>();
-            updateMap.put("rankId",rankId);
-            updateMap.put("userId",userId);
-            updateMap.put("status","2");
-            updateMap.put("updateTime",new Date());
-            int updateRow = this.rankMembersMapper.updateRank(updateMap);
-            if(updateRow < 1){
-                return baseResp.fail("退榜失败");
+                //3.更改参榜人数
+                boolean updateRankFlag = updateRankMemberCount(rankId,-1);
+                //4.删除reids中榜单的该用户排名
+                boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userId+"");
+                return baseResp.ok("退榜成功");
+            }else {
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_70,Constant.RTNINFO_SYS_70);
             }
-            //2.更改用户在该榜单中发布的进步的状态
-            int removeRow = improveRankMapper.updateImproveRanStatus(userId+"",rankId+"",null,"1");
-
-            //3.更改参榜人数
-            boolean updateRankFlag = updateRankMemberCount(rankId,-1);
-            //4.删除reids中榜单的该用户排名
-            boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userId+"");
-            return baseResp.ok("退榜成功");
         }catch(Exception e){
             logger.error("remove RankMember error userId:{} rankId:{}",userId,rankId);
             printException(e);
@@ -2283,6 +2286,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
                 if(appUserMongoEntity != null){
                     awardMap.put("nickname",appUserMongoEntity.getNickname());
+                }
+                if(StringUtils.isBlank(rankAwardRelease.getAwardid())){
+                    continue;
                 }
                 Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAwardRelease.getAwardid()));
                 if(null != award){

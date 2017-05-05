@@ -1,8 +1,6 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +145,27 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 					map.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
 				}
 			}else{
-				map.put("is_acquaintance_look","1");
+				List<UserSettingCommon> setlist = new ArrayList<UserSettingCommon>();
+				UserSettingCommon common = new UserSettingCommon(Long.parseLong(userid), "is_new_fans", "1",
+						"新粉丝", new Date(), new Date());
+				UserSettingCommon common2 = new UserSettingCommon(Long.parseLong(userid), "is_like", "1",
+						"点赞", new Date(), new Date());
+				UserSettingCommon common3 = new UserSettingCommon(Long.parseLong(userid), "is_flower", "1",
+						"送花", new Date(), new Date());
+				UserSettingCommon common4 = new UserSettingCommon(Long.parseLong(userid), "is_comment", "2",
+						"评论设置", new Date(), new Date());
+				UserSettingCommon common5 = new UserSettingCommon(Long.parseLong(userid), "is_nick_search", "1",
+						"允许通过昵称搜到我", new Date(), new Date());
+				UserSettingCommon common6 = new UserSettingCommon(Long.parseLong(userid), "is_phone_search", "1",
+						"允许通过此手机号搜到我", new Date(), new Date());
+				list.add(common);
+				list.add(common2);
+				list.add(common3);
+				list.add(common4);
+				list.add(common5);
+				list.add(common6);
+				userSettingCommonMapper.insertList(setlist);
+//				map.put("is_acquaintance_look","1");
 				map.put("is_comment","1");
 				map.put("is_diamond","1");
 				map.put("is_flower","1");
