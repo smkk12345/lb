@@ -602,10 +602,35 @@ public class UserServiceImpl implements UserService {
 		return returnResp;
 	}
 
+
+	@Override
+	public BaseResp<UserInfo> login(String username, String password) {
+		BaseResp<UserInfo> baseResp = new BaseResp<>();
+		BaseResp<Object> baseRespLogin = null;
+		try {
+			baseRespLogin = iUserBasicService.gettoken(username, password);
+		} catch (Exception e) {
+			logger.error("pc login is error:",e);
+			return baseResp;
+		}
+		if (ResultUtil.isSuccess(baseRespLogin)){
+			try {
+				UserInfo userInfo = userInfoMapper.getByUserName(username);
+				baseResp.initCodeAndDesp(baseRespLogin.getCode(),baseRespLogin.getRtnInfo());
+				baseResp.setData(userInfo);
+			} catch (Exception e) {
+				logger.error("select userinfo by usernam={} is error:",username,e);
+			}
+		} else {
+			baseResp.initCodeAndDesp(baseRespLogin.getCode(),baseRespLogin.getRtnInfo());
+		}
+		return baseResp;
+	}
+
 	/* smkk
-	 * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 * 2017年1月17日
-	 */
+         * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+         * 2017年1月17日
+         */
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> registerthird(String username, String password, 
