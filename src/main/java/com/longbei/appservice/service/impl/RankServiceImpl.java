@@ -2244,12 +2244,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             //获取当前结束的榜单
             Map<String,Object> parameterMap = new HashMap<String,Object>();
-            parameterMap.put("isfinish","5");
-            parameterMap.put("isdel","0");
-            parameterMap.put("startNum",startNum);
-            parameterMap.put("pageSize",pageSize);
 
-            List<Rank> finishRankList = this.rankMapper.selectRankList(parameterMap);
+            List<Rank> finishRankList = this.rankMapper.selectHasAwardRankList(startNum, pageSize);
 
             //查看结束的榜单的获奖情况
             if(finishRankList != null && finishRankList.size() > 0){
