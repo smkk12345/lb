@@ -23,8 +23,8 @@ public class Comment {
 	private String friendid;   //被评论商户id
 	private String content;    //评论内容
 	private String createtime; //评论时间
-	private String businesstype;      //类型    0 零散进步评论   1 目标进步评论    2 榜评论  3圈子评论 4 教室评论
-											//5 榜中微进步评论  6 圈子中微进步评论  7 教室中微进步评论
+	private String businesstype;      //businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+	 									//10：榜评论  11 圈子评论  12 教室评论
 	private String businessid;    //各类型对应的id
 	
 	private String impid; //进步id
