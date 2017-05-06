@@ -353,7 +353,7 @@
   </sql>
 
   <select id="selectListByBusinessid" resultMap="BaseResultMap" >
-    select #{orderby} a, 
+    select
     <if test="tablename == 'improve_classroom'" >
     	<include refid="Classroom_List" /> 
     </if>
