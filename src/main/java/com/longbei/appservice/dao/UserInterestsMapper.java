@@ -9,9 +9,7 @@ import com.longbei.appservice.entity.UserInterests;
 public interface UserInterestsMapper {
 
     int updateInterests(UserInterests record);
-    int insertInterests(UserInterests record);
-    int deleteInterests(@Param("id") int id,@Param("userid")String userid);
-    
+    int insert(UserInterests record);
     List<UserInterests> selectInterests(@Param("userid") long userid);
     
 }

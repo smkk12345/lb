@@ -943,7 +943,7 @@ public class AppUserController extends BaseController {
     /**
      * @Title: http://ip:port/appservice/user/insertInterests
      * @Description: 添加兴趣信息
-     * @param @param userid  ptype十全十美类型  perfectname十全十美名
+     * @param @param userid  ids
      * @param @param code 0
      * @auther IngaWu
      * @currentdate:2017年2月24日
@@ -951,70 +951,20 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/insertInterests")
     @ResponseBody
-    public BaseResp<Object> insertInterests(String userid,String ptype,String perfectname) {
-        logger.info("insertInterests and userid={},ptype={},perfectname={}",userid,ptype,perfectname);
+    public BaseResp<Object> insertInterests(String userid,String ids) {
+        logger.info("insertInterests and userid={},ptype={},perfectname={}",userid,ids);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(userid,ptype,perfectname)){
+        if(StringUtils.hasBlankParams(userid,ids)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            return userInterestsService.insertInterests(userid,ptype,perfectname);
+            return userInterestsService.insertInterests(userid,ids);
         } catch (Exception e) {
-            logger.error("insertInterests and userid={},ptype={},perfectname={}",userid,ptype,perfectname,e);
+            logger.error("insertInterests and userid={},ptype={},perfectname={}",userid,ids,e);
         }
         return baseResp;
     }
 
-    /**
-     * @Title: http://ip:port/appservice/user/deleteInterests
-     * @Description: 删除兴趣信息
-     * @param  @param id，userid
-     * @param @param code 0
-     * @auther IngaWu
-     * @currentdate:2017年2月24日
-     */
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/deleteInterests")
-    @ResponseBody
-    public BaseResp<Object> deleteInterests(String id,String userid) {
-        logger.info("deleteInterests and id={},userid={}",id,userid);
-        BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(id,userid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
-        try {
-            return userInterestsService.deleteInterests(Integer.parseInt(id),userid);
-        } catch (Exception e) {
-            logger.error("deleteInterests and id={},userid={}",id,userid,e);
-        }
-        return baseResp;
-    }
-
-    /**
-     * @Title: http://ip:port/appservice/user/updateInterests
-     * @Description: 更改用户的兴趣信息
-     * @param @param id userid  ptype十全十美类型  perfectname十全十美名
-     * @param @param code 0
-     * @auther IngaWu
-     * @currentdate:2017年2月23日
-     */
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/updateInterests")
-    @ResponseBody
-    public BaseResp<Object> updateInterests(String id,String ptype,String perfectname) {
-        logger.info("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname);
-        BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(id)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
-        try {
-            baseResp = userInterestsService.updateInterests(Integer.parseInt(id),ptype,perfectname);
-            return baseResp;
-        } catch (Exception e) {
-            logger.error("updateInterests and id={},ptype={},perfectname={}",id,ptype,perfectname,e);
-        }
-        return baseResp;
-    }
     //--------------------用户兴趣标签end-------------------------------
     /**
      * @Title: http://ip:port/appservice/user/selectCityList

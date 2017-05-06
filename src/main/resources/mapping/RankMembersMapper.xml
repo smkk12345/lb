@@ -57,7 +57,7 @@
         count(1)
     from rank_members
     <where>
-        <if test="isfashionman != null">
+        <if test="isfashionman != null and isfashionman != ''">
           isfashionman = #{isfashionman}
         </if>
         <if test="checkstatus != null">
@@ -95,7 +95,7 @@
       <include refid="Base_Column_List" />
     FROM rank_members
     <where>
-        <if test="rankmember.isfashionman != null">
+        <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
           AND isfashionman = #{rankmember.isfashionman}
         </if>
         <if test="rankmember.checkstatus != null">

@@ -21,6 +21,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
@@ -94,6 +95,8 @@ public class UserServiceImpl implements UserService {
 	private IJPushService ijPushService;
 	@Autowired
 	private UserPlDetailService userPlDetailService;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -239,11 +242,6 @@ public class UserServiceImpl implements UserService {
 		} else {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
-		try {
-			initUserPerfectTen(userid);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return reseResp;
 	}
 
@@ -300,16 +298,37 @@ public class UserServiceImpl implements UserService {
 	* @auther smkk
 	* @currentdate 2017年1月14日
 	 */
-	private boolean registerOther(UserInfo userInfo) {
-		//保存到mongodb
-		saveUserInfoToMongo(userInfo);
-		//保存其他信息,如个人信息等  十全十美数据
-		saveUserPointInfo(userInfo);
-		initUserCommonMenuInfo(userInfo.getUserid());
-		//初始化用户设置
-		initUserUserSettingCommon(userInfo.getUserid());
+	private boolean registerOther(final UserInfo userInfo) {
+		threadPoolTaskExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				//保存到mongodb
+				saveUserInfoToMongo(userInfo);
+				//保存其他信息,如个人信息等  十全十美数据
+				saveUserPointInfo(userInfo);
+				initUserCommonMenuInfo(userInfo.getUserid());
+				//初始化用户设置
+				initUserUserSettingCommon(userInfo.getUserid());
+				//初始化用户十全十美等级明细
+				initUserPerfectTen(userInfo.getUserid());
+				//初始化用户感兴趣的标签
+				initUserInterestInfo(userInfo.getUserid());
+			}
+		});
 		return true;
 	}
+
+
+	private boolean initUserInterestInfo(long userid){
+		UserInterests userInterests = new UserInterests();
+		userInterests.setUserid(String.valueOf(userid));
+		Date date = new Date();
+		userInterests.setCreatetime(date);
+		userInterests.setUpdatetime(date);
+		userInterestsMapper.insert(userInterests);
+		return true	;
+	}
+
 	
 	/**
 	 * 初始化用户设置
