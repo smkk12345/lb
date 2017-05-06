@@ -25,7 +25,7 @@ public class ImpComplaintsApiController {
 	
 	
 	/**
-    * @Title: http://ip:port/app_service/api/order/selectListByStatus
+    * @Title: http://ip:port/app_service/api/complaints/selectListByStatus
     * @Description: 根据status查询投诉列表
     * @param @param status 0：未处理  1: 已处理
     * @param @param startNo  pageSize
@@ -50,7 +50,7 @@ public class ImpComplaintsApiController {
 	}
   	
   	/**
-     * @Title: http://ip:port/app_service/api/order/searchList
+     * @Title: http://ip:port/app_service/api/complaints/searchList
      * @Description: 搜索 
      * @param @param status 0：未处理  1: 已处理
      * @param @param username
@@ -83,7 +83,7 @@ public class ImpComplaintsApiController {
  	}
    	
    	/**
-     * @Title: http://ip:port/app_service/api/order/updateStatus
+     * @Title: http://ip:port/app_service/api/complaints/updateStatus
      * @Description: 投诉处理 
      * @param @param status 0：未处理  1: 已处理
      * @param @param checkoption
@@ -113,7 +113,7 @@ public class ImpComplaintsApiController {
  	}
    	
    	/**
-     * @Title: http://ip:port/app_service/api/order/selectDetail
+     * @Title: http://ip:port/app_service/api/complaints/selectDetail
      * @Description: 获取投诉详情 
      * @param @param id 业务id
      * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码

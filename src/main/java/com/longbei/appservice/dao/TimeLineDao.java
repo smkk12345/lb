@@ -49,15 +49,18 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
 	 * return_type
 	 * TimeLineDao
 	 */
-    public List<TimeLine> selectTimeListByUserAndTypeDate(String userid, String timelinetype, Date lastdate, int pagesize){
+    public List<TimeLine> selectTimeListByUserAndTypeDate(String userid, String timelinetype, Date searchDate, Date lastdate, int pagesize){
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-        if (null != lastdate) {
-        	Date start = DateUtils.getDateStart(lastdate);
-        	Date end = DateUtils.getDateEnd(lastdate);
+        if (!StringUtils.isEmpty(searchDate)) {
+        	Date start = DateUtils.getDateStart(searchDate);
+        	Date end = DateUtils.getDateEnd(searchDate);
             criteria.and("createdate").gte(start).lte(end);
+        }
+        if (null != lastdate) {
+            criteria.and("createdate").lt(lastdate);
         }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
