@@ -71,10 +71,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 	}
 
 	@Override
-	public UserAddress selectByPrimaryKey(Integer id) {
+	public UserAddress selectByPrimaryKey(long userid, Integer id) {
 		UserAddress userAddress = null;
 		try {
-			userAddress = userAddressMapper.selectByPrimaryKey(id);
+			userAddress = userAddressMapper.selectByPrimaryKey(userid, id);
 		} catch (Exception e) {
 			logger.error("selectByPrimaryKey id = {}, msg = {}",id,e);
 		}
@@ -105,7 +105,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 			}
 			int temp = userAddressMapper.updateByPrimaryKeySelective(record);
 			if (temp > 0) {
-				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(record.getId());
+				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(record.getUserid(), record.getId());
 				reseResp.setData(userAddress);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
