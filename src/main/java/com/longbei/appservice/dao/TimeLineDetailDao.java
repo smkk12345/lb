@@ -103,12 +103,22 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
     }
 
     public void updateRecommendImproveSort(Long improveId,String businesstype,int sort){
-        Criteria criteria = Criteria.where("improveId").in(improveId)
+        Criteria criteria = Criteria.where("improveId").is(improveId)
                 .and("businesstype").is(businesstype);
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("sort",sort);
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
+    }
+
+    public void deleteImproveByBusinessid(String businessid,String businesstype,String userid){
+        Criteria criteria = Criteria.where("improveId").is(businessid)
+                .and("businesstype").is(businesstype);
+        Query query = new Query(criteria);
+        List<TimeLineDetail> lists = mongoTemplate.find(query,TimeLineDetail.class);
+        for (TimeLineDetail timeLineDetail : lists){
+            deleteImprove(timeLineDetail.getImproveId(),userid);
+        }
     }
 
     public void deleteImprove(Long improveid,String userid){

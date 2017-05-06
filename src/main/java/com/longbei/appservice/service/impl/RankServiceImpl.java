@@ -1653,7 +1653,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(award.getAwardClassify().getClassifytype() < 3){//不是实物奖品
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_611,Constant.RTNINFO_SYS_611);
             }
-            UserAddress userAddress = this.userAddressService.selectByPrimaryKey(userAddressId);
+            UserAddress userAddress = this.userAddressService.selectByPrimaryKey(userId, userAddressId);
             if(userAddress == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
@@ -2599,7 +2599,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         Page<RankMembers> page = new Page<>(pageno,pagesize);
         try {
-            List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+            List<UserInfo> userInfos = new ArrayList<>();
+            if (!isNullUser(userInfo)){
+                userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+            }
             RankMembers rankMembers = new RankMembers();
             rankMembers.setIsfashionman("1");
             List<AppUserMongoEntity> appUserMongoEntities = new ArrayList<>();
@@ -2626,6 +2629,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+    private boolean isNullUser(UserInfo userInfo){
+
+        if (!StringUtils.isBlank(userInfo.getNickname())){
+            return false;
+        }
+        if (!StringUtils.isBlank(userInfo.getUsername())){
+            return false;
+        }
+        if (!StringUtils.isBlank(userInfo.getSex())){
+            return false;
+        }
+        if (null != userInfo.getScreatetime()){
+            return false;
+        }
+        if (null != userInfo.getEcreatetime()){
+            return false;
+        }
+        if (0 != userInfo.getSgrade()){
+            return false;
+        }
+        if (0 != userInfo.getEgrade()){
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {

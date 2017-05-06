@@ -32,6 +32,9 @@
   <select id="selectCount" parameterType="com.longbei.appservice.entity.HomePicture" resultType="java.lang.Integer">
     SELECT count(*) FROM homepicture
     WHERE isdel=0
+    <if test="type != null and type != ''">
+      AND type = #{type}
+    </if>
     <if test="picname != null and picname != ''">
       AND picname LIKE concat(concat('%',#{picname}),'%')
     </if>
@@ -49,7 +52,7 @@
     from homepicture
     WHERE isdel=0
     <if test="homePicture.type != null and homePicture.type != ''">
-      AND type = #{homePicture.type}
+      AND homepicture.type = #{homePicture.type}
     </if>
     <if test="homePicture.picname != null and homePicture.picname != ''">
       AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')

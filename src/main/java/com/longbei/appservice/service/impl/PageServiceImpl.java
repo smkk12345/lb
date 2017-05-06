@@ -112,11 +112,12 @@ public class PageServiceImpl implements PageService{
 
 
     @Override
-    public BaseResp<List<HomePicture>> selectHomePicList() {
+    public BaseResp<List<HomePicture>> selectHomePicList(String type) {
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         try {
             HomePicture homePicture = new HomePicture();
             homePicture.setIsup("1");
+            homePicture.setType(type);
             List<HomePicture> homePictures = homePictureMapper.selectList(homePicture,null,null);
             baseResp = BaseResp.ok();
             baseResp.setData(homePictures);

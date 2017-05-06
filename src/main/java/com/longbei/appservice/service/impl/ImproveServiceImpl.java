@@ -2057,7 +2057,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_CANCEL,0);
         afterImproveInfoChange(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
@@ -2497,6 +2497,8 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             int res = improveMapper.delGoalToImprove(goalId,userId,Constant.IMPROVE_GOAL_TYPE);
             if(res>0){
+                timeLineDetailDao.deleteImproveByBusinessid(String.valueOf(goalId),
+                        Constant.IMPROVE_GOAL_TYPE,String.valueOf(userId));
                 return baseResp.initCodeAndDesp();
             }
         }catch (Exception e){
