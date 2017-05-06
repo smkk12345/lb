@@ -31,78 +31,20 @@
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserInterests" >
-    insert into user_interests (id, userid, ptype, 
-      perfectname, createtime, updatetime
+    insert into user_interests (id, userid,
+      createtime, updatetime
       )
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{ptype,jdbcType=VARCHAR}, 
-      #{perfectname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertInterests" parameterType="com.longbei.appservice.entity.UserInterests" >
-    insert into user_interests
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="userid != null" >
-        userid,
-      </if>
-      <if test="ptype != null" >
-        ptype,
-      </if>
-      <if test="perfectname != null" >
-        perfectname,
-      </if>
-      <if test="createtime != null" >
-        createtime,
-      </if>
-      <if test="updatetime != null" >
-        updatetime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="userid != null" >
-        #{userid,jdbcType=VARCHAR},
-      </if>
-      <if test="ptype != null" >
-        #{ptype,jdbcType=VARCHAR},
-      </if>
-      <if test="perfectname != null" >
-        #{perfectname,jdbcType=VARCHAR},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
+
   <update id="updateInterests" parameterType="com.longbei.appservice.entity.UserInterests" >
     update user_interests
     <set >
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=VARCHAR},
-      </if>
-      <if test="ptype != null" >
         ptype = #{ptype,jdbcType=VARCHAR},
-      </if>
-      <if test="perfectname != null" >
-        perfectname = #{perfectname,jdbcType=VARCHAR},
-      </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where userid = #{userid}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInterests" >
-    update user_interests
-    set userid = #{userid,jdbcType=VARCHAR},
-      ptype = #{ptype,jdbcType=VARCHAR},
-      perfectname = #{perfectname,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>
