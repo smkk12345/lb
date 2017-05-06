@@ -34,7 +34,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	UserAddress selectByPrimaryKey(Integer id);
+	UserAddress selectByPrimaryKey(long userid, Integer id);
 	
 	/**
 	 * @author yinxc

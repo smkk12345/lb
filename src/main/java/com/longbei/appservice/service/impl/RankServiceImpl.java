@@ -1653,7 +1653,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(award.getAwardClassify().getClassifytype() < 3){//不是实物奖品
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_611,Constant.RTNINFO_SYS_611);
             }
-            UserAddress userAddress = this.userAddressService.selectByPrimaryKey(userAddressId);
+            UserAddress userAddress = this.userAddressService.selectByPrimaryKey(userId, userAddressId);
             if(userAddress == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }

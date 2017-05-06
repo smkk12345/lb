@@ -20,6 +20,8 @@ public class UserCheckinDetail {
     //---------------扩展字段-------------------
     
     private String isimprove = "0"; //签到是否已发进步状态  isimprove 0:没有发进步   1：已发进步
+    
+    private String day;  //dd  签到---天
 
     /**
      * 
@@ -75,7 +77,7 @@ public class UserCheckinDetail {
      * 
      * @return createtime 
      */
-    @JsonFormat(pattern="dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -104,6 +106,14 @@ public class UserCheckinDetail {
 
 	public void setIsimprove(String isimprove) {
 		this.isimprove = isimprove;
+	}
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
 	}
     
 }

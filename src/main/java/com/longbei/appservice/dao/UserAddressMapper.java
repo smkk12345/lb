@@ -23,7 +23,7 @@ public interface UserAddressMapper {
 	 */
     List<UserAddress> selectByUserId(@Param("userid") long userid, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
-    UserAddress selectByPrimaryKey(Integer id);
+    UserAddress selectByPrimaryKey(@Param("userid") long userid, @Param("id") int id);
     
     UserAddress selectByIdAndUserid(@Param("id") int id, @Param("userid") long userid);
     
