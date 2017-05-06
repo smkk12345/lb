@@ -996,6 +996,32 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(updateRow < 1){
                 return baseResp.fail("退榜失败");
             }
+            //添加消息---榜@我通知
+            //sourcetype 来源类型。0 运营端创建   1  b端创建 2 app用户创建。
+            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
+            if("0".equals(rank.getSourcetype())){
+            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+								//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+								//25:订单发货N天后自动确认收货    26：实名认证审核结果
+								//27:工作认证审核结果      28：学历认证审核结果
+								//29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+								//32：创建的龙榜/教室/圈子被选中推荐  
+								//40：订单已取消 41 榜中进步下榜   
+								// 42.榜单公告更新   43:后台反馈回复消息 
+								//44: 榜中成员下榜)
+				//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
+				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
+				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+            	userMsgService.insertMsg("0", rankMembers.getUserid().toString(), 
+    					"", "10", 
+    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+            }
+            if("2".equals(rank.getSourcetype())){
+            	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(), 
+            			"", "10", 
+    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+            }
+            
             //2.更改用户在该榜单中发布的进步的状态
             int removeRow = improveRankMapper.updateImproveRanStatus(rankMembers.getUserid()+"",
                     rankMembers.getRankid()+"",null,"1");
@@ -1570,7 +1596,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAcceptAwardMap.put("reciverusertel",rankAcceptAward.getReciverusertel());//收货人电话
                 }
                 rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
-
+                rankMember.setReceivecode(rankAcceptAward.getReceivecode());
                 resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 resultMap.put("award",award);
                 resultMap.put("rankMember",rankMember);
@@ -2548,10 +2574,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("commentCount","0");
             }
 
-            //将入榜口令给过滤掉
-            if(userId == null || !userId.equals(rank.getCreateuserid())){
-                rank.setJoincode(null);
-            }
+
 
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);
@@ -2797,6 +2820,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         RankMembers rankMembers = new RankMembers();
         rankMembers.setRankid(Long.parseLong(rankid));
+        Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
         List<RankAcceptAward> rankAcceptAwards = new ArrayList<>();
         //获取榜单全部成员列表
         List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
@@ -2826,7 +2850,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != award){
                     rankAcceptAward.setAwardcateid(String.valueOf(award.getAwardcateid()));
                 }
-                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+
                 if (null != rank){
                     rankAcceptAward.setRanktitle(rank.getRanktitle());
                 }

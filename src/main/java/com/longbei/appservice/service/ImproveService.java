@@ -261,7 +261,7 @@ public interface ImproveService {
      * @param pagesize  每页显示条数
      * @return
      */
-    List<Improve> selectImproveListByUserDate(String userid,String ptype,String ctype, Date lastdate,int pagesize);
+    List<Improve> selectImproveListByUserDate(String userid,String ptype,String ctype, Date searchDate, Date lastdate,int pagesize);
     
     /**
      * 点赞

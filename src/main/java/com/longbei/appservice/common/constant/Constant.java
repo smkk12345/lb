@@ -465,7 +465,8 @@ public class Constant {
 	public static final String  MSG_PUBLISH_MODEL = "在m'n'中@了您";  		 			//发布新公告          m:榜，圈子，教室     n:名称   
 	public static final String  MSG_AWARD_MODEL = "恭喜您在龙榜'n'中获得了m,快去领奖吧!";  		//获奖         m:奖品     n:榜名称 
 	public static final String  MSG_DELETE_MODEL = "由于您在加入'n'mg";  					//剔除         m:榜，圈子，教室     n:名称    g:投诉理由
-	public static final String  MSG_CHECK_MODEL = "您加入m'n'的申请已被g,快去发第一条进步吧";  	//加入请求审批结果      m:榜，圈子，教室     n:名称   g:结果:通过或拒绝     
+	public static final String  MSG_CHECK_MODEL = "您加入m'n'的申请已被g,快去发第一条进步吧";  	//加入请求审批结果      m:榜，圈子，教室     n:名称   g:结果:通过或拒绝
+	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主踢出了该龙榜!";      //下榜
 	
 	
 	/*

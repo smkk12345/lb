@@ -56,9 +56,17 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			if(null != comment){
 				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-				userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
-						comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
-						commentLower.getContent(), "1", "1", 0);
+				if(!"10".equals(comment.getBusinesstype()) && !"11".equals(comment.getBusinesstype()) 
+						&& !"12".equals(comment.getBusinesstype())){
+					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+							comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
+							commentLower.getContent(), "1", "1", 0);
+				}else{
+					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+							"", comment.getBusinesstype(), comment.getBusinessid(), 
+							commentLower.getContent(), "1", "1", 0);
+				}
+				
 			}
 //			insertMsg(commentLower);
 			

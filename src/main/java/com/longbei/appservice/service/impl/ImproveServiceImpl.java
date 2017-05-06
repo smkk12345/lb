@@ -1071,10 +1071,9 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      */
 	@Override
-	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date lastdate, int pagesize) {
-		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype,lastdate,pagesize);
+	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date searchDate, Date lastdate, int pagesize) {
+		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype, searchDate,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
-
         for (int i = 0; i < timeLines.size() ; i++){
             TimeLine timeLine = timeLines.get(i);
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
