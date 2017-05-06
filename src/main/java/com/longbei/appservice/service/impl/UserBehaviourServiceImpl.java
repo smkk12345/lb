@@ -127,16 +127,16 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * lixb
      */
     private void putPointToCache(int point,long userid,String operateType){
-        String key = Constant.RP_USER_PERDAY+"sum"+userid;
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        String key = Constant.RP_USER_PERDAY+"sum"+userid+dateStr;
         if(springJedisDao.hasKey(key)){
-            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+            springJedisDao.increment(key,operateType,point);
         }else{
-            springJedisDao.increment(key,operateType+"#"+dateStr,point);
+            springJedisDao.increment(key,operateType,point);
             springJedisDao.expire(key,DateUtils.getLastTime());
         }
 
-        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL";
+        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL"+dateStr;
         if(springJedisDao.hasKey(totalKey)){
             springJedisDao.increment(totalKey,dateStr,point);
         }else{

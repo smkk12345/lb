@@ -252,6 +252,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 						//判断是否已经关注
 						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getUserid());
 						if(null != fans){
+							snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
 							snsFans.setIsfocus("1");
 						}
 					}else{
@@ -259,6 +260,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 						//判断是否已经是粉丝
 						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getLikeuserid());
 						if(null != fans){
+							snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
 							snsFans.setIsfans("1");
 						}
 					}
@@ -269,6 +271,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 							//好友备注
 							snsFans.getAppUserMongoEntityLikeuserid().setNickname(snsFriends.getRemark());
 						}
+						snsFans.getAppUserMongoEntityLikeuserid().setIsfriend("1");
 						snsFans.setIsfriend("1");
 					}
 				}
