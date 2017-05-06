@@ -103,7 +103,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
     }
 
     public void updateRecommendImproveSort(Long improveId,String businesstype,int sort){
-        Criteria criteria = Criteria.where("improveId").in(improveId)
+        Criteria criteria = Criteria.where("improveId").is(improveId)
                 .and("businesstype").is(businesstype);
         Query query = new Query(criteria);
         Update update = new Update();
