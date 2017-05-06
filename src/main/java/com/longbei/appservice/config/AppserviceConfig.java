@@ -94,6 +94,7 @@ public class AppserviceConfig {
     public static String h5_share_rank_improve;
     public static String h5_share_goal_detail;
     public static String h5_agreementurl;
+    public static String h5_levelprivilege;
 
     @Value("${h5.helper}")
     public void setH5_helper(String h5_helper){
@@ -127,5 +128,10 @@ public class AppserviceConfig {
     @Value("${h5.agreementurl}")
     public void setH5_agreementurl(String h5_agreementurl){
         this.h5_agreementurl = h5_agreementurl;
+    }
+
+    @Value("${h5.levelprivilege}")
+    public void setH5_levelprivilege(String h5_levelprivilege){
+        this.h5_levelprivilege = h5_levelprivilege;
     }
 }

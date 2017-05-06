@@ -26,12 +26,12 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateInterests(int id,String ptype,String perfectname) {
+	public BaseResp<Object> insertInterests(String userid,String ids) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
+
 		UserInterests data = new UserInterests();
-		data.setId(id);
-		data.setPtype(ptype);
-		data.setPerfectname(perfectname);
+		data.setUserid(userid);
+		data.setPtype(ids);
 		Date date = new Date();
 		data.setUpdatetime(date);
 		try {
@@ -45,40 +45,5 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 		return baseResp;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public BaseResp<Object> insertInterests(String userid,String ptype,String perfectname) {
-		BaseResp<Object> baseResp = new BaseResp<Object>();
-		UserInterests data = new UserInterests();
-		data.setUserid(userid);
-		data.setPtype(ptype);
-		data.setPerfectname(perfectname);
-		Date date = new Date();
-		data.setCreatetime(date);
-		data.setUpdatetime(date);
-		try {
-			int n = userInterestsMapper.insertInterests(data);
-			if(n == 1){
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}
-		} catch (Exception e) {
-			logger.error("updateInterests error and msg={}",e);
-		}
-		return baseResp;
-	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public BaseResp<Object> deleteInterests(int id,String userid) {
-		BaseResp<Object> baseResp = new BaseResp<Object>();
-		try {
-			int m = userInterestsMapper.deleteInterests(id,userid);
-			if(m == 1){
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			}
-		} catch (Exception e) {
-			logger.error("deleteSchool error and msg={}",e);
-		}
-		return baseResp;
-	}
 }
