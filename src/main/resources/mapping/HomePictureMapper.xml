@@ -49,7 +49,7 @@
     from homepicture
     WHERE isdel=0
     <if test="homePicture.type != null and homePicture.type != ''">
-      AND type = #{homePicture.type}
+      AND homepicture.type = #{homePicture.type}
     </if>
     <if test="homePicture.picname != null and homePicture.picname != ''">
       AND picname LIKE concat(concat('%',#{homePicture.picname}),'%')
