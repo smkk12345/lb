@@ -17,11 +17,12 @@
     id, userid, region, address, isdefault, mobile, receiver, isdel, createtime, 
     updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from user_address
-    where id = #{id,jdbcType=INTEGER} and isdel = '0'
+    where id = #{id} and isdel = '0' 
+    and userid = #{userid} 
   </select>
   
   <select id="selectByIdAndUserid" resultMap="BaseResultMap" >
