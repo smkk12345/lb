@@ -504,6 +504,25 @@ public class RankApiController {
         return baseResp;
     }
 
+    @RequestMapping(value = "updatestatus/{status}/{userid}/{rankid}/{improveid}")
+    public BaseResp<Object> updateStatus(@PathVariable("status")String status,
+                                         @PathVariable("userid")String userid,
+                                         @PathVariable("rankid")String rankid,
+                                         @PathVariable("improveid")String improveid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+
+        if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(status,userid,rankid,improveid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.updateStatus(status,userid,rankid,improveid);
+        } catch (Exception e) {
+            logger.error("remove rank improve improveid={} userid={} is error:",improveid,userid,e);
+        }
+        return baseResp;
+
+    }
+
     /**
      * 下榜，下榜再不能参加次榜
      * @param rankMembers
