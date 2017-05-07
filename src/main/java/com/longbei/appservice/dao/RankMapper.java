@@ -34,7 +34,7 @@ public interface RankMapper {
     /**
      * 获取榜单列表 （带人数、评论数排序）
      * @param rank
-     * @param pageno
+     * @param startno
      * @param pagesize
      * @return
      * @author IngaWu
