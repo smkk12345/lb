@@ -7,6 +7,7 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -836,6 +837,7 @@ public class UserServiceImpl implements UserService {
 			map.put("levelDetail", levelDetail);
 			map.put("todayPoint", point);
 			map.put("userPoint", userInfo.getCurpoint());
+			map.put("levelprivilegeurl", AppserviceConfig.h5_levelprivilege);
 //			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
@@ -867,7 +869,8 @@ public class UserServiceImpl implements UserService {
 
 	private Map<String, Object> getPointInfoPerDay(long userid, int point){
 		Map<String, Object> returnmap = new HashMap<String, Object>();
-		String key = Constant.RP_USER_PERDAY+"sum"+userid;
+		String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+		String key = Constant.RP_USER_PERDAY+"sum"+userid+dateStr;
 		List<String> list = new ArrayList<>();
 		if(springJedisDao.hasKey(key)){
 			Map<String,String> map = springJedisDao.entries(key);
@@ -875,7 +878,7 @@ public class UserServiceImpl implements UserService {
 			while (iterator.hasNext()){
 				String subKey = iterator.next();
 				String value = map.get(subKey);
-				String operateType = subKey.split("#")[0];
+				String operateType = subKey;
 				String disStr = "";
 				switch (operateType){
 					case "NEW_REGISTER":
@@ -1123,6 +1126,16 @@ public class UserServiceImpl implements UserService {
 			baseResp.initCodeAndDesp();
 		}
 		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
+		try{
+			return iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+		}catch (Exception e){
+			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
+		}
+		return BaseResp.fail();
 	}
 
 	/**

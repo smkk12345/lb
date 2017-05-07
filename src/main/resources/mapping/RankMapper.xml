@@ -826,4 +826,13 @@
     and isfinish = #{isfinish}
   </select>
 
+  <select id="selectHasAwardRankList" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM rank r
+    where EXISTS (select rm.rankid from rank_members rm where r.rankid=rm.rankid and rm.iswinning = 1)
+    order by r.endtime DESC
+    limit #{startNum},#{pageSize}
+  </select>
+
 </mapper>

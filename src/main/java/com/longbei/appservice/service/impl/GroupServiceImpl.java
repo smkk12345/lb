@@ -815,6 +815,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         return baseResp;
     }
 
+
+
+
     /**
      * 更新用户群组的其他信息
      * @param userid 用户id
@@ -875,8 +878,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
-            logger.error("select group detail error groupId:{} userId:{}",groupId,userid);
-            printException(e);
+            logger.error("select group detail error groupId:{} userId:{}",groupId,userid,e);
         }
         return baseResp;
     }

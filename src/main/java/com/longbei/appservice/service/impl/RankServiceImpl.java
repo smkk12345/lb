@@ -1598,7 +1598,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAcceptAwardMap.put("reciverusertel",rankAcceptAward.getReciverusertel());//收货人电话
                 }
                 rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
-
+                rankMember.setReceivecode(rankAcceptAward.getReceivecode());
                 resultMap.put("rankAcceptAward",rankAcceptAwardMap);
                 resultMap.put("award",award);
                 resultMap.put("rankMember",rankMember);
@@ -2246,12 +2246,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             //获取当前结束的榜单
             Map<String,Object> parameterMap = new HashMap<String,Object>();
-            parameterMap.put("isfinish","5");
-            parameterMap.put("isdel","0");
-            parameterMap.put("startNum",startNum);
-            parameterMap.put("pageSize",pageSize);
 
-            List<Rank> finishRankList = this.rankMapper.selectRankList(parameterMap);
+            List<Rank> finishRankList = this.rankMapper.selectHasAwardRankList(startNum, pageSize);
 
             //查看结束的榜单的获奖情况
             if(finishRankList != null && finishRankList.size() > 0){
@@ -2576,10 +2572,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("commentCount","0");
             }
 
-            //将入榜口令给过滤掉
-            if(userId == null || !userId.equals(rank.getCreateuserid())){
-                rank.setJoincode(null);
-            }
+
 
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);
@@ -2825,6 +2818,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         RankMembers rankMembers = new RankMembers();
         rankMembers.setRankid(Long.parseLong(rankid));
+        Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
         List<RankAcceptAward> rankAcceptAwards = new ArrayList<>();
         //获取榜单全部成员列表
         List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
@@ -2854,7 +2848,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != award){
                     rankAcceptAward.setAwardcateid(String.valueOf(award.getAwardcateid()));
                 }
-                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+
                 if (null != rank){
                     rankAcceptAward.setRanktitle(rank.getRanktitle());
                 }

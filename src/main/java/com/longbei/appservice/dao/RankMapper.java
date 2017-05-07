@@ -93,4 +93,6 @@ public interface RankMapper {
      */
     List<Rank> selectWillEndRank(Map<String, Object> map);
 
+    List<Rank> selectHasAwardRankList(@Param("startNum") int startNum,@Param("pageSize") int pageSize);
+
 }

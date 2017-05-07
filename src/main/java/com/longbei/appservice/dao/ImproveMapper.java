@@ -54,7 +54,7 @@ public interface ImproveMapper {
                                     @Param("likescore") int likescore,
                                     @Param("startno")int startno,
                                     @Param("pagesize")int pagesize,
-                                    @Param("lastdate") Date lastdate
+                                    @Param("lastdate") String lastdate
                             );
 
 

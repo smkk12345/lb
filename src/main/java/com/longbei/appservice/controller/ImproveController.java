@@ -52,7 +52,8 @@ public class ImproveController {
      * @param userid   用户id
      * @param ptype    十全十美id  不传时查所有
      * @param ctype    0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
-     * @param lastDate 当天日期
+     * @param searchDate 当天日期
+     * @param lastDate 分页最后一个时间
      * @param pageSize 显示条数
      * @return
      * @Description: 获取参数lastdate当天的用户进步列表
@@ -61,16 +62,19 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "line/daylist")
-    public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype, String lastDate, String pageSize) {
-        logger.info("userid={},ptype={},ctype={},lastDate={},pageSize={}",userid, ptype,ctype,lastDate,pageSize);
+    public BaseResp<List<Improve>> daylist(String userid, String ptype, String ctype,
+                                           String searchDate, String lastDate, String pageSize) {
+        logger.info("line/daylist userid = {}, ptype = {}, ctype = {}, searchDate = {}, lastDate = {}, pageSize = {}",
+                userid, ptype, ctype, searchDate, lastDate, pageSize);
 
-        if (StringUtils.hasBlankParams(userid, ctype, lastDate)) {
+        if (StringUtils.hasBlankParams(userid, ctype, searchDate)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         BaseResp<List<Improve>> baseres = new BaseResp<>();
         List<Improve> improves = null;
         try {
             improves = improveService.selectImproveListByUserDate(userid, ptype, ctype,
+                    searchDate == null ? null : DateUtils.parseDate(searchDate),
                     lastDate == null ? null : DateUtils.parseDate(lastDate),
                     Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
             baseres.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

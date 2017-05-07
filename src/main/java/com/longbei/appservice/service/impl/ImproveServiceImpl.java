@@ -557,7 +557,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
             improves = improveMapper.selectListByRank(rankid,orderby,
-                    flowerscore,likescore,pageNo,pageSize,lastdate==null?null:DateUtils.parseDate(lastdate));
+                    flowerscore,likescore,pageNo,pageSize,StringUtils.isBlank(lastdate)?null:lastdate);
             initImproveListOtherInfo(userid,improves);
             initSortInfo(rank,improves);
             if(null == improves){
@@ -1045,10 +1045,13 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> list = selectImproveListByUser(targetuserid,null,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
+            initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
             if (null != list && list.size() != 0){
                 for (Improve improve : list){
                     //初始化是否 点赞 送花 送钻 收藏
                     initIsOptionForImprove(userid+"",improve);
+                    improve.setAppUserMongoEntity(appUserMongoEntity);
                 }
             }
             baseResp = BaseResp.ok();
@@ -1068,10 +1071,9 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      */
 	@Override
-	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date lastdate, int pagesize) {
-		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype,lastdate,pagesize);
+	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date searchDate, Date lastdate, int pagesize) {
+		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype, searchDate,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
-
         for (int i = 0; i < timeLines.size() ; i++){
             TimeLine timeLine = timeLines.get(i);
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
