@@ -101,6 +101,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
     private CommentMongoService commentMongoService;
+    @Autowired
+    private ImproveService improveService;
 
     /**
      *  @author luye
@@ -2904,6 +2906,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("select rankmember info is error:",e);
         }
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> updateStatus(String status,String userid,String rankid,String improveid){
+        BaseResp<Object> reseResp = new BaseResp<>();
+        try {
+            //status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
+            if ("1".equals(status)) {
+                //删除
+                improveService.removeImprove(userid, improveid, "2", rankid);
+            }
+            if ("2".equals(status)) {
+                //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
+                //下榜
+                improveService.removeImproveFromBusiness(improveid, rankid, "2");
+            }
+            reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        } catch (Exception e) {
+            logger.error("remove rankImprove status={},userid={} ,rankid={},improveid={} ",status,userid,rankid,improveid);
+        }
+        return reseResp;
     }
 
     @Override
