@@ -504,11 +504,11 @@ public class RankApiController {
         return baseResp;
     }
 
-    @RequestMapping(value = "updatestatus/{status}/{userid}")
-    public BaseResp<Object> updateStatus(String rankid,
-                                         String improveid,
-                                         @PathVariable("status")String status,
-                                         @PathVariable("userid")String userid){
+    @RequestMapping(value = "updatestatus/{status}/{userid}/{rankid}/{improveid}")
+    public BaseResp<Object> updateStatus(@PathVariable("status")String status,
+                                         @PathVariable("userid")String userid,
+                                         @PathVariable("rankid")String rankid,
+                                         @PathVariable("improveid")String improveid){
         BaseResp<Object> baseResp = new BaseResp<>();
 
         if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(status,userid,rankid,improveid)){
