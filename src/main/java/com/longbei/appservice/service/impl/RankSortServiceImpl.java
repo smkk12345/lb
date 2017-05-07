@@ -152,6 +152,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             }else{//需要人工审核
                 updateRank.setIsfinish("2");
             }
+            updateRank.setIsrecommend("0");//榜单结束去掉推荐属性
             int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);
 
             //6.从redis中删除该标识 以及从redis中删除该榜单的排名
