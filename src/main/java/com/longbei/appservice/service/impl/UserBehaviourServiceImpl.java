@@ -136,13 +136,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             springJedisDao.expire(key,DateUtils.getLastTime());
         }
 
-        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL"+dateStr;
-        if(springJedisDao.hasKey(totalKey)){
-            springJedisDao.increment(totalKey,dateStr,point);
-        }else{
-            springJedisDao.increment(totalKey,dateStr,point);
-            springJedisDao.expire(totalKey,DateUtils.getLastTime());
-        }
+//        String totalKey = Constant.RP_USER_PERDAY+userid+"_TOTAL"+dateStr;
+//        if(springJedisDao.hasKey(totalKey)){
+//            springJedisDao.increment(totalKey,dateStr,point);
+//        }else{
+//            springJedisDao.increment(totalKey,dateStr,point);
+//            springJedisDao.expire(totalKey,DateUtils.getLastTime());
+//        }
 
     }
 
