@@ -510,6 +510,8 @@ public interface RankService extends BaseService{
      */
     BaseResp<Object> updateRankInfo(Long rankId, Long userid, Boolean needConfirm, String notice, Boolean noticeUser);
 
+    BaseResp<Object> insertNotice(Rank rank,String noticetype);
+
     /**
      * 查询榜主名片详情
      * @param rankCardId

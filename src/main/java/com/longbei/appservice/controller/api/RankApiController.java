@@ -243,6 +243,25 @@ public class RankApiController {
 
 
     /**
+     * 发布公告
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "insertnotice")
+    public BaseResp<Object> insertNotice(@RequestBody Rank rank,String noticetype){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = rankService.insertNotice(rank,noticetype);
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return baseResp;
+    }
+
+
+
+
+    /**
      * 发布榜单
      * @param rankid 榜单id
      * @return
