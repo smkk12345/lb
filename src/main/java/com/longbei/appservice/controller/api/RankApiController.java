@@ -13,6 +13,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
@@ -566,6 +567,27 @@ public class RankApiController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(value = "close/{rankid}")
+    BaseResp<Object> closeRank(@PathVariable("rankid")String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(null==rankid){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.closeRank(rankid);
+            //删除榜单
+            if(ResultUtil.isSuccess(baseResp)){
+                Rank rank =  new Rank();
+                rank.setRankid(Long.parseLong(rankid));
+                rank.setIsdel("1");
+                rankService.updateRankSymbol(rank);
+            }
+        }catch (Exception e){
+            logger.error("close rank_ rankid={} is error:",rankid);
+        }
+        return baseResp;
+    }
     /**
      * 设置，取消达人,附带 达人排序
      * @param rankMembers
@@ -607,6 +629,7 @@ public class RankApiController {
         }
         try {
             rankMembers.setCheckdate(new Date());
+            rankMembers.setIcount(0);
             baseResp = rankService.updateRankMemberCheckStatus(rankMembers);
         } catch (Exception e) {
             logger.error("check rankmember status rankid={} userid={} checkstatus={}" +

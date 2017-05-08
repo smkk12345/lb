@@ -370,6 +370,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
         Page<Rank> page = new Page<>(pageno,pagesize);
         try {
+            rank.setIsdel("0");
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
@@ -994,6 +995,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rankMembers.getUserid().equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
             }
+            rankMembers.setIcount(0);
             int updateRow = this.rankMembersMapper.updateRankMemberState(rankMembers);
             if(updateRow < 1){
                 return baseResp.fail("退榜失败");
@@ -1039,6 +1041,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+
+    @Override
+    public BaseResp<Object> closeRank(String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(Long.parseLong(rankid));
+            //获取榜单全部成员列表
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
+            for(RankMembers rankMember : rankMemberses){
+                try {
+                    removeRankMember(rankMember);
+                }catch (Exception e){
+                    logger.error("remove RankMember:{} error when close Rank rankId:{}",rankMember.getUserid(),rankid);
+                    return baseResp.fail("关闭榜单失败");
+                }
+            }
+        }catch (Exception e){
+            logger.error("close RankMember error rankId:{}",rankid);
+        }
+        return baseResp.ok("关闭榜单成功");
+
+    }
+
+
     @Override
     public BaseResp<Object> setIsfishionman(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -1049,6 +1076,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if ("0".equals(rankMembers.getIsfashionman())){
                 rankMembers.setDownfashionmantime(new Date());
             }
+            rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
                 return BaseResp.ok();
@@ -1063,6 +1091,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
                 return BaseResp.ok();
@@ -1298,8 +1327,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
             }else{
-//                int n = rank.get
-                baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+5+"条微进步！");
+                if("1".equals(rank.getIsfinish())){
+                    String sn = rank.getMinimprovenum();
+                    if(StringUtils.isBlank(sn)){
+                    }else{
+                        baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+(Integer.parseInt(sn) - rankMembers.getIcount())+"条微进步！");
+                    }
+                }
             }
 
             baseResp.setData(rankMembers);
@@ -1984,10 +2018,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //查询是否有该用户的获奖信息
             RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userid+"");
             if(rankAcceptAward == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"未获取到获奖信息");
             }
             if(!"2".equals(rankAcceptAward.getStatus())){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"未获取到获奖信息");
             }
             //修改订单状态为已收货
             Map<String,Object> map = new HashMap<String,Object>();
@@ -2822,8 +2856,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
-
-
+                    rankMembers.setIcount(0);
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())

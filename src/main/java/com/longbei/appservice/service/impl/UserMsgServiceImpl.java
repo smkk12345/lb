@@ -135,9 +135,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	@Override
 	public int selectCountShowMyByMtype(long userid){
-		Map<String,Object> resultMap = selectShowMyByMtype(userid);
-		int count = Integer.parseInt(resultMap.get("count").toString());
-		return count > 0?1:0;
+		try{
+			Map<String,Object> resultMap = selectShowMyByMtype(userid);
+			int count = Integer.parseInt(resultMap.get("count").toString());
+			return count > 0?1:0;
+		}catch (Exception e){
+			logger.error("userid={}",userid,e);
+		}
+		return 0;
 	}
 	
 	/**
