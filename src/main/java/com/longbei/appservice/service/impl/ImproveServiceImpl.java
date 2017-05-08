@@ -2477,6 +2477,7 @@ public class ImproveServiceImpl implements ImproveService{
             List<Improve> list = improveMapper.selectGoalMainImproveList(userid,startNum,pageSize);
             for (Improve improve:list) {
                 UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getGoalid());
+                improve.setIspublic(userGoal.getIspublic());
                 improve.setBusinessEntity(userGoal.getPtype(),
                         userGoal.getGoaltag(),
                         0,
