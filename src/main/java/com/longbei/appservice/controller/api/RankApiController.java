@@ -243,6 +243,25 @@ public class RankApiController {
 
 
     /**
+     * 发布公告
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "insertnotice")
+    public BaseResp<Object> insertNotice(@RequestBody Rank rank,String noticetype){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = rankService.insertNotice(rank,noticetype);
+        } catch (Exception e) {
+            logger.error("update rank is error:{}",e);
+        }
+        return baseResp;
+    }
+
+
+
+
+    /**
      * 发布榜单
      * @param rankid 榜单id
      * @return
@@ -786,6 +805,32 @@ public class RankApiController {
             pageSize = endNum - startNum;
         }
         baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
+        return baseResp;
+    }
+
+    /**
+     * 查询榜单中的达人
+     * @url http://ip:port/app_service/api/rank/selectFashionMan
+     * @param rankId 榜单id
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping(value="selectFashionMan")
+    public BaseResp<Object> selectFashionMan(String rankId,Integer startNum,Integer pageSize){
+        logger.info("rankId={},startNum={},pageSize={}",rankId,startNum,pageSize);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(rankId == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (startNum == null || startNum < 0){
+            startNum =Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+
+        baseResp = this.rankService.selectFashionMan(null,Long.parseLong(rankId),startNum,pageSize);
         return baseResp;
     }
 

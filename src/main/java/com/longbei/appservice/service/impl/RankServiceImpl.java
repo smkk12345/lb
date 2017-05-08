@@ -1202,6 +1202,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object>  baseResp = submitRankMemberCheckResultPreview(String.valueOf(rank.getRankid()));
         if (ResultUtil.isSuccess(baseResp)){
             if(isUpdateRank){
+                Rank rank1 = rankMapper.selectRankByRankid(rank.getRankid());
+                //防止获奖名单重复提交
+                if ("5".equals(rank1.getIsfinish())){
+                    return baseResp;
+                }
                 int res = rankMapper.updateSymbolByRankId(rank);
             }
             //添加中奖名单信息
@@ -1381,45 +1386,67 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             int row = this.rankMapper.updateSymbolByRankId(updateRank);
             if(row > 0 && StringUtils.isNotEmpty(notice) && noticeUser != null && noticeUser){
-                Map<String,Object> map = new HashMap<String,Object>();
-                map.put("rankId",rankId);
-                map.put("status","1");
-                final List<RankMembers> rankMembersList= this.rankMembersMapper.selectRankMembers(map);
-                if(rankMembersList != null && rankMembersList.size() > 0){
-                    //通知所有用户
-                    threadPoolTaskExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                String messageContent = "\"" + rank.getRanktitle() + "\"龙榜更新了公告:"+notice;
-                                List<Long> userIdList = new ArrayList<Long>();
-                                for(RankMembers rankMembers:rankMembersList){
-                                    userIdList.add(rankMembers.getUserid());
-                                }
-                                UserMsg userMsg = new UserMsg();
-                                userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
-                                userMsg.setMtype("0");//系统消息
-                                userMsg.setMsgtype("42");
-                                userMsg.setSnsid(rank.getRankid());
-                                userMsg.setGtypeid(rank.getRankid());
-                                userMsg.setRemark(messageContent);
-                                userMsg.setGtype("10");
-                                userMsg.setCreatetime(new Date());
-                                userMsg.setUpdatetime(new Date());
-                                userMsg.setIsdel("0");
-                                userMsg.setIsread("0");
-                                userMsgService.batchInsertUserMsg(userIdList,userMsg);
-                            }catch (Exception e){
-                                logger.error("update rank info notice user error msg:{}",e);
-                            }
-                        }
-                    });
-                }
+                rankNoticeMessage(rankId,notice);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("update rank info error rankId:{} userid:{} needConfirm:{} notice:{} noticeUser:{}",rankId,userid,needConfirm,notice,noticeUser);
             printException(e);
+        }
+        return baseResp;
+    }
+
+
+    private void rankNoticeMessage(Long rankId,final String  notice){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("rankId",rankId);
+        map.put("status","1");
+        final List<RankMembers> rankMembersList= this.rankMembersMapper.selectRankMembers(map);
+        final Rank rank = this.rankMapper.selectRankByRankid(rankId);
+        if(rankMembersList != null && rankMembersList.size() > 0){
+            //通知所有用户
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        String messageContent = "\"" + rank.getRanktitle() + "\"龙榜更新了公告:"+notice;
+                        List<Long> userIdList = new ArrayList<Long>();
+                        for(RankMembers rankMembers:rankMembersList){
+                            userIdList.add(rankMembers.getUserid());
+                        }
+                        UserMsg userMsg = new UserMsg();
+                        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        userMsg.setMtype("0");//系统消息
+                        userMsg.setMsgtype("42");
+                        userMsg.setSnsid(rank.getRankid());
+                        userMsg.setGtypeid(rank.getRankid());
+                        userMsg.setRemark(messageContent);
+                        userMsg.setGtype("10");
+                        userMsg.setCreatetime(new Date());
+                        userMsg.setUpdatetime(new Date());
+                        userMsg.setIsdel("0");
+                        userMsg.setIsread("0");
+                        userMsgService.batchInsertUserMsg(userIdList,userMsg);
+                    }catch (Exception e){
+                        logger.error("update rank info notice user error msg:{}",e);
+                    }
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public BaseResp<Object> insertNotice(Rank rank, String noticetype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            int row = this.rankMapper.updateSymbolByRankId(rank);
+            if(row > 0 && "1".equals(noticetype)){
+                rankNoticeMessage(rank.getRankid(),rank.getNotice());
+            }
+            baseResp = BaseResp.ok();
+        } catch (Exception e) {
+            logger.error("insert rank notice is error:",e);
         }
         return baseResp;
     }
@@ -2829,15 +2856,18 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
-                    rankMembers.setIcount(0);
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())
                         || "2".equals(rkmember.getCheckstatus())){
                     tempcount++;
-                    rankMembers.setUserid(rkmember.getUserid());
-                    rankMembers.setIswinning("2");
-                    rankMembersMapper.updateRankMemberState(rankMembers);
+                    //rankMembers延用了前面的值，且无法更新
+//                    rankMembers.setUserid(rkmember.getUserid());
+//                    rankMembers.setIswinning("2");
+                    rkmember.setIswinning("2");
+                    rkmember.setIcount(0);//不改变进步数
+//                    rankMembersMapper.updateRankMemberState(rankMembers);
+                    rankMembersMapper.updateRankMemberState(rkmember);
                 }
             }
             awardcount = 0;

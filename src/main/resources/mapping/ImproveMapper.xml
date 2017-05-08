@@ -395,7 +395,7 @@
         ON ir.businessid=rm.rankid
           and rm.userid = ir.userid
     <where>
-      rm.status = '1'
+      rm.status = '1' AND ir.status='0'
       and ir.isdel = 0
       AND ir.businessid = #{businessid}
       <if test="lastdate != null">

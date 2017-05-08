@@ -595,6 +595,7 @@ public class RankController {
     }
 
     /**
+     *
      * 更改榜单的加榜验证 或 公告
      * @param rankId
      * @param userid 当前登录用户id

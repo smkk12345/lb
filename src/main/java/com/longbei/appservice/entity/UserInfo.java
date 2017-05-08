@@ -111,6 +111,9 @@ public class UserInfo {
 
     private String defaultbg;//背景图片
 
+
+    private String remark; //备注
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -768,5 +771,13 @@ public class UserInfo {
 
 	public void setIsfans(String isfans) {
 		this.isfans = isfans;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
