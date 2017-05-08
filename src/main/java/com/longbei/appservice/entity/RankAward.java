@@ -1,6 +1,9 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.longbei.appservice.common.web.CustomDoubleSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -118,6 +121,7 @@ public class RankAward {
      * 
      * @return awardrate 
      */
+    @JsonSerialize(using = CustomDoubleSerialize.class)
     public Double getAwardrate() {
         return awardrate;
     }
