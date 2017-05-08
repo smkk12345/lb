@@ -590,7 +590,7 @@
               and userid = #{userId}
           </if>
           <if test="isFashionMan != null">
-              isfashionman = 1
+              and isfashionman = 1
           </if>
           <if test="status != null">
               and status = #{status}
@@ -600,7 +600,7 @@
       <if test="orderType != null and orderType == 'updateTimeDesc'">
           order by updatetime desc
       </if>
-      <if test="orderType == null">
+      <if test="sort == null">
           order by sort desc,updatetime desc
       </if>
       <if test="startNum != null">
