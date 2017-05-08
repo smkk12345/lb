@@ -1326,7 +1326,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     String sn = rank.getMinimprovenum();
                     if(StringUtils.isBlank(sn)){
                     }else{
-                        baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+(Integer.parseInt(sn) - rankMembers.getIcount())+"条微进步！");
+                        rankMembers.setCheckresult("根据榜规则，至少还需要发"+(Integer.parseInt(sn) - rankMembers.getIcount())+"条微进步！");
                     }
                 }
             }

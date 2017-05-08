@@ -413,7 +413,7 @@
       ORDER BY ir.flowers*#{flowerscore}+ir.likes*#{likescore} desc
     </if>
     <choose>
-      <when test="orderby=='0'.toString()">
+      <when test="orderby=='0'.toString() or lastdate != null">
         limit #{pagesize}
       </when>
       <otherwise>
