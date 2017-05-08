@@ -1039,6 +1039,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+
+    @Override
+    public BaseResp<Object> closeRank(String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setRankid(Long.parseLong(rankid));
+            //获取榜单全部成员列表
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
+            for(RankMembers rankMember : rankMemberses){
+                try {
+                    removeRankMember(rankMember);
+                }catch (Exception e){
+                    logger.error("remove RankMember:{} error when close Rank rankId:{}",rankMember.getUserid(),rankid);
+                    return baseResp.fail("关闭榜单失败");
+                }
+            }
+        }catch (Exception e){
+            logger.error("close RankMember error rankId:{}",rankid);
+        }
+        return baseResp.ok("关闭榜单成功");
+
+    }
+
+
     @Override
     public BaseResp<Object> setIsfishionman(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();

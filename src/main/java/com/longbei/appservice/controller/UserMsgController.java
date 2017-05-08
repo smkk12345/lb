@@ -361,10 +361,6 @@ public class UserMsgController extends BaseController {
     * @Title: http://ip:port/app_service/userMsg/isMsgRed
     * @Description: 获取消息是否显示红点
     * @param @param userid  
-    * @param @param type 0 通知消息(系统消息)页面是否显示红点
-	* 		 			 1  获取"我的"页面是否显示红点
-	* 		 			 2:@我消息页面是否显示红点
-	 * 		 			 3: 添加好友申请 是否显示红点
 	* return_type  0:不显示   1：显示
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -379,11 +375,15 @@ public class UserMsgController extends BaseController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
+			//type 0 通知消息(系统消息)页面是否显示红点
+			//	   1  获取"我的"页面是否显示红点
+			// 	   2:@我消息页面是否显示红点
+			//	   3: 添加好友申请 是否显示红点
 //			Map<String,Object> resultMap = new HashMap<String,Object>();
 //  			int temp = 0;
 //  			if("1".equals(type)){
   				//type 1   获取"我的"页面是否显示红点
-				Map<String,Object> myMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
+			Map<String,Object> myMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
 //  			}else if("3".equals(type)){
 				//获取添加好友的申请 消息数量和最大的createtime
 			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
