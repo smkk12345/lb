@@ -949,6 +949,8 @@ public class UserServiceImpl implements UserService {
 						point += Integer.parseInt(value);
 						break;
 					default:
+						disStr = operateType+value+"分";
+						point += Integer.parseInt(value);
 						break;
 				}
 				list.add(disStr);
