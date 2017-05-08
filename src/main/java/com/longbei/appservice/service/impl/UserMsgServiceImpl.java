@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
@@ -136,9 +135,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	@Override
 	public int selectCountShowMyByMtype(long userid){
-		Map<String,Object> resultMap = selectShowMyByMtype(userid);
-		int count = Integer.parseInt(resultMap.get("count").toString());
-		return count > 0?1:0;
+		try{
+			Map<String,Object> resultMap = selectShowMyByMtype(userid);
+			int count = Integer.parseInt(resultMap.get("count").toString());
+			return count > 0?1:0;
+		}catch (Exception e){
+			logger.error("userid={}",userid,e);
+		}
+		return 0;
 	}
 	
 	/**
@@ -199,7 +203,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 //				}
 			}
 			if(msgTypeList.size() == 0){
-				resultMap.put("count",0);
+				resultMap.put("mycount",0);
 				return resultMap;
 			}
 			Map<String,Object> parameterMap = new HashMap<String,Object>();
@@ -222,10 +226,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 				if(count < 1){
 					resultMap.remove("maxtime");
 				}
+				resultMap.remove("count");
+				resultMap.put("mycount", count);
 				return resultMap;
 			}
 			if(count < 1){
-				resultMap.put("count",1);
+				resultMap.put("mycount",1);
 				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
 				return resultMap;
 			}
@@ -236,12 +242,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}else{
 				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
 			}
-			resultMap.put("count",count);
+			resultMap.put("mycount",count);
 			return resultMap;
 		}catch (Exception e){
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
-		resultMap.put("count",0);
+		resultMap.put("mycount",0);
 		return resultMap;
 	}
 	
@@ -582,8 +588,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		int count = friendAddAskList != null?friendAddAskList.size():0;
 		Date maxtime = (friendAddAskList != null && friendAddAskList.size() > 0)?friendAddAskList.get(0).getCreateDate():null;
-		resultMap.put("count",count);
-		resultMap.put("maxtime",maxtime.getTime()/1000);
+		resultMap.put("friendAskcount",count);
+		if(null != maxtime){
+			resultMap.put("maxtime",maxtime.getTime()/1000);
+		}
 		return resultMap;
 	}
 
@@ -602,7 +610,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * mtype 0 系统消息(通知消息.进步消息等) 
 	 * 		 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
 	 * 		 2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 * 		 	14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
 	 */
 	@Override
 	public BaseResp<Object> selectOtherList(long userid, String mtype, String msgtype, int startNum, int endNum) {
@@ -612,17 +620,29 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
 				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  )
+				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  44: 榜中成员下榜)
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
 							&& !"17".equals(userMsg.getMsgtype()) ){
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
-						//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
-						appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
-						appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
-						userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+						if("44".equals(userMsg.getMsgtype())){
+							//44: 榜中成员下榜     
+							if(!"0".equals(userMsg.getFriendid())){
+								//如果是定制榜---显示榜主的信息
+								initMsgUserInfoByFriendid(userMsg, userid);
+							}else{
+								appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+								appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+								userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+							}
+						}else{
+							//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
+							appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+							appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+							userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+						}
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -1000,10 +1020,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public Map<String,Object> selectCountByType(long userid, String mtype, String msgtype, String isread) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		try {
-			map = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread);
-			long count = (long)map.get("count");
-			if(count > 0){
-
+			Map<String,Object> resultmap = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread);
+			long count = 0;
+			if(!resultmap.isEmpty()){
+				count = (long)resultmap.get("count");
+			}
+			if("0".equals(mtype)){
+				//通知消息
+				map.put("informcount", count);
+			}
+			if("2".equals(mtype)){
+				//@我消息
+				map.put("rankcount", count);
 			}
 		} catch (Exception e) {
 			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);

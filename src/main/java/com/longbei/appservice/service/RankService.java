@@ -228,6 +228,13 @@ public interface RankService extends BaseService{
     BaseResp<Object> removeRankMember(RankMembers rankMembers);
 
     /**
+     * 关闭榜单
+     * @param rankid
+     * @return
+     */
+    BaseResp<Object> closeRank(String rankid);
+
+    /**
      * 设置，取消达人
      * @param rankMembers
      * @return
@@ -502,6 +509,8 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> updateRankInfo(Long rankId, Long userid, Boolean needConfirm, String notice, Boolean noticeUser);
+
+    BaseResp<Object> insertNotice(Rank rank,String noticetype);
 
     /**
      * 查询榜主名片详情

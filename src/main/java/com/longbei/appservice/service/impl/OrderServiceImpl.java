@@ -108,13 +108,15 @@ public class OrderServiceImpl implements OrderService {
 				if(ResultUtil.isSuccess(baseResp)){
 					//调用product_service成功后    扣除进步币，龙币   
 					if(moneyprice != 0){
+						//结算订单所用龙币
+						userInfoMapper.updateMoneyAndFlowerByUserid(userid, -moneyprice, 0);
 						//origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 						// 					3：设榜单    4：赞助榜单    5：赞助教室 
 						userMoneyDetailService.insertPublic(userid, "2", moneyprice, 0);
-					}else{
-						baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					}
 					if(impiconprice != 0){
+						//结算订单所用进步币
+						userInfoMapper.updateCoinAndFlowerByUserid(userid, -impiconprice, 0);
 						// 7:兑换商品
 						userImpCoinDetailService.insertPublic(userid, "7",
 								impiconprice, Long.parseLong(orderid), 0l);
@@ -127,14 +129,14 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 	
-	/**
-	 * @author yinxc
-	 * 添加龙币明细
-	 * 2017年4月5日
-	 * @param baseResp 
-	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
-	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
-	 */
+//	/**
+//	 * @author yinxc
+//	 * 添加龙币明细
+//	 * 2017年4月5日
+//	 * @param
+//	 * @  origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+//	 * 					3：设榜单    4：赞助榜单    5：赞助教室
+//	 */
 //	private void insertMoney(Integer moneyprice, Long userid, String origin){
 //		//数量
 //		userMoneyDetailService.insertPublic(userid, origin, moneyprice, 0);

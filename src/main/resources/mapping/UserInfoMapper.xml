@@ -618,11 +618,12 @@
           userid,
           avatar,
           username,
+          upfashionmantime,
           nickname
       from user_info
       where
           isfashionman = 1
-          order by upfashionmantime desc
+          order by sort desc,upfashionmantime desc
       limit #{startNum},#{pageSize}
   </select>
 

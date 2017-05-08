@@ -583,21 +583,25 @@
         <include refid="Base_Column_List" />
       from rank_members
       <where>
+          <if test="rankId != null">
+              and rankid = #{rankId}
+          </if>
+          <if test="userId != null">
+              and userid = #{userId}
+          </if>
           <if test="isFashionMan != null">
               isfashionman = 1
           </if>
           <if test="status != null">
               and status = #{status}
           </if>
-          <if test="rankId != null">
-              and rankid = #{rankId}
-          </if>
-          <if test="userId != null">
-            and userid = #{userId}
-          </if>
+
       </where>
       <if test="orderType != null and orderType == 'updateTimeDesc'">
           order by updatetime desc
+      </if>
+      <if test="orderType == null">
+          order by sort desc,updatetime desc
       </if>
       <if test="startNum != null">
           limit #{startNum},#{pageSize}
