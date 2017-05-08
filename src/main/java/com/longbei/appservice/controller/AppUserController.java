@@ -492,7 +492,7 @@ public class AppUserController extends BaseController {
     		String inviteuserid = request.getParameter("inviteusername");
     		String deviceindex = request.getParameter("deviceindex");
             String devicetype = request.getParameter("devicetype");
-        logger.info("login utype={},openid={},password={},username={},avatar={},sex={},randomcode={},inviteuserid={},deviceindex={},devicetype={}",
+            logger.info("login utype={},openid={},password={},username={},avatar={},sex={},randomcode={},inviteuserid={},deviceindex={},devicetype={}",
                 utype, openid,password,username,avatar,sex,randomcode,inviteuserid,deviceindex,devicetype);
 
         //必传参数  类型 openid 密码 手机号  随机码
@@ -509,6 +509,26 @@ public class AppUserController extends BaseController {
 			logger.error("thirdregister error and msg = {}",e);
 		}
     		return baseResp;
+    }
+
+    /**
+     * user/thirdbinding
+     * 绑定第三方帐号
+     * @param userid  必传
+     * @param utype   必传
+     * @param openid  必传
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/thirdbinding")
+    @ResponseBody
+    public BaseResp<Object> thirdbinding(String userid,String utype,String openid) {
+        logger.info("thirdbinding userid={},utype={},opendi={}",userid,utype,openid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid,utype,openid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return userService.thirdbinding(userid,utype,openid);
     }
 
     /** user/thirdlogin

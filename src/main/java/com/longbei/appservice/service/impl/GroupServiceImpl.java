@@ -871,6 +871,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembers != null && snsGroupMembers.getStatus() != 4 && snsGroupMembers.getStatus() != 2){
                 status = snsGroupMembers.getStatus() == 0?1:2;
                 resultMap.put("nickname",snsGroupMembers.getNickname());
+                if(snsGroup.getMainuserid().equals(String.valueOf(userid))){
+                    resultMap.put("isMainUser",true);
+                }else{
+                    resultMap.put("isMainUser",false);
+                }
             }
             baseResp.setData(snsGroup);
             resultMap.put("status",status);

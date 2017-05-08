@@ -34,7 +34,7 @@ public interface RankMapper {
     /**
      * 获取榜单列表 （带人数、评论数排序）
      * @param rank
-     * @param pageno
+     * @param startno
      * @param pagesize
      * @return
      * @author IngaWu
@@ -92,5 +92,7 @@ public interface RankMapper {
      * @return
      */
     List<Rank> selectWillEndRank(Map<String, Object> map);
+
+    List<Rank> selectHasAwardRankList(@Param("startNum") int startNum,@Param("pageSize") int pageSize);
 
 }

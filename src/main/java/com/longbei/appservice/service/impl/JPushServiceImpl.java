@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service("jPushService")
 public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
 
+    @Autowired
     private IJPushService iJPushService;
     /**
      * 发送push消息

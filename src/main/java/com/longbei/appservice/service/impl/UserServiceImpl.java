@@ -1128,6 +1128,16 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
+		try{
+			return iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+		}catch (Exception e){
+			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
+		}
+		return BaseResp.fail();
+	}
+
 	/**
 	 * 用户注册初始化用户显示菜单
 	 */

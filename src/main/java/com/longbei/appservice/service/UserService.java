@@ -225,4 +225,13 @@ public interface UserService {
 	BaseResp<List<UserSettingMenu>> selectMenuByUid(long userid);
 
 	BaseResp<Object> updateBg(long userid,String bg);
+
+	/**
+	 * 第三方帐号绑定
+	 * @param userid
+	 * @param utype
+	 * @param opendid
+	 * @return
+	 */
+	BaseResp<Object> thirdbinding(String userid,String utype,String opendid);
 }

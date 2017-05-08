@@ -190,6 +190,17 @@ public interface RankService extends BaseService{
      */
     BaseResp<RankMembers> selectRankMemberInfo(String rankid,String userid);
 
+
+    /**
+     * 榜中单条进步下榜或删除
+     * @param status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
+     * @param userid
+     * @param rankid
+     * @param improveid
+     * @return
+     */
+    BaseResp<Object> updateStatus(String status,String userid,String rankid,String improveid);
+
     /**
      * 获取成员列表 app
      * @param rankid
