@@ -171,6 +171,16 @@ public interface RankService extends BaseService{
      */
     BaseResp<Page<RankMembers>> selectRankAllMemberList(UserInfo userInfo,Integer pageno,Integer pagesize);
 
+
+    /**
+     * 查询榜单达人列表
+     * @param rankId
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<RankMembers>> selectRankFashionManList(String rankId,Integer pageno,Integer pagesize);
+
     /**
      * 获取成员列表 待审核 pc
      * @param rankMembers
