@@ -800,10 +800,11 @@ public class UserServiceImpl implements UserService {
 			List<String> levelDetail = getPointInfoLevel(userid, userLevel);
 //			String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 //			String point = springJedisDao.getHashValue(Constant.RP_USER_PERDAY+userid+"_TOTAL",dateStr);
-			map.put("pointDetail", ist);
-			map.put("levelDetail", levelDetail);
+			map.put("pointDetail", ist); //得分明细
+			map.put("levelDetail", levelDetail);//
 			map.put("todayPoint",point);
-			map.put("userPoint", userInfo.getCurpoint());
+			map.put("userPoint", userInfo.getPoint());
+			map.put("curPoint",userInfo.getCurpoint());
 //			map.put("",);
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
@@ -836,9 +837,9 @@ public class UserServiceImpl implements UserService {
 			map.put("pointDetail", ist);
 			map.put("levelDetail", levelDetail);
 			map.put("todayPoint", point);
-			map.put("userPoint", userInfo.getCurpoint());
+			map.put("userPoint", userInfo.getPoint());
 			map.put("levelprivilegeurl", AppserviceConfig.h5_levelprivilege);
-//			map.put("",);
+			map.put("curPoint",userInfo.getCurpoint());
 			baseResp.setData(map);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
