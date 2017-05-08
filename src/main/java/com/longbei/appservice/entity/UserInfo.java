@@ -103,7 +103,7 @@ public class UserInfo {
 
     private Date downfashionmantime; //取消达人时间
 
-    private int sort; //排序
+    private int sortno; //排序
 
     private String settings; //设置
 
@@ -164,12 +164,12 @@ public class UserInfo {
         this.downfashionmantime = downfashionmantime;
     }
 
-    public int getSort() {
-        return sort;
+    public int getSortno() {
+        return sortno;
     }
 
-    public void setSort(int sort) {
-        this.sort = sort;
+    public void setSortno(int sortno) {
+        this.sortno = sortno;
     }
 
     private List<UserJob> jobList = new ArrayList<UserJob>();

@@ -406,7 +406,7 @@ public class UserServiceImpl implements UserService {
 		userInfo.setTotallikes(0);
 		userInfo.setTotalfans(0);
 		userInfo.setGivedflowers(0);
-		userInfo.setSort(0);
+		userInfo.setSortno(0);
 		int n = userInfoMapper.insertSelective(userInfo);
 		return n > 0 ? true : false;
 	}
@@ -1097,7 +1097,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			if ("0".equals(userInfo.getIsfashionman())){
 				userInfo.setDownfashionmantime(new Date());
-				userInfo.setSort(0);
+				userInfo.setSortno(0);
 			}
 			if ("1".equals(userInfo.getIsfashionman())){
 				userInfo.setUpfashionmantime(new Date());

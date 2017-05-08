@@ -44,7 +44,7 @@
     <result column="givedflowers" property="givedflowers"/>
     <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
     <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
-    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="sortno" property="sortno" jdbcType="INTEGER" />
     <result column="defaultbg" property="defaultbg"/>
 
   </resultMap>
@@ -54,7 +54,7 @@
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
     hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
-    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sort,defaultbg
+    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sortno,defaultbg
   </sql>
   
   <sql id="InfoMore_List" >
@@ -131,7 +131,7 @@
       </if>
     </where>
     <if test="order=='-1'.toString()">
-      ORDER BY sort DESC ,upfashionmantime DESC
+      ORDER BY sortno DESC ,upfashionmantime DESC
     </if>
     <if test="order=='0'.toString()">
       ORDER BY createtime
@@ -555,8 +555,8 @@
       <if test="isfashionman != null">
         isfashionman = #{isfashionman,jdbcType=VARCHAR},
       </if>
-      <if test="sort != null" >
-        sort = #{sort,jdbcType=INTEGER},
+      <if test="sortno != null" >
+        sortno = #{sortno,jdbcType=INTEGER},
       </if>
     </set>
     where userid = #{userid,jdbcType=BIGINT}
@@ -613,7 +613,7 @@
   </update>
 
   <!-- 查询系统推荐的达人 -->
-  <select id="selectFashionManUser" parameterType="int" resultType="com.longbei.appservice.entity.UserInfo">
+  <select id="selectFashionManUser" resultType="com.longbei.appservice.entity.UserInfo">
       select
           userid,
           avatar,
@@ -621,10 +621,12 @@
           upfashionmantime,
           nickname
       from user_info
-      where
-          isfashionman = 1
-          order by sort desc,upfashionmantime desc
-      limit #{startNum},#{pageSize}
+      where 
+          isfashionman = 1 
+          order by sortno desc,upfashionmantime desc 
+	    <if test="pageSize != 0" >
+	      limit #{startNum},#{pageSize}
+	    </if>
   </select>
 
   <!-- 修改用户进步币 -->
