@@ -2856,15 +2856,18 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
-                    rankMembers.setIcount(0);
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())
                         || "2".equals(rkmember.getCheckstatus())){
                     tempcount++;
-                    rankMembers.setUserid(rkmember.getUserid());
-                    rankMembers.setIswinning("2");
-                    rankMembersMapper.updateRankMemberState(rankMembers);
+                    //rankMembers延用了前面的值，且无法更新
+//                    rankMembers.setUserid(rkmember.getUserid());
+//                    rankMembers.setIswinning("2");
+                    rkmember.setIswinning("2");
+                    rkmember.setIcount(0);//不改变进步数
+//                    rankMembersMapper.updateRankMemberState(rankMembers);
+                    rankMembersMapper.updateRankMemberState(rkmember);
                 }
             }
             awardcount = 0;
