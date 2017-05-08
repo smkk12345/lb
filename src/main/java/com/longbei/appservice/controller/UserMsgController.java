@@ -63,7 +63,7 @@ public class UserMsgController extends BaseController {
 	*										32：创建的龙榜/教室/圈子被选中推荐) 
 	* 		 				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
 	* 		 				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	* 		 					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
     * @param @param msgtype 可为null 获取@我消息
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -372,28 +372,32 @@ public class UserMsgController extends BaseController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/isMsgRed")
-    public BaseResp<Object> isMsgRed(String userid, String type) {
-		logger.info("userid = {}", userid, type);
+    public BaseResp<Object> isMsgRed(String userid) {
+		logger.info("userid = {}", userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid, type)) {
+  		if (StringUtils.hasBlankParams(userid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-			Map<String,Object> resultMap = new HashMap<String,Object>();
-  			int temp = 0;
-  			if("1".equals(type)){
+//			Map<String,Object> resultMap = new HashMap<String,Object>();
+//  			int temp = 0;
+//  			if("1".equals(type)){
   				//type 1   获取"我的"页面是否显示红点
-				resultMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
-  			}else if("3".equals(type)){
+				Map<String,Object> myMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
+//  			}else if("3".equals(type)){
 				//获取添加好友的申请 消息数量和最大的createtime
-				resultMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
-			}else{
-  				resultMap = userMsgService.selectCountByType(Long.parseLong(userid), type, null, "0");
-  			}
-			baseResp.setExpandData(resultMap);
+			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
+//			}else{
+			Map<String,Object> informMap = userMsgService.selectCountByType(Long.parseLong(userid), "0", null, "0");
+			Map<String,Object> rankMap = userMsgService.selectCountByType(Long.parseLong(userid), "2", null, "0");
+//  			}
+			myMap.putAll(friendMap);
+			myMap.putAll(informMap);
+			myMap.putAll(rankMap);
+			baseResp.setExpandData(myMap);
   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("isMsgRed userid = {}, type = {}", userid, type, e);
+			logger.error("isMsgRed userid = {}", userid, e);
 		}
   		return baseResp;
 	}
