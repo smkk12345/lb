@@ -112,7 +112,7 @@ public class CommentController extends BaseController {
     * @param @param businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
 	* 										10：榜评论  11 圈子评论  12 教室评论
 	* @param @param impid  进步id  可为null
-    * @param @param startNum
+    * @param @param lastDate 分页数据最后一个的时间
     * @param @param pageSize
     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -122,15 +122,17 @@ public class CommentController extends BaseController {
 	@RequestMapping(value = "/commentList")
     @ResponseBody
     public BaseResp<Object> commentList(String userid, String businessid, String businesstype, String impid,
-    		int startNum, int pageSize) {
-		logger.info("userid={},businessid={}，businesstype={},impid={},startNum={}，pageSize={}",userid,businessid,businesstype,impid,startNum,pageSize);
+										String lastDate, int pageSize) {
+		logger.info("commentList userid = {},businessid = {}，businesstype = {}, impid = {}, lastDate={}，pageSize={}",
+				userid, businessid, businesstype, impid, lastDate, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
 			baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(userid, businessid, businesstype, 
-					impid, startNum, pageSize);
+					impid,
+					lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
 		} catch (Exception e) {
 			logger.error("commentList businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}

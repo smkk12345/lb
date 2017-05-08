@@ -216,7 +216,7 @@ public class RankShareController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, businessid, businesstype, impid, 0, 15);
+            baseResp = commentMongoService.selectCommentListByItypeidAndFriendid(null, businessid, businesstype, impid, null, 15);
         } catch (Exception e) {
             logger.error("commentList businessid = {}, businesstype = {}", impid, businesstype, e);
         }
