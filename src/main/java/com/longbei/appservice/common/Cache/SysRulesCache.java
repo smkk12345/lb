@@ -61,7 +61,7 @@ public class SysRulesCache {
         add(new PerfectTen("3","艺术",3));
         add(new PerfectTen("4","生活",4));
         add(new PerfectTen("5","公益",5));
-        add(new PerfectTen("6","文字",6));
+        add(new PerfectTen("6","文学",6));
         add(new PerfectTen("7","工作",7));
         add(new PerfectTen("8","修养",8));
         add(new PerfectTen("9","健康",9));
