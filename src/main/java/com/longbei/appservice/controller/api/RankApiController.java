@@ -547,6 +547,20 @@ public class RankApiController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(value = "close")
+    BaseResp<Object> closeRank(@PathVariable("rankid")String rankid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(null==rankid){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = rankService.closeRank(rankid);
+        }catch (Exception e){
+            logger.error("close rank_ rankid={} is error:",rankid);
+        }
+        return baseResp;
+    }
     /**
      * 设置，取消达人,附带 达人排序
      * @param rankMembers
