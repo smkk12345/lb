@@ -590,7 +590,7 @@
               and userid = #{userId}
           </if>
           <if test="isFashionMan != null">
-              isfashionman = 1
+              and isfashionman = 1
           </if>
           <if test="status != null">
               and status = #{status}
