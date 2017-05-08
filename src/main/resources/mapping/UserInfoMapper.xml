@@ -44,7 +44,7 @@
     <result column="givedflowers" property="givedflowers"/>
     <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
     <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
-    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="sortno" property="sortno" jdbcType="INTEGER" />
     <result column="defaultbg" property="defaultbg"/>
 
   </resultMap>
@@ -54,7 +54,7 @@
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
     hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
-    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sort,defaultbg
+    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sortno,defaultbg
   </sql>
   
   <sql id="InfoMore_List" >
@@ -131,7 +131,7 @@
       </if>
     </where>
     <if test="order=='-1'.toString()">
-      ORDER BY sort DESC ,upfashionmantime DESC
+      ORDER BY sortno DESC ,upfashionmantime DESC
     </if>
     <if test="order=='0'.toString()">
       ORDER BY createtime
@@ -623,7 +623,7 @@
       from user_info
       where
           isfashionman = 1
-          order by sort desc,upfashionmantime desc
+          order by sortno desc,upfashionmantime desc
       limit #{startNum},#{pageSize}
   </select>
 

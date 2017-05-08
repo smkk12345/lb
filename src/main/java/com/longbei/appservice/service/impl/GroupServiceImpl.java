@@ -143,6 +143,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             map.put("mainUserId",mainGroupUserId);
             int insertGroupMemebersRow = snsGroupMembersMapper.batchInsertGroupMembers(map);
             if(insertGroupMemebersRow > 0){
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("groupId",snsGroup.getGroupid());
+                parameterMap.put("startNum",0);
+                parameterMap.put("pageSize",9);
+                List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+                int maxLength = groupMembersList.size();
+                String[] avatarArray = new String[maxLength];
+                for(int i = 0;i<maxLength;i++){
+                    AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+                    avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
+                }
+                snsGroup.setAvatarArray(avatarArray);
                 baseResp.setData(snsGroup);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
