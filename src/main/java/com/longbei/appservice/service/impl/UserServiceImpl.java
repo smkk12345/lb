@@ -882,6 +882,10 @@ public class UserServiceImpl implements UserService {
 				String operateType = subKey;
 				String disStr = "";
 				switch (operateType){
+					case "":
+						disStr = "点赞+"+value+"分";
+						point += Integer.parseInt(value);
+						break;
 					case "NEW_REGISTER":
 						disStr = "注册成功+"+value+"分";
 						point += Integer.parseInt(value);
