@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
 			}
 			expandData.put("flowernum", flowernum);
 			if(lookid != 0){
-				SnsFriends snsFriends = userRelationService.selectByUidAndFid(userid,lookid);
+				SnsFriends snsFriends = userRelationService.selectByUidAndFid(lookid, userid);
 				if(null != snsFriends){
 					userInfo.setIsfriend("1");
 				}
@@ -145,6 +145,9 @@ public class UserServiceImpl implements UserService {
 				if(null != snsFans){
 					userInfo.setIsfans("1");
 				}
+				//获取好友昵称
+				String remark = userRelationService.selectRemark(lookid, userid);
+				userInfo.setRemark(remark);
 			}
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
@@ -152,7 +155,6 @@ public class UserServiceImpl implements UserService {
 			//查询奖品数量----
 			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);
 			expandData.put("awardnum", awardnum);
-			
 			reseResp.setData(userInfo);
 //			expandData.put("detailList", detailList);
 			reseResp.setExpandData(expandData);
@@ -404,7 +406,7 @@ public class UserServiceImpl implements UserService {
 		userInfo.setTotallikes(0);
 		userInfo.setTotalfans(0);
 		userInfo.setGivedflowers(0);
-		userInfo.setSort(0);
+		userInfo.setSortno(0);
 		int n = userInfoMapper.insertSelective(userInfo);
 		return n > 0 ? true : false;
 	}
@@ -1095,7 +1097,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			if ("0".equals(userInfo.getIsfashionman())){
 				userInfo.setDownfashionmantime(new Date());
-				userInfo.setSort(0);
+				userInfo.setSortno(0);
 			}
 			if ("1".equals(userInfo.getIsfashionman())){
 				userInfo.setUpfashionmantime(new Date());

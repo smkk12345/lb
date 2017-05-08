@@ -1331,7 +1331,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     String sn = rank.getMinimprovenum();
                     if(StringUtils.isBlank(sn)){
                     }else{
-                        baseResp.getExpandData().put("remark","根据榜规则，至少还需要发"+(Integer.parseInt(sn) - rankMembers.getIcount())+"条微进步！");
+                        rankMembers.setCheckresult("根据榜规则，至少还需要发"+(Integer.parseInt(sn) - rankMembers.getIcount())+"条微进步！");
                     }
                 }
             }
@@ -2707,6 +2707,39 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.setData(page);
         } catch (Exception e) {
             logger.error("select all rank member list for pc is error:",e);
+        }
+        return baseResp;
+    }
+
+
+
+    @Override
+    public BaseResp<Page<RankMembers>> selectRankFashionManList(String rankId, Integer pageno, Integer pagesize) {
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        Page<RankMembers> page = new Page<>(pageno,pagesize);
+        try {
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setIsfashionman("1");
+            rankMembers.setRankid(Long.parseLong(rankId));
+            List<AppUserMongoEntity> appUserMongoEntities = new ArrayList<>();
+            int totalcount = rankMembersMapper.selectCount(rankMembers);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,"1",pagesize*(pageno-1),pagesize);
+            for (RankMembers rankMembers1 : rankMemberses){
+                UserInfo userInfo1 = userInfoMapper.selectByPrimaryKey(rankMembers1.getUserid());
+                Rank rank = rankMapper.selectRankByRankid(rankMembers1.getRankid());
+                rankMembers1.setUserInfo(userInfo1);
+                rankMembers1.setRank(rank);
+                AppUserMongoEntity user = new AppUserMongoEntity();
+                user.setId(String.valueOf(rankMembers1.getUserid()));
+                appUserMongoEntities.add(user);
+            }
+            rankMembers.setAppUserMongoEntities(appUserMongoEntities);
+            page.setTotalCount(totalcount);
+            page.setList(rankMemberses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("selectRankFashionManList for pc is error:",e);
         }
         return baseResp;
     }

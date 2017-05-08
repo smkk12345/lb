@@ -98,6 +98,9 @@
         <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
           AND isfashionman = #{rankmember.isfashionman}
         </if>
+        <if test="rankmember.rankid != null and rankmember.rankid != ''">
+            AND rankid = #{rankmember.rankid}
+        </if>
         <if test="rankmember.checkstatus != null">
           <choose>
             <when test="rankmember.checkstatus == '2'.toString()">
