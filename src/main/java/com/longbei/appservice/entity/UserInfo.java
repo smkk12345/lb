@@ -103,13 +103,16 @@ public class UserInfo {
 
     private Date downfashionmantime; //取消达人时间
 
-    private int sort; //排序
+    private int sortno; //排序
 
     private String settings; //设置
 
     private int givedflowers; //
 
     private String defaultbg;//背景图片
+
+
+    private String remark; //备注
 
     public String getJobcertify() {
         return jobcertify;
@@ -161,12 +164,12 @@ public class UserInfo {
         this.downfashionmantime = downfashionmantime;
     }
 
-    public int getSort() {
-        return sort;
+    public int getSortno() {
+        return sortno;
     }
 
-    public void setSort(int sort) {
-        this.sort = sort;
+    public void setSortno(int sortno) {
+        this.sortno = sortno;
     }
 
     private List<UserJob> jobList = new ArrayList<UserJob>();
@@ -768,5 +771,13 @@ public class UserInfo {
 
 	public void setIsfans(String isfans) {
 		this.isfans = isfans;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

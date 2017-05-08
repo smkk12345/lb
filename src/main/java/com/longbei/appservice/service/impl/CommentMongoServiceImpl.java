@@ -149,10 +149,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 
 	@Override
-	public BaseResp<Object> selectCommentListByItypeid(String businessid, String businesstype, int startNo, int pageSize) {
+	public BaseResp<Object> selectCommentListByItypeid(String businessid, String businesstype, Date lastdate, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(null,businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(null,businessid, businesstype, lastdate, pageSize);
 //			String commentids = "";
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
@@ -181,13 +181,13 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	
 	@Override
 	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype, 
-			String impid, 
-			int startNo, int pageSize) {
+			String impid,
+			Date lastdate, int pageSize) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		Map<String, Object> expandData = new HashMap<>();
 		int commentNum = 0;
 		try {
-			List<Comment> list = commentMongoDao.selectCommentListByItypeid(impid,businessid, businesstype, startNo, pageSize);
+			List<Comment> list = commentMongoDao.selectCommentListByItypeid(impid,businessid, businesstype, lastdate, pageSize);
 			if(null != list && list.size()>0){
 				for (Comment comment : list) {
 					//初始化用户信息

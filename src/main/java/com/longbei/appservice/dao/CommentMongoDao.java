@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class CommentMongoDao {
 	 * return_type
 	 * CommentMongoDao
 	 */
-	public List<Comment> selectCommentListByItypeid(String impid,String businessid, String businesstype, int startNo,
+	public List<Comment> selectCommentListByItypeid(String impid,String businessid, String businesstype, Date lastdate,
 			int pageSize){
 		Criteria criteria  = Criteria.where("businesstype").is(businesstype);
 		if (StringUtils.isNotEmpty(businessid)) {
@@ -60,9 +61,9 @@ public class CommentMongoDao {
 		if(StringUtils.isNotEmpty(impid)){
 			criteria = criteria.and("impid").is(impid);
 		}
-//		if (date != null) {
-//			criteria = criteria.and("createdate").lte(date); 
-//		}
+		if (lastdate != null) {
+			criteria = criteria.and("createdate").lt(lastdate);
+		}
 		Query query = Query.query(criteria);
 		query.with(new Sort(Direction.DESC, "createdate"));
 		query.limit(pageSize);
