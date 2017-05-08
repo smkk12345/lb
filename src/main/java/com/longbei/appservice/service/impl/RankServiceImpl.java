@@ -370,6 +370,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
         Page<Rank> page = new Page<>(pageno,pagesize);
         try {
+            rank.setIsdel("0");
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
@@ -994,6 +995,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rankMembers.getUserid().equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
             }
+            rankMembers.setIcount(0);
             int updateRow = this.rankMembersMapper.updateRankMemberState(rankMembers);
             if(updateRow < 1){
                 return baseResp.fail("退榜失败");
@@ -1074,6 +1076,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if ("0".equals(rankMembers.getIsfashionman())){
                 rankMembers.setDownfashionmantime(new Date());
             }
+            rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
                 return BaseResp.ok();
@@ -1088,6 +1091,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
                 return BaseResp.ok();
@@ -2820,8 +2824,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
-
-
+                    rankMembers.setIcount(0);
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())
