@@ -1957,10 +1957,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //查询是否有该用户的获奖信息
             RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userid+"");
             if(rankAcceptAward == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"未获取到获奖信息");
             }
             if(!"2".equals(rankAcceptAward.getStatus())){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"未获取到获奖信息");
             }
             //修改订单状态为已收货
             Map<String,Object> map = new HashMap<String,Object>();
