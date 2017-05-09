@@ -607,7 +607,7 @@
       <if test="orderType != null and orderType == 'updateTimeDesc'">
           order by updatetime desc
       </if>
-      <if test="sort == null">
+      <if test="sort != null">
           order by sort desc,updatetime desc
       </if>
       <if test="startNum != null">

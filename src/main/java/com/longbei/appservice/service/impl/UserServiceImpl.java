@@ -121,21 +121,21 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfo.setDetailList(detailList);
 			//获取用户星级
-			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-			expandData.put("userStar", userLevel.getStar());
+//			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+//			expandData.put("userStar", userLevel.getStar());
 			//龙级
-			expandData.put("grade", userLevel.getGrade());
+			expandData.put("grade", userInfo.getGrade());
 			//查询粉丝总数
-			int fansCount = snsFansMapper.selectCountFans(userid);
-			expandData.put("fansCount", fansCount);
+//			int fansCount = snsFansMapper.selectCountFans(userid);
+			expandData.put("fansCount", userInfo.getTotalfans());
 			
 			//获取用户被赠与的进步花
-			int flowernum = 0;
-			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
-			if(null != list && list.size()>0){
-				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
-			}
-			expandData.put("flowernum", flowernum);
+//			int flowernum = 0;
+//			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
+//			if(null != list && list.size()>0){
+//				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
+//			}
+			expandData.put("flowernum", userInfo.getGivedflowers());
 			if(lookid != 0){
 				SnsFriends snsFriends = userRelationService.selectByUidAndFid(lookid, userid);
 				if(null != snsFriends){
@@ -884,7 +884,7 @@ public class UserServiceImpl implements UserService {
 				String operateType = subKey;
 				String disStr = "";
 				switch (operateType){
-					case "":
+					case "DAILY_LIKE":
 						disStr = "点赞+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
@@ -949,6 +949,8 @@ public class UserServiceImpl implements UserService {
 						point += Integer.parseInt(value);
 						break;
 					default:
+						disStr = operateType+value+"分";
+						point += Integer.parseInt(value);
 						break;
 				}
 				list.add(disStr);

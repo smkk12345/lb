@@ -961,26 +961,27 @@ public class AppUserController extends BaseController {
     }
 
     /**
-     * @Title: http://ip:port/appservice/user/insertInterests
-     * @Description: 添加兴趣信息
-     * @param @param userid  ids
+     * @Title: http://ip:port/appservice/user/updateInterests
+     * @Description: 更改兴趣标签信息
+     * @param userid 用户id
+     * @param ids 兴趣标签id(String字符串类型，用逗号隔开)
      * @param @param code 0
      * @auther IngaWu
      * @currentdate:2017年2月24日
      */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/insertInterests")
+    @RequestMapping(value = "/updateInterests")
     @ResponseBody
-    public BaseResp<Object> insertInterests(String userid,String ids) {
-        logger.info("insertInterests and userid={},ptype={},perfectname={}",userid,ids);
+    public BaseResp<Object> updateInterests(String userid,String ids) {
+        logger.info("updateInterests and userid={},ids={}",userid,ids);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(userid,ids)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            return userInterestsService.insertInterests(userid,ids);
+            return userInterestsService.updateInterests(userid,ids);
         } catch (Exception e) {
-            logger.error("insertInterests and userid={},ptype={},perfectname={}",userid,ids,e);
+            logger.error("updateInterests and userid={},ids={}",userid,ids,e);
         }
         return baseResp;
     }

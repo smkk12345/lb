@@ -26,7 +26,7 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertInterests(String userid,String ids) {
+	public BaseResp<Object> updateInterests(String userid,String ids) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 
 		UserInterests data = new UserInterests();

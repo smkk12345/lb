@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,8 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-  	@RequestMapping(value = "/verify/ali")
-    public String ali(String userid, 
+  	@RequestMapping(value = "/verify/ali/{userid}")
+    public String ali(@PathVariable("userid") String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("/verify/ali userid = {}", userid);
   		try {
@@ -76,18 +77,18 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-  	@RequestMapping(value = "/verify/wx")
-    public String verifywx(String userid, String price, 
+  	@RequestMapping(value = "/verify/wx/{userid}")
+    public String verifywx(@PathVariable("userid") String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("/verify/wx userid = {}, price = {}", userid, price);
+		logger.info("/verify/wx userid = {}", userid);
   		try {
   			ResponseHandler resHandler = new ResponseHandler(request, response);
   			//2：购买龙币
-  			String result = payService.verifywx(Long.parseLong(userid), price, "2", resHandler);
+  			String result = payService.verifywx(Long.parseLong(userid), "2", resHandler);
   			logger.info("/verify/wx result = {}", result);
   			return result;
 		} catch (Exception e) {
-			logger.error("verifywx userid = {}, price = {}", userid, price, e);
+			logger.error("verifywx userid = {}", userid, e);
 		}
   		return "fail";
 	}

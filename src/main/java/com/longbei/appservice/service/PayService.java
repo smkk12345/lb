@@ -40,7 +40,7 @@ public interface PayService {
 	 * @param @param orderType 2：购买龙币
 	 * 2017年3月21日
 	 */
-	 String verifywx(Long userid, String orderType, String price, ResponseHandler resHandler);
+	 String verifywx(Long userid, String orderType, ResponseHandler resHandler);
 	
 	 void testWx();
 }

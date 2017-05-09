@@ -572,7 +572,7 @@
   <select id="selectUserMsgCountByMsgTypeList" parameterType="map" resultType="map">
       SELECT
           count(1) count,
-          max(createtime) maxtime
+          max(createtime) mymaxtime
       from
           user_msg
       <where>

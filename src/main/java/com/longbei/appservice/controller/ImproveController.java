@@ -231,7 +231,7 @@ public class ImproveController {
      * @param sorttype 排序类型（ 0 - 成员动态 1 - 热度 2 - 时间）
      * @param startNum  开始条数
      * @param pageSize 页面显示条数
-     * @param lastDate 最后一条时间 在 sorttype=0 时使用
+     * @param lastDate 最后一条时间 在 sorttype=0,2 时使用
      * @return
      * @author:luye
      */
@@ -245,11 +245,14 @@ public class ImproveController {
         if (StringUtils.hasBlankParams(userid, rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if ("0".equals(sorttype)){
-            if (StringUtils.isBlank(lastDate)){
-                lastDate = DateUtils.formatDateTime1(new Date());
-//                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-            }
+        //按成员动态，按时间:都要记录上一页的最后一条的时间lastDate
+        //按热度:与时间排序无关lastDate＝null
+        if ("1".equals(sorttype)){
+//            if (StringUtils.isBlank(lastDate)){
+//                lastDate = DateUtils.formatDateTime1(new Date());
+////                return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+//            }
+            lastDate=null;
         }
         if (StringUtils.isBlank(startNum)) {
             startNum = Constant.DEFAULT_START_NO;
