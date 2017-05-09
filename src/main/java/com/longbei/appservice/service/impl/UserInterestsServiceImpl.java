@@ -22,27 +22,28 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 	private UserInterestsMapper userInterestsMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserInterestsServiceImpl.class);
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertInterests(String userid,String ids) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<Object> updateInterests(String userid,String ids) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+
 		UserInterests data = new UserInterests();
+		data.setUserid(userid);
+		data.setPtype(ids);
 		Date date = new Date();
-		String idsString[] = ids.split(",");
-			for (String id : idsString) {
-				data.setUserid(userid);
-				data.setPtype(id);
-				data.setCreatetime(date);
-				try {
-				   int temp = userInterestsMapper.insert(data);
-				   if(temp > 0 ){
-				 	reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-				   }
-				} catch (Exception e){
-					logger.error("insertInterests userid = {},ptype = {}",userid,id, e);
-				};
+		data.setUpdatetime(date);
+		try {
+			int n = userInterestsMapper.updateInterests(data);
+			if(n == 1){
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
-		return reseResp;
+		} catch (Exception e) {
+			logger.error("updateInterests error and msg={}",e);
+		}
+		return baseResp;
 	}
+
+
 }
