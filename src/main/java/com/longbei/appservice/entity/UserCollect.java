@@ -13,7 +13,7 @@ public class UserCollect {
 
     private Date updatetime;
 
-    private String ctype;//收藏类型  0 微进步 1 其他
+    private String ctype;//收藏类型  0 独立微进步 1－目标 2-龙榜进步
 
     private String businessid;
 
