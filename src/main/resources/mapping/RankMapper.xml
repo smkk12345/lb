@@ -700,7 +700,7 @@
       set rankinvolved = rankinvolved + #{count,jdbcType=INTEGER}
       where
         <if test="count &lt; 0">
-          rankinvolved > 1 AND
+          rankinvolved > 0 AND
         </if>
         rankid = #{rankId,jdbcType=BIGINT}
   </update>
