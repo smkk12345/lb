@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,8 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-  	@RequestMapping(value = "/verify/ali")
-    public String ali(String userid, 
+  	@RequestMapping(value = "/verify/ali/{userid}")
+    public String ali(@PathVariable("userid") String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("/verify/ali userid = {}", userid);
   		try {
@@ -76,8 +77,8 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-  	@RequestMapping(value = "/verify/wx")
-    public String verifywx(String userid, String price, 
+  	@RequestMapping(value = "/verify/wx/{userid}/{price}")
+    public String verifywx(@PathVariable("userid") String userid, @PathVariable("price") String price, 
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("/verify/wx userid = {}, price = {}", userid, price);
   		try {
