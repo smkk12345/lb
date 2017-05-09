@@ -47,6 +47,10 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+    <select id="selectRankIcount" resultType="java.lang.Integer">
+      SELECT sum(icount) from rank_members where rankid=#{rankid} AND status='1'
+    </select>
+
 
     <select id="getRankImproveCount" resultType="java.lang.String">
         SELECT sum(icount) FROM rank_members WHERE rankid=#{rankid} AND status='1'

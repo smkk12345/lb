@@ -482,7 +482,7 @@
     SELECT
     count(DISTINCT (ir.id))
     FROM improve_rank ir
-    JOIN rank_members rm ON  ir.businessid=rm.rankid
+    LEFT JOIN rank_members rm ON  ir.businessid=rm.rankid
     WHERE rm.status = '1' AND ir.status = '0' AND ir.isrecommend='0'
     <if test="startdate != null">
       AND ir.createtime &gt;= #{startdate}
@@ -505,7 +505,7 @@
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
     ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
     FROM improve_rank ir
-    JOIN rank_members rm ON  ir.businessid=rm.rankid
+    LEFT JOIN rank_members rm ON  ir.businessid=rm.rankid
     WHERE rm.status = '1' AND ir.status = '0' AND ir.isrecommend='0'
     <if test="startdate != null">
       AND ir.createtime &gt;= #{startdate}
@@ -539,7 +539,7 @@
     count(*)
     FROM
     improve
-    WHERE ispublic = '0' AND isdel = '0' AND isrecommend='0'
+    WHERE ispublic = '2' AND isdel = '0' AND isrecommend='0'
     <if test="startdate != null">
       AND createtime &gt;= #{startdate}
     </if>
@@ -559,7 +559,7 @@
     <include refid="Base_Column_List" />
     FROM
     improve
-    WHERE ispublic = '0' AND isdel = '0' AND isrecommend='0'
+    WHERE ispublic = '2' AND isdel = '0' AND isrecommend='0'
     <if test="startdate != null">
       AND createtime &gt;= #{startdate}
     </if>
