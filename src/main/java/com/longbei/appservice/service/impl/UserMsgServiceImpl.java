@@ -204,6 +204,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			if(msgTypeList.size() == 0){
 				resultMap.put("mycount",0);
+				resultMap.put("mymaxtime",0);
 				return resultMap;
 			}
 			Map<String,Object> parameterMap = new HashMap<String,Object>();
@@ -225,6 +226,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if(commentMaxDate == null){
 				if(count < 1){
 					resultMap.remove("maxtime");
+					resultMap.put("mymaxtime",0);
 				}
 				resultMap.remove("count");
 				resultMap.put("mycount", count);
@@ -232,15 +234,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			if(count < 1){
 				resultMap.put("mycount",1);
-				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
+//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 				return resultMap;
 			}
 			Date maxtime = DateUtils.parseDate(resultMap.get("maxtime"));
 			count ++;
 			if(maxtime.getTime() > commentMaxDate.getTime()){
-				resultMap.put("maxtime",maxtime.getTime()/1000);
+//				resultMap.put("mymaxtime",maxtime.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}else{
-				resultMap.put("maxtime",commentMaxDate.getTime()/1000);
+//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}
 			resultMap.put("mycount",count);
 			return resultMap;
@@ -248,6 +253,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
 		resultMap.put("mycount",0);
+		resultMap.put("mymaxtime", 0);
 		return resultMap;
 	}
 	
@@ -590,7 +596,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		Date maxtime = (friendAddAskList != null && friendAddAskList.size() > 0)?friendAddAskList.get(0).getCreateDate():null;
 		resultMap.put("friendAskcount",count);
 		if(null != maxtime){
-			resultMap.put("maxtime",maxtime.getTime()/1000);
+//			resultMap.put("friendAskmaxtime",maxtime.getTime()/1000);
+			resultMap.put("friendAskmaxtime",maxtime.getTime());
+		}else{
+			resultMap.put("friendAskmaxtime", 0);
 		}
 		return resultMap;
 	}
@@ -820,22 +829,27 @@ public class UserMsgServiceImpl implements UserMsgService {
 		if("0".equals(userMsg.getGtype())){
 			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
 		}else if("1".equals(userMsg.getGtype())){
 			//1 目标中  进步评论消息
 			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
 			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
 			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
 		}else if("4".equals(userMsg.getGtype())){
 			//4 教室中   进步点赞消息
 			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
 		}else if("10".equals(userMsg.getGtype())){
 			//2 榜中   评论消息   获取榜图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
@@ -982,6 +996,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 		userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+		userMsg.setImpItype(improve.getItype());
 	}
 	
 	/**
@@ -1028,10 +1043,20 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if("0".equals(mtype)){
 				//通知消息
 				map.put("informcount", count);
+				if(resultmap.containsKey("maxtime")){
+					map.put("informmaxtime", resultmap.get("maxtime"));
+				}else{
+					map.put("informmaxtime", 0);
+				}
 			}
 			if("2".equals(mtype)){
 				//@我消息
 				map.put("rankcount", count);
+				if(resultmap.containsKey("maxtime")){
+					map.put("rankmaxtime", resultmap.get("maxtime"));
+				}else{
+					map.put("rankmaxtime", 0);
+				}
 			}
 		} catch (Exception e) {
 			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);
