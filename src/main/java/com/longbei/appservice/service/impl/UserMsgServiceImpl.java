@@ -204,7 +204,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			if(msgTypeList.size() == 0){
 				resultMap.put("mycount",0);
-				resultMap.put("mymaxtime","0");
+				resultMap.put("mymaxtime",0);
 				return resultMap;
 			}
 			Map<String,Object> parameterMap = new HashMap<String,Object>();
@@ -226,7 +226,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if(commentMaxDate == null){
 				if(count < 1){
 					resultMap.remove("maxtime");
-					resultMap.put("mymaxtime","0");
+					resultMap.put("mymaxtime",0);
 				}
 				resultMap.remove("count");
 				resultMap.put("mycount", count);
@@ -234,15 +234,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			if(count < 1){
 				resultMap.put("mycount",1);
-				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 				return resultMap;
 			}
 			Date maxtime = DateUtils.parseDate(resultMap.get("maxtime"));
 			count ++;
 			if(maxtime.getTime() > commentMaxDate.getTime()){
-				resultMap.put("mymaxtime",maxtime.getTime()/1000);
+//				resultMap.put("mymaxtime",maxtime.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}else{
-				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
+				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}
 			resultMap.put("mycount",count);
 			return resultMap;
@@ -250,7 +253,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
 		resultMap.put("mycount",0);
-		resultMap.put("mymaxtime","0");
+		resultMap.put("mymaxtime", 0);
 		return resultMap;
 	}
 	
@@ -593,9 +596,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		Date maxtime = (friendAddAskList != null && friendAddAskList.size() > 0)?friendAddAskList.get(0).getCreateDate():null;
 		resultMap.put("friendAskcount",count);
 		if(null != maxtime){
-			resultMap.put("friendAskmaxtime",maxtime.getTime()/1000);
+//			resultMap.put("friendAskmaxtime",maxtime.getTime()/1000);
+			resultMap.put("friendAskmaxtime",maxtime.getTime());
 		}else{
-			resultMap.put("friendAskmaxtime","0");
+			resultMap.put("friendAskmaxtime", 0);
 		}
 		return resultMap;
 	}
@@ -1042,7 +1046,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				if(resultmap.containsKey("maxtime")){
 					map.put("informmaxtime", resultmap.get("maxtime"));
 				}else{
-					map.put("informmaxtime", "0");
+					map.put("informmaxtime", 0);
 				}
 			}
 			if("2".equals(mtype)){
@@ -1051,7 +1055,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				if(resultmap.containsKey("maxtime")){
 					map.put("rankmaxtime", resultmap.get("maxtime"));
 				}else{
-					map.put("rankmaxtime", "0");
+					map.put("rankmaxtime", 0);
 				}
 			}
 		} catch (Exception e) {
