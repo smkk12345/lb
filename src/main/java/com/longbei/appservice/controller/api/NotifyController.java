@@ -83,7 +83,7 @@ public class NotifyController {
   		try {
   			ResponseHandler resHandler = new ResponseHandler(request, response);
   			//2：购买龙币
-  			String result = payService.verifywx(Long.parseLong(userid), price, "2", resHandler);
+  			String result = payService.verifywx(Long.parseLong(userid), "2", price, resHandler);
   			logger.info("/verify/wx result = {}", result);
   			return result;
 		} catch (Exception e) {
