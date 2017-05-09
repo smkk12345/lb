@@ -81,7 +81,6 @@ public class PayServiceImpl implements PayService {
 	@Override
 	public String verifyali(Long userid, String orderType, Map<String, String> resMap) {
 		try{
-//			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
 			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
 			if(ResultUtil.isSuccess(resp)){
 				ProductOrders productOrders = resp.getData();
@@ -89,13 +88,13 @@ public class PayServiceImpl implements PayService {
 					if (!"0".equals(productOrders.getOrderstatus())) {
 						return "SUCCESS";
 					}else{
-						Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
-						logger.info("verifyali total_fee = {}", total_fee);
-						logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
-						//添加龙币
-						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 						BaseResp<Object> baseResp = iProductBasicService.verifyali(orderType, resMap);
 						if(ResultUtil.isSuccess(baseResp)){
+							Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
+							logger.info("verifyali total_fee = {}", total_fee);
+							logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
+							//添加龙币
+							insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 							return "SUCCESS";
 						}
 					}
@@ -129,14 +128,14 @@ public class PayServiceImpl implements PayService {
 					if (!"0".equals(productOrders.getOrderstatus())) {
 						return "SUCCESS";
 					}else{
-						//购买成功后，添加龙币----
-						Double price = Double.parseDouble(productOrders.getPrice())/100;
-						logger.info("verifywx price = {}", price);
-						Double total_fee = price/AppserviceConfig.yuantomoney;
-						logger.info("verifywx total_fee = {}", total_fee);
-						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 						BaseResp<Object> baseResp = iProductBasicService.verifywx(orderType, resHandler);
 						if(ResultUtil.isSuccess(baseResp)){
+							//购买成功后，添加龙币----
+							Double price = Double.parseDouble(productOrders.getPrice())/100;
+							logger.info("verifywx price = {}", price);
+							Double total_fee = price/AppserviceConfig.yuantomoney;
+							logger.info("verifywx total_fee = {}", total_fee);
+							insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 							return "SUCCESS";
 						}
 					}
