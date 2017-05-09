@@ -972,7 +972,7 @@ public class AppUserController extends BaseController {
     @RequestMapping(value = "/insertInterests")
     @ResponseBody
     public BaseResp<Object> insertInterests(String userid,String ids) {
-        logger.info("insertInterests and userid={},ptype={},perfectname={}",userid,ids);
+        logger.info("insertInterests and userid={},ids={}",userid,ids);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(userid,ids)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -980,7 +980,7 @@ public class AppUserController extends BaseController {
         try {
             return userInterestsService.insertInterests(userid,ids);
         } catch (Exception e) {
-            logger.error("insertInterests and userid={},ptype={},perfectname={}",userid,ids,e);
+            logger.error("insertInterests and userid={},ids={}",userid,ids,e);
         }
         return baseResp;
     }

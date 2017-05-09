@@ -81,19 +81,22 @@ public class PayServiceImpl implements PayService {
 	@Override
 	public String verifyali(Long userid, String orderType, Map<String, String> resMap) {
 		try{
+//			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
 			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
 			if(ResultUtil.isSuccess(resp)){
 				ProductOrders productOrders = resp.getData();
 				if(null != productOrders){
 					if (!"0".equals(productOrders.getOrderstatus())) {
-						return "success";                                                               
+						return "SUCCESS";
 					}else{
 						Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
+						logger.info("verifyali total_fee = {}", total_fee);
+						logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
 						//添加龙币
 						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 						BaseResp<Object> baseResp = iProductBasicService.verifyali(orderType, resMap);
 						if(ResultUtil.isSuccess(baseResp)){
-							return "success"; 
+							return "SUCCESS";
 						}
 					}
 				}else{
@@ -124,14 +127,16 @@ public class PayServiceImpl implements PayService {
 				ProductOrders productOrders = resp.getData();
 				if(null != productOrders){
 					if (!"0".equals(productOrders.getOrderstatus())) {
-						return "success";                                                               
+						return "SUCCESS";
 					}else{
 						//购买成功后，添加龙币----
 						Double total_fee = Double.parseDouble(price)/AppserviceConfig.yuantomoney;
+						logger.info("verifywx total_fee = {}", total_fee);
+						logger.info("verifywx total_fee.intValue() = {}", total_fee.intValue());
 						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 						BaseResp<Object> baseResp = iProductBasicService.verifywx(orderType, resHandler);
 						if(ResultUtil.isSuccess(baseResp)){
-							return "success"; 
+							return "SUCCESS";
 						}
 					}
 				}else{
@@ -156,7 +161,6 @@ public class PayServiceImpl implements PayService {
 	 * @author yinxc
 	 * 添加龙币明细
 	 * 2017年3月21日
-	 * @param baseResp 
 	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
 	 */
