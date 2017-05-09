@@ -118,7 +118,7 @@ public class PayServiceImpl implements PayService {
 	 * 2017年3月21日
 	 */
 	@Override
-	public String verifywx(Long userid, String orderType, String price, ResponseHandler resHandler) {
+	public String verifywx(Long userid, String orderType, ResponseHandler resHandler) {
 		try{
 			String out_trade_no = resHandler.getSmap().get("out_trade_no").toString();
 			logger.info("verifywx out_trade_no = {}", out_trade_no);
@@ -130,9 +130,10 @@ public class PayServiceImpl implements PayService {
 						return "SUCCESS";
 					}else{
 						//购买成功后，添加龙币----
-						Double total_fee = Double.parseDouble(price)/AppserviceConfig.yuantomoney;
+						Double price = Double.parseDouble(productOrders.getPrice())/100;
+						logger.info("verifywx price = {}", price);
+						Double total_fee = price/AppserviceConfig.yuantomoney;
 						logger.info("verifywx total_fee = {}", total_fee);
-						logger.info("verifywx total_fee.intValue() = {}", total_fee.intValue());
 						insertMoney(total_fee.intValue(), userid, Constant.USER_MONEY_BUY);
 						BaseResp<Object> baseResp = iProductBasicService.verifywx(orderType, resHandler);
 						if(ResultUtil.isSuccess(baseResp)){
@@ -146,8 +147,8 @@ public class PayServiceImpl implements PayService {
 			}
 			
 		}catch (Exception e){
-			logger.error("verifywx userid = {}, orderType = {}, price = {}, resHandler.smap = {}", 
-					userid, orderType, price, JSONArray.fromObject(resHandler.getSmap()).toString(), e);
+			logger.error("verifywx userid = {}, orderType = {}, resHandler.smap = {}", 
+					userid, orderType, JSONArray.fromObject(resHandler.getSmap()).toString(), e);
 		}
 		return "fail";
 	}

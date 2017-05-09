@@ -77,18 +77,18 @@ public class NotifyController {
     * @auther yxc
     * @currentdate:2017年3月20日
 	*/
-  	@RequestMapping(value = "/verify/wx/{userid}/{price}")
-    public String verifywx(@PathVariable("userid") String userid, @PathVariable("price") String price, 
+  	@RequestMapping(value = "/verify/wx/{userid}")
+    public String verifywx(@PathVariable("userid") String userid, 
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("/verify/wx userid = {}, price = {}", userid, price);
+		logger.info("/verify/wx userid = {}", userid);
   		try {
   			ResponseHandler resHandler = new ResponseHandler(request, response);
   			//2：购买龙币
-  			String result = payService.verifywx(Long.parseLong(userid), "2", price, resHandler);
+  			String result = payService.verifywx(Long.parseLong(userid), "2", resHandler);
   			logger.info("/verify/wx result = {}", result);
   			return result;
 		} catch (Exception e) {
-			logger.error("verifywx userid = {}, price = {}", userid, price, e);
+			logger.error("verifywx userid = {}", userid, e);
 		}
   		return "fail";
 	}
