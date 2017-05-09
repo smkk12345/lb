@@ -195,7 +195,7 @@ public interface UserService {
 	 * 感兴趣的标签
 	 * @return
 	 */
-	BaseResp<Object> selectRandomTagList();
+	BaseResp<Object> selectRandomTagList(String userid);
 
 	BaseResp<Object> perfectInfo(String ptype);
 

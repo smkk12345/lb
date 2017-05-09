@@ -20,4 +20,12 @@ public interface UserInterestsService {
 	BaseResp<Object> updateInterests(String userid,String ids);
 
 
+	/**
+	 * @Title: selectInterests
+	 * @Description: 获取用户兴趣标签
+	 * @param userid
+	 * @auther IngaWu
+	 * @currentdate:2017年5月9日
+	 */
+	BaseResp<UserInterests> selectInterests(long userid);
 }

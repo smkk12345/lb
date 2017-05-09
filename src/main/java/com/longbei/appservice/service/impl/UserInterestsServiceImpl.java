@@ -46,4 +46,20 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 	}
 
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<UserInterests> selectInterests(long userid) {
+		BaseResp<UserInterests> baseResp = new BaseResp<UserInterests>();
+		try {
+			UserInterests uerInterests = userInterestsMapper.selectInterests(userid);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			baseResp.setData(uerInterests);
+		} catch (Exception e) {
+			logger.error("selectInterests error and userid = {}, msg={}",userid,e);
+		}
+		return baseResp;
+	}
+
+
+
 }

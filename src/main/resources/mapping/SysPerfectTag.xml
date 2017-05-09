@@ -14,7 +14,13 @@
        id, tag, ptype
     from sys_perfect_tag
     where 1=1
-           order by rand() LIMIT 10
+   <if test="ptypes != null and ptypes!=''">
+    and id not in
+    <foreach item="item" collection="ptypes" open="(" separator="," close=")">
+       #{item}
+    </foreach>
+   </if>
+       order by rand() LIMIT 10
   </select>
 
     <select id="selectUserTagList" resultMap="BaseResultMap" >
