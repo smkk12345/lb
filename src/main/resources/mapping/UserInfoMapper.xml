@@ -619,6 +619,7 @@
           avatar,
           username,
           upfashionmantime,
+          sortno,
           nickname
       from user_info
       where 

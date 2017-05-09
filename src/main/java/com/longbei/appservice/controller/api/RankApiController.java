@@ -389,7 +389,33 @@ public class RankApiController {
 
     }
 
+    /**
+     * 查询榜单达人列表
+     * @param rankId
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "selectRankFashionManList/{rankId}/{pageNo}/{pageSize}")
+    public BaseResp<Page<RankMembers>> selectRankFashionManList(@PathVariable("rankId") String rankId,
+                                                         @PathVariable("pageNo") String pageNo,
+                                                         @PathVariable("pageSize") String pageSize){
+        BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = rankService.selectRankFashionManList(rankId,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("selectRankFashionManList for pc is error:",e);
+        }
+        return baseResp;
 
+    }
 
 
     /**
@@ -805,32 +831,6 @@ public class RankApiController {
             pageSize = endNum - startNum;
         }
         baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
-        return baseResp;
-    }
-
-    /**
-     * 查询榜单中的达人
-     * @url http://ip:port/app_service/api/rank/selectFashionMan
-     * @param rankId 榜单id
-     * @param startNum
-     * @param pageSize
-     * @return
-     */
-    @RequestMapping(value="selectFashionMan")
-    public BaseResp<Object> selectFashionMan(String rankId,Integer startNum,Integer pageSize){
-        logger.info("rankId={},startNum={},pageSize={}",rankId,startNum,pageSize);
-        BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(rankId == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
-        if (startNum == null || startNum < 0){
-            startNum =Integer.parseInt(Constant.DEFAULT_START_NO);
-        }
-        if(null == pageSize){
-            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        }
-
-        baseResp = this.rankService.selectFashionMan(null,Long.parseLong(rankId),startNum,pageSize);
         return baseResp;
     }
 

@@ -884,7 +884,7 @@ public class UserServiceImpl implements UserService {
 				String operateType = subKey;
 				String disStr = "";
 				switch (operateType){
-					case "":
+					case "DAILY_LIKE":
 						disStr = "点赞+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
@@ -949,6 +949,8 @@ public class UserServiceImpl implements UserService {
 						point += Integer.parseInt(value);
 						break;
 					default:
+						disStr = operateType+value+"分";
+						point += Integer.parseInt(value);
 						break;
 				}
 				list.add(disStr);
