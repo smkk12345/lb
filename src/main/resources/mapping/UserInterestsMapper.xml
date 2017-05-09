@@ -20,10 +20,10 @@
   </select>
   
   <select id="selectInterests" resultMap="BaseResultMap" >
-    select 
-    <include refid="Base_Column_List" />
-    from user_interests 
-    where userid = #{userid}
+    SELECT a.userid,a.ptype,a.createtime,a.updatetime,
+	b.tag AS perfectname
+    FROM user_interests a INNER JOIN sys_perfect_tag b ON a.ptype = b.id
+    WHERE a.userid = #{userid}
   </select>
   
   <delete id="deleteInterests" >
@@ -31,10 +31,9 @@
     where id = #{id,jdbcType=INTEGER} and userid = #{userid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserInterests" >
-    insert into user_interests (id, userid,
-      createtime, updatetime
-      )
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+    insert into user_interests (ptype, userid, createtime
+    )
+    values (#{ptype,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
 
