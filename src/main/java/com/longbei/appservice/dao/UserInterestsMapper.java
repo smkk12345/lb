@@ -24,6 +24,6 @@ public interface UserInterestsMapper {
      * @auther IngaWu
      * @currentdate:2017年5月9日
      */
-    List<UserInterests> selectInterests(@Param("userid") long userid);
+    UserInterests selectInterests(@Param("userid") long userid);
     
 }

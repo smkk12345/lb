@@ -558,6 +558,12 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improves = improveMapper.selectListByRank(rankid,orderby,
                     flowerscore,likescore,pageNo,pageSize,StringUtils.isBlank(lastdate)?null:lastdate);
+            if ("0".equals(orderby)){
+                if (null != rank){
+                    flowerscore = rank.getFlowerscore();
+                    likescore = rank.getLikescore();
+                }
+            }
             initImproveListOtherInfo(userid,improves);
             initSortInfo(rank,improves);
             if(null == improves){

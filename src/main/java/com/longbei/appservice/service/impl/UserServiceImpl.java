@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
 	private UserFlowerDetailMapper userFlowerDetailMapper;
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
-
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
 	@Autowired
@@ -174,8 +173,22 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
-			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
-			userInfo.setInterestList(interestList);
+			UserInterests userInterests = userInterestsMapper.selectInterests(userid);
+			String ptypes[] = userInterests.getPtype().split(",");
+			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
+			List<UserInterests> userInterestsList = new ArrayList<UserInterests>();
+			for(int i=0;i<ptypes.length;i++)
+			{
+				UserInterests userInterest = new UserInterests();
+				userInterest.setId(userInterests.getId());
+				userInterest.setUserid(userInterests.getUserid());
+				userInterest.setPtype(ptypes[i]);
+				userInterest.setCreatetime(userInterests.getCreatetime());
+				userInterest.setUpdatetime(userInterests.getUpdatetime());
+				userInterest.setPerfectname(userTagList.get(i).getTag());
+				userInterestsList.add(userInterest);
+			}
+			userInfo.setInterestList(userInterestsList);
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
