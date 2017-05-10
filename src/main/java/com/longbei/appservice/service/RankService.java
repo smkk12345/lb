@@ -411,10 +411,10 @@ public interface RankService extends BaseService{
 
     /**
      * 通知关注榜单的用户 榜单已开始
-     * @param currentDate
+     * @param rank
      * @return
      */
-    BaseResp<Object> noticeFollowRankUser(Date currentDate);
+    BaseResp<Object> noticeFollowRankUser(Rank rank);
 
     /**
      * 将开始的榜单状态置为已开始

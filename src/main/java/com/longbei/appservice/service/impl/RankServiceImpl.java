@@ -1882,24 +1882,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     /**
      * 通知关注榜单的用户 榜单已开始
-     * @param currentDate
+     * @param rank
      * @return
      */
     @Override
-    public BaseResp<Object> noticeFollowRankUser(Date currentDate) {
+    public BaseResp<Object> noticeFollowRankUser(Rank rank) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,5);
-            Map<String,Object> map = new HashMap<String,Object>();
-            map.put("beforeDate",beforeDate);
-            map.put("currentDate",currentDate);
-            //查看前五分钟刚刚开始的榜单
-            List<Rank> rankList = this.rankMapper.selectStartRank(map);
-            if(rankList == null || rankList.size() == 0 ){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
-            }
             List<Long> userIdList = new ArrayList<Long>();
-            for(Rank rank:rankList){
                 //通过rank查看关注的用户
                 Map<String,Object> paraMap = new HashMap<String,Object>();
                 paraMap.put("businessId",rank.getRankid());
@@ -1927,10 +1917,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setIsdel("0");
                 userMsg.setIsread("0");
                 this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
-            }
             return baseResp.ok();
         }catch(Exception e){
-            logger.error("notice follow rank user error currentDate:{}",currentDate);
+            logger.error("notice follow rank user error rank:{}", com.alibaba.fastjson.JSON.toJSONString(rank));
             printException(e);
         }
         return baseResp;
@@ -1945,16 +1934,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> handleStartRank(Date currentDate) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            Date beforeDate = DateUtils.getBeforeDateTime(currentDate,500000);
             Map<String,Object> map = new HashMap<String,Object>();
-            map.put("beforeDate",DateUtils.formatDate(beforeDate,"yyyy-MM-dd HH:mm:ss"));
             map.put("currentDate",DateUtils.formatDate(currentDate,"yyyy-MM-dd HH:mm:ss"));
-            int row = this.rankMapper.handleStartRank(map);
-            logger.info("handleStartRank beforeDate={},currentDate={},updatetCount={}",beforeDate,currentDate,row);
+            List<Rank> lists = this.rankMapper.selectStartRank(map);
+            if (null == lists || lists.size() == 0){
+                return BaseResp.ok();
+            }
+            for (Rank rank : lists){
+                Rank torank = new Rank();
+                torank.setRankid(rank.getRankid());
+                torank.setIsfinish("1");
+                int row = rankMapper.updateSymbolByRankId(torank);
+                if (row > 0){
+                    noticeFollowRankUser(rank);
+                }
+            }
+            logger.info("handleStartRank currentDate={},",currentDate);
             return baseResp.ok();
         }catch(Exception e){
             logger.error("handle start rank error currentDate:{]",currentDate);
-            printException(e);
         }
         return baseResp.fail();
     }
@@ -2230,7 +2228,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<Long> noWinningUserIdList = new ArrayList<Long>();
             for(RankMembers rankMember:rankMemberses){
                 if("1".equals(rankMember.getIswinning()) && "3".equals(rankMember.getCheckstatus())){
-                    UserMsg userMsg = createWinningUserMsg(rank,rankMember.getUserid(),Integer.parseInt(rankMember.getRankAward().getAwardid()));
+                    UserMsg userMsg = createWinningUserMsg(rank,rankMember.getUserid(),
+                            Integer.parseInt(rankMember.getRankAward().getAwardid()));
                     if(userMsg != null) winningUserMsgList.add(userMsg);
                     continue;
                 }
