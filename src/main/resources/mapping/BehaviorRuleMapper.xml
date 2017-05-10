@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.admin.dao.BehaviorRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.admin.entity.BehaviorRule" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="registergoals" property="registergoals" jdbcType="INTEGER" />
+    <result column="qqbindgoals" property="qqbindgoals" jdbcType="INTEGER" />
+    <result column="webbindgoals" property="webbindgoals" jdbcType="INTEGER" />
+    <result column="wechatbindgoals" property="wechatbindgoals" jdbcType="INTEGER" />
+    <result column="certificationgoals" property="certificationgoals" jdbcType="INTEGER" />
+    <result column="infocompletegoals" property="infocompletegoals" jdbcType="INTEGER" />
+    <result column="signgoals" property="signgoals" jdbcType="INTEGER" />
+    <result column="firstsignimpcoins" property="firstsignimpcoins" jdbcType="INTEGER" />
+    <result column="continuesignimpcoinsmore" property="continuesignimpcoinsmore" jdbcType="INTEGER" />
+    <result column="innersharegoals" property="innersharegoals" jdbcType="INTEGER" />
+    <result column="outsharegoals" property="outsharegoals" jdbcType="INTEGER" />
+    <result column="outshareimpcoins" property="outshareimpcoins" jdbcType="INTEGER" />
+    <result column="friendregistergoals" property="friendregistergoals" jdbcType="INTEGER" />
+    <result column="friendregisterimpcoins" property="friendregisterimpcoins" jdbcType="INTEGER" />
+    <result column="addfriendgoals" property="addfriendgoals" jdbcType="INTEGER" />
+    <result column="addfriendimpcoins" property="addfriendimpcoins" jdbcType="INTEGER" />
+    <result column="lotterygoals" property="lotterygoals" jdbcType="INTEGER" />
+    <result column="coindonategoals" property="coindonategoals" jdbcType="INTEGER" />
+    <result column="impcoindonategoals" property="impcoindonategoals" jdbcType="DOUBLE" />
+    <result column="eachimproveflowersmax" property="eachimproveflowersmax" jdbcType="INTEGER" />
+    <result column="likegoals" property="likegoals" jdbcType="INTEGER" />
+    <result column="impcommentgoals" property="impcommentgoals" jdbcType="INTEGER" />
+    <result column="flowergoals" property="flowergoals" jdbcType="INTEGER" />
+    <result column="improvegoals" property="improvegoals" jdbcType="INTEGER" />
+    <result column="improveimpcoins" property="improveimpcoins" jdbcType="INTEGER" />
+    <result column="rankimprovesdaymax" property="rankimprovesdaymax" jdbcType="INTEGER" />
+    <result column="rankimprovestotalmin" property="rankimprovestotalmin" jdbcType="INTEGER" />
+    <result column="rankimprovestotalmax" property="rankimprovestotalmax" jdbcType="INTEGER" />
+    <result column="rankdaysmin" property="rankdaysmin" jdbcType="INTEGER" />
+    <result column="rankdaysmax" property="rankdaysmax" jdbcType="INTEGER" />
+    <result column="publicrankpricetotalmin" property="publicrankpricetotalmin" jdbcType="INTEGER" />
+    <result column="privaterankpricetotalmin" property="privaterankpricetotalmin" jdbcType="INTEGER" />
+    <result column="joinrankgoals" property="joinrankgoals" jdbcType="INTEGER" />
+    <result column="joincirclegoals" property="joincirclegoals" jdbcType="INTEGER" />
+    <result column="joinclassgoals" property="joinclassgoals" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals, 
+    infocompletegoals, signgoals, firstsignimpcoins, continuesignimpcoinsmore, innersharegoals, 
+    outsharegoals, outshareimpcoins, friendregistergoals, friendregisterimpcoins, addfriendgoals, 
+    addfriendimpcoins, lotterygoals, coindonategoals, impcoindonategoals, eachimproveflowersmax, 
+    likegoals, impcommentgoals, flowergoals, improvegoals, improveimpcoins, rankimprovesdaymax, 
+    rankimprovestotalmin, rankimprovestotalmax, rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
+    privaterankpricetotalmin, joinrankgoals, joincirclegoals, joinclassgoals
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_behavior_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_behavior_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.admin.entity.BehaviorRule" >
+    insert into sys_behavior_rule (id, registergoals, qqbindgoals, 
+      webbindgoals, wechatbindgoals, certificationgoals, 
+      infocompletegoals, signgoals, firstsignimpcoins, 
+      continuesignimpcoinsmore, innersharegoals, 
+      outsharegoals, outshareimpcoins, friendregistergoals, 
+      friendregisterimpcoins, addfriendgoals, 
+      addfriendimpcoins, lotterygoals, coindonategoals, 
+      impcoindonategoals, eachimproveflowersmax, 
+      likegoals, impcommentgoals, flowergoals, 
+      improvegoals, improveimpcoins, rankimprovesdaymax, 
+      rankimprovestotalmin, rankimprovestotalmax, 
+      rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
+      privaterankpricetotalmin, joinrankgoals, 
+      joincirclegoals, joinclassgoals)
+    values (#{id,jdbcType=BIGINT}, #{registergoals,jdbcType=INTEGER}, #{qqbindgoals,jdbcType=INTEGER}, 
+      #{webbindgoals,jdbcType=INTEGER}, #{wechatbindgoals,jdbcType=INTEGER}, #{certificationgoals,jdbcType=INTEGER}, 
+      #{infocompletegoals,jdbcType=INTEGER}, #{signgoals,jdbcType=INTEGER}, #{firstsignimpcoins,jdbcType=INTEGER}, 
+      #{continuesignimpcoinsmore,jdbcType=INTEGER}, #{innersharegoals,jdbcType=INTEGER}, 
+      #{outsharegoals,jdbcType=INTEGER}, #{outshareimpcoins,jdbcType=INTEGER}, #{friendregistergoals,jdbcType=INTEGER}, 
+      #{friendregisterimpcoins,jdbcType=INTEGER}, #{addfriendgoals,jdbcType=INTEGER}, 
+      #{addfriendimpcoins,jdbcType=INTEGER}, #{lotterygoals,jdbcType=INTEGER}, #{coindonategoals,jdbcType=INTEGER}, 
+      #{impcoindonategoals,jdbcType=DOUBLE}, #{eachimproveflowersmax,jdbcType=INTEGER}, 
+      #{likegoals,jdbcType=INTEGER}, #{impcommentgoals,jdbcType=INTEGER}, #{flowergoals,jdbcType=INTEGER}, 
+      #{improvegoals,jdbcType=INTEGER}, #{improveimpcoins,jdbcType=INTEGER}, #{rankimprovesdaymax,jdbcType=INTEGER}, 
+      #{rankimprovestotalmin,jdbcType=INTEGER}, #{rankimprovestotalmax,jdbcType=INTEGER}, 
+      #{rankdaysmin,jdbcType=INTEGER}, #{rankdaysmax,jdbcType=INTEGER}, #{publicrankpricetotalmin,jdbcType=INTEGER}, 
+      #{privaterankpricetotalmin,jdbcType=INTEGER}, #{joinrankgoals,jdbcType=INTEGER}, 
+      #{joincirclegoals,jdbcType=INTEGER}, #{joinclassgoals,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.admin.entity.BehaviorRule" >
+    insert into sys_behavior_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="registergoals != null" >
+        registergoals,
+      </if>
+      <if test="qqbindgoals != null" >
+        qqbindgoals,
+      </if>
+      <if test="webbindgoals != null" >
+        webbindgoals,
+      </if>
+      <if test="wechatbindgoals != null" >
+        wechatbindgoals,
+      </if>
+      <if test="certificationgoals != null" >
+        certificationgoals,
+      </if>
+      <if test="infocompletegoals != null" >
+        infocompletegoals,
+      </if>
+      <if test="signgoals != null" >
+        signgoals,
+      </if>
+      <if test="firstsignimpcoins != null" >
+        firstsignimpcoins,
+      </if>
+      <if test="continuesignimpcoinsmore != null" >
+        continuesignimpcoinsmore,
+      </if>
+      <if test="innersharegoals != null" >
+        innersharegoals,
+      </if>
+      <if test="outsharegoals != null" >
+        outsharegoals,
+      </if>
+      <if test="outshareimpcoins != null" >
+        outshareimpcoins,
+      </if>
+      <if test="friendregistergoals != null" >
+        friendregistergoals,
+      </if>
+      <if test="friendregisterimpcoins != null" >
+        friendregisterimpcoins,
+      </if>
+      <if test="addfriendgoals != null" >
+        addfriendgoals,
+      </if>
+      <if test="addfriendimpcoins != null" >
+        addfriendimpcoins,
+      </if>
+      <if test="lotterygoals != null" >
+        lotterygoals,
+      </if>
+      <if test="coindonategoals != null" >
+        coindonategoals,
+      </if>
+      <if test="impcoindonategoals != null" >
+        impcoindonategoals,
+      </if>
+      <if test="eachimproveflowersmax != null" >
+        eachimproveflowersmax,
+      </if>
+      <if test="likegoals != null" >
+        likegoals,
+      </if>
+      <if test="impcommentgoals != null" >
+        impcommentgoals,
+      </if>
+      <if test="flowergoals != null" >
+        flowergoals,
+      </if>
+      <if test="improvegoals != null" >
+        improvegoals,
+      </if>
+      <if test="improveimpcoins != null" >
+        improveimpcoins,
+      </if>
+      <if test="rankimprovesdaymax != null" >
+        rankimprovesdaymax,
+      </if>
+      <if test="rankimprovestotalmin != null" >
+        rankimprovestotalmin,
+      </if>
+      <if test="rankimprovestotalmax != null" >
+        rankimprovestotalmax,
+      </if>
+      <if test="rankdaysmin != null" >
+        rankdaysmin,
+      </if>
+      <if test="rankdaysmax != null" >
+        rankdaysmax,
+      </if>
+      <if test="publicrankpricetotalmin != null" >
+        publicrankpricetotalmin,
+      </if>
+      <if test="privaterankpricetotalmin != null" >
+        privaterankpricetotalmin,
+      </if>
+      <if test="joinrankgoals != null" >
+        joinrankgoals,
+      </if>
+      <if test="joincirclegoals != null" >
+        joincirclegoals,
+      </if>
+      <if test="joinclassgoals != null" >
+        joinclassgoals,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="registergoals != null" >
+        #{registergoals,jdbcType=INTEGER},
+      </if>
+      <if test="qqbindgoals != null" >
+        #{qqbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="webbindgoals != null" >
+        #{webbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="wechatbindgoals != null" >
+        #{wechatbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="certificationgoals != null" >
+        #{certificationgoals,jdbcType=INTEGER},
+      </if>
+      <if test="infocompletegoals != null" >
+        #{infocompletegoals,jdbcType=INTEGER},
+      </if>
+      <if test="signgoals != null" >
+        #{signgoals,jdbcType=INTEGER},
+      </if>
+      <if test="firstsignimpcoins != null" >
+        #{firstsignimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="continuesignimpcoinsmore != null" >
+        #{continuesignimpcoinsmore,jdbcType=INTEGER},
+      </if>
+      <if test="innersharegoals != null" >
+        #{innersharegoals,jdbcType=INTEGER},
+      </if>
+      <if test="outsharegoals != null" >
+        #{outsharegoals,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoins != null" >
+        #{outshareimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="friendregistergoals != null" >
+        #{friendregistergoals,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoins != null" >
+        #{friendregisterimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendgoals != null" >
+        #{addfriendgoals,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendimpcoins != null" >
+        #{addfriendimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="lotterygoals != null" >
+        #{lotterygoals,jdbcType=INTEGER},
+      </if>
+      <if test="coindonategoals != null" >
+        #{coindonategoals,jdbcType=INTEGER},
+      </if>
+      <if test="impcoindonategoals != null" >
+        #{impcoindonategoals,jdbcType=DOUBLE},
+      </if>
+      <if test="eachimproveflowersmax != null" >
+        #{eachimproveflowersmax,jdbcType=INTEGER},
+      </if>
+      <if test="likegoals != null" >
+        #{likegoals,jdbcType=INTEGER},
+      </if>
+      <if test="impcommentgoals != null" >
+        #{impcommentgoals,jdbcType=INTEGER},
+      </if>
+      <if test="flowergoals != null" >
+        #{flowergoals,jdbcType=INTEGER},
+      </if>
+      <if test="improvegoals != null" >
+        #{improvegoals,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoins != null" >
+        #{improveimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovesdaymax != null" >
+        #{rankimprovesdaymax,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovestotalmin != null" >
+        #{rankimprovestotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovestotalmax != null" >
+        #{rankimprovestotalmax,jdbcType=INTEGER},
+      </if>
+      <if test="rankdaysmin != null" >
+        #{rankdaysmin,jdbcType=INTEGER},
+      </if>
+      <if test="rankdaysmax != null" >
+        #{rankdaysmax,jdbcType=INTEGER},
+      </if>
+      <if test="publicrankpricetotalmin != null" >
+        #{publicrankpricetotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="privaterankpricetotalmin != null" >
+        #{privaterankpricetotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="joinrankgoals != null" >
+        #{joinrankgoals,jdbcType=INTEGER},
+      </if>
+      <if test="joincirclegoals != null" >
+        #{joincirclegoals,jdbcType=INTEGER},
+      </if>
+      <if test="joinclassgoals != null" >
+        #{joinclassgoals,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.admin.entity.BehaviorRule" >
+    update sys_behavior_rule
+    <set >
+      <if test="registergoals != null" >
+        registergoals = #{registergoals,jdbcType=INTEGER},
+      </if>
+      <if test="qqbindgoals != null" >
+        qqbindgoals = #{qqbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="webbindgoals != null" >
+        webbindgoals = #{webbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="wechatbindgoals != null" >
+        wechatbindgoals = #{wechatbindgoals,jdbcType=INTEGER},
+      </if>
+      <if test="certificationgoals != null" >
+        certificationgoals = #{certificationgoals,jdbcType=INTEGER},
+      </if>
+      <if test="infocompletegoals != null" >
+        infocompletegoals = #{infocompletegoals,jdbcType=INTEGER},
+      </if>
+      <if test="signgoals != null" >
+        signgoals = #{signgoals,jdbcType=INTEGER},
+      </if>
+      <if test="firstsignimpcoins != null" >
+        firstsignimpcoins = #{firstsignimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="continuesignimpcoinsmore != null" >
+        continuesignimpcoinsmore = #{continuesignimpcoinsmore,jdbcType=INTEGER},
+      </if>
+      <if test="innersharegoals != null" >
+        innersharegoals = #{innersharegoals,jdbcType=INTEGER},
+      </if>
+      <if test="outsharegoals != null" >
+        outsharegoals = #{outsharegoals,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoins != null" >
+        outshareimpcoins = #{outshareimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="friendregistergoals != null" >
+        friendregistergoals = #{friendregistergoals,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoins != null" >
+        friendregisterimpcoins = #{friendregisterimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendgoals != null" >
+        addfriendgoals = #{addfriendgoals,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendimpcoins != null" >
+        addfriendimpcoins = #{addfriendimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="lotterygoals != null" >
+        lotterygoals = #{lotterygoals,jdbcType=INTEGER},
+      </if>
+      <if test="coindonategoals != null" >
+        coindonategoals = #{coindonategoals,jdbcType=INTEGER},
+      </if>
+      <if test="impcoindonategoals != null" >
+        impcoindonategoals = #{impcoindonategoals,jdbcType=DOUBLE},
+      </if>
+      <if test="eachimproveflowersmax != null" >
+        eachimproveflowersmax = #{eachimproveflowersmax,jdbcType=INTEGER},
+      </if>
+      <if test="likegoals != null" >
+        likegoals = #{likegoals,jdbcType=INTEGER},
+      </if>
+      <if test="impcommentgoals != null" >
+        impcommentgoals = #{impcommentgoals,jdbcType=INTEGER},
+      </if>
+      <if test="flowergoals != null" >
+        flowergoals = #{flowergoals,jdbcType=INTEGER},
+      </if>
+      <if test="improvegoals != null" >
+        improvegoals = #{improvegoals,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoins != null" >
+        improveimpcoins = #{improveimpcoins,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovesdaymax != null" >
+        rankimprovesdaymax = #{rankimprovesdaymax,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovestotalmin != null" >
+        rankimprovestotalmin = #{rankimprovestotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="rankimprovestotalmax != null" >
+        rankimprovestotalmax = #{rankimprovestotalmax,jdbcType=INTEGER},
+      </if>
+      <if test="rankdaysmin != null" >
+        rankdaysmin = #{rankdaysmin,jdbcType=INTEGER},
+      </if>
+      <if test="rankdaysmax != null" >
+        rankdaysmax = #{rankdaysmax,jdbcType=INTEGER},
+      </if>
+      <if test="publicrankpricetotalmin != null" >
+        publicrankpricetotalmin = #{publicrankpricetotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="privaterankpricetotalmin != null" >
+        privaterankpricetotalmin = #{privaterankpricetotalmin,jdbcType=INTEGER},
+      </if>
+      <if test="joinrankgoals != null" >
+        joinrankgoals = #{joinrankgoals,jdbcType=INTEGER},
+      </if>
+      <if test="joincirclegoals != null" >
+        joincirclegoals = #{joincirclegoals,jdbcType=INTEGER},
+      </if>
+      <if test="joinclassgoals != null" >
+        joinclassgoals = #{joinclassgoals,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.admin.entity.BehaviorRule" >
+    update sys_behavior_rule
+    set registergoals = #{registergoals,jdbcType=INTEGER},
+      qqbindgoals = #{qqbindgoals,jdbcType=INTEGER},
+      webbindgoals = #{webbindgoals,jdbcType=INTEGER},
+      wechatbindgoals = #{wechatbindgoals,jdbcType=INTEGER},
+      certificationgoals = #{certificationgoals,jdbcType=INTEGER},
+      infocompletegoals = #{infocompletegoals,jdbcType=INTEGER},
+      signgoals = #{signgoals,jdbcType=INTEGER},
+      firstsignimpcoins = #{firstsignimpcoins,jdbcType=INTEGER},
+      continuesignimpcoinsmore = #{continuesignimpcoinsmore,jdbcType=INTEGER},
+      innersharegoals = #{innersharegoals,jdbcType=INTEGER},
+      outsharegoals = #{outsharegoals,jdbcType=INTEGER},
+      outshareimpcoins = #{outshareimpcoins,jdbcType=INTEGER},
+      friendregistergoals = #{friendregistergoals,jdbcType=INTEGER},
+      friendregisterimpcoins = #{friendregisterimpcoins,jdbcType=INTEGER},
+      addfriendgoals = #{addfriendgoals,jdbcType=INTEGER},
+      addfriendimpcoins = #{addfriendimpcoins,jdbcType=INTEGER},
+      lotterygoals = #{lotterygoals,jdbcType=INTEGER},
+      coindonategoals = #{coindonategoals,jdbcType=INTEGER},
+      impcoindonategoals = #{impcoindonategoals,jdbcType=DOUBLE},
+      eachimproveflowersmax = #{eachimproveflowersmax,jdbcType=INTEGER},
+      likegoals = #{likegoals,jdbcType=INTEGER},
+      impcommentgoals = #{impcommentgoals,jdbcType=INTEGER},
+      flowergoals = #{flowergoals,jdbcType=INTEGER},
+      improvegoals = #{improvegoals,jdbcType=INTEGER},
+      improveimpcoins = #{improveimpcoins,jdbcType=INTEGER},
+      rankimprovesdaymax = #{rankimprovesdaymax,jdbcType=INTEGER},
+      rankimprovestotalmin = #{rankimprovestotalmin,jdbcType=INTEGER},
+      rankimprovestotalmax = #{rankimprovestotalmax,jdbcType=INTEGER},
+      rankdaysmin = #{rankdaysmin,jdbcType=INTEGER},
+      rankdaysmax = #{rankdaysmax,jdbcType=INTEGER},
+      publicrankpricetotalmin = #{publicrankpricetotalmin,jdbcType=INTEGER},
+      privaterankpricetotalmin = #{privaterankpricetotalmin,jdbcType=INTEGER},
+      joinrankgoals = #{joinrankgoals,jdbcType=INTEGER},
+      joincirclegoals = #{joincirclegoals,jdbcType=INTEGER},
+      joinclassgoals = #{joinclassgoals,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
