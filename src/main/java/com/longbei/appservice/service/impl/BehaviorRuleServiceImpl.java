@@ -57,10 +57,10 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
     }
 
     @Override
-    public BehaviorRule selectBehaviorRule(Long id) {
+    public BehaviorRule selectBehaviorRule() {
         BehaviorRule behaviorRule = new BehaviorRule();
         try {
-            behaviorRule = behaviorRuleMapper.selectByPrimaryKey(id);
+            behaviorRule = behaviorRuleMapper.selectOne();
         } catch (Exception e) {
             logger.error("select behaviorRule is error:{}",e);
         }

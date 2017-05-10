@@ -9,7 +9,7 @@ public interface BehaviorRuleMapper {
 
     int insertSelective(BehaviorRule record);
 
-    BehaviorRule selectByPrimaryKey(Long id);
+    BehaviorRule selectOne();
 
     int updateByPrimaryKeySelective(BehaviorRule record);
 

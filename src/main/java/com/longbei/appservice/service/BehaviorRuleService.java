@@ -33,9 +33,8 @@ public interface BehaviorRuleService {
 
     /**
      * 查
-     * @param id
      * @return
      */
-    BehaviorRule selectBehaviorRule(Long id);
+    BehaviorRule selectBehaviorRule();
 
 }

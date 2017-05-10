@@ -93,17 +93,13 @@ public class BehaviorRuleApiController {
 
     /**
      * 详情
-     * @param id
      * @return
      */
-    @RequestMapping(value = "get/{id}")
-    public BaseResp<BehaviorRule> getBehaviorRule(@PathVariable("id") String id){
+    @RequestMapping(value = "get")
+    public BaseResp<BehaviorRule> getBehaviorRule(){
         BaseResp<BehaviorRule> baseResp = new BaseResp<>();
-        if (StringUtils.isEmpty(id)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
         try {
-            BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule(Long.parseLong(id));
+            BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule();
             baseResp.setData(behaviorRule);
         } catch (NumberFormatException e) {
             logger.error("get behaviorRule  is error:{}",e);

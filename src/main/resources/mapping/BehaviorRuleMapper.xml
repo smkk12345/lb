@@ -48,11 +48,12 @@
     rankimprovestotalmin, rankimprovestotalmax, rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
     privaterankpricetotalmin, joinrankgoals, joincirclegoals, joinclassgoals
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectOne" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from sys_behavior_rule
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
+    limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from sys_behavior_rule
@@ -67,7 +68,7 @@
       friendregisterimpcoins, addfriendgoals, 
       addfriendimpcoins, lotterygoals, coindonategoals, 
       impcoindonategoals, eachimproveflowersmax, 
-      likegoals, impcommentgoals, flowergoals, 
+      likegoals, impcommentgoals, flowergoals,
       improvegoals, improveimpcoins, rankimprovesdaymax, 
       rankimprovestotalmin, rankimprovestotalmax, 
       rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
