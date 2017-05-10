@@ -2223,6 +2223,9 @@ public class ImproveServiceImpl implements ImproveService{
 //        key = key.replace("longbei_mp3/","");
 //        key = key.replace("longbei_vido/","");
         String sourceKey = key;
+        if(StringUtils.isBlank(duration)){
+            duration = null;
+        }
         if(workflow.contains("mp3")){
             sourceKey = "longbei_mp3/"+key;
         }else{

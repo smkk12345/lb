@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
 			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
 			if(null == userInterests){
-				userInfo.setInterestList(null);
+				userInfo.setInterestList(new ArrayList<SysPerfectTag>());
 			}else{
 				String ptypes[] = userInterests.getPtype().split(",");
 				List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
