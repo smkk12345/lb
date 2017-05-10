@@ -504,6 +504,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             List<Rank> ranks = rankMapper.selectRankList(map);
+            Integer totalCount = rankMapper.selectRankListCount(map);
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     if(showAward != null && showAward){
@@ -515,6 +516,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             baseResp.setData(ranks);
+            baseResp.getExpandData().put("totalCount",totalCount);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);

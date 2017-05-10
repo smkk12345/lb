@@ -67,6 +67,13 @@ public interface RankMapper {
     List<Rank> selectRankList(Map<String, Object> parameterMap);
 
     /**
+     * 查询榜单列表数量
+     * @param parameterMap
+     * @return
+     */
+    Integer selectRankListCount(Map<String, Object> parameterMap);
+
+    /**
      * 查询五分钟前刚刚开始的榜单
      * @param map
      * @return
