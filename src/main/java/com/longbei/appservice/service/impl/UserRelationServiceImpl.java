@@ -11,8 +11,10 @@ package com.longbei.appservice.service.impl;
 import java.util.*;
 
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserMsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,6 @@ import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.SnsFans;
-import com.longbei.appservice.entity.SnsFriends;
-import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserRelationService;
 
 /**
@@ -52,6 +50,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private FriendService friendService;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserMsgService userMsgService;
 	
 	
 	/**
@@ -205,6 +205,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			SnsFans snsFans = new SnsFans(userid,likeuserid);
 			int n = snsFansMapper.insert(snsFans);
 			if(n > 0){
+				insertAddFansMsg(userid,likeuserid);
 				userBehaviourService.userSumInfo(Constant.UserSumType.addedFans,
 						userid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -514,6 +515,14 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private void initMsgUserInfoByUserid(SnsFans snsFans){
 		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
 		snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+	}
+
+
+	private void insertAddFansMsg(Long userId,Long likeUserId){
+		String remark = "关注消息";
+		userMsgService.insertMsg(String.valueOf(userId),String.valueOf(likeUserId),
+				null,null,null,remark,"1","5",0);
+
 	}
 
 

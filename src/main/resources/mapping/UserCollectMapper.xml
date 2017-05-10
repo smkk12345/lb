@@ -138,7 +138,6 @@
       from user_collect
       where
         impstatus = 0
-        and ctype = #{ctype}
         and userid = #{userid}
       order by createtime DESC
       limit #{startNum},#{pageSize}

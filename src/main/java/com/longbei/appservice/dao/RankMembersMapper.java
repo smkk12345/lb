@@ -22,6 +22,7 @@ public interface RankMembersMapper {
 
     int selectCount(RankMembers rankMembers);
 
+    int selectRankIcount(@Param("rankid") String rankid);
 
     String getRankImproveCount(@Param("rankid") String rankid);
 

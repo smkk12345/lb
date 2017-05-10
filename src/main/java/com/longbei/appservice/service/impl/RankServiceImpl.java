@@ -374,12 +374,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
-            for (Rank rank1 : ranks){
-                BaseResp<Integer> integerBaseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank.getRankid()), "2", null);
-                rank1.setCommentCount(integerBaseResp.getData());
-                String icount = rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()));
-                rank1.setIcount(StringUtils.isBlank(icount)?0:Integer.parseInt(icount));
-            }
             page.setTotalCount(totalcount);
             page.setList(ranks);
         } catch (Exception e) {
@@ -397,6 +391,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if(awardList != null && awardList.size() > 0){
                         rank.setRankAwards(awardList);
                     }
+                    BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"2",null);
+                    if (ResultUtil.isSuccess(baseResp)){
+                        rank1.setCommentCount(baseResp.getData());
+                    }
+                    rank1.setIcount(Integer.parseInt(rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()))));
                 }
             }
             return ranks;

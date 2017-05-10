@@ -59,7 +59,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
     public Long selectRecommendImproveCount(String brief,List<String> userids, Date lastdate){
         Criteria criteria = Criteria.where("isrecommend").is("1");
         if (null != userids && userids.size() != 0){
-            criteria.in(userids);
+            criteria.and("user.$id").in(userids);
         }
         if (!StringUtils.isEmpty(brief)){
             criteria.regex(brief);

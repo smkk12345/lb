@@ -17,7 +17,15 @@ public interface UserInterestsService {
 	 * @auther IngaWu
 	 * @currentdate:2017年2月24日
 	 */
-	BaseResp<Object> insertInterests(String userid,String ids);
+	BaseResp<Object> updateInterests(String userid,String ids);
 
 
+	/**
+	 * @Title: selectInterests
+	 * @Description: 获取用户兴趣标签
+	 * @param userid
+	 * @auther IngaWu
+	 * @currentdate:2017年5月9日
+	 */
+	BaseResp<UserInterests> selectInterests(long userid);
 }

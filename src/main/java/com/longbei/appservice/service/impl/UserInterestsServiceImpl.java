@@ -26,7 +26,7 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> insertInterests(String userid,String ids) {
+	public BaseResp<Object> updateInterests(String userid,String ids) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 
 		UserInterests data = new UserInterests();
@@ -44,6 +44,22 @@ public class UserInterestsServiceImpl implements UserInterestsService {
 		}
 		return baseResp;
 	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<UserInterests> selectInterests(long userid) {
+		BaseResp<UserInterests> baseResp = new BaseResp<UserInterests>();
+		try {
+			UserInterests uerInterests = userInterestsMapper.selectInterests(userid);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			baseResp.setData(uerInterests);
+		} catch (Exception e) {
+			logger.error("selectInterests error and userid = {}, msg={}",userid,e);
+		}
+		return baseResp;
+	}
+
 
 
 }

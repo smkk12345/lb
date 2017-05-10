@@ -33,6 +33,7 @@ import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserPlDetailService;
+import com.longbei.appservice.service.UserInterestsService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -83,7 +84,6 @@ public class UserServiceImpl implements UserService {
 	private UserFlowerDetailMapper userFlowerDetailMapper;
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
-
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
 	@Autowired
@@ -96,6 +96,8 @@ public class UserServiceImpl implements UserService {
 	private IJPushService ijPushService;
 	@Autowired
 	private UserPlDetailService userPlDetailService;
+	@Autowired
+	private UserInterestsService userInterestsService;
 	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
@@ -121,21 +123,21 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfo.setDetailList(detailList);
 			//获取用户星级
-			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-			expandData.put("userStar", userLevel.getStar());
+//			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+//			expandData.put("userStar", userLevel.getStar());
 			//龙级
-			expandData.put("grade", userLevel.getGrade());
+			expandData.put("grade", userInfo.getGrade());
 			//查询粉丝总数
-			int fansCount = snsFansMapper.selectCountFans(userid);
-			expandData.put("fansCount", fansCount);
+//			int fansCount = snsFansMapper.selectCountFans(userid);
+			expandData.put("fansCount", userInfo.getTotalfans());
 			
 			//获取用户被赠与的进步花
-			int flowernum = 0;
-			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
-			if(null != list && list.size()>0){
-				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
-			}
-			expandData.put("flowernum", flowernum);
+//			int flowernum = 0;
+//			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
+//			if(null != list && list.size()>0){
+//				flowernum = userFlowerDetailMapper.selectCountFlower(userid);
+//			}
+			expandData.put("flowernum", userInfo.getGivedflowers());
 			if(lookid != 0){
 				SnsFriends snsFriends = userRelationService.selectByUidAndFid(lookid, userid);
 				if(null != snsFriends){
@@ -174,8 +176,22 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
-			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
-			userInfo.setInterestList(interestList);
+			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
+			String ptypes[] = userInterests.getPtype().split(",");
+			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
+			List<UserInterests> userInterestsList = new ArrayList<UserInterests>();
+			for(int i=0;i<ptypes.length;i++)
+			{
+				UserInterests userInterest = new UserInterests();
+				userInterest.setId(userInterests.getId());
+				userInterest.setUserid(userInterests.getUserid());
+				userInterest.setPtype(ptypes[i]);
+				userInterest.setCreatetime(userInterests.getCreatetime());
+				userInterest.setUpdatetime(userInterests.getUpdatetime());
+				userInterest.setPerfectname(userTagList.get(i).getTag());
+				userInterestsList.add(userInterest);
+			}
+			userInfo.setInterestList(userInterestsList);
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
@@ -1004,8 +1020,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp<Object> selectRandomTagList() {
+	public BaseResp<Object> selectRandomTagList(String userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
+		String[] ptypes = null;
 		try{
 			List<SysPerfectTag> list = sysPerfectTagMapper.selectAll();
 			baseResp.setData(list);
