@@ -15,48 +15,48 @@ public class Constant_point {
     /**
      * 新手任务
      */
-    public static int NEW_REGISTER = 30;
-    public static int NEW_LOGIN_QQ = 5;
-    public static int NEW_LOGIN_WX = 5;
-    public static int NEW_LOGIN_WB = 5;
-    public static int NEW_BINDING_EMAIL = 10;
+    public static int NEW_REGISTER = 30;//用户注册
+    public static int NEW_LOGIN_QQ = 5;//绑定qq
+    public static int NEW_LOGIN_WX = 5;//绑定微信
+    public static int NEW_LOGIN_WB = 5;//绑定微博
+    public static int NEW_BINDING_EMAIL = 10;//绑定邮箱
     public static int NEW_CERTIFY_USERCARD = 50;//身份证认证
     public static int NEW_CERTIFY_ACADEMIC = 30;//学历认证 academic
-    public static int NEW_CERTIFY_JOB = 30;
-    public static int NEW_USERINFO = 5;
+    public static int NEW_CERTIFY_JOB = 30;//用作认证
+    public static int NEW_USERINFO = 5;//更新用户信息
 
     /**
      * 日常行为
      */
     public static int DAILY_CHECKIN = 3;//点赞
-    public static int DAILY_SHARE=2;
-    public static int DAILY_SHARE_LIMIT = 10;
-    public static int DAILY_ADDFRIEND = 2;
-    public static int DAILY_ADDFRIEND_LIMIT = 20;
-    public static int DAILY_FUN = 1;
-    public static int DAILY_FUN_LIMIT = 20;
+    public static int DAILY_SHARE=2;//每日分享
+    public static int DAILY_SHARE_LIMIT = 10;//每日分享上限限制
+    public static int DAILY_ADDFRIEND = 2;//每日添加好友
+    public static int DAILY_ADDFRIEND_LIMIT = 20;//每日添加好友限制
+    public static int DAILY_FUN = 1;//每日关注
+    public static int DAILY_FUN_LIMIT = 20;//每日关注限制
     /**
      * 互动行为
      */
-    public static int DAILY_LIKE = 1;
-    public static int DAILY_LIKE_LIMIT = 30;
-    public static int DAILY_COMMENT = 2;
-    public static int DAILY_COMMENT_LIMIT = 40;
-    public static int DAILY_FLOWER = 1;
-    public static int DAILY_FLOWER_LIMIT = 100;
-    public static int DAILY_DIAMOND = 10;
-    public static int DAILY_DIAMOND_LIMIT = 100;
+    public static int DAILY_LIKE = 1;//点赞
+    public static int DAILY_LIKE_LIMIT = 30;//点赞限制
+    public static int DAILY_COMMENT = 2;//评论
+    public static int DAILY_COMMENT_LIMIT = 40;//评论限制
+    public static int DAILY_FLOWER = 1;//送花
+    public static int DAILY_FLOWER_LIMIT = 100;//送花限制
+    public static int DAILY_DIAMOND = 10;//送钻
+    public static int DAILY_DIAMOND_LIMIT = 100;//送钻限制
     /**
      * 进步行为
      */
-    public static int DAILY_ADDIMP = 50;
-    public static int DAILY_ADDIMP_LIMIT = 500;
-    public static int DAILY_ADDRANK = 7;
-    public static int DAILY_ADDRANK_LIMIT = 35;
-    public static int DAILY_ADDCLASSROOM = 7;
-    public static int DAILY_ADDCLASSROOM_LIMIT = 35;
-    public static int DAILY_ADDCIRCLE = 7;
-    public static int DAILY_ADDCIRCLE_LIMIT = 35;
+    public static int DAILY_ADDIMP = 50;//发进步
+    public static int DAILY_ADDIMP_LIMIT = 500;//发进步限制
+    public static int DAILY_ADDRANK = 7;//加榜
+    public static int DAILY_ADDRANK_LIMIT = 35;//加榜限制
+    public static int DAILY_ADDCLASSROOM = 7;//加教室
+    public static int DAILY_ADDCLASSROOM_LIMIT = 35;//加教室限制
+    public static int DAILY_ADDCIRCLE = 7;//加圈子
+    public static int DAILY_ADDCIRCLE_LIMIT = 35;//加圈子限制
     /**
      * 金融消费
      */
