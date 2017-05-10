@@ -1588,22 +1588,28 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         map.put("avatar",appUserMongoEntity.getAvatar());
 
                         if(userId == null){
-                            map.put("isfans",false);
+                            map.put("isfans","0");
                             resultList.add(map);
                             continue;
                         }
 
                         //判断是否是好友
                         if(userId.equals(rankMembers.getUserid())){
-                            map.put("isfans",true);
+                            map.put("isfans","1");
                             resultList.add(map);
                             continue;
                         }
                         SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
                         if(snsFans != null){
-                            map.put("isfans",true);
+                            map.put("isfans","1");
                         }else{
-                            map.put("isfans",false);
+                            map.put("isfans","0");
+                        }
+                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                        if(snsFriends != null){
+                            map.put("isfriend","1");
+                        }else{
+                            map.put("isfriend","0");
                         }
                         resultList.add(map);
                     }
