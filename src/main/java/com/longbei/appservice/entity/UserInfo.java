@@ -176,7 +176,7 @@ public class UserInfo {
 
     private List<UserSchool> schoolList = new ArrayList<UserSchool>();
 
-    private List<UserInterests> interestList = new ArrayList<UserInterests>();
+    private List<SysPerfectTag> interestList = new ArrayList<SysPerfectTag>();
 
     private List<UserPlDetail> detailList = new ArrayList<UserPlDetail>();  //用户十全十美的信息列表
 
@@ -735,10 +735,10 @@ public class UserInfo {
 	public void setSchoolList(List<UserSchool> schoolList) {
 		this.schoolList = schoolList;
 	}
-	public List<UserInterests> getInterestList() {
+	public List<SysPerfectTag> getInterestList() {
 		return interestList;
 	}
-	public void setInterestList(List<UserInterests> interestList) {
+	public void setInterestList(List<SysPerfectTag> interestList) {
 		this.interestList = interestList;
 	}
 	public List<UserPlDetail> getDetailList() {
