@@ -31,7 +31,10 @@ public class ImproveApiController {
 
     @ResponseBody
     @RequestMapping(value = "updatemedia")
-    public BaseResp<Object> updatemedia(String objid, String pickey, String filekey,String workflow,String duration){
+    public BaseResp<Object> updatemedia(String objid, String pickey, String filekey,
+                                        String workflow,String duration){
+        logger.info("objid={},pickey={},filekey={},workflow={},duration={}",
+                objid,pickey,filekey,workflow,duration);
         try {
             return improveService.updateMedia(objid,pickey,filekey,workflow,duration);
         }catch (Exception e){

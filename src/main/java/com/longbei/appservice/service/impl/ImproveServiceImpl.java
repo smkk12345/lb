@@ -26,11 +26,13 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 进步业务操作实现类
@@ -111,6 +113,8 @@ public class ImproveServiceImpl implements ImproveService{
     private RankMapper rankMapper;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      *  @author luye
@@ -2627,16 +2631,36 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    public BaseResp<Object> updateImproveRecommentStatus(String businesstype, List<Long> impids, String isrecommend) {
+    public BaseResp<Object> updateImproveRecommentStatus(final String businesstype, final List<Long> impids, String isrecommend) {
         BaseResp baseResp = new BaseResp();
         try {
             timeLineDetailDao.updateRecommendImprove(impids,businesstype,isrecommend);
             improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),impids,isrecommend);
+//            //发送消息
+//            threadPoolExecutor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    for (Long id : impids){
+//                        insertImproveRecommentMsg(businesstype,id);
+//                    }
+//                }
+//            });
             baseResp = BaseResp.ok();
         } catch (Exception e) {
             logger.error("update improve recommend status is error:",e);
         }
         return baseResp;
+    }
+
+    private void insertImproveRecommentMsg(String businesstype,Long impid){
+        Improve improve = improveMapper.selectByPrimaryKey
+                (impid,null,getTableNameByBusinessType(businesstype),"0","2");
+        if (null != improve){
+            String remark = "您的进步被设置为推荐进步";
+            userMsgService.insertMsg
+                    (String.valueOf(improve.getUserid()),"1",String.valueOf(impid),
+                            businesstype,String.valueOf(improve.getBusinessid()),remark,"0","31",0);
+        }
     }
 
 
@@ -2684,7 +2708,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
             Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),businessid,
-                    getSourecTableNameByBusinessType(businesstype),"0",null);
+                    getTableNameByBusinessType(businesstype),"0",null);
             if (null == improve){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_55,Constant.RTNINFO_SYS_55);
                 return baseResp;

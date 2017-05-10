@@ -2,7 +2,6 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Award;
 import org.apache.ibatis.annotations.Param;
-import scala.Int;
 
 import java.util.List;
 
