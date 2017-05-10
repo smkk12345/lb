@@ -42,6 +42,7 @@ public class FindServiceImpl implements FindService{
                     if(null != userInfo)
                     {
                         appuser.setBrief(userInfo.getBrief());
+                        appuser.setSex(userInfo.getSex());
                     }
                 }catch (Exception e){
                     logger.error("getByUserName error nad username={}",appuser.getUsername(),e);

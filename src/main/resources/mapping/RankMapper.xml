@@ -387,6 +387,9 @@
       <if test="rankrule != null" >
         rankrule,
       </if>
+      <if test="notice != null" >
+        notice,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -508,6 +511,9 @@
       </if>
       <if test="rankrule != null" >
         #{rankrule},
+      </if>
+      <if test="notice != null" >
+        #{notice},
       </if>
     </trim>
   </insert>
@@ -798,9 +804,9 @@
     select
       <include refid="Base_Column_List" />
     from rank
-    where starttime &gt; #{beforeDate}
-    and starttime &lt;= #{currentDate}
-    and isfinish = 1
+    where
+    starttime &lt;= #{currentDate}
+    and isfinish = 0
   </select>
 
   <!-- 将已开始的活动置为已开始 -->

@@ -519,7 +519,7 @@
         updatetime = #{updatetime},
       </if>
       <if test="icount != null">
-        icount = icount+#{icount}
+        icount = icount+#{icount},
       </if>
         <if test="upfashionmantime != null">
             upfashionmantime = #{upfashionmantime},
@@ -604,7 +604,7 @@
           </if>
 
       </where>
-      <if test="orderType != null and orderType == 'updateTimeDesc'">
+      <if test="sort == null and orderType != null and orderType == 'updateTimeDesc'">
           order by updatetime desc
       </if>
       <if test="sort != null">

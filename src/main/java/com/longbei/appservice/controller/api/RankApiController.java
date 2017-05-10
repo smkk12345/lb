@@ -732,7 +732,7 @@ public class RankApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         Date currentDate = new Date(currentTime);
-        baseResp = this.rankService.noticeFollowRankUser(currentDate);
+//        baseResp = this.rankService.noticeFollowRankUser(currentDate);
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 

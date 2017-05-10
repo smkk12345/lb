@@ -79,6 +79,8 @@ public class Improve {
 
     private Integer complaincount; //投诉次数
 
+    private String duration;
+
 
     /**
      * 以下扩展返回信息
@@ -636,6 +638,14 @@ public class Improve {
 
     public Integer getTotalflowers() {
         return totalflowers;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getDuration() {
+        return duration;
     }
 
     /**

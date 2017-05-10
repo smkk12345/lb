@@ -177,21 +177,13 @@ public class UserServiceImpl implements UserService {
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
 			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
-			String ptypes[] = userInterests.getPtype().split(",");
-			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
-			List<UserInterests> userInterestsList = new ArrayList<UserInterests>();
-			for(int i=0;i<ptypes.length;i++)
-			{
-				UserInterests userInterest = new UserInterests();
-				userInterest.setId(userInterests.getId());
-				userInterest.setUserid(userInterests.getUserid());
-				userInterest.setPtype(ptypes[i]);
-				userInterest.setCreatetime(userInterests.getCreatetime());
-				userInterest.setUpdatetime(userInterests.getUpdatetime());
-				userInterest.setPerfectname(userTagList.get(i).getTag());
-				userInterestsList.add(userInterest);
+			if(null == userInterests){
+				userInfo.setInterestList(new ArrayList<SysPerfectTag>());
+			}else{
+				String ptypes[] = userInterests.getPtype().split(",");
+				List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
+				userInfo.setInterestList(userTagList);
 			}
-			userInfo.setInterestList(userInterestsList);
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
@@ -1024,11 +1016,7 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		String[] ptypes = null;
 		try{
-			if(null != userid) {
-				UserInterests userInterests = userInterestsService.selectInterests(Long.parseLong(userid)).getData();
-				ptypes = userInterests.getPtype().split(",");
-			}
-			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList(ptypes);
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectAll();
 			baseResp.setData(list);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){

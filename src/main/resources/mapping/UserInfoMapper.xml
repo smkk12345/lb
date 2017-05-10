@@ -59,8 +59,8 @@
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
-    sex, city, area, brief, birthday, constellation, blood, feeling, 
-    avatar, username, curpoint, point, grade,defaultbg,totalfans,givedflowers
+    sex, city, area, brief, birthday, constellation, blood, feeling, totalimp,totallikes,totalfans,givedflowers,
+    avatar, username, curpoint, point, grade,defaultbg
   </sql>
   
   <select id="selectInfoMore" resultMap="BaseResultMap"  >

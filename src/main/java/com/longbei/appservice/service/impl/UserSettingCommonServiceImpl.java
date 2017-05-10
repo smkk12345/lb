@@ -164,7 +164,7 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 				list.add(common4);
 				list.add(common5);
 				list.add(common6);
-				userSettingCommonMapper.insertList(setlist);
+//				userSettingCommonMapper.insertList(setlist);
 //				map.put("is_acquaintance_look","1");
 				map.put("is_comment","1");
 				map.put("is_diamond","1");

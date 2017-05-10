@@ -29,11 +29,13 @@
     <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
+    <result column="duration" property="duration"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
     impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
-    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey,complaincount
+    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
+    ispublic,sourcekey,complaincount,duration
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
@@ -335,6 +337,9 @@
     <if test="pickey != null" >
     pickey = #{pickey},
     </if>
+    <if test="duration != null">
+      duration =  #{duration},
+    </if>
     <if test="filekey!= null" >
       filekey = #{filekey}
     </if>
@@ -386,7 +391,7 @@
 
   <select id="selectListByRank" resultMap="BaseResultMap">
     SELECT
-    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
+    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,ir.duration,
     ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
     ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
@@ -446,7 +451,7 @@
 
   <select id="selectGoalImproveList" resultMap="BaseResultMap">
     SELECT
-    ig.id, ig.impid, ig.itype, ig.brief, ig.pickey, ig.filekey, ig.userid,
+    ig.id, ig.impid, ig.itype, ig.brief, ig.pickey, ig.filekey, ig.userid,ig.duration,
     ig.businessid, ig.businesstype, ig.likes,
     ig.flowers, ig.diamonds, ig.createtime, ig.updatetime, ig.indexnum, ig.isdel, ig.ptype,
     ig.ispublic,ig.sourcekey,ig.complaincount
@@ -500,7 +505,7 @@
 
   <select id="selectRankImproveList" resultMap="BaseResultMap">
     SELECT
-    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,
+    ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,ir.duration,
     ir.businessid, ir.businesstype, ir.likes,rm.likes as totallikes,rm.flowers as totalflowers,
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ismainimp, ir.ptype,
     ir.ispublic,ir.sourcekey,ir.complaincount,rm.sortnum
@@ -617,6 +622,7 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="goalid" property="goalid" />
+    <result column="duration"/>
   </resultMap>
 
   <select id="findCircleMemberImprove" parameterType="map" resultMap="BaseResultMap">

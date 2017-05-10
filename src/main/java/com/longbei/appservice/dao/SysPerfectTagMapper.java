@@ -19,4 +19,6 @@ public interface SysPerfectTagMapper {
      */
     List<SysPerfectTag> selectUserTagList(@Param("ptypes")String[] ptypes);
 
+    List<SysPerfectTag> selectAll();
+
 }
