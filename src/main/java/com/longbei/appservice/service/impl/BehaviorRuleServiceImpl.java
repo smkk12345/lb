@@ -6,10 +6,12 @@ import com.longbei.appservice.service.BehaviorRuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by mchaolee on 17/5/10.
  */
+@Service
 public class BehaviorRuleServiceImpl implements BehaviorRuleService {
 
     private static Logger logger = LoggerFactory.getLogger(BehaviorRuleServiceImpl.class);
