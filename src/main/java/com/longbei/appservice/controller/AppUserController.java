@@ -952,7 +952,7 @@ public class AppUserController extends BaseController {
 //            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 //        }
         try {
-            baseResp = userService.selectRandomTagList();
+            baseResp = userService.selectRandomTagList(userid);
             return baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("selectInterests and userid={}",userid,e);

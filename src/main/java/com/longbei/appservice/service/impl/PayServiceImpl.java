@@ -128,7 +128,7 @@ public class PayServiceImpl implements PayService {
 					if (!"0".equals(productOrders.getOrderstatus())) {
 						return "SUCCESS";
 					}else{
-						BaseResp<Object> baseResp = iProductBasicService.verifywx(orderType, resHandler);
+						BaseResp<Object> baseResp = iProductBasicService.verifywx(out_trade_no);
 						if(ResultUtil.isSuccess(baseResp)){
 							//购买成功后，添加龙币----
 							Double price = Double.parseDouble(productOrders.getPrice())/100;

@@ -287,8 +287,7 @@ public interface IProductBasicService {
 	 * 2017年3月21日
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/notify/verify/wx")
-	BaseResp<Object> verifywx(@RequestParam("orderType") String orderType,
-							  ResponseHandler resHandler);
+	BaseResp<Object> verifywx(@RequestParam("out_trade_no") String out_trade_no);
 
 	/**
 	 * @Title: http://ip:port/app_service/product/selectProductList

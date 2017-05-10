@@ -33,6 +33,7 @@ import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserPlDetailService;
+import com.longbei.appservice.service.UserInterestsService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -83,7 +84,6 @@ public class UserServiceImpl implements UserService {
 	private UserFlowerDetailMapper userFlowerDetailMapper;
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
-
 	@Autowired
 	private RankAcceptAwardService rankAcceptAwardService;
 	@Autowired
@@ -96,6 +96,8 @@ public class UserServiceImpl implements UserService {
 	private IJPushService ijPushService;
 	@Autowired
 	private UserPlDetailService userPlDetailService;
+	@Autowired
+	private UserInterestsService userInterestsService;
 	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
@@ -174,8 +176,22 @@ public class UserServiceImpl implements UserService {
 			UserInfo userInfo = userInfoMapper.selectByUserid(userid);
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
-			List<UserInterests> interestList = userInterestsMapper.selectInterests(userid);
-			userInfo.setInterestList(interestList);
+			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
+			String ptypes[] = userInterests.getPtype().split(",");
+			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
+			List<UserInterests> userInterestsList = new ArrayList<UserInterests>();
+			for(int i=0;i<ptypes.length;i++)
+			{
+				UserInterests userInterest = new UserInterests();
+				userInterest.setId(userInterests.getId());
+				userInterest.setUserid(userInterests.getUserid());
+				userInterest.setPtype(ptypes[i]);
+				userInterest.setCreatetime(userInterests.getCreatetime());
+				userInterest.setUpdatetime(userInterests.getUpdatetime());
+				userInterest.setPerfectname(userTagList.get(i).getTag());
+				userInterestsList.add(userInterest);
+			}
+			userInfo.setInterestList(userInterestsList);
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
@@ -1004,10 +1020,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp<Object> selectRandomTagList() {
+	public BaseResp<Object> selectRandomTagList(String userid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
+		String[] ptypes = null;
 		try{
-			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList();
+			if(null != userid) {
+				UserInterests userInterests = userInterestsService.selectInterests(Long.parseLong(userid)).getData();
+				ptypes = userInterests.getPtype().split(",");
+			}
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList(ptypes);
 			baseResp.setData(list);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){

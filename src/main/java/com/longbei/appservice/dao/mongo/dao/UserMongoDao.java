@@ -4,7 +4,6 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.GPSUtils;
-import com.longbei.appservice.common.utils.LoggerUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -17,13 +16,11 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import scala.App;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -77,7 +74,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	}
 	
 	public AppUserMongoEntity getAppUser(String userid){
-		logger.info("getAppUser userid={}",userid);
+//		logger.info("getAppUser userid={}",userid);
 		userid = userid.trim();
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
