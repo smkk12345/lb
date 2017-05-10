@@ -179,19 +179,8 @@ public class UserServiceImpl implements UserService {
 			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
 			String ptypes[] = userInterests.getPtype().split(",");
 			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
-			List<UserInterests> userInterestsList = new ArrayList<UserInterests>();
-			for(int i=0;i<ptypes.length;i++)
-			{
-				UserInterests userInterest = new UserInterests();
-				userInterest.setId(userInterests.getId());
-				userInterest.setUserid(userInterests.getUserid());
-				userInterest.setPtype(ptypes[i]);
-				userInterest.setCreatetime(userInterests.getCreatetime());
-				userInterest.setUpdatetime(userInterests.getUpdatetime());
-				userInterest.setPerfectname(userTagList.get(i).getTag());
-				userInterestsList.add(userInterest);
-			}
-			userInfo.setInterestList(userInterestsList);
+
+			userInfo.setInterestList(userTagList);
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
