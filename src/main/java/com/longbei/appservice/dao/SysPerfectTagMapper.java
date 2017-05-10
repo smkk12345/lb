@@ -8,4 +8,6 @@ public interface SysPerfectTagMapper {
 
     List<SysPerfectTag> selectRandomTagList();
 
+    List<SysPerfectTag> selectAll();
+
 }

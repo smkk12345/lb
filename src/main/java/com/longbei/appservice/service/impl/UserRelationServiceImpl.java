@@ -416,15 +416,21 @@ public class UserRelationServiceImpl implements UserRelationService {
 					map.put("userid",userInfo.getUserid());
 
 					if(userId.equals(userInfo.getUserid())){
-						map.put("isfans",true);
+						map.put("isfans","1");
 						resultMap.add(map);
 						continue;
 					}
 					SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,userInfo.getUserid());
 					if(snsFans != null){
-						map.put("isfans",true);
+						map.put("isfans","1");
 					}else{
-						map.put("isfans",false);
+						map.put("isfans","0");
+					}
+					SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,userInfo.getUserid());
+					if(null == snsFriends){
+						map.put("isfriend","0");
+					}else{
+						map.put("isfriend","1");
 					}
 					map.put("ptype",0);
 					map.put("plevel",3);

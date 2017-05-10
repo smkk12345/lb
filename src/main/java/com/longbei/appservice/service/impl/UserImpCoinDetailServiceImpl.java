@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.config.AppserviceConfig;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,8 +196,8 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 			map.put("totalcoin", userInfo.getTotalcoin() + "");
 			
 			//getMoneyUrl 查看获得财富的方式URL    
-			String getMoneyUrl = "";
-			map.put("getMoneyUrl", getMoneyUrl);
+			String getMoneyUrl = AppserviceConfig.h5_helper;
+			map.put("moneyurl", getMoneyUrl);
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

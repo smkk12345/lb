@@ -9,11 +9,11 @@
   <sql id="Base_Column_List" >
     id, tag, ptype
   </sql> 
-   <select id="selectRandomTagList" resultMap="BaseResultMap" >
+   <select id="selectAll" resultMap="BaseResultMap" >
     select
        id, tag, ptype
     from sys_perfect_tag
     where 1=1
-           order by rand() LIMIT 10
+
   </select>
 </mapper>

@@ -148,7 +148,8 @@ public interface ImproveMapper {
                     @Param("pickey") String pickey,
                     @Param("filekey") String filekey,
                     @Param("businessid") String businessid,
-                    @Param("tablename") String table);
+                    @Param("tablename") String table,
+                    @Param("duration") String duration);
 
     /**
      * 假删

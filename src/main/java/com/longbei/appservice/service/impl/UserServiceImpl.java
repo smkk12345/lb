@@ -1007,7 +1007,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> selectRandomTagList() {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList();
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectAll();
 			baseResp.setData(list);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){

@@ -2208,7 +2208,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      */
     @Override
-    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow){
+    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow,String duration){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -2236,13 +2236,13 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try{
             String tableName = getTableNameByBusinessType(type);
-            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,businessid,tableName);
+            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,duration,businessid,tableName);
             if(n > 0){
                 timeLineDetailDao.updateImproveFileKey(sourceKey,pickey,filekey);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
-            logger.error("updateMedia error and key={},pickey={},filekey={},msg={}",key,pickey,filekey,e);
+            logger.error("updateMedia error and key={},pickey={},filekey={},duration={},msg={}",key,pickey,filekey,duration,e);
         }
         return baseResp;
     }

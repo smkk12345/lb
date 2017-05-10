@@ -49,8 +49,8 @@ public class Constant_point {
     /**
      * 进步行为
      */
-    public static int DAILY_ADDIMP = 5;
-    public static int DAILY_ADDIMP_LIMIT = 50;
+    public static int DAILY_ADDIMP = 50;
+    public static int DAILY_ADDIMP_LIMIT = 500;
     public static int DAILY_ADDRANK = 7;
     public static int DAILY_ADDRANK_LIMIT = 35;
     public static int DAILY_ADDCLASSROOM = 7;
