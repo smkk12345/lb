@@ -504,7 +504,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             
             //推送一条消息
             String remark = Constant.MSG_USER_PL_LEVEL_MODEL.replace("n", level + "");
-            remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
+            if (!"a".equals(ptype)){
+                remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
+            } else {
+                remark = remark.replace("m", "龙级");
+            }
+
             //mtype 0 系统消息      msgtype  19：十全十美升级
             userMsgService.insertMsg("0", userInfo.getUserid().toString(), 
             		"", "6", "", remark, "0", "19", 0);
