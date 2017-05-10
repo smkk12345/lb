@@ -274,7 +274,8 @@ public class ImproveServiceImpl implements ImproveService{
                     "," + Constant.IMPROVE_SINGLE_TYPE +
                     ",-1," + improve.getUserid() +
                     "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(message);
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -303,7 +304,8 @@ public class ImproveServiceImpl implements ImproveService{
                     "," + improve.getBusinessid() +
                     "," + improve.getUserid() +
                     "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(message);
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -333,7 +335,8 @@ public class ImproveServiceImpl implements ImproveService{
                     "," + improve.getUserid() +
                     "," + DateUtils.formatDateTime1(improve.getCreatetime());
 
-            queueMessageSendService.sendAddMessage(message);
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -377,7 +380,8 @@ public class ImproveServiceImpl implements ImproveService{
                     "," + improve.getBusinessid() +
                     "," + improve.getUserid() +
                     "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(message);
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -416,7 +420,8 @@ public class ImproveServiceImpl implements ImproveService{
                     "," + improve.getUserid() +
                     "," + DateUtils.formatDateTime1(improve.getCreatetime());
 
-            queueMessageSendService.sendAddMessage(message);
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;

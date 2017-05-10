@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_point;
+import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NickNameUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -92,14 +93,15 @@ public class UserServiceImpl implements UserService {
 	private IUserBasicService iUserBasicService;
 	@Autowired
 	private IRongYunService iRongYunService;
-	@Autowired
-	private IJPushService ijPushService;
+
 	@Autowired
 	private UserPlDetailService userPlDetailService;
 	@Autowired
 	private UserInterestsService userInterestsService;
 	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
+	private QueueMessageSendService queueMessageSendService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -772,6 +774,8 @@ public class UserServiceImpl implements UserService {
 			userInfoMapper.updateByUseridSelective(userInfo);
 			//更新信息到mongodb
 			userMongoDao.updateAppUserMongoEntity(userInfo);
+			queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+					Constant.MQDOMAIN_USER_UPDATE,String.valueOf(userInfo.getUserid()));
 		} catch (Exception e) {
 			logger.error("updateUserInfo error and msg={}",e);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
@@ -1072,6 +1076,8 @@ public class UserServiceImpl implements UserService {
 			//更新信息到mongodb
 			userMongoDao.updateAppUserMongoEntity(userInfo);
 			if(temp > 0){
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_UPDATE,userid);
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

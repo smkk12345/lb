@@ -9,8 +9,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.entity.SnsFans;
-import com.longbei.appservice.entity.SnsFriends;
+import com.longbei.appservice.entity.*;
 
 import java.util.Date;
 import java.util.List;
@@ -153,4 +152,11 @@ public interface UserRelationService {
      * @return
      */
 	BaseResp<Object> selectFansListByLikeUserid(Long likeuserId,Boolean queryUserInfo, Integer startNum, Integer pageSize);
+
+	boolean syncUserRelationInfo(String uid);
+
+	boolean syncUserRelationInfo(String uid,String otheruid);
+
+	BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String dataStr);
+
 }

@@ -8,6 +8,7 @@
 */
 package com.longbei.appservice.controller;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import org.slf4j.Logger;
@@ -329,4 +330,23 @@ public class UserRelationController extends BaseController {
 	public BaseResp<Object> test(){
 		return this.userRelationService.selectFansListByLikeUserid(Long.parseLong("17012211590782000"),false,null,null);
 	}
+
+	/**
+	 * 获取关系用户数据变化接口
+	 * @param userid
+	 * @param dataStr
+	 * @return
+	 */
+	@RequestMapping(value="selectRelationList")
+	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String dataStr){
+		logger.info("selectRelationList userid={},dataStr={}",userid,dataStr);
+		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
+		try{
+			baseResp = userRelationService.selectRelationList(userid,dataStr);
+		}catch (Exception e){
+			logger.error("selectRelationList userid={},dataStr={}",userid,dataStr,e);
+		}
+		return baseResp;
+	}
+
 }
