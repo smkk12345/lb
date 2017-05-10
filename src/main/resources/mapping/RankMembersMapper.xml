@@ -519,7 +519,7 @@
         updatetime = #{updatetime},
       </if>
       <if test="icount != null">
-        icount = icount+#{icount}
+        icount = icount+#{icount},
       </if>
         <if test="upfashionmantime != null">
             upfashionmantime = #{upfashionmantime},
