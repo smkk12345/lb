@@ -31,7 +31,7 @@ public interface ImproveGoalMapper {
      * @param goalid 目标id
      * @return
      */
-    Improve selectBeanByGoalId(@Param("goalid") long goalid);
+    List<Improve> selectBeanByGoalId(@Param("goalid") long goalid);
     
     /**
      * 根据目标id 获取进步Count
