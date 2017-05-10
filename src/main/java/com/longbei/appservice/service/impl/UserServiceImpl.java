@@ -1024,11 +1024,7 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		String[] ptypes = null;
 		try{
-			if(null != userid) {
-				UserInterests userInterests = userInterestsService.selectInterests(Long.parseLong(userid)).getData();
-				ptypes = userInterests.getPtype().split(",");
-			}
-			List<SysPerfectTag> list = sysPerfectTagMapper.selectRandomTagList(ptypes);
+			List<SysPerfectTag> list = sysPerfectTagMapper.selectAll();
 			baseResp.setData(list);
 			return baseResp.initCodeAndDesp();
 		}catch (Exception e){
