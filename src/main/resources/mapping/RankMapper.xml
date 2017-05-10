@@ -387,6 +387,9 @@
       <if test="rankrule != null" >
         rankrule,
       </if>
+      <if test="notice != null" >
+        notice,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -508,6 +511,9 @@
       </if>
       <if test="rankrule != null" >
         #{rankrule},
+      </if>
+      <if test="notice != null" >
+        #{notice},
       </if>
     </trim>
   </insert>

@@ -649,7 +649,7 @@ public class AppUserController extends BaseController {
 			UserIdcard record = new UserIdcard();
 			record.setIdcard(idcard);
 			record.setIdcardimage(idcardimage);
-			//是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
+			//是否验证了身份证号码 0  为验证 1  验证通过 2 验证不通过
 			record.setValidateidcard("1");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
