@@ -177,10 +177,13 @@ public class UserServiceImpl implements UserService {
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
 			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
-			String ptypes[] = userInterests.getPtype().split(",");
-			List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
-
-			userInfo.setInterestList(userTagList);
+			if(null == userInterests){
+				userInfo.setInterestList(null);
+			}else{
+				String ptypes[] = userInterests.getPtype().split(",");
+				List<SysPerfectTag> userTagList = sysPerfectTagMapper.selectUserTagList(ptypes);
+				userInfo.setInterestList(userTagList);
+			}
 			userInfo.setJobList(jobList);
 			userInfo.setSchoolList(schoolList);
 			reseResp.setData(userInfo);
