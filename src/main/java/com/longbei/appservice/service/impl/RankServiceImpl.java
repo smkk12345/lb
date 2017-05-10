@@ -1087,6 +1087,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
+                if("1".equals(rankMembers.getIsfashionman())){
+                    String remark = "你被选为榜单达人";
+                    userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                }
+                if ("0".equals(rankMembers.getIsfashionman())){
+                    String remark = "你被取消榜单达人";
+                    userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                }
                 return BaseResp.ok();
             }
         } catch (Exception e) {
