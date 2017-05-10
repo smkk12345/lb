@@ -147,9 +147,10 @@ public interface ImproveMapper {
     int updateMedia(@Param("key") String key,
                     @Param("pickey") String pickey,
                     @Param("filekey") String filekey,
+                    @Param("duration") String duration,
                     @Param("businessid") String businessid,
-                    @Param("tablename") String table,
-                    @Param("duration") String duration);
+                    @Param("tablename") String table
+                   );
 
     /**
      * 假删
