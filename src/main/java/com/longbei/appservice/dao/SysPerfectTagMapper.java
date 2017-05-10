@@ -7,11 +7,7 @@ import java.util.List;
 
 public interface SysPerfectTagMapper {
 
-    /**
-     * @Title: selectRandomTagList
-     * @Description: 获取随机兴趣标签(去重)
-     */
-    List<SysPerfectTag> selectRandomTagList(@Param("ptypes")String[] ptypes);
+
 
     /**
      * @Title: selectUserTagList

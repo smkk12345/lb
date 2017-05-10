@@ -123,15 +123,15 @@ public class GoalServiceImpl implements GoalService {
 //        			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
 //        			userGoal.setGoalCount(goalCount);
         			if(userGoal.getIcount() != 0){
-        				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
-                        if(null == improve){
-                            continue;
+        				List<Improve> improves = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
+                        if (null != improves && improves.size() > 0){
+                            //拼接pickey
+                            String photo = improveService.getFirstPhotos(improves.get(0));
+                            userGoal.setPickey(photo);
+                            userGoal.setItype(improves.get(0).getItype());
+                            userGoal.setStarttime(improves.get(0).getCreatetime());
                         }
-        				//拼接pickey
-                        String photo = improveService.getFirstPhotos(improve);
-                        userGoal.setPickey(photo);
-                        userGoal.setItype(improve.getItype());
-                        userGoal.setStarttime(improve.getCreatetime());
+
         			}
 				}
         		baseResp.setData(list);
@@ -161,12 +161,14 @@ public class GoalServiceImpl implements GoalService {
 //    			goalCount = improveGoalMapper.selectCountGoal(userGoal.getGoalid(), userid);
 //    			userGoal.setGoalCount(goalCount);
     			if(userGoal.getIcount() != 0){
-    				Improve improve = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
-    				//拼接pickey
-                    String photo = improveService.getFirstPhotos(improve);
-                    userGoal.setPickey(photo);
-                    userGoal.setItype(improve.getItype());
-                    userGoal.setStarttime(improve.getCreatetime());
+    				List<Improve> improves = improveGoalMapper.selectBeanByGoalId(userGoal.getGoalid());
+                    if (null != improves && improves.size() > 0){
+                        //拼接pickey
+                        String photo = improveService.getFirstPhotos(improves.get(0));
+                        userGoal.setPickey(photo);
+                        userGoal.setItype(improves.get(0).getItype());
+                        userGoal.setStarttime(improves.get(0).getCreatetime());
+                    }
     			}
         		baseResp.setData(userGoal);
         	}else{
