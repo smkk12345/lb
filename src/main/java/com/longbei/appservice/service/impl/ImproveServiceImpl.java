@@ -2684,7 +2684,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
             Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(impid),businessid,
-                    getSourecTableNameByBusinessType(businesstype),"0",null);
+                    getTableNameByBusinessType(businesstype),"0",null);
             if (null == improve){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_55,Constant.RTNINFO_SYS_55);
                 return baseResp;
