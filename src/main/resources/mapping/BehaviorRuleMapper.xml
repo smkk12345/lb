@@ -421,7 +421,7 @@
         joinclassgoals = #{joinclassgoals,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.BehaviorRule" >
     update sys_behavior_rule
@@ -460,6 +460,6 @@
       joinrankgoals = #{joinrankgoals,jdbcType=INTEGER},
       joincirclegoals = #{joincirclegoals,jdbcType=INTEGER},
       joinclassgoals = #{joinclassgoals,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
   </update>
 </mapper>
