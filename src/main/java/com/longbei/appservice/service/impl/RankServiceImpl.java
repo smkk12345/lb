@@ -1851,6 +1851,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("userid",appUserMongoEntity.getUserid());
             resultMap.put("sortnum",sortNum);
             resultMap.put("icount",rankMembers.getIcount());
+            Rank rank = rankMapper.selectRankByRankid(rankId);
+            resultMap.put("ranktitle",rank.getRanktitle());
 
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
