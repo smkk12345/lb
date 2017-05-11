@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsFriendsMapper;
@@ -45,6 +46,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private UserInfoMapper userInfoMapper;
     @Autowired
     private IJPushService ijPushService;
+    @Autowired
+    private QueueMessageSendService queueMessageSendService;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -355,6 +358,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("msgid",friendAddAsk.getId());
             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
             ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+            String message = friendAddAsk.getReceiveUserId()+"&"+friendAddAsk.getSenderUserId();
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+                    Constant.MQDOMAIN_USER_ADDFRIEND, message);
             return new BaseResp<Object>().ok();
         }catch(Exception e){
             logger.error("update friendAddAsk status id:{} status:{} userId:{}",id,status,userId);

@@ -41,6 +41,7 @@ public class AddMessageReceiveService implements MessageListener{
     @Autowired
     private UserRelationService relationService;
 
+
     /**
      * 接收mq消息
      * @author luye
@@ -268,42 +269,66 @@ public class AddMessageReceiveService implements MessageListener{
     public void onMessage(Message message) {
         try{
             String action = message.getStringProperty("action");
-            String domainName = message.getStringProperty("domainName");
-            String msg = message.getStringProperty("ids");
-            logger.info("onMessage sucess and msg={}",msg);
-
-//            System.out.println("监听接收到的消息是:"+msg);//打印队列内的消息
-            //TODO 连续二次重复的split没必要， 太浪费了； 消息大的话一堆的临时对象
-            String []content = msg.split(",");
-            if (StringUtils.isBlank(msg)
-                    || msg.indexOf(",") == -1
-                    || content.length < 5
-                    || content.length > 5){
-                return;
+            if(action.equals(Constant.MQACTION_IMPROVE)){
+                String domainName = message.getStringProperty("domainName");
+                String msg = message.getStringProperty("ids");
+                logger.info("onMessage sucess and msg={}",msg);
+                //TODO 连续二次重复的split没必要， 太浪费了； 消息大的话一堆的临时对象
+                String []content = msg.split(",");
+                if (StringUtils.isBlank(msg)
+                        || msg.indexOf(",") == -1
+                        || content.length < 5
+                        || content.length > 5){
+                    return;
+                }
+                //提取消息中的内容
+                String id = content[0];
+                String businesstype = content[1];
+                String businessid = content[2];
+                String userid = content[3];
+                String date = content[4];
+                Date creatdate = null;
+                try {
+                    creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
+                } catch (ParseException e) {
+                    creatdate = new Date();
+                    //TODO ,logger参数 试用错误
+                    logger.error("string:{} to date is error:{}",date,e);
+                }
+                //保存时间线详情
+                insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
+                //好友关系
+            }else if(action.equals(Constant.MQACTION_USERRELATION)){
+                String domainName = message.getStringProperty("domainName");
+                String msg = message.getStringProperty("ids");
+                if(domainName.equals(Constant.MQDOMAIN_USER_UPDATE)){//更新用户所有好友的信息流
+                    relationService.syncUserRelationInfo(msg);
+                }else if(domainName.equals(Constant.MQDOMAIN_USER_ADDFRIEND)){
+                    String[] sArr = msg.split("&");
+                    String uid = sArr[0];
+                    String friendid = sArr[1];
+                    relationService.syncUserRelationInfo(uid,friendid);
+                }else if(domainName.equals(Constant.MQDOMAIN_USER_ADDFUN)){
+                    String[] sArr = msg.split("&");
+                    String uid = sArr[0];
+                    String friendid = sArr[1];
+                    relationService.syncUserRelationInfo(uid,friendid);
+                }else if(domainName.equals(Constant.MQDOMAIN_USER_REMOVEFRIEND)){
+                    String[] sArr = msg.split("&");
+                    String uid = sArr[0];
+                    String friendid = sArr[1];
+                    relationService.syncUserRelationInfo(uid,friendid);
+                }else if(domainName.equals(Constant.MQDOMAIN_USER_REMOVEFUN)){
+                    String[] sArr = msg.split("&");
+                    String uid = sArr[0];
+                    String friendid = sArr[1];
+                    relationService.syncUserRelationInfo(uid,friendid);
+                }
             }
-            //id,businesstype,businessid,userid,date
-            
-            //提取消息中的内容
-            String id = content[0];
-            String businesstype = content[1];
-            String businessid = content[2];
-            String userid = content[3];
-            String date = content[4];
-
-            Date creatdate = null;
-            try {
-                creatdate = DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss");
-            } catch (ParseException e) {
-                creatdate = new Date();
-                //TODO ,logger参数 试用错误
-                logger.error("string:{} to date is error:{}",date,e);
-            }
-            //保存时间线详情
-            insertTimeLineDetail(id,businesstype,businessid,userid,creatdate);
         }catch (Exception e){
-
+            logger.error("",message.toString());
         }
 
-
     }
+
 }
