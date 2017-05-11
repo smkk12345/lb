@@ -28,6 +28,15 @@ public class TimeLine {
 	private String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
 	private Long businessid;
 	private Date createdate;
+	private int ispublic;
+
+	public int getIspublic() {
+		return ispublic;
+	}
+
+	public void setIspublic(int ispublic) {
+		this.ispublic = ispublic;
+	}
 
 	public void setBusinessid(Long businessid) {
 		this.businessid = businessid;

@@ -93,6 +93,10 @@
     </where>
   </select>
 
+    
+    <select id="selectpasscount" resultType="java.lang.Integer">
+        SELECT count(*) FROM rank_memebers where rankid=#{rankid} AND checkstatus != '1'
+    </select>
 
   <select id="selectList" resultMap="BaseResultMap">
     SELECT

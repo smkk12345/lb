@@ -308,7 +308,10 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
      * 初始化用户进步币信息 ------Userid
      */
     private void initMsgUserInfoByUserid(UserImpCoinDetail userImpCoinDetail, long userid){
-    	if(userImpCoinDetail.getFriendid() != 0){
+		if(null == userImpCoinDetail){
+			return;
+		}
+    	if(null != userImpCoinDetail.getFriendid()&&userImpCoinDetail.getFriendid() != 0){
 			//获取好友昵称
 			String remark = userRelationService.selectRemark(userid, userImpCoinDetail.getFriendid());
 	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));

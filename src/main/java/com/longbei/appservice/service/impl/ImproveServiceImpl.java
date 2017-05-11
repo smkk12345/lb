@@ -1056,10 +1056,19 @@ public class ImproveServiceImpl implements ImproveService{
 
 
     @Override
-    public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid, Date lastdate, int pagesize) {
+    public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid,
+                                                          Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid));
+        int ispublic = 1;
+        if (null != snsFriends){
+            ispublic = 0;
+        } else {
+            ispublic = 1;
+        }
         try {
-            List<Improve> list = selectImproveListByUser(targetuserid,null,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
+            List<Improve> list = selectImproveListByUser(targetuserid,null,
+                    Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
             initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
             if (null != list && list.size() != 0){
@@ -1125,10 +1134,11 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午3:58
      */
     @Override
-    public List<Improve> selectImproveListByUser(String userid,String ptype,String ctype,Date lastdate,int pagesize) {
+    public List<Improve> selectImproveListByUser(String userid,String ptype,
+                                                 String ctype,Date lastdate,int pagesize,Integer ispublic) {
 
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
-                (userid,ptype,ctype,lastdate,pagesize);
+                (userid,ptype,ctype,lastdate,pagesize,ispublic);
         List<Improve> improves = new ArrayList<>();
 
         for (int i = 0; i < timeLines.size() ; i++){
@@ -2730,8 +2740,12 @@ public class ImproveServiceImpl implements ImproveService{
 //            userMsgMapper.insertSelective(userMsg);
             //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-            userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, "榜中下榜", "0", "41", 0);
+
             if (res > 0){
+                //清除数据
+                clearDirtyData(improve);
+                //发送消息
+                userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, "榜中下榜", "0", "41", 0);
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {

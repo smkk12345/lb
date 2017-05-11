@@ -24,11 +24,16 @@ import java.util.List;
 @Repository
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
-    public List<TimeLine> selectTimeListByUserAndType(String userid,String ptype, String timelinetype, Date lastdate, int pagesize){
+    public List<TimeLine> selectTimeListByUserAndType(String userid,String ptype,
+                                                      String timelinetype, Date lastdate,
+                                                      int pagesize,int ispublic){
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
+        if ("1".equals(timelinetype)){
+            criteria.and("ispublic").gt(ispublic);
+        }
         if (!StringUtils.isEmpty(ptype) && !"-1".equals(ptype)){
             criteria.and("ptype").is(ptype);
         }

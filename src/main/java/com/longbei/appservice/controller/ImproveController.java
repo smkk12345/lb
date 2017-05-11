@@ -436,7 +436,7 @@ public class ImproveController {
         try {
             improves = improveService.selectImproveListByUser(userid, ptype, ctype,
                     lastDate == null ? null : DateUtils.parseDate(lastDate),
-                    Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize));
+                    Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize),0);
             BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
             baseres.setData(improves);
 
@@ -763,7 +763,11 @@ public class ImproveController {
         }
         Date tempLastDate = null;
         if(StringUtils.isNotEmpty(lastDate)){
-            tempLastDate = new Date(Long.parseLong(lastDate));
+            try {
+                tempLastDate = DateUtils.formatDate(lastDate,"yyyy-MM-dd HH:mm:ss");
+            }catch (Exception e){
+                tempLastDate = new Date(Long.parseLong(lastDate));
+            }
         }
         try {
             baseResp = improveService.selectImproveLFDList(impid, opttype,
