@@ -30,23 +30,21 @@ public class BehaviorRuleApiController {
 
 
     /**
-     * 添加
-     * @param behaviorRule
+     * 详情
      * @return
      */
-    @RequestMapping(value = "add")
-    public BaseResp addBehaviorRule(@RequestBody BehaviorRule behaviorRule){
-        BaseResp baseResp = new BaseResp<>();
+    @RequestMapping(value = "get")
+    public BaseResp<BehaviorRule> getBehaviorRule(){
+        BaseResp<BehaviorRule> baseResp = new BaseResp<>();
         try {
-            boolean flag = behaviorRuleService.insertBehaviorRule(behaviorRule);
-            if (flag){
-                baseResp = BaseResp.ok();
-            }
+            BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule();
+            baseResp.setData(behaviorRule);
         } catch (NumberFormatException e) {
-            logger.error("add behaviorRule  is error:{}",e);
+            logger.error("get behaviorRule  is error:{}",e);
         }
         return baseResp;
     }
+
 
     /**
      * 编辑
@@ -66,6 +64,27 @@ public class BehaviorRuleApiController {
         }
         return baseResp;
     }
+
+    /**
+     * 添加
+     * @param behaviorRule
+     * @return
+     */
+    @RequestMapping(value = "add")
+    public BaseResp addBehaviorRule(@RequestBody BehaviorRule behaviorRule){
+        BaseResp baseResp = new BaseResp<>();
+        try {
+            boolean flag = behaviorRuleService.insertBehaviorRule(behaviorRule);
+            if (flag){
+                baseResp = BaseResp.ok();
+            }
+        } catch (NumberFormatException e) {
+            logger.error("add behaviorRule  is error:{}",e);
+        }
+        return baseResp;
+    }
+
+
 
 
     /**
@@ -89,22 +108,6 @@ public class BehaviorRuleApiController {
         }
         return baseResp;
 
-    }
-
-    /**
-     * 详情
-     * @return
-     */
-    @RequestMapping(value = "get")
-    public BaseResp<BehaviorRule> getBehaviorRule(){
-        BaseResp<BehaviorRule> baseResp = new BaseResp<>();
-        try {
-            BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule();
-            baseResp.setData(behaviorRule);
-        } catch (NumberFormatException e) {
-            logger.error("get behaviorRule  is error:{}",e);
-        }
-        return baseResp;
     }
 
 }

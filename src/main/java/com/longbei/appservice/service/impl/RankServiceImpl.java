@@ -497,9 +497,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(status != 0 && StringUtils.isNotEmpty(lastDate)){
                 Date tempLastDate = DateUtils.parseDate(lastDate);
                 map.put("lastDate",tempLastDate);
-            }else if(startNo != null){
-                map.put("startNum",startNo);
             }
+            map.put("startNum",startNo);
             map.put("sstatus",status);
             map.put("ispublic","0");
             map.put("isdel","0");

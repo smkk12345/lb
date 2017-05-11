@@ -162,6 +162,9 @@ public class RankController {
     public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,String lastDate,Integer startNum,Integer pageSize){
         logger.info("rankTitle={},pType={},rankscope={},status={},lastDate={},startNum={},pageSize={}",rankTitle,pType,rankscope,status,lastDate,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(startNum == null || startNum < 0){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
         if(pageSize == null || pageSize < 0){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
