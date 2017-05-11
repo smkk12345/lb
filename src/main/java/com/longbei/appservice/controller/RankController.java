@@ -169,7 +169,7 @@ public class RankController {
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         if(status == null){
-            status = 0;
+            status = -1;
         }
         baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,status,lastDate,startNum,pageSize,true);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
