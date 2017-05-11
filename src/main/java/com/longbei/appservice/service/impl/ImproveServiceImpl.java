@@ -1059,7 +1059,7 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid, Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
-            List<Improve> list = selectImproveListByUser(targetuserid,null,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
+            List<Improve> list = selectImproveListByUser(userid,null,Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize);
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
             initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
             if (null != list && list.size() != 0){
