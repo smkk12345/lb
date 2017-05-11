@@ -368,7 +368,8 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize);
+    BaseResp<Object> selectownRank(Long userId,Integer searchType,
+                                   Integer startNum, Integer pageSize,String opttype);
 
     /**
      * 查询榜单奖品列表
