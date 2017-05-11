@@ -120,7 +120,6 @@ public class UserRelationController extends BaseController {
 	* @Title: http://ip:port/app_service/user/selectListByUserId
 	* @Description: 查询好友列表 通过好友id
 	* @param @param userid
-	* @param @param startNum  endNum
 	* @param updateTime 上次同步的时间,如果是获取整个好友列表,则不需要传该参数或仅限于传0
 	 *                  如果传入updateTime ,请传入格式为 2017-03-16 10:00:00 的时间格式
 	* @param @return
@@ -332,19 +331,20 @@ public class UserRelationController extends BaseController {
 	}
 
 	/**
-	 * 获取关系用户数据变化接口
+	 * @url user/selectRelationList
+	 * 获取关系用户数据变化接口 用户关系同步接口
 	 * @param userid
-	 * @param dataStr
+	 * @param updateTime  2017-05-11 00：00：00
 	 * @return
 	 */
 	@RequestMapping(value="selectRelationList")
-	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String dataStr){
-		logger.info("selectRelationList userid={},dataStr={}",userid,dataStr);
+	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String updateTime){
+		logger.info("selectRelationList userid={},dataStr={}",userid,updateTime);
 		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
 		try{
-			baseResp = userRelationService.selectRelationList(userid,dataStr);
+			baseResp = userRelationService.selectRelationList(userid,updateTime);
 		}catch (Exception e){
-			logger.error("selectRelationList userid={},dataStr={}",userid,dataStr,e);
+			logger.error("selectRelationList userid={},dataStr={}",userid,updateTime,e);
 		}
 		return baseResp;
 	}
