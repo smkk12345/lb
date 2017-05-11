@@ -220,7 +220,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			if(n > 0){
 				insertAddFansMsg(userid,likeuserid);
 				userBehaviourService.userSumInfo(Constant.UserSumType.addedFans,
-						userid,null,0);
+						likeuserid,null,0);
 				String message = userid+"&"+likeuserid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_ADDFUN, message);
@@ -242,7 +242,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			int n = snsFansMapper.deleteByUidAndLid(userid, likeuserid);
 			if(n > 0){
-				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,userid,null,0);
+				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,likeuserid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				String message = userid+"&"+likeuserid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
