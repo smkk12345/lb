@@ -10,7 +10,10 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.MongoUtils;
+import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -52,6 +55,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private QueueMessageSendService queueMessageSendService;
+	@Autowired
+	private UserRelationChangeDao userRelationChangeDao;
 	
 	
 	/**
@@ -92,6 +99,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			int n1 = snsFriendsMapper.insert(snsFriends1);
 			if(n==1&&n1==1){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				String message=userid+"&"+friendid;
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_ADDFRIEND, message);
 			}
 		} catch (Exception e) {
 			logger.error("snsFriendsMapper insert error and msg={}",e);
@@ -181,6 +191,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			int n1 = snsFriendsMapper.deleteByUidAndFid(friendid, userid);
 			if(n == 1&&n1 == 1){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				String message = userid+"&"+friendid;
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_REMOVEFRIEND, message);
 			}
 		} catch (Exception e) {
 			logger.error("snsFriendsMapper deleteByUidAndFid error and msg={}",e);
@@ -208,6 +221,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 				insertAddFansMsg(userid,likeuserid);
 				userBehaviourService.userSumInfo(Constant.UserSumType.addedFans,
 						userid,null,0);
+				String message = userid+"&"+likeuserid;
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_ADDFUN, message);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -228,6 +244,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			if(n > 0){
 				userBehaviourService.userSumInfo(Constant.UserSumType.removedFans,userid,null,0);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				String message = userid+"&"+likeuserid;
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_REMOVEFUN, message);
 			}
 		} catch (Exception e) {
 			logger.error("deleteByUidAndLid error and smg = {}",e);
@@ -308,6 +327,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			boolean temp = updateRemark(userid, friendid, remark);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				String message = userid+"&"+friendid;
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_UPDATE, message);
 			}
 		} catch (Exception e) {
 			logger.error("updateRemarkByUidAndFid userid = {}, friendid = {}, remark = {}, msg = {}", userid, friendid, remark, e);
@@ -475,6 +497,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return baseResp;
 	}
 
+
+
 	/**
 	 * @author yinxc
 	 * 读取拼接ids
@@ -525,5 +549,84 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	}
 
+	/**
+	 * 更新用户信息时 同步到用户的所有好友
+	 * @param uid
+	 * @return
+	 */
+	@Override
+	public boolean syncUserRelationInfo(String uid) {
+		BaseResp<Object> baseResp = selectListByUserId(Long.parseLong(uid),null,null,null);
+		if(baseResp.getCode() != 0){
+			return false;
+		}
+		Map<String,Object> map = (Map<String, Object>) baseResp.getData();
+		List<Map<String,Object>> snsFriendses = (List<Map<String, Object>>) map.get("friendList");
+		for (Map snsFriends : snsFriendses) {
+			Object userid = snsFriends.get("userid");
+			userRelationChangeDao.save(String.valueOf(snsFriends.get("userid")),uid);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean syncUserRelationInfo(String uid, String otheruid) {
+		userRelationChangeDao.save(otheruid,uid);
+		return true;
+	}
+
+	@Override
+	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid,String dataStr){
+		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
+		List<AppUserMongoEntity> dataList = new ArrayList<>();
+		List<String> idList = new ArrayList<>();
+		List<UserRelationChange> list = userRelationChangeDao.getListByUid(Long.parseLong(userid),dataStr);
+		for (int i = 0; i < list.size(); i++) {
+			UserRelationChange userRe = list.get(i);
+			if(idList.contains(userRe.getChangeuid())){
+				continue;
+			}
+			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(userRe.getChangeuid());
+			initUserRelateInfo(Long.parseLong(userid),appUserMongEntity);
+			dataList.add(appUserMongEntity);
+		}
+		baseResp.setData(dataList);
+		return baseResp.initCodeAndDesp();
+	}
+
+
+	private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
+		if(userid == null){
+			apuser.setIsfans("0");
+			apuser.setIsfriend("0");
+			return ;
+		}
+		if(userid == apuser.getUserid()){
+			return;
+		}
+		initFriendInfo(userid,apuser);
+		initFanInfo(userid,apuser);
+	}
+
+	private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
+		SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
+		if(null != snsFriends){
+			if(!StringUtils.isBlank(snsFriends.getRemark())){
+				apuser.setNickname(snsFriends.getRemark());
+			}
+			apuser.setIsfriend("1");
+		}else{
+			apuser.setIsfriend("0");
+		}
+	}
+
+	private void initFanInfo(long userid,AppUserMongoEntity apuser){
+		SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+		if(null != snsFans){
+			apuser.setIsfans("1");
+		}else{
+			apuser.setIsfans("0");
+		}
+	}
 
 }

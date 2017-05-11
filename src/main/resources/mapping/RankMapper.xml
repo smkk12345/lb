@@ -790,14 +790,74 @@
         <if test="orderByType == null or orderByType == ''">
           order by starttime DESC
         </if>
-
-        <if test="startNum != null">
           limit #{startNum},#{pageSize}
-        </if>
-        <if test="startNum == null and pageSize != null">
-            limit 0,#{pageSize}
-        </if>
   </select>
+
+  <!-- 查询榜单列表数量 -->
+  <select id="selectRankListCount" parameterType="map" resultType="java.lang.Integer">
+    Select count(*)
+    FROM rank
+    WHERE 1=1
+    <if test="ranktitle != null and ranktitle != ''" >
+      AND (ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+      OR codeword = #{codeword})
+    </if>
+    <if test="rankbrief != null and rankbrief != ''" >
+      AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
+    </if>
+    <if test="sstatus != null and sstatus != 0 and lastDate != null">
+      <if test="sstatus == 1">
+        and starttime &lt; #{lastDate}
+      </if>
+      <if test="sstatus == 2">
+        and starttime &gt; #{lastDate}
+      </if>
+      <if test="sstatus == 3">
+        and endtime &lt; #{lastDate}
+      </if>
+    </if>
+    <if test="minEndDate != null">
+      and endtime &gt; #{minEndDate}
+    </if>
+    <if test="ptype != null and ptype != '-1'" >
+      AND ptype = #{ptype}
+    </if>
+    <if test="starttime != null" >
+      AND starttime &gt;= #{starttime}
+    </if>
+    <if test="estarttime != null" >
+      AND starttime &lt; #{starttime}
+    </if>
+    <if test="rankscope != null" >
+      AND rankscope = #{rankscope}
+    </if>
+    <if test="ispublic != null" >
+      AND ispublic = #{ispublic}
+    </if>
+    <if test="isup != null" >
+      AND isup = #{isup}
+    </if>
+    <if test="isdel != null" >
+      AND isdel = #{isdel}
+    </if>
+    <if test="isfinish != null and isfinish != 2">
+      and isfinish = #{isfinish}
+    </if>
+    <if test="isfinish != null and isfinish == 2">
+      and isfinish > 1
+    </if>
+    <if test="sourcetype != null" >
+      AND sourcetype = #{sourcetype}
+    </if>
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
+    </if>
+
+    <if test="isrecommend != null">
+      and isrecommend = #{isrecommend}
+    </if>
+  </select>
+
 
   <!-- 查看五分钟前刚刚开始的榜单 -->
   <select id="selectStartRank" parameterType="map" resultMap="BaseResultMap">

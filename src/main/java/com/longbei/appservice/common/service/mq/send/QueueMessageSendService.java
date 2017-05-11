@@ -1,6 +1,7 @@
 package com.longbei.appservice.common.service.mq.send;
 
 import com.longbei.appservice.common.activemq.IActiveMq.BaseJmsProducer;
+import com.longbei.appservice.common.constant.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,11 @@ public class QueueMessageSendService {
     /**
      * 向添加队列发送消息
      * @param message
+     * @Param action 操作名称
+     * @Param domain 二级类型
      */
-    public void sendAddMessage(String message) {
-        improveJmsProducer.sendMsg("","",message);
+    public void sendAddMessage(String action, String domain, String message) {
+        improveJmsProducer.sendMsg(action,domain,message);
 //        this.jmsMessagingTemplate.convertAndSend(this.addqueue, message);
     }
 

@@ -596,6 +596,24 @@ public class Constant {
 	}
 
 	/**
+	 * 操作分类
+	 */
+	public static String MQACTION_IMPROVE = "improve";
+	public static String MQACTION_USERRELATION = "userrelation";
+
+	/**
+	 * 具体类型
+	 */
+	public static String MQDOMAIN_IMP_ADD = "improve_add";
+	public static String MQDOMAIN_IMP_UPDATE = "improve_update";
+	public static String MQDOMAIN_IMP_DEL = "improve_del";
+
+	public static String MQDOMAIN_USER_UPDATE = "user_update";
+	public static String MQDOMAIN_USER_ADDFRIEND = "user_addfriend";
+	public static String MQDOMAIN_USER_REMOVEFRIEND = "user_removefriend";
+	public static String MQDOMAIN_USER_ADDFUN = "user_addfun";
+	public static String MQDOMAIN_USER_REMOVEFUN = "user_removefun";
+	/**
 	 * 排序类型
 	 */
 	public enum SortType{

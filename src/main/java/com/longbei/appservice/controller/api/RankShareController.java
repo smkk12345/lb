@@ -354,7 +354,7 @@ public class RankShareController {
     }
 
     /**
-     * 帮主名片
+     * 榜主名片
      * @param rankCardId
      * @param request
      * @return

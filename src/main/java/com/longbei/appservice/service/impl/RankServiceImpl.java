@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -496,14 +497,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(status != 0 && StringUtils.isNotEmpty(lastDate)){
                 Date tempLastDate = DateUtils.parseDate(lastDate);
                 map.put("lastDate",tempLastDate);
-            }else if(startNo != null){
-                map.put("startNum",startNo);
             }
+            map.put("startNum",startNo);
             map.put("sstatus",status);
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             List<Rank> ranks = rankMapper.selectRankList(map);
+            Integer totalCount = rankMapper.selectRankListCount(map);
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     if(showAward != null && showAward){
@@ -515,6 +516,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             baseResp.setData(ranks);
+            baseResp.getExpandData().put("totalCount",totalCount);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
@@ -1848,6 +1850,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("userid",appUserMongoEntity.getUserid());
             resultMap.put("sortnum",sortNum);
             resultMap.put("icount",rankMembers.getIcount());
+            Rank rank = rankMapper.selectRankByRankid(rankId);
+            resultMap.put("ranktitle",rank.getRanktitle());
 
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -2349,6 +2353,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 baseResp.setData(resultList);
             }
+            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank award list error startNum:{} pageSize:{}",startNum,pageSize);
@@ -2377,6 +2382,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 initAwardResultMap(resultMap,rank.getRankid());
             }
             baseResp.setData(resultMap);
+            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select onlyRankAward error rankid:{}",rankid);
