@@ -862,28 +862,28 @@
     <if test="isrecommend != null">
       and isrecommend = #{isrecommend}
     </if>
-    <if test="orderByType != null and orderByType == 'endtime'">
-      order by endtime DESC
-    </if>
-    <if test="orderByType != null and orderByType == 'recommend'">
-      order by weight DESC
-    </if>
-    <if test="orderByType != null and orderByType == 'starttimeAsc'">
-      order by starttime
-    </if>
-    <if test="orderByType != null and orderByType == 'starttimeDesc'">
-      order by starttime DESC
-    </if>
-    <if test="orderByType == null or orderByType == ''">
-      order by starttime DESC
-    </if>
+    <!--<if test="orderByType != null and orderByType == 'endtime'">-->
+      <!--order by endtime DESC-->
+    <!--</if>-->
+    <!--<if test="orderByType != null and orderByType == 'recommend'">-->
+      <!--order by weight DESC-->
+    <!--</if>-->
+    <!--<if test="orderByType != null and orderByType == 'starttimeAsc'">-->
+      <!--order by starttime-->
+    <!--</if>-->
+    <!--<if test="orderByType != null and orderByType == 'starttimeDesc'">-->
+      <!--order by starttime DESC-->
+    <!--</if>-->
+    <!--<if test="orderByType == null or orderByType == ''">-->
+      <!--order by starttime DESC-->
+    <!--</if>-->
 
-    <if test="startNum != null">
-      limit #{startNum},#{pageSize}
-    </if>
-    <if test="startNum == null and pageSize != null">
-      limit 0,#{pageSize}
-    </if>
+    <!--<if test="startNum != null">-->
+      <!--limit #{startNum},#{pageSize}-->
+    <!--</if>-->
+    <!--<if test="startNum == null and pageSize != null">-->
+      <!--limit 0,#{pageSize}-->
+    <!--</if>-->
   </select>
 
 
