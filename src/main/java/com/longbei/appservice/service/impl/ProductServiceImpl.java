@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.entity.ProductBasic;
@@ -48,9 +49,11 @@ public class ProductServiceImpl implements ProductService {
 				totalcoin = userInfo.getTotalcoin();
 			}
 			
-			
 			baseResp = iProductBasicService.category(userid, level);
 			expandData.put("totalcoin", totalcoin);
+			//getMoneyUrl 查看如何赚进步币URL    
+			String getMoneyUrl = AppserviceConfig.h5_helper;
+			expandData.put("moneyurl", getMoneyUrl);
 			baseResp.setExpandData(expandData);
 		}catch (Exception e){
 			logger.error("selectCategoryList userid = {}", userid, e);
