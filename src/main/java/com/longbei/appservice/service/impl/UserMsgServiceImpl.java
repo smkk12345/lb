@@ -915,8 +915,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 				if(msgtype.equals(Constant.MSG_FANS_TYPE)){
 					//5:粉丝   拼接获取粉丝消息记录展示字段List
 					//获取粉丝列表
-					List<SnsFans> fanslist = snsFansMapper.selectFansByUserid(userid, startNum, endNum);
-					fanslists(fanslist, userid, msgtype);
+//					List<SnsFans> fanslist = snsFansMapper.selectFansByLikeUserid(userid, startNum, endNum);
+//					fanslists(fanslist, userid, msgtype);
+					for (UserMsg userMsg : list) {
+						//初始化消息中用户信息----friendid
+						initMsgUserInfoByFriendid(userMsg, userid);
+					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{

@@ -150,7 +150,12 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             if("0".equals(rank.getIscheck())){//不需要人工审核
                 updateRank.setIsfinish("5");
             }else{//需要人工审核
-                updateRank.setIsfinish("2");
+                int count = rankMembersMapper.selectpasscount(rank.getRankid());
+                if (count == 0){
+                    updateRank.setIsfinish("5");
+                }else {
+                    updateRank.setIsfinish("2");
+                }
             }
             updateRank.setIsrecommend("0");//榜单结束去掉推荐属性
             int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);

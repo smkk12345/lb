@@ -18,6 +18,8 @@ public interface RankMembersMapper {
 
     RankMembers selectByPrimaryKey(Integer id);
 
+    int selectpasscount(@Param("rankid") Long rankid);
+
     int updateByPrimaryKeySelective(RankMembers record);
 
     int selectCount(RankMembers rankMembers);

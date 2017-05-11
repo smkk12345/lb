@@ -130,6 +130,7 @@ public class AddMessageReceiveService implements MessageListener{
         timeLine.setBusinesstype(improve.getBusinesstype());
         timeLine.setPtype(improve.getPtype());
         timeLine.setBusinessid(improve.getBusinessid());
+
         switch (improve.getIspublic()){
             case Constant.IMPROVE_ISPUBLIC_2:
                 //广场
@@ -146,11 +147,13 @@ public class AddMessageReceiveService implements MessageListener{
                 insertTimeLineAcq(timeLine,userid);
                 break;
             case Constant.IMPROVE_ISPUBLIC_0:
-                //我的
+                //
+                timeLine.setIspublic(improve.getIspublic()==null?2:Integer.parseInt(improve.getIspublic()));
                 insertTimeLineSelf(timeLine,userid);
                 break;
             default:
                 //我的
+                timeLine.setIspublic(improve.getIspublic()==null?2:Integer.parseInt(improve.getIspublic()));
                 insertTimeLineSelf(timeLine,userid);
                 //动态
                 insertTimeLineDyn(timeLine,userid);
