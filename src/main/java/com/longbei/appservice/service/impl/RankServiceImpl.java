@@ -1333,17 +1333,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             Map<String,Object> resultMap = new HashMap<String,Object>();
             if("5".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
-                if("3".equals(rankMembers.getCheckstatus())){
-                    if("0".equals(rankMembers.getAcceptaward())){
-                        rankMembers.setIswinning("1");//已中奖 未领取
-                    }else{
-                        rankMembers.setIswinning("3");//已中奖 且已领奖
-                    }
-                }else if("0".equals(rankMembers.getCheckstatus())){
-                    rankMembers.setIswinning("4");//已中奖 人工审核中
-                }else{
-                    rankMembers.setIswinning("2");//审核未通过
-                }
+//                if("3".equals(rankMembers.getCheckstatus())){
+//                    if("0".equals(rankMembers.getAcceptaward())){
+//                        rankMembers.setIswinning("1");//已中奖 未领取
+//                    }else{
+//                        rankMembers.setIswinning("3");//已中奖 且已领奖
+//                    }
+//                }else if("0".equals(rankMembers.getCheckstatus())){
+//                    rankMembers.setIswinning("4");//已中奖 人工审核中
+//                }else{
+//                    rankMembers.setIswinning("2");//审核未通过
+//                }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
             }else{

@@ -763,7 +763,11 @@ public class ImproveController {
         }
         Date tempLastDate = null;
         if(StringUtils.isNotEmpty(lastDate)){
-            tempLastDate = new Date(Long.parseLong(lastDate));
+            try {
+                tempLastDate = DateUtils.formatDate(lastDate,"yyyy-MM-dd HH:mm:ss");
+            }catch (Exception e){
+                tempLastDate = new Date(Long.parseLong(lastDate));
+            }
         }
         try {
             baseResp = improveService.selectImproveLFDList(impid, opttype,
