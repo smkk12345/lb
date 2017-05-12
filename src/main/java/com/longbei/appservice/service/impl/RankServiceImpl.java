@@ -1031,7 +1031,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
-            	userMsgService.insertMsg("0", rankMembers.getUserid().toString(), 
+            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(), 
     					"", "10", 
     					rankMembers.getRankid().toString(), remark, "2", "44", 0);
             }
@@ -1339,17 +1339,30 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             Map<String,Object> resultMap = new HashMap<String,Object>();
             if("5".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
-//                if("3".equals(rankMembers.getCheckstatus())){
-//                    if("0".equals(rankMembers.getAcceptaward())){
-//                        rankMembers.setIswinning("1");//已中奖 未领取
-//                    }else{
-//                        rankMembers.setIswinning("3");//已中奖 且已领奖
-//                    }
-//                }else if("0".equals(rankMembers.getCheckstatus())){
-//                    rankMembers.setIswinning("4");//已中奖 人工审核中
-//                }else{
-//                    rankMembers.setIswinning("2");//审核未通过
-//                }
+                if("3".equals(rankMembers.getCheckstatus())){
+                    if("0".equals(rankMembers.getAcceptaward())){
+                        rankMembers.setIswinning("1");//已中奖 未领取
+                    }else{
+                        RankAcceptAward rankAcceptAward = rankAcceptAwardMapper.selectByRankIdAndUserid(
+                                String.valueOf(rankId),String.valueOf(userId));
+                        if(null != rankAcceptAward){
+                            // status 状态 0 - 未领取 1 - 已领取 2 - 已经发货 待确认（实物 物流） 3 - 已完成 4 - 已经失效
+                            if(rankAcceptAward.getStatus().equals("2")){
+                                rankMembers.setIswinning("5");//已中奖 已经发货
+                            }else if(rankAcceptAward.getStatus().equals("3")){
+                                rankMembers.setIswinning("6");//已中奖 已经确认收货
+                            }else {
+                                rankMembers.setIswinning("3");//已中奖 且已领奖 未发货
+                            }
+                        }else{
+                            rankMembers.setIswinning("3");//已中奖 且已领奖 未发货
+                        }
+                    }
+                }else if("0".equals(rankMembers.getCheckstatus())){
+                    rankMembers.setIswinning("4");//已中奖 人工审核中
+                }else{
+                    rankMembers.setIswinning("2");//审核未通过
+                }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
             }else{
@@ -1549,17 +1562,30 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                 if("0".equals(rankMember.getAcceptaward())){
                                     rankMember.setIswinning("1");//已中奖 未领取
                                 }else{
-                                    rankMember.setIswinning("3");//已中奖 且已领奖
+                                    RankAcceptAward rankAcceptAward = rankAcceptAwardMapper.selectByRankIdAndUserid(
+                                            String.valueOf(rankId),String.valueOf(rankMember.getUserid()));
+                                    if(null != rankAcceptAward){
+                                        // status 状态 0 - 未领取 1 - 已领取 2 - 已经发货 待确认（实物 物流） 3 - 已完成 4 - 已经失效
+                                        if(rankAcceptAward.getStatus().equals("2")){
+                                            rankMember.setIswinning("5");//已中奖 已经发货
+                                        }else if(rankAcceptAward.getStatus().equals("3")){
+                                            rankMember.setIswinning("6");//已中奖 已经确认收货
+                                        }else {
+                                            rankMember.setIswinning("3");//已中奖 且已领奖 未发货
+                                        }
+                                    }else{
+                                        rankMember.setIswinning("3");//已中奖 且已领奖 未发货
+                                    }
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("4");//已中奖 人工审核中
+                                rankMember.setIswinning("0");//已中奖 人工审核中
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
                             RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMember.getRankAward().getAwardid()));
                             rankMember.setRankAward(rankAward);
                         }else{
-                            rankMember.setIswinning("0");
+//                            rankMember.setIswinning("0");
                         }
 
                         i++;
@@ -2888,8 +2914,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (waitcount==0){
                 return true;
             }
-        } else {
-            return true;
         }
         return false;
     }
@@ -3034,20 +3058,51 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
-
+    
     @Override
     public BaseResp<Object> updateStatus(String status,String userid,String rankid,String improveid){
         BaseResp<Object> reseResp = new BaseResp<>();
         try {
+        	Rank rank = rankMapper.selectByPrimaryKey(Long.parseLong(rankid));
             //status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
             if ("1".equals(status)) {
                 //删除
                 improveService.removeImprove(userid, improveid, "2", rankid);
+                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
+            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
+				//						27:工作认证审核结果      28：学历认证审核结果
+				//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+				//						32：创建的龙榜/教室/圈子被选中推荐  
+				//						40：订单已取消 41 榜中进步下榜   
+				// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
+            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
+            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
+            			improveid, "2", 
+            			rankid, remark, "0", "45", 0);
             }
             if ("2".equals(status)) {
                 //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
                 //下榜
                 improveService.removeImproveFromBusiness(improveid, rankid, "2");
+                
+            	String remark = Constant.MSG_QUITRANK_QUIT_MODEL.replace("n", rank.getRanktitle());
+            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
+				//						27:工作认证审核结果      28：学历认证审核结果
+				//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+				//						32：创建的龙榜/教室/圈子被选中推荐  
+				//						40：订单已取消 41 榜中进步下榜   
+				// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
+            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
+            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
+            			improveid, "2", 
+            			rankid, remark, "0", "41", 0);
+                
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {

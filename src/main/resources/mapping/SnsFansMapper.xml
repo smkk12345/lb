@@ -85,7 +85,7 @@
       AND likeuserid = #{userid}
     </if>
     order by createtime desc
-    <if test="endNum != 0" >
+    <if test="startNum != null and endNum != null and endNum > 0" >
       limit #{startNum},#{endNum}
     </if>
   </select>

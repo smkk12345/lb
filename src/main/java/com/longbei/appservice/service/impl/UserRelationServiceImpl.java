@@ -585,6 +585,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid,String dataStr){
 		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
 		List<AppUserMongoEntity> dataList = new ArrayList<>();
+		if(StringUtils.isBlank(dataStr)){
+			dataList = getInitUserListByUid(Long.parseLong(userid));
+			baseResp.setData(dataList);
+			baseResp.getExpandData().put("updateTime",DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+			return baseResp.initCodeAndDesp();
+		}
+		//读关系记录获取好友信息变更
 		List<String> idList = new ArrayList<>();
 		List<UserRelationChange> list = userRelationChangeDao.getListByUid(Long.parseLong(userid),dataStr);
 		for (int i = 0; i < list.size(); i++) {
@@ -592,11 +599,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 			if(idList.contains(userRe.getChangeuid())){
 				continue;
 			}
+			idList.add(userRe.getChangeuid());
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(userRe.getChangeuid());
 			initUserRelateInfo(Long.parseLong(userid),appUserMongEntity);
 			dataList.add(appUserMongEntity);
 		}
 		baseResp.setData(dataList);
+		baseResp.getExpandData().put("updateTime",DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
 		return baseResp.initCodeAndDesp();
 	}
 
@@ -618,7 +627,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 		SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
 		if(null != snsFriends){
 			if(!StringUtils.isBlank(snsFriends.getRemark())){
-				apuser.setNickname(snsFriends.getRemark());
+//				apuser.setNickname(snsFriends.getRemark());
+				apuser.setRemark(snsFriends.getRemark());
 			}
 			apuser.setIsfriend("1");
 		}else{
@@ -633,6 +643,41 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}else{
 			apuser.setIsfans("0");
 		}
+	}
+
+	/**
+	 * 直接获取好友列表
+	 * @param userid
+	 * @return
+	 */
+	private List<AppUserMongoEntity> getInitUserListByUid(long userid){
+		List<AppUserMongoEntity> resultList = new ArrayList<>();
+		List<String> idList = new ArrayList<>();
+		List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,null,null,null,0);
+		for (int i = 0; i < list.size(); i++) {
+			SnsFriends userRe = list.get(i);
+			if(idList.contains(String.valueOf(userRe.getFriendid()))){
+				continue;
+			}
+			idList.add(userRe.getFriendid()+"");
+			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(userRe.getFriendid()));
+			appUserMongEntity.setIsfriend("1");
+			initFanInfo(userid,appUserMongEntity);
+			resultList.add(appUserMongEntity);
+		}
+
+		List<SnsFans> fansList = snsFansMapper.selectFansList(userid,0,null,null);
+		for (int i = 0; i < fansList.size(); i++) {
+			SnsFans fans = fansList.get(i);
+			if(idList.contains(String.valueOf(fans.getLikeuserid()))){
+				continue;
+			}
+			idList.add(fans.getLikeuserid()+"");
+			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(fans.getLikeuserid()));
+			appUserMongEntity.setIsfans("1");
+			resultList.add(appUserMongEntity);
+		}
+		return resultList;
 	}
 
 }

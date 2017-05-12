@@ -139,11 +139,11 @@ public class InitConfig implements CommandLineRunner {
      * key  ptype+&+level  value point
      */
     private void initSysRulePLevelPointCache(){
-        Map<String,Integer> map = new HashMap<>();
+        Map<String,SysRulePerfectTen> map = new HashMap<>();
         List<SysRulePerfectTen> list = sysRulePerfectTenMapper.selectAll();
         for (int i = 0; i < list.size(); i++) {
             SysRulePerfectTen sysRule = list.get(i);
-            map.put(sysRule.getPtype()+"&"+sysRule.getPlevel(),sysRule.getScore());
+            map.put(sysRule.getPtype()+"&"+sysRule.getPlevel(),sysRule);
         }
         SysRulesCache.pLevelPointMap = map;
     }

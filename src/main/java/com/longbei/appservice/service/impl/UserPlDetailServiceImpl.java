@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.SysPerfectInfoMapper;
+import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.SysPerfectInfo;
 import com.longbei.appservice.service.UserPlDetailService;
@@ -28,10 +29,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectNowscoreAndDiffById(int id) {
+	public BaseResp<Object> selectNowscoreAndDiffByUseridAndPtype(long userid,String ptype) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			UserPlDetail userPlDetail = userPlDetailMapper.selectUserPlDetailById(id);
+			UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userid,ptype);
 			int score = 0;
 			int level = 0;
 			if(null != userPlDetail){
@@ -48,20 +49,20 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			for (int i = 0; i <level-1 ; i++) {
 				//sysRule.getPtype()+"&"+sysRule.getPlevel()
 				if(null != SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1))){
-					levelscore = levelscore+ SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1));
+					levelscore = levelscore+ SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1)).getScore();
 				}
 			}
             int nowscore = levelscore + score;
 			int levelscore1 = 0;
 			if(null != SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level))){
-				 levelscore1 = SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level));
+				 levelscore1 = SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level)).getScore();
 			}
 			int diff = levelscore1 - score;
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			baseResp.getExpandData().put("diff",diff);
 			baseResp.getExpandData().put("nowscore",nowscore);
 		} catch (Exception e) {
-			logger.error("selectNowscoreAndDiffById error and id={}",id,e);
+			logger.error("selectNowscoreAndDiffByUseridAndPtype error and userid={}，ptype={} ",userid,ptype,e);
 		}
 		return baseResp;
 	}
@@ -82,6 +83,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 				if (null != sysPerfectInfo) {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
+				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				baseResp.setData(list);
 			}
@@ -90,6 +92,14 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		}
 		return baseResp;
 	}
+
+	private Integer getTotalScore(UserPlDetail userPlDetail){
+//		int currSource = userPlDetail.getScorce();
+		String key = userPlDetail.getPtype()+"&"+userPlDetail.getLeve();
+		SysRulePerfectTen sysRulePerfectTen = SysRulesCache.pLevelPointMap.get(key);
+		return sysRulePerfectTen.getScore();
+	}
+
 
 	@Override
 	public Integer insertUserPlDetail (UserPlDetail userPlDetail){
