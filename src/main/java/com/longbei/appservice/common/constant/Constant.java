@@ -102,7 +102,8 @@ public class Constant {
 	public static final int STATUS_SYS_55 = -55;
 	public static final int STATUS_SYS_56 = -56;
 	public static final int STATUS_SYS_57 = -57;
-
+	public static final int STATUS_SYS_58 = -58;
+	public static final int STATUS_SYS_59 = -59;
 
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
@@ -217,6 +218,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_56 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_57 = "送钻失败，龙币扣除";
 
+	public static final String RTNINFO_SYS_58 = "目标不存在";
+	public static final String RTNINFO_SYS_59 = "所选目标不是你的目标";
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";
@@ -467,6 +470,8 @@ public class Constant {
 	public static final String  MSG_DELETE_MODEL = "由于您在加入'n'mg";  					//剔除         m:榜，圈子，教室     n:名称    g:投诉理由
 	public static final String  MSG_CHECK_MODEL = "您加入m'n'的申请已被g,快去发第一条进步吧";  	//加入请求审批结果      m:榜，圈子，教室     n:名称   g:结果:通过或拒绝
 	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主踢出了该龙榜!";      //下榜
+	public static final String  MSG_QUITRANK_IMP_MODEL = "您在龙榜'n'中的进步已删除!";      //下榜
+	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
 	
 	
 	/*
