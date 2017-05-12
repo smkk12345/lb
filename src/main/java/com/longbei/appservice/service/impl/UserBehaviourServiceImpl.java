@@ -162,7 +162,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(count < userLevel.getJoinranknum()){
                     return BaseResp.ok();
                 }else{
-                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                 }
             }else {
                 //发榜  判断发布榜单个数  暂时不做

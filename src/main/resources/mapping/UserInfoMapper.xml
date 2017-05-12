@@ -223,7 +223,7 @@
   
   <select id="selectByUserid" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
     select 
-    <include refid="Info_List" />
+    <include refid="Base_Column_List" />
     from user_info
     where userid = #{userid,jdbcType=BIGINT}
   </select>

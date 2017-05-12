@@ -873,21 +873,21 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private UserMsg impRankItype(UserMsg userMsg, String gtype){
 		if("2".equals(gtype)){
 			//榜评论图片
-			Rank rank = rankMapper.selectByPrimaryKey(userMsg.getSnsid());
+			Rank rank = rankMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != rank){
 				userMsg.setImpPicFilekey(rank.getRankphotos());
 			}
 		}
 		if("3".equals(gtype)){
 			//圈子评论图片
-			Circle circle = circleMapper.selectByPrimaryKey(userMsg.getSnsid());
+			Circle circle = circleMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != circle){
 				userMsg.setImpPicFilekey(circle.getCirclephotos());
 			}
 		}
 		if("4".equals(gtype)){
 			//教室评论图片
-			Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getSnsid());
+			Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != classroom){
 				userMsg.setImpPicFilekey(classroom.getClassphotos());
 			}
