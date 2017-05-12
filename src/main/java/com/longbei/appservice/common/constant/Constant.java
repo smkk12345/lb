@@ -102,7 +102,8 @@ public class Constant {
 	public static final int STATUS_SYS_55 = -55;
 	public static final int STATUS_SYS_56 = -56;
 	public static final int STATUS_SYS_57 = -57;
-
+	public static final int STATUS_SYS_58 = -58;
+	public static final int STATUS_SYS_59 = -59;
 
 	public static final int STATUS_SYS_60 = -60;
 	public static final int STATUS_SYS_61 = -61;
@@ -217,6 +218,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_56 = "送钻失败，龙币扣除";
 	public static final String RTNINFO_SYS_57 = "送钻失败，龙币扣除";
 
+	public static final String RTNINFO_SYS_58 = "目标不存在";
+	public static final String RTNINFO_SYS_59 = "所选目标不是你的目标";
 
 
 	public static final String RTNINFO_SYS_60 = "榜单没有审核，或审核不通过";

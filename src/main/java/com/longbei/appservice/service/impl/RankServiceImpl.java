@@ -532,7 +532,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> selectownRank(Long userId,Integer searchType, Integer startNum, Integer pageSize) {
+    public BaseResp<Object> selectownRank(Long userId,Integer searchType,
+                                          Integer startNum, Integer pageSize,String opttype) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             if(searchType == 1){//我参与的
@@ -554,11 +555,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }
                         initRankAward(rank);
                         if("0".equals(rank.getIsfinish())){//未开始
-                            finish.add(rank);
+                            nostart.add(rank);
                         }else if("1".equals(rank.getIsfinish())){//进行中
                             marching.add(rank);
                         }else{
-                            nostart.add(rank);
+                            if (StringUtils.isBlank(opttype)){
+                                finish.add(rank);
+                            }
                         }
                     }
                 }
