@@ -1162,7 +1162,7 @@ public class AppUserController extends BaseController {
     /**
      * @Title: http://ip:port/app_service/user/selectPerfectInfoByPtype
      * @Description: 查询单个十全十美类型的信息
-     * @param @param Ptype十全十美类型 0 全部 1学习 等
+     * @param @param ptype十全十美类型 0 全部 1学习 等
      * @auther IngaWu
      * @currentdate:2017年3月6日
      */
@@ -1185,27 +1185,29 @@ public class AppUserController extends BaseController {
     }
 
     /**
-     * @Title: http://ip:port/app_service/user/selectNowscoreAndDiffById
+     * @Title: http://ip:port/app_service/user/selectNowscoreAndDiffByUseridAndPtype
      * @Description: 查询用户现在的分数和距离升级的差分
-     * @param @param id（userPlDetail的id）
-     * @return nowscore现在的分数 diff距离升级的差分
+     * @param userid 用户id
+     * @param  ptype 十全十美类型 0 全部 1学习 等
+     * @return nowscore 现在的分数
+     * @return diff 距离升级的差分
      * @auther IngaWu
      * @currentdate:2017年3月6日
      */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/selectNowscoreAndDiffById")
+    @RequestMapping(value = "/selectNowscoreAndDiffByUseridAndPtype")
     @ResponseBody
-    public BaseResp<Object> selectNowscoreAndDiffById(String id) {
-        logger.info("selectNowscoreAndDiffById and id={}",id);
+    public BaseResp<Object> selectNowscoreAndDiffByUseridAndPtype(String userid,String ptype) {
+        logger.info("selectNowscoreAndDiffByUseridAndPtype and userid={}，ptype={} ",userid,ptype);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(StringUtils.isBlank(id)){
+        if(StringUtils.hasBlankParams(userid,ptype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userPlDetailService.selectNowscoreAndDiffById(Integer.parseInt(id));
+            baseResp = userPlDetailService.selectNowscoreAndDiffByUseridAndPtype(Long.parseLong(userid), ptype);
             return baseResp;
         } catch (Exception e) {
-            logger.error("selectNowscoreAndDiffById and id={}",id,e);
+            logger.error("selectNowscoreAndDiffByUseridAndPtype and userid={}，ptype={} ",userid,ptype,e);
         }
         return baseResp;
     }

@@ -10,14 +10,14 @@ import java.util.Date;
 public interface UserPlDetailService {
 
 	/**
-	 * @Title: selectNowscoreAndDiffById
+	 * @Title: selectNowscoreAndDiffByUseridAndPtype
 	 * @Description: 查询用户现在的分数和距离升级的差分
 	 * @param @param id（userPlDetail的id）
 	 * @return @return nowscore现在的分数 diff距离升级的差分
 	 * @auther IngaWu
 	 * @currentdate:2017年3月6日
 	 */
-	BaseResp<Object> selectNowscoreAndDiffById(int id);
+	BaseResp<Object> selectNowscoreAndDiffByUseridAndPtype(long userid,String ptype);
 
 	/**
 	 * @Title: selectUserPerfectListByUserId
