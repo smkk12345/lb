@@ -1333,17 +1333,30 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             Map<String,Object> resultMap = new HashMap<String,Object>();
             if("5".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
-//                if("3".equals(rankMembers.getCheckstatus())){
-//                    if("0".equals(rankMembers.getAcceptaward())){
-//                        rankMembers.setIswinning("1");//已中奖 未领取
-//                    }else{
-//                        rankMembers.setIswinning("3");//已中奖 且已领奖
-//                    }
-//                }else if("0".equals(rankMembers.getCheckstatus())){
-//                    rankMembers.setIswinning("4");//已中奖 人工审核中
-//                }else{
-//                    rankMembers.setIswinning("2");//审核未通过
-//                }
+                if("3".equals(rankMembers.getCheckstatus())){
+                    if("0".equals(rankMembers.getAcceptaward())){
+                        rankMembers.setIswinning("1");//已中奖 未领取
+                    }else{
+                        RankAcceptAward rankAcceptAward = rankAcceptAwardMapper.selectByRankIdAndUserid(
+                                String.valueOf(rankId),String.valueOf(userId));
+                        if(null != rankAcceptAward){
+                            // status 状态 0 - 未领取 1 - 已领取 2 - 已经发货 待确认（实物 物流） 3 - 已完成 4 - 已经失效
+                            if(rankAcceptAward.getStatus().equals("2")){
+                                rankMembers.setIswinning("5");//已中奖 已经发货
+                            }else if(rankAcceptAward.getStatus().equals("3")){
+                                rankMembers.setIswinning("6");//已中奖 已经确认收货
+                            }else {
+                                rankMembers.setIswinning("3");//已中奖 且已领奖 未发货
+                            }
+                        }else{
+                            rankMembers.setIswinning("3");//已中奖 且已领奖 未发货
+                        }
+                    }
+                }else if("0".equals(rankMembers.getCheckstatus())){
+                    rankMembers.setIswinning("4");//已中奖 人工审核中
+                }else{
+                    rankMembers.setIswinning("2");//审核未通过
+                }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
             }else{
@@ -1543,17 +1556,30 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                 if("0".equals(rankMember.getAcceptaward())){
                                     rankMember.setIswinning("1");//已中奖 未领取
                                 }else{
-                                    rankMember.setIswinning("3");//已中奖 且已领奖
+                                    RankAcceptAward rankAcceptAward = rankAcceptAwardMapper.selectByRankIdAndUserid(
+                                            String.valueOf(rankId),String.valueOf(rankMember.getUserid()));
+                                    if(null != rankAcceptAward){
+                                        // status 状态 0 - 未领取 1 - 已领取 2 - 已经发货 待确认（实物 物流） 3 - 已完成 4 - 已经失效
+                                        if(rankAcceptAward.getStatus().equals("2")){
+                                            rankMember.setIswinning("5");//已中奖 已经发货
+                                        }else if(rankAcceptAward.getStatus().equals("3")){
+                                            rankMember.setIswinning("6");//已中奖 已经确认收货
+                                        }else {
+                                            rankMember.setIswinning("3");//已中奖 且已领奖 未发货
+                                        }
+                                    }else{
+                                        rankMember.setIswinning("3");//已中奖 且已领奖 未发货
+                                    }
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("4");//已中奖 人工审核中
+                                rankMember.setIswinning("0");//已中奖 人工审核中
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
                             RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMember.getRankAward().getAwardid()));
                             rankMember.setRankAward(rankAward);
                         }else{
-                            rankMember.setIswinning("0");
+//                            rankMember.setIswinning("0");
                         }
 
                         i++;

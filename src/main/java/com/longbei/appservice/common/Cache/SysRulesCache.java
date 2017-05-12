@@ -28,7 +28,7 @@ public class SysRulesCache {
      * 业务发生变化社交升级龙分和别的分类不一致了 所以修改数据结构
      * key  ptype+&+level  value point
      */
-    public static Map<String,Integer> pLevelPointMap = new HashMap<String,Integer>();
+    public static Map<String,SysRulePerfectTen> pLevelPointMap = new HashMap<String,SysRulePerfectTen>();
     /**
      * 龙级没级所需龙分
      */

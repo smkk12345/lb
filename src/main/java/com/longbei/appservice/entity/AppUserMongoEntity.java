@@ -35,6 +35,8 @@ public class AppUserMongoEntity {
 	private Integer totallikes;
 	@Transient
 	private Integer totalflowers;
+	@Transient
+	private String remark;
 
 	private int distance;
 
@@ -154,5 +156,13 @@ public class AppUserMongoEntity {
 
 	public void setUserid(String userid){
 		this.userid = this.id != null? Long.parseLong(this.id):null;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getRemark() {
+		return remark;
 	}
 }

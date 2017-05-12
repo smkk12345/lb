@@ -125,6 +125,7 @@ public class UserRelationController extends BaseController {
 	* @param @return
 	* @auther smkk
 	* @currentdate:2017年1月20日
+	 * @update by smkk on 2017-05-12  该方法暂时不用了
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectListByUserId")
@@ -341,6 +342,9 @@ public class UserRelationController extends BaseController {
 	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String updateTime){
 		logger.info("selectRelationList userid={},dataStr={}",userid,updateTime);
 		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
+		if("0".equals(updateTime)){
+			updateTime = null;
+		}
 		try{
 			baseResp = userRelationService.selectRelationList(userid,updateTime);
 		}catch (Exception e){
