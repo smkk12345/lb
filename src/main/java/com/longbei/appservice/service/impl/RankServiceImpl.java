@@ -504,7 +504,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             List<Rank> ranks = rankMapper.selectRankList(map);
-            Integer totalCount = rankMapper.selectRankListCount(map);
+            int totalCount = 0;
+            if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
+                totalCount = rankMapper.selectRankListCount(map);
+            }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     if(showAward != null && showAward){
