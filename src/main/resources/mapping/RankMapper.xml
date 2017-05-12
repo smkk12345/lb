@@ -58,6 +58,14 @@
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
     sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm
   </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from rank
+    where rankid = #{rankid}
+  </select>
+  
   <select id="selectRankByRankid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

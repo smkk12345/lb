@@ -399,12 +399,14 @@ public class RankController {
      * @url http://ip:port/app_service/rank/selectOwnRank
      * @param userid
      * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @param opttype 可以不传，如果要获取我参见的未结束的榜请传 1
      * @param startNum
      * @param pageSize
      * @return
      */
     @RequestMapping(value="selectOwnRank")
-    public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,Integer startNum,Integer pageSize){
+    public BaseResp<Object> selectOwnRank(Long userid,Integer searchType,String opttype,
+                                          Integer startNum,Integer pageSize){
         logger.info("userid={},searchType={},startNum={},pageSize={}",userid,searchType,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
@@ -419,7 +421,7 @@ public class RankController {
         if(null == pageSize){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        baseResp = this.rankService.selectownRank(userid,searchType,startNum,pageSize);
+        baseResp = this.rankService.selectownRank(userid,searchType,startNum,pageSize,opttype);
         return baseResp;
     }
 

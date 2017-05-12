@@ -165,6 +165,13 @@ public class ImproveServiceImpl implements ImproveService{
                 isok = insertImproveForCircle(improve);
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
+                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
+                if (null == userGoal){
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
+                }
+                if (userGoal.getUserid() != improve.getUserid()){
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
+                }
                 isok = insertImproveForGoal(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
