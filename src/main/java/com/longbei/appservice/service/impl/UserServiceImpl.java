@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
 			List<UserJob> jobList = userJobMapper.selectJobList(userid, 0, 10);
 			List<UserSchool> schoolList = userSchoolMapper.selectSchoolList(userid, 0, 10);
 			UserInterests userInterests = userInterestsService.selectInterests(userid).getData();
-			if(null == userInterests){
+			if(null == userInterests || null == userInterests.getPtype()){
 				userInfo.setInterestList(new ArrayList<SysPerfectTag>());
 			}else{
 				String ptypes[] = userInterests.getPtype().split(",");

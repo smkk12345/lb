@@ -29,10 +29,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> selectNowscoreAndDiffById(int id) {
+	public BaseResp<Object> selectNowscoreAndDiffByUseridAndPtype(long userid,String ptype) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			UserPlDetail userPlDetail = userPlDetailMapper.selectUserPlDetailById(id);
+			UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userid,ptype);
 			int score = 0;
 			int level = 0;
 			if(null != userPlDetail){
@@ -62,7 +62,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			baseResp.getExpandData().put("diff",diff);
 			baseResp.getExpandData().put("nowscore",nowscore);
 		} catch (Exception e) {
-			logger.error("selectNowscoreAndDiffById error and id={}",id,e);
+			logger.error("selectNowscoreAndDiffByUseridAndPtype error and userid={}，ptype={} ",userid,ptype,e);
 		}
 		return baseResp;
 	}

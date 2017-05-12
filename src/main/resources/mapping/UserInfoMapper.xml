@@ -244,14 +244,14 @@
        or username LIKE concat(concat('%', #{nickname}),'%'))
     <if test="type == 0" >
     	<if test="ids != ''" >
-      		and userid in (#{ids})
+      		and userid in (${ids})
       	</if> 
     </if>
-    <if test="type == 1" >
+    <!-- <if test="type == 1" >
     	<if test="ids != ''" >
-      		and userid not in (#{ids})
+      		and userid not in (${ids})
       	</if> 
-    </if>
+    </if> -->
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

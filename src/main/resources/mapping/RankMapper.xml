@@ -803,7 +803,8 @@
 
   <!-- 查询榜单列表数量 -->
   <select id="selectRankListCount" parameterType="map" resultType="java.lang.Integer">
-    Select count(*)
+    SELECT
+      count(1)
     FROM rank
     WHERE 1=1
     <if test="ranktitle != null and ranktitle != ''" >
