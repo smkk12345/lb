@@ -17,7 +17,7 @@ public interface RankMapper {
 
     int insertSelective(Rank record);
 
-    Rank selectByPrimaryKey(Long rankid);
+    Rank selectByPrimaryKey(@Param("rankid") Long rankid);
 
     int updateByPrimaryKeySelective(Rank record);
 
