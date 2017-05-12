@@ -162,7 +162,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(count < userLevel.getJoinranknum()){
                     return BaseResp.ok();
                 }else{
-                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                 }
             }else {
                 //发榜  判断发布榜单个数  暂时不做
@@ -354,11 +354,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             if(null == userPlDetail){
                 //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
                 level = 1;
-                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1");
+                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1").getScore();
             }else{
                 curPoint = userPlDetail.getScorce();
                 level = userPlDetail.getLeve();
-                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()));
+                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getScore();
             }
             if(hasKey){
                 int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT+pType);
@@ -398,11 +398,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         if(null == userPlDetail){
             //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
             map.put("level",1);
-            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1");
+            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1").getScore();
         }else{
             point = userPlDetail.getScorce();
             map.put("level",userPlDetail.getLeve());
-            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()));
+            levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getScore();
         }
         //等级所需分数-当前等级分数-操作分数
         int leftPoint = levelPoint - point - iPoint;

@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserPlDetailMapper;
 import com.longbei.appservice.dao.SysPerfectInfoMapper;
+import com.longbei.appservice.entity.SysRulePerfectTen;
 import com.longbei.appservice.entity.UserPlDetail;
 import com.longbei.appservice.entity.SysPerfectInfo;
 import com.longbei.appservice.service.UserPlDetailService;
@@ -48,13 +49,13 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			for (int i = 0; i <level-1 ; i++) {
 				//sysRule.getPtype()+"&"+sysRule.getPlevel()
 				if(null != SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1))){
-					levelscore = levelscore+ SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1));
+					levelscore = levelscore+ SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(i+1)).getScore();
 				}
 			}
             int nowscore = levelscore + score;
 			int levelscore1 = 0;
 			if(null != SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level))){
-				 levelscore1 = SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level));
+				 levelscore1 = SysRulesCache.pLevelPointMap.get(userPlDetail.getPtype()+"&"+(level)).getScore();
 			}
 			int diff = levelscore1 - score;
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -82,6 +83,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 				if (null != sysPerfectInfo) {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
+				userPlDetail.setScorce(getTotalScore(userPlDetail));
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				baseResp.setData(list);
 			}
@@ -90,6 +92,14 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		}
 		return baseResp;
 	}
+
+	private Integer getTotalScore(UserPlDetail userPlDetail){
+		int currSource = userPlDetail.getScorce();
+		String key = userPlDetail.getPtype()+"&"+userPlDetail.getLeve();
+		SysRulePerfectTen sysRulePerfectTen = SysRulesCache.pLevelPointMap.get(key);
+		return currSource+sysRulePerfectTen.getMaxscore();
+	}
+
 
 	@Override
 	public Integer insertUserPlDetail (UserPlDetail userPlDetail){

@@ -2,6 +2,7 @@ package com.longbei.appservice.dao.mongo.dao;
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserRelationChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,18 +47,19 @@ public class UserRelationChangeDao extends BaseMongoDao<UserRelationChange> {
      * @return
      */
     public List<UserRelationChange> getListByUid(long uid,String dateStr){
-        Query query = new Query();
-        Criteria criteria = new Criteria();
         try{
-            Date date = DateUtils.formatDate(dateStr,"yyyy-MM-dd HH:mm:ss");
-            query.addCriteria(criteria.orOperator(Criteria.where("uid").is(String.valueOf(uid))
-                    ));
-            criteria.and("updatetime").lt(date);
+            Criteria criteria = Criteria.where("uid").is(String.valueOf(uid));
+            if(!StringUtils.isBlank(dateStr)){
+                Date date = DateUtils.formatDate(dateStr,"yyyy-MM-dd HH:mm:ss");
+                criteria.and("updatetime").gt(date);
+            }
+            Query query = new Query(criteria);
             query.with(new Sort(Sort.Direction.DESC,"updatetime"));
+            return mongoTemplate.find(query,UserRelationChange.class);
         }catch (Exception e){
-
+            e.printStackTrace();
         }
-        return mongoTemplate.find(query,UserRelationChange.class);
+        return null;
     }
 
 }
