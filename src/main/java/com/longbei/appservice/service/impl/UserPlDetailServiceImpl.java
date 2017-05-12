@@ -83,7 +83,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 				if (null != sysPerfectInfo) {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
-				userPlDetail.setScorce(getTotalScore(userPlDetail));
+				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				baseResp.setData(list);
 			}
@@ -94,10 +94,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 	}
 
 	private Integer getTotalScore(UserPlDetail userPlDetail){
-		int currSource = userPlDetail.getScorce();
+//		int currSource = userPlDetail.getScorce();
 		String key = userPlDetail.getPtype()+"&"+userPlDetail.getLeve();
 		SysRulePerfectTen sysRulePerfectTen = SysRulesCache.pLevelPointMap.get(key);
-		return currSource+sysRulePerfectTen.getMaxscore();
+		return sysRulePerfectTen.getScore();
 	}
 
 
