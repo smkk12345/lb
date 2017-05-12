@@ -143,6 +143,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             map.put("mainUserId",mainGroupUserId);
             int insertGroupMemebersRow = snsGroupMembersMapper.batchInsertGroupMembers(map);
             if(insertGroupMemebersRow > 0){
+                //通知群成员 发送群组通知消息,通知创建了群组
+                AppUserMongoEntity mainGroupUser = this.userMongoDao.getAppUser(mainGroupUserId);
+                this.iRongYunService.noticeCreateGroup(mainGroupUserId,mainGroupUser.getNickname(),groupId+"",groupName);
+
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
                 parameterMap.put("groupId",snsGroup.getGroupid());
                 parameterMap.put("startNum",0);
@@ -200,7 +204,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             Date updateDate = null;
-            if(StringUtils.isNotEmpty(notice) || StringUtils.isNotEmpty(groupName)){
+            if(StringUtils.isNotEmpty(notice)){
                 updateDate = new Date();
             }
             int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,updateDate);

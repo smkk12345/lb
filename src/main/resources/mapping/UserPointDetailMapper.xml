@@ -17,7 +17,6 @@
     <include refid="Base_Column_List" />
     FROM user_point_detail
     where userid=#{userid} and ptype=#{ptype}  order by drawdate desc limit #{startNum},#{pageSize}
-
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

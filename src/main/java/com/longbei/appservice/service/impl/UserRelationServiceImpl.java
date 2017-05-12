@@ -13,6 +13,7 @@ import java.util.*;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.MongoUtils;
+import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
@@ -59,7 +60,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private QueueMessageSendService queueMessageSendService;
 	@Autowired
 	private UserRelationChangeDao userRelationChangeDao;
-	
+	@Autowired
+	private FriendMongoDao friendMongoDao;
 	
 	/**
 	* @Title: selectRemark 
@@ -189,12 +191,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			int n = snsFriendsMapper.deleteByUidAndFid(userid, friendid);
 			int n1 = snsFriendsMapper.deleteByUidAndFid(friendid, userid);
-			if(n == 1&&n1 == 1){
+			if(n == 1 && n1 == 1){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				String message = userid+"&"+friendid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_REMOVEFRIEND, message);
 			}
+			//删除好友的加好友申请
+			this.friendMongoDao.deleteFriendAddAsk(userid,friendid);
+
+			return baseResp.ok();
 		} catch (Exception e) {
 			logger.error("snsFriendsMapper deleteByUidAndFid error and msg={}",e);
 		}
