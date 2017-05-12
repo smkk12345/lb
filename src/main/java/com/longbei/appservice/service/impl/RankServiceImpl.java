@@ -2911,8 +2911,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (waitcount==0){
                 return true;
             }
-        } else {
-            return true;
         }
         return false;
     }
