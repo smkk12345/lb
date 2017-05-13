@@ -1,14 +1,15 @@
 package com.longbei.appservice.entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.longbei.appservice.common.utils.StringUtils;
 
 /**
  * @author yinxc
@@ -25,7 +26,7 @@ public class CommentLikes {
 	private String commentid;  //主评论id
 	private String userid;     //主评论商户id
 	private String friendid;   //点赞者商户id
-	private String createtime; //评论时间
+	private Date createtime; //评论时间
 	
 	public CommentLikes(){
 		super();
@@ -66,16 +67,14 @@ public class CommentLikes {
 		this.friendid = friendid;
 	}
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public String getCreatetime() {
-		return createtime;
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar beijingcal = Calendar.getInstance();
+        beijingcal.setTimeInMillis(createtime.getTime());
+        return sf.format(beijingcal.getTime());
 	}
 
-	public void setCreatetime(String createtime) {
-		if (!StringUtils.isBlank(createtime) && createtime.indexOf(".0") > -1) {
-			this.createtime = createtime.substring(0, createtime.length() - 2);
-		}else{
-			this.createtime = createtime;
-		}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
 	}
 }
