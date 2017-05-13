@@ -61,7 +61,8 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 * 花公用添加明细方法
 	 * 2017年3月21日
 	 * param userid 
-	 * param origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
+	 * param origin： 来源  0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+	 * 						4:赠与---进步币兑换    5:被赠与---进步币兑换
 	 *
 	 * param number 鲜花数量 --- 消耗：(1:赠与;)value值为负---方法里面已做判断
 	 * param improveid 业务id  类型：     
@@ -124,9 +125,14 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					// 					11:取消订单返还龙币   12:兑换鲜花
 					userImpCoinDetailService.insertPublic(userid, "12", num, 0, 0l);
 				}else if("3".equals(origin)){
-					//   3:被赠与
+					//   3:被赠与---龙币兑换
 					//被赠与用户，修改收到的花数量
-					userInfoMapper.updateMoneyAndFlowerByUserid(friendid, 0, number);
+					userInfoMapper.updateMoneyAndFlowerByUserid(userid, 0, number);
+				}else if("5".equals(origin)){
+					//   5:被赠与---进步币兑换
+					//被赠与用户，修改收到的花数量
+					userInfoMapper.updateCoinAndFlowerByUserid(userid, 0, number);
+//					userInfoMapper.updateMoneyAndFlowerByUserid(friendid, 0, number);
 				}
 				UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 				Map<String, Object> expandData = new HashMap<>();
@@ -189,7 +195,8 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 * @author yinxc
 	 * 获取鲜花明细列表
 	 * 2017年4月14日
-	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
+	 * param origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+	 *						4:赠与---进步币兑换    5:被赠与---进步币兑换
 	 */
 	@Override
 	public BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo,
@@ -275,13 +282,15 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_23, Constant.RTNINFO_SYS_23);
 			}
 		}
-		//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
+		//origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+		//						4:赠与---进步币兑换    5:被赠与---进步币兑换
 		reseResp = insertPublic(userid, "0", number, 0, 0);
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
 			//赠送后，被赠与用户添加一条花的明细  赠与用户添加一条花明细
-			//origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
+			//来源  0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
 			insertPublic(Long.parseLong(friendid), "3", number, Long.parseLong(improveid), userid);
 			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
 		}
@@ -324,15 +333,17 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_24, Constant.RTNINFO_SYS_24);
 			}
 		}
-		//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换
+		//origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+		//						4:赠与---进步币兑换    5:被赠与---进步币兑换
 		reseResp = insertPublic(userid, "2", number, 0, 0);
 		//赠送
 		if(ResultUtil.isSuccess(reseResp)){
 			improveService.addFlower(userid + "", friendid, improveid, number, businesstype, businessid);
 			//赠送后，被赠与用户添加一条花的明细  赠与用户添加一条花明细
-			//origin： 来源  0:龙币兑换;  1:赠与    2:进步币兑换    3:被赠与
-			insertPublic(Long.parseLong(friendid), "3", number, Long.parseLong(improveid), userid);
-			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
+			//origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
+			insertPublic(Long.parseLong(friendid), "5", number, Long.parseLong(improveid), userid);
+			insertPublic(userid, "4", number, Long.parseLong(improveid), Long.parseLong(friendid));
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){

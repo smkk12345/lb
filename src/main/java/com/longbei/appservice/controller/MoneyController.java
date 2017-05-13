@@ -156,7 +156,8 @@ public class MoneyController {
   			if(null != pageSize){
   				sSize = pageSize.intValue();
   			}
-  			//origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
+			//origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
   			baseResp = userFlowerDetailService.selectListByUseridAndOrigin(Long.parseLong(userid), "3", sNo, sSize);
         } catch (Exception e) {
             logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
