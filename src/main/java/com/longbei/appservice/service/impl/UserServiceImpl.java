@@ -5,9 +5,7 @@ import java.util.*;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.NickNameUtils;
-import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -29,7 +27,6 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
@@ -771,11 +768,16 @@ public class UserServiceImpl implements UserService {
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 				}
 			}
-			userInfoMapper.updateByUseridSelective(userInfo);
-			//更新信息到mongodb
-			userMongoDao.updateAppUserMongoEntity(userInfo);
-			queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
-					Constant.MQDOMAIN_USER_UPDATE,String.valueOf(userInfo.getUserid()));
+
+			int n = userInfoMapper.updateByUseridSelective(userInfo);
+			if(n == 1){
+				UserInfo userInfo1 = userInfoMapper.selectByUserid(userInfo.getUserid());
+				BeanUtils.copyProperties(userInfo,userInfo1);
+				userMongoDao.updateAppUserMongoEntity(userInfo1);
+				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(userInfo.getUserid()));
+			}
+
 		} catch (Exception e) {
 			logger.error("updateUserInfo error and msg={}",e);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
@@ -1073,9 +1075,12 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 			int temp = userInfoMapper.updateByUseridSelective(userInfo);
-			//更新信息到mongodb
-			userMongoDao.updateAppUserMongoEntity(userInfo);
+
 			if(temp > 0){
+				//更新信息到mongodb
+				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(userid));
+				BeanUtils.copyProperties(userInfo,userInfo1);
+				userMongoDao.updateAppUserMongoEntity(userInfo1);
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_UPDATE,userid);
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

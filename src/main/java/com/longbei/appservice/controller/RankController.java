@@ -112,6 +112,9 @@ public class RankController {
         if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if(Constant.VISITOR_UID.equals(userid+"")){
+            return baseResp;
+        }
         baseResp = this.rankService.ownRankSort(rankId,userid);
 
         return baseResp;

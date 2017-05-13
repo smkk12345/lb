@@ -302,16 +302,25 @@ public class Constant {
 
 	public static final String VISITOR_UID = "-1";
 	/**
-	 * 游客模式 uid -1 可近接口
+	 * 游客模式 uid -1 可进入接口
 	 *
 	 * 首页轮播图
 	 * 获奖公示
 	 * 首页榜单列表
 	 * 首页关注达人
 	 *
+	 * 进步推荐列表
+	 * 微进步广场
 	 *
+	 * 龙榜列表
+	 * 龙榜详情
 	 */
-	public static final String VISITOR_URL = "/user/selectFashionManUser";
+	public static final String VISITOR_URL = "/home/homepics,/rank/selectWinningRankAward," +
+			"/rank/selectRankListForApp," +
+			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
+			"/rank/selectRankList," +
+			"/rank/rankDetail,/rank/rankMemberSort," +
+			"/rank/ownRankSort";
 
 	/**
 	 * 进步相关配置

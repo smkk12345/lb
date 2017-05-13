@@ -1644,23 +1644,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             continue;
                         }
 
-                        //判断是否是好友
+
                         if(userId.equals(rankMembers.getUserid())){
                             map.put("isfans","1");
                             resultList.add(map);
                             continue;
                         }
-                        SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
-                        if(snsFans != null){
-                            map.put("isfans","1");
-                        }else{
-                            map.put("isfans","0");
-                        }
-                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
-                        if(snsFriends != null){
-                            map.put("isfriend","1");
-                        }else{
-                            map.put("isfriend","0");
+                        //判断是否是好友
+                        if(!Constant.VISITOR_UID.equals(userId+"")){
+                            SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
+                            if(snsFans != null){
+                                map.put("isfans","1");
+                            }else{
+                                map.put("isfans","0");
+                            }
+                            SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                            if(snsFriends != null){
+                                map.put("isfriend","1");
+                            }else{
+                                map.put("isfriend","0");
+                            }
                         }
                         resultList.add(map);
                     }
@@ -1953,7 +1956,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
                     map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
-                    if(userid == null){
+                    if(Constant.VISITOR_UID.equals(userid+"")){
                         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
                         if(null == appUserMongoEntity){
                             continue;
@@ -2711,7 +2714,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             int userRankMemberStatus = 0;//可参榜ß
-            if(userId != null){
+            if(!Constant.VISITOR_UID.equals(userId+"")){
                 if("5".equals(rank.getIsfinish())){
                     userRankMemberStatus = 4;//榜已结束 查看
                 }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
