@@ -214,6 +214,38 @@ public class PageApiController {
         return baseResp;
     }
 
+    /**
+     * 保存或更新注册协议
+     * @param regpro
+     * @return
+     */
+    @RequestMapping("updateregpro")
+    public BaseResp<Object> saveOrUpdateRegisterProtocol(String regpro){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.saveOrUpdateRegisterProtocol(regpro);
+        } catch (Exception e) {
+            logger.error("save or update register protocol is error:",e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 获取注册协议
+     * @return
+     */
+    @RequestMapping("regprodetail")
+    public BaseResp<String> selectRegisterProtocol(){
+        BaseResp<String> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectRegisterProtocol();
+        } catch (Exception e) {
+            logger.error("select register protocol is error:",e);
+        }
+        return baseResp;
+    }
+
 
 
 

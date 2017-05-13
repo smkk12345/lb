@@ -504,10 +504,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             List<Rank> ranks = rankMapper.selectRankList(map);
-            int totalCount = 0;
-            if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
-                totalCount = rankMapper.selectRankListCount(map);
-            }
+            Integer totalCount = rankMapper.selectRankListCount(map);
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     if(showAward != null && showAward){
@@ -814,7 +811,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
                     //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
                     String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
-                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                     boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"10");
 
@@ -898,10 +895,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
         }
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(), 
-        		"", gType, 
+        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
+        		"", gType,
         		snsId+"", remark, "2", msgType, 0);
         if(insertResult.getCode() == 0){
             return true;
@@ -1025,22 +1022,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 								//25:订单发货N天后自动确认收货    26：实名认证审核结果
 								//27:工作认证审核结果      28：学历认证审核结果
 								//29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-								//32：创建的龙榜/教室/圈子被选中推荐  
-								//40：订单已取消 41 榜中进步下榜   
+								//32：创建的龙榜/教室/圈子被选中推荐
+								//40：订单已取消 41 榜中进步下榜
 								// 42.榜单公告更新   43:后台反馈回复消息 )
 				//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
-            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(), 
-    					"", "10", 
+            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
+    					"", "10",
     					rankMembers.getRankid().toString(), remark, "2", "44", 0);
             }
             if("2".equals(rank.getSourcetype())){
-            	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(), 
-            			"", "10", 
+            	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
+            			"", "10",
     					rankMembers.getRankid().toString(), remark, "2", "44", 0);
             }
-            
+
             //2.更改用户在该榜单中发布的进步的状态
             int removeRow = improveRankMapper.updateImproveRanStatus(rankMembers.getUserid()+"",
                     rankMembers.getRankid()+"",null,"1");
@@ -1185,7 +1182,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setMsgtype("17");
 //                userMsg.setSnsid(rank.getRankid());
                 userMsg.setRemark(remark);
-                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsg.setGtype("10");
                 userMsg.setGtypeid(rank.getRankid());
@@ -1957,7 +1954,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                userMsg.setSnsid(rank.getRankid());
                 userMsg.setGtypeid(rank.getRankid());
                 userMsg.setRemark("您关注的榜已经开始了,快去参榜吧!");
-                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+                //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsg.setGtype("10");
                 userMsg.setMtype("0");//系统消息
@@ -2037,10 +2034,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                userMsg.setRemark("由于您长时间未确认收货,系统已为您自动确认收货!");
 //                BaseResp baseResp1 = this.userMsgService.insertSelective(userMsg);
 //            	String remark = "由于您长时间未确认收货,系统已为您自动确认收货!";
-            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-//            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankAcceptAward.getUserid().toString(), 
-//            			"", "10", rankAcceptAward.getRankid().toString(), 
+//            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankAcceptAward.getUserid().toString(),
+//            			"", "10", rankAcceptAward.getRankid().toString(),
 //            			remark, "0", "25", 0);
 //            }
             //系统同意修改确认收货状态
@@ -2319,7 +2316,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //mtype 0 系统消息     1 对话消息   2:@我消息   用户中奖消息在@我      未中奖消息在通知消息
         userMsg.setMtype("2");
         userMsg.setMsgtype("34");
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         userMsg.setGtype("10");
         userMsg.setGtypeid(rank.getRankid());
@@ -2344,7 +2341,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
         userMsg.setMtype("0");
         userMsg.setMsgtype("22");
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         userMsg.setGtype("10");
         userMsg.setIsdel("0");
@@ -2917,6 +2914,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (waitcount==0){
                 return true;
             }
+        } else {
+            return true;
         }
         return false;
     }
