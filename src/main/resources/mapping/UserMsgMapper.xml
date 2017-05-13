@@ -427,7 +427,6 @@
               </if>
               <if test="userMsg.createtime != null">
                 #{userMsg.createtime},
-                #{userMsg.createtime},
               </if>
             </trim>
           )
