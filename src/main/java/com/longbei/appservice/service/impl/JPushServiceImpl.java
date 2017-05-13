@@ -33,7 +33,7 @@ public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
         pushMessage.put("userid",userId);
         pushMessage.put("content",content);
         pushMessage.put("msgid",msgid);
-        pushMessage.put("tag", Constant.JPUSH_TAG_COUNT_1001);
+        pushMessage.put("tag", tag);
         BaseResp<Object> baseResp = iJPushService.messagePush(userId,title,content,pushMessage.toString());
         if(baseResp.getCode() == 0){
             return true;

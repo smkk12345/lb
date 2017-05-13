@@ -120,7 +120,13 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
                 }
 
-                friendMongoDao.updateFriendAddAskStatus(userId,friendId,FriendAddAsk.STATUS_PENDING,true);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("senderId",userId);
+                jsonObject.put("content",message);
+                JSONArray jsonArray = friendAddAsk.getMessage();
+                jsonArray.add(jsonObject);
+
+                friendMongoDao.updateFriendAddAskStatus(userId,friendId,FriendAddAsk.STATUS_PENDING,jsonArray,true);
                 updateUserNewMessageTip(friendId,true);
 
                 //JPUSH通知用户

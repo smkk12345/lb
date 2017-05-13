@@ -851,13 +851,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("10".equals(userMsg.getGtype())){
-			//2 榜中   评论消息   获取榜图片
+			//10 榜中   评论消息   获取榜图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}else if("11".equals(userMsg.getGtype())){
-			//3圈子中      评论消息   获取圈子图片
+			//11 圈子中      评论消息   获取圈子图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}else{
-			//4 教室中   评论消息    获取教室图片
+			//12 教室中   评论消息    获取教室图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}
 	}
@@ -871,21 +871,21 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * UserMsgServiceImpl
 	 */
 	private UserMsg impRankItype(UserMsg userMsg, String gtype){
-		if("2".equals(gtype)){
+		if("10".equals(gtype)){
 			//榜评论图片
 			Rank rank = rankMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != rank){
 				userMsg.setImpPicFilekey(rank.getRankphotos());
 			}
 		}
-		if("3".equals(gtype)){
+		if("11".equals(gtype)){
 			//圈子评论图片
 			Circle circle = circleMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != circle){
 				userMsg.setImpPicFilekey(circle.getCirclephotos());
 			}
 		}
-		if("4".equals(gtype)){
+		if("12".equals(gtype)){
 			//教室评论图片
 			Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getGtypeid());
 			if(null != classroom){

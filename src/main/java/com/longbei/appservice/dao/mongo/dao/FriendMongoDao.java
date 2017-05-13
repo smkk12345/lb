@@ -47,11 +47,16 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
      * @param status 更改的状态
      * @param updateTimeFlag 是否更改添加好友的申请时间
      */
-    public void updateFriendAddAskStatus(Long userId, Long friendId, Integer status, Boolean updateTimeFlag) {
+    public void updateFriendAddAskStatus(Long userId, Long friendId, Integer status,JSONArray messages, Boolean updateTimeFlag) {
         Criteria  criteria = Criteria.where("userId").is(userId).and("friendId").is(friendId);
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("status",status);
+        update.set("receiveIsRead",false);
+        update.set("senderIsRead",true);
+        if(messages != null){
+            update.set("message",messages);
+        }
         if(updateTimeFlag != null && updateTimeFlag){
             update.set("createDate",new Date());
         }
@@ -151,4 +156,21 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         return mongoTemplate.find(query,FriendAddAsk.class);
     }
 
+    /**
+     * 删除好友的加群申请
+     * @param userid
+     * @param friendid
+     */
+    public boolean deleteFriendAddAsk(long userid, long friendid) {
+        Criteria criteria = new Criteria();
+        Query query = new Query();
+        query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userid).and("receiveUserId").is(friendid),
+                Criteria.where("senderUserId").is(friendid).and("receiveUserId").is(userid)));
+
+        int row = mongoTemplate.remove(query,FriendAddAsk.class).getN();
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
 }

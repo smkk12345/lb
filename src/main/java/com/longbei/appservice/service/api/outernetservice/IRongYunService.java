@@ -101,4 +101,16 @@ public interface IRongYunService {
                                 @RequestParam("groupId")String groupId,
                                 @RequestParam("nickName") String nickName);
 
+    /**
+     * 通知用户创建群
+     * @param operatorUserId 操作群的用户id
+     * @param operatorNickname 操作群的用户昵称
+     * @param groupId 群组id
+     * @param groupName 群组名称
+     * @return
+     */
+    @RequestMapping(method=RequestMethod.GET,value="/rongyun/noticeCreateGroup")
+    BaseResp<Object> noticeCreateGroup(@RequestParam("operatorUserId") String operatorUserId,@RequestParam("operatorNickname")String operatorNickname,
+                                       @RequestParam("groupId") String groupId,@RequestParam("groupName") String groupName);
+
 }
