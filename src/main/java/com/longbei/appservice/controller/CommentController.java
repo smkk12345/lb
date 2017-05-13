@@ -95,7 +95,7 @@ public class CommentController extends BaseController {
   		commentLikes.setCommentid(commentid);
   		commentLikes.setFriendid(friendid);
   		commentLikes.setUserid(userid);
-  		commentLikes.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  		commentLikes.setCreatetime(new Date());
   		try {
   			baseResp = commentLikesMongoService.insertCommentLikes(commentLikes);
 		} catch (Exception e) {
@@ -195,7 +195,7 @@ public class CommentController extends BaseController {
  		try {
  			Comment comment = new Comment();
  			comment.setContent(content);
- 			comment.setCreatetime(DateUtils.formatDateTime1(new Date()));
+ 			comment.setCreatetime(new Date());
  			comment.setBusinesstype(businesstype);
  			comment.setBusinessid(businessid);
  			comment.setUserid(userid);
@@ -237,7 +237,7 @@ public class CommentController extends BaseController {
   		try {
   			CommentLower commentLower = new CommentLower();
   			commentLower.setContent(content);
-  			commentLower.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			commentLower.setCreatetime(new Date());
   			commentLower.setCommentid(commentid);
   			commentLower.setSeconduserid(seconduserid);
   			commentLower.setFirstuserid(firstuserid);

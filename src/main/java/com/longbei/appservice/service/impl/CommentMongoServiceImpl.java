@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CommentCountMongoDao;
@@ -138,7 +137,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	private void insertCount(Comment comment){
 		CommentCount commentCount = new CommentCount();
 		commentCount.setComcount(1);
-		commentCount.setCreatetime(DateUtils.formatDateTime1(new Date()));
+		commentCount.setCreatetime(new Date());
 		commentCount.setLikes(0);
 		commentCount.setCommentid(comment.getId());
 		try {

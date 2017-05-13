@@ -1,6 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,10 +11,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.longbei.appservice.common.utils.StringUtils;
 
 @Document(collection = "maincomment")
 public class Comment {
@@ -22,7 +23,7 @@ public class Comment {
 	@Transient
 	private String friendid;   //被评论商户id
 	private String content;    //评论内容
-	private String createtime; //评论时间
+	private Date createtime; //评论时间
 	private String businesstype;      //businesstype  类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
 	 									//10：榜评论  11 圈子评论  12 教室评论
 	private String businessid;    //各类型对应的id
@@ -61,17 +62,15 @@ public class Comment {
 		this.content = content;
 	}
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public String getCreatetime() {
-		return createtime;
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar beijingcal = Calendar.getInstance();
+        beijingcal.setTimeInMillis(createtime.getTime());
+        return sf.format(beijingcal.getTime());
 	}
 
-	public void setCreatetime(String createtime) {
-		if (!StringUtils.isBlank(createtime) && createtime.indexOf(".0") > -1) {
-			this.createtime = createtime.substring(0, createtime.length() - 2);
-		}else{
-			this.createtime = createtime;
-		}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
 	}
 	
 	@JsonInclude(Include.ALWAYS)
