@@ -9,9 +9,10 @@
     <result column="ishot" property="ishot" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, title, typeid, content, ishot, createtime, updatetime
+    id, title, typeid, content, ishot, createtime, updatetime,sortnum
   </sql>
   <select id="selectIssueList"  parameterType="com.longbei.appservice.entity.Issue" resultMap="BaseResultMap" >
     select
@@ -27,6 +28,7 @@
     <if test="issue.typeid != null and issue.typeid != ''" >
       AND typeid = #{issue.typeid}
     </if>
+    ORDER BY sortnum DESC
     limit #{startNum},#{pageSize}
   </select>
   <select id="selectIssueListCount" parameterType="com.longbei.appservice.entity.Issue" resultType="java.lang.Integer">
@@ -71,6 +73,9 @@
       <if test="createtime != null" >
         createtime,
       </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="title != null" >
@@ -87,6 +92,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime},
+      </if>
+      <if test="sortnum != null" >
+        #{sortnum},
       </if>
     </trim>
   </insert>
@@ -107,6 +115,9 @@
       </if>
       <if test="updatetime != null" >
         updatetime = #{updatetime},
+      </if>
+      <if test="sortnum != null" >
+        sortnum = #{sortnum},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
