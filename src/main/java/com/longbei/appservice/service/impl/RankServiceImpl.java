@@ -1913,6 +1913,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
                     map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
+                    if (StringUtils.isBlank(appUserMongoEntity.getNickname())){
+                        continue;
+                    }
                     map.put("nickname",appUserMongoEntity.getNickname());
                     resultList.add(map);
                 }

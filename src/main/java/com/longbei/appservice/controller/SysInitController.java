@@ -3,6 +3,8 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -38,6 +40,12 @@ public class SysInitController extends BaseController{
         baseResp.getExpandData().put("helperurl",AppserviceConfig.h5_helper);
         //协议
         baseResp.getExpandData().put("agreementurl",AppserviceConfig.h5_agreementurl);
+
+        baseResp.getExpandData().put("invitepoint", Constant_point.INVITE_LEVEL1);
+        baseResp.getExpandData().put("inviteimp", Constant_Imp_Icon.INVITE_LEVEL1);
+
+        baseResp.getExpandData().put("registerurl",AppserviceConfig.h5_helper);
+
         //多媒体前缀
 //        baseResp.getExpandData().put("mediapath",Constant.OSS_MEDIA);
         //初始化操作
