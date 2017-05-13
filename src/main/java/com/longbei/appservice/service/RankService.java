@@ -376,7 +376,7 @@ public interface RankService extends BaseService{
      * @param rankId
      * @return
      */
-    BaseResp<Object> selectRankAward(Long rankId);
+    BaseResp<List<RankAwardRelease>> selectRankAward(Long rankId);
 
     /**
      * 获取领奖列表

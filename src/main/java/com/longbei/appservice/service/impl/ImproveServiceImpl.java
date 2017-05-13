@@ -155,6 +155,13 @@ public class ImproveServiceImpl implements ImproveService{
                 isok = insertImproveSingle(improve);
                 break;
             case Constant.IMPROVE_RANK_TYPE:
+                Rank rank = rankMapper.selectRankByRankid(improve.getBusinessid());
+                if (null == rank){
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_616,Constant.RTNINFO_SYS_616);
+                }
+                if (!canInsertImprove(improve.getUserid(),improve.getBusinessid(),rank)){
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617,Constant.RTNINFO_SYS_617);
+                }
                 isok = insertImproveForRank(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -169,7 +176,7 @@ public class ImproveServiceImpl implements ImproveService{
                 if (null == userGoal){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
                 }
-                if (userGoal.getUserid() != improve.getUserid()){
+                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
                 }
                 isok = insertImproveForGoal(improve);
@@ -386,6 +393,19 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert rank immprove:{} is error:{}", "",e);
         }
         if(res != 0){
+
+
+            String tempnum = springJedisDao.get("rankid"+improve.getBusinessid()+
+                    "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
+            int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
+            if (num == 0){
+                springJedisDao.set("rankid"+improve.getBusinessid()+
+                        "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),"1",1000*60*60*48);
+            } else {
+                springJedisDao.increment("rankid"+improve.getBusinessid()+
+                        "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),1);
+            }
+
             String message = improve.getImpid() +
                     "," + Constant.IMPROVE_RANK_TYPE +
                     "," + improve.getBusinessid() +
@@ -397,6 +417,18 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return false;
     }
+
+
+    private boolean canInsertImprove(Long userid,Long rankid,Rank rank){
+        String tempnum = springJedisDao.get("rankid"+rankid+"userid"+userid+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
+        int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
+        if (num < Integer.parseInt(rank.getMaximprovenum())){
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      *  @author luye
      *  @desp  更新目标中进步之后 主进步状态需要更新
@@ -949,6 +981,8 @@ public class ImproveServiceImpl implements ImproveService{
         if(res != 0){
             //清除数据
             clearDirtyData(improve);
+            springJedisDao.increment("rankid"+improve.getBusinessid()+
+                    "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),-1);
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             return true;
@@ -1176,10 +1210,11 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
 
 //            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(timeLine.getUserid());
-                initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-                improve.setAppUserMongoEntity(timeLineDetail.getUser());
-
-                initImproveInfo(improve,Long.parseLong(userid));
+                if(!Constant.VISITOR_UID.equals(userid)){
+                    initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
+                    initImproveInfo(improve,Long.parseLong(userid));
+                }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
                 improves.add(improve);
@@ -1249,12 +1284,14 @@ public class ImproveServiceImpl implements ImproveService{
             }
             //初始化评论数量
             initImproveCommentInfo(improve);
-            //初始化进步用户信息
-            initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
-            //初始化是否 点赞 送花 送钻 收藏
-            initIsOptionForImprove(userid,improve);
+            if(!Constant.VISITOR_UID.equals(userid)){
+                //初始化进步用户信息
+                initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
+                //初始化是否 点赞 送花 送钻 收藏
+                initIsOptionForImprove(userid,improve);
+            }
         }
     }
 
@@ -2636,8 +2673,9 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setItype(timeLineDetail.getItype());
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
-
-                    initImproveInfo(improve,Long.parseLong(userid));
+                    if(!Constant.VISITOR_UID.equals(userid)){
+                        initImproveInfo(improve,Long.parseLong(userid));
+                    }
                     //初始化 赞 花 数量
                     initImproveLikeAndFlower(improve);
                     improves.add(improve);

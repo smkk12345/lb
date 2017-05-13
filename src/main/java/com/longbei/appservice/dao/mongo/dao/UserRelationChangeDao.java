@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by lixb on 2017/5/10.
+ * 用户信息同步接口
  */
 @Repository
 public class UserRelationChangeDao extends BaseMongoDao<UserRelationChange> {

@@ -72,21 +72,27 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
 
         boolean isNew = false;
+        boolean isC = false;
         boolean isFor = false;
+        boolean isforC = false;
         for (int i = 0; i < size; i++) {
             int newi = newVersion.charAt(i);
 
             int versioni = cversion.charAt(i);
-            if(!isNew){
+            if(!isNew&&!isC){
                 if(versioni < newi){
                     isNew = true;
+                }else if(versioni > newi){
+                    isC = true;
                 }
             }
             if(!StringUtils.isBlank(enforceversion)){
                 int enforceveri = enforceversion.charAt(i);
-                if(!isFor){
+                if(!isFor&&!isforC){
                     if(versioni < enforceveri){
                         isFor = true;
+                    }else if(versioni > enforceveri){
+                        isforC = true;
                     }
                 }
             }
