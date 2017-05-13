@@ -333,7 +333,7 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize);
+    BaseResp<Object> rankAwardList(Long userId,Integer startNum, Integer pageSize);
 
     /**
      * 查询单条榜单的获奖公示
@@ -408,7 +408,7 @@ public interface RankService extends BaseService{
      * 查询中奖的用户
      * @return
      */
-    BaseResp<Object> selectWinningRankAward();
+    BaseResp<Object> selectWinningRankAward(Long userid);
 
     /**
      * 通知关注榜单的用户 榜单已开始

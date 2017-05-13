@@ -53,7 +53,7 @@
     select 
     <include refid="Base_Column_List" />
     from sns_friends
-    where userid = #{userid} and friendid=#{friendid} and isdel='0'
+    where userid = #{userid} and friendid=#{friendid}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
