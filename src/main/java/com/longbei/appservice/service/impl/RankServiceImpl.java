@@ -899,7 +899,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
         		"", gType,
-        		snsId+"", remark, "2", msgType, 0);
+        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0);
         if(insertResult.getCode() == 0){
             return true;
         }
@@ -1030,12 +1030,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
     					"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
             }
             if("2".equals(rank.getSourcetype())){
             	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
             			"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
             }
 
             //2.更改用户在该榜单中发布的进步的状态
@@ -1095,12 +1095,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if("1".equals(rankMembers.getIsfashionman())){
                     String remark = "你被选为榜单达人";
                     userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "选为榜单达人",0);
                 }
                 if ("0".equals(rankMembers.getIsfashionman())){
                     String remark = "你被取消榜单达人";
                     userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "取消榜单达人",0);
                 }
                 return BaseResp.ok();
             }
@@ -1190,6 +1190,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setCreatetime(new Date());
                 userMsg.setIsdel("0");
                 userMsg.setIsread("0");
+                userMsg.setTitle("加入请求审批结果");
                 boolean insertUserMsg = this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
             }
             if(flag){
@@ -1465,6 +1466,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         userMsg.setUpdatetime(new Date());
                         userMsg.setIsdel("0");
                         userMsg.setIsread("0");
+                        userMsg.setTitle("龙榜公告更新");
                         userMsgService.batchInsertUserMsg(userIdList,userMsg);
                     }catch (Exception e){
                         logger.error("update rank info notice user error msg:{}",e);
@@ -1962,6 +1964,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setUpdatetime(new Date());
                 userMsg.setIsdel("0");
                 userMsg.setIsread("0");
+                userMsg.setTitle("龙榜关注开榜通知");
                 this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
             return baseResp.ok();
         }catch(Exception e){
@@ -2326,6 +2329,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         userMsg.setUpdatetime(new Date());
 //        userMsg.setSnsid(rank.getRankid());
         userMsg.setRemark(remark);
+        userMsg.setTitle("加入的龙榜获奖通知");
         return userMsg;
     }
 
@@ -2351,6 +2355,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //        userMsg.setSnsid(rank.getRankid());
         userMsg.setGtypeid(rank.getRankid());
         userMsg.setRemark(remark);
+        userMsg.setTitle("加入的龙榜结榜未获奖");
         return userMsg;
     }
 
@@ -3083,7 +3088,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "45", 0);
+            			rankid, remark, "0", "45", "榜中删除成员进步", 0);
             }
             if ("2".equals(status)) {
                 //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
@@ -3103,7 +3108,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "41", 0);
+            			rankid, remark, "0", "41", "榜中进步下榜", 0);
                 
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
