@@ -2293,7 +2293,9 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 improve.setAppUserMongoEntity(appUserMongoEntity);
-                initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                if (!StringUtils.isBlank(userid)){
+                    initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                }
                 //初始化目标，榜单，圈子，教室等信息
                 switch(businesstype){
                     case Constant.IMPROVE_SINGLE_TYPE:
