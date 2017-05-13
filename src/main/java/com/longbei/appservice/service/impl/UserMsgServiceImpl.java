@@ -84,7 +84,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	@Override
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
-			String businessid, String remark, String mtype, String msgtype, int num) {
+			String businessid, String remark, String mtype, String msgtype, String title, int num) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		if (StringUtils.isBlank(friendid)){
 			return reseResp;
@@ -113,6 +113,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			record.setIsdel("0");
 			record.setIsread("0");
 			record.setNum(num);
+			record.setTitle(title);
 			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
 			// 送花 4 送钻石  5:粉丝  等等)
 			record.setMtype(mtype);
