@@ -28,7 +28,8 @@
     select 
     <include refid="Bid_Column_List" />
     from sns_friends
-    where userid = #{userid}
+    where isdel = 0
+      and userid = #{userid}
   </select>
   
   <select id="selectListByUsrid" resultMap="BaseResultMap" >

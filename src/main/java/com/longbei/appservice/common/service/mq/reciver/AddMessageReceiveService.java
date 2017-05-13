@@ -309,6 +309,7 @@ public class AddMessageReceiveService implements MessageListener{
                     String uid = sArr[0];
                     String friendid = sArr[1];
                     relationService.syncUserRelationInfo(uid,friendid);
+                    relationService.syncUserRelationInfo(friendid,uid);
                 }else if(domainName.equals(Constant.MQDOMAIN_USER_ADDFUN)){
                     String[] sArr = msg.split("&");
                     String uid = sArr[0];

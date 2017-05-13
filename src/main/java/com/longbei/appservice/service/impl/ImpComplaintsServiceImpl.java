@@ -24,6 +24,7 @@ import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.UserMsgService;
 
 @Service("impComplaintsService")
 public class ImpComplaintsServiceImpl implements ImpComplaintsService {
@@ -40,6 +41,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private UserMsgService userMsgService;
 //	@Autowired
 //	private RankService rankService;
 	
@@ -239,6 +242,20 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//删除
 						improveService.removeImprove(impComplaints.getComuserid().toString(), impComplaints.getImpid().toString(), 
 								impComplaints.getBusinesstype().toString(), impComplaints.getBusinessid().toString());
+						String remark = "您的进步已被删除,原因：" + checkoption;
+		            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+						//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+						//						25:订单发货N天后自动确认收货    26：实名认证审核结果
+						//						27:工作认证审核结果      28：学历认证审核结果
+						//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+						//						32：创建的龙榜/教室/圈子被选中推荐  
+						//						40：订单已取消 41 榜中进步下榜   
+						// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
+		            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+						//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
+		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
+		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
+		            			impComplaints.getBusinessid().toString(), remark, "0", "45", 0);
 					}
 				}
 				if("2".equals(status)){
@@ -247,6 +264,21 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//下榜
 						improveService.removeImproveFromBusiness(impComplaints.getImpid().toString(), 
 								impComplaints.getBusinessid().toString(), impComplaints.getBusinesstype().toString());
+						
+						String remark = "您的进步已被下榜,原因：" + checkoption;
+		            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+						//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+						//						25:订单发货N天后自动确认收货    26：实名认证审核结果
+						//						27:工作认证审核结果      28：学历认证审核结果
+						//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+						//						32：创建的龙榜/教室/圈子被选中推荐  
+						//						40：订单已取消 41 榜中进步下榜   
+						// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
+		            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+						//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
+		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
+		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
+		            			impComplaints.getBusinessid().toString(), remark, "0", "41", 0);
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
