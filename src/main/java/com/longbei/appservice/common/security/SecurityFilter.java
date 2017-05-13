@@ -113,19 +113,21 @@ public class SecurityFilter extends OncePerRequestFilter {
 			try {
 				String urlPath = request.getRequestURI();
 				urlPath = urlPath.replace("/app_service/", "");
-				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1) {
+				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1
+						|| (uid.equals(Constant.VISITOR_UID)
+						&&Constant.VISITOR_URL.indexOf(urlPath)>-1)) {
 					token = "longbei2017";
 				} else {
 					token = springJedisDao.get("userid&token&"+uid);
-					String vers[] = version.split("_");
-					if (vers.length > 0) {
-						if(!canLogin(version)){
-							returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
-									"请前往应用中心更新版本");
-							return;
-						}
-					}
 				}
+//				String vers[] = version.split("_");
+//				if (vers.length > 0) {
+//					if(!canLogin(version)){
+//						returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
+//								"请前往应用中心更新版本");
+//						return;
+//					}
+//				}
 				if (StringUtils.isBlank(token)) {
 					//token过期
 					returnAfterErrorToken(request, response, Constant.STATUS_SYS_08, Constant.RTNINFO_SYS_08);

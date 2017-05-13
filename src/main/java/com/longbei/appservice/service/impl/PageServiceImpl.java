@@ -249,4 +249,42 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
     }
+
+    @Override
+    public BaseResp<Object> saveOrUpdateRegisterProtocol(String regPro) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.REGISTER_PROTOCOL_KEY);
+            SysCommon sysCommon1 = new SysCommon();
+            sysCommon1.setKey(Constant.REGISTER_PROTOCOL_KEY);
+            sysCommon1.setInfo(regPro);
+            int res = 0;
+            if (null == sysCommon){
+                res = sysCommonMapper.insertSelective(sysCommon1);
+            } else {
+                res = sysCommonMapper.updateByKey(sysCommon1);
+            }
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("save or update register protocol is error:",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<String> selectRegisterProtocol() {
+        BaseResp<String> baseResp = new BaseResp<>();
+        try {
+            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.REGISTER_PROTOCOL_KEY);
+            if (null != sysCommon){
+                baseResp = BaseResp.ok();
+                baseResp.setData(sysCommon.getInfo());
+            }
+        } catch (Exception e) {
+            logger.error("select register protocol is error:",e);
+        }
+        return baseResp;
+    }
 }

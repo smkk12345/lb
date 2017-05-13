@@ -43,7 +43,7 @@
     <include refid="Base_Column_List" />
     from ${tablename}
 
-    where impid = #{impid,jdbcType=BIGINT}
+    where businessid= #{businessid} and impid = #{impid,jdbcType=BIGINT}
     <if test="isdel != null" >
       and isdel = #{isdel,jdbcType=CHAR}
     </if>

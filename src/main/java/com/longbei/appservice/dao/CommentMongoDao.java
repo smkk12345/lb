@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -62,12 +61,13 @@ public class CommentMongoDao {
 			criteria = criteria.and("impid").is(impid);
 		}
 		if (lastdate != null) {
-			criteria = criteria.and("createdate").lt(lastdate);
+			criteria = criteria.and("createtime").lt(lastdate);
 		}
 		Query query = Query.query(criteria);
-		query.with(new Sort(Direction.DESC, "createdate"));
+		query.with(new Sort(Sort.Direction.DESC, "createtime"));
+//		query.with(new Sort(Direction.DESC, "createdate"));
 		query.limit(pageSize);
-		//long totalcount = mongoTemplate1.count(query, ImproveCircle.class);
+		//long totalcount = mongoTemplate1.count(query, Comment.class);
 		List<Comment> comments = null;
 		try {
 			comments = mongoTemplate1.find(query, Comment.class);

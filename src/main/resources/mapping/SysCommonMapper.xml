@@ -29,7 +29,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.SysCommon" >
-    insert into sys_common (id, key, info, 
+    insert into sys_common (id, `key`, info,
       remark)
     values (#{id,jdbcType=INTEGER}, #{key,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR})
@@ -69,7 +69,7 @@
     update sys_common
     <set >
       <if test="key != null" >
-        key = #{key,jdbcType=VARCHAR},
+        `key` = #{key,jdbcType=VARCHAR},
       </if>
       <if test="info != null" >
         info = #{info,jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysCommon" >
     update sys_common
-    set key = #{key,jdbcType=VARCHAR},
+    set `key` = #{key,jdbcType=VARCHAR},
       info = #{info,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

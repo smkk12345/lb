@@ -1123,11 +1123,11 @@ public class UserServiceImpl implements UserService {
 			if (res > 0){
 				if ("1".equals(userInfo.getIsfashionman())){
 					String remark = "你被选为达人";
-					userMsgService.insertMsg(String.valueOf(userInfo.getUserid()),"1",null,null,null,remark,"0","30",0);
+					userMsgService.insertMsg("1",String.valueOf(userInfo.getUserid()),null,null,null,remark,"0","30",0);
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";
-					userMsgService.insertMsg(String.valueOf(userInfo.getUserid()),"1",null,null,null,remark,"0","30",0);
+					userMsgService.insertMsg("1",String.valueOf(userInfo.getUserid()),null,null,null,remark,"0","30",0);
 				}
                 baseResp = BaseResp.ok();
             }

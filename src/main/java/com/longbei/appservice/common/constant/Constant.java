@@ -293,8 +293,25 @@ public class Constant {
 	 * 移动端调用api的token失效
 	 */
 	public static final int APP_TOKEN_EXPIRE = 30*24*60*60;
-	
-	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms,/user/registerbasic,/user/thirdlogin,/user/thirdregister,/user/checkSms,/init,/user/findPassword";
+	/**
+	 * 不需要用户token的接口
+	 */
+	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms," +
+			"/user/registerbasic,/user/thirdlogin,/user/thirdregister," +
+			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade";
+
+	public static final String VISITOR_UID = "-1";
+	/**
+	 * 游客模式 uid -1 可近接口
+	 *
+	 * 首页轮播图
+	 * 获奖公示
+	 * 首页榜单列表
+	 * 首页关注达人
+	 *
+	 *
+	 */
+	public static final String VISITOR_URL = "/user/selectFashionManUser";
 
 	/**
 	 * 进步相关配置
@@ -343,6 +360,9 @@ public class Constant {
 	public static final String RANK_TYEP_C = "0";
 
 	public static final String PUBLISH_BG_KEY = "publishbg";
+
+	public static final String REGISTER_PROTOCOL_KEY = "regprotocol";
+
 	/**
 	 * 进步时间线类型
 	 */
@@ -587,10 +607,26 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1002 = "1002";//用户回复了添加好友的消息
 	public static final String JPUSH_TAG_COUNT_1003 = "1003";//加好友申请被拒绝
 	public static final String JPUSH_TAG_COUNT_1004 = "1004";//加好友申请被同意
-	//11开头的代表群组相关的通知
-	public static final String JPUSH_TAG_COUNT_1101 = "1101";//申请加群 通知
+	//11开头的代表群组相关的通知  前端推送
+	public static final String JPUSH_TAG_COUNT_1101 = "1101";//群消息
+	//12开头 代表实名认证
+	public static final String JPUSH_TAG_COUNT_1201 = "1201";//实名认证通过
+	public static final String JPUSH_TAG_COUNT_1202 = "1202";//实名认证未通过
+	//13开头 代表被运营选中
+	public static final String JPUSH_TAG_COUNT_1301 = "1301";//实名认证未通过
+	public static final String JPUSH_TAG_COUNT_1302 = "1302";//被选为达人
+	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
+	//14开头 好友对话  前端推送
+//	public static final String JPUSH_TAG_COUNT_1401 = "1401";
+	//15 龙榜消息
+	public static final String JPUSH_TAG_COUNT_1501 = "1501";//榜主@好友上榜
+	public static final String JPUSH_TAG_COUNT_1502 = "1502";//龙榜获奖
+	public static final String JPUSH_TAG_COUNT_1503 = "1503";//创建的榜单通过审核
+	/**---------------自定义消息--设置title为空即可------------------**/
+	//100开始 10001
 
 	/****** JPUSH 消息的tag end ******/
+
 
 	/** 操作类型 **/
 	public enum OperationType{

@@ -42,6 +42,7 @@ public class GroupController {
         if(mainGroupUserId == null || (StringUtils.isNotEmpty(groupName) && groupName.length() > 40)){
             return baseResp.fail("参数错误");
         }
+
         String[] userIdss = null;
         if(StringUtils.isNotEmpty(userIds)){
             userIdss = userIds.split(",");
