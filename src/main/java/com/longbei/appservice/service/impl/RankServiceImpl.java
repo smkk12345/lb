@@ -104,6 +104,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private CommentMongoService commentMongoService;
     @Autowired
     private ImproveService improveService;
+    @Autowired
+    private FriendService friendService;
 
     /**
      *  @author luye
@@ -506,7 +508,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<Rank> ranks = rankMapper.selectRankList(map);
             int totalCount = 0;
             if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
-                totalCount = rankMapper.selectRankListCount(map);
+                 totalCount = rankMapper.selectRankListCount(map);
             }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
@@ -515,6 +517,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                     if (Constant.RANK_TYEP_APP.equals(rank1.getRanktype())){
                         rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
+                    }
+                    //初始化榜主名片
+                    if(StringUtils.isNotEmpty(rankTitle) && rank1.getRankcardid() != null){
+                        RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
+                        rank1.setRankCard(rankCard);
                     }
                 }
             }
@@ -1700,17 +1707,41 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 logger.error("query award null awardId:{}",rankMember.getAwardid());
                 return baseResp.fail("系统异常");
             }
+            RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
+            if(rankAcceptAward == null){
+                logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
+                return baseResp.fail("系统异常");
+            }
+
             Map<String,Object> rankResultMap = new HashMap<String,Object>();
             rankResultMap.put("ranktitle",rank.getRanktitle());
             rankResultMap.put("ptype",rank.getPtype());
             resultMap.put("rank",rankResultMap);
-            //已领奖
-            if(rankMember.getAcceptaward() != null && !"0".equals(rankMember.getAcceptaward())){
-                RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
-                if(rankAcceptAward == null){
-                    logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
-                    return baseResp.fail("系统异常");
+
+            Integer acceptAwardStatus = Integer.parseInt(rankMember.getAcceptaward());
+            String explain = "";//前台显示的说明文案
+            if(award.getAwardClassify().getClassifytype() == 0){//进步币
+                explain = "进步币可在\"我的钱包\"中查看";
+            }else if(award.getAwardClassify().getClassifytype() == 1){//红包
+                if(acceptAwardStatus == 1){//0 未领奖 1 领奖 2 发货 3签收
+                    explain = "添加龙杯小编微信:15816987854\n发送你的领奖码给小编,领取微信红包";
+                }else{
+                    explain = "你已领奖成功";
                 }
+            }else if(award.getAwardClassify().getClassifytype() == 3){//实物
+                if(acceptAwardStatus == 0){//0 未领奖 1 领奖 2 发货 3签收
+                    explain = "恭喜你获得了"+rankAcceptAward.getAwardnickname();
+                }else if(acceptAwardStatus == 1){
+                    explain = "奖品会在20个工作日内发放,\n记得领取哦";
+                }else if(acceptAwardStatus == 2){
+                    explain = "奖品已经发放,正在飞奔到你的手中";
+                }else if(acceptAwardStatus == 3){
+                    explain = "你已领奖成功";
+                }
+            }
+
+            //已领奖
+            if(rankMember.getAcceptaward() != null && acceptAwardStatus > 0){
                 Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
                 rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
                 if(award.getAwardClassify().getClassifytype() == 3){//实物
@@ -1727,21 +1758,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 return baseResp;
+            }else if(acceptAwardStatus == 0 && award.getAwardClassify().getClassifytype() == 3){
+                //获取用户的默认收货地址
+                UserAddress userAddress = this.userAddressService.selectDefaultAddressByUserid(userId);
+                if(userAddress != null){
+                    Map<String,Object> rankAcceptAwardMap = new HashMap<String,Object>();
+                    rankAcceptAwardMap.put("receiverid",rankAcceptAward.getId());
+                    rankAcceptAwardMap.put("userAddressId",userAddress.getId());
+                    rankAcceptAwardMap.put("reciverusername",userAddress.getReceiver());
+                    rankAcceptAwardMap.put("reciveruseraddr",userAddress.getRegion()+userAddress.getAddress());
+                    rankAcceptAwardMap.put("reciverusertel",userAddress.getMobile());
+                    rankAcceptAwardMap.put("reciverstatus",rankAcceptAward.getStatus());// 1 领奖 2 发货 3签收
+                    resultMap.put("rankAcceptAward",rankAcceptAwardMap);
+                }
             }
 
-            RankAcceptAward rankAcceptAward = new RankAcceptAward();
-            rankAcceptAward.setRankid(rankId);
-            rankAcceptAward.setUserid(userId);
+            RankAcceptAward newRankAcceptAward = new RankAcceptAward();
+            newRankAcceptAward.setRankid(rankId);
+            newRankAcceptAward.setUserid(userId);
             if(award.getAwardClassify().getClassifytype() < 3){//除实物以外的
-                rankAcceptAward.setAcceptdate(new Date());
-                rankAcceptAward.setStatus(1);
+                newRankAcceptAward.setAcceptdate(new Date());
+                newRankAcceptAward.setStatus(1);
             }
 
             if(award.getAwardClassify().getClassifytype() == 0){//进步币
                 //加进步币
                 BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
 
-                rankAcceptAward.setPublishawardtype("0");
+                newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
                     //更改用户的领奖状态
@@ -1752,11 +1796,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     int updateRow = this.rankMembersMapper.updateRank(parameterMap);
                     rankMember.setAcceptaward("1");
 
-                    rankAcceptAward.setStatus(3);
+                    newRankAcceptAward.setStatus(3);
                 }
             }
-            if(rankAcceptAward.getAcceptdate() != null){
-                BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(rankAcceptAward);
+            if(newRankAcceptAward.getAcceptdate() != null){
+                BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
             }
 
             resultMap.put("award",award);
@@ -1899,21 +1943,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> selectWinningRankAward() {
+    public BaseResp<Object> selectWinningRankAward(Long userid) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             List<RankMembers> winningRankAwardList = this.rankMembersMapper.selectWinningRankAward();
             if(winningRankAwardList != null && winningRankAwardList.size() > 0){
                 for(RankMembers rankMembers: winningRankAwardList){
-                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
-                    if(null == appUserMongoEntity){
-                        continue;
-                    }
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
                     map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
-                    map.put("nickname",appUserMongoEntity.getNickname());
+                    if(userid == null){
+                        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
+                        if(null == appUserMongoEntity){
+                            continue;
+                        }
+                        map.put("nickname",appUserMongoEntity.getNickname());
+                    }else{
+                        map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
+                    }
                     resultList.add(map);
                 }
             }
@@ -2362,7 +2410,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> rankAwardList(Integer startNum, Integer pageSize) {
+    public BaseResp<Object> rankAwardList(Long userId,Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
         try{
@@ -2380,7 +2428,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                     resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                     resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
-                    initAwardResultMap(resultMap,rank.getRankid());
+                    initAwardResultMap(resultMap,rank.getRankid(),userId);
                     resultList.add(resultMap);
                 }
                 baseResp.setData(resultList);
@@ -2411,7 +2459,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                 resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                 resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
-                initAwardResultMap(resultMap,rank.getRankid());
+                initAwardResultMap(resultMap,rank.getRankid(),null);
             }
             baseResp.setData(resultMap);
             baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
@@ -2423,20 +2471,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
-    private void initAwardResultMap(Map<String,Object> resultMap,Long rankid){
+    private void initAwardResultMap(Map<String,Object> resultMap,Long rankid,Long userId){
         List<RankAwardRelease> rankAwardList = this.rankMembersMapper.selectAwardMemberList(rankid);
 
         if(rankAwardList != null && rankAwardList.size() > 0){
             List<Map<String,Object>> awardList = new ArrayList<Map<String,Object>>();
             int rankAwardCount = 0;//整个榜单的获奖总数
             for(RankAwardRelease rankAwardRelease:rankAwardList){
-                Map<String,Object> awardMap = new HashMap<String,Object>();
-                AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
-                if(appUserMongoEntity != null){
-                    awardMap.put("nickname",appUserMongoEntity.getNickname());
-                }
                 if(StringUtils.isBlank(rankAwardRelease.getAwardid())){
                     continue;
+                }
+
+                Map<String,Object> awardMap = new HashMap<String,Object>();
+                if(userId == null){
+                    AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankAwardRelease.getUserid()+"");
+                    if(appUserMongoEntity != null){
+                        awardMap.put("nickname",appUserMongoEntity.getNickname());
+                    }
+                }else{
+                    //查看是否是好友
+                    awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
                 }
                 Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAwardRelease.getAwardid()));
                 if(null != award){

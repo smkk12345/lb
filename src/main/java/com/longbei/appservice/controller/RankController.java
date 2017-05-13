@@ -315,12 +315,13 @@ public class RankController {
     /**
      * 查询获奖公示
      * @url http://ip:port/app_service/rank/rankAwardList
+     * @param userid 当前登录用户id 如果未登录,可不传该参数
      * @param startNum 开始下标
      * @param pageSize 结束下标
      * @return
      */
     @RequestMapping(value="rankAwardList")
-    public BaseResp<Object> rankAwardList(Integer startNum,Integer pageSize){
+    public BaseResp<Object> rankAwardList(Long userid,Integer startNum,Integer pageSize){
         logger.info("startNum={},pageSize={}",startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(startNum == null || startNum < 0){
@@ -329,7 +330,7 @@ public class RankController {
         if(null == pageSize){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        baseResp = this.rankService.rankAwardList(startNum,pageSize);
+        baseResp = this.rankService.rankAwardList(userid,startNum,pageSize);
         return baseResp;
     }
 
@@ -488,11 +489,12 @@ public class RankController {
     /**
      * 查询中奖的用户和奖项
      * @url http://ip:port/app_service/rank/selectWinningRankAward
+     * @param userid 当前登录用户的id 如果用户未登录,该参数可不传
      * @return
      */
     @RequestMapping(value="selectWinningRankAward")
-    public BaseResp<Object> selectWinningRankAward(){
-        BaseResp<Object> baseResp = this.rankService.selectWinningRankAward();
+    public BaseResp<Object> selectWinningRankAward(Long userid){
+        BaseResp<Object> baseResp = this.rankService.selectWinningRankAward(userid);
         return baseResp;
     }
 

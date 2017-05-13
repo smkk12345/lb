@@ -64,7 +64,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.fail("参数错误");
             }
             if(needConfirm == null){
-                needConfirm = true;
+                needConfirm = false;
             }
             //先调用融云创建群,融云创建群成功后,再在数据库创建数据
             Long groupId = null;
@@ -90,8 +90,27 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             String userIdString = sb.toString().substring(1);
             String[] newUserIds = userIdString.split(",");
 
+            //获取群主信息
+            AppUserMongoEntity mainGroupUser = this.userMongoDao.getAppUser(mainGroupUserId);
+            if(mainGroupUser == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+
             if(StringUtils.isEmpty(groupName)){
-                groupName = "群组"+groupId;
+                groupName = "";
+                groupName += mainGroupUser.getNickname();
+                if(userIds.length > 0){
+                    String tempUserId = userIds[0].trim();
+                    if(userIds.length > 1 && tempUserId.equals(mainGroupUserId)){
+                        tempUserId = userIds[1].trim();
+                    }else if(tempUserId.equals(mainGroupUserId)){
+                        tempUserId = null;
+                    }
+                    if(StringUtils.isNotEmpty(tempUserId)){
+                        AppUserMongoEntity tempUser = this.userMongoDao.getAppUser(tempUserId);
+                        groupName += "、"+tempUser.getNickname();
+                    }
+                }
             }
 
             //1.调用融云 创建群组
@@ -144,7 +163,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             int insertGroupMemebersRow = snsGroupMembersMapper.batchInsertGroupMembers(map);
             if(insertGroupMemebersRow > 0){
                 //通知群成员 发送群组通知消息,通知创建了群组
-                AppUserMongoEntity mainGroupUser = this.userMongoDao.getAppUser(mainGroupUserId);
                 this.iRongYunService.noticeCreateGroup(mainGroupUserId,mainGroupUser.getNickname(),groupId+"",groupName);
 
                 Map<String,Object> parameterMap = new HashMap<String,Object>();
