@@ -2,11 +2,15 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.ArticleBusinessMapper;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.entity.Article;
 import com.longbei.appservice.entity.ArticleBusiness;
+import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.service.ArticleService;
+import com.longbei.appservice.service.RankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,9 @@ public class ArticleServiceImpl implements ArticleService{
     @Autowired
     private ArticleBusinessMapper articleBusinessMapper;
 
+    @Autowired
+    private RankService rankService;
+
     @Override
     public boolean insertArticle(Article article) {
         try {
@@ -48,12 +55,55 @@ public class ArticleServiceImpl implements ArticleService{
         return false;
     }
 
+
+
     @Override
     public BaseResp<Article> getArticle(String articleid) {
         BaseResp<Article> baseResp = new BaseResp<Article>();
         Article article = new Article();
         try {
             article = articleMapper.selectByPrimaryKey(Integer.parseInt(articleid));
+//            List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
+//            for (ArticleBusiness articleBusiness : articleBusinesses){
+//                Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());
+//                articleBusiness.setRank(rank);
+//            }
+//            article.setArticleBusinesses(articleBusinesses);
+            baseResp = BaseResp.ok();
+            baseResp.setData(article);
+        } catch (NumberFormatException e) {
+            logger.error("select article articleid={} is error:{}",articleid,e);
+        }
+        return baseResp;
+    }
+
+
+
+    @Override
+    public BaseResp<Article> getArticleH5(String articleid) {
+        BaseResp<Article> baseResp = new BaseResp<Article>();
+        Article article = new Article();
+        try {
+            article = articleMapper.selectByPrimaryKey(Integer.parseInt(articleid));
+            List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
+            for (ArticleBusiness articleBusiness : articleBusinesses){
+                Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());
+                BaseResp<List<RankAwardRelease>> baseResp1 = rankService.selectRankAward(rank.getRankid());
+                if (ResultUtil.isSuccess(baseResp1)){
+                    List<RankAwardRelease> rankAwardRelease = baseResp1.getData();
+                    List<RankAwardRelease> rkaward = new ArrayList<>();
+                    for (RankAwardRelease rankAwardRelease1 : rankAwardRelease){
+                        if (rankAwardRelease1.getAwardlevel() == 1){
+                            rkaward.add(rankAwardRelease1);
+                            break;
+                        }
+                    }
+                    rank.setRankAwards(rkaward);
+                }
+                articleBusiness.setRank(rank);
+            }
+            article.setArticleBusinesses(articleBusinesses);
+            baseResp = BaseResp.ok();
             baseResp.setData(article);
         } catch (NumberFormatException e) {
             logger.error("select article articleid={} is error:{}",articleid,e);

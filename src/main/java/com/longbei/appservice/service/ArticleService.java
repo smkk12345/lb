@@ -31,6 +31,14 @@ public interface ArticleService {
 
 
     /**
+     * 获取文章
+     * @param articleid
+     * @return
+     */
+    BaseResp<Article> getArticleH5(String articleid);
+
+
+    /**
      * 更新文章
      * @param article
      * @return

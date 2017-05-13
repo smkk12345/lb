@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class Article {
     /**
@@ -46,10 +47,26 @@ public class Article {
      */
     private Long pageview;
 
+
+    /**
+     * 显示
+     */
+    private List<ArticleBusiness> articleBusinesses;
+
+
+
     /**
      * 
      */
     private String content;
+
+    public List<ArticleBusiness> getArticleBusinesses() {
+        return articleBusinesses;
+    }
+
+    public void setArticleBusinesses(List<ArticleBusiness> articleBusinesses) {
+        this.articleBusinesses = articleBusinesses;
+    }
 
     public Integer getId() {
         return id;
