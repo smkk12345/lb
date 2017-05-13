@@ -909,7 +909,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
         		"", gType,
-        		snsId+"", remark, "2", msgType, 0);
+        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0);
         if(insertResult.getCode() == 0){
             return true;
         }
@@ -1040,12 +1040,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
     					"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
             }
             if("2".equals(rank.getSourcetype())){
             	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
             			"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", 0);
+    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
             }
 
             //2.更改用户在该榜单中发布的进步的状态
@@ -1105,12 +1105,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if("1".equals(rankMembers.getIsfashionman())){
                     String remark = "你被选为榜单达人";
                     userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "选为榜单达人",0);
                 }
                 if ("0".equals(rankMembers.getIsfashionman())){
                     String remark = "你被取消榜单达人";
                     userMsgService.insertMsg(String.valueOf(rankMembers.getUserid()),"1",null,null,
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45",0);
+                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "取消榜单达人",0);
                 }
                 return BaseResp.ok();
             }
@@ -1200,6 +1200,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setCreatetime(new Date());
                 userMsg.setIsdel("0");
                 userMsg.setIsread("0");
+                userMsg.setTitle("加入请求审批结果");
                 boolean insertUserMsg = this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
             }
             if(flag){
@@ -1372,17 +1373,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
-            }else{
-                if("1".equals(rank.getIsfinish())){
-                    String sn = rank.getMinimprovenum();
-                    if(StringUtils.isBlank(sn)){
-                    }else{
-                        int n = (Integer.parseInt(sn) - rankMembers.getIcount());
-                        if(n>0){
-                            rankMembers.setCheckresult("根据榜规则，至少还需要发"+n+"条微进步！");
-                        }
+            }else if("1".equals(rank.getIsfinish())){
+                String sn = rank.getMinimprovenum();
+                if(StringUtils.isBlank(sn)){
+                }else{
+                    int n = (Integer.parseInt(sn) - rankMembers.getIcount());
+                    if(n>0){
+                        rankMembers.setCheckresult("根据榜规则，至少还需要发"+n+"条微进步！");
                     }
                 }
+            }else if(!"0".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
+                rankMembers.setIswinning("4");
             }
 
             baseResp.setData(rankMembers);
@@ -1475,6 +1476,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         userMsg.setUpdatetime(new Date());
                         userMsg.setIsdel("0");
                         userMsg.setIsread("0");
+                        userMsg.setTitle("龙榜公告更新");
                         userMsgService.batchInsertUserMsg(userIdList,userMsg);
                     }catch (Exception e){
                         logger.error("update rank info notice user error msg:{}",e);
@@ -1533,7 +1535,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> rankMemberSort(Long rankId, Integer sortType, Integer startNum, Integer pageSize) {
+    public BaseResp<Object> rankMemberSort(Long userId,Long rankId, Integer sortType, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
@@ -1547,10 +1549,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Set<String> userIdList  = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rankId,startNum,endNum);
                 if(userIdList != null && userIdList.size() > 0){
                     int i = 0;
-                    for(String userId:userIdList){
-                        RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(userId));
+                    for(String tempUserId:userIdList){
+                        RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
                         rankMembers.setSortnum(startNum+i+1);
-                        rankMembers.setAppUserMongoEntity(userMongoDao.getAppUser(userId+""));
+                        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
+                        if(userId != null){
+                            appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(tempUserId)));
+                        }
+                        rankMembers.setAppUserMongoEntity(appUserMongoEntity);
                         userList.add(rankMembers);
                         i++;
                     }
@@ -1632,41 +1638,45 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rankMembersList != null && rankMembersList.size() > 0){
                 for (RankMembers rankMembers : rankMembersList) {
                     AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMembers.getUserid()+"");
-                    if(appUserMongoEntity != null){
-                        Map<String,Object> map = new HashMap<String,Object>();
-                        map.put("usernickname",appUserMongoEntity.getNickname());
-                        map.put("userid",appUserMongoEntity.getUserid());
-                        map.put("avatar",appUserMongoEntity.getAvatar());
-
-                        if(userId == null){
-                            map.put("isfans","0");
-                            resultList.add(map);
-                            continue;
-                        }
-
-
-                        if(userId.equals(rankMembers.getUserid())){
-                            map.put("isfans","1");
-                            resultList.add(map);
-                            continue;
-                        }
-                        //判断是否是好友
-                        if(!Constant.VISITOR_UID.equals(userId+"")){
-                            SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
-                            if(snsFans != null){
-                                map.put("isfans","1");
-                            }else{
-                                map.put("isfans","0");
-                            }
-                            SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
-                            if(snsFriends != null){
-                                map.put("isfriend","1");
-                            }else{
-                                map.put("isfriend","0");
-                            }
-                        }
-                        resultList.add(map);
+                    if(appUserMongoEntity == null){
+                        continue;
                     }
+                    Map<String,Object> map = new HashMap<String,Object>();
+                    map.put("userid",appUserMongoEntity.getUserid());
+                    map.put("avatar",appUserMongoEntity.getAvatar());
+
+                    if(userId == null){
+                        map.put("usernickname",appUserMongoEntity.getNickname());
+                    }else{
+                        map.put("usernickname",this.friendService.getNickName(userId,rankMembers.getUserid()));
+                    }
+                    if(userId == null){
+                        map.put("isfans","0");
+                        resultList.add(map);
+                        continue;
+                    }
+                    if(userId.longValue() == rankMembers.getUserid().longValue()){
+                        map.put("isfans","1");
+                        resultList.add(map);
+                        continue;
+                    }
+                    //判断是否是好友
+                    if(!Constant.VISITOR_UID.equals(userId+"")){
+                        SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
+                        if(snsFans != null){
+                            map.put("isfans","1");
+                        }else{
+                            map.put("isfans","0");
+                        }
+                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                        if(snsFriends != null){
+                            map.put("isfriend","1");
+                        }else{
+                            map.put("isfriend","0");
+                        }
+                    }
+
+                    resultList.add(map);
                 }
             }
             baseResp.setData(resultList);
@@ -2013,6 +2023,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userMsg.setUpdatetime(new Date());
                 userMsg.setIsdel("0");
                 userMsg.setIsread("0");
+                userMsg.setTitle("龙榜关注开榜通知");
                 this.userMsgService.batchInsertUserMsg(userIdList,userMsg);
             return baseResp.ok();
         }catch(Exception e){
@@ -2377,6 +2388,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         userMsg.setUpdatetime(new Date());
 //        userMsg.setSnsid(rank.getRankid());
         userMsg.setRemark(remark);
+        userMsg.setTitle("加入的龙榜获奖通知");
         return userMsg;
     }
 
@@ -2402,6 +2414,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //        userMsg.setSnsid(rank.getRankid());
         userMsg.setGtypeid(rank.getRankid());
         userMsg.setRemark(remark);
+        userMsg.setTitle("加入的龙榜结榜未获奖");
         return userMsg;
     }
 
@@ -2753,7 +2766,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("commentCount","0");
             }
 
-
+            //计算入榜截止时间
+            Date endJoinTime = rank.getEndtime();
+            if(StringUtils.isNotEmpty(rank.getJoinlastday()) && !"0".equals(rank.getJoinlastday())){
+                endJoinTime = DateUtils.getBeforeDateTime(rank.getEndtime(),Integer.parseInt(rank.getJoinlastday()));
+            }
+            rank.setEndjointime(endJoinTime);
 
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);
@@ -3140,7 +3158,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "45", 0);
+            			rankid, remark, "0", "45", "榜中删除成员进步", 0);
             }
             if ("2".equals(status)) {
                 //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
@@ -3160,7 +3178,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "41", 0);
+            			rankid, remark, "0", "41", "榜中进步下榜", 0);
                 
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

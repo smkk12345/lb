@@ -244,7 +244,7 @@ public class OrderServiceImpl implements OrderService {
 			  				//mtype 0 系统消息
 //			  				insertMsg(userid, "40", productOrders.getOrderid(), "订单已取消", "7", "0");
 			  				userMsgService.insertMsg("0", userid + "", "", "7", productOrders.getOrderid(), 
-									"订单已取消", "0", "40", 0);
+									"订单已取消", "0", "40", "订单已取消", 0);
 	  					}
 	  				}
 	  				
@@ -448,7 +448,7 @@ public class OrderServiceImpl implements OrderService {
 					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 	  				//mtype 0 系统消息
 					userMsgService.insertMsg("0", userid + "", "", "7", productOrders.getOrderid(), 
-							"订单已发货", "0", "24", 0);
+							"订单已发货", "0", "24", "订单已发货", 0);
 //	  				insertMsg(userid, "24", productOrders.getOrderid(), "订单已发货", "7", "0");
 				}
 			}
@@ -543,7 +543,7 @@ public class OrderServiceImpl implements OrderService {
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, productOrders.getUserid(), "", "7", 
 						productOrders.getOrderid(), "您的订单:"+productOrders.getOrderid()+",由于长时间未确认收货,已由系统自动确认收货!", 
-						"0", "25", 0);
+						"0", "25", "系统自动确认收货", 0);
 			}
 
 			//修改订单状态

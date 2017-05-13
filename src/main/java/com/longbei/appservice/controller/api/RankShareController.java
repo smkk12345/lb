@@ -110,13 +110,14 @@ public class RankShareController {
     /**
      * 获取整个榜单的排名
      * @url http://ip:port/app_service/api/rankShare/rankMemberSort
+     * @param userid 当前登录用户id
      * @param rankId 榜单id
      * @param sortType 排序的方式 0:综合排序 1:赞 2:花
      * @return
      */
     @RequestMapping(value="rankMemberSort")
     @ResponseBody
-    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType){
+    public BaseResp<Object> rankMemberSort(Long userid,Long rankId,Integer sortType){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -126,7 +127,7 @@ public class RankShareController {
         }
         Integer startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
+        baseResp = this.rankService.rankMemberSort(userid,rankId,sortType,startNum,pageSize);
         return baseResp;
     }
 
