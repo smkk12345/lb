@@ -189,7 +189,7 @@ public class ImproveServiceImpl implements ImproveService{
                     	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
             			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                     	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), improve.getImpid().toString(), 
-                    			"13", businessid, "批复作业", "2", "12", 0);
+                    			"13", businessid, "批复作业", "2", "12", "教室作业批复", 0);
 //                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
                     }
                 }
@@ -1443,7 +1443,7 @@ public class ImproveServiceImpl implements ImproveService{
             //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
             userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
-            		Constant.MSG_LIKE_MODEL, "1", "2", 0);
+            		Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0);
 //            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
@@ -1661,7 +1661,7 @@ public class ImproveServiceImpl implements ImproveService{
                 String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
                 //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", 0);
+                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0);
                 //用户龙分变化
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
@@ -1759,6 +1759,42 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_49,Constant.RTNINFO_SYS_49);
     }
 
+    /**
+     *  @author luye
+     *  @desp
+     *  @create 2017/3/8 下午3:59
+     *  @update 2017/3/8 下午3:59
+     */
+    @Override
+    public BaseResp<List<ImpAllDetail>> selectImproveLFDListByUserid(String userid, String impid, String listtype,
+                                                             int pagesize, Date lastdate) {
+
+        BaseResp<List<ImpAllDetail>>  baseResp = new BaseResp<>();
+        try {
+            List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
+            for (ImpAllDetail impAllDetail : impAllDetails) {
+            	//获取好友昵称
+    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
+    			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid()));
+    			if(null != appUserMongoEntity){
+    				if(!StringUtils.isBlank(remark)){
+    					appUserMongoEntity.setNickname(remark);
+    				}
+    				impAllDetail.setAppUser(appUserMongoEntity);
+    			}else{
+    				impAllDetail.setAppUser(new AppUserMongoEntity());
+    			}
+//                impAllDetail.setAppUser(userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid())));
+            }
+            baseResp = BaseResp.ok();
+            baseResp.setData(impAllDetails);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("select improveLFDList impid={},listtype={}",impid,listtype,e);
+        }
+        return baseResp;
+    }
+    
     /**
      *  @author luye
      *  @desp
@@ -2683,7 +2719,7 @@ public class ImproveServiceImpl implements ImproveService{
             String remark = "您的进步被设置为推荐进步";
             userMsgService.insertMsg
                     (String.valueOf(improve.getUserid()),"1",String.valueOf(impid),
-                            businesstype,String.valueOf(improve.getBusinessid()),remark,"0","31",0);
+                            businesstype,String.valueOf(improve.getBusinessid()),remark,"0","31", "进步被推荐",0);
         }
     }
 
@@ -2754,7 +2790,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //清除数据
                 clearDirtyData(improve);
                 //发送消息
-                userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, "榜中下榜", "0", "41", 0);
+                userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, "榜中下榜", "0", "41", "下榜", 0);
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {

@@ -27,7 +27,7 @@ public interface UserMsgService {
 	 */
 	BaseResp<Object> insertMsg(String userid, String friendid, String impid, 
 			String businesstype, String businessid, String remark, 
-			String mtype, String msgtype, int num);
+			String mtype, String msgtype, String title, int num);
 
 	/**
 	 * @author yinxc

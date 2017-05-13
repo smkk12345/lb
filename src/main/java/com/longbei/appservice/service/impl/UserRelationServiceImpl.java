@@ -62,6 +62,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private UserRelationChangeDao userRelationChangeDao;
 	@Autowired
 	private FriendMongoDao friendMongoDao;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	/**
 	* @Title: selectRemark 
@@ -266,7 +268,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * @param ftype 0:查询关注列表   1：粉丝列表
 	 */
 	@Override
-	public BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum) {
+	public BaseResp<List<SnsFans>> selectFansListByUserId(long userid, long friendid, String ftype, Integer startNum, Integer endNum) {
 		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
 		try {
 			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
@@ -274,7 +276,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 				for (SnsFans snsFans : list) {
 					if("1".equals(ftype)){
 						//1：粉丝列表
-						initMsgUserInfoByUserid(snsFans);
+						initMsgUserInfoByUserid(snsFans, friendid);
 						//判断是否已经关注
 						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getUserid());
 						if(null != fans){
@@ -282,7 +284,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 							snsFans.setIsfocus("1");
 						}
 					}else{
-						initMsgUserInfoByLikeuserid(snsFans);
+						initMsgUserInfoByLikeuserid(snsFans, friendid);
 						//判断是否已经是粉丝
 						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getLikeuserid());
 						if(null != fans){
@@ -540,21 +542,43 @@ public class UserRelationServiceImpl implements UserRelationService {
      * @param snsFans
      * @author:luye
      */
-    private void initMsgUserInfoByLikeuserid(SnsFans snsFans){
-        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
-        snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+    private void initMsgUserInfoByLikeuserid(SnsFans snsFans, long userid){
+    	//获取好友昵称
+		String remark = userRelationService.selectRemark(userid, snsFans.getLikeuserid());
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
+		if(null != appUserMongoEntity){
+			if(!StringUtils.isBlank(remark)){
+				appUserMongoEntity.setNickname(remark);
+			}
+			snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+		}else{
+			snsFans.setAppUserMongoEntityLikeuserid(new AppUserMongoEntity());
+		}
+//        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
+//        snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
     }
 
-	private void initMsgUserInfoByUserid(SnsFans snsFans){
+	private void initMsgUserInfoByUserid(SnsFans snsFans,long userid){
+		//获取好友昵称
+		String remark = userRelationService.selectRemark(userid, snsFans.getUserid());
 		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
-		snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+		if(null != appUserMongoEntity){
+			if(!StringUtils.isBlank(remark)){
+				appUserMongoEntity.setNickname(remark);
+			}
+			snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
+		}else{
+			snsFans.setAppUserMongoEntityLikeuserid(new AppUserMongoEntity());
+		}
+//		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
+//		snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
 	}
 
 
 	private void insertAddFansMsg(Long userId,Long likeUserId){
 		String remark = "关注消息";
 		userMsgService.insertMsg(String.valueOf(userId),String.valueOf(likeUserId),
-				null,null,null,remark,"1","5",0);
+				null,null,null,remark,"1","5", "关注",0);
 
 	}
 

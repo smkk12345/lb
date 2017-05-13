@@ -77,7 +77,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
 						comment.getImpid(), comment.getBusinesstype(), 
-						comment.getBusinessid(), comment.getContent(), "1", "1", 0);
+						comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0);
 //				insertMsg(comment);
 			}
 

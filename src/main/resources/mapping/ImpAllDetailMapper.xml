@@ -20,7 +20,7 @@
     select 
     <include refid="Base_Column_List" />
     from imp_like_detail
-    where id = #{id,jdbcType=INTEGER}ßßßßßßßßßßßßßß
+    where id = #{id}
   </select>
 
   <select id="selectList"  resultMap="BaseResultMap">
