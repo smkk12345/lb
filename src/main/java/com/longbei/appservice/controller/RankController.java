@@ -9,6 +9,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.RankService;
@@ -225,9 +226,9 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="selectRankAward")
-    public BaseResp<Object> selectRankAward(Long rankId){
+    public BaseResp<List<RankAwardRelease>> selectRankAward(Long rankId){
         logger.info("rankId={}",rankId);
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+        BaseResp<List<RankAwardRelease>> baseResp = new BaseResp<List<RankAwardRelease>>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

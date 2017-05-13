@@ -623,8 +623,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> selectRankAward(Long rankId) {
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<List<RankAwardRelease>> selectRankAward(Long rankId) {
+        BaseResp<List<RankAwardRelease>> baseResp = new BaseResp<List<RankAwardRelease>>();
         try{
             List<RankAwardRelease> rankAwardList = selectRankAwardByRankidRelease(rankId+"");
             baseResp.setData(rankAwardList);
@@ -1466,7 +1466,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }
                         UserMsg userMsg = new UserMsg();
                         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
-                        userMsg.setMtype("0");//系统消息
+                        userMsg.setMtype("2");//系统消息
                         userMsg.setMsgtype("42");
                         userMsg.setSnsid(rank.getRankid());
                         userMsg.setGtypeid(rank.getRankid());

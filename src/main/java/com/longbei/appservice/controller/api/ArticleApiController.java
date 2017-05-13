@@ -67,6 +67,42 @@ public class ArticleApiController {
         return baseResp;
     }
 
+
+
+    @RequestMapping(value = "getinfo/{articleid}")
+    public BaseResp<Article> getArticleH5(@PathVariable("articleid") String articleid){
+        BaseResp<Article> baseResp = new BaseResp<>();
+        if (StringUtils.isEmpty(articleid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = articleService.getArticleH5(articleid);
+        } catch (NumberFormatException e) {
+            logger.error("get article  is error:{}",e);
+        }
+        return baseResp;
+    }
+
+
+
+
+
+
+
+//    @RequestMapping(value = "getforh5/{articleid}")
+//    public String getArticleH5(@PathVariable("articleid") String articleid,String callpack){
+//        BaseResp<Article> baseResp = new BaseResp<>();
+//        if (StringUtils.isEmpty(articleid)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//        }
+//        try {
+//            baseResp = articleService.getArticle(articleid);
+//        } catch (NumberFormatException e) {
+//            logger.error("get article  is error:{}",e);
+//        }
+//        return baseResp;
+//    }
+
     @RequestMapping(value = "add")
     public BaseResp addArticle(@RequestBody Article article){
         BaseResp baseResp = new BaseResp<>();
