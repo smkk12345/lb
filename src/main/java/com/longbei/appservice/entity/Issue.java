@@ -18,6 +18,7 @@ public class Issue  implements Serializable {
     private String ishot;//是否热点 0普通文章 1热点
     private String createtime;//创建时间
     private String updatetime;//修改时间
+    private String sortnum;//排序
 
     public Integer getId() {
         return id;
@@ -73,5 +74,13 @@ public class Issue  implements Serializable {
 
     public String getCreatetime() {
         return createtime;
+    }
+
+    public String getSortnum() {
+        return sortnum;
+    }
+
+    public void setSortnum(String sortnum) {
+        this.sortnum = sortnum;
     }
 }

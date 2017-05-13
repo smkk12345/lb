@@ -113,4 +113,18 @@ public interface PageService {
      */
     BaseResp<String> selectPublishBg();
 
+    /**
+     * 保存或更新注册协议
+     * @param regPro
+     * @return
+     */
+    BaseResp<Object> saveOrUpdateRegisterProtocol(String regPro);
+
+    /**
+     * 获取注册协议
+     * @return
+     */
+    BaseResp<String> selectRegisterProtocol();
+
+
 }

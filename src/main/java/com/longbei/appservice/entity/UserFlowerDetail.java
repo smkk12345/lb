@@ -23,7 +23,8 @@ public class UserFlowerDetail {
 
     private String ftype;//0:花朵;1:花束;2:花篮
 
-    private String origin;//origin  0:龙币兑换       1:赠与;  2:进步币兑换   3:被赠与
+    private String origin;//origin  0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+                            //4:赠与---进步币兑换    5:被赠与---进步币兑换
 
     private Date drawdate;//获得时间
     

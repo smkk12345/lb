@@ -360,6 +360,9 @@ public class Constant {
 	public static final String RANK_TYEP_C = "0";
 
 	public static final String PUBLISH_BG_KEY = "publishbg";
+
+	public static final String REGISTER_PROTOCOL_KEY = "regprotocol";
+
 	/**
 	 * 进步时间线类型
 	 */
