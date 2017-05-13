@@ -121,6 +121,7 @@ public class RankController {
     /**
      * 获取整个榜单的排名
      * @url http://ip:port/app_service/rank/rankMemberSort
+     * @param userid 当前登录用户的id 如果当前用户未登录,可不传该参数
      * @param rankId 榜单id
      * @param sortType 排序的方式 0:综合排序 1:赞 2:花
      * @param startNum
@@ -128,7 +129,7 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="rankMemberSort")
-    public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer pageSize){
+    public BaseResp<Object> rankMemberSort(Long userid,Long rankId,Integer sortType,Integer startNum,Integer pageSize){
         logger.info("rankId={},sortType={},startNum={},pageSize={}",rankId,sortType,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
@@ -143,7 +144,7 @@ public class RankController {
         if(pageSize == null){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
+        baseResp = this.rankService.rankMemberSort(userid,rankId,sortType,startNum,pageSize);
         return baseResp;
     }
 

@@ -392,8 +392,8 @@ public class RankApiController {
     /**
      * 查询榜单达人列表
      * @param rankId
-     * @param pageno
-     * @param pagesize
+     * @param pageNo
+     * @param pageSize
      * @return
      */
     @ResponseBody
@@ -830,7 +830,7 @@ public class RankApiController {
         if(endNum != null && endNum > startNum){
             pageSize = endNum - startNum;
         }
-        baseResp = this.rankService.rankMemberSort(rankId,sortType,startNum,pageSize);
+        baseResp = this.rankService.rankMemberSort(null,rankId,sortType,startNum,pageSize);
         return baseResp;
     }
 

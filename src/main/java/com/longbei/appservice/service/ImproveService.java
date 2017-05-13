@@ -325,6 +325,8 @@ public interface ImproveService {
     BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow,String duration);
 
 
+    BaseResp<List<ImpAllDetail>> selectImproveLFDListByUserid(String userid, String impid, String listtype,int pagesize, Date lastdate);
+    
     BaseResp<List<ImpAllDetail>> selectImproveLFDList(String impid, String listtype,int pagesize, Date lastdate);
 
     /**

@@ -60,11 +60,11 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 						&& !"12".equals(comment.getBusinesstype())){
 					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
 							comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
-							commentLower.getContent(), "1", "1", 0);
+							commentLower.getContent(), "1", "1", "评论", 0);
 				}else{
 					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
 							"", comment.getBusinesstype(), comment.getBusinessid(), 
-							commentLower.getContent(), "1", "1", 0);
+							commentLower.getContent(), "1", "1", "评论", 0);
 				}
 				
 			}

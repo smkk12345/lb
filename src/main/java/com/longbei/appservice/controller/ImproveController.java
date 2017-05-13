@@ -770,7 +770,7 @@ public class ImproveController {
             }
         }
         try {
-            baseResp = improveService.selectImproveLFDList(impid, opttype,
+            baseResp = improveService.selectImproveLFDListByUserid(userid, impid, opttype,
                     Integer.parseInt(pageSize), tempLastDate);
 
         } catch (Exception e) {

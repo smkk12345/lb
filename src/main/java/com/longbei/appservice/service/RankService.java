@@ -308,7 +308,7 @@ public interface RankService extends BaseService{
      * @param pageSize 每页条数
      * @return
      */
-    BaseResp<Object> rankMemberSort(Long rankId, Integer sortType, Integer startNum, Integer pageSize);
+    BaseResp<Object> rankMemberSort(Long userId,Long rankId, Integer sortType, Integer startNum, Integer pageSize);
 
     /**
      * 获取榜中的达人

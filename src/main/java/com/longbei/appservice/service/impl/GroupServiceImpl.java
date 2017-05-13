@@ -522,6 +522,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setGtypeid(snsGroup.getGroupid());
             userMsg.setIsdel("0");
             userMsg.setIsread("0");
+            userMsg.setTitle("加入请求审批结果");
             userMsg.setCreatetime(new Date());
             userMsg.setUpdatetime(new Date());
             if(sendMessageUserList.size() > 0){

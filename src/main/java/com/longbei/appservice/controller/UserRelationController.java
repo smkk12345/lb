@@ -264,6 +264,7 @@ public class UserRelationController extends BaseController {
 	* @Title: http://ip:port/app_service/user/selectFansListByUserId
 	* @Description: 查询关注的人员列表：粉丝列表
 	* @param @param userid
+	 *@param @param friendid 当前访问者id
 	* @param ftype 0:查询关注列表   1：粉丝列表
 	* @param @param startNum pageSize
 	* @auther smkk
@@ -271,10 +272,11 @@ public class UserRelationController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
     @RequestMapping(value = "selectFansListByUserId")
-	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String ftype, Integer startNum, Integer pageSize){
+	public BaseResp<List<SnsFans>> selectFansListByUserId(String userid, String friendid, String ftype,
+														  Integer startNum, Integer pageSize){
 		logger.info("userid={},ftype={}startNum={},pageSize={}",userid,ftype,startNum,pageSize);
 		BaseResp<List<SnsFans>> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(userid, ftype)) {
+		if (StringUtils.hasBlankParams(userid, friendid, ftype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
 		try {
@@ -286,7 +288,7 @@ public class UserRelationController extends BaseController {
 			if(null != pageSize){
 				sSize = pageSize.intValue();
 			}
-			return userRelationService.selectFansListByUserId(Long.parseLong(userid), ftype, sNo, sSize);
+			return userRelationService.selectFansListByUserId(Long.parseLong(userid), Long.parseLong(friendid), ftype, sNo, sSize);
 		} catch (Exception e) {
 			logger.error("selectFansListByUserId error and msg={}",e);
 		}

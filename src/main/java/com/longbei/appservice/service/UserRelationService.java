@@ -115,7 +115,7 @@ public interface UserRelationService {
 	* @auther smkk
 	* @currentdate:2017年1月20日
 	 */
-	BaseResp<List<SnsFans>> selectFansListByUserId(long userid, String ftype, Integer startNum, Integer endNum);
+	BaseResp<List<SnsFans>> selectFansListByUserId(long userid, long friendid, String ftype, Integer startNum, Integer endNum);
 
 	/**
 	 * @author yinxc

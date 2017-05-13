@@ -255,7 +255,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
 		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
 		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
-		            			impComplaints.getBusinessid().toString(), remark, "0", "45", 0);
+		            			impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0);
 					}
 				}
 				if("2".equals(status)){
@@ -278,7 +278,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
 		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
 		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
-		            			impComplaints.getBusinessid().toString(), remark, "0", "41", 0);
+		            			impComplaints.getBusinessid().toString(), remark, "0", "41", "榜中进步下榜", 0);
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
