@@ -42,6 +42,8 @@ public class Rank {
 
     private Date eendtime;
 
+    private Date endjointime;//入榜截止时间
+
     private String areaname;//区域名字
 
     private String coordinate;//坐标
@@ -855,5 +857,23 @@ public class Rank {
 
     public void setWeight(Integer weight) {
         this.weight = weight;
+    }
+
+    /***
+     * 获取入榜截止时间
+     * @return
+     */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getEndjointime() {
+        return endjointime;
+    }
+
+    /**
+     * 设置入榜截止时间
+     * @param endjointime
+     */
+    public void setEndjointime(Date endjointime) {
+        this.endjointime = endjointime;
     }
 }

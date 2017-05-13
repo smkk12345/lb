@@ -164,7 +164,7 @@
             inner join rank_members on rank.rankid = rank_members.rankid
       where
         rank_members.awardid = rank_award_release.awardid
-        and rank_members.awardlevel = 2
+        and rank_members.awardlevel = 1
         and rank_members.iswinning = 1
         and rank.isfinish = 5
       order by rank.endtime DESC
