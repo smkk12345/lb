@@ -62,7 +62,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-            if(snsFriends != null){
+            if(snsFriends != null && snsFriends.getIsdel() == 0){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
             }
             AppUserMongoEntity senderUser = userMongoDao.getAppUser(userId+"");
@@ -116,7 +116,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 }
                 //校验用户现在是否还是好友
                 SnsFriends tempSnsFriend = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-                if(tempSnsFriend != null){
+                if(tempSnsFriend != null && tempSnsFriend.getIsdel() == 0){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
                 }
 
@@ -420,10 +420,10 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public boolean checkIsFriend(Long userId, Long friendId) {
         SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-        if(snsFriends == null){
-            return false;
+        if(snsFriends != null && snsFriends.getIsdel() == 0){
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -435,7 +435,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public String getNickName(Long userId, Long friendId) {
         SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId);
-        if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
+        if(snsFriends != null && snsFriends.getIsdel() == 0 && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
             return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
         }
         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId+"");
