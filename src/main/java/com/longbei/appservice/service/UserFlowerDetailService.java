@@ -42,7 +42,8 @@ public interface UserFlowerDetailService {
 	 * @author yinxc
 	 * 获取鲜花明细列表
 	 * 2017年2月23日
-	 * param origin： 来源  0:龙币兑换;  1:赠与;  2:进步币兑换      3:被赠与
+	 * param origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
+	 *						4:赠与---进步币兑换    5:被赠与---进步币兑换
 	 */
 	BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo, int pageSize);
 	
