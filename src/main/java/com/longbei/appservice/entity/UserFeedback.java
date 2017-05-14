@@ -35,6 +35,8 @@ public class UserFeedback {
 
     private AppUserMongoEntity appUserMongoEntity; //用户信息
 
+    private AppUserMongoEntity appUserMongoEntityLongbei; //龙杯用户信息
+
     private UserInfo userInfo;//用户信息
 
     public AppUserMongoEntity getAppUserMongoEntity() {
@@ -242,4 +244,12 @@ public class UserFeedback {
     public void setCheckoption(String checkoption) {
         this.checkoption = checkoption == null ? null : checkoption.trim();
     }
+
+	public AppUserMongoEntity getAppUserMongoEntityLongbei() {
+		return appUserMongoEntityLongbei;
+	}
+
+	public void setAppUserMongoEntityLongbei(AppUserMongoEntity appUserMongoEntityLongbei) {
+		this.appUserMongoEntityLongbei = appUserMongoEntityLongbei;
+	}
 }

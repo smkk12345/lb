@@ -595,6 +595,7 @@ public class AppUserController extends BaseController {
 
     /**
      * @param id
+     * @param userid 当前登录者id
      * @Title: getFeedback
      * @Description: 获取意见反馈信息
      * @auther yinxc
@@ -603,14 +604,14 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/getFeedback")
     @ResponseBody
-    public BaseResp<UserFeedback> getFeedback(@RequestParam("id") String id) {
+    public BaseResp<UserFeedback> getFeedback(String id, String userid) {
         logger.info("getFeedback id = {}", id);
         BaseResp<UserFeedback> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(id)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userFeedbackService.selectUserFeedback(id);
+            baseResp = userFeedbackService.selectUserFeedback(id, Long.parseLong(userid));
         } catch (Exception e) {
             logger.error("getFeedback id = {}", id, e);
         }
