@@ -64,9 +64,7 @@ public class UserFeedbackApiController {
             return baseResp;
         }
         try {
-            UserFeedback userFeedback = userFeedbackService.selectUserFeedback(id);
-            baseResp = BaseResp.ok();
-            baseResp.setData(userFeedback);
+        	baseResp = userFeedbackService.selectUserFeedback(id);
         } catch (Exception e) {
             logger.error("get userFeedback is error:{}",e);
         }

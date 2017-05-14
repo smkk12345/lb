@@ -15,7 +15,7 @@ public interface UserFeedbackMapper {
     int updateByPrimaryKey(UserFeedback record);
 
 
-    UserFeedback selectByPrimaryKey(Long id);
+    UserFeedback selectByPrimaryKey(@Param("id") long id);
 
     int updateByPrimaryKeySelective(UserFeedback record);
 
