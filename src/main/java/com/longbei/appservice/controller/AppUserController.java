@@ -588,9 +588,35 @@ public class AppUserController extends BaseController {
     		UserFeedback record = new UserFeedback(Long.parseLong(userid), content, photos, new Date(), "0");
     		baseResp = userFeedbackService.insertSelective(record);
         } catch (Exception e) {
-            logger.error("login error and msg={}", e);
+            logger.error("addFeedback userid={},content={},photos={}", userid, content,photos, e);
         }
     	return baseResp;
+    }
+
+    /**
+     * @param id
+     * @Title: getFeedback
+     * @Description: 获取意见反馈信息
+     * @auther yinxc
+     * @currentdate:2017年5月14日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/getFeedback")
+    @ResponseBody
+    public BaseResp<Object> getFeedback(@RequestParam("id") String id) {
+        logger.info("getFeedback id = {}", id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(id)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            UserFeedback record = userFeedbackService.selectUserFeedback(id);
+            baseResp.setData(record);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        } catch (Exception e) {
+            logger.error("getFeedback id = {}", id, e);
+        }
+        return baseResp;
     }
     
     /**
