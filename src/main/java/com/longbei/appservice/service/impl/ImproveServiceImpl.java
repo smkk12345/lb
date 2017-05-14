@@ -2229,10 +2229,12 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
-            Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-            improve.setLfdcount(count);
-            improve.setImproveLFDs(improveLFDs);
+            if(null != improve){
+                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+                improve.setLfdcount(count);
+                improve.setImproveLFDs(improveLFDs);
+            }
         }catch (Exception e){
             logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
         }

@@ -111,6 +111,13 @@ public class UserServiceImpl implements UserService {
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(lookid != userid){
+				//获取好友昵称
+				String remark = userRelationService.selectRemark(lookid, userid);
+				if(!StringUtils.isBlank(remark)){
+					userInfo.setNickname(remark);
+				}
+			}
 			//查询用户十全十美的信息列表
 			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
 			for (UserPlDetail userPlDetail : detailList) {
