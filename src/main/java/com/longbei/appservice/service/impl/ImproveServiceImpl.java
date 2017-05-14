@@ -179,6 +179,7 @@ public class ImproveServiceImpl implements ImproveService{
                 if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
                 }
+                improve.setIspublic(userGoal.getIspublic());
                 isok = insertImproveForGoal(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
