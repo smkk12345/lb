@@ -298,25 +298,26 @@ public class UserRelationController extends BaseController {
 	/**
 	 * 加载推荐的达人
 	 * @url http://ip:port/app_service/user/selectFashionManUser
-	 * @param userid
+	 * @param userid 
 	 * @param startNum 开始页码
 	 * @param pageSize 结束页码
      * @return
      */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectFashionManUser")
-	public BaseResp<Object> selectFashionManUser(Long userid,Integer startNum,Integer pageSize ){
+	public BaseResp<Object> selectFashionManUser(String userid, Integer startNum, Integer pageSize ){
 		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
-		if(userid == null){
-			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-		}
+		if (StringUtils.hasBlankParams(userid)) {
+  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+  		}
 		if(startNum == null || startNum < 0){
 			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
 		}
 		if(null == pageSize){
 			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
 		}
-		baseResp = this.userRelationService.selectFashionManUser(userid,startNum,pageSize);
+		baseResp = this.userRelationService.selectFashionManUser(Long.parseLong(userid), startNum, pageSize);
 		return baseResp;
 	}
 	//－－－－－－－－－－－sns_fans－end－－－－－－－－－－－－－-

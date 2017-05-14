@@ -141,7 +141,7 @@ public interface UserRelationService {
 	 * @param pageSize
      * @return
      */
-	BaseResp<Object> selectFashionManUser(Long userId,Integer startNum, Integer pageSize);
+	BaseResp<Object> selectFashionManUser(long userId,Integer startNum, Integer pageSize);
 
 	/**
 	 * 查询关注了likeuserId的用户列表
