@@ -603,16 +603,14 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/getFeedback")
     @ResponseBody
-    public BaseResp<Object> getFeedback(@RequestParam("id") String id) {
+    public BaseResp<UserFeedback> getFeedback(@RequestParam("id") String id) {
         logger.info("getFeedback id = {}", id);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<UserFeedback> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(id)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            UserFeedback record = userFeedbackService.selectUserFeedback(id);
-            baseResp.setData(record);
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            baseResp = userFeedbackService.selectUserFeedback(id);
         } catch (Exception e) {
             logger.error("getFeedback id = {}", id, e);
         }

@@ -32,7 +32,7 @@ public interface UserFeedbackService {
 	 * @param id
 	 * @return
 	 */
-	UserFeedback selectUserFeedback(String id);
+	BaseResp<UserFeedback> selectUserFeedback(String id);
 
 
 

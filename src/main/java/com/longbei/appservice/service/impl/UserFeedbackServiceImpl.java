@@ -100,14 +100,21 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 	}
 
 	@Override
-	public UserFeedback selectUserFeedback(String id) {
+	public BaseResp<UserFeedback> selectUserFeedback(String id) {
+		BaseResp<UserFeedback> baseResp = new BaseResp<>();
 		UserFeedback userFeedback = null;
 		try {
 			userFeedback = userFeedbackMapper.selectByPrimaryKey(Long.parseLong(id));
+			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+			appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+			appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+			userFeedback.setAppUserMongoEntity(appUserMongoEntity);
+			baseResp.setData(userFeedback);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (NumberFormatException e) {
 			logger.error("select userFeedback id={} is error:{}",id,e);
 		}
-		return userFeedback;
+		return baseResp;
 	}
 
 	
