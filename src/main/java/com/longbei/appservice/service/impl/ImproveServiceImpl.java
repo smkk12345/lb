@@ -2762,7 +2762,7 @@ public class ImproveServiceImpl implements ImproveService{
             String remark = "您的进步被设置为推荐进步";
             userMsgService.insertMsg
                     (String.valueOf(improve.getUserid()),"1",String.valueOf(impid),
-                            businesstype,String.valueOf(improve.getBusinessid()),remark,"0","31", "进步被推荐",0);
+                            "9",String.valueOf(improve.getBusinessid()),remark,"0","31", "进步被推荐",0);
         }
     }
 
