@@ -35,6 +35,8 @@ public class SnsGroup {
 
     private String[] avatarArray;//群组成员的头像数组
 
+    private String hasjoin;//0 未加入  1 已加入
+
     /**
      * 
      * @return id 
@@ -221,5 +223,13 @@ public class SnsGroup {
 
     public void setAvatarArray(String[] avatarArray) {
         this.avatarArray = avatarArray;
+    }
+
+    public void setHasjoin(String hasjoin) {
+        this.hasjoin = hasjoin;
+    }
+
+    public String getHasjoin() {
+        return hasjoin;
     }
 }

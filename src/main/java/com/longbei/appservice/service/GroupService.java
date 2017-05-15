@@ -100,10 +100,10 @@ public interface GroupService {
 
     /**
      * 查询群组
-     * @param keyword
+     * @param keyword userid
      * @return
      */
-    BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize);
+    BaseResp<Object> searchGroup(Long userid,String keyword,Integer startNum,Integer pageSize);
 
     /**
      * 更新用户群组的其他信息

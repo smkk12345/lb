@@ -584,7 +584,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private void insertAddFansMsg(Long userId,Long likeUserId){
 		String remark = "关注消息";
 		userMsgService.insertMsg(String.valueOf(userId),String.valueOf(likeUserId),
-				null,null,null,remark,"1","5", "关注",0);
+				null,"15",null,remark,"1","5", "关注",0);
 
 	}
 
