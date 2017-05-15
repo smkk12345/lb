@@ -613,7 +613,9 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            initImproveListOtherInfo(userid,improves);
+            if(!Constant.VISITOR_UID.equals(userid)){
+                initImproveListOtherInfo(userid,improves);
+            }
             initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();

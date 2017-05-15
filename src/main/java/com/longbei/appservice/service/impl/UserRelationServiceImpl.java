@@ -443,11 +443,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 				for(UserInfo userInfo:fashionManUserList){
 					//获取好友昵称
 					String remark = userRelationService.selectRemark(userId, userInfo.getUserid());
-					if(!StringUtils.isBlank(remark)){
-						userInfo.setNickname(remark);
-					}
 					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("usernickname",userInfo.getNickname());
+					if(!StringUtils.isBlank(remark)){
+						map.put("usernickname", remark);
+					}else{
+						map.put("usernickname",userInfo.getNickname());
+					}
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
 

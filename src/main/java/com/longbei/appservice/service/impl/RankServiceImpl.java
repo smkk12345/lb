@@ -106,6 +106,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ImproveService improveService;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private UserRelationService userRelationService;
 
     /**
      *  @author luye
@@ -1645,21 +1647,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     map.put("userid",appUserMongoEntity.getUserid());
                     map.put("avatar",appUserMongoEntity.getAvatar());
 
-                    if(userId == null){
-                        map.put("usernickname",appUserMongoEntity.getNickname());
-                    }else{
-                        map.put("usernickname",this.friendService.getNickName(userId,rankMembers.getUserid()));
-                    }
-                    if(userId == null){
-                        map.put("isfans","0");
-                        resultList.add(map);
-                        continue;
-                    }
-                    if(userId.longValue() == rankMembers.getUserid().longValue()){
-                        map.put("isfans","1");
-                        resultList.add(map);
-                        continue;
-                    }
+
                     //判断是否是好友
                     if(!Constant.VISITOR_UID.equals(userId+"")){
                         SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
@@ -1673,6 +1661,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             map.put("isfriend","1");
                         }else{
                             map.put("isfriend","0");
+                        }
+                        if(userId == null){
+                            map.put("usernickname",appUserMongoEntity.getNickname());
+                        }else{
+                            map.put("usernickname",this.friendService.getNickName(userId,rankMembers.getUserid()));
+                        }
+                        if(userId == null){
+                            map.put("isfans","0");
+                            resultList.add(map);
+                            continue;
+                        }
+                        if(userId.longValue() == rankMembers.getUserid().longValue()){
+                            map.put("isfans","1");
+                            resultList.add(map);
+                            continue;
                         }
                     }
 
@@ -1815,6 +1818,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(newRankAcceptAward.getAcceptdate() != null){
                 BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
             }
+            //获取用户获得的奖项信息
+            RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankId+"",rankMember.getRankAward().getAwardid()+"");
+            resultMap.put("awardnickname",rankAwardRelease.getAwardnickname());
 
             resultMap.put("award",award);
             resultMap.put("rankMember",rankMember);
@@ -2296,7 +2302,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int showBtn = 0;//未登录/不在榜中
 
             for(RankMembers rankMembers:rankMembersList){
-                rankMembers.setAppUserMongoEntity(this.userMongoDao.getAppUser(rankMembers.getUserid()+""));
+            	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
+            	//获取好友昵称
+				String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
+				if(!StringUtils.isBlank(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
 
                 if(userid != null && userid.equals(rankMembers.getUserid())){
                     if(!"1".equals(rankMembers.getIswinning())){
