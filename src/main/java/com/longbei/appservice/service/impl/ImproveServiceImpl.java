@@ -2382,24 +2382,27 @@ public class ImproveServiceImpl implements ImproveService{
                     case Constant.IMPROVE_RANK_TYPE:
                         {
                             Rank rank = rankService.selectByRankid(improve.getBusinessid());
-                            int sortnum = 0;
-                            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
-                            if("0".equals(rank.getIsfinish())){
+                            if (null != rank){
+                                int sortnum = 0;
+                                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                                if("0".equals(rank.getIsfinish())){
 
-                            }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
-                                long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
-                                sortnum = Integer.parseInt(s+"");
-                            }else{
-                                sortnum = rankMembers.getSortnum();
+                                }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
+                                    long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
+                                    sortnum = Integer.parseInt(s+"");
+                                }else{
+                                    sortnum = rankMembers.getSortnum();
+                                }
+                                improve.setBusinessEntity(rank.getPtype(),
+                                        rank.getRanktitle(),
+                                        rank.getRankinvolved(),
+                                        rank.getStarttime(),
+                                        rank.getEndtime(),
+                                        sortnum,0,
+                                        rank.getRankphotos(),
+                                        rankMembers.getIcount());
                             }
-                            improve.setBusinessEntity(rank.getPtype(),
-                                    rank.getRanktitle(),
-                                    rank.getRankinvolved(),
-                                    rank.getStarttime(),
-                                    rank.getEndtime(),
-                                    sortnum,0,
-                                    rank.getRankphotos(),
-                                    rankMembers.getIcount());
+
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -2408,21 +2411,23 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_GOAL_TYPE:
                         UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
-                        String photos = improve.getPickey();
-                        if(!StringUtils.isBlank(photos)){
-                            JSONArray jsonArray = JSONArray.fromObject(photos);
-                            if(jsonArray.size()>0){
-                                photos = jsonArray.getString(0);
-                            }else
-                                photos = null;
+                        if(null != userGoal){
+                            String photos = improve.getPickey();
+                            if(!StringUtils.isBlank(photos)){
+                                JSONArray jsonArray = JSONArray.fromObject(photos);
+                                if(jsonArray.size()>0){
+                                    photos = jsonArray.getString(0);
+                                }else
+                                    photos = null;
+                            }
+                            improve.setBusinessEntity(userGoal.getPtype(),
+                                    userGoal.getGoaltag(),
+                                    0,
+                                    userGoal.getCreatetime(),
+                                    null,
+                                    0,
+                                    userGoal.getIcount(),photos,userGoal.getIcount());
                         }
-                        improve.setBusinessEntity(userGoal.getPtype(),
-                                userGoal.getGoaltag(),
-                                0,
-                                userGoal.getCreatetime(),
-                                null,
-                                0,
-                                userGoal.getIcount(),photos,userGoal.getIcount());
                         break;
                     default:
                         break;
