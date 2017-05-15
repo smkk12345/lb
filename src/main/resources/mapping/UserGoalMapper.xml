@@ -76,6 +76,9 @@
       <if test="userid != null" >
         userid,
       </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
       <if test="goaltag != null" >
         goaltag,
       </if>
@@ -107,6 +110,9 @@
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=CHAR},
       </if>
       <if test="goaltag != null" >
         #{goaltag,jdbcType=VARCHAR},

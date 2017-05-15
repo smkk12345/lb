@@ -1,7 +1,6 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.Page;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,14 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserFeedbackMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserFeedback;
 import com.longbei.appservice.service.UserFeedbackService;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserRelationService;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,8 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFeedbackServiceImpl.class);
 	
@@ -100,14 +103,36 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 	}
 
 	@Override
-	public UserFeedback selectUserFeedback(String id) {
+	public BaseResp<UserFeedback> selectUserFeedback(String id, long userid) {
+		BaseResp<UserFeedback> baseResp = new BaseResp<>();
 		UserFeedback userFeedback = null;
 		try {
 			userFeedback = userFeedbackMapper.selectByPrimaryKey(Long.parseLong(id));
-		} catch (NumberFormatException e) {
-			logger.error("select userFeedback id={} is error:{}",id,e);
+			initMsgUserInfoByFriendid(userFeedback, userid);
+			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+			appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+			appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+			userFeedback.setAppUserMongoEntityLongbei(appUserMongoEntity);;
+			baseResp.setData(userFeedback);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectUserFeedback id={}, userid = {}", id, userid, e);
 		}
-		return userFeedback;
+		return baseResp;
+	}
+	
+	@Override
+	public BaseResp<UserFeedback> selectUserFeedbackById(String id) {
+		BaseResp<UserFeedback> baseResp = new BaseResp<>();
+		UserFeedback userFeedback = null;
+		try {
+			userFeedback = userFeedbackMapper.selectByPrimaryKey(Long.parseLong(id));
+			baseResp.setData(userFeedback);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectUserFeedbackById id={}", id, e);
+		}
+		return baseResp;
 	}
 
 	
@@ -122,5 +147,25 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 		}
         return "";
     }
+    
+  //------------------------公用方法，初始化消息中用户信息------------------------------------------
+  	/**
+   * 初始化消息中用户信息 ------Friendid
+   */
+  private void initMsgUserInfoByFriendid(UserFeedback userFeedback, long userid){
+  	if(!StringUtils.hasBlankParams(userFeedback.getUserid().toString())){
+		//获取好友昵称
+		String remark = userRelationService.selectRemark(userid, userFeedback.getUserid());
+  		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userFeedback.getUserid()));
+		if(null != appUserMongoEntity){
+			if(!StringUtils.isBlank(remark)){
+				appUserMongoEntity.setNickname(remark);
+			}
+			userFeedback.setAppUserMongoEntity(appUserMongoEntity);
+		}else{
+			userFeedback.setAppUserMongoEntity(new AppUserMongoEntity());
+		}
+  	}
+  }
 
 }

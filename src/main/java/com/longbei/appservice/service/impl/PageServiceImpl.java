@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.HomePictureMapper;
 import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.RankMapper;
@@ -119,6 +120,11 @@ public class PageServiceImpl implements PageService{
             homePicture.setIsup("1");
             homePicture.setType(type);
             List<HomePicture> homePictures = homePictureMapper.selectList(homePicture,null,null);
+            for (HomePicture homePicture1 : homePictures){
+                if ("0".equals(homePicture1.getContenttype())){
+                    homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());
+                }
+            }
             baseResp = BaseResp.ok();
             baseResp.setData(homePictures);
         } catch (Exception e) {

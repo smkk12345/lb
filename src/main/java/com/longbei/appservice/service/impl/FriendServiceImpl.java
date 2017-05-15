@@ -13,6 +13,7 @@ import com.longbei.appservice.dao.mongo.dao.NewMessageTipDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
+import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -48,6 +49,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private IJPushService ijPushService;
     @Autowired
     private QueueMessageSendService queueMessageSendService;
+    @Autowired
+    private UserRelationService userRelationService;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -389,15 +392,28 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,null,startNo,pageSize);
             if(list != null && list.size() > 0){
                 for(FriendAddAsk friendAddAsk:list){
+                	
                     if(friendAddAsk.getMessage() != null && friendAddAsk.getMessage().size() > 0){
                         JSONObject jsonObject = friendAddAsk.getMessage().getJSONObject(friendAddAsk.getMessage().size()-1);
                         friendAddAsk.setLastMessage(jsonObject.getString("content"));
                         friendAddAsk.setMessage(null);
                     }
-                    if(userId.equals(friendAddAsk.getSenderUserId())){
-                        friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+""));
+                    if(userId.longValue() == friendAddAsk.getSenderUserId().longValue()){
+                    	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+"");
+                    	//获取好友昵称
+    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getReceiveUserId());
+    					if(!StringUtils.isBlank(remark)){
+    						appUserMongoEntity.setNickname(remark);
+    					}
+                        friendAddAsk.setAppUserMongoEntity(appUserMongoEntity);
                     }else{
-                        friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+""));
+                    	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+"");
+                    	//获取好友昵称
+    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getSenderUserId());
+    					if(!StringUtils.isBlank(remark)){
+    						appUserMongoEntity.setNickname(remark);
+    					}
+                        friendAddAsk.setAppUserMongoEntity(appUserMongoEntity);
                     }
                 }
             }

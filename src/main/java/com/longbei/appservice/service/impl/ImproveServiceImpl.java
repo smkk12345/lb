@@ -179,6 +179,7 @@ public class ImproveServiceImpl implements ImproveService{
                 if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
                 }
+                improve.setIspublic(userGoal.getIspublic());
                 isok = insertImproveForGoal(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
@@ -612,7 +613,9 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            initImproveListOtherInfo(userid,improves);
+            if(!Constant.VISITOR_UID.equals(userid)){
+                initImproveListOtherInfo(userid,improves);
+            }
             initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -2228,10 +2231,12 @@ public class ImproveServiceImpl implements ImproveService{
      */
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
-            Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-            improve.setLfdcount(count);
-            improve.setImproveLFDs(improveLFDs);
+            if(null != improve){
+                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+                improve.setLfdcount(count);
+                improve.setImproveLFDs(improveLFDs);
+            }
         }catch (Exception e){
             logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
         }
