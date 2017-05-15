@@ -1075,9 +1075,9 @@ public class ImproveServiceImpl implements ImproveService{
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid));
         int ispublic = 2;
         if (null != snsFriends){
-            ispublic = 2;
-        } else {
             ispublic = 1;
+        } else {
+            ispublic = 2;
         }  //0 私密 1 好友 2 公开
         try {
             List<Improve> list = selectImproveListByUser(targetuserid,null,
@@ -2783,6 +2783,8 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
             }
         }
+        String icount = rankMembersMapper.getRankImproveCount(businessid);
+        baseResp.getExpandData().put("rankTotalImpCount",icount);
         return baseResp;
     }
 

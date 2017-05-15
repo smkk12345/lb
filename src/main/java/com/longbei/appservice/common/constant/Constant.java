@@ -279,7 +279,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_96 = "加入该榜单,需要用户实名认证,您还未实名认证通过";
 	public static final String RTNINFO_SYS_97 = "由于您的等级未满足参榜的等级要求,请先提高自己的等级吧!";
 	public static final String RTNINFO_SYS_98 = "您已在龙榜中,无需再次提交申请";
-	public static final String RTNINFO_SYS_99 = "由于您被榜主踢出了该龙榜,因此无法再次申请加入!";
+	public static final String RTNINFO_SYS_99 = "由于您被榜主剔除了该龙榜,因此无法再次申请加入!";
 	public static final String RTNINFO_SYS_910 = "您当前还未加入该榜单,或已退出该榜单";
 
 
@@ -502,7 +502,7 @@ public class Constant {
 	public static final String  MSG_AWARD_MODEL = "恭喜您在龙榜'n'中获得了m,快去领奖吧!";  		//获奖         m:奖品     n:榜名称 
 	public static final String  MSG_DELETE_MODEL = "由于您在加入'n'mg";  					//剔除         m:榜，圈子，教室     n:名称    g:投诉理由
 	public static final String  MSG_CHECK_MODEL = "您加入m'n'的申请已被g,快去发第一条进步吧";  	//加入请求审批结果      m:榜，圈子，教室     n:名称   g:结果:通过或拒绝
-	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主踢出了该龙榜!";      //下榜
+	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主剔除了该龙榜!";      //下榜
 	public static final String  MSG_QUITRANK_IMP_MODEL = "您在龙榜'n'中的进步已删除!";      //下榜
 	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
 	

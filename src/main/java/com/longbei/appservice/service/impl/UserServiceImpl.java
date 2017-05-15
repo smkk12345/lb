@@ -32,6 +32,7 @@ import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserPlDetailService;
 import com.longbei.appservice.service.UserInterestsService;
+import com.longbei.appservice.service.UserBehaviourService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -99,6 +100,8 @@ public class UserServiceImpl implements UserService {
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private QueueMessageSendService queueMessageSendService;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -283,6 +286,7 @@ public class UserServiceImpl implements UserService {
 			Integer n = null;
 			try {
 				n = userPlDetailService.insertUserPlDetail(userPlDetail);
+				userBehaviourService.updateUserPLDetailToplevel(userid,"2");
 			} catch (Exception e) {
 				logger.error("initUserPerfectTen error and msg = {}",e);
 			}
@@ -330,6 +334,8 @@ public class UserServiceImpl implements UserService {
 				initUserPerfectTen(userInfo.getUserid());
 				//初始化用户感兴趣的标签
 				initUserInterestInfo(userInfo.getUserid());
+				//注册获得龙分
+				userBehaviourService.pointChange(userInfo,"NEW_REGISTER","2",null,0,0);
 			}
 		});
 		return true;
