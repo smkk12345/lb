@@ -135,16 +135,17 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectFlowerDetail
     * @Description: 获取用户收到的鲜花明细
     * @param @param userid
-    * @param @param startNo   pageSize
+    * @param @param friendid 当前登录者id
+    * @param @param startNum   pageSize
     * @auther yinxc
     * @currentdate:2017年4月14日
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectFlowerDetail")
-    public BaseResp<List<UserFlowerDetail>> selectFlowerDetail(String userid, Integer startNum, Integer pageSize) {
-		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
+    public BaseResp<List<UserFlowerDetail>> selectFlowerDetail(String userid, String friendid, Integer startNum, Integer pageSize) {
+		logger.info("userid={},friendid={},startNum={},pageSize={}",userid,friendid,startNum,pageSize);
 		BaseResp<List<UserFlowerDetail>> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
+  		if (StringUtils.hasBlankParams(userid, friendid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
@@ -158,7 +159,8 @@ public class MoneyController {
   			}
 			//origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
 			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
-  			baseResp = userFlowerDetailService.selectListByUseridAndOrigin(Long.parseLong(userid), "3", sNo, sSize);
+  			baseResp = userFlowerDetailService.selectListByUseridAndOrigin(Long.parseLong(userid), 
+  					Long.parseLong(friendid), "3", sNo, sSize);
         } catch (Exception e) {
             logger.error("selectMoneyDetail userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
