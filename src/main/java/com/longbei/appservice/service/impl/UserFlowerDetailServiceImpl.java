@@ -199,7 +199,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 *						4:赠与---进步币兑换    5:被赠与---进步币兑换
 	 */
 	@Override
-	public BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo,
+	public BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, long friendid, String origin, int pageNo,
 			int pageSize) {
 		BaseResp<List<UserFlowerDetail>> reseResp = new BaseResp<>();
 		try {
@@ -207,7 +207,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			if(null != list && list.size()>0){
 				for (UserFlowerDetail userFlowerDetail : list) {
 					//初始化用户信息
-					initFlowerUserInfoByUserid(userFlowerDetail, userid);
+					initFlowerUserInfoByUserid(userFlowerDetail, friendid);
 				}
 			}
 			reseResp.setData(list);

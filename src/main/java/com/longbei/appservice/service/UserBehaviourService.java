@@ -49,4 +49,16 @@ public interface UserBehaviourService {
                                  long userid, Improve improve, int count);
 
 
+    /**
+     * @Title: updateUserPLDetailToplevel
+     * @Description: 更新是否最高级
+     * @param userid
+     * @param @return
+     * @return boolean 返回类型
+     * @auther IngaWu
+     * @currentdate:2017年5月3日
+     */
+    boolean updateUserPLDetailToplevel(long userid,String pType);
+
+
 }

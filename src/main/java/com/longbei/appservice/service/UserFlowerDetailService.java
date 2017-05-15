@@ -45,7 +45,7 @@ public interface UserFlowerDetailService {
 	 * param origin： 0:龙币兑换;  1:赠与---龙币兑换    2:进步币兑换    3:被赠与---龙币兑换
 	 *						4:赠与---进步币兑换    5:被赠与---进步币兑换
 	 */
-	BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, String origin, int pageNo, int pageSize);
+	BaseResp<List<UserFlowerDetail>> selectListByUseridAndOrigin(long userid, long friendid, String origin, int pageNo, int pageSize);
 	
 	/**
 	 * @author yinxc
