@@ -525,12 +525,22 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setTitle("加入请求审批结果");
             userMsg.setCreatetime(new Date());
             userMsg.setUpdatetime(new Date());
+            String remark;
+            String inviteRemark;
+            if(status.equals("2")){
+                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
+                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
+            }else {
+                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
+                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
+            }
+
             if(sendMessageUserList.size() > 0){
                 List<Long> tempList = new ArrayList<Long>();
                 for(Long tempUserId:sendMessageUserList){
                     tempList.add(tempUserId);
                 }
-                userMsg.setRemark("您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                userMsg.setRemark(remark);
                 boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
             }
             if(sendToInviteUserList.size() > 0){
@@ -538,7 +548,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 for(Long tempUserId:sendToInviteUserList){
                     tempList.add(tempUserId);
                 }
-                userMsg.setRemark("您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                userMsg.setRemark(inviteRemark);
                 boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
             }
 
@@ -820,7 +830,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize) {
+    public BaseResp<Object> searchGroup(Long userid,String keyword,Integer startNum,Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<SnsGroup> groupList = this.snsGroupMapper.selectGroup(keyword,startNum,pageSize);
@@ -830,6 +840,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     parameterMap.put("groupId",snsGroup.getGroupid());
                     parameterMap.put("startNum",0);
                     parameterMap.put("pageSize",9);
+                    SnsGroupMembers snsGroupMembers = snsGroupMembersMapper.findByUserIdAndGroupId(userid,String.valueOf(snsGroup.getGroupid()));
+                    if(null == snsGroupMembers){
+                        snsGroup.setHasjoin("0");
+                    }else {
+                        snsGroup.setHasjoin("1");
+                    }
                     List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
                     int maxLength = groupMembersList.size();
                     String[] avatarArray = new String[maxLength];

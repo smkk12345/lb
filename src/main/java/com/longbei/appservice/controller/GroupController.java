@@ -318,10 +318,10 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value="searchGroup")
-    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize){
+    public BaseResp<Object> searchGroup(String userid,String keyword,Integer startNum,Integer pageSize){
         logger.info("keyword={},startNum={},pageSize={}", keyword,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(StringUtils.isEmpty(keyword)){
+        if(StringUtils.hasBlankParams(keyword,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(startNum == null || startNum < 0){
@@ -331,7 +331,7 @@ public class GroupController {
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
 
-        baseResp = this.groupService.searchGroup(keyword,startNum,pageSize);
+        baseResp = this.groupService.searchGroup(Long.parseLong(userid),keyword,startNum,pageSize);
         return baseResp;
     }
 
