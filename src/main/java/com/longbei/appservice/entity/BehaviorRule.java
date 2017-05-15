@@ -2,7 +2,7 @@ package com.longbei.appservice.entity;
 
 public class BehaviorRule {
     /**
-     * 
+     *
      */
     private Long id;
 
@@ -180,6 +180,106 @@ public class BehaviorRule {
      * 用户参加教室，可得N个龙分；1次／天；退出不扣分
      */
     private Integer joinclassgoals;
+
+    /**
+     * 分享（站内）可获得N个龙分；上限值
+     */
+    private Integer innersharegoalsmax;
+
+    /**
+     * 用户签到奖励N个龙分,X个进步币；N+X的上限
+     */
+    private Integer signimpcoinsmax;
+
+    /**
+     * 分享（站外）可获得N个龙分，上限值
+     */
+    private Integer outsharegoalsmax;
+
+    /**
+     * 分享（站外）可获得X个进步币，随机最小值
+     */
+    private Integer outshareimpcoinsmin;
+
+    /**
+     * 分享（站外）可获得X个进步币，随机最大值
+     */
+    private Integer outshareimpcoinsmax;
+
+    /**
+     * 分享（站外）奖励次数，上限值
+     */
+    private Integer outshareawardtimes;
+
+    /**
+     * 邀请好友注册成功可得N个龙分，上限值
+     */
+    private Integer friendregistergoalsmax;
+
+    /**
+     * 邀请好友注册成功可得X个进步币，上限值
+     */
+    private Integer friendregisterimpcoinsmax;
+
+    /**
+     * 添加好友可得N个龙分，上限值
+     */
+    private Integer addfriendgoalsmax;
+
+    /**
+     * 添加好友可得X个进步币，上限值
+     */
+    private Integer addfriendimpcoinsmax;
+
+    /**
+     * 给他人点赞，可得N个龙分，上限值
+     */
+    private Integer likegoalsmax;
+
+    /**
+     * 给他人微进步评论和回复他人的评论，可得N个龙分，上限值
+     */
+    private Integer impcommentgoalsmax;
+
+    /**
+     * 给他人送1朵花，可得N个龙分，上限值
+     */
+    private Integer flowergoalsmax;
+
+    /**
+     * 单个用户每发1条微进步，可得N个龙分，上限值
+     */
+    private Integer improvegoalsmax;
+
+    /**
+     * 单个用户每发1条微进步，可得X个进步币，随机最小值
+     */
+    private Integer improveimpcoinsmin;
+
+    /**
+     * 单个用户每发1条微进步，可得X个进步币，随机最大值
+     */
+    private Integer improveimpcoinsmax;
+
+    /**
+     * 单个用户每发1条微进步，可得进步币次数，上限值
+     */
+    private Integer improveimpcoinstimes;
+
+    /**
+     * 用户参加龙榜，可得龙分次数，上限值
+     */
+    private Integer joinrankgoalstimes;
+
+    /**
+     * 用户参加圈子，可得龙分次数，上限值
+     */
+    private Integer joincirclegoalstimes;
+
+    /**
+     * 用户参加教室，可得龙分次数，上限值
+     */
+    private Integer aoinclassgoalstimes;
 
     public Long getId() {
         return id;
@@ -467,5 +567,165 @@ public class BehaviorRule {
 
     public void setJoinclassgoals(Integer joinclassgoals) {
         this.joinclassgoals = joinclassgoals;
+    }
+
+    public Integer getInnersharegoalsmax() {
+        return innersharegoalsmax;
+    }
+
+    public void setInnersharegoalsmax(Integer innersharegoalsmax) {
+        this.innersharegoalsmax = innersharegoalsmax;
+    }
+
+    public Integer getSignimpcoinsmax() {
+        return signimpcoinsmax;
+    }
+
+    public void setSignimpcoinsmax(Integer signimpcoinsmax) {
+        this.signimpcoinsmax = signimpcoinsmax;
+    }
+
+    public Integer getOutsharegoalsmax() {
+        return outsharegoalsmax;
+    }
+
+    public void setOutsharegoalsmax(Integer outsharegoalsmax) {
+        this.outsharegoalsmax = outsharegoalsmax;
+    }
+
+    public Integer getOutshareimpcoinsmin() {
+        return outshareimpcoinsmin;
+    }
+
+    public void setOutshareimpcoinsmin(Integer outshareimpcoinsmin) {
+        this.outshareimpcoinsmin = outshareimpcoinsmin;
+    }
+
+    public Integer getOutshareimpcoinsmax() {
+        return outshareimpcoinsmax;
+    }
+
+    public void setOutshareimpcoinsmax(Integer outshareimpcoinsmax) {
+        this.outshareimpcoinsmax = outshareimpcoinsmax;
+    }
+
+    public Integer getOutshareawardtimes() {
+        return outshareawardtimes;
+    }
+
+    public void setOutshareawardtimes(Integer outshareawardtimes) {
+        this.outshareawardtimes = outshareawardtimes;
+    }
+
+    public Integer getFriendregistergoalsmax() {
+        return friendregistergoalsmax;
+    }
+
+    public void setFriendregistergoalsmax(Integer friendregistergoalsmax) {
+        this.friendregistergoalsmax = friendregistergoalsmax;
+    }
+
+    public Integer getFriendregisterimpcoinsmax() {
+        return friendregisterimpcoinsmax;
+    }
+
+    public void setFriendregisterimpcoinsmax(Integer friendregisterimpcoinsmax) {
+        this.friendregisterimpcoinsmax = friendregisterimpcoinsmax;
+    }
+
+    public Integer getAddfriendgoalsmax() {
+        return addfriendgoalsmax;
+    }
+
+    public void setAddfriendgoalsmax(Integer addfriendgoalsmax) {
+        this.addfriendgoalsmax = addfriendgoalsmax;
+    }
+
+    public Integer getAddfriendimpcoinsmax() {
+        return addfriendimpcoinsmax;
+    }
+
+    public void setAddfriendimpcoinsmax(Integer addfriendimpcoinsmax) {
+        this.addfriendimpcoinsmax = addfriendimpcoinsmax;
+    }
+
+    public Integer getLikegoalsmax() {
+        return likegoalsmax;
+    }
+
+    public void setLikegoalsmax(Integer likegoalsmax) {
+        this.likegoalsmax = likegoalsmax;
+    }
+
+    public Integer getImpcommentgoalsmax() {
+        return impcommentgoalsmax;
+    }
+
+    public void setImpcommentgoalsmax(Integer impcommentgoalsmax) {
+        this.impcommentgoalsmax = impcommentgoalsmax;
+    }
+
+    public Integer getFlowergoalsmax() {
+        return flowergoalsmax;
+    }
+
+    public void setFlowergoalsmax(Integer flowergoalsmax) {
+        this.flowergoalsmax = flowergoalsmax;
+    }
+
+    public Integer getImprovegoalsmax() {
+        return improvegoalsmax;
+    }
+
+    public void setImprovegoalsmax(Integer improvegoalsmax) {
+        this.improvegoalsmax = improvegoalsmax;
+    }
+
+    public Integer getImproveimpcoinsmin() {
+        return improveimpcoinsmin;
+    }
+
+    public void setImproveimpcoinsmin(Integer improveimpcoinsmin) {
+        this.improveimpcoinsmin = improveimpcoinsmin;
+    }
+
+    public Integer getImproveimpcoinsmax() {
+        return improveimpcoinsmax;
+    }
+
+    public void setImproveimpcoinsmax(Integer improveimpcoinsmax) {
+        this.improveimpcoinsmax = improveimpcoinsmax;
+    }
+
+    public Integer getImproveimpcoinstimes() {
+        return improveimpcoinstimes;
+    }
+
+    public void setImproveimpcoinstimes(Integer improveimpcoinstimes) {
+        this.improveimpcoinstimes = improveimpcoinstimes;
+    }
+
+    public Integer getJoinrankgoalstimes() {
+        return joinrankgoalstimes;
+    }
+
+    public void setJoinrankgoalstimes(Integer joinrankgoalstimes) {
+        this.joinrankgoalstimes = joinrankgoalstimes;
+    }
+
+    public Integer getJoincirclegoalstimes() {
+        return joincirclegoalstimes;
+    }
+
+    public void setJoincirclegoalstimes(Integer joincirclegoalstimes) {
+        this.joincirclegoalstimes = joincirclegoalstimes;
+    }
+
+    public Integer getAoinclassgoalstimes() {
+        return aoinclassgoalstimes;
+    }
+
+    public void setAoinclassgoalstimes(Integer aoinclassgoalstimes) {
+        this.aoinclassgoalstimes = aoinclassgoalstimes;
     }
 }

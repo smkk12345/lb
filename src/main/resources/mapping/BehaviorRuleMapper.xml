@@ -38,56 +38,97 @@
     <result column="joinrankgoals" property="joinrankgoals" jdbcType="INTEGER" />
     <result column="joincirclegoals" property="joincirclegoals" jdbcType="INTEGER" />
     <result column="joinclassgoals" property="joinclassgoals" jdbcType="INTEGER" />
+    <result column="innersharegoalsmax" property="innersharegoalsmax" jdbcType="INTEGER" />
+    <result column="signimpcoinsmax" property="signimpcoinsmax" jdbcType="INTEGER" />
+    <result column="outsharegoalsmax" property="outsharegoalsmax" jdbcType="INTEGER" />
+    <result column="outshareimpcoinsmin" property="outshareimpcoinsmin" jdbcType="INTEGER" />
+    <result column="outshareimpcoinsmax" property="outshareimpcoinsmax" jdbcType="INTEGER" />
+    <result column="outshareawardtimes" property="outshareawardtimes" jdbcType="INTEGER" />
+    <result column="friendregistergoalsmax" property="friendregistergoalsmax" jdbcType="INTEGER" />
+    <result column="friendregisterimpcoinsmax" property="friendregisterimpcoinsmax" jdbcType="INTEGER" />
+    <result column="addfriendgoalsmax" property="addfriendgoalsmax" jdbcType="INTEGER" />
+    <result column="addfriendimpcoinsmax" property="addfriendimpcoinsmax" jdbcType="INTEGER" />
+    <result column="likegoalsmax" property="likegoalsmax" jdbcType="INTEGER" />
+    <result column="impcommentgoalsmax" property="impcommentgoalsmax" jdbcType="INTEGER" />
+    <result column="flowergoalsmax" property="flowergoalsmax" jdbcType="INTEGER" />
+    <result column="improvegoalsmax" property="improvegoalsmax" jdbcType="INTEGER" />
+    <result column="improveimpcoinsmin" property="improveimpcoinsmin" jdbcType="INTEGER" />
+    <result column="improveimpcoinsmax" property="improveimpcoinsmax" jdbcType="INTEGER" />
+    <result column="improveimpcoinstimes" property="improveimpcoinstimes" jdbcType="INTEGER" />
+    <result column="joinrankgoalstimes" property="joinrankgoalstimes" jdbcType="INTEGER" />
+    <result column="joincirclegoalstimes" property="joincirclegoalstimes" jdbcType="INTEGER" />
+    <result column="aoinclassgoalstimes" property="aoinclassgoalstimes" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals, 
-    infocompletegoals, signgoals, firstsignimpcoins, continuesignimpcoinsmore, innersharegoals, 
-    outsharegoals, outshareimpcoins, friendregistergoals, friendregisterimpcoins, addfriendgoals, 
-    addfriendimpcoins, lotterygoals, coindonategoals, impcoindonategoals, eachimproveflowersmax, 
-    likegoals, impcommentgoals, flowergoals, improvegoals, improveimpcoins, rankimprovesdaymax, 
-    rankimprovestotalmin, rankimprovestotalmax, rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
-    privaterankpricetotalmin, joinrankgoals, joincirclegoals, joinclassgoals
+    id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals,
+    infocompletegoals, signgoals, firstsignimpcoins, continuesignimpcoinsmore, innersharegoals,
+    outsharegoals, outshareimpcoins, friendregistergoals, friendregisterimpcoins, addfriendgoals,
+    addfriendimpcoins, lotterygoals, coindonategoals, impcoindonategoals, eachimproveflowersmax,
+    likegoals, impcommentgoals, flowergoals, improvegoals, improveimpcoins, rankimprovesdaymax,
+    rankimprovestotalmin, rankimprovestotalmax, rankdaysmin, rankdaysmax, publicrankpricetotalmin,
+    privaterankpricetotalmin, joinrankgoals, joincirclegoals, joinclassgoals, innersharegoalsmax,
+    signimpcoinsmax, outsharegoalsmax, outshareimpcoinsmin, outshareimpcoinsmax, outshareawardtimes,
+    friendregistergoalsmax, friendregisterimpcoinsmax, addfriendgoalsmax, addfriendimpcoinsmax,
+    likegoalsmax, impcommentgoalsmax, flowergoalsmax, improvegoalsmax, improveimpcoinsmin,
+    improveimpcoinsmax, improveimpcoinstimes, joinrankgoalstimes, joincirclegoalstimes,
+    aoinclassgoalstimes
   </sql>
-  <select id="selectOne" resultMap="BaseResultMap" >
-    select 
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
     <include refid="Base_Column_List" />
     from sys_behavior_rule
-    where 1=1
-    limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from sys_behavior_rule
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.BehaviorRule" >
-    insert into sys_behavior_rule (id, registergoals, qqbindgoals, 
-      webbindgoals, wechatbindgoals, certificationgoals, 
-      infocompletegoals, signgoals, firstsignimpcoins, 
-      continuesignimpcoinsmore, innersharegoals, 
-      outsharegoals, outshareimpcoins, friendregistergoals, 
-      friendregisterimpcoins, addfriendgoals, 
-      addfriendimpcoins, lotterygoals, coindonategoals, 
-      impcoindonategoals, eachimproveflowersmax, 
-      likegoals, impcommentgoals, flowergoals,
-      improvegoals, improveimpcoins, rankimprovesdaymax, 
-      rankimprovestotalmin, rankimprovestotalmax, 
-      rankdaysmin, rankdaysmax, publicrankpricetotalmin, 
-      privaterankpricetotalmin, joinrankgoals, 
-      joincirclegoals, joinclassgoals)
-    values (#{id,jdbcType=BIGINT}, #{registergoals,jdbcType=INTEGER}, #{qqbindgoals,jdbcType=INTEGER}, 
-      #{webbindgoals,jdbcType=INTEGER}, #{wechatbindgoals,jdbcType=INTEGER}, #{certificationgoals,jdbcType=INTEGER}, 
-      #{infocompletegoals,jdbcType=INTEGER}, #{signgoals,jdbcType=INTEGER}, #{firstsignimpcoins,jdbcType=INTEGER}, 
-      #{continuesignimpcoinsmore,jdbcType=INTEGER}, #{innersharegoals,jdbcType=INTEGER}, 
-      #{outsharegoals,jdbcType=INTEGER}, #{outshareimpcoins,jdbcType=INTEGER}, #{friendregistergoals,jdbcType=INTEGER}, 
-      #{friendregisterimpcoins,jdbcType=INTEGER}, #{addfriendgoals,jdbcType=INTEGER}, 
-      #{addfriendimpcoins,jdbcType=INTEGER}, #{lotterygoals,jdbcType=INTEGER}, #{coindonategoals,jdbcType=INTEGER}, 
-      #{impcoindonategoals,jdbcType=DOUBLE}, #{eachimproveflowersmax,jdbcType=INTEGER}, 
-      #{likegoals,jdbcType=INTEGER}, #{impcommentgoals,jdbcType=INTEGER}, #{flowergoals,jdbcType=INTEGER}, 
-      #{improvegoals,jdbcType=INTEGER}, #{improveimpcoins,jdbcType=INTEGER}, #{rankimprovesdaymax,jdbcType=INTEGER}, 
-      #{rankimprovestotalmin,jdbcType=INTEGER}, #{rankimprovestotalmax,jdbcType=INTEGER}, 
-      #{rankdaysmin,jdbcType=INTEGER}, #{rankdaysmax,jdbcType=INTEGER}, #{publicrankpricetotalmin,jdbcType=INTEGER}, 
-      #{privaterankpricetotalmin,jdbcType=INTEGER}, #{joinrankgoals,jdbcType=INTEGER}, 
-      #{joincirclegoals,jdbcType=INTEGER}, #{joinclassgoals,jdbcType=INTEGER})
+    insert into sys_behavior_rule (id, registergoals, qqbindgoals,
+    webbindgoals, wechatbindgoals, certificationgoals,
+    infocompletegoals, signgoals, firstsignimpcoins,
+    continuesignimpcoinsmore, innersharegoals,
+    outsharegoals, outshareimpcoins, friendregistergoals,
+    friendregisterimpcoins, addfriendgoals,
+    addfriendimpcoins, lotterygoals, coindonategoals,
+    impcoindonategoals, eachimproveflowersmax,
+    likegoals, impcommentgoals, flowergoals,
+    improvegoals, improveimpcoins, rankimprovesdaymax,
+    rankimprovestotalmin, rankimprovestotalmax,
+    rankdaysmin, rankdaysmax, publicrankpricetotalmin,
+    privaterankpricetotalmin, joinrankgoals,
+    joincirclegoals, joinclassgoals, innersharegoalsmax,
+    signimpcoinsmax, outsharegoalsmax, outshareimpcoinsmin,
+    outshareimpcoinsmax, outshareawardtimes,
+    friendregistergoalsmax, friendregisterimpcoinsmax,
+    addfriendgoalsmax, addfriendimpcoinsmax,
+    likegoalsmax, impcommentgoalsmax, flowergoalsmax,
+    improvegoalsmax, improveimpcoinsmin, improveimpcoinsmax,
+    improveimpcoinstimes, joinrankgoalstimes,
+    joincirclegoalstimes, aoinclassgoalstimes
+    )
+    values (#{id,jdbcType=BIGINT}, #{registergoals,jdbcType=INTEGER}, #{qqbindgoals,jdbcType=INTEGER},
+    #{webbindgoals,jdbcType=INTEGER}, #{wechatbindgoals,jdbcType=INTEGER}, #{certificationgoals,jdbcType=INTEGER},
+    #{infocompletegoals,jdbcType=INTEGER}, #{signgoals,jdbcType=INTEGER}, #{firstsignimpcoins,jdbcType=INTEGER},
+    #{continuesignimpcoinsmore,jdbcType=INTEGER}, #{innersharegoals,jdbcType=INTEGER},
+    #{outsharegoals,jdbcType=INTEGER}, #{outshareimpcoins,jdbcType=INTEGER}, #{friendregistergoals,jdbcType=INTEGER},
+    #{friendregisterimpcoins,jdbcType=INTEGER}, #{addfriendgoals,jdbcType=INTEGER},
+    #{addfriendimpcoins,jdbcType=INTEGER}, #{lotterygoals,jdbcType=INTEGER}, #{coindonategoals,jdbcType=INTEGER},
+    #{impcoindonategoals,jdbcType=DOUBLE}, #{eachimproveflowersmax,jdbcType=INTEGER},
+    #{likegoals,jdbcType=INTEGER}, #{impcommentgoals,jdbcType=INTEGER}, #{flowergoals,jdbcType=INTEGER},
+    #{improvegoals,jdbcType=INTEGER}, #{improveimpcoins,jdbcType=INTEGER}, #{rankimprovesdaymax,jdbcType=INTEGER},
+    #{rankimprovestotalmin,jdbcType=INTEGER}, #{rankimprovestotalmax,jdbcType=INTEGER},
+    #{rankdaysmin,jdbcType=INTEGER}, #{rankdaysmax,jdbcType=INTEGER}, #{publicrankpricetotalmin,jdbcType=INTEGER},
+    #{privaterankpricetotalmin,jdbcType=INTEGER}, #{joinrankgoals,jdbcType=INTEGER},
+    #{joincirclegoals,jdbcType=INTEGER}, #{joinclassgoals,jdbcType=INTEGER}, #{innersharegoalsmax,jdbcType=INTEGER},
+    #{signimpcoinsmax,jdbcType=INTEGER}, #{outsharegoalsmax,jdbcType=INTEGER}, #{outshareimpcoinsmin,jdbcType=INTEGER},
+    #{outshareimpcoinsmax,jdbcType=INTEGER}, #{outshareawardtimes,jdbcType=INTEGER},
+    #{friendregistergoalsmax,jdbcType=INTEGER}, #{friendregisterimpcoinsmax,jdbcType=INTEGER},
+    #{addfriendgoalsmax,jdbcType=INTEGER}, #{addfriendimpcoinsmax,jdbcType=INTEGER},
+    #{likegoalsmax,jdbcType=INTEGER}, #{impcommentgoalsmax,jdbcType=INTEGER}, #{flowergoalsmax,jdbcType=INTEGER},
+    #{improvegoalsmax,jdbcType=INTEGER}, #{improveimpcoinsmin,jdbcType=INTEGER}, #{improveimpcoinsmax,jdbcType=INTEGER},
+    #{improveimpcoinstimes,jdbcType=INTEGER}, #{joinrankgoalstimes,jdbcType=INTEGER},
+    #{joincirclegoalstimes,jdbcType=INTEGER}, #{aoinclassgoalstimes,jdbcType=INTEGER}
+    )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.BehaviorRule" >
     insert into sys_behavior_rule
@@ -200,6 +241,66 @@
       <if test="joinclassgoals != null" >
         joinclassgoals,
       </if>
+      <if test="innersharegoalsmax != null" >
+        innersharegoalsmax,
+      </if>
+      <if test="signimpcoinsmax != null" >
+        signimpcoinsmax,
+      </if>
+      <if test="outsharegoalsmax != null" >
+        outsharegoalsmax,
+      </if>
+      <if test="outshareimpcoinsmin != null" >
+        outshareimpcoinsmin,
+      </if>
+      <if test="outshareimpcoinsmax != null" >
+        outshareimpcoinsmax,
+      </if>
+      <if test="outshareawardtimes != null" >
+        outshareawardtimes,
+      </if>
+      <if test="friendregistergoalsmax != null" >
+        friendregistergoalsmax,
+      </if>
+      <if test="friendregisterimpcoinsmax != null" >
+        friendregisterimpcoinsmax,
+      </if>
+      <if test="addfriendgoalsmax != null" >
+        addfriendgoalsmax,
+      </if>
+      <if test="addfriendimpcoinsmax != null" >
+        addfriendimpcoinsmax,
+      </if>
+      <if test="likegoalsmax != null" >
+        likegoalsmax,
+      </if>
+      <if test="impcommentgoalsmax != null" >
+        impcommentgoalsmax,
+      </if>
+      <if test="flowergoalsmax != null" >
+        flowergoalsmax,
+      </if>
+      <if test="improvegoalsmax != null" >
+        improvegoalsmax,
+      </if>
+      <if test="improveimpcoinsmin != null" >
+        improveimpcoinsmin,
+      </if>
+      <if test="improveimpcoinsmax != null" >
+        improveimpcoinsmax,
+      </if>
+      <if test="improveimpcoinstimes != null" >
+        improveimpcoinstimes,
+      </if>
+      <if test="joinrankgoalstimes != null" >
+        joinrankgoalstimes,
+      </if>
+      <if test="joincirclegoalstimes != null" >
+        joincirclegoalstimes,
+      </if>
+      <if test="aoinclassgoalstimes != null" >
+        aoinclassgoalstimes,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -309,6 +410,66 @@
       </if>
       <if test="joinclassgoals != null" >
         #{joinclassgoals,jdbcType=INTEGER},
+      </if>
+      <if test="innersharegoalsmax != null" >
+        #{innersharegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="signimpcoinsmax != null" >
+        #{signimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outsharegoalsmax != null" >
+        #{outsharegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoinsmin != null" >
+        #{outshareimpcoinsmin,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoinsmax != null" >
+        #{outshareimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outshareawardtimes != null" >
+        #{outshareawardtimes,jdbcType=INTEGER},
+      </if>
+      <if test="friendregistergoalsmax != null" >
+        #{friendregistergoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoinsmax != null" >
+        #{friendregisterimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendgoalsmax != null" >
+        #{addfriendgoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendimpcoinsmax != null" >
+        #{addfriendimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="likegoalsmax != null" >
+        #{likegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="impcommentgoalsmax != null" >
+        #{impcommentgoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="flowergoalsmax != null" >
+        #{flowergoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improvegoalsmax != null" >
+        #{improvegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinsmin != null" >
+        #{improveimpcoinsmin,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinsmax != null" >
+        #{improveimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinstimes != null" >
+        #{improveimpcoinstimes,jdbcType=INTEGER},
+      </if>
+      <if test="joinrankgoalstimes != null" >
+        #{joinrankgoalstimes,jdbcType=INTEGER},
+      </if>
+      <if test="joincirclegoalstimes != null" >
+        #{joincirclegoalstimes,jdbcType=INTEGER},
+      </if>
+      <if test="aoinclassgoalstimes != null" >
+        #{aoinclassgoalstimes,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -420,8 +581,67 @@
       <if test="joinclassgoals != null" >
         joinclassgoals = #{joinclassgoals,jdbcType=INTEGER},
       </if>
+      <if test="innersharegoalsmax != null" >
+        innersharegoalsmax = #{innersharegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="signimpcoinsmax != null" >
+        signimpcoinsmax = #{signimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outsharegoalsmax != null" >
+        outsharegoalsmax = #{outsharegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoinsmin != null" >
+        outshareimpcoinsmin = #{outshareimpcoinsmin,jdbcType=INTEGER},
+      </if>
+      <if test="outshareimpcoinsmax != null" >
+        outshareimpcoinsmax = #{outshareimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="outshareawardtimes != null" >
+        outshareawardtimes = #{outshareawardtimes,jdbcType=INTEGER},
+      </if>
+      <if test="friendregistergoalsmax != null" >
+        friendregistergoalsmax = #{friendregistergoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoinsmax != null" >
+        friendregisterimpcoinsmax = #{friendregisterimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendgoalsmax != null" >
+        addfriendgoalsmax = #{addfriendgoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="addfriendimpcoinsmax != null" >
+        addfriendimpcoinsmax = #{addfriendimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="likegoalsmax != null" >
+        likegoalsmax = #{likegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="impcommentgoalsmax != null" >
+        impcommentgoalsmax = #{impcommentgoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="flowergoalsmax != null" >
+        flowergoalsmax = #{flowergoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improvegoalsmax != null" >
+        improvegoalsmax = #{improvegoalsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinsmin != null" >
+        improveimpcoinsmin = #{improveimpcoinsmin,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinsmax != null" >
+        improveimpcoinsmax = #{improveimpcoinsmax,jdbcType=INTEGER},
+      </if>
+      <if test="improveimpcoinstimes != null" >
+        improveimpcoinstimes = #{improveimpcoinstimes,jdbcType=INTEGER},
+      </if>
+      <if test="joinrankgoalstimes != null" >
+        joinrankgoalstimes = #{joinrankgoalstimes,jdbcType=INTEGER},
+      </if>
+      <if test="joincirclegoalstimes != null" >
+        joincirclegoalstimes = #{joincirclegoalstimes,jdbcType=INTEGER},
+      </if>
+      <if test="aoinclassgoalstimes != null" >
+        aoinclassgoalstimes = #{aoinclassgoalstimes,jdbcType=INTEGER},
+      </if>
     </set>
-    where 1=1
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.BehaviorRule" >
     update sys_behavior_rule
@@ -459,7 +679,26 @@
       privaterankpricetotalmin = #{privaterankpricetotalmin,jdbcType=INTEGER},
       joinrankgoals = #{joinrankgoals,jdbcType=INTEGER},
       joincirclegoals = #{joincirclegoals,jdbcType=INTEGER},
-      joinclassgoals = #{joinclassgoals,jdbcType=INTEGER}
-    where 1=1
+      joinclassgoals = #{joinclassgoals,jdbcType=INTEGER},
+      innersharegoalsmax = #{innersharegoalsmax,jdbcType=INTEGER},
+      signimpcoinsmax = #{signimpcoinsmax,jdbcType=INTEGER},
+      outsharegoalsmax = #{outsharegoalsmax,jdbcType=INTEGER},
+      outshareimpcoinsmin = #{outshareimpcoinsmin,jdbcType=INTEGER},
+      outshareimpcoinsmax = #{outshareimpcoinsmax,jdbcType=INTEGER},
+      outshareawardtimes = #{outshareawardtimes,jdbcType=INTEGER},
+      friendregistergoalsmax = #{friendregistergoalsmax,jdbcType=INTEGER},
+      friendregisterimpcoinsmax = #{friendregisterimpcoinsmax,jdbcType=INTEGER},
+      addfriendgoalsmax = #{addfriendgoalsmax,jdbcType=INTEGER},
+      addfriendimpcoinsmax = #{addfriendimpcoinsmax,jdbcType=INTEGER},
+      likegoalsmax = #{likegoalsmax,jdbcType=INTEGER},
+      impcommentgoalsmax = #{impcommentgoalsmax,jdbcType=INTEGER},
+      flowergoalsmax = #{flowergoalsmax,jdbcType=INTEGER},
+      improvegoalsmax = #{improvegoalsmax,jdbcType=INTEGER},
+      improveimpcoinsmin = #{improveimpcoinsmin,jdbcType=INTEGER},
+      improveimpcoinsmax = #{improveimpcoinsmax,jdbcType=INTEGER},
+      improveimpcoinstimes = #{improveimpcoinstimes,jdbcType=INTEGER},
+      joinrankgoalstimes = #{joinrankgoalstimes,jdbcType=INTEGER},
+      joincirclegoalstimes = #{joincirclegoalstimes,jdbcType=INTEGER},
+      aoinclassgoalstimes = #{aoinclassgoalstimes,jdbcType=INTEGER}
   </update>
 </mapper>
