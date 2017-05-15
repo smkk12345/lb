@@ -675,7 +675,7 @@ public class AppUserController extends BaseController {
 			record.setIdcard(idcard);
 			record.setIdcardimage(idcardimage);
 			//是否验证了身份证号码 0  为验证 1  验证通过 2 验证不通过
-			record.setValidateidcard("1");
+			record.setValidateidcard("0");
 			record.setUserid(Long.parseLong(userid));
 			record.setApplydate(new Date());
             record.setRealname(realname);
