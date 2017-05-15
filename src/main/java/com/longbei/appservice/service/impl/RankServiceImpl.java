@@ -1010,7 +1010,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<Object> removeRankMember(RankMembers rankMembers) {
+    public BaseResp<Object> removeRankMember(RankMembers rankMembers,String opttype) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
             Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
@@ -1040,14 +1040,28 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
-            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
-    					"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
+                if ("1".equals(opttype)){
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
+                            "", "10",
+                            rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0);
+                } else {
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
+                            "", "10",
+                            rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
+                }
+
             }
             if("2".equals(rank.getSourcetype())){
-            	userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
-            			"", "10",
-    					rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
+                if ("1".equals(opttype)){
+                    userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
+                            "", "10",
+                            rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0);
+                } else {
+                    userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
+                            "", "10",
+                            rankMembers.getRankid().toString(), remark, "2", "44", "榜中成员下榜", 0);
+                }
+
             }
 
             //2.更改用户在该榜单中发布的进步的状态
@@ -1077,7 +1091,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
             for(RankMembers rankMember : rankMemberses){
                 try {
-                    removeRankMember(rankMember);
+                    removeRankMember(rankMember,"1");
                 }catch (Exception e){
                     logger.error("remove RankMember:{} error when close Rank rankId:{}",rankMember.getUserid(),rankid);
                     return baseResp.fail("关闭榜单失败");
