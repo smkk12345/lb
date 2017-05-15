@@ -500,9 +500,30 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             improve = selectImprove(impid,userid,businesstype,businessid,null,null);
         } catch (Exception e) {
-
+            logger.error("select improve is error:",e);
         }
         initImproveInfo(improve,Long.parseLong(userid));
+        return improve;
+    }
+
+    /**
+     * 查询进步核心信息
+     * @param impid
+     * @param userid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    @Override
+    public Improve selectImproveByImpidMuc(Long impid,String userid,
+                                        String businesstype,String businessid) {
+
+        Improve improve = null;
+        try {
+            improve = selectImprove(impid,userid,businesstype,businessid,null,null);
+        } catch (Exception e) {
+            logger.error("select improve is error:",e);
+        }
         return improve;
     }
 
@@ -2257,6 +2278,9 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setHasdiamond("0");
             improve.setHascollect("0");
             return ;
+        }
+        if (null == improve){
+            return;
         }
 //        ImpAllDetail impAllDetail = new ImpAllDetail();
 //        impAllDetail.setUserid(Long.parseLong(userid));
