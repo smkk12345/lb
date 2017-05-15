@@ -1104,9 +1104,9 @@ public class ImproveServiceImpl implements ImproveService{
                                                           Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid));
-        int ispublic = 1;
+        int ispublic = 2;
         if (null != snsFriends){
-            ispublic = 0;
+            ispublic = 2;
         } else {
             ispublic = 1;
         }

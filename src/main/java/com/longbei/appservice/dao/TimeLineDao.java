@@ -31,9 +31,9 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
             userid = Constant.SQUARE_USER_ID;
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-//        if ("1".equals(timelinetype)){
-//            criteria.and("ispublic").gt(ispublic);
-//        }
+        if ("1".equals(timelinetype)){
+            criteria.and("ispublic").gte(ispublic);
+        }
         if (!StringUtils.isEmpty(ptype) && !"-1".equals(ptype)){
             criteria.and("ptype").is(ptype);
         }
