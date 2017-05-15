@@ -32,7 +32,14 @@ public interface UserFeedbackService {
 	 * @param id
 	 * @return
 	 */
-	UserFeedback selectUserFeedback(String id);
+	BaseResp<UserFeedback> selectUserFeedback(String id, long userid);
+	
+	/**
+	 * 意见反馈详情
+	 * @param id
+	 * @return
+	 */
+	BaseResp<UserFeedback> selectUserFeedbackById(String id);
 
 
 

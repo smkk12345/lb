@@ -40,13 +40,12 @@ public interface GoalService {
     
     /**
      * 单个目标进步列表
-     * @param userid
      * @param goalid 目标id
      * @param startNum
      * @param pageSize
      * @return
      */
-    BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int pageSize);
+    BaseResp<List<Improve>> selectListByGoalid(long goalid, int startNum, int pageSize);
     
     /**
      * 获取目标列表

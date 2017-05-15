@@ -96,6 +96,14 @@ public class AppserviceConfig {
     public static String h5_agreementurl;
     public static String h5_levelprivilege;
 
+
+    public static String articleurl;
+
+    @Value("${articleurl}")
+    public static void setArticleurl(String articleurl) {
+        AppserviceConfig.articleurl = articleurl;
+    }
+
     @Value("${h5.helper}")
     public void setH5_helper(String h5_helper){
         this.h5_helper = h5_helper;
