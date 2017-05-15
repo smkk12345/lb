@@ -4,10 +4,7 @@ import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService;
 import com.longbei.appservice.dao.*;
-import com.longbei.appservice.entity.SysPerfectInfo;
-import com.longbei.appservice.entity.SysRuleCheckin;
-import com.longbei.appservice.entity.SysRulePerfectTen;
-import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.SysSensitiveService;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,6 +38,10 @@ public class InitConfig implements CommandLineRunner {
     //十全十美等级规则表
     @Autowired
     private SysRulePerfectTenMapper sysRulePerfectTenMapper;
+    //用户行为规则
+    @Autowired
+    private BehaviorRuleMapper behaviorRuleMapper;
+
     //计分规则
     @Autowired
     private SysScoringRuleMapper sysScoringRuleMapper;
@@ -75,7 +76,21 @@ public class InitConfig implements CommandLineRunner {
         //缓存敏感词
         initSensitiveMap();
 
+
         initListener();
+    }
+
+    private void initUserBehaviorRule(int num){
+
+        try {
+            BehaviorRule behaviorRule = behaviorRuleMapper.selectOne();
+            SysRulesCache.behaviorRule = behaviorRule;
+        } catch (Exception e) {
+            logger.error("init user behavior rule againnum={} is error:",num,e);
+            if (num <= 3){
+                initUserBehaviorRule(num++);
+            }
+        }
     }
 
     /**
