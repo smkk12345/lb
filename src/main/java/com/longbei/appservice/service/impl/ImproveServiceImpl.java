@@ -2572,7 +2572,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, startno, pagesize);
+                    null, null, null, startno, pagesize);
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
