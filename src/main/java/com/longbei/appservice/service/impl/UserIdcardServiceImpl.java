@@ -102,7 +102,7 @@ public class UserIdcardServiceImpl implements UserIdcardService {
                 }
 			}else{
 				userIdcard = new UserIdcard();
-				userIdcard.setValidateidcard("0");
+				userIdcard.setValidateidcard("-1");
 			}
 //			userIdcard.setRealname(userInfo.getRealname());
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
