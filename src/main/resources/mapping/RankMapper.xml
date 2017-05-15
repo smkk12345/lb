@@ -726,8 +726,10 @@
       FROM rank
       WHERE 1=1
         <if test="ranktitle != null and ranktitle != ''" >
-          AND (ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
-          OR codeword = #{codeword})
+          AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+        </if>
+        <if test="codeword != null and codeword != ''">
+           and joincode = #{codeword}
         </if>
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')

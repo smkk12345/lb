@@ -296,9 +296,10 @@ public interface RankService extends BaseService{
      * 查询用户在榜单中的排名
      * @param rankId 榜单id
      * @param userId 用户id
+     * @param currentUserid 当前登录用户id
      * @return
      */
-    BaseResp<Object> ownRankSort(Long rankId, Long userId);
+    BaseResp<Object> ownRankSort(Long rankId, Long userId,Long currentUserid);
 
     /**
      * 榜单的排名
@@ -358,7 +359,7 @@ public interface RankService extends BaseService{
      * @param pageSize
      * @return
      */
-    BaseResp<Object> selectRankListByCondition(String rankTitle, String pType, String rankscope,Integer status,
+    BaseResp<Object> selectRankListByCondition(Long userid,String rankTitle,String codeword, String pType, String rankscope,Integer status,
                                                String lastDate,Integer startNo, Integer pageSize,Boolean showAward);
 
     /**

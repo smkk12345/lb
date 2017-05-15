@@ -102,12 +102,12 @@ public class RankController {
      * 查询自己在榜单中的排名
      * @url http://ip:port/app_service/rank/ownRankSort
      * @param rankId
-     * @param userid
-     * @paramsortType 0 或者 不传 返回综合排名  1 花排名  2 赞排名
+     * @param userid 查询榜单中用户排名的用户id
+     * @param currentUserid 当前登录用户id
      * @return
      */
     @RequestMapping(value="ownRankSort")
-    public BaseResp<Object> ownRankSort(Long rankId,Long userid){
+    public BaseResp<Object> ownRankSort(Long rankId,Long userid,Long currentUserid){
         logger.info("rankId={},userid={}",rankId,userid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null || userid == null){
@@ -116,7 +116,7 @@ public class RankController {
         if(Constant.VISITOR_UID.equals(userid+"")){
             return baseResp;
         }
-        baseResp = this.rankService.ownRankSort(rankId,userid);
+        baseResp = this.rankService.ownRankSort(rankId,userid,currentUserid);
 
         return baseResp;
     }
@@ -154,17 +154,19 @@ public class RankController {
     /**
      * 获取龙榜列表
      * @url http://ip:port/app_service/rank/selectRankList
+     * @param userid 当前登录用户id
      * @param rankTitle 榜单名称
      * @param pType 十全十美分类
      * @param rankscope 地区
      * @param status 状态筛选 0.推荐 1.进行中 2.将开始 3.已结束
      * @param lastDate 最后一个榜单的时间 lastDate是当status != 0时,需要传该参数
+     * @param searchByCodeword 根据入榜口令搜索榜单 可不传 传入的值是0/1 1代表按照榜口令搜索榜 0代表按照榜名称搜索榜
      * @param startNum 开始的下标 startNo是当status == 0时,需要传该参数
      * @param pageSize
      * @return
      */
     @RequestMapping(value="selectRankList")
-    public BaseResp<Object> selectRankList(String rankTitle,String pType,String rankscope,Integer status,String lastDate,Integer startNum,Integer pageSize){
+    public BaseResp<Object> selectRankList(Long userid,String rankTitle,String pType,String rankscope,Integer status,String lastDate,String searchByCodeword,Integer startNum,Integer pageSize){
         logger.info("rankTitle={},pType={},rankscope={},status={},lastDate={},startNum={},pageSize={}",rankTitle,pType,rankscope,status,lastDate,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(startNum == null || startNum < 0){
@@ -176,7 +178,12 @@ public class RankController {
         if(status == null){
             status = -1;
         }
-        baseResp = this.rankService.selectRankListByCondition(rankTitle,pType,rankscope,status,lastDate,startNum,pageSize,true);
+        String codeword = null;
+        if(StringUtils.isNotEmpty(searchByCodeword) && "1".equals(searchByCodeword)){
+            codeword = rankTitle;
+            rankTitle = null;
+        }
+        baseResp = this.rankService.selectRankListByCondition(userid,rankTitle,codeword,pType,rankscope,status,lastDate,startNum,pageSize,true);
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
     }
