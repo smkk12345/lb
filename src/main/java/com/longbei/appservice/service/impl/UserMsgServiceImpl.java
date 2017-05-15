@@ -461,8 +461,13 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public BaseResp<Object> updateIsreadByUserid(long userid, String mtype, String msgtype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			boolean temp = updateUserid(userid, mtype, msgtype);
-			if (temp) {
+			List<UserMsg> list = userMsgMapper.selectOtherList(userid, mtype, msgtype, 0, 1);
+			if(null != list && list.size()>0){
+				boolean temp = updateUserid(userid, mtype, msgtype);
+				if (temp) {
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}else{
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
