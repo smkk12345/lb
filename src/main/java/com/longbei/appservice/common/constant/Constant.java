@@ -324,7 +324,7 @@ public class Constant {
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
-			"/rank/ownRankSort";
+			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list";
 
 	/**
 	 * 进步相关配置

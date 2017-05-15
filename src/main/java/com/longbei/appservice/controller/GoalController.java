@@ -113,7 +113,7 @@ public class GoalController extends BaseController {
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try{
-            baseResp = goalService.selectListByGoalid(Long.parseLong(goalid), startNum, pageSize);
+            baseResp = goalService.selectListByGoalid(Long.parseLong(userid), Long.parseLong(goalid), startNum, pageSize);
         }catch(Exception e){
             logger.error("goalService.list error and msg={}",e);
         }

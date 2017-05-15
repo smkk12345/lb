@@ -613,7 +613,9 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            initImproveListOtherInfo(userid,improves);
+            if(!Constant.VISITOR_UID.equals(userid)){
+                initImproveListOtherInfo(userid,improves);
+            }
             initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -2572,7 +2574,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, startno, pagesize);
+                    null, null, null, startno, pagesize);
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
