@@ -106,6 +106,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private ImproveService improveService;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private UserRelationService userRelationService;
 
     /**
      *  @author luye
@@ -2296,7 +2298,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int showBtn = 0;//未登录/不在榜中
 
             for(RankMembers rankMembers:rankMembersList){
-                rankMembers.setAppUserMongoEntity(this.userMongoDao.getAppUser(rankMembers.getUserid()+""));
+            	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
+            	//获取好友昵称
+				String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
+				if(!StringUtils.isBlank(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
+                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
 
                 if(userid != null && userid.equals(rankMembers.getUserid())){
                     if(!"1".equals(rankMembers.getIswinning())){
