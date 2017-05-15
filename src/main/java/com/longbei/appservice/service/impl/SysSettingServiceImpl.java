@@ -57,7 +57,7 @@ public class SysSettingServiceImpl implements SysSettingService {
         BaseResp<Object> baseResp = new BaseResp<>();
         SysAppupdate app = sysAppupdateMapper.selectRecentByKey(ttype);
         if(null == app){
-            baseResp.initCodeAndDesp();
+            return baseResp.initCodeAndDesp();
         }
         String newVersion = app.getVersion().replaceAll("\\.", "");
         String cversion = version.replaceAll("\\.","");

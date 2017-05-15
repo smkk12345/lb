@@ -99,7 +99,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(StringUtils.isEmpty(groupName)){
                 groupName = "";
                 groupName += mainGroupUser.getNickname();
-                if(userIds.length > 0){
+                if(null != userIds&&userIds.length > 0){
                     String tempUserId = userIds[0].trim();
                     if(userIds.length > 1 && tempUserId.equals(mainGroupUserId)){
                         tempUserId = userIds[1].trim();
