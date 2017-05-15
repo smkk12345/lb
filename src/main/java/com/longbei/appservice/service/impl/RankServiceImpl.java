@@ -1815,6 +1815,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(newRankAcceptAward.getAcceptdate() != null){
                 BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
             }
+            //获取用户获得的奖项信息
+            RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankId+"",rankMember.getRankAward().getAwardid()+"");
+            resultMap.put("awardnickname",rankAwardRelease.getAwardnickname());
 
             resultMap.put("award",award);
             resultMap.put("rankMember",rankMember);
