@@ -420,6 +420,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @auther IngaWu
      * @currentdate:2017年5月3日
      */
+    @Override
     public boolean updateUserPLDetailToplevel(long userid,String pType){
         UserPlDetail userPlDetail = new UserPlDetail();
         userPlDetail.setUserid(userid);
