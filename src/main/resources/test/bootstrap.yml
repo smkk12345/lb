@@ -27,7 +27,7 @@ spring:
         config:
             enabled: true
             name: app_service
-            profile: test
+            profile: test_temp
             discovery:
               enabled: true
               serviceId: config-server
