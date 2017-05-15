@@ -148,21 +148,17 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setBusinessid(Long.parseLong(businessid));
         }
 
-
-        BaseResp<Object> baseResp = new BaseResp<>();
+        //添加进步之前的过滤
+        BaseResp<Object> baseResp = insertImproveFilter(improve,businesstype);
+;       if(ResultUtil.fail(baseResp)){
+            return baseResp;
+        }
         boolean isok = false;
         switch (businesstype){
             case Constant.IMPROVE_SINGLE_TYPE:
                 isok = insertImproveSingle(improve);
                 break;
             case Constant.IMPROVE_RANK_TYPE:
-                Rank rank = rankMapper.selectRankByRankid(improve.getBusinessid());
-                if (null == rank){
-                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_616,Constant.RTNINFO_SYS_616);
-                }
-                if (!canInsertImprove(improve.getUserid(),improve.getBusinessid(),rank)){
-                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617,Constant.RTNINFO_SYS_617);
-                }
                 isok = insertImproveForRank(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -173,14 +169,7 @@ public class ImproveServiceImpl implements ImproveService{
                 isok = insertImproveForCircle(improve);
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
-                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
-                if (null == userGoal){
-                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
-                }
-                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
-                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
-                }
-                improve.setIspublic(userGoal.getIspublic());
+
                 isok = insertImproveForGoal(improve);
                 break;
             case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
@@ -210,14 +199,23 @@ public class ImproveServiceImpl implements ImproveService{
 
         //进步发布完成之后
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
+
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
             baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype, Constant_Perfect.PERFECT_GAM,improve.getImpid(),0);
             //发布完成之后redis存储i一天数量信息
-//            springJedisDao.put(Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"",businesstype);
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);
             springJedisDao.expire(key,Constant.CACHE_24X60X60);
             userBehaviourService.userSumInfo(Constant.UserSumType.addedImprove,Long.parseLong(userid),null,0);
+
+            String message = improve.getImpid() +
+                    "," + businesstype +
+                    "," + improve.getBusinessid() +
+                    "," + improve.getUserid() +
+                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
+            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
+                    Constant.MQDOMAIN_IMP_ADD,message);
+
         }
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -279,23 +277,13 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveSingle(Improve improve) {
 
-        if(!insertImproveFilter(improve,Constant.IMPROVE_SINGLE_TYPE)){
-            return false;
-        }
         int res = 0;
         try {
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE);
         } catch (Exception e) {
             logger.error("insert sigle immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
-        if(res != 0){
-            //id,businesstype,businessid,userid,date
-            String message = improve.getImpid() +
-                    "," + Constant.IMPROVE_SINGLE_TYPE +
-                    ",-1," + improve.getUserid() +
-                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
-                    Constant.MQDOMAIN_IMP_ADD,message);
+        if(res > 0){
             return true;
         }
         return false;
@@ -309,9 +297,6 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForCircle(Improve improve) {
 
-        if(!insertImproveFilter(improve,Constant.IMPROVE_CIRCLE_TYPE)){
-            return false;
-        }
         int res = 0;
         try {
             res = improveMapper.insertSelective(improve,Constant_table.IMPROVE_CIRCLE);
@@ -319,13 +304,7 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert circle immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improve.getImpid() +
-                    "," + Constant.IMPROVE_CIRCLE_TYPE +
-                    "," + improve.getBusinessid() +
-                    "," + improve.getUserid() +
-                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
-                    Constant.MQDOMAIN_IMP_ADD,message);
+
             return true;
         }
         return false;
@@ -339,9 +318,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForClassroom(Improve improve) {
 
-        if(!insertImproveFilter(improve,Constant.IMPROVE_CLASSROOM_TYPE)){
-            return false;
-        }
+
         int res = 0;
         try {
             res = improveClassroomMapper.insertSelective(improve);
@@ -349,14 +326,6 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert classroom immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
         if(res != 0){
-            String message = improve.getImpid() +
-                    "," + Constant.IMPROVE_CLASSROOM_TYPE +
-                    "," + improve.getBusinessid() +
-                    "," + improve.getUserid() +
-                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
-
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
-                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -371,9 +340,6 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForRank(Improve improve) {
         logger.info("insert improve fro rank rankid={}",improve.getBusinessid());
-        if(!insertImproveFilter(improve,Constant.IMPROVE_RANK_TYPE)){
-            return false;
-        }
 
         int res = 0;
         try {
@@ -407,14 +373,6 @@ public class ImproveServiceImpl implements ImproveService{
                 springJedisDao.increment("rankid"+improve.getBusinessid()+
                         "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),1);
             }
-
-            String message = improve.getImpid() +
-                    "," + Constant.IMPROVE_RANK_TYPE +
-                    "," + improve.getBusinessid() +
-                    "," + improve.getUserid() +
-                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
-                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -441,9 +399,6 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForGoal(Improve improve) {
 
-        if(!insertImproveFilter(improve,Constant.IMPROVE_GOAL_TYPE)){
-            return false;
-        }
         int res = 0;
         try {
             //更新
@@ -459,14 +414,6 @@ public class ImproveServiceImpl implements ImproveService{
              *
              */
             updateGoalPerDay(improve);
-            String message = improve.getImpid() +
-                    "," + Constant.IMPROVE_GOAL_TYPE +
-                    "," + improve.getBusinessid() +
-                    "," + improve.getUserid() +
-                    "," + DateUtils.formatDateTime1(improve.getCreatetime());
-
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_IMPROVE,
-                    Constant.MQDOMAIN_IMP_ADD,message);
             return true;
         }
         return false;
@@ -500,9 +447,30 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             improve = selectImprove(impid,userid,businesstype,businessid,null,null);
         } catch (Exception e) {
-
+            logger.error("select improve is error:",e);
         }
         initImproveInfo(improve,Long.parseLong(userid));
+        return improve;
+    }
+
+    /**
+     * 查询进步核心信息
+     * @param impid
+     * @param userid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    @Override
+    public Improve selectImproveByImpidMuc(Long impid,String userid,
+                                        String businesstype,String businessid) {
+
+        Improve improve = null;
+        try {
+            improve = selectImprove(impid,userid,businesstype,businessid,null,null);
+        } catch (Exception e) {
+            logger.error("select improve is error:",e);
+        }
         return improve;
     }
 
@@ -1110,7 +1078,7 @@ public class ImproveServiceImpl implements ImproveService{
             ispublic = 2;
         } else {
             ispublic = 1;
-        }
+        }  //0 私密 1 好友 2 公开
         try {
             List<Improve> list = selectImproveListByUser(targetuserid,null,
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
@@ -1213,7 +1181,6 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setBusinessid(timeLine.getBusinessid());
                 improve.setPtype(timeLine.getPtype());
 
-//            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(timeLine.getUserid());
                 if(!Constant.VISITOR_UID.equals(userid)){
                     initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
@@ -1238,38 +1205,54 @@ public class ImproveServiceImpl implements ImproveService{
      * @author:luye
      * @date update 02月10日
      */
-    private boolean insertImproveFilter(Improve improve,String improvetype){
+    private BaseResp insertImproveFilter(Improve improve,String improvetype){
+        BaseResp baseResp = new BaseResp();
         switch (improvetype){
             case Constant.IMPROVE_SINGLE_TYPE:
+                baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
-                break;
-            case Constant.IMPROVE_RANK_TYPE:
-                Rank rank = null;
-                try {
-                    logger.info("select rank by rankid={}",improve.getBusinessid());
-                    rank = rankMapper.selectRankByRankid(improve.getBusinessid());
-                    logger.info("select rank result : {} ",rank);
-                } catch (Exception e) {
-                    logger.error("select rank by rankid={} is error:",improve.getBusinessid(),e);
+                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
+                if (null == userGoal){
+                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
                 }
-                if(null != rank){
-                    logger.info("select rank is not null rank={}",JSON.toJSONString(rank));
-                    if(rank.getIsfinish().equals("1")){
-                        return true;
-                    }else{
-                        return false;
+                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
+                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
+                }else {
+                    baseResp.initCodeAndDesp();
+                }
+
+                break;
+            case Constant.IMPROVE_RANK_TYPE: {
+                    Rank rank = null;
+                    try {
+                        logger.info("select rank by rankid={}", improve.getBusinessid());
+                        rank = rankMapper.selectRankByRankid(improve.getBusinessid());
+                        logger.info("select rank result : {} ", rank);
+                    } catch (Exception e) {
+                        logger.error("select rank by rankid={} is error:", improve.getBusinessid(), e);
+                    }
+                    if (null != rank) {
+                        logger.info("select rank is not null rank={}", JSON.toJSONString(rank));
+                        if (rank.getIsfinish().equals("1")) {
+                            baseResp.initCodeAndDesp();
+                        }
+                        if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
+                            baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
+                        }
+                    } else {
+                        baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
                     }
                 }
                 break;
             default:
                 break;
         }
-        return true;
+        return baseResp;
     }
 
 
@@ -2258,6 +2241,9 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setHascollect("0");
             return ;
         }
+        if (null == improve){
+            return;
+        }
 //        ImpAllDetail impAllDetail = new ImpAllDetail();
 //        impAllDetail.setUserid(Long.parseLong(userid));
 //        impAllDetail.setImpid(improve.getImpid());
@@ -2382,24 +2368,27 @@ public class ImproveServiceImpl implements ImproveService{
                     case Constant.IMPROVE_RANK_TYPE:
                         {
                             Rank rank = rankService.selectByRankid(improve.getBusinessid());
-                            int sortnum = 0;
-                            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
-                            if("0".equals(rank.getIsfinish())){
+                            if (null != rank){
+                                int sortnum = 0;
+                                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                                if("0".equals(rank.getIsfinish())){
 
-                            }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
-                                long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
-                                sortnum = Integer.parseInt(s+"");
-                            }else{
-                                sortnum = rankMembers.getSortnum();
+                                }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
+                                    long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
+                                    sortnum = Integer.parseInt(s+"");
+                                }else{
+                                    sortnum = rankMembers.getSortnum();
+                                }
+                                improve.setBusinessEntity(rank.getPtype(),
+                                        rank.getRanktitle(),
+                                        rank.getRankinvolved(),
+                                        rank.getStarttime(),
+                                        rank.getEndtime(),
+                                        sortnum,0,
+                                        rank.getRankphotos(),
+                                        rankMembers.getIcount());
                             }
-                            improve.setBusinessEntity(rank.getPtype(),
-                                    rank.getRanktitle(),
-                                    rank.getRankinvolved(),
-                                    rank.getStarttime(),
-                                    rank.getEndtime(),
-                                    sortnum,0,
-                                    rank.getRankphotos(),
-                                    rankMembers.getIcount());
+
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
@@ -2408,21 +2397,23 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_GOAL_TYPE:
                         UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
-                        String photos = improve.getPickey();
-                        if(!StringUtils.isBlank(photos)){
-                            JSONArray jsonArray = JSONArray.fromObject(photos);
-                            if(jsonArray.size()>0){
-                                photos = jsonArray.getString(0);
-                            }else
-                                photos = null;
+                        if(null != userGoal){
+                            String photos = improve.getPickey();
+                            if(!StringUtils.isBlank(photos)){
+                                JSONArray jsonArray = JSONArray.fromObject(photos);
+                                if(jsonArray.size()>0){
+                                    photos = jsonArray.getString(0);
+                                }else
+                                    photos = null;
+                            }
+                            improve.setBusinessEntity(userGoal.getPtype(),
+                                    userGoal.getGoaltag(),
+                                    0,
+                                    userGoal.getCreatetime(),
+                                    null,
+                                    0,
+                                    userGoal.getIcount(),photos,userGoal.getIcount());
                         }
-                        improve.setBusinessEntity(userGoal.getPtype(),
-                                userGoal.getGoaltag(),
-                                0,
-                                userGoal.getCreatetime(),
-                                null,
-                                0,
-                                userGoal.getIcount(),photos,userGoal.getIcount());
                         break;
                     default:
                         break;

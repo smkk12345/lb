@@ -833,27 +833,30 @@ public class UserMsgServiceImpl implements UserMsgService {
 		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			if (null == improve){
+				return;
+			}
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("1".equals(userMsg.getGtype())){
 			//1 目标中  进步评论消息
-			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
-			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
-			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("4".equals(userMsg.getGtype())){
 			//4 教室中   进步点赞消息
-			Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
 		}else if("10".equals(userMsg.getGtype())){
