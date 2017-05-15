@@ -441,24 +441,24 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
 			if(fashionManUserList != null && fashionManUserList.size() > 0){
 				for(UserInfo userInfo:fashionManUserList){
-					//获取好友昵称
-					String remark = userRelationService.selectRemark(userId, userInfo.getUserid());
 					Map<String,Object> map = new HashMap<String,Object>();
-					if(!StringUtils.isBlank(remark)){
-						map.put("usernickname", remark);
-					}else{
-						map.put("usernickname",userInfo.getNickname());
-					}
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
-
-					if(userId == userInfo.getUserid().longValue()){
-						map.put("isfans","1");
-						resultMap.add(map);
-						continue;
-					}
 					if(Constant.VISITOR_UID.equals(userId + "")){
+						map.put("usernickname",userInfo.getNickname());
 					}else{
+						//获取好友昵称
+						String remark = userRelationService.selectRemark(userId, userInfo.getUserid());
+						if(!StringUtils.isBlank(remark)){
+							map.put("usernickname", remark);
+						}else{
+							map.put("usernickname",userInfo.getNickname());
+						}
+						if(userId == userInfo.getUserid().longValue()){
+							map.put("isfans","1");
+							resultMap.add(map);
+							continue;
+						}
 						SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,userInfo.getUserid());
 						if(snsFans != null){
 							map.put("isfans","1");
