@@ -19,6 +19,11 @@ public class SysRulesCache {
     public static SysRules sysRules = new SysRules();
 
     /**
+     * 用户行为相关规则
+     */
+    public static BehaviorRule behaviorRule = new BehaviorRule();
+
+    /**
      * 签到规则  key--天数  value--规则实体
      */
     public static Map<Integer,SysRuleCheckin> sysRuleCheckinMap = new HashMap<>();

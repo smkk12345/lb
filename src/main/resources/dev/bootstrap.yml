@@ -22,12 +22,12 @@ spring:
     jackson:
         time-zone: GMT+8
     application:
-        name: appServicelcc
+        name: appService
     cloud:
         config:
             enabled: true
             name: app_service
-            profile: devel
+            profile: devel2222
             discovery:
               enabled: true
               serviceId: config-server

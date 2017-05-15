@@ -1105,9 +1105,9 @@ public class ImproveServiceImpl implements ImproveService{
                                                           Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid));
-        int ispublic = 1;
+        int ispublic = 2;
         if (null != snsFriends){
-            ispublic = 0;
+            ispublic = 2;
         } else {
             ispublic = 1;
         }
@@ -2575,7 +2575,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, startno, pagesize);
+                    null, null, null, startno, pagesize);
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
@@ -2763,7 +2763,7 @@ public class ImproveServiceImpl implements ImproveService{
             String remark = "您的进步被设置为推荐进步";
             userMsgService.insertMsg
                     (String.valueOf(improve.getUserid()),"1",String.valueOf(impid),
-                            businesstype,String.valueOf(improve.getBusinessid()),remark,"0","31", "进步被推荐",0);
+                            "9",String.valueOf(improve.getBusinessid()),remark,"0","31", "进步被推荐",0);
         }
     }
 
