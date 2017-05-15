@@ -2783,6 +2783,8 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
             }
         }
+        String icount = rankMembersMapper.getRankImproveCount(businessid);
+        baseResp.getExpandData().put("rankTotalImpCount",icount);
         return baseResp;
     }
 
