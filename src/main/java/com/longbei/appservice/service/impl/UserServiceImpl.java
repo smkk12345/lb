@@ -32,6 +32,7 @@ import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.UserPlDetailService;
 import com.longbei.appservice.service.UserInterestsService;
+import com.longbei.appservice.service.UserBehaviourService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -99,6 +100,8 @@ public class UserServiceImpl implements UserService {
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private QueueMessageSendService queueMessageSendService;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -111,13 +114,13 @@ public class UserServiceImpl implements UserService {
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
-			if(lookid != userid){
-				//获取好友昵称
-				String remark = userRelationService.selectRemark(lookid, userid);
-				if(!StringUtils.isBlank(remark)){
-					userInfo.setNickname(remark);
-				}
-			}
+//			if(lookid != userid){
+//				//获取好友昵称
+//				String remark = userRelationService.selectRemark(lookid, userid);
+//				if(!StringUtils.isBlank(remark)){
+//					userInfo.setNickname(remark);
+//				}
+//			}
 			//查询用户十全十美的信息列表
 			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
 			for (UserPlDetail userPlDetail : detailList) {
@@ -283,6 +286,7 @@ public class UserServiceImpl implements UserService {
 			Integer n = null;
 			try {
 				n = userPlDetailService.insertUserPlDetail(userPlDetail);
+				userBehaviourService.updateUserPLDetailToplevel(userid,"2");
 			} catch (Exception e) {
 				logger.error("initUserPerfectTen error and msg = {}",e);
 			}
@@ -330,6 +334,8 @@ public class UserServiceImpl implements UserService {
 				initUserPerfectTen(userInfo.getUserid());
 				//初始化用户感兴趣的标签
 				initUserInterestInfo(userInfo.getUserid());
+				//注册获得龙分
+				userBehaviourService.pointChange(userInfo,"NEW_REGISTER","2",null,0,0);
 			}
 		});
 		return true;
@@ -1004,7 +1010,7 @@ public class UserServiceImpl implements UserService {
 		list.add("邀请好友注册+"+Constant_point.INVITE_LEVEL1+"分"+",上限+1000分／天");
 		list.add("分享+"+Constant_point.DAILY_SHARE+"分"+",上限+"+Constant_point.DAILY_SHARE_LIMIT+"分／天");
 		list.add("添加好友+"+Constant_point.DAILY_ADDFRIEND+"分"+",上限+"+Constant_point.DAILY_ADDFRIEND_LIMIT+"分／天");
-		list.add("关注他人+"+Constant_point.DAILY_FUN+"分"+",上限+"+Constant_point.DAILY_FUN_LIMIT+"分／天");
+//		list.add("关注他人+"+Constant_point.DAILY_FUN+"分"+",上限+"+Constant_point.DAILY_FUN_LIMIT+"分／天");
 		list.add("与他人评论互动+"+Constant_point.DAILY_COMMENT+"分"+",上限+"+Constant_point.DAILY_COMMENT_LIMIT+"分／天");
 		list.add("发微进步+"+Constant_point.DAILY_ADDIMP+"分"+",上限+"+Constant_point.DAILY_ADDIMP_LIMIT+"分／天");
 		list.add("加入龙榜+"+ Constant_point.DAILY_ADDRANK+"分");
@@ -1135,11 +1141,11 @@ public class UserServiceImpl implements UserService {
 			if (res > 0){
 				if ("1".equals(userInfo.getIsfashionman())){
 					String remark = "你被选为达人";
-					userMsgService.insertMsg("1",String.valueOf(userInfo.getUserid()),null,null,null,remark,"0","30", "选为达人",0);
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,remark,"0","30", "选为达人",0);
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";
-					userMsgService.insertMsg("1",String.valueOf(userInfo.getUserid()),null,null,null,remark,"0","30", "取消达人",0);
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,remark,"0","30", "取消达人",0);
 				}
                 baseResp = BaseResp.ok();
             }

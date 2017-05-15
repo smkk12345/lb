@@ -2,11 +2,14 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.FindService;
+import com.longbei.appservice.service.UserRelationService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +28,11 @@ public class FindServiceImpl implements FindService{
     private UserMongoDao userMongoDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserRelationService userRelationService;
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<Object> near(String longitude, String latitude, String userid,String gender, String startNum, String pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();
 
@@ -36,6 +42,11 @@ public class FindServiceImpl implements FindService{
                     Integer.parseInt(startNum),Integer.parseInt(pageSize));
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
+                //获取好友昵称
+				String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(appuser.getId()));
+				if(!StringUtils.isBlank(remark)){
+					appuser.setNickname(remark);
+				}
                 //判断是否好友 是否关注 是否粉丝等等
                 try {
                     UserInfo userInfo = userInfoMapper.getByUserName(appuser.getUsername());

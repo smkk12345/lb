@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -184,12 +185,17 @@ public class PageServiceImpl implements PageService{
         HomeRecommend homeRecommend = new HomeRecommend();
         try {
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,startno,pagesize);
+            List<HomeRecommend> resultlist = new ArrayList<>();
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                homeRecommend1.setRank(rank);
+                if (null != rank){
+                    homeRecommend1.setRank(rank);
+                    resultlist.add(homeRecommend1);
+                }
+
             }
             baseResp = BaseResp.ok();
-            baseResp.setData(homeRecommends);
+            baseResp.setData(resultlist);
         } catch (Exception e) {
             logger.error("select homeRecmment list is error:",e);
         }

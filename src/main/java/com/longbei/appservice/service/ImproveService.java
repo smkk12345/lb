@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
-import com.mysql.fabric.xmlrpc.base.Data;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -79,6 +78,10 @@ public interface ImproveService {
      */
     Improve selectImproveByImpid(Long impid,String userid,
                           String businesstype,String businessid);
+
+
+    Improve selectImproveByImpidMuc(Long impid,String userid,
+                                 String businesstype,String businessid);
 
 
     /**

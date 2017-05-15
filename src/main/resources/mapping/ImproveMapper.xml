@@ -42,14 +42,20 @@
     select
     <include refid="Base_Column_List" />
     from ${tablename}
+    <where>
+      <if test="businessid != null">
+        AND businessid= #{businessid}
+      </if>
+      and impid = #{impid,jdbcType=BIGINT}
+      <if test="isdel != null" >
+        and isdel = #{isdel,jdbcType=CHAR}
+      </if>
+      <if test="ispublic != null">
+        and ispublic = #{ispublic,jdbcType=CHAR}
+      </if>
+    </where>
 
-    where businessid= #{businessid} and impid = #{impid,jdbcType=BIGINT}
-    <if test="isdel != null" >
-      and isdel = #{isdel,jdbcType=CHAR}
-    </if>
-    <if test="ispublic != null">
-      and ispublic = #{ispublic,jdbcType=CHAR}
-    </if>
+
 
   </select>
 

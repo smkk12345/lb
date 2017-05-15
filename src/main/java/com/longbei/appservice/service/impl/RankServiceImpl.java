@@ -431,7 +431,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(homeRecommend != null && homeRecommendList.size() > 0){
                 for(HomeRecommend homeRecommend1: homeRecommendList){
                     Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                    if(rank == null || "0".equals(rank.getIsdel())){
+                    if(rank == null || "1".equals(rank.getIsdel())){
                         continue;
                     }
                     List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
@@ -1565,8 +1565,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
                         rankMembers.setSortnum(startNum+i+1);
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
-                        if(userId != null){
-                            appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(tempUserId)));
+                        if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
+                        	//获取好友昵称
+        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid());
+        					if(!StringUtils.isBlank(remark)){
+        						appUserMongoEntity.setNickname(remark);
+        					}
+//                            appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(tempUserId)));
                         }
                         rankMembers.setAppUserMongoEntity(appUserMongoEntity);
                         userList.add(rankMembers);
@@ -1694,6 +1699,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             resultList.add(map);
                             continue;
                         }
+                    }else{
+                        map.put("usernickname",appUserMongoEntity.getNickname());
                     }
 
                     resultList.add(map);

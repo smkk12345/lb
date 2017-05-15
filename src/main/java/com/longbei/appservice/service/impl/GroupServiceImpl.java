@@ -99,7 +99,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(StringUtils.isEmpty(groupName)){
                 groupName = "";
                 groupName += mainGroupUser.getNickname();
-                if(userIds.length > 0){
+                if(null != userIds&&userIds.length > 0){
                     String tempUserId = userIds[0].trim();
                     if(userIds.length > 1 && tempUserId.equals(mainGroupUserId)){
                         tempUserId = userIds[1].trim();
@@ -525,12 +525,22 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setTitle("加入请求审批结果");
             userMsg.setCreatetime(new Date());
             userMsg.setUpdatetime(new Date());
+            String remark;
+            String inviteRemark;
+            if(status.equals("2")){
+                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
+                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
+            }else {
+                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
+                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
+            }
+
             if(sendMessageUserList.size() > 0){
                 List<Long> tempList = new ArrayList<Long>();
                 for(Long tempUserId:sendMessageUserList){
                     tempList.add(tempUserId);
                 }
-                userMsg.setRemark("您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                userMsg.setRemark(remark);
                 boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
             }
             if(sendToInviteUserList.size() > 0){
@@ -538,7 +548,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 for(Long tempUserId:sendToInviteUserList){
                     tempList.add(tempUserId);
                 }
-                userMsg.setRemark("您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!");
+                userMsg.setRemark(inviteRemark);
                 boolean insertRow = this.userMsgService.batchInsertUserMsg(tempList,userMsg);
             }
 
@@ -759,54 +769,56 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize,Date updateTime) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            List<SnsGroup> resultList = new ArrayList<SnsGroup>();
             List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize,updateTime);
-            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
-                for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                    SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
-                    if(snsGroup == null){
+            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
+                for (SnsGroupMembers snsGroupMembers : snsGroupMembersList) {
+                    SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid() + "", null);
+                    if (snsGroup == null) {
                         continue;
                     }
-                    Map<String,Object> map = new HashMap<String,Object>();
-
-                    Map<String,Object> parameterMap = new HashMap<String,Object>();
-                    parameterMap.put("groupId",snsGroup.getGroupid());
-                    parameterMap.put("startNum",0);
-                    parameterMap.put("pageSize",9);
-                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                    int maxLength = groupMembersList.size();
-                    String[] avatarArray = new String[maxLength];
-                    for(int i = 0;i<maxLength;i++){
-                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
-                    }
-
-                    map.put("groupid",snsGroup.getGroupid());
-                    map.put("groupname",snsGroup.getGroupname());
-                    map.put("grouptype",snsGroup.getGrouptype());
-                    map.put("needconfirm",snsGroup.getNeedconfirm());
-                    map.put("notice",snsGroup.getNotice());
-                    map.put("currentnum",snsGroup.getCurrentnum());
-                    map.put("maxnum",snsGroup.getMaxnum());
-                    map.put("avatarArray",avatarArray);
-
-                    if(updateTime != null){
-                        if(snsGroupMembers.getStatus() == 4){
-                            map.put("operationType","delete");
-                        }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
-                            map.put("operationType","insert");
-                        }else{
-                            map.put("operationType","update");
-                        }
-                    }
-                    resultList.add(map);
+                    resultList.add(snsGroup);
+//                    Map<String,Object> map = new HashMap<String,Object>();
+//
+//                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+//                    parameterMap.put("groupId",snsGroup.getGroupid());
+//                    parameterMap.put("startNum",0);
+//                    parameterMap.put("pageSize",9);
+//                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+//                    int maxLength = groupMembersList.size();
+//                    String[] avatarArray = new String[maxLength];
+//                    for(int i = 0;i<maxLength;i++){
+//                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+//                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
+//                    }
+//
+//                    map.put("groupid",snsGroup.getGroupid());
+//                    map.put("groupname",snsGroup.getGroupname());
+//                    map.put("grouptype",snsGroup.getGrouptype());
+//                    map.put("needconfirm",snsGroup.getNeedconfirm());
+//                    map.put("notice",snsGroup.getNotice());
+//                    map.put("currentnum",snsGroup.getCurrentnum());
+//                    map.put("maxnum",snsGroup.getMaxnum());
+//                    map.put("avatarArray",avatarArray);
+//
+//                    if(updateTime != null){
+//                        if(snsGroupMembers.getStatus() == 4){
+//                            map.put("operationType","delete");
+//                        }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
+//                            map.put("operationType","insert");
+//                        }else{
+//                            map.put("operationType","update");
+//                        }
+//                    }
+//                    resultList.add(map);
+//                }
                 }
+//            Map<String,Object> resultMap = new HashMap<String,Object>();
+//            resultMap.put("groupList",resultList);
+//            resultMap.put("updateTime",DateUtils.getDateTime());
+                baseResp.setData(resultList);
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
-            Map<String,Object> resultMap = new HashMap<String,Object>();
-            resultMap.put("groupList",resultList);
-            resultMap.put("updateTime",DateUtils.getDateTime());
-            baseResp.setData(resultMap);
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select user group list error userId:{} startNum:{} pageSize:{} updateTime:{}",userId,startNum,pageSize,updateTime);
             printException(e);
@@ -820,7 +832,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> searchGroup(String keyword,Integer startNum,Integer pageSize) {
+    public BaseResp<Object> searchGroup(Long userid,String keyword,Integer startNum,Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<SnsGroup> groupList = this.snsGroupMapper.selectGroup(keyword,startNum,pageSize);
@@ -830,6 +842,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     parameterMap.put("groupId",snsGroup.getGroupid());
                     parameterMap.put("startNum",0);
                     parameterMap.put("pageSize",9);
+                    SnsGroupMembers snsGroupMembers = snsGroupMembersMapper.findByUserIdAndGroupId(userid,String.valueOf(snsGroup.getGroupid()));
+                    if(null == snsGroupMembers){
+                        snsGroup.setHasjoin("0");
+                    }else {
+                        snsGroup.setHasjoin("1");
+                    }
                     List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
                     int maxLength = groupMembersList.size();
                     String[] avatarArray = new String[maxLength];
