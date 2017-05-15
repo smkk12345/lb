@@ -80,6 +80,10 @@ public interface ImproveService {
                           String businesstype,String businessid);
 
 
+    Improve selectImproveByImpidMuc(Long impid,String userid,
+                                 String businesstype,String businessid);
+
+
     /**
      *  榜中成员动态
      * @param userid

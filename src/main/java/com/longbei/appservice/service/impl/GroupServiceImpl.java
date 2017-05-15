@@ -769,54 +769,56 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     public BaseResp<Object> goupListByUser(Long userId, Integer startNum, Integer pageSize,Date updateTime) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            List<SnsGroup> resultList = new ArrayList<SnsGroup>();
             List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMembersList(userId,startNum,pageSize,updateTime);
-            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0){
-                for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                    SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid()+"",null);
-                    if(snsGroup == null){
+            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
+                for (SnsGroupMembers snsGroupMembers : snsGroupMembersList) {
+                    SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(snsGroupMembers.getGroupid() + "", null);
+                    if (snsGroup == null) {
                         continue;
                     }
-                    Map<String,Object> map = new HashMap<String,Object>();
-
-                    Map<String,Object> parameterMap = new HashMap<String,Object>();
-                    parameterMap.put("groupId",snsGroup.getGroupid());
-                    parameterMap.put("startNum",0);
-                    parameterMap.put("pageSize",9);
-                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                    int maxLength = groupMembersList.size();
-                    String[] avatarArray = new String[maxLength];
-                    for(int i = 0;i<maxLength;i++){
-                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
-                    }
-
-                    map.put("groupid",snsGroup.getGroupid());
-                    map.put("groupname",snsGroup.getGroupname());
-                    map.put("grouptype",snsGroup.getGrouptype());
-                    map.put("needconfirm",snsGroup.getNeedconfirm());
-                    map.put("notice",snsGroup.getNotice());
-                    map.put("currentnum",snsGroup.getCurrentnum());
-                    map.put("maxnum",snsGroup.getMaxnum());
-                    map.put("avatarArray",avatarArray);
-
-                    if(updateTime != null){
-                        if(snsGroupMembers.getStatus() == 4){
-                            map.put("operationType","delete");
-                        }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
-                            map.put("operationType","insert");
-                        }else{
-                            map.put("operationType","update");
-                        }
-                    }
-                    resultList.add(map);
+                    resultList.add(snsGroup);
+//                    Map<String,Object> map = new HashMap<String,Object>();
+//
+//                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+//                    parameterMap.put("groupId",snsGroup.getGroupid());
+//                    parameterMap.put("startNum",0);
+//                    parameterMap.put("pageSize",9);
+//                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+//                    int maxLength = groupMembersList.size();
+//                    String[] avatarArray = new String[maxLength];
+//                    for(int i = 0;i<maxLength;i++){
+//                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+//                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
+//                    }
+//
+//                    map.put("groupid",snsGroup.getGroupid());
+//                    map.put("groupname",snsGroup.getGroupname());
+//                    map.put("grouptype",snsGroup.getGrouptype());
+//                    map.put("needconfirm",snsGroup.getNeedconfirm());
+//                    map.put("notice",snsGroup.getNotice());
+//                    map.put("currentnum",snsGroup.getCurrentnum());
+//                    map.put("maxnum",snsGroup.getMaxnum());
+//                    map.put("avatarArray",avatarArray);
+//
+//                    if(updateTime != null){
+//                        if(snsGroupMembers.getStatus() == 4){
+//                            map.put("operationType","delete");
+//                        }else if(DateUtils.compare(snsGroup.getCreatetime(),updateTime)){
+//                            map.put("operationType","insert");
+//                        }else{
+//                            map.put("operationType","update");
+//                        }
+//                    }
+//                    resultList.add(map);
+//                }
                 }
+//            Map<String,Object> resultMap = new HashMap<String,Object>();
+//            resultMap.put("groupList",resultList);
+//            resultMap.put("updateTime",DateUtils.getDateTime());
+                baseResp.setData(resultList);
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
-            Map<String,Object> resultMap = new HashMap<String,Object>();
-            resultMap.put("groupList",resultList);
-            resultMap.put("updateTime",DateUtils.getDateTime());
-            baseResp.setData(resultMap);
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select user group list error userId:{} startNum:{} pageSize:{} updateTime:{}",userId,startNum,pageSize,updateTime);
             printException(e);

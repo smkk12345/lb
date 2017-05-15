@@ -65,6 +65,7 @@ public class InitConfig implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
+        initUserBehaviorRule(0);
         //初始化相关
         initSysRuleCheckInCache();
         //十全十美每级所需龙分缓存

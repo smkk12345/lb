@@ -431,7 +431,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(homeRecommend != null && homeRecommendList.size() > 0){
                 for(HomeRecommend homeRecommend1: homeRecommendList){
                     Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                    if(rank == null || "0".equals(rank.getIsdel())){
+                    if(rank == null || "1".equals(rank.getIsdel())){
                         continue;
                     }
                     List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());

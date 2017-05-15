@@ -2,6 +2,7 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class HomePageController {
 
     @Autowired
     private PageService pageService;
+
 
     /**
      * 获取首页轮播图
@@ -81,6 +83,22 @@ public class HomePageController {
             baseResp = pageService.selectPublishBg();
         } catch (Exception e) {
             logger.error("user userid={} get publishbg is error:",userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取首页推荐
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value = "recommens")
+    public BaseResp<List<HomeRecommend>> getHomeRecommenList(String userid){
+        BaseResp<List<HomeRecommend>> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectHomeRecommendList(null,null);
+        } catch (Exception e) {
+            logger.error("user userid={} get home recommen list is error:",e);
         }
         return baseResp;
     }
