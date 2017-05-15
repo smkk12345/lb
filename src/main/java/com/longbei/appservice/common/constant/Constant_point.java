@@ -1,5 +1,6 @@
 package com.longbei.appservice.common.constant;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import org.apache.commons.collections.map.FixedSizeMap;
 
 import java.lang.reflect.Field;
@@ -15,26 +16,27 @@ public class Constant_point {
     /**
      * 新手任务
      */
-    public static int NEW_REGISTER = 30;//用户注册
-    public static int NEW_LOGIN_QQ = 5;//绑定qq
-    public static int NEW_LOGIN_WX = 5;//绑定微信
-    public static int NEW_LOGIN_WB = 5;//绑定微博
+    public static int NEW_REGISTER = SysRulesCache.behaviorRule.getRegistergoals();//用户注册
+    public static int NEW_LOGIN_QQ = SysRulesCache.behaviorRule.getQqbindgoals();//绑定qq
+    public static int NEW_LOGIN_WX = SysRulesCache.behaviorRule.getWechatbindgoals();//绑定微信
+    public static int NEW_LOGIN_WB = SysRulesCache.behaviorRule.getWebbindgoals();//绑定微博
     public static int NEW_BINDING_EMAIL = 10;//绑定邮箱
-    public static int NEW_CERTIFY_USERCARD = 50;//身份证认证
+    public static int NEW_CERTIFY_USERCARD = SysRulesCache.behaviorRule.getCertificationgoals();//身份证认证
     public static int NEW_CERTIFY_ACADEMIC = 30;//学历认证 academic
     public static int NEW_CERTIFY_JOB = 30;//用作认证
-    public static int NEW_USERINFO = 5;//更新用户信息
+    public static int NEW_USERINFO = SysRulesCache.behaviorRule.getInfocompletegoals();//更新用户信息
 
     /**
      * 日常行为
      */
-    public static int DAILY_CHECKIN = 3;//点赞
-    public static int DAILY_SHARE=2;//每日分享
-    public static int DAILY_SHARE_LIMIT = 10;//每日分享上限限制
-    public static int DAILY_ADDFRIEND = 2;//每日添加好友
+    public static int DAILY_CHECKIN = SysRulesCache.behaviorRule.getLikegoals();//点赞
+    public static int DAILY_SHARE= SysRulesCache.behaviorRule.getInfocompletegoals();//每日分享
+    public static int DAILY_SHARE_OUT= SysRulesCache.behaviorRule.getOutsharegoals();//每日分享(站外)
+    public static int DAILY_SHARE_LIMIT = 20;//每日分享上限限制
+    public static int DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendgoals();//每日添加好友
     public static int DAILY_ADDFRIEND_LIMIT = 20;//每日添加好友限制
-    public static int DAILY_FUN = 1;//每日关注
-    public static int DAILY_FUN_LIMIT = 20;//每日关注限制
+//    public static int DAILY_FUN = SysRulesCache.behaviorRule.;//每日关注
+//    public static int DAILY_FUN_LIMIT = SysRulesCache.behaviorRule.;//每日关注限制
     /**
      * 互动行为
      */
@@ -49,7 +51,7 @@ public class Constant_point {
     /**
      * 进步行为
      */
-    public static int DAILY_ADDIMP = 50;//发进步
+    public static int DAILY_ADDIMP = SysRulesCache.behaviorRule.getImprovegoals();//发进步
     public static int DAILY_ADDIMP_LIMIT = 500;//发进步限制
     public static int DAILY_ADDRANK = 7;//加榜
     public static int DAILY_ADDRANK_LIMIT = 35;//加榜限制

@@ -1004,7 +1004,7 @@ public class UserServiceImpl implements UserService {
 		list.add("邀请好友注册+"+Constant_point.INVITE_LEVEL1+"分"+",上限+1000分／天");
 		list.add("分享+"+Constant_point.DAILY_SHARE+"分"+",上限+"+Constant_point.DAILY_SHARE_LIMIT+"分／天");
 		list.add("添加好友+"+Constant_point.DAILY_ADDFRIEND+"分"+",上限+"+Constant_point.DAILY_ADDFRIEND_LIMIT+"分／天");
-		list.add("关注他人+"+Constant_point.DAILY_FUN+"分"+",上限+"+Constant_point.DAILY_FUN_LIMIT+"分／天");
+//		list.add("关注他人+"+Constant_point.DAILY_FUN+"分"+",上限+"+Constant_point.DAILY_FUN_LIMIT+"分／天");
 		list.add("与他人评论互动+"+Constant_point.DAILY_COMMENT+"分"+",上限+"+Constant_point.DAILY_COMMENT_LIMIT+"分／天");
 		list.add("发微进步+"+Constant_point.DAILY_ADDIMP+"分"+",上限+"+Constant_point.DAILY_ADDIMP_LIMIT+"分／天");
 		list.add("加入龙榜+"+ Constant_point.DAILY_ADDRANK+"分");
