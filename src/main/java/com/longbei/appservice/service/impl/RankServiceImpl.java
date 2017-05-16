@@ -2028,15 +2028,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
                     map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
-                    if(Constant.VISITOR_UID.equals(userid+"")){
+//                    if(Constant.VISITOR_UID.equals(userid+"")){
                         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
-                        if(null == appUserMongoEntity){
-                            continue;
-                        }
+//                        if(null == appUserMongoEntity){
+//                            continue;
+//                        }
                         map.put("nickname",appUserMongoEntity.getNickname());
-                    }else{
-                        map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
-                    }
+//                    }else{
+//                        map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
+//                    }
                     resultList.add(map);
                 }
             }

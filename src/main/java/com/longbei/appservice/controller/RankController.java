@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import scala.collection.immutable.Stream;
 
 import java.util.List;
 
@@ -506,7 +507,10 @@ public class RankController {
      */
     @RequestMapping(value="selectWinningRankAward")
     public BaseResp<Object> selectWinningRankAward(Long userid){
-        BaseResp<Object> baseResp = this.rankService.selectWinningRankAward(userid);
+        logger.info("selectWinningRankAward userid={}",userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+
+        baseResp = this.rankService.selectWinningRankAward(userid);
         return baseResp;
     }
 
