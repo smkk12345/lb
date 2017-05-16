@@ -29,6 +29,29 @@ public interface UserMsgService {
 			String businesstype, String businessid, String remark, 
 			String mtype, String msgtype, String title, int num, 
 			String commentid, String commentlowerid);
+
+	/**
+	 * 和上面的方法差不多 就是多了一个href参数，图省事不想改了 先这样吧 陆也
+	 * @param userid
+	 * @param friendid
+	 * @param impid
+	 * @param businesstype
+	 * @param businessid
+	 * @param remark
+	 * @param mtype
+	 * @param msgtype
+	 * @param title
+	 * @param num
+	 * @param commentid
+	 * @param commentlowerid
+	 * @param href
+	 * @return
+	 * luye
+	 */
+	BaseResp<Object> insertMsg(String userid, String friendid, String impid,
+							   String businesstype, String businessid, String remark,
+							   String mtype, String msgtype, String title, int num,
+							   String commentid, String commentlowerid,String href);
 	
 	/**
 	 * 删除评论信息

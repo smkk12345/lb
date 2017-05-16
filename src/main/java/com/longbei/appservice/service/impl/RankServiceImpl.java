@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -865,6 +866,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //2.如果直接入榜 不需要审核的话,则修改入榜人数
                 if(status == 1 && updateRankMemberRow > 0){
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
+                    //参榜成功获得龙分
+                    userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
                 }
 
 
@@ -1243,6 +1246,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //3.初始化redis的用户排名
                 boolean redisFlag = initRedisRankSort(rank,userId);
                 userIdList.add(userId);
+
+                //4.参榜成功获得龙分
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUserid(userId);
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
             }
             if(userIdList.size() > 0){
                 String remark = null;
@@ -1996,7 +2004,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(appUserMongoEntity == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Map<String,Object> resultMap = new HashMap<String,Object>();
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
-            if(rankMembers == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            if(rankMembers == null || rankMembers.getStatus() != 1) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Long sortNum = null;
             if(rankMembers.getSortnum() == null||rankMembers.getSortnum() == 0){
                 sortNum = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userid+"");
@@ -2030,7 +2038,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("icount",rankMembers.getIcount());
             Rank rank = rankMapper.selectRankByRankid(rankId);
             resultMap.put("ranktitle",rank.getRanktitle());
-
+            resultMap.put("isfinish",rank.getIsfinish());
+            resultMap.put("endtime",rank.getEendtime());
+            resultMap.put("starttime",rank.getStarttime());
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -2054,7 +2064,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 for(RankMembers rankMembers: winningRankAwardList){
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
-                    map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
+
+                    Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                    map.put("awardnickname",award.getAwardtitle());
 //                    if(Constant.VISITOR_UID.equals(userid+"")){
                         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
 //                        if(null == appUserMongoEntity){
@@ -3272,7 +3284,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "");
+            			rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "",AppserviceConfig.h5_helper);
             }
             if ("2".equals(status)) {
                 //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
@@ -3292,7 +3304,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "41", "榜中进步下榜", 0, "", "");
+            			rankid, remark, "0", "41", "榜中进步下榜", 0, "", "",AppserviceConfig.h5_helper);
                 
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

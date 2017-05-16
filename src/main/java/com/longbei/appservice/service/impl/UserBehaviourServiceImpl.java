@@ -102,7 +102,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
-            levelUp(userInfo.getUserid(),point,pType);
+            levelUp(userInfo,point,pType);
             saveUserPointDetail(userInfo,point,pType,operateType);
             putPointToCache(point,userInfo.getUserid(),operateType);
         }

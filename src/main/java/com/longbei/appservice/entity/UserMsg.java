@@ -63,6 +63,8 @@ public class UserMsg {
 	private String commentid;  //主评论id
 	
 	private String commentlowerid;  //子评论id
+
+	private String href; //连接
 	
 	
 	//----------------扩展字段------------------------------------------
@@ -80,6 +82,15 @@ public class UserMsg {
 //	private String impPickey;//图片的key
 	
 //	private String impkey;//文件key  视频文件  音频文件 普通文件
+
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
 
 	/**
 	 * 
