@@ -123,12 +123,12 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 				if ("1".equals(record.getValidateidcard())){
 					String remark = "实名认证通过";
 					userMsgService.insertMsg(String.valueOf(record.getUserid())
-							,"1",null,"9",null,remark,"0","26", "实名认证",0);
+							,"1",null,"9",null,remark,"0","26", "实名认证",0, "", "");
 				}
 				if ("2".equals(record.getValidateidcard())){
 					String remark = "实名认证未通过";
 					userMsgService.insertMsg(String.valueOf(record.getUserid())
-							,"1",null,"9",null,remark,"0","26", "实名认证",0);
+							,"1",null,"9",null,remark,"0","26", "实名认证",0, "", "");
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}

@@ -60,11 +60,13 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 						&& !"12".equals(comment.getBusinesstype())){
 					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
 							comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
-							commentLower.getContent(), "1", "1", "评论", 0);
+							commentLower.getContent(), "1", "1", "评论", 0, 
+							commentLower.getCommentid(), commentLower.getId());
 				}else{
 					userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
 							"", comment.getBusinesstype(), comment.getBusinessid(), 
-							commentLower.getContent(), "1", "1", "评论", 0);
+							commentLower.getContent(), "1", "1", "评论", 0, 
+							commentLower.getCommentid(), commentLower.getId());
 				}
 				
 			}
@@ -206,6 +208,12 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 			if(null != commentLower){
 				//修改
 				updateCountSizeDelete(commentLower.getCommentid());
+				Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
+				if(null != comment){
+					//删除评论消息
+					userMsgService.deleteCommentMsg(comment.getImpid(), comment.getBusinesstype(), 
+							comment.getBusinessid(), commentLower.getCommentid(), commentLower.getId());
+				}
 			}
 			deleteByid(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

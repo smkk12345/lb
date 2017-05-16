@@ -92,7 +92,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 					//后台回复反馈信息   添加通知消息
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, 
 							userFeedback.getUserid().toString(), "", "14", userFeedback.getId().toString(), 
-							userFeedback.getCheckoption(), "0", "43", "用户反馈被回复", 0);
+							userFeedback.getCheckoption(), "0", "43", "用户反馈被回复", 0, "", "");
 				}
 				return true;
 			}

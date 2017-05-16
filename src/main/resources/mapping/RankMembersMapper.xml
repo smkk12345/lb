@@ -447,7 +447,9 @@
         rank_members
     where
         rankid = #{rankid}
-      and userid = #{userid}
+      <if test="userid != null">
+       and userid = #{userid}
+      </if>
   </select>
 
   <!-- 更改榜单中的用户数量 -->
