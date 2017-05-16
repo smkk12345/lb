@@ -78,7 +78,7 @@ public class InitConfig implements CommandLineRunner {
         //缓存敏感词
         initSensitiveMap();
 
-//        Constant_Imp_Icon.init();
+        Constant_Imp_Icon.init();
 
         initListener();
     }

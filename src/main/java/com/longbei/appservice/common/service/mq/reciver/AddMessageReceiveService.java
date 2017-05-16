@@ -168,7 +168,7 @@ public class AddMessageReceiveService implements MessageListener{
      */
     private void insertTimeLinePublic(TimeLine timeLine){
         timeLine.setId(MongoUtils.UUID());
-        timeLine.setUserid("0");
+        timeLine.setUserid(Constant.SQUARE_USER_ID);
         timeLine.setCtype("0");
         timeLineDao.save(timeLine);
     }
