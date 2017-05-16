@@ -423,7 +423,7 @@ public class ImproveController {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
-    @RequestMapping(value = "line/list", method = RequestMethod.POST)
+    @RequestMapping(value = "line/list")
     public BaseResp selectImproveLineListByUser(String userid, String ptype, String ctype, String lastDate, String pageSize) {
         logger.info("userid={},ptype={},ctype={},lastDate={},pageSize={}", userid,ptype,ctype,lastDate,pageSize);
         Long s = System.currentTimeMillis();

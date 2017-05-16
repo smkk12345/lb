@@ -1,5 +1,6 @@
 package com.longbei.appservice.common.constant;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.utils.RandomUtils;
 
 import java.lang.reflect.Field;
@@ -14,18 +15,22 @@ public class Constant_Imp_Icon {
 
 
     public static int DAILY_CHECKIN = 0;
+
+    public static void init(){
+        int first = SysRulesCache.behaviorRule.getFirstsignimpcoins();
+        int more = SysRulesCache.behaviorRule.getContinuesignimpcoinsmore();
+        for (int i = 0 ; i < 7 ; i++){
+            checkInImpIconMap.put(i+1,first);
+            first = first + more;
+        }
+
+    }
+
+
     /**
      * 签到送进步币
      */
-    public static Map<Integer,Integer> checkInImpIconMap = new HashMap<Integer,Integer>(){{
-        put(1,1);
-        put(2,2);
-        put(3,3);
-        put(4,4);
-        put(5,5);
-        put(6,6);
-        put(7,7);
-    }};
+    public static Map<Integer,Integer> checkInImpIconMap = new HashMap<Integer,Integer>(){};
 
     public static int DAILY_SHARE_RANDOM=0;//5-10 5-10 算法0
     public static int DAILY_SHARE_LIMIT = 3; //限制3次
@@ -37,6 +42,7 @@ public class Constant_Imp_Icon {
      * 邀请好友注册赠送的进步币
      */
     public static int INVITE_LEVEL1 = 10;
+//    public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
 
     //以下两类需要单独接口
     public static int DAILY_FLOWERED = 0;//被送花 进步币系数

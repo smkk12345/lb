@@ -1671,6 +1671,11 @@ public class ImproveServiceImpl implements ImproveService{
 //        if (!ResultUtil.isSuccess(baseResp)){
 //            return baseResp;
 //        }
+        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        if(null == improve || null == userInfo){
+            return baseResp;
+        }
 
         //消耗龙币
 //        userMoneyDetailService.insertPublic(Long.parseLong(userid),
@@ -1688,9 +1693,10 @@ public class ImproveServiceImpl implements ImproveService{
                 //redis
                 addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
                 timeLineDetailDao.updateImproveFlower(businesstype,Long.valueOf(impid),flowernum);
+                addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER,
+                        userInfo.getAvatar())  ;
                 //赠送龙分操作  UserInfo userInfo,String operateType,String pType)
                 //送分  送进步币
-                UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
                 //送花添加消息记录    msg
                 String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
                 //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
