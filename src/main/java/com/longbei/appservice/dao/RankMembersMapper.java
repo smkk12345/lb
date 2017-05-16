@@ -144,4 +144,11 @@ public interface RankMembersMapper {
      */
     List<RankMembers> getWinningRankAwardUser(@Param("rankid") Long rankid,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
+    /**
+     * 更新赞 花到快照中去
+     * @param rankid
+     * @return
+     */
+    int updateSortSource(@Param("rankid") Long rankid);
+
 }

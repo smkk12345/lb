@@ -339,7 +339,9 @@
           <if test="userId != null">
             and userid = #{userId}
           </if>
+
       group by groupid
+      ORDER by updatetime DESC
       <if test="startNum != null and pageSize != null">
           limit #{startNum},#{pageSize}
       </if>

@@ -15,11 +15,13 @@
     <result column="title" property="title" />
     <result column="mtype" property="mtype" jdbcType="CHAR" />
     <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="commentid" property="commentid" />
+    <result column="commentlowerid" property="commentlowerid" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, 
-    gtypeid, title, mtype, num, createtime
+    gtypeid, title, mtype, num, commentid, commentlowerid, createtime
   </sql>
   <sql id="Fid_Column_List" >
     friendid
@@ -146,6 +148,27 @@
     order by createtime desc
   </select>
   
+  <delete id="deleteCommentMsg">
+    delete from user_msg 
+    where mtype = 1 
+    and msgtype = 1 
+    <if test="snsid != null" >
+    	and snsid = #{snsid}  
+    </if> 
+    <if test="gtype != null" >
+    	and gtype = #{gtype} 
+    </if> 
+    <if test="gtypeid != null" >
+    	and gtypeid = #{gtypeid} 
+    </if>
+    <if test="commentid != null" >
+    	and commentid = #{commentid} 
+    </if>
+    <if test="commentlowerid != null" >
+    	and commentlowerid = #{commentlowerid} 
+    </if>
+  </delete>
+  
   <delete id="deleteByMtypeAndMsgtype">
     delete from user_msg 
     where userid = #{userid} 
@@ -180,13 +203,15 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserMsg" >
     insert into user_msg (userid, friendid,
       msgtype, snsid, remark, 
-      isdel, isread, gtype, gtypeid, title, mtype, num, createtime,updatetime
+      isdel, isread, gtype, gtypeid, title, mtype, num, commentid, commentlowerid, 
+      createtime,updatetime
       )
     values ( #{userid,jdbcType=BIGINT}, #{friendid,jdbcType=BIGINT},
       #{msgtype,jdbcType=CHAR}, #{snsid,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, 
       #{isdel,jdbcType=CHAR}, #{isread,jdbcType=CHAR}, #{gtype,jdbcType=CHAR}, #{gtypeid}, #{title}, 
       #{mtype,jdbcType=CHAR}, 
-      #{num,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},#{createtime,jdbcType=TIMESTAMP}
+      #{num,jdbcType=INTEGER}, #{commentid}, #{commentlowerid}, 
+      #{createtime,jdbcType=TIMESTAMP},#{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserMsg" >
@@ -231,6 +256,12 @@
       <if test="num != null" >
         num,
       </if>
+      <if test="commentid != null" >
+        commentid,
+      </if>
+      <if test="commentlowerid != null" >
+        commentlowerid,
+      </if>
       <if test="createtime != null" >
         createtime,updatetime,
       </if>
@@ -274,6 +305,12 @@
       </if>
       <if test="num != null" >
         #{num,jdbcType=INTEGER},
+      </if>
+      <if test="commentid != null" >
+        #{commentid},
+      </if>
+      <if test="commentlowerid != null" >
+        #{commentlowerid},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},

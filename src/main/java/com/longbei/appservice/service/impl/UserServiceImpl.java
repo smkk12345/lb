@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		try {
-			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userid+"", username, "#");
+			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(String.valueOf(userid), username, "#");
 			if(!ResultUtil.isSuccess(tokenRtn)){
 				return reseResp;
 			}
@@ -1141,11 +1141,13 @@ public class UserServiceImpl implements UserService {
 			if (res > 0){
 				if ("1".equals(userInfo.getIsfashionman())){
 					String remark = "你被选为达人";
-					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,remark,"0","30", "选为达人",0);
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
+							remark,"0","30", "选为达人",0, "", "");
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";
-					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,remark,"0","30", "取消达人",0);
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
+							remark,"0","30", "取消达人",0, "", "");
 				}
                 baseResp = BaseResp.ok();
             }

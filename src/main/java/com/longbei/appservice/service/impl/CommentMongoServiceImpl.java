@@ -77,7 +77,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
 						comment.getImpid(), comment.getBusinesstype(), 
-						comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0);
+						comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
 //				insertMsg(comment);
 			}
 
@@ -283,6 +283,12 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	public BaseResp<Object> deleteComment(String id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Comment comment = commentMongoDao.selectCommentByid(id);
+			if(null != comment){
+				//删除评论消息
+				userMsgService.deleteCommentMsg(comment.getImpid(), comment.getBusinesstype(), 
+						comment.getBusinessid(), comment.getId(), null);
+			}
 			//删除其他的信息，评论总数及子评论信息
 			deleteCommentOther(id);
 			//后删主评论信息
