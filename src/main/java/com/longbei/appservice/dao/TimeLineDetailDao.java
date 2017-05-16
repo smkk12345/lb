@@ -8,6 +8,10 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.TimeLine;
 import com.longbei.appservice.entity.TimeLineDetail;
 import com.longbei.appservice.entity.UserImproveStatistic;
+import com.longbei.appservice.service.impl.UserCheckinDetailImpl;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -18,10 +22,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 时间线详情mongo操作
@@ -31,7 +32,7 @@ import java.util.Map;
  **/
 @Repository
 public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
-
+    private static Logger logger = LoggerFactory.getLogger(TimeLineDetailDao.class);
     public void updateImproveFileKey(String sourcekey,String pickey,String fliekey){
         Criteria criteria = Criteria.where("sourcekey").is(sourcekey);
         Query query = new Query(criteria);
@@ -150,7 +151,18 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
             AggregationResults<Map> results =mongoTemplate.aggregate(agg,TimeLineDetail.class,Map.class);
 
             for(Map map : results.getMappedResults()){
-                AppUserMongoEntity userMongoEntity = (AppUserMongoEntity) map.get("_id");
+                AppUserMongoEntity userMongoEntity = null;
+                try{
+                    userMongoEntity = (AppUserMongoEntity) map.get("_id");
+                }catch (Exception e){
+//                    logger.error("getUserImproveStatistic map.get(_id)={}",
+//                            JSONObject.fromObject(map.get("_id")).toString(),e);
+                    userMongoEntity = new AppUserMongoEntity();
+                    LinkedHashMap map1 = (LinkedHashMap)map.get("_id");
+                    userMongoEntity.setUserid(map1.get("_id").toString());
+//                    continue;
+                }
+
                 if(userMongoEntity == null){
                     continue;
                 }
