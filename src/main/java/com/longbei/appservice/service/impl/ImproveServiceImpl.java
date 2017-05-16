@@ -23,6 +23,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2127,6 +2128,16 @@ public class ImproveServiceImpl implements ImproveService{
             }
         }
         return photos;
+    }
+
+    @Override
+    public int updateSortSource(Long rankId) {
+        try{
+            improveMapper.updateSortSource(getTableNameByBusinessType(Constant.IMPROVE_RANK_TYPE),rankId);
+        }catch (Exception e){
+            logger.error("updateSortSource error rankId={}",rankId);
+        }
+        return 0;
     }
 
     private String firstPhotos(String photos){

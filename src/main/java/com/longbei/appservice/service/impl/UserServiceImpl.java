@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		try {
-			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userid+"", username, "#");
+			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(String.valueOf(userid), username, "#");
 			if(!ResultUtil.isSuccess(tokenRtn)){
 				return reseResp;
 			}

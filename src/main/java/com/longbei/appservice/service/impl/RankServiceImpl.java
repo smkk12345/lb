@@ -1363,6 +1363,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if("1".equals(rank.getIsfinish())){
                 long sort = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userId+"");
                 rankMembers.setSortnum(Integer.parseInt(sort+""));
+            }else{
+                rankMembers.setLikes(rankMembers.getRankfinishlikes());
+                rankMembers.setFlowers(rankMembers.getRankfinishflower());
             }
 
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");

@@ -78,6 +78,10 @@ public class RankMembers {
 
     private Integer sort; //达人排序
 
+    private Integer rankfinishlikes = 0;
+
+    private Integer rankfinishflower = 0;
+
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpfashionmantime() {
@@ -503,5 +507,21 @@ public class RankMembers {
      */
     public void setAwardlevel(Integer awardlevel) {
         this.awardlevel = awardlevel;
+    }
+
+    public void setRankfinishflower(Integer rankfinishflower) {
+        this.rankfinishflower = rankfinishflower;
+    }
+
+    public void setRankfinishlikes(Integer rankfinishlikes) {
+        this.rankfinishlikes = rankfinishlikes;
+    }
+
+    public Integer getRankfinishflower() {
+        return rankfinishflower;
+    }
+
+    public Integer getRankfinishlikes() {
+        return rankfinishlikes;
     }
 }

@@ -242,4 +242,8 @@ public interface ImproveMapper {
                                   @Param("businessid") String businessid,
                                   @Param("impid") String impid);
 
+
+    int updateSortSource(@Param("tablename") String tablename,
+                         @Param("rankid") Long rankid);
+
 }
