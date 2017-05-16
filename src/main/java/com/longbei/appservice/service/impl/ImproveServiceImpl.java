@@ -1466,7 +1466,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
 
                 try{
-                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE","2",null,0,0);
+                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
                     userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
                 }catch (Exception e){
                     logger.error("pointChange or userSumInfo error ",e);
@@ -1696,7 +1696,8 @@ public class ImproveServiceImpl implements ImproveService{
                 //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
-                //用户龙分变化
+                //用户送花获得龙分
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED",Constant_Perfect.PERFECT_GAM,null,0,0);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
@@ -1776,7 +1777,7 @@ public class ImproveServiceImpl implements ImproveService{
 
                 //赠送龙分操作
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
-                //用户龙分变化
+                //用户送钻获得龙分
                 BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_DIAMOND", Constant_Perfect.PERFECT_GAM,null,0,0);
                 if(ResultUtil.isSuccess(resp)){
                     int icon = diamondnum* Constant_Imp_Icon.DAILY_DIAMONDED;

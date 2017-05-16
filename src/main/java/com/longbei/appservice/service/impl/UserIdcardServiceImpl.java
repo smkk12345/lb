@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.UserMsgService;
@@ -17,6 +18,7 @@ import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserBehaviourService;
 
 import java.util.List;
 
@@ -31,6 +33,8 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private UserBehaviourService userBehaviourService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserIdcardServiceImpl.class);
 	
@@ -121,6 +125,10 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 			boolean temp = updateUserIdcard(record);
 			if (temp) {
 				if ("1".equals(record.getValidateidcard())){
+					//完成实名认证获得龙分
+					UserInfo userInfo = new UserInfo();
+					userInfo.setUserid(record.getUserid());
+					userBehaviourService.pointChange(userInfo,"NEW_CERTIFY_USERCARD",Constant_Perfect.PERFECT_GAM,null,0,0);
 					String remark = "实名认证通过";
 					userMsgService.insertMsg(String.valueOf(record.getUserid())
 							,"1",null,"9",null,remark,"0","26", "实名认证",0, "", "");

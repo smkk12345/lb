@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -824,6 +825,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //2.如果直接入榜 不需要审核的话,则修改入榜人数
                 if(status == 1 && updateRankMemberRow > 0){
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
+                    //参榜成功获得龙分
+                    userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
                 }
 
 
@@ -1202,6 +1205,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //3.初始化redis的用户排名
                 boolean redisFlag = initRedisRankSort(rank,userId);
                 userIdList.add(userId);
+
+                //4.参榜成功获得龙分
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUserid(userId);
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
             }
             if(userIdList.size() > 0){
                 String remark = null;

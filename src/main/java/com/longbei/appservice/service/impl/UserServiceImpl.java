@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.*;
@@ -335,7 +336,7 @@ public class UserServiceImpl implements UserService {
 				//初始化用户感兴趣的标签
 				initUserInterestInfo(userInfo.getUserid());
 				//注册获得龙分
-				userBehaviourService.pointChange(userInfo,"NEW_REGISTER","2",null,0,0);
+				userBehaviourService.pointChange(userInfo,"NEW_REGISTER",Constant_Perfect.PERFECT_GAM,null,0,0);
 			}
 		});
 		return true;
@@ -706,6 +707,22 @@ public class UserServiceImpl implements UserService {
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
+			//第三方注册获得龙分
+			UserInfo userInfo = new UserInfo();
+			userInfo.setUserid(suserid);
+			switch (utype) {
+				case "qq":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wx":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wb":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				default:
+					break;
+			}
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -732,6 +749,20 @@ public class UserServiceImpl implements UserService {
 					baseResp.getExpandData().put("token", baseResp.getData());
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
+					//第三方注册获得龙分
+					switch (utype) {
+						case "qq":
+							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
+							break;
+						case "wx":
+							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
+							break;
+						case "wb":
+							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
+							break;
+						default:
+							break;
+					}
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
