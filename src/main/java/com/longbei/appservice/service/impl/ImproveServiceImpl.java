@@ -1817,12 +1817,14 @@ public class ImproveServiceImpl implements ImproveService{
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
             for (ImpAllDetail impAllDetail : impAllDetails) {
             	//获取好友昵称
-    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
+                SnsFriends snsFriends = userRelationService.selectByUidAndFid(Long.parseLong(userid), impAllDetail.getUserid());
+//    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
     			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid()));
     			if(null != appUserMongoEntity){
-    				if(!StringUtils.isBlank(remark)){
-    					appUserMongoEntity.setNickname(remark);
-    				}
+                    if (null != snsFriends){
+                        appUserMongoEntity.setIsfriend("1");
+                        appUserMongoEntity.setNickname(snsFriends.getRemark());
+                    }
     				impAllDetail.setAppUser(appUserMongoEntity);
     			}else{
     				impAllDetail.setAppUser(new AppUserMongoEntity());
