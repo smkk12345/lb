@@ -92,6 +92,7 @@ public class OrderController {
     * @param @param orderid 订单业务id 
     * @param @param impiconprice 成交价格---进步币
     * @param @param moneyprice 成交价格---龙币       若没有,传0
+    * @param @param ptype 0:Android 1：IOS
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -99,7 +100,7 @@ public class OrderController {
 	*/
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/buyOrder")
-    public BaseResp<Object> buyOrder(String userid, String orderid, String impiconprice, String moneyprice) {
+    public BaseResp<Object> buyOrder(String userid, String orderid, String impiconprice, String moneyprice, String ptype) {
 		logger.info("userid={},orderid={},impiconprice={},moneyprice={}", userid,orderid,impiconprice,moneyprice);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid, impiconprice)) {
@@ -117,7 +118,7 @@ public class OrderController {
 				impiconprice = impiconprice.substring(0, impiconprice.length()-2);
 			}
   			baseResp = orderService.buyOrder(Long.parseLong(userid), orderid,
-					Integer.parseInt(impiconprice), Integer.parseInt(moneyprice));
+					Integer.parseInt(impiconprice), Integer.parseInt(moneyprice), ptype);
 		} catch (Exception e) {
 			logger.error("buyOrder userid = {}, orderid = {}, impiconprice = {}, moneyprice = {}", 
 					userid, orderid, impiconprice, moneyprice, e);
@@ -169,6 +170,7 @@ public class OrderController {
     * @param @param prices 商品价格，以逗号隔开
     * @param @param otype 订单类型。0 龙币 1 进步币 2 混排
     * @param @param remark 备注
+    * @param @param ptype 0:Android 1：IOS
     * @param @param 正确返回 code 0， -7为 参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @desc  
@@ -177,11 +179,13 @@ public class OrderController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/create")
     public BaseResp<ProductOrders> create(String userid, String productidss, String numberss, String prices,
-    		String addressid, String impiconprice, String moneyprice, String paytype, String otype, String remark) {
+    		String addressid, String impiconprice, String moneyprice, String paytype, 
+    		String otype, String remark, String ptype) {
 		
 		logger.info("create userid = {}, productidss= {}, numberss = {}, prices = {}, addressid = {}, impiconprice = {},"
 				+ " moneyprice = {}, paytype = {}, otype = {} remark = {}",
-				userid, productidss, numberss,  prices, addressid, impiconprice, moneyprice, paytype, otype, remark);
+				userid, productidss, numberss,  prices, addressid, impiconprice, 
+				moneyprice, paytype, otype, remark);
 
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, productidss, numberss, addressid, 
@@ -190,7 +194,7 @@ public class OrderController {
   		}
   		try {
   			baseResp = orderService.create(Long.parseLong(userid), productidss, numberss, addressid, 
-  					impiconprice, moneyprice, paytype, prices, otype, remark);
+  					impiconprice, moneyprice, paytype, prices, otype, remark, ptype);
 		} catch (Exception e) {
 			logger.error("create userid = {}, productidss = {}, numberss = {}, impiconprice = {}, moneyprice = {}", 
 					userid, productidss, numberss, impiconprice, moneyprice, e);

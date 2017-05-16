@@ -508,7 +508,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             if (!"a".equals(ptype)) {
                 remark = remark.replace("m", SysRulesCache.perfectTenMap.get(ptype));
                 //mtype 0 系统消息      msgtype  19：十全十美升级
-                userMsgService.insertMsg("0", userInfo.getUserid().toString(),
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(),
                         "", "6", "", remark, "0", "19", "升级", 0, "", "");
             }
 //            levelMsg(userInfo.getUserid(), "19", remark);
@@ -531,7 +531,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             //推送一条消息
             String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
             //mtype 0 系统消息      msgtype  18:升龙级
-            userMsgService.insertMsg("0", userInfo.getUserid().toString(), 
+            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(), 
             		"", "6", "", remark, "0", "18", "升级", 0, "", "");
 //            levelMsg(userInfo.getUserid(), "18", remark);
         }catch (Exception e){
