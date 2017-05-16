@@ -216,7 +216,7 @@ public class RankController {
     public BaseResp<Rank> rankDetail(Long userid,String rankId){
         logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
-        if(StringUtils.isEmpty(rankId) || userid == null){
+        if(StringUtils.isEmpty(rankId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
