@@ -2030,7 +2030,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("icount",rankMembers.getIcount());
             Rank rank = rankMapper.selectRankByRankid(rankId);
             resultMap.put("ranktitle",rank.getRanktitle());
-
+            resultMap.put("isfinish",rank.getIsfinish());
+            resultMap.put("endtime",rank.getEendtime());
+            resultMap.put("starttime",rank.getStarttime());
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
