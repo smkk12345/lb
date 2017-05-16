@@ -84,7 +84,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 */
 	@Override
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
-			String businessid, String remark, String mtype, String msgtype, String title, int num) {
+			String businessid, String remark, String mtype, String msgtype, String title, int num, 
+			String commentid, String commentlowerid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		if (StringUtils.isBlank(friendid)){
 			return reseResp;
@@ -114,6 +115,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 			record.setIsread("0");
 			record.setNum(num);
 			record.setTitle(title);
+			record.setCommentid(commentid);
+			record.setCommentlowerid(commentlowerid);
 			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
 			// 送花 4 送钻石  5:粉丝  等等)
 			record.setMtype(mtype);
@@ -128,6 +131,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}
 		return reseResp;
 	}
+
+	@Override
+	public int deleteCommentMsg(String impid, String businesstype, String businessid,
+			String commentid, String commentlowerid) {
+		int temp = userMsgMapper.deleteCommentMsg(impid, businesstype, businessid, commentid, commentlowerid);
+		return temp;
+	}
+
 
 	/**
 	 * 获取是否显示红点 0.不显示 1.显示红点
@@ -1111,7 +1122,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
     	}
     }
-
 
     /**
      * 初始化消息中用户信息 ------Userid

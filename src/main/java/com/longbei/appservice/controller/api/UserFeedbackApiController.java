@@ -103,7 +103,7 @@ public class UserFeedbackApiController {
 		BaseResp<Object> baseResp = new BaseResp<>();
   		try {
   			baseResp = userMsgService.insertMsg(Constant.SQUARE_USER_ID, 
-  					friendid, "", "14", businessid, remark, "0", "43", "用户反馈被回复", 0);
+  					friendid, "", "14", businessid, remark, "0", "43", "用户反馈被回复", 0, "", "");
 		} catch (Exception e) {
 			logger.error("insertMsg friendid = {}, businessid = {}, remark = {}", 
 					friendid, businessid, remark, e);
