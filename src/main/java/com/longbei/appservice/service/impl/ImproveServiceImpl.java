@@ -992,6 +992,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
+                //跟新榜中进步条数
+                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
                 //更新redis中排名by lixb
                 rankSortService.updateRankSortScore(improve.getBusinessid(),
                     improve.getUserid(),Constant.OperationType.like,-like);
