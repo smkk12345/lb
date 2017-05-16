@@ -2197,6 +2197,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("newStatus","3");
             int row = this.rankAcceptAwardMapper.updateRankAwardStatus(map);
 
+            //修改rankMember状态为已完成
+            Map<String,Object> parameterMap = new HashMap<String,Object>();
+            parameterMap.put("userId",userid);
+            parameterMap.put("rankId",rankId);
+            parameterMap.put("acceptaward","3");
+            int updateRow = this.rankMembersMapper.updateRank(parameterMap);
+
             if(row > 0){
                 return baseResp.ok();
             }
@@ -2771,7 +2778,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             int userRankMemberStatus = 0;//可参榜
-            if(!Constant.VISITOR_UID.equals(userId+"")){
+            if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
                 //用户是否可参榜
                 userRankMemberStatus = getInsertUserRankMemberStatus(userId,rank);
 
@@ -2792,8 +2799,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
             if(commentResp.getCode() == 0){
                 resultMap.put("commentCount",commentResp.getData());
+                rank.setCommentCount(commentResp.getData());
             }else{
                 resultMap.put("commentCount","0");
+                rank.setCommentCount(0);
             }
 
             //计算入榜截止时间

@@ -227,6 +227,7 @@
         </if>
         and groupid=#{groupId}
       </where>
+      order by id
       <if test="startNum != null and pageSize != null">
           limit #{startNum},#{pageSize}
       </if>
@@ -304,6 +305,7 @@
           </if>
         and groupid = #{groupId}
       </where>
+      order by id
       <if test="startNum != null and pageSize != null">
           limit #{startNum},#{pageSize}
       </if>
