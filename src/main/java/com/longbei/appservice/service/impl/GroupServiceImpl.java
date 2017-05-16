@@ -780,17 +780,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     resultList.add(snsGroup);
 //                    Map<String,Object> map = new HashMap<String,Object>();
 //
-//                    Map<String,Object> parameterMap = new HashMap<String,Object>();
-//                    parameterMap.put("groupId",snsGroup.getGroupid());
-//                    parameterMap.put("startNum",0);
-//                    parameterMap.put("pageSize",9);
-//                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-//                    int maxLength = groupMembersList.size();
-//                    String[] avatarArray = new String[maxLength];
-//                    for(int i = 0;i<maxLength;i++){
-//                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-//                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
-//                    }
+                    Map<String,Object> parameterMap = new HashMap<String,Object>();
+                    parameterMap.put("groupId",snsGroup.getGroupid());
+                    parameterMap.put("startNum",0);
+                    parameterMap.put("pageSize",9);
+                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+                    int maxLength = groupMembersList.size();
+                    String[] avatarArray = new String[maxLength];
+                    for(int i = 0;i<maxLength;i++){
+                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
+                    }
+                    snsGroup.setAvatarArray(avatarArray);
 //
 //                    map.put("groupid",snsGroup.getGroupid());
 //                    map.put("groupname",snsGroup.getGroupname());

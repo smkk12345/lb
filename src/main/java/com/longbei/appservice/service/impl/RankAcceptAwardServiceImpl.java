@@ -204,7 +204,7 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 map.put("rankid",rankAcceptAward.getRankid());
                 map.put("ranktitle",rankAcceptAward.getRanktitle());
                 map.put("awardnickname",award.getAwardtitle());
-                map.put("endtime",rank.getEndtime());
+                map.put("endtime",DateUtils.formatDate(rank.getEndtime(),"yyyy-MM-dd HH:mm:ss"));
                 map.put("awardphotos",award.getAwardphotos());
                 map.put("status",rankAcceptAward.getStatus());//奖品领取状态
 

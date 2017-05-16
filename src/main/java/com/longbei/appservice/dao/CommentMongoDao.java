@@ -88,10 +88,10 @@ public class CommentMongoDao {
 		List<Comment> list = null;
 		try {
 			Criteria criteria  = Criteria.where("businesstype").is(businesstype);
-			if (!StringUtils.isBlank(impid)) {
+			if (StringUtils.isNotBlank(impid)) {
 				criteria = criteria.and("impid").is(impid);
 			}
-			if (!StringUtils.isBlank(businessid)) {
+			if (StringUtils.isNotBlank(businessid)) {
 				criteria = criteria.and("businessid").is(businessid);
 			}
 			Query query = Query.query(criteria);

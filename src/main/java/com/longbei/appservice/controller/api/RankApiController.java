@@ -584,7 +584,7 @@ public class RankApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = rankService.removeRankMember(rankMembers);
+            baseResp = rankService.removeRankMember(rankMembers,"0");
         } catch (Exception e) {
             logger.error("remove rankmember rankid={} userid={} is error:",rankMembers.getRankid(),
                     rankMembers.getUserid(),e);

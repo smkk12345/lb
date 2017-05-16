@@ -36,8 +36,10 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value="createGroup")
-    public BaseResp<Object> createGroup(String userIds,String mainGroupUserId,Integer type,Long typeId,String groupName,Boolean needConfirm){
-        logger.info("userIds={},mainGroupUserId={},type={},typeId={},groupName={},needConfirm={}",userIds,mainGroupUserId,type,typeId,groupName,needConfirm);
+    public BaseResp<Object> createGroup(String userIds,String mainGroupUserId,Integer type,
+                                        Long typeId,String groupName,Boolean needConfirm){
+        logger.info("userIds={},mainGroupUserId={},type={},typeId={},groupName={},needConfirm={}",
+                userIds,mainGroupUserId,type,typeId,groupName,needConfirm);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(mainGroupUserId == null || (StringUtils.isNotEmpty(groupName) && groupName.length() > 40)){
             return baseResp.fail("参数错误");
