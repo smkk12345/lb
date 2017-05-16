@@ -76,13 +76,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }while(groupId == null);
 
-            Set<String> userIdSet = new HashSet<String>();
+            List<String> userIdSet = new ArrayList<String>();
+            userIdSet.add(mainGroupUserId.trim());
             if(userIds != null && userIds.length > 0){
                 for(String userId:userIds){
-                    userIdSet.add(userId.trim());
+                    if(!userIdSet.contains(userId)){
+                        userIdSet.add(userId.trim());
+                    }
                 }
             }
-            userIdSet.add(mainGroupUserId.trim());
             StringBuilder sb = new StringBuilder();
             for(String tempId:userIdSet){
                 sb.append(",").append(tempId.trim());
@@ -252,7 +254,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                 return baseResp.fail("抱歉,你无法修改用户昵称!");
             }
-            BaseResp rongyunBaseResp = iRongYunService.updateGroupMemberNickname(userId+"",groupId,nickName);
+            //暂时不用推送此通知消息
+//            BaseResp rongyunBaseResp = iRongYunService.updateGroupMemberNickname(userId+"",groupId,nickName);
             int row= snsGroupMembersMapper.updateSnsGroupMemberInfo(userId,groupId,nickName,null);
             if(row > 0){
                 return baseResp.ok();
@@ -527,12 +530,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             userMsg.setUpdatetime(new Date());
             String remark;
             String inviteRemark;
-            if(status.equals("2")){
-                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
-                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
-            }else {
+            if(status == 2){
                 remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
                 inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
+            }else {
+                remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
+                inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
             }
 
             if(sendMessageUserList.size() > 0){
@@ -598,16 +601,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_95,Constant.RTNINFO_SYS_95);
                 }
             }
+            SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(currentUserId,groupId);
             AppUserMongoEntity operatorUser = this.userMongoDao.getAppUser(currentUserId+"");
             StringBuilder sb = new StringBuilder();
             for(String userid:userIds){
-                AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid);
-                if(appUserMongoEntity != null){
-                    sb.append(",").append(appUserMongoEntity.getNickname());
-                }
+                SnsGroupMembers snsGroupMembers1 = this.snsGroupMembersMapper.findByUserIdAndGroupId(Long.parseLong(userid),groupId);
+                sb.append(",").append(snsGroupMembers1.getNickname());
             }
 
-            boolean flag = deleteRongYunGroupMember(currentUserId+"",operatorUser.getNickname(),sb.toString().substring(1),userIds,groupId);
+            boolean flag = deleteRongYunGroupMember(currentUserId+"",snsGroupMembers.getNickname(),sb.toString().substring(1),userIds,groupId);
             if(flag){
                 //从数据库删除数据
                 Map<String,Object> deleteMap = new HashMap<String,Object>();

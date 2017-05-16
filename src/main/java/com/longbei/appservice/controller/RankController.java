@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import scala.collection.immutable.Stream;
 
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class RankController {
      */
     @RequestMapping(value="selectRankList")
     public BaseResp<Object> selectRankList(Long userid,String rankTitle,String pType,String rankscope,Integer status,String lastDate,String searchByCodeword,Integer startNum,Integer pageSize){
-        logger.info("rankTitle={},pType={},rankscope={},status={},lastDate={},startNum={},pageSize={}",rankTitle,pType,rankscope,status,lastDate,startNum,pageSize);
+        logger.info("userid={},rankTitle={},pType={},rankscope={},status={},lastDate={},searchByCodeword={},startNum={},pageSize={}",userid,rankTitle,pType,rankscope,status,lastDate,searchByCodeword,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -215,7 +216,7 @@ public class RankController {
     public BaseResp<Rank> rankDetail(Long userid,String rankId){
         logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
-        if(StringUtils.isEmpty(rankId) || userid == null){
+        if(StringUtils.isEmpty(rankId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
@@ -506,7 +507,10 @@ public class RankController {
      */
     @RequestMapping(value="selectWinningRankAward")
     public BaseResp<Object> selectWinningRankAward(Long userid){
-        BaseResp<Object> baseResp = this.rankService.selectWinningRankAward(userid);
+        logger.info("selectWinningRankAward userid={}",userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+
+        baseResp = this.rankService.selectWinningRankAward(userid);
         return baseResp;
     }
 
@@ -568,15 +572,19 @@ public class RankController {
     /**
      * url: http://ip:port/app_service/rank/selectRankListForApp
      * @ 首页推荐的龙榜列表
+     * @param userid
      * @param startNum
      * @param pageSize
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "selectRankListForApp")
-    public BaseResp<List<Rank>> selectRankListForApp(Integer startNum, Integer pageSize){
-        logger.info("startNum={},pageSize={}",startNum,pageSize);
+    public BaseResp<List<Rank>> selectRankListForApp(String userid ,Integer startNum, Integer pageSize){
+        logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
@@ -585,7 +593,7 @@ public class RankController {
         }
 
         try {
-            baseResp = rankService.selectRankListForApp(startNum,pageSize);
+            baseResp = rankService.selectRankListForApp(Long.parseLong(userid),startNum,pageSize);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }
