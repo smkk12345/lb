@@ -285,18 +285,17 @@ public class RankShareController {
         if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        List<Improve> improves = null;
-        try {
-            improves = improveService.selectRankImproveList(null, rankid, sift, sorttype,0,15,null);
-        } catch (Exception e) {
+        BaseResp<List<Improve>> improves = new BaseResp<>();
+            try {
+                improves = improveService.selectRankImproveList(null, rankid, sift, sorttype,0,15,null);
+            } catch (Exception e) {
             logger.error("select rank improve list is error:{}", e);
         }
-        if (null == improves) {
-            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+            if (null == improves.getData()) {
+            return improves.initCodeAndDesp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
-        baseres.setData(improves);
-        return baseres;
+            improves.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_44);
+            return improves;
     }
 
     /**

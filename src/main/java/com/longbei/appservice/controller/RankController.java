@@ -167,7 +167,7 @@ public class RankController {
      */
     @RequestMapping(value="selectRankList")
     public BaseResp<Object> selectRankList(Long userid,String rankTitle,String pType,String rankscope,Integer status,String lastDate,String searchByCodeword,Integer startNum,Integer pageSize){
-        logger.info("rankTitle={},pType={},rankscope={},status={},lastDate={},startNum={},pageSize={}",rankTitle,pType,rankscope,status,lastDate,startNum,pageSize);
+        logger.info("userid={},rankTitle={},pType={},rankscope={},status={},lastDate={},searchByCodeword={},startNum={},pageSize={}",userid,rankTitle,pType,rankscope,status,lastDate,searchByCodeword,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);

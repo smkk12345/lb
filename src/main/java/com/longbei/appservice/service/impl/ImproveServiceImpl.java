@@ -542,7 +542,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
     @Override
-    public List<Improve> selectRankImproveList(String userid, String rankid,String sift,
+    public  BaseResp<List<Improve>> selectRankImproveList(String userid, String rankid,String sift,
                                                String orderby, int pageNo, int pageSize,String lastdate) {
         List<Improve> improves = new ArrayList<>();
         try {
@@ -593,7 +593,16 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
             logger.error("selectRankImproveList userid:{} rankid:{} is error:{}",userid,rankid,e);
         }
-        return improves;
+        BaseResp<List<Improve>> improvesList = new BaseResp<>();
+        improvesList.setData(improves);
+        //获取评论总数
+        int taltalCommentNum = 0;
+        BaseResp<Integer> resp = commentMongoService.selectCommentCountSum(rankid, "10", null);
+        if (ResultUtil.isSuccess(resp)){
+            taltalCommentNum = resp.getData();
+        }
+        improvesList.getExpandData().put("taltalCommentNum",taltalCommentNum);
+        return improvesList;
     }
 
     private void initSortInfo(Rank rank,List<Improve> improves){
