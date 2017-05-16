@@ -27,7 +27,14 @@ public interface UserMsgService {
 	 */
 	BaseResp<Object> insertMsg(String userid, String friendid, String impid, 
 			String businesstype, String businessid, String remark, 
-			String mtype, String msgtype, String title, int num);
+			String mtype, String msgtype, String title, int num, 
+			String commentid, String commentlowerid);
+	
+	/**
+	 * 删除评论信息
+	 */
+	int deleteCommentMsg(String impid, String businesstype, String businessid,  
+			String commentid, String commentlowerid);
 
 	/**
 	 * @author yinxc
