@@ -260,20 +260,18 @@ public class ImproveController {
         if (StringUtils.isBlank(pageSize)) {
             pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
-        List<Improve> improves = new ArrayList<>();
+        BaseResp<List<Improve>> improves = new BaseResp<>();
         try {
             improves = improveService.selectRankImproveList(userid, rankid, sift, sorttype, Integer.parseInt(startNum),
                     Integer.parseInt(pageSize),lastDate);
-
         } catch (Exception e) {
             logger.error("select rank improve list is error:{}", e);
         }
-        if (null == improves) {
-            return new BaseResp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
+        if (null == improves.getData()) {
+            return improves.initCodeAndDesp(Constant.STATUS_SYS_43, Constant.RTNINFO_SYS_43);
         }
-        BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
-        baseres.setData(improves);
-        return baseres;
+        improves.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_44);
+        return improves;
     }
 
     /**
