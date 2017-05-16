@@ -39,6 +39,7 @@ public class BehaviorRuleApiController {
         try {
             BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule();
             baseResp.setData(behaviorRule);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         } catch (NumberFormatException e) {
             logger.error("get behaviorRule  is error:{}",e);
         }

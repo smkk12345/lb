@@ -101,7 +101,7 @@ public interface RankService extends BaseService{
      * @return
      * @author lixb
      */
-    BaseResp<List<Rank>> selectRankListForApp(Integer startNo,Integer pageSize);
+    BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNo,Integer pageSize);
 
     /**
      * 删除榜单 非线上

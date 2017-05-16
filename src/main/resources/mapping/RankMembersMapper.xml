@@ -551,6 +551,9 @@
         <if test="sort != null">
             sort = #{sort},
         </if>
+        <if test="acceptaward != null">
+            acceptaward = #{acceptaward},
+        </if>
     </set>
     where rankid = #{rankid} and userid = #{userid}
   </update>

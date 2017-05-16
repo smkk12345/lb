@@ -4,17 +4,12 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.dao.AwardMapper;
-import com.longbei.appservice.dao.RankAcceptAwardMapper;
-import com.longbei.appservice.dao.RankAwardMapper;
-import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.Award;
-import com.longbei.appservice.entity.Rank;
-import com.longbei.appservice.entity.RankAcceptAward;
-import com.longbei.appservice.entity.RankAward;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.UserMsgService;
 import com.netflix.discovery.converters.Auto;
 import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
@@ -45,13 +40,34 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     private RankMapper rankMapper;
     @Autowired
     private AwardMapper awardMapper;
+    @Autowired
+    private UserMsgService userMsgService;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
 
     @Override
     public boolean insertAcceptAwardInfoBatch(List<RankAcceptAward> rankAcceptAwards) {
         int res = 0;
+        if (null == rankAcceptAwards || rankAcceptAwards.size() == 0){
+            return false;
+        }
+        RankAcceptAward rankAcceptAward1 = rankAcceptAwards.get(0);
+        Rank rank = rankMapper.selectRankByRankid(rankAcceptAward1.getRankid());
+        if (null == rank){
+            return false;
+        }
+
         for (RankAcceptAward rankAcceptAward : rankAcceptAwards){
             try {
+                String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
+                        +rankAcceptAward.getAwardlevel()+"等奖品";
                 res = rankAcceptAwardMapper.insertSelective(rankAcceptAward);
+                if (res > 0){
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID,
+                            String.valueOf(rankAcceptAward.getUserid()),
+                            null,Constant.IMPROVE_RANK_TYPE,String.valueOf(rankAcceptAward.getRankid()),
+                            remark,"2","15","获奖消息",0,"","");
+                }
             } catch (Exception e) {
                 logger.error("insert batch rank accept award is error:",e);
             }
@@ -125,6 +141,13 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
         try {
             int res = rankAcceptAwardMapper.updateByRankidAndUseridSelective(rankAcceptAward);
             if (res > 0){
+                if ("2".equals(rankAcceptAward.getStatus()) || "3".equals(rankAcceptAward.getStatus())){
+                    RankMembers rankMembers = new RankMembers();
+                    rankMembers.setRankid(rankAcceptAward.getRankid());
+                    rankMembers.setUserid(rankAcceptAward.getUserid());
+                    rankMembers.setAcceptaward(String.valueOf(rankAcceptAward.getStatus()));
+                    rankMembersMapper.updateRankMemberState(rankMembers);
+                }
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {

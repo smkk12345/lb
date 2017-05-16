@@ -23,6 +23,11 @@ public class Constant {
 	};
 
 
+	public static final String RANK_SOURCE_TYPE_0 = "0"; //运营
+	public static final String RANK_SOURCE_TYPE_1 = "1"; //app
+	public static final String RANK_SOURCE_TYPE_2 = "2"; //商户
+
+
 	/**
 	 * OSS属性  
 	 */
@@ -379,7 +384,7 @@ public class Constant {
 	/**
 	 * 进步时间线类型
 	 */
-	public static final String SQUARE_USER_ID = "0";  //系统用户id
+	public static final String SQUARE_USER_ID = "10000";  //系统用户id
 	/**
 	 * 广场
 	 */
