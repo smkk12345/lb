@@ -23,6 +23,11 @@ public class Constant {
 	};
 
 
+	public static final String RANK_SOURCE_TYPE_0 = "0"; //运营
+	public static final String RANK_SOURCE_TYPE_1 = "1"; //app
+	public static final String RANK_SOURCE_TYPE_2 = "2"; //商户
+
+
 	/**
 	 * OSS属性  
 	 */

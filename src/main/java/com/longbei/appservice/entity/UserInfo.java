@@ -32,7 +32,7 @@ public class UserInfo {
 
     private String realname;//真名
 
-    private String sex;//性别  0 男  1 女
+    private String sex;//性别  0 女  1 男
 
     private String city;//所在城市
 

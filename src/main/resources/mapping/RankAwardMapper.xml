@@ -10,9 +10,10 @@
     <result column="awardcount" property="awardcount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
+    <result column="pccoins" property="pccoins" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, awardid, awardlevel, awardrate, awardcount,awardnickname, createtime
+    id, rankid, awardid, awardlevel, awardrate, awardcount,awardnickname, pccoins,createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -49,6 +50,14 @@
     <foreach collection="list" item="award" index="index" separator="," >
       (#{award.rankid},#{award.awardid},#{award.awardlevel},#{award.awardrate},
       #{award.awardnickname},#{award.createtime})
+    </foreach>
+  </insert>
+  <insert id="insertPCBatch" parameterType="java.util.List">
+    insert into rank_award (rankid, awardlevel,awardrate,awardnickname,pccoins,createtime)
+    values
+    <foreach collection="list" item="award" index="index" separator="," >
+      (#{award.rankid},#{award.awardlevel},#{award.awardrate},#{award.awardnickname},
+      #{award.pccoins},#{award.createtime})
     </foreach>
   </insert>
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankAward" >
