@@ -1,20 +1,21 @@
-package com.longbei.appservice.controller;
+package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.controller.ProductController;
 import com.longbei.appservice.service.StatisticService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by wangyongzhi 17/4/17.
  */
 @RestController
-@RequestMapping(value="statistic")
-public class StatisticController {
+@RequestMapping(value="api/statistic")
+public class StatisticApiController {
 
     @Autowired
     private StatisticService statisticService;

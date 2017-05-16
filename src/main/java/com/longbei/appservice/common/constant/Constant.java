@@ -379,7 +379,7 @@ public class Constant {
 	/**
 	 * 进步时间线类型
 	 */
-	public static final String SQUARE_USER_ID = "0";  //系统用户id
+	public static final String SQUARE_USER_ID = "10000";  //系统用户id
 	/**
 	 * 广场
 	 */
