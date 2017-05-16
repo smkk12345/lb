@@ -1996,7 +1996,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(appUserMongoEntity == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Map<String,Object> resultMap = new HashMap<String,Object>();
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
-            if(rankMembers == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            if(rankMembers == null || rankMembers.getStatus() != 1) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Long sortNum = null;
             if(rankMembers.getSortnum() == null||rankMembers.getSortnum() == 0){
                 sortNum = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankId,userid+"");
@@ -2054,7 +2054,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 for(RankMembers rankMembers: winningRankAwardList){
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
-                    map.put("awardnickname",rankMembers.getRankAward().getAwardnickname());
+
+                    Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                    map.put("awardnickname",award.getAwardtitle());
 //                    if(Constant.VISITOR_UID.equals(userid+"")){
                         AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
 //                        if(null == appUserMongoEntity){

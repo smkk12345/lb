@@ -167,7 +167,8 @@
           rank_award_release.awardnickname,
           rank.rankid,
           rank_members.userid,
-          rank.endtime
+          rank.endtime,
+          rank_award_release.awardid awardid
       from rank inner join rank_award_release on rank_award_release.rankid = rank.rankid
             inner join rank_members on rank.rankid = rank_members.rankid
       where
