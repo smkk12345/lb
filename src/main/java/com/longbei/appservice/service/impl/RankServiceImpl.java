@@ -420,7 +420,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<List<Rank>> selectRankListForApp(Integer startNum,Integer pageSize) {
+    public BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         try{
             List<Rank> rankList = new ArrayList<Rank>();
@@ -433,6 +433,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
                     if(rank == null || "1".equals(rank.getIsdel())){
                         continue;
+                    }
+                    if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+                        if(null != rankMembers){
+                            rank.setHasjoin("1");
+                        }
                     }
                     List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
                     if(awardList != null && awardList.size() > 0){
@@ -516,6 +522,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
+                    if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userid);
+                        if(null != rankMembers){
+                            rank1.setHasjoin("1");
+                        }
+                    }
                     if(showAward != null && showAward){
                         initRankAward(rank1);
                     }
@@ -533,8 +545,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.getExpandData().put("totalCount",totalCount);
             //如果是按照口令搜索,则返回用户是否可以入榜
             if(StringUtils.isNotEmpty(codeword) && ranks != null && ranks.size() > 0){
-                int userRankMemberStatus = getInsertUserRankMemberStatus(userid,ranks.get(0));
-                baseResp.getExpandData().put("userRankMemberStatus",userRankMemberStatus);
+                if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                    int userRankMemberStatus = getInsertUserRankMemberStatus(userid,ranks.get(0));
+                    baseResp.getExpandData().put("userRankMemberStatus",userRankMemberStatus);
+                }
             }
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         } catch (Exception e) {

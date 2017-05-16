@@ -139,6 +139,8 @@ public class Rank {
 
     private Integer commentCount; //评论数
 
+    private String hasjoin = "0";//0 未加入  1 加入
+
     //--------
 
 
@@ -876,4 +878,13 @@ public class Rank {
     public void setEndjointime(Date endjointime) {
         this.endjointime = endjointime;
     }
+
+    public void setHasjoin(String hasjoin) {
+        this.hasjoin = hasjoin;
+    }
+
+    public String getHasjoin() {
+        return hasjoin;
+    }
+
 }
