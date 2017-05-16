@@ -10,6 +10,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.MongoUtils;
@@ -232,6 +233,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 				String message = userid+"&"+likeuserid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_ADDFUN, message);
+
+				//关注他人获得龙分
+				UserInfo userInfo = new UserInfo();
+				userInfo.setUserid(likeuserid);
+				userBehaviourService.pointChange(userInfo,"DAILY_FUN",Constant_Perfect.PERFECT_GAM,null,0,0);
+
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

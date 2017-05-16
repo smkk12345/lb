@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(comment.getUserid()));//此处通过id获取用户信息
 			initCommentUserInfoByUserid(comment, comment.getFriendid());
 			reseResp.setData(comment);
-			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT", "2", null,0,0);
+			userBehaviourService.pointChange(userInfo, "DAILY_COMMENT",Constant_Perfect.PERFECT_GAM, null,0,0);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("insertComment comment = {}", JSONArray.toJSON(comment).toString(), e);

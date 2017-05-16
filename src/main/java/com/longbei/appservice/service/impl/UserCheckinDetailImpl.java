@@ -173,7 +173,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 //			String pType = SysRulesCache.perfectTenMap.get(2);
 			String pType = Constant_Perfect.PERFECT_GAM;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",pType,
+			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",Constant_Perfect.PERFECT_GAM,
 					Constant.USER_IMP_COIN_CHECKIN,0,0);
 
 		}
