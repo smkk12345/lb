@@ -1,6 +1,7 @@
 package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService;
 import com.longbei.appservice.dao.*;
@@ -77,6 +78,7 @@ public class InitConfig implements CommandLineRunner {
         //缓存敏感词
         initSensitiveMap();
 
+//        Constant_Imp_Icon.init();
 
         initListener();
     }
