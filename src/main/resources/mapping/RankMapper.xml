@@ -727,7 +727,7 @@
       WHERE 1=1
         <if test="ranktitle != null and ranktitle != ''" >
           AND (ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
-          OR codeword = #{codeword})
+          OR joincode = #{joincode})
         </if>
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
