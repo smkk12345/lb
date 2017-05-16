@@ -384,7 +384,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private boolean deleteUserid(long userid, String mtype){
 		int temp = userMsgMapper.deleteByUserid(userid, mtype);
-		return temp > 0 ? true : false;
+		return temp >= 0 ? true : false;
 	}
 
 	private BaseResp<Object> insertSelective(UserMsg record) {
