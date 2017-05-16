@@ -40,6 +40,14 @@
     checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate,
     downfashionmantime,upfashionmantime,sort
   </sql>
+
+    <sql id="Base_Finish_List" >
+        id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
+        rankfinishlikes as likes, rankfinishflower as flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
+        checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate,
+        downfashionmantime,upfashionmantime,sort,rankfinishlikes,rankfinishflower
+    </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -452,7 +460,14 @@
         rankinvolved = rankinvolved + #{count}
       where rankid = #{rankId}
   </update>
-
+    <update id="updateSortSource">
+        update
+        rank_members
+      set
+        rankfinishlikes = likes,
+        rankfinishflower = flowers
+      where rankid = #{rankid}
+    </update>
   <!-- 更新rank -->
   <update id="updateRank" parameterType="map">
     update
@@ -551,7 +566,7 @@
   <!-- 获取用户在榜单中的排名 -->
   <select id="selectUserSort" resultMap="BaseResultMap">
       select
-          <include refid="Base_Column_List" />
+          <include refid="Base_Finish_List" />
       from
         rank_members
       <where>
@@ -559,10 +574,10 @@
           and rankId = #{rankId}
       </where>
       <if test="sortType == 1">
-        order by likes desc,createtime asc
+        order by rankfinishlikes desc,createtime asc
       </if>
       <if test="sortType == 2">
-        order by flowers desc,createtime asc
+        order by rankfinishflower desc,createtime asc
       </if>
       <if test="sortType == 0">
           order by sortnum asc,createtime asc

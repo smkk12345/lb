@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -509,5 +510,12 @@ public interface ImproveService {
      * @return
      */
     String getFirstPhotos(Improve improve);
+
+    /**
+     * 更新点赞送花数到快找
+     * @param rankId
+     * @return
+     */
+    int updateSortSource(Long rankId);
 
 }

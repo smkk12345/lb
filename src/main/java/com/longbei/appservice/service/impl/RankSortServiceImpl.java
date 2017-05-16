@@ -7,6 +7,7 @@ import com.longbei.appservice.dao.RankMembersMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankMembers;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.RankSortService;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
     private RankMembersMapper rankMembersMapper;
     @Autowired
     private RankService rankService;
+    @Autowired
+    private ImproveService improveService;
 
     /**
      * 榜中点赞,送花时,更新用户在榜中的排名分值
@@ -157,6 +160,11 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                     updateRank.setIsfinish("2");
                 }
             }
+            //缓存花，赞到快照中
+            int updateRankMemberRow = rankMembersMapper.updateSortSource(rank.getRankid());
+            //缓存 花，赞到单个进步快照中
+            int updateImproves = improveService.updateSortSource(rank.getRankid());
+
             updateRank.setIsrecommend("0");//榜单结束去掉推荐属性
             int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);
 

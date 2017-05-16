@@ -60,6 +60,13 @@ public class UserMsg {
 
 	private Date updatetime;
 	
+	private String commentid;  //主评论id
+	
+	private String commentlowerid;  //子评论id
+	
+	
+	//----------------扩展字段------------------------------------------
+	
 	private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
 	
 	private AppUserMongoEntity appUserMongoEntityFriendid; //消息用户信息----Friendid
@@ -334,6 +341,24 @@ public class UserMsg {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getCommentid() {
+		return commentid;
+	}
+
+	public void setCommentid(String commentid) {
+		this.commentid = commentid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getCommentlowerid() {
+		return commentlowerid;
+	}
+
+	public void setCommentlowerid(String commentlowerid) {
+		this.commentlowerid = commentlowerid;
 	}
 
 	//	public String getImpPickey() {
