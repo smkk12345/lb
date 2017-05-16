@@ -124,7 +124,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
-            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            //PC端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }else{
+                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -156,6 +161,28 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("update rank symbol is error:",e);
         }
         return res>0;
+    }
+
+    /**
+     * pc端发榜
+     * @param rankid
+     * @param rankAwards
+     * @return
+     */
+    private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
+        if (null != rankAwards){
+            for (RankAward rankAward:rankAwards){
+                rankAward.setRankid(rankid);
+                rankAward.setCreatetime(new Date());
+            }
+            try {
+                int res = rankAwardMapper.insertPCBatch(rankAwards);
+                return true;
+            } catch (Exception e) {
+                logger.error("insert pc rank award rankid={} is error:",rankid,e);
+            }
+        }
+        return false;
     }
 
     private boolean insertRankAward(String rankid, List<RankAward> rankAwards){

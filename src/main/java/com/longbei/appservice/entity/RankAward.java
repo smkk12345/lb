@@ -29,6 +29,16 @@ public class RankAward {
 
     private Rank rank;
 
+    private Integer pccoins;
+
+    public Integer getPccoins() {
+        return pccoins;
+    }
+
+    public void setPccoins(Integer pccoins) {
+        this.pccoins = pccoins;
+    }
+
     public Rank getRank() {
         return rank;
     }
