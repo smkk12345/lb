@@ -337,6 +337,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 							currentday);
 					if(null != userImproveStatistic){
 						isimprove = "1";
+					}else{
+						isimprove = "0";
 					}
 					userCheckinDetail.setIsimprove(isimprove);
 				}
