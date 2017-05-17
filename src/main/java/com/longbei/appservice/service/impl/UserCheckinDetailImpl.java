@@ -287,25 +287,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				case 1:
 					disStr = "签到,第"+subKey+"天获得"+value+"个进步币";
 					break;
-				case 2:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 3:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 4:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 5:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 6:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 7:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
 				default:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
 					break;
 			}
 			list.add(disStr);
@@ -335,6 +318,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 							currentday);
 					if(null != userImproveStatistic){
 						isimprove = "1";
+					}else{
+						isimprove = "0";
 					}
 					userCheckinDetail.setIsimprove(isimprove);
 				}

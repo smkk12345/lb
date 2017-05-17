@@ -519,17 +519,17 @@ public class UserServiceImpl implements UserService {
 			else if(mobile.contains("1851128")){
 				iAlidayuService.sendMsg("18511285918", randomCode, operateName);
 			}else{
-				resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
+//				resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
 			}
 
-            if (ResultUtil.isSuccess(resp)) {
+//            if (ResultUtil.isSuccess(resp)) {
 				springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
                 logger.info("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
-            } else {
-//            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
-                logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
-            }
+//            } else {
+////            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+//                logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
+//            }
         } catch (Exception e) {
             logger.error("向手机  {} 发送验证码 {} 时出现异常：{}", mobile, randomCode,e);
         }

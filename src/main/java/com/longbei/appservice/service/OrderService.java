@@ -28,8 +28,9 @@ public interface OrderService {
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日
 	 * @param orderid 订单业务id
+	 * @param ptype 0:Android 1：IOS
 	 */
-	BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice);
+	BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice, String ptype);
 	
 	BaseResp<UserAddress> selectAddress(long userid);
 	
@@ -54,7 +55,7 @@ public interface OrderService {
 	 BaseResp<ProductOrders> create(Long userid, String productidss,
 			 String numberss, String addressid, 
 			 String impiconprice, String moneyprice, String paytype, String prices, 
-			 String otype, String remark);
+			 String otype, String remark, String ptype);
 	 
 	 /**
 	 * 我的订单列表

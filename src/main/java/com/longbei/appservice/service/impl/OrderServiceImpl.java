@@ -88,20 +88,49 @@ public class OrderServiceImpl implements OrderService {
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日
 	 * @param orderid 订单业务id
+	 * @param ptype 0:Android 1：IOS
 	 */
 	@Override
-	public BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice) {
+	public BaseResp<Object> buyOrder(long userid, String orderid, Integer impiconprice, Integer moneyprice, String ptype) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
 			//判断用户进步币，龙币是否够用
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
 				if(userInfo.getTotalcoin() < impiconprice){
-					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_24);
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_24, Constant.RTNINFO_SYS_24);
 					return baseResp;
 				}
 				if(userInfo.getTotalmoney() < moneyprice){
-					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_23);
+					baseResp.initCodeAndDesp(Constant.STATUS_SYS_23, Constant.RTNINFO_SYS_23);
+					return baseResp;
+				}
+				BaseResp<ProductOrders> reseResp = iProductBasicService.get(userid, orderid);
+				if(ResultUtil.isSuccess(reseResp)){
+					ProductOrders productOrders = reseResp.getData();
+					//ptype 0:Android 1：IOS
+					if("0".equals(ptype)){
+						//判断进步币是否大于最低要求进步币数量
+						if(impiconprice<productOrders.getImpiconprice().intValue()){
+							baseResp.initCodeAndDesp(Constant.STATUS_SYS_25, Constant.RTNINFO_SYS_25);
+							return baseResp;
+						}
+						//判断支付的总价是否大于等于总价
+						double moneytocoin = AppserviceConfig.moneytocoin;
+						double zong = moneyprice*moneytocoin + impiconprice;
+						double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
+						if(zong < productPrice){
+							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
+							return baseResp;
+						}
+					}else{
+						Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
+						if(impiconprice < productPrice.intValue()){
+							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
+							return baseResp;
+						}
+					}
+				}else{
 					return baseResp;
 				}
 				baseResp = iProductBasicService.buyOrder(userid, orderid);
@@ -109,14 +138,14 @@ public class OrderServiceImpl implements OrderService {
 					//调用product_service成功后    扣除进步币，龙币   
 					if(moneyprice != 0){
 						//结算订单所用龙币
-						userInfoMapper.updateMoneyAndFlowerByUserid(userid, -moneyprice, 0);
+//						userInfoMapper.updateMoneyAndFlowerByUserid(userid, -moneyprice, 0);
 						//origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 						// 					3：设榜单    4：赞助榜单    5：赞助教室 
 						userMoneyDetailService.insertPublic(userid, "2", moneyprice, 0);
 					}
 					if(impiconprice != 0){
 						//结算订单所用进步币
-						userInfoMapper.updateCoinAndFlowerByUserid(userid, -impiconprice, 0);
+//						userInfoMapper.updateCoinAndFlowerByUserid(userid, -impiconprice, 0);
 						// 7:兑换商品
 						userImpCoinDetailService.insertPublic(userid, "7",
 								impiconprice, Long.parseLong(orderid), 0l);
@@ -145,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public BaseResp<ProductOrders> create(Long userid, String productidss, String numberss, String addressid,
 			String impiconprice, String moneyprice, String paytype, String prices, String otype,
-			String remark) {
+			String remark, String ptype) {
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
@@ -157,12 +186,12 @@ public class OrderServiceImpl implements OrderService {
 				
 				baseResp = iProductBasicService.create(userid, userInfo.getUsername(), productidss, numberss, address, 
 						userAddress.getReceiver(), userAddress.getMobile(), impiconprice, moneyprice, paytype, prices, otype, 
-						remark, userLevel.getDiscount().toString());
+						remark, userLevel.getDiscount().toString(), ptype, userInfo.getTotalcoin());
 			}
 		}catch (Exception e){
 			logger.error("create userid = {}, productidss= {}, numberss = {}, addressid = {}, prices = {}, impiconprice = {},"
-					+ " moneyprice = {}, remark = {}", 
-					userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark, e);
+					+ " moneyprice = {}, remark = {}, ptype = {}", 
+					userid, productidss, numberss, addressid, impiconprice, moneyprice, prices, remark, ptype, e);
 		}
 		return baseResp;
 	}
@@ -229,11 +258,11 @@ public class OrderServiceImpl implements OrderService {
 	  					ProductOrders productOrders = resResp.getData();
 	  					if(null != productOrders){
 							if(productOrders.getMoneyprice() != 0){
-								userInfoMapper.updateMoneyAndFlowerByUserid(userid, productOrders.getMoneyprice().intValue(), 0);
+//								userInfoMapper.updateMoneyAndFlowerByUserid(userid, productOrders.getMoneyprice().intValue(), 0);
 								userMoneyDetailService.insertPublic(userid, "6", productOrders.getMoneyprice().intValue(), 0);
 							}
 							if(productOrders.getImpiconprice() != 0){
-								userInfoMapper.updateCoinAndFlowerByUserid(userid, productOrders.getImpiconprice().intValue(), 0);
+//								userInfoMapper.updateCoinAndFlowerByUserid(userid, productOrders.getImpiconprice().intValue(), 0);
 								userImpCoinDetailService.insertPublic(userid, "11",
 										productOrders.getImpiconprice().intValue(), Long.parseLong(productOrders.getOrderid()), 0l);
 							}

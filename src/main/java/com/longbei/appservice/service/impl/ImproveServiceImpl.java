@@ -992,6 +992,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
+                //跟新榜中进步条数
+                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
                 //更新redis中排名by lixb
                 rankSortService.updateRankSortScore(improve.getBusinessid(),
                     improve.getUserid(),Constant.OperationType.like,-like);
@@ -1815,12 +1817,14 @@ public class ImproveServiceImpl implements ImproveService{
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
             for (ImpAllDetail impAllDetail : impAllDetails) {
             	//获取好友昵称
-    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
+                SnsFriends snsFriends = userRelationService.selectByUidAndFid(Long.parseLong(userid), impAllDetail.getUserid());
+//    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
     			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid()));
     			if(null != appUserMongoEntity){
-    				if(!StringUtils.isBlank(remark)){
-    					appUserMongoEntity.setNickname(remark);
-    				}
+                    if (null != snsFriends){
+                        appUserMongoEntity.setIsfriend("1");
+                        appUserMongoEntity.setNickname(snsFriends.getRemark());
+                    }
     				impAllDetail.setAppUser(appUserMongoEntity);
     			}else{
     				impAllDetail.setAppUser(new AppUserMongoEntity());
@@ -2282,6 +2286,9 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
         if (islike) {
             improve.setHaslike("1");
+        }else
+        {
+            improve.setHaslike("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
 //        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2293,6 +2300,8 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
         if (isflower) {
             improve.setHasflower("1");
+        }else{
+            improve.setHasflower("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
 //        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2698,8 +2707,11 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     if(!Constant.VISITOR_UID.equals(userid)){
+                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
                         initImproveInfo(improve,Long.parseLong(userid));
                     }
+
                     //初始化 赞 花 数量
                     initImproveLikeAndFlower(improve);
                     improves.add(improve);

@@ -41,8 +41,8 @@ public class Constant_Imp_Icon {
     /**
      * 邀请好友注册赠送的进步币
      */
-    public static int INVITE_LEVEL1 = 10;
-//    public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
+//    public static int INVITE_LEVEL1 = 10;
+    public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
 
     //以下两类需要单独接口
     public static int DAILY_FLOWERED = 0;//被送花 进步币系数

@@ -159,11 +159,12 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
 //                            JSONObject.fromObject(map.get("_id")).toString(),e);
                     userMongoEntity = new AppUserMongoEntity();
                     LinkedHashMap map1 = (LinkedHashMap)map.get("_id");
-                    userMongoEntity.setUserid(map1.get("_id").toString());
+                    String userid = (String) map1.get("_id");
+                    userMongoEntity.setUserid(userid);
 //                    continue;
                 }
 
-                if(userMongoEntity == null){
+                if(userMongoEntity == null||StringUtils.isEmpty(userMongoEntity.getUserid())){
                     continue;
                 }
                 UserImproveStatistic userImproveStatistic = new UserImproveStatistic();

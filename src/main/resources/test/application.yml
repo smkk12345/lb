@@ -81,19 +81,3 @@ weixin_dev_page: 59.110.91.84:8080
 
 oss_media: http://longbei0413-media-out.oss-cn-shanghai.aliyuncs.com/
 
-
-h5:
-  hostname: 47.93.36.156
-  port: 8090
-  helper: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-index.html
-  rankcard: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/rank-master.html
-  share:
-    improve:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
-    rank:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
-      award: http://localhost:7777/share_service/html/apptpl/help-index.html
-      improve: http://localhost:7777/share_service/html/apptpl/help-index.html
-    goal:
-      detail: http://localhost:7777/share_service/html/apptpl/help-index.html
-
