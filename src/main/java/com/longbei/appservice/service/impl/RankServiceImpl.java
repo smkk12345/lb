@@ -1202,6 +1202,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            if ("3".equals(rankMembers.getCheckstatus())){
+                if (!canCheckPass(rankMembers)){
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_618,Constant.RTNINFO_SYS_618);
+                    return baseResp;
+                }
+            }
             rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
@@ -1212,6 +1218,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+    private boolean canCheckPass(RankMembers rankMembers){
+        Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
+        //榜单参与人数
+        int rankmnum = rank.getRankinvolved();
+        //榜单设置奖品数
+        int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
+        //审核通过数
+        rankMembers.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers);
+        if (okcount < awardcount){
+            return true;
+        }
+        return false;
+    }
+
+
+
 
     /**
      * 更改用户的参榜申请
@@ -3126,9 +3151,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (waitcount==0){
                 return true;
             }
-        } else {
-            return true;
         }
+
         return false;
     }
 
