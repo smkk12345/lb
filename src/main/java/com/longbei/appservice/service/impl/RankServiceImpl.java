@@ -552,7 +552,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 for(Rank rank1:ranks){
                     if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
                         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userid);
-                        if(null != rankMembers){
+                        if(null != rankMembers&&rankMembers.getStatus().equals("1")){
                             rank1.setHasjoin("1");
                         }
                     }
@@ -614,6 +614,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         if(rank == null){
                             continue;
                         }
+                        rank.setHasjoin("1");
                         initRankAward(rank);
                         if("0".equals(rank.getIsfinish())){//未开始
                             nostart.add(rank);
@@ -644,6 +645,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     for(UserBusinessConcern userBusinessConcern:concernList){
                         Rank rank = this.rankMapper.selectRankByRankid(userBusinessConcern.getBusinessid());
                         if(rank != null){
+                            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
+                            if(null != rankMembers){
+                                rank.setHasjoin("1");
+                            }
                             initRankAward(rank);
                             rankList.add(rank);
                         }
@@ -658,6 +663,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 parameterMap.put("startNum",startNum);
                 parameterMap.put("pageSize",pageSize);
                 List<Rank> createList = this.rankMapper.selectRankList(parameterMap);
+                for(Rank rank1:createList){
+                    RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userId);
+                    if(null != rankMembers){
+                        rank1.setHasjoin("1");
+                    }
+                }
                 baseResp.setData(createList);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1895,7 +1906,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //加进步币
                 BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
                 //更新用户进步币总数
-                userInfoMapper.updateCoinAndFlowerByUserid(userId,(int) (award.getAwardprice()*Constant.RMB_COIN),0);
+//                userInfoMapper.updateCoinAndFlowerByUserid(userId,(int) (award.getAwardprice()*Constant.RMB_COIN),0);
                 newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
@@ -2040,8 +2051,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Rank rank = rankMapper.selectRankByRankid(rankId);
             resultMap.put("ranktitle",rank.getRanktitle());
             resultMap.put("isfinish",rank.getIsfinish());
-            resultMap.put("endtime",rank.getEendtime());
-            resultMap.put("starttime",rank.getStarttime());
+            resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime(),"yyyy-MM-dd HH:mm:ss"));
+            resultMap.put("starttime",DateUtils.formatDate(rank.getStarttime(),"yyyy-MM-dd HH:mm:ss"));
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
