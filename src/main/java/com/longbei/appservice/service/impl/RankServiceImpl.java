@@ -2612,8 +2612,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     awardMap.put("awardphotos",award.getAwardphotos());
                     awardMap.put("awardprice",award.getAwardprice());
                 }
-                RankAwardRelease tempRankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",award.getId()+"");
-                awardMap.put("nickname",tempRankAwardRelease.getAwardnickname());
+                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);
                 rankAwardCount += rankAwardRelease.getAwardcount();
