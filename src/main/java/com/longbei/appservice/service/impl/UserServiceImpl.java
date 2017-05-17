@@ -945,6 +945,10 @@ public class UserServiceImpl implements UserService {
 						disStr = "点赞+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
+					case "DAILY_FLOWER":
+						disStr = "送花+"+value+"分";
+						point += Integer.parseInt(value);
+						break;
 					case "NEW_REGISTER":
 						disStr = "注册成功+"+value+"分";
 						point += Integer.parseInt(value);
@@ -1212,8 +1216,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			return iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			baseResp = iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			if (ResultUtil.isSuccess(baseResp)){
+				//第三方绑定获得龙分
+				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
+				thirdregisterGainPoint(userInfo,utype);
+			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}
