@@ -66,7 +66,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			if("0".equals(origin) || "6".equals(origin)){
 				userMoneyDetail.setNumber(number);
 			}else{
-				userMoneyDetail.setNumber(0 - number);
+				number = 0 - number;
+				userMoneyDetail.setNumber(number);
 			}
 			boolean temp = insert(userMoneyDetail);
 			if (temp) {
