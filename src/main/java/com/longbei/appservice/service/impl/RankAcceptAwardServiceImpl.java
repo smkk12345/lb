@@ -141,7 +141,7 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
         try {
             int res = rankAcceptAwardMapper.updateByRankidAndUseridSelective(rankAcceptAward);
             if (res > 0){
-                if ("2".equals(rankAcceptAward.getStatus()) || "3".equals(rankAcceptAward.getStatus())){
+                if (2 == rankAcceptAward.getStatus() || 3 == rankAcceptAward.getStatus()){
                     RankMembers rankMembers = new RankMembers();
                     rankMembers.setRankid(rankAcceptAward.getRankid());
                     rankMembers.setUserid(rankAcceptAward.getUserid());

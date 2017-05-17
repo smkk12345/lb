@@ -99,8 +99,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 		SnsFriends snsFriends = new SnsFriends(userid,friendid);
 		SnsFriends snsFriends1 = new SnsFriends(friendid,userid);
 		try {
-			int n = snsFriendsMapper.insert(snsFriends);
-			int n1 = snsFriendsMapper.insert(snsFriends1);
+			int n = snsFriendsMapper.insertSelective(snsFriends);
+			int n1 = snsFriendsMapper.insertSelective(snsFriends1);
 			if(n==1&&n1==1){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				String message=userid+"&"+friendid;
@@ -444,6 +444,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
+					map.put("brief",userInfo.getBrief());
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());
 					}else{
