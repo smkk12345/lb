@@ -97,7 +97,10 @@ public class GoalServiceImpl implements GoalService {
     public BaseResp<List<Improve>> selectListByGoalid(long userid, long goalid, int startNum, int pageSize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try{
-            baseResp = improveService.selectBusinessImproveList(userid + "", goalid + "", "1", startNum,pageSize);
+            List<Improve> improveList = new ArrayList<Improve>();
+            improveList = improveService.selectGoalImproveList(userid + "", goalid + "", null, startNum,pageSize);
+            baseResp.setData(improveList);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch (Exception e){
             logger.error("list error userid={},startNum={},endNum={}",userid,startNum,pageSize,e);
         }
