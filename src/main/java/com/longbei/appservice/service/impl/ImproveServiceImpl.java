@@ -2286,6 +2286,9 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
         if (islike) {
             improve.setHaslike("1");
+        }else
+        {
+            improve.setHaslike("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
 //        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2297,6 +2300,8 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
         if (isflower) {
             improve.setHasflower("1");
+        }else{
+            improve.setHasflower("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
 //        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2702,8 +2707,11 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     if(!Constant.VISITOR_UID.equals(userid)){
+                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
                         initImproveInfo(improve,Long.parseLong(userid));
                     }
+
                     //初始化 赞 花 数量
                     initImproveLikeAndFlower(improve);
                     improves.add(improve);
