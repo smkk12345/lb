@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.PayService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -25,8 +23,8 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
-	@Autowired
-	private UserInfoMapper userInfoMapper;
+//	@Autowired
+//	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private IProductBasicService iProductBasicService;
 
@@ -94,7 +92,9 @@ public class PayServiceImpl implements PayService {
 //							logger.info("verifyali total_fee = {}", total_fee);
 //							logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
 							//添加龙币
-							insertMoney(productOrders.getMoneyprice().intValue(), userid, Constant.USER_MONEY_BUY);
+							userMoneyDetailService.insertPublic(userid, Constant.USER_MONEY_BUY, 
+									productOrders.getMoneyprice().intValue(), Long.parseLong(Constant.SQUARE_USER_ID));
+//							insertMoney(productOrders.getMoneyprice().intValue(), userid, Constant.USER_MONEY_BUY);
 							return "SUCCESS";
 						}
 					}
@@ -135,7 +135,9 @@ public class PayServiceImpl implements PayService {
 //							logger.info("verifywx price = {}", price);
 //							Double total_fee = price/AppserviceConfig.yuantomoney;
 //							logger.info("verifywx total_fee = {}", total_fee);
-							insertMoney(productOrders.getMoneyprice().intValue(), userid, Constant.USER_MONEY_BUY);
+							userMoneyDetailService.insertPublic(userid, Constant.USER_MONEY_BUY, 
+									productOrders.getMoneyprice().intValue(), Long.parseLong(Constant.SQUARE_USER_ID));
+//							insertMoney(productOrders.getMoneyprice().intValue(), userid, Constant.USER_MONEY_BUY);
 							return "SUCCESS";
 						}
 					}
@@ -157,24 +159,24 @@ public class PayServiceImpl implements PayService {
 		iProductBasicService.testWx();
 	}
 
-	/**
-	 * @author yinxc
-	 * 添加龙币明细
-	 * 2017年3月21日
-	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
-	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
-	 */
-	private void insertMoney(int buynum, Long userid, String origin){
-		//修改用户龙币数量
-		userInfoMapper.updateMoneyAndFlowerByUserid(userid, buynum, 0);
-//		Map<String, Object> expandData = baseResp.getExpandData();
-		//购买数量
-//		String buynums = (String) expandData.get("buynum");
-//		if(!StringUtils.isBlank(buynums)){
-			userMoneyDetailService.insertPublic(userid, origin, buynum, 0);
-			//修改userinfo信息
-//			userInfoMapper.updateMoneyAndFlowerByUserid(userid, Integer.parseInt(buynums), 0);
-//		}
-	}
+//	/**
+//	 * @author yinxc
+//	 * 添加龙币明细
+//	 * 2017年3月21日
+//	 * @param origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
+//	 * 					3：设榜单    4：赞助榜单    5：赞助教室 
+//	 */
+//	private void insertMoney(int buynum, Long userid, String origin){
+//		//修改用户龙币数量
+////		userInfoMapper.updateMoneyAndFlowerByUserid(userid, buynum, 0);
+////		Map<String, Object> expandData = baseResp.getExpandData();
+//		//购买数量
+////		String buynums = (String) expandData.get("buynum");
+////		if(!StringUtils.isBlank(buynums)){
+//		userMoneyDetailService.insertPublic(userid, origin, buynum, 0);
+//			//修改userinfo信息
+////			userInfoMapper.updateMoneyAndFlowerByUserid(userid, Integer.parseInt(buynums), 0);
+////		}
+//	}
 
 }
