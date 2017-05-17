@@ -734,7 +734,7 @@
         <if test="rankbrief != null and rankbrief != ''" >
           AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
         </if>
-        <if test="sstatus != null and sstatus != 0 and lastDate != null">
+        <if test="sstatus != null and sstatus != 0 and sstatus != -1 and lastDate != null ">
           <if test="sstatus == 1">
              and starttime &lt; #{lastDate}
           </if>

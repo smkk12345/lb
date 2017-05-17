@@ -425,12 +425,12 @@ public class Constant {
      * 					11:取消订单返还龙币     12:兑换鲜花
 	 */
 	public static final String USER_IMP_COIN_CHECKIN="0";
-	public static final String USER_IMP_COIN_SHARE="1";
-	public static final String USER_IMP_COIN_INVITE = "2";
-	public static final String USER_IMP_COIN_FLOWERD="3";
-	public static final String USER_IMP_COIN_DIAMONDED = "4";
-	public static final String USER_IMP_COIN_ADDIMPROVE = "5";
-	public static final String USER_IMP_COIN_RANKAWARD = "6";
+	public static final String USER_IMP_COIN_ADDIMPROVE="1";
+	public static final String USER_IMP_COIN_SHARE = "2";
+	public static final String USER_IMP_COIN_INVITE="3";
+	public static final String USER_IMP_COIN_RANKAWARD = "4";
+	public static final String USER_IMP_COIN_DIAMONDED = "5";
+	public static final String USER_IMP_COIN_FLOWERD = "6";
 
 
 	/**

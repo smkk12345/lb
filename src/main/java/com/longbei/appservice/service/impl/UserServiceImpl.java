@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
@@ -13,7 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
-import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.*;
 import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
@@ -28,12 +29,6 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.service.RankAcceptAwardService;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.UserPlDetailService;
-import com.longbei.appservice.service.UserInterestsService;
-import com.longbei.appservice.service.UserBehaviourService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -103,6 +98,8 @@ public class UserServiceImpl implements UserService {
 	private QueueMessageSendService queueMessageSendService;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -255,7 +252,12 @@ public class UserServiceImpl implements UserService {
 		}
 		if (ri) {
 			if(null != userInfo1){
+				//建立好友关系
 				userRelationService.insertFriend(userid,userInfo1.getUserid());
+				//给推荐人添加龙分
+				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+				//给推荐人添加龙币
+				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
@@ -945,6 +947,10 @@ public class UserServiceImpl implements UserService {
 						disStr = "点赞+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
+					case "DAILY_FLOWER":
+						disStr = "送花+"+value+"分";
+						point += Integer.parseInt(value);
+						break;
 					case "NEW_REGISTER":
 						disStr = "注册成功+"+value+"分";
 						point += Integer.parseInt(value);
@@ -1112,7 +1118,12 @@ public class UserServiceImpl implements UserService {
 				UserInfo info = userInfoMapper.getByUserName(invitecode);
 				if(null != info){
 					//是龙杯用户,送分.....
-					
+					//建立好友关系
+					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
+					//给推荐人添加龙分
+					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+					//给推荐人添加龙币
+					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}
@@ -1212,8 +1223,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			return iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			baseResp = iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			if (ResultUtil.isSuccess(baseResp)){
+				//第三方绑定获得龙分
+				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
+				thirdregisterGainPoint(userInfo,utype);
+			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}

@@ -216,7 +216,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -1725,7 +1725,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                     rankMember.setRankAward(rankAward);
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("0");//已中奖 人工审核中
+                                rankMember.setIswinning("4");//已中奖 人工审核中
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
