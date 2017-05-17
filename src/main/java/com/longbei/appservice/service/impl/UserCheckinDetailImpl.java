@@ -170,8 +170,6 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		reseResp = insertSelective(userCheckinDetail);
 		//+进步币
 		if(ResultUtil.isSuccess(reseResp)){
-//			String pType = SysRulesCache.perfectTenMap.get(2);
-			String pType = Constant_Perfect.PERFECT_GAM;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 			reseResp = userBehaviourService.pointChange(userInfo,"DAILY_CHECKIN",Constant_Perfect.PERFECT_GAM,
 					Constant.USER_IMP_COIN_CHECKIN,0,0);
@@ -289,25 +287,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				case 1:
 					disStr = "签到,第"+subKey+"天获得"+value+"个进步币";
 					break;
-				case 2:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 3:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 4:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 5:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 6:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
-				case 7:
-					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
-					break;
 				default:
+					disStr = "连续签到,第"+subKey+"天获得"+value+"个进步币";
 					break;
 			}
 			list.add(disStr);
@@ -337,6 +318,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 							currentday);
 					if(null != userImproveStatistic){
 						isimprove = "1";
+					}else{
+						isimprove = "0";
 					}
 					userCheckinDetail.setIsimprove(isimprove);
 				}

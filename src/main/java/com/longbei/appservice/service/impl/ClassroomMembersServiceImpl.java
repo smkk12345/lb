@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private ImproveClassroomMapper improveClassroomMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserService userService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -83,9 +86,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(record.getClassroomid(), 1);
 				//加入圈子成功获得龙分
-				UserInfo userInfo = new UserInfo();
-				userInfo.setUserid(record.getUserid());
-				userBehaviourService.pointChange(userInfo,"DAILY_ADDCLASSROOM", Constant_Perfect.PERFECT_GAM,null,0,0);
+				UserInfo userInfo = userService.selectJustInfo(record.getUserid());
+				userBehaviourService.pointChange(userInfo,"DAILY_ADDCLASSROOM",classroom.getPtype(),null,0,0);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 			reseResp.setData(record);

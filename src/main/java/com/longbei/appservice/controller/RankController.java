@@ -287,7 +287,6 @@ public class RankController {
         baseResp = this.rankService.acceptAward(userid,rankId);
         return baseResp;
     }
-
     /**
      * 领取实物奖品
      * @url http://ip:port/app_service/acceptRealAard

@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	private UserMsgService userMsgService;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserService userService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserIdcardServiceImpl.class);
 	
@@ -126,8 +129,7 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 			if (temp) {
 				if ("1".equals(record.getValidateidcard())){
 					//完成实名认证获得龙分
-					UserInfo userInfo = new UserInfo();
-					userInfo.setUserid(record.getUserid());
+					UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 					userBehaviourService.pointChange(userInfo,"NEW_CERTIFY_USERCARD",Constant_Perfect.PERFECT_GAM,null,0,0);
 					String remark = "实名认证通过";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(record.getUserid())

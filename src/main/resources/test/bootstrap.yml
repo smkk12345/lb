@@ -60,6 +60,7 @@ h5:
       improve: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-improve.html
     goal:
       detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/goal-detail.html
+    invite: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/invite.html
   agreementurl: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-agreement.html
   levelprivilege: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-privilege.html
 

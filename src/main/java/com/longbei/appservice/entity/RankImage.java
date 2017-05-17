@@ -126,6 +126,8 @@ public class RankImage {
 
     //--------
 
+    private List<RankAward> rankAwards; //榜单奖品
+
 
     public String getRankrule() {
         return rankrule;
@@ -205,8 +207,6 @@ public class RankImage {
     public void setEendtime(Date eendtime) {
         this.eendtime = eendtime;
     }
-
-    private List<RankAward> rankAwards; //榜单奖品
 
     public String getJoinlastday() {
         return joinlastday;

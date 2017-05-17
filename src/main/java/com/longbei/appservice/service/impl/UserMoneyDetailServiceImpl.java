@@ -50,7 +50,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	 * param origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 	 * 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
 	 *
-	 * param number 数量 --- 消耗：(除充值  购买外)value值为负---方法里面已做判断
+	 * param number 数量 --- 消耗：(除 0:充值  购买  6:取消订单返还龙币)value值为负---方法里面已做判断
 	 * param friendid 
 	 */
 	@Override
@@ -63,13 +63,14 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			userMoneyDetail.setFriendid(friendid);
 			userMoneyDetail.setOrigin(origin);
 			userMoneyDetail.setUserid(userid);
-			if(!"0".equals(origin)){
-				userMoneyDetail.setNumber(0 - number);
-			}else{
+			if("0".equals(origin) || "6".equals(origin)){
 				userMoneyDetail.setNumber(number);
+			}else{
+				userMoneyDetail.setNumber(0 - number);
 			}
 			boolean temp = insert(userMoneyDetail);
 			if (temp) {
+				userInfoMapper.updateMoneyAndFlowerByUserid(userid, number, 0);
 //				UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
 //				int allnum = userInfo.getTotalmoney() + userMoneyDetail.getNumber();
 //				userInfo.setTotalmoney(allnum);

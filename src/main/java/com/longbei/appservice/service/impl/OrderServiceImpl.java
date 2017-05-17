@@ -108,24 +108,25 @@ public class OrderServiceImpl implements OrderService {
 				BaseResp<ProductOrders> reseResp = iProductBasicService.get(userid, orderid);
 				if(ResultUtil.isSuccess(reseResp)){
 					ProductOrders productOrders = reseResp.getData();
+					//price:进步币最低要求   impiconprice:总进步币
+					Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
+					Double zongPrice = productOrders.getImpiconprice();
 					//ptype 0:Android 1：IOS
 					if("0".equals(ptype)){
 						//判断进步币是否大于最低要求进步币数量
-						if(impiconprice<productOrders.getImpiconprice().intValue()){
+						if(impiconprice<productPrice.intValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_25, Constant.RTNINFO_SYS_25);
 							return baseResp;
 						}
 						//判断支付的总价是否大于等于总价
 						double moneytocoin = AppserviceConfig.moneytocoin;
 						double zong = moneyprice*moneytocoin + impiconprice;
-						double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
-						if(zong < productPrice){
+						if(zong < zongPrice.longValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
 							return baseResp;
 						}
 					}else{
-						Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
-						if(impiconprice < productPrice.intValue()){
+						if(impiconprice < zongPrice.intValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
 							return baseResp;
 						}
@@ -138,14 +139,14 @@ public class OrderServiceImpl implements OrderService {
 					//调用product_service成功后    扣除进步币，龙币   
 					if(moneyprice != 0){
 						//结算订单所用龙币
-						userInfoMapper.updateMoneyAndFlowerByUserid(userid, -moneyprice, 0);
+//						userInfoMapper.updateMoneyAndFlowerByUserid(userid, -moneyprice, 0);
 						//origin ： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 						// 					3：设榜单    4：赞助榜单    5：赞助教室 
 						userMoneyDetailService.insertPublic(userid, "2", moneyprice, 0);
 					}
 					if(impiconprice != 0){
 						//结算订单所用进步币
-						userInfoMapper.updateCoinAndFlowerByUserid(userid, -impiconprice, 0);
+//						userInfoMapper.updateCoinAndFlowerByUserid(userid, -impiconprice, 0);
 						// 7:兑换商品
 						userImpCoinDetailService.insertPublic(userid, "7",
 								impiconprice, Long.parseLong(orderid), 0l);
@@ -258,11 +259,11 @@ public class OrderServiceImpl implements OrderService {
 	  					ProductOrders productOrders = resResp.getData();
 	  					if(null != productOrders){
 							if(productOrders.getMoneyprice() != 0){
-								userInfoMapper.updateMoneyAndFlowerByUserid(userid, productOrders.getMoneyprice().intValue(), 0);
+//								userInfoMapper.updateMoneyAndFlowerByUserid(userid, productOrders.getMoneyprice().intValue(), 0);
 								userMoneyDetailService.insertPublic(userid, "6", productOrders.getMoneyprice().intValue(), 0);
 							}
 							if(productOrders.getImpiconprice() != 0){
-								userInfoMapper.updateCoinAndFlowerByUserid(userid, productOrders.getImpiconprice().intValue(), 0);
+//								userInfoMapper.updateCoinAndFlowerByUserid(userid, productOrders.getImpiconprice().intValue(), 0);
 								userImpCoinDetailService.insertPublic(userid, "11",
 										productOrders.getImpiconprice().intValue(), Long.parseLong(productOrders.getOrderid()), 0l);
 							}
