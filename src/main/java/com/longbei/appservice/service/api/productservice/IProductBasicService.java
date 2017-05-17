@@ -6,7 +6,6 @@ import java.util.Map;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
-import com.longbei.pay.weixin.res.ResponseHandler;
 
 import feign.Headers;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -202,6 +201,20 @@ public interface IProductBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/order/buyOrder")
 	BaseResp<Object> buyOrder(@RequestParam("userid") Long userid,
 							  @RequestParam("orderid") String orderid);
+	
+	/**
+	 * 修改订单
+	 * @author yinxc
+	 * 2017年5月17日
+	 * @param orderid 订单业务id
+	 * @param moneyprice  成交价格---龙币
+     * @param impiconprice 成交价格---进步币
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/order/updateOrderPrice")
+	BaseResp<Object> updateOrderPrice(@RequestParam("userid") Long userid,
+							  @RequestParam("orderid") String orderid, 
+							  @RequestParam("moneyprice") Integer moneyprice, 
+							  @RequestParam("impiconprice") Integer impiconprice);
 
 	/**
 	 * @author yinxc

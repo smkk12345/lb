@@ -17,9 +17,7 @@ import com.longbei.appservice.common.utils.MongoUtils;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.FriendService;
-import com.longbei.appservice.service.UserBehaviourService;
-import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,6 @@ import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.service.UserRelationService;
 
 /**
  * @author smkk
@@ -65,6 +62,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private FriendMongoDao friendMongoDao;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private UserService userService;
 	
 	/**
 	* @Title: selectRemark 
@@ -100,8 +99,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 		SnsFriends snsFriends = new SnsFriends(userid,friendid);
 		SnsFriends snsFriends1 = new SnsFriends(friendid,userid);
 		try {
-			int n = snsFriendsMapper.insert(snsFriends);
-			int n1 = snsFriendsMapper.insert(snsFriends1);
+			int n = snsFriendsMapper.insertSelective(snsFriends);
+			int n1 = snsFriendsMapper.insertSelective(snsFriends1);
 			if(n==1&&n1==1){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				String message=userid+"&"+friendid;
@@ -233,12 +232,6 @@ public class UserRelationServiceImpl implements UserRelationService {
 				String message = userid+"&"+likeuserid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_ADDFUN, message);
-
-				//关注他人获得龙分
-				UserInfo userInfo = new UserInfo();
-				userInfo.setUserid(likeuserid);
-				userBehaviourService.pointChange(userInfo,"DAILY_FUN",Constant_Perfect.PERFECT_GAM,null,0,0);
-
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

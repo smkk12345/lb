@@ -52,6 +52,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
     @Autowired
     private UserBehaviourService userBehaviourService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public BaseResp<Object> relevantCircle(String circleName, Integer startNo, Integer pageSize) {
@@ -265,9 +267,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 map.put("personNum", 1);
                 circleMappler.updateCircleInvoloed(map);
                 //加入圈子成功获得龙分
-                UserInfo userInfo = new UserInfo();
-                userInfo.setUserid(Long.parseLong(userId));
-                userBehaviourService.pointChange(userInfo,"DAILY_ADDCIRCLE", Constant_Perfect.PERFECT_GAM,null,0,0);
+                UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userId));
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDCIRCLE",circle.getPtype(),null,0,0);
                 if (circle.getNeedconfirm()) {//通知群主审核
                     noticeCircleCreateUserId(circleId,circle.getCreateuserid());
 
