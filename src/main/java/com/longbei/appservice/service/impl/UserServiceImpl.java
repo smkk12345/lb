@@ -710,21 +710,8 @@ public class UserServiceImpl implements UserService {
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
 			//第三方注册获得龙分
-			UserInfo userInfo = new UserInfo();
-			userInfo.setUserid(suserid);
-			switch (utype) {
-				case "qq":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				case "wx":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				case "wb":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				default:
-					break;
-			}
+			UserInfo userInfo = selectJustInfo(suserid);
+			thirdregisterGainPoint(userInfo,utype);
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -752,19 +739,7 @@ public class UserServiceImpl implements UserService {
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
 					//第三方注册获得龙分
-					switch (utype) {
-						case "qq":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						case "wx":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						case "wb":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						default:
-							break;
-					}
+					thirdregisterGainPoint(userInfo,utype);
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
@@ -772,6 +747,30 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return baseResp;
+	}
+
+	/*
+	 * 第三方注册获得龙分
+	 */
+	public void thirdregisterGainPoint(UserInfo userInfo,String utype) {
+		try {
+			switch (utype) {
+				case "qq":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wx":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wb":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				default:
+					break;
+			}
+		}catch (Exception e) {
+			logger.error("thirdregisterGainPoint error and msg={}",e);
+		}
+
 	}
 
 	/* smkk

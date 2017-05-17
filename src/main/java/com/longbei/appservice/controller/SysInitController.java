@@ -51,7 +51,7 @@ public class SysInitController extends BaseController{
             baseResp.getExpandData().put("invitepoint", Constant_point.INVITE_LEVEL1);
             baseResp.getExpandData().put("inviteimp", Constant_Imp_Icon.INVITE_LEVEL1);
 
-            baseResp.getExpandData().put("registerurl",AppserviceConfig.h5_helper);
+            baseResp.getExpandData().put("registerurl",AppserviceConfig.h5_share_invite);
         }catch (Exception e){
             logger.error("initerror",e);
         }
