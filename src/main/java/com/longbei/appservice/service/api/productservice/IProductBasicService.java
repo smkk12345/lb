@@ -137,6 +137,7 @@ public interface IProductBasicService {
 	 * @param prices 商品价格，以逗号隔开
 	 * @param otype 订单类型。0 龙币 1 进步币 2 混排 3 其他
 	 * @param remark 备注
+	 * @param ptype 0:Android 1：IOS
 	 * @param discount 用户等级所享受的折扣
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/order/create")
@@ -153,7 +154,9 @@ public interface IProductBasicService {
 							@RequestParam("prices") String prices,
 							@RequestParam("otype") String otype,
 							@RequestParam("remark") String remark,
-							@RequestParam("discount") String discount);
+							@RequestParam("discount") String discount, 
+							@RequestParam("ptype") String ptype, 
+							@RequestParam("totalcoin") int totalcoin);
 
 	/**
 	 * 我的订单列表

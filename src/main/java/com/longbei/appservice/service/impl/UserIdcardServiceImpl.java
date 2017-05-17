@@ -130,13 +130,13 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 					userInfo.setUserid(record.getUserid());
 					userBehaviourService.pointChange(userInfo,"NEW_CERTIFY_USERCARD",Constant_Perfect.PERFECT_GAM,null,0,0);
 					String remark = "实名认证通过";
-					userMsgService.insertMsg(String.valueOf(record.getUserid())
-							,"1",null,"9",null,remark,"0","26", "实名认证",0, "", "");
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(record.getUserid())
+							,null,"9",null,remark,"0","26", "实名认证",0, "", "");
 				}
 				if ("2".equals(record.getValidateidcard())){
 					String remark = "实名认证未通过";
-					userMsgService.insertMsg(String.valueOf(record.getUserid())
-							,"1",null,"9",null,remark,"0","26", "实名认证",0, "", "");
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(record.getUserid())
+							,null,"9",null,remark,"0","26", "实名认证",0, "", "");
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
