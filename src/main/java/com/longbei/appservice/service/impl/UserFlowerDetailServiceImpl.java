@@ -102,7 +102,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 				//origin  0:龙币兑换       1:赠与;  2:进步币兑换   3:被赠与
 				if("0".equals(origin)){
 					int num = (int) (number*flowertomoney);
-					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, 0);
+//					userInfoMapper.updateMoneyAndFlowerByUserid(userid, -num, 0);
 					//修改被赠送人收到的礼物
 //					userInfoMapper.updateMoneyAndFlowerByUserid(friendid, 0, number);
 					//添加一条龙币消费明细
@@ -115,7 +115,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 //				}
 				else if("2".equals(origin)){
 					int num = (int) (number*flowertocoin);
-					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, 0);
+//					userInfoMapper.updateCoinAndFlowerByUserid(userid, -num, 0);
 					//修改被赠送人收到的礼物
 //					userInfoMapper.updateCoinAndFlowerByUserid(friendid, 0, number);
 					//添加一条进步币消费明细
