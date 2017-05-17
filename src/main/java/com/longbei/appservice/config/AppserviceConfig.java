@@ -93,10 +93,9 @@ public class AppserviceConfig {
     public static String h5_share_rank_award;
     public static String h5_share_rank_improve;
     public static String h5_share_goal_detail;
+    public static String h5_share_invite;
     public static String h5_agreementurl;
     public static String h5_levelprivilege;
-
-
     public static String articleurl;
 
     @Value("${articleurl}")
@@ -138,8 +137,8 @@ public class AppserviceConfig {
         this.h5_agreementurl = h5_agreementurl;
     }
 
-    @Value("${h5.levelprivilege}")
-    public void setH5_levelprivilege(String h5_levelprivilege){
-        this.h5_levelprivilege = h5_levelprivilege;
+    @Value("${h5.share.invite}")
+    public void setH5_share_invite(String h5_share_invite){
+        this.h5_share_invite = h5_share_invite;
     }
 }

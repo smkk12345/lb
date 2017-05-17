@@ -16,6 +16,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.UserService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -55,6 +56,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private UserRelationService userRelationService;
     @Autowired
     private UserBehaviourService userBehaviourService;
+    @Autowired
+    private UserService userService;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -376,8 +379,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     Constant.MQDOMAIN_USER_ADDFRIEND, message);
 
             //添加好友成功获得龙分
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUserid(friendAddAsk.getSenderUserId());
+            UserInfo userInfo = userService.selectJustInfo(friendAddAsk.getSenderUserId());
             userBehaviourService.pointChange(userInfo,"DAILY_ADDFRIEND",Constant_Perfect.PERFECT_GAM,null,0,0);
 
             return new BaseResp<Object>().ok();

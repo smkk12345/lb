@@ -109,6 +109,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private FriendService friendService;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private UserService userService;
 
     /**
      *  @author luye
@@ -225,7 +227,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<RankImage> selectRankImage(String rankimageid) {
         try {
             RankImage rankImage = rankImageMapper.selectByRankImageId(rankimageid);
-            rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
+            //PC端榜单
+            rankImage.setRankAwards(selectRankAwardByRankid(rankimageid,rankImage.getSourcetype()));
             logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
             BaseResp<RankImage> baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
@@ -236,11 +239,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return BaseResp.fail();
     }
 
-    private List<RankAward> selectRankAwardByRankid(String rankiamgeid){
+    private List<RankAward> selectRankAwardByRankid(String rankiamgeid,String sourcetype){
         List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankiamgeid);
-        for (RankAward rankAward : rankAwards){
-            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award);
+        //PC端榜单奖品无awradid
+        if(!Constant.RANK_SOURCE_TYPE_1.equals(sourcetype)){
+            for (RankAward rankAward : rankAwards){
+                Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+                rankAward.setAward(award);
+            }
         }
         return rankAwards;
     }
@@ -249,7 +255,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         logger.info("publish rank image : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
         BaseResp baseResp = new BaseResp();
         String rankImageId = rankImage.getRankid()+"";
-        rankImage.setRankAwards(selectRankAwardByRankid(rankImageId));
+        rankImage.setRankAwards(selectRankAwardByRankid(rankImageId,rankImage.getSourcetype()));
         if (!Constant.RANKIMAGE_STATUS_4.equals(rankImage.getCheckstatus())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_60, Constant.RTNINFO_SYS_60);
         }
@@ -877,8 +883,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //2.如果直接入榜 不需要审核的话,则修改入榜人数
                 if(status == 1 && updateRankMemberRow > 0){
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
-                    //参榜成功获得龙分
-                    userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
+
                 }
 
 
@@ -933,6 +938,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
                 //往reids中放入初始化的排名值
                 boolean initRedisFlag = initRedisRankSort(rank,userId);
+                //参榜成功获得龙分
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",rank.getPtype(),null,0,0);
             }
             Map<String,Object> expandData = new HashMap<String,Object>();
             expandData.put("status",rankMember.getStatus());
@@ -1202,6 +1209,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> updateRankMemberCheckStatus(RankMembers rankMembers) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            if ("3".equals(rankMembers.getCheckstatus())){
+                if (!canCheckPass(rankMembers)){
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_618,Constant.RTNINFO_SYS_618);
+                    return baseResp;
+                }
+            }
             rankMembers.setIcount(0);
             int res = rankMembersMapper.updateRankMemberState(rankMembers);
             if (res > 0){
@@ -1212,6 +1225,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+    private boolean canCheckPass(RankMembers rankMembers){
+        Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
+        //榜单参与人数
+        int rankmnum = rank.getRankinvolved();
+        //榜单设置奖品数
+        int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
+        //审核通过数
+        rankMembers.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers);
+        if (okcount < awardcount){
+            return true;
+        }
+        return false;
+    }
+
+
+
 
     /**
      * 更改用户的参榜申请
@@ -1259,9 +1291,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userIdList.add(userId);
 
                 //4.参榜成功获得龙分
-                UserInfo userInfo = new UserInfo();
-                userInfo.setUserid(userId);
-                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
+                UserInfo userInfo = userService.selectJustInfo(userId);
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",rank.getPtype(),null,0,0);
             }
             if(userIdList.size() > 0){
                 String remark = null;
@@ -3138,9 +3169,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (waitcount==0){
                 return true;
             }
-        } else {
-            return true;
         }
+
         return false;
     }
 
