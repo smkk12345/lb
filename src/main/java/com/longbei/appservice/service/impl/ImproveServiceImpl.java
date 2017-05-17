@@ -202,7 +202,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
-            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,"5",improve.getImpid(),0);
+            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,"1",improve.getImpid(),0);
             //发布完成之后redis存储i一天数量信息
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);

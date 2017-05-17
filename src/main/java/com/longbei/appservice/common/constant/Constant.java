@@ -256,7 +256,7 @@ public class Constant {
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
-	public static final String RTNINFO_SYS_101 = "结算总价不足";
+	public static final String RTNINFO_SYS_101 = "结算总价不一致";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
@@ -419,6 +419,10 @@ public class Constant {
 	
 	/**
 	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
+	 * 0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
+     *				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
+     * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
+     * 					11:取消订单返还龙币     12:兑换鲜花
 	 */
 	public static final String USER_IMP_COIN_CHECKIN="0";
 	public static final String USER_IMP_COIN_SHARE="1";
