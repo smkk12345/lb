@@ -216,7 +216,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -1725,7 +1725,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                     rankMember.setRankAward(rankAward);
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("0");//已中奖 人工审核中
+                                rankMember.setIswinning("4");//已中奖 人工审核中
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
@@ -2663,7 +2663,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     awardMap.put("awardphotos",award.getAwardphotos());
                     awardMap.put("awardprice",award.getAwardprice());
                 }
-                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
+                //获取好友昵称
+                String remark = userRelationService.selectRemark(userId, rankAwardRelease.getUserid());
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(rankAwardRelease.getUserid()));
+                if(!StringUtils.isBlank(remark)){
+                    awardMap.put("nickname", remark);
+                }else{
+                    if(null != appUserMongoEntity){
+                        awardMap.put("nickname", appUserMongoEntity.getNickname());
+                    }
+
+                }
+
+//                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);
                 rankAwardCount += rankAwardRelease.getAwardcount();

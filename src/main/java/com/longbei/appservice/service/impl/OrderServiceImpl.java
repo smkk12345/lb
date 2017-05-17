@@ -108,24 +108,25 @@ public class OrderServiceImpl implements OrderService {
 				BaseResp<ProductOrders> reseResp = iProductBasicService.get(userid, orderid);
 				if(ResultUtil.isSuccess(reseResp)){
 					ProductOrders productOrders = reseResp.getData();
+					//price:进步币最低要求   impiconprice:总进步币
+					Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
+					Double zongPrice = productOrders.getImpiconprice();
 					//ptype 0:Android 1：IOS
 					if("0".equals(ptype)){
 						//判断进步币是否大于最低要求进步币数量
-						if(impiconprice<productOrders.getImpiconprice().intValue()){
+						if(impiconprice<productPrice.intValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_25, Constant.RTNINFO_SYS_25);
 							return baseResp;
 						}
 						//判断支付的总价是否大于等于总价
 						double moneytocoin = AppserviceConfig.moneytocoin;
 						double zong = moneyprice*moneytocoin + impiconprice;
-						double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
-						if(zong < productPrice){
+						if(zong < zongPrice.longValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
 							return baseResp;
 						}
 					}else{
-						Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
-						if(impiconprice < productPrice.intValue()){
+						if(impiconprice < zongPrice.intValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
 							return baseResp;
 						}
