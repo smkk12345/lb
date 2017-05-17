@@ -1895,7 +1895,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //加进步币
                 BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
                 //更新用户进步币总数
-                userInfoMapper.updateCoinAndFlowerByUserid(userId,(int) (award.getAwardprice()*Constant.RMB_COIN),0);
+//                userInfoMapper.updateCoinAndFlowerByUserid(userId,(int) (award.getAwardprice()*Constant.RMB_COIN),0);
                 newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
