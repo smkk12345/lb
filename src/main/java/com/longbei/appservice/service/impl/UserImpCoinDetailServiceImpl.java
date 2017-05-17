@@ -54,7 +54,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	 * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
 	 * 					11:取消订单返还龙币   12:兑换鲜花
 	 *
-	 * param number 数量 --- 消耗：(7:兑换商品    9：公益抽奖消耗进步币)value值为负---方法里面已做判断
+	 * param number 数量 --- 消耗：(7:兑换商品    9：公益抽奖消耗进步币 12:兑换鲜花)value值为负---方法里面已做判断
 	 * param impid 业务id  类型：
 	 * 						发进步：进步id，  榜获奖：榜id，   收到钻石礼物和收到鲜花礼物：进步id
 	 * 						兑换商品:商品id
@@ -97,8 +97,8 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 				return reseResp.fail("系统异常");
 			}
 			//2.给用户增加进步币
-//			int updateRow = this.userInfoMapper.updateUserCoin(userid,number);
-//			if(updateRow > 0){
+			int updateRow = this.userInfoMapper.updateCoinAndFlowerByUserid(userid, number, 0);
+			if(updateRow > 0){
 				record.setOrigin(origin);
 				record.setFriendid(friendid);
 				record.setUserid(userid);
@@ -107,9 +107,9 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 				if(!temp){
 					flag = false;
 				}
-//			}else{
-//				flag = false;
-//			}
+			}else{
+				flag = false;
+			}
 			if(flag){
 				return reseResp.ok();
 			}
