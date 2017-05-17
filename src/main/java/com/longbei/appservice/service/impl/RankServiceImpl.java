@@ -1683,7 +1683,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                     rankMember.setRankAward(rankAward);
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
-                                rankMember.setIswinning("0");//已中奖 人工审核中
+                                rankMember.setIswinning("4");//已中奖 人工审核中
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
