@@ -109,6 +109,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private FriendService friendService;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private UserService userService;
 
     /**
      *  @author luye
@@ -866,8 +868,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //2.如果直接入榜 不需要审核的话,则修改入榜人数
                 if(status == 1 && updateRankMemberRow > 0){
                     boolean updateRankMemberCount = updateRankMemberCount(rankId,1);
-                    //参榜成功获得龙分
-                    userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
+
                 }
 
 
@@ -922,6 +923,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
                 //往reids中放入初始化的排名值
                 boolean initRedisFlag = initRedisRankSort(rank,userId);
+                //参榜成功获得龙分
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",rank.getPtype(),null,0,0);
             }
             Map<String,Object> expandData = new HashMap<String,Object>();
             expandData.put("status",rankMember.getStatus());
@@ -1248,9 +1251,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 userIdList.add(userId);
 
                 //4.参榜成功获得龙分
-                UserInfo userInfo = new UserInfo();
-                userInfo.setUserid(userId);
-                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",Constant_Perfect.PERFECT_GAM,null,0,0);
+                UserInfo userInfo = userService.selectJustInfo(userId);
+                userBehaviourService.pointChange(userInfo,"DAILY_ADDRANK",rank.getPtype(),null,0,0);
             }
             if(userIdList.size() > 0){
                 String remark = null;

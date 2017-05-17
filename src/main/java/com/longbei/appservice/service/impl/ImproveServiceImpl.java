@@ -202,7 +202,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
-            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype, Constant_Perfect.PERFECT_GAM,improve.getImpid(),0);
+            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,"5",improve.getImpid(),0);
             //发布完成之后redis存储i一天数量信息
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);
@@ -1703,7 +1703,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
                 //用户送花获得龙分
-                userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED",Constant_Perfect.PERFECT_GAM,null,0,0);
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
