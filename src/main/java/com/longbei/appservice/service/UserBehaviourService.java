@@ -25,7 +25,8 @@ public interface UserBehaviourService {
      * return point  impicon  status
      * @return
      */
-    BaseResp<Object> pointChange(UserInfo userInfo,String operateType,String pType,String origin,long impid,long friendid);
+    BaseResp<Object> pointChange(UserInfo userInfo,String operateType,
+                                 String pType,String origin,long impid,long friendid);
 
     /**
      * 用户特权

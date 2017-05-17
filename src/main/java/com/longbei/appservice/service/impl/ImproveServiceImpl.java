@@ -202,7 +202,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
 
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
-            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype, Constant_Perfect.PERFECT_GAM,improve.getImpid(),0);
+            baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,"5",improve.getImpid(),0);
             //发布完成之后redis存储i一天数量信息
             String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
             springJedisDao.increment(key,businesstype,1);
@@ -1705,7 +1705,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
                 userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
                 //用户送花获得龙分
-                userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED",Constant_Perfect.PERFECT_GAM,null,0,0);
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
@@ -2286,6 +2286,9 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
         if (islike) {
             improve.setHaslike("1");
+        }else
+        {
+            improve.setHaslike("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
 //        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2297,6 +2300,8 @@ public class ImproveServiceImpl implements ImproveService{
                 userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
         if (isflower) {
             improve.setHasflower("1");
+        }else{
+            improve.setHasflower("0");
         }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
 //        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2702,8 +2707,11 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                     improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     if(!Constant.VISITOR_UID.equals(userid)){
+                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
                         initImproveInfo(improve,Long.parseLong(userid));
                     }
+
                     //初始化 赞 花 数量
                     initImproveLikeAndFlower(improve);
                     improves.add(improve);

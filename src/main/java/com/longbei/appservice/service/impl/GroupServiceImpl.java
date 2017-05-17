@@ -320,7 +320,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                             continue;
                         }
 
-                        if(!snsGroup.getNeedconfirm() || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
+                        if((!snsGroup.getNeedconfirm()) || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
                             status = 1;
                         }else{
                             status = 0;
@@ -356,6 +356,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 if(insertGroupNum > 0){
                     updateGroupCurrentNum(groupId,insertGroupNum);
                 }
+                if(status == 0){
+                    String memo = "有用户申请加入群组:"+snsGroup.getGroupname()+",快去处理吧!";
+                    boolean sendMessageFlag = this.userMsgService.sendMessage(true,snsGroup.getMainuserid(),null,"0","35",snsGroup.getGroupid(),memo,"5");
+                    //JPush推送 消息
+                    boolean pushFlag = this.jPushService.pushMessage("消息标识",snsGroup.getMainuserid()+"","用户加群申请",memo,snsGroup.getGroupid()+"",Constant.JPUSH_TAG_COUNT_1101);
+                }
                 expandData.put("status",status);
                 baseResp.setExpandData(expandData);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -379,7 +385,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
 
-            if(!snsGroup.getNeedconfirm() || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
+            if((!snsGroup.getNeedconfirm()) || (invitationUserId != null && invitationUserId.equals(snsGroup.getMainuserid()))){
                 status = 1;
                 newSnsGroupMember.setStatus(1);
                 boolean flag = insertRongYunGroupMember(operatorUserId,invitationAppUserMongoEntity.getNickname(),

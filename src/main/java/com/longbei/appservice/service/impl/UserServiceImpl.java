@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
@@ -13,7 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 
-import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.*;
 import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
@@ -28,12 +29,6 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.service.RankAcceptAwardService;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserService;
-import com.longbei.appservice.service.UserPlDetailService;
-import com.longbei.appservice.service.UserInterestsService;
-import com.longbei.appservice.service.UserBehaviourService;
 
 import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
@@ -103,6 +98,8 @@ public class UserServiceImpl implements UserService {
 	private QueueMessageSendService queueMessageSendService;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
+	@Autowired
+	private UserImpCoinDetailService userImpCoinDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -255,7 +252,12 @@ public class UserServiceImpl implements UserService {
 		}
 		if (ri) {
 			if(null != userInfo1){
+				//建立好友关系
 				userRelationService.insertFriend(userid,userInfo1.getUserid());
+				//给推荐人添加龙分
+				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+				//给推荐人添加龙币
+				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
@@ -708,21 +710,8 @@ public class UserServiceImpl implements UserService {
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
 			//第三方注册获得龙分
-			UserInfo userInfo = new UserInfo();
-			userInfo.setUserid(suserid);
-			switch (utype) {
-				case "qq":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				case "wx":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				case "wb":
-					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
-					break;
-				default:
-					break;
-			}
+			UserInfo userInfo = selectJustInfo(suserid);
+			thirdregisterGainPoint(userInfo,utype);
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -750,19 +739,7 @@ public class UserServiceImpl implements UserService {
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
 					//第三方注册获得龙分
-					switch (utype) {
-						case "qq":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						case "wx":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						case "wb":
-							userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
-							break;
-						default:
-							break;
-					}
+					thirdregisterGainPoint(userInfo,utype);
 					return baseResp;
 				}else{//验证码或者密码错误
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
@@ -770,6 +747,30 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return baseResp;
+	}
+
+	/*
+	 * 第三方注册获得龙分
+	 */
+	public void thirdregisterGainPoint(UserInfo userInfo,String utype) {
+		try {
+			switch (utype) {
+				case "qq":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_QQ",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wx":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WX",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				case "wb":
+					userBehaviourService.pointChange(userInfo,"NEW_LOGIN_WB",Constant_Perfect.PERFECT_GAM,null,0,0);
+					break;
+				default:
+					break;
+			}
+		}catch (Exception e) {
+			logger.error("thirdregisterGainPoint error and msg={}",e);
+		}
+
 	}
 
 	/* smkk
@@ -1113,7 +1114,12 @@ public class UserServiceImpl implements UserService {
 				UserInfo info = userInfoMapper.getByUserName(invitecode);
 				if(null != info){
 					//是龙杯用户,送分.....
-					
+					//建立好友关系
+					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
+					//给推荐人添加龙分
+					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+					//给推荐人添加龙币
+					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}
