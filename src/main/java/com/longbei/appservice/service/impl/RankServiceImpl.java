@@ -2632,7 +2632,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     awardMap.put("awardphotos",award.getAwardphotos());
                     awardMap.put("awardprice",award.getAwardprice());
                 }
-                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
+                //获取好友昵称
+                String remark = userRelationService.selectRemark(userId, rankAwardRelease.getUserid());
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(rankAwardRelease.getUserid()));
+                if(!StringUtils.isBlank(remark)){
+                    awardMap.put("nickname", remark);
+                }else{
+                    if(null != appUserMongoEntity){
+                        awardMap.put("nickname", appUserMongoEntity.getNickname());
+                    }
+
+                }
+
+//                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);
                 rankAwardCount += rankAwardRelease.getAwardcount();
