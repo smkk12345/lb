@@ -682,6 +682,17 @@ public class UserServiceImpl implements UserService {
 	/* smkk
          * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
          * 2017年1月17日
+         * Object data = baseResp.getData();
+			JSONObject jsonObject = JSONObject.fromObject(data);
+			String token = (String)jsonObject.get("token");
+			baseResp.getExpandData().put("token", token);
+
+			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//			if(userInfo.getDeviceindex().equals(deviceindex)){
+				//token 放到redis中去
+				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+         *
          */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -690,6 +701,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 		
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
+
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -707,6 +719,9 @@ public class UserServiceImpl implements UserService {
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
+			JSONObject jsonObject = JSONObject.fromObject(baseResp.getData());
+			String token = (String)jsonObject.get("token");
+			springJedisDao.set("userid&token&"+suserid, token);
 			//第三方注册获得龙分
 			UserInfo userInfo = new UserInfo();
 			userInfo.setUserid(suserid);
@@ -723,6 +738,7 @@ public class UserServiceImpl implements UserService {
 				default:
 					break;
 			}
+
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -746,9 +762,11 @@ public class UserServiceImpl implements UserService {
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
 					baseResp.getExpandData().put("userid", userInfo.getUserid());
-					baseResp.getExpandData().put("token", baseResp.getData());
+					String token = (String) baseResp.getData();
+					baseResp.getExpandData().put("token", token);
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
+					springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					//第三方注册获得龙分
 					switch (utype) {
 						case "qq":

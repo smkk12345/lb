@@ -36,7 +36,8 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
     public void saveImproveLfd(ImproveLFD improveLFD,String businessid,String businesstype){
         Criteria criteria = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid())
-                .and("opttype").is(improveLFD.getOpttype());
+                .and("opttype").is(improveLFD.getOpttype())
+                .and("avatar").is(improveLFD.getAvatar());
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("createtime",improveLFD.getCreatetime());
