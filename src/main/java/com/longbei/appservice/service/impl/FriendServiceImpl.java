@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -13,6 +14,7 @@ import com.longbei.appservice.dao.mongo.dao.NewMessageTipDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.FriendService;
+import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import net.sf.json.JSONArray;
@@ -51,6 +53,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private QueueMessageSendService queueMessageSendService;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private UserBehaviourService userBehaviourService;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -370,6 +374,12 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             String message = friendAddAsk.getReceiveUserId()+"&"+friendAddAsk.getSenderUserId();
             queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
                     Constant.MQDOMAIN_USER_ADDFRIEND, message);
+
+            //添加好友成功获得龙分
+            UserInfo userInfo = new UserInfo();
+            userInfo.setUserid(friendAddAsk.getSenderUserId());
+            userBehaviourService.pointChange(userInfo,"DAILY_ADDFRIEND",Constant_Perfect.PERFECT_GAM,null,0,0);
+
             return new BaseResp<Object>().ok();
         }catch(Exception e){
             logger.error("update friendAddAsk status id:{} status:{} userId:{}",id,status,userId);

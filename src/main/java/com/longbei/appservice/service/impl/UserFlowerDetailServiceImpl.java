@@ -234,6 +234,10 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
 			expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
 			expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
+			//getMoneyUrl 查看获得财富的方式URL    
+			String getMoneyUrl = AppserviceConfig.h5_helper;
+			expandData.put("moneyurl", getMoneyUrl);
+			
 			logger.info("selectUserInfoByUserid yuantomoney = {}, moneytocoin = {}, " +
 					"flowertocoin = {}, flowertomoney = {}",
 					AppserviceConfig.yuantomoney, AppserviceConfig.moneytocoin,

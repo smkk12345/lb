@@ -71,6 +71,7 @@ public class Constant {
 	public static final int STATUS_SYS_22 = -22;
 	public static final int STATUS_SYS_23 = -23;
 	public static final int STATUS_SYS_24 = -24;
+	public static final int STATUS_SYS_25 = -25;
 	
 	public static final int STATUS_SYS_26 = -26;
 	public static final int STATUS_SYS_27 = -27;
@@ -156,6 +157,7 @@ public class Constant {
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
+	public static final int STATUS_SYS_101 = -101;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -192,6 +194,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_22 = "该评论已点赞";
 	public static final String RTNINFO_SYS_23 = "龙币数量不足";
 	public static final String RTNINFO_SYS_24 = "进步币数量不足";
+	public static final String RTNINFO_SYS_25 = "最低进步币要求数量不足";
 	
 	public static final String RTNINFO_SYS_26 = "暂无好友信息";
 	public static final String RTNINFO_SYS_27 = "暂无搜索信息";
@@ -251,6 +254,7 @@ public class Constant {
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
+	public static final String RTNINFO_SYS_101 = "结算总价不足";
 	
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";

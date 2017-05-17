@@ -45,7 +45,7 @@ public class ProductBasic {
     
     private Integer goodsCount; //购物车提交时带的该商品数量
 
-    private Long lowimpicon; //最低进步币要求
+    private Integer lowimpicon; //最低进步币要求  值为-1时 不可以使用龙币抵扣
     
     private String productrule;  //商品规则
 
@@ -356,14 +356,14 @@ public class ProductBasic {
      * 最低进步币要求
      * @return   lowimpicon
      */
-    public Long getLowimpicon() {  //最低进步币要求
+    public Integer getLowimpicon() {  //最低进步币要求
         return lowimpicon;
     }
     /**
      * 最低进步币要求
      * @param @param  lowimpicon
      */
-    public void setLowimpicon(Long lowimpicon) {//最低进步币要求
+    public void setLowimpicon(Integer lowimpicon) {//最低进步币要求
         this.lowimpicon = lowimpicon;
     }
 

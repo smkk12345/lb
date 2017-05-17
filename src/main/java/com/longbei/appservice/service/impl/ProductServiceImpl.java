@@ -97,6 +97,9 @@ public class ProductServiceImpl implements ProductService {
 			if(null != userInfo){
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
 				baseResp = iProductBasicService.getProduct(userid, productid, userLevel.getDiscount());
+				Map<String, Object> expandData = new HashMap<>();
+				expandData.put("totalcoin", userInfo.getTotalcoin());
+				baseResp.setExpandData(expandData);
 			}
 		}catch (Exception e){
 			logger.error("selectProduct userid = {}, productid = {}",userid, productid, e);
@@ -177,6 +180,9 @@ public class ProductServiceImpl implements ProductService {
 			if(null != userInfo){
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
 				baseResp = iProductBasicService.getCart(userid, userLevel.getDiscount(), startNo, pageSize);
+				Map<String, Object> expandData = new HashMap<>();
+				expandData.put("totalcoin", userInfo.getTotalcoin());
+				baseResp.setExpandData(expandData);
 //				baseResp = iProductBasicService.getProduct(userid, productid, );
 			}
 		}catch (Exception e){

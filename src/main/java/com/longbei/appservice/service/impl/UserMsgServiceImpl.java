@@ -132,6 +132,58 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 
+
+	@Override
+	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
+									  String businessid, String remark, String mtype, String msgtype, String title, int num,
+									  String commentid, String commentlowerid,String href) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		if (StringUtils.isBlank(friendid)){
+			return reseResp;
+		}
+		try {
+			UserMsg record = new UserMsg();
+			if(!StringUtils.isBlank(friendid)){
+				record.setUserid(Long.valueOf(friendid));
+			}
+			record.setCreatetime(new Date());
+			record.setFriendid(Long.valueOf(userid));
+			record.setGtype(businesstype);
+			//0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
+			record.setMsgtype(msgtype);
+			if(!StringUtils.isBlank(businessid)){
+				record.setGtypeid(Long.valueOf(businessid));
+			}else{
+				record.setGtypeid(0l);
+			}
+			if(!StringUtils.isBlank(impid)){
+				record.setSnsid(Long.valueOf(impid));
+			}else{
+				record.setSnsid(0l);
+			}
+			record.setRemark(remark);
+			record.setIsdel("0");
+			record.setIsread("0");
+			record.setNum(num);
+			record.setTitle(title);
+			record.setCommentid(commentid);
+			record.setCommentid(href);
+			record.setCommentlowerid(commentlowerid);
+			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
+			// 送花 4 送钻石  5:粉丝  等等)
+			record.setMtype(mtype);
+			try {
+				userMsgMapper.insertSelective(record);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			} catch (Exception e) {
+				logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
+			}
+		} catch (Exception e) {
+			logger.error("insertMsg userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+
 	@Override
 	public int deleteCommentMsg(String impid, String businesstype, String businessid,
 			String commentid, String commentlowerid) {
