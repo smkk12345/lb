@@ -684,6 +684,17 @@ public class UserServiceImpl implements UserService {
 	/* smkk
          * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
          * 2017年1月17日
+         * Object data = baseResp.getData();
+			JSONObject jsonObject = JSONObject.fromObject(data);
+			String token = (String)jsonObject.get("token");
+			baseResp.getExpandData().put("token", token);
+
+			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//			if(userInfo.getDeviceindex().equals(deviceindex)){
+				//token 放到redis中去
+				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+         *
          */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -692,6 +703,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 		
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
+
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -709,6 +721,9 @@ public class UserServiceImpl implements UserService {
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
+			JSONObject jsonObject = JSONObject.fromObject(baseResp.getData());
+			String token = (String)jsonObject.get("token");
+			springJedisDao.set("userid&token&"+suserid, token);
 			//第三方注册获得龙分
 			UserInfo userInfo = selectJustInfo(suserid);
 			thirdregisterGainPoint(userInfo,utype);
@@ -735,9 +750,11 @@ public class UserServiceImpl implements UserService {
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
 					baseResp.getExpandData().put("userid", userInfo.getUserid());
-					baseResp.getExpandData().put("token", baseResp.getData());
+					String token = (String) baseResp.getData();
+					baseResp.getExpandData().put("token", token);
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
+					springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					//第三方注册获得龙分
 					thirdregisterGainPoint(userInfo,utype);
 					return baseResp;
@@ -945,6 +962,10 @@ public class UserServiceImpl implements UserService {
 				switch (operateType){
 					case "DAILY_LIKE":
 						disStr = "点赞+"+value+"分";
+						point += Integer.parseInt(value);
+						break;
+					case "DAILY_FLOWER":
+						disStr = "送花+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
 					case "NEW_REGISTER":
@@ -1219,8 +1240,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			return iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			baseResp = iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			if (ResultUtil.isSuccess(baseResp)){
+				//第三方绑定获得龙分
+				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
+				thirdregisterGainPoint(userInfo,utype);
+			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}
