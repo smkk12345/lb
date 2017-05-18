@@ -1247,6 +1247,8 @@ public class UserServiceImpl implements UserService {
 				//第三方绑定获得龙分
 				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
 				thirdregisterGainPoint(userInfo,utype);
+			}else{
+				baseResp.setData(null);
 			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
