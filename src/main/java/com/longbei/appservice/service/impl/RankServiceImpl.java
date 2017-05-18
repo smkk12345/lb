@@ -1101,7 +1101,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             //添加消息---榜@我通知
             //sourcetype 来源类型。0 运营端创建   1  b端创建 2 app用户创建。
-            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
+			String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+			if(null != rank){
+				remark = remark.replace("n", rank.getRanktitle());
+			}else{
+				remark = remark.replace("n", "");
+			}
+//            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
             if("0".equals(rank.getSourcetype())){
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 								//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
@@ -1851,9 +1857,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if((!"1".equals(rankMember.getIswinning())) || (rankMember != null && rankMember.getRankAward().getAwardid() == null)){//判断是否获奖
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_66,Constant.RTNINFO_SYS_66);
             }
-//            else if(rankMember != null && rankMember.getAcceptaward() != null && !"0".equals(rankMember.getAcceptaward())){//已经领过奖了
-//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
-//            }
             //查询该用户获得的奖
             Award award = this.awardMapper.selectAwardAndAwardClassify(Integer.parseInt(rankMember.getRankAward().getAwardid()));
             if(award == null){
@@ -1876,15 +1879,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(award.getAwardClassify().getClassifytype() == 0){//进步币
                 explain = "进步币可在\"我的钱包\"中查看";
             }else if(award.getAwardClassify().getClassifytype() == 1){//红包
-                if(acceptAwardStatus == 1){//0 未领奖 1 领奖 2 发货 3签收
+                if(acceptAwardStatus < 2){//0 未领奖 1 领奖 2 发货 3签收
                     explain = "添加龙杯小编微信:15816987854\n发送你的领奖码给小编,领取微信红包";
                 }else{
                     explain = "你已领奖成功";
                 }
             }else if(award.getAwardClassify().getClassifytype() == 3){//实物
-                if(acceptAwardStatus == 0){//0 未领奖 1 领奖 2 发货 3签收
-                    explain = "恭喜你获得了"+rankAcceptAward.getAwardnickname();
-                }else if(acceptAwardStatus == 1){
+                if(acceptAwardStatus < 2){//0 未领奖 1 领奖 2 发货 3签收
                     explain = "奖品会在20个工作日内发放,\n记得领取哦";
                 }else if(acceptAwardStatus == 2){
                     explain = "奖品已经发放,正在飞奔到你的手中";
@@ -1915,7 +1916,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 return baseResp;
-            }else if(acceptAwardStatus == 0 && award.getAwardClassify().getClassifytype() == 3){
+            }
+            //实物 未领奖
+            if(acceptAwardStatus == 0 && award.getAwardClassify().getClassifytype() == 3){
                 //获取用户的默认收货地址
                 UserAddress userAddress = this.userAddressService.selectDefaultAddressByUserid(userId);
                 if(userAddress != null){
@@ -1936,13 +1939,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(award.getAwardClassify().getClassifytype() < 3){//除实物以外的
                 newRankAcceptAward.setAcceptdate(new Date());
                 newRankAcceptAward.setStatus(1);
+
+                rankMember.setAcceptaward("1");
             }
 
             if(award.getAwardClassify().getClassifytype() == 0){//进步币
                 //加进步币
                 BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
-                //更新用户进步币总数
-//                userInfoMapper.updateCoinAndFlowerByUserid(userId,(int) (award.getAwardprice()*Constant.RMB_COIN),0);
                 newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
@@ -1950,12 +1953,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> parameterMap = new HashMap<String,Object>();
                     parameterMap.put("userId",userId);
                     parameterMap.put("rankId",rankId);
-                    parameterMap.put("acceptaward","1");
+                    parameterMap.put("acceptaward","3");
                     int updateRow = this.rankMembersMapper.updateRank(parameterMap);
-                    rankMember.setAcceptaward("1");
+                    rankMember.setAcceptaward("3");
 
                     newRankAcceptAward.setStatus(3);
                 }
+            }else if(award.getAwardClassify().getClassifytype() == 1){//红包
+                //更改用户的领奖状态
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("userId",userId);
+                parameterMap.put("rankId",rankId);
+                parameterMap.put("acceptaward","1");
+                int updateRow = this.rankMembersMapper.updateRank(parameterMap);
             }
             if(newRankAcceptAward.getAcceptdate() != null){
                 BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
@@ -2668,19 +2678,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     awardMap.put("awardphotos",award.getAwardphotos());
                     awardMap.put("awardprice",award.getAwardprice());
                 }
-                //获取好友昵称
-                String remark = userRelationService.selectRemark(userId, rankAwardRelease.getUserid());
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(rankAwardRelease.getUserid()));
-                if(!StringUtils.isBlank(remark)){
-                    awardMap.put("nickname", remark);
-                }else{
-                    if(null != appUserMongoEntity){
-                        awardMap.put("nickname", appUserMongoEntity.getNickname());
-                    }
-
-                }
-
-//                awardMap.put("nickname",this.friendService.getNickName(userId,rankAwardRelease.getUserid()));
+                RankAwardRelease tempRankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankAwardRelease.getAwardid());
+                awardMap.put("nickname",tempRankAwardRelease.getAwardnickname());
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);
                 rankAwardCount += rankAwardRelease.getAwardcount();
@@ -3329,7 +3328,23 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if ("1".equals(status)) {
                 //删除
                 improveService.removeImprove(userid, improveid, "2", rankid);
-                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
+                Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid), 
+                		userid, "2", rankid);
+				String remark = Constant.MSG_IMP_DEL_MODEL;
+				if(null != improve){
+					if(!StringUtils.isBlank(improve.getBrief())){
+						if(improve.getBrief().length()>=20){
+							//抓取内容20个字
+							String brief = improve.getBrief().substring(0, 20);
+							remark = remark.replace("n", brief);
+						}else{
+							remark = remark.replace("n", improve.getBrief());
+						}
+					}else{
+						remark = remark.replace("n", "");
+					}
+				}
+//                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
@@ -3349,7 +3364,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //下榜
                 improveService.removeImproveFromBusiness(improveid, rankid, "2");
                 
-            	String remark = Constant.MSG_QUITRANK_QUIT_MODEL.replace("n", rank.getRanktitle());
+				String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+				if(null != rank){
+					remark = remark.replace("n", rank.getRanktitle());
+				}else{
+					remark = remark.replace("n", "");
+				}
+//            	String remark = Constant.MSG_QUITRANK_QUIT_MODEL.replace("n", rank.getRanktitle());
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 				//						25:订单发货N天后自动确认收货    26：实名认证审核结果

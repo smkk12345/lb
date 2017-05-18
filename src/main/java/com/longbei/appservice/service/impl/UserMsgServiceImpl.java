@@ -257,6 +257,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 //					return temp;
 //				}
 //			}
+
+			Date commentMaxDate = null;//评论的最后消息时间
 			// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
 			if(expandData.get("is_comment").toString().equals("2")){
 				//评论设置   打开提醒   ---所有人
@@ -265,12 +267,19 @@ public class UserMsgServiceImpl implements UserMsgService {
 //				if(temp > 0){
 //					return temp;
 //				}
+			}else if(expandData.get("is_comment").toString().equals("1")){
+				commentMaxDate = getShowComment(userid);
 			}
-			if(msgTypeList.size() == 0){
+			if(msgTypeList.size() == 0 && commentMaxDate == null){
 				resultMap.put("mycount",0);
 				resultMap.put("mymaxtime",0);
 				return resultMap;
+			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
+				resultMap.put("mycount",1);
+				resultMap.put("mymaxtime",commentMaxDate);
+				return resultMap;
 			}
+
 			Map<String,Object> parameterMap = new HashMap<String,Object>();
 			parameterMap.put("userid",userid);
 			parameterMap.put("mtype",Constant.MSG_DIALOGUE_TYPE);
@@ -278,14 +287,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			parameterMap.put("isread","0");
 			resultMap = this.userMsgMapper.selectUserMsgCountByMsgTypeList(parameterMap);
 
-			Date commentMaxDate = null;
-			if(expandData.get("is_comment").toString().equals("1")){
-				//评论设置   打开提醒    ---与我相关（好友、Like、熟人）
-				commentMaxDate = getShowComment(userid);
-//				if(temp > 0){
-//					return temp;
-//				}
-			}
 			int count = Integer.parseInt(resultMap.get("count").toString());
 			if(commentMaxDate == null){
 				if(count < 1){
@@ -298,17 +299,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}
 			if(count < 1){
 				resultMap.put("mycount",1);
-//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
 				resultMap.put("mymaxtime", commentMaxDate.getTime());
 				return resultMap;
 			}
 			Date maxtime = DateUtils.parseDate(resultMap.get("maxtime"));
 			count ++;
 			if(maxtime.getTime() > commentMaxDate.getTime()){
-//				resultMap.put("mymaxtime",maxtime.getTime()/1000);
 				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}else{
-//				resultMap.put("mymaxtime",commentMaxDate.getTime()/1000);
 				resultMap.put("mymaxtime", commentMaxDate.getTime());
 			}
 			resultMap.put("mycount",count);
@@ -339,7 +337,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
 		if(null != list && list.size()>0){
 			for (UserMsg userMsg : list) {
-				if(slist.contains(userMsg.getFriendid())){
+				if(slist.contains(userMsg.getFriendid().toString())){
 					//好友   粉丝    评论含有未读消息
 					return userMsg.getCreatetime();
 				}

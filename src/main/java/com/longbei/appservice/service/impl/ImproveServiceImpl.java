@@ -951,6 +951,15 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
+        //查询该榜单,校验该榜单是否已经结束
+        Rank rank = this.rankMapper.selectRankByRankid(Long.parseLong(rankid));
+        if(rank == null){
+            return false;
+        }
+        if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
+            return false;
+        }
+
         int res = 0;
         Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
 //        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
@@ -2870,8 +2879,15 @@ public class ImproveServiceImpl implements ImproveService{
                 //清除数据
                 clearDirtyData(improve);
                 //发送消息
+                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(businessid));
+				String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+				if(null != rank){
+					remark = remark.replace("n", rank.getRanktitle());
+				}else{
+					remark = remark.replace("n", "");
+				}
                 userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, 
-                		"榜中下榜", "0", "41", "下榜", 0, "", "");
+                		remark, "0", "41", "下榜", 0, "", "");
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {
