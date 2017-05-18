@@ -216,7 +216,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            } else {
+                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }
+
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
