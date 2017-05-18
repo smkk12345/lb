@@ -111,7 +111,7 @@ public class RankController {
     public BaseResp<Object> ownRankSort(Long rankId,Long userid,Long currentUserid){
         logger.info("rankId={},userid={}",rankId,userid);
         BaseResp<Object> baseResp = new BaseResp<>();
-        if(rankId == null || userid == null || currentUserid == null){
+        if(rankId == null || userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         if(Constant.VISITOR_UID.equals(userid+"")){
