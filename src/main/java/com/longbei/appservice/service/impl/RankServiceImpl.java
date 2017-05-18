@@ -556,7 +556,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
-                    if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                    if(userid != null && !Constant.VISITOR_UID.equals(String.valueOf(userid))){
                         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userid);
                         if(null != rankMembers&&rankMembers.getStatus().equals("1")){
                             rank1.setHasjoin("1");
@@ -1639,11 +1639,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
         return baseResp;
-    }
-
-    @Override
-    public BaseResp<Integer> getRankImproveCount(String rankid) {
-        return null;
     }
 
     /**

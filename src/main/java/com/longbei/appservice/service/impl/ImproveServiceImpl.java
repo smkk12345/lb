@@ -1462,9 +1462,9 @@ public class ImproveServiceImpl implements ImproveService{
 
                 timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
 
-                //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                   circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
+                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
 
                 try{
@@ -1489,7 +1489,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
-    
+
     /**
 	 * @author yinxc
 	 * 添加评论消息---点赞

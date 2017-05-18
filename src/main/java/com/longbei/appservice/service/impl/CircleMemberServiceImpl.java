@@ -34,9 +34,15 @@ public class CircleMemberServiceImpl implements CircleMemberService {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("userId",userId);
         map.put("circleId",circleId);
-        map.put("likes",likes);
-        map.put("flowers",flowers);
-        map.put("diamonds",diamonds);
+        if(likes != null){
+            map.put("likes",likes);
+        }
+        if(flowers != null){
+            map.put("flowers",flowers);
+        }
+        if(diamonds != null){
+            map.put("diamonds",diamonds);
+        }
         map.put("updateTime",new Date());
         int row = circleMembersMapper.updateCircleMemberInfo(map);
         if(row > 0){
