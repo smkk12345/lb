@@ -8,6 +8,7 @@ import com.longbei.appservice.dao.ImproveGoalMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserGoal;
+import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
 import net.sf.json.JSONArray;
@@ -35,6 +36,8 @@ public class GoalServiceImpl implements GoalService {
     private IdGenerateService idGenerateService;
     @Autowired
     private ImproveGoalMapper improveGoalMapper;
+    @Autowired
+    private FriendService friendService;
 
     private static Logger logger = LoggerFactory.getLogger(GoalServiceImpl.class);
 
@@ -174,6 +177,8 @@ public class GoalServiceImpl implements GoalService {
                     }
     			}
         		baseResp.setData(userGoal);
+                String nickname = this.friendService.getNickName(userid,userGoal.getUserid());
+                baseResp.getExpandData().put("nickname",nickname);
         	}else{
         		baseResp.setData(new UserGoal());
         	}

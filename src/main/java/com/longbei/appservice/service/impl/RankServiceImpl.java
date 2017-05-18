@@ -1272,6 +1272,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             updateMap.put("rankId",rankId);
             updateMap.put("status",status);
             updateMap.put("initRankMember",false);
+            updateMap.put("updateTime",new Date());
 
             List<Long> userIdList = new ArrayList<Long>();
             boolean flag = true;
@@ -1473,10 +1474,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
             if(currentUserid != null && !currentUserid.equals(userId)){
             	//获取好友昵称
-    			String remark = userRelationService.selectRemark(currentUserid, userId);
-    			if(!StringUtils.isBlank(remark)){
-    				appUserMongoEntity.setNickname(remark);
-    			}
+    			appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
 //                appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
             }
             rankMembers.setAppUserMongoEntity(appUserMongoEntity);
@@ -1698,7 +1696,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }else{
-                userList = this.rankMembersMapper.selectUserSort(rankId,sortType,startNum,pageSize);
+                userList = this.rankMembersMapper.selectUserSort(rankId,sortType,"1".equals(rank.getIsfinish())?0:1,startNum,pageSize);
                 if(userList != null && userList.size() > 0){
                     int i = 0;
                     for (RankMembers rankMember:userList){
