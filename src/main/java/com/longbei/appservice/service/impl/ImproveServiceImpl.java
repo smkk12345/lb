@@ -951,6 +951,15 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
+        //查询该榜单,校验该榜单是否已经结束
+        Rank rank = this.rankMapper.selectRankByRankid(Long.parseLong(rankid));
+        if(rank == null){
+            return false;
+        }
+        if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
+            return false;
+        }
+
         int res = 0;
         Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
 //        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
@@ -1462,9 +1471,9 @@ public class ImproveServiceImpl implements ImproveService{
 
                 timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
 
-                //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                 if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                   circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
+                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
                 }
 
                 try{
@@ -1489,7 +1498,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
-    
+
     /**
 	 * @author yinxc
 	 * 添加评论消息---点赞
@@ -2814,12 +2823,16 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
         if(ResultUtil.isSuccess(baseResp)){
+            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
             List<Improve> list = baseResp.getData();
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
                 initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                if (!StringUtils.isBlank(remark)){
+                    improve.getAppUserMongoEntity().setNickname(remark);
+                }
             }
         }
         String icount = rankMembersMapper.getRankImproveCount(businessid);
@@ -2866,8 +2879,15 @@ public class ImproveServiceImpl implements ImproveService{
                 //清除数据
                 clearDirtyData(improve);
                 //发送消息
+                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(businessid));
+				String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+				if(null != rank){
+					remark = remark.replace("n", rank.getRanktitle());
+				}else{
+					remark = remark.replace("n", "");
+				}
                 userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, 
-                		"榜中下榜", "0", "41", "下榜", 0, "", "");
+                		remark, "0", "41", "下榜", 0, "", "");
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {

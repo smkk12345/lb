@@ -277,25 +277,25 @@ public class UserServiceImpl implements UserService {
 	 * @currentdate:2017年5月3日
 	 */
 	public boolean initUserPerfectTen(long userid){
-		Integer sum = 0;
-		Integer i;
 		Date date = new Date();
-		for(i = 0 ;i < 10; i++) {
+		List<UserPlDetail> userPlDetailList =new ArrayList<>();
+		for(Integer i = 0 ;i < 10; i++) {
 			UserPlDetail userPlDetail = new UserPlDetail();
 			userPlDetail.setUserid(userid);
+			userPlDetail.setLeve(1);
 			userPlDetail.setPtype(i.toString());
+			userPlDetail.setScorce(0);
 			userPlDetail.setToplevel("0");
 			userPlDetail.setCreatetime(date);
-			Integer n = null;
-			try {
-				n = userPlDetailService.insertUserPlDetail(userPlDetail);
-				userBehaviourService.updateUserPLDetailToplevel(userid,"2");
-			} catch (Exception e) {
-				logger.error("initUserPerfectTen error and msg = {}",e);
-			}
-			sum = sum + n;
+			userPlDetailList.add(userPlDetail);
 		}
-        if(sum == 10){
+		Integer n = null;
+		try {
+			n = userPlDetailService.insertBatchUserPlDetails(userPlDetailList);
+		} catch (Exception e) {
+			logger.error("initUserPerfectTen error and msg = {}",e);
+		}
+        if(n > 0){
 			return true;
 		}
 		return false;
@@ -684,6 +684,17 @@ public class UserServiceImpl implements UserService {
 	/* smkk
          * @see com.longbei.appservice.service.UserService#registerthird(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
          * 2017年1月17日
+         * Object data = baseResp.getData();
+			JSONObject jsonObject = JSONObject.fromObject(data);
+			String token = (String)jsonObject.get("token");
+			baseResp.getExpandData().put("token", token);
+
+			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
+			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
+//			if(userInfo.getDeviceindex().equals(deviceindex)){
+				//token 放到redis中去
+				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+         *
          */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -692,6 +703,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 		
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
+
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -709,6 +721,9 @@ public class UserServiceImpl implements UserService {
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
 			iUserBasicService.bindingThird(openid, utype, suserid);
+			JSONObject jsonObject = JSONObject.fromObject(baseResp.getData());
+			String token = (String)jsonObject.get("token");
+			springJedisDao.set("userid&token&"+suserid, token);
 			//第三方注册获得龙分
 			UserInfo userInfo = selectJustInfo(suserid);
 			thirdregisterGainPoint(userInfo,utype);
@@ -717,6 +732,7 @@ public class UserServiceImpl implements UserService {
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
+				baseResp.setData(null);
 				return baseResp;
 			}else{
 				//验证码是否正确
@@ -735,9 +751,11 @@ public class UserServiceImpl implements UserService {
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
 					baseResp.getExpandData().put("userid", userInfo.getUserid());
-					baseResp.getExpandData().put("token", baseResp.getData());
+					String token = (String) baseResp.getData();
+					baseResp.getExpandData().put("token", token);
 					baseResp.setData(userInfo);
 					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
+					springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					//第三方注册获得龙分
 					thirdregisterGainPoint(userInfo,utype);
 					return baseResp;
@@ -1230,11 +1248,13 @@ public class UserServiceImpl implements UserService {
 				//第三方绑定获得龙分
 				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
 				thirdregisterGainPoint(userInfo,utype);
+			}else{
+				baseResp.setData(null);
 			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}
-		return BaseResp.fail();
+		return baseResp;
 	}
 
 	/**

@@ -263,7 +263,7 @@
     SELECT *
       FROM
     (SELECT <include refid="Base_Column_List" /> FROM rank_members
-    WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' limit #{totalcount}) temp
+    WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' ORDER BY sortnum ASC limit #{totalcount}) temp
     WHERE 1=1
     <if test="rankmember.isfashionman != null">
       AND temp.isfashionman = #{rankmember.isfashionman}
@@ -274,7 +274,7 @@
         #{item.id}
       </foreach>
     </if>
-    ORDER BY temp.sortnum DESC ,temp.likes DESC
+    ORDER BY temp.sortnum ASC ,temp.likes DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
@@ -570,7 +570,12 @@
   <!-- 获取用户在榜单中的排名 -->
   <select id="selectUserSort" resultMap="BaseResultMap">
       select
-          <include refid="Base_Finish_List" />
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+            <include refid="Base_Finish_List" />
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              <include refid="Base_Column_List" />
+          </if>
       from
         rank_members
       <where>
@@ -578,10 +583,20 @@
           and rankId = #{rankId}
       </where>
       <if test="sortType == 1">
-        order by rankfinishlikes desc,createtime asc
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+              order by rankfinishlikes desc,createtime asc
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              order by likes desc,createtime asc
+          </if>
       </if>
       <if test="sortType == 2">
-        order by rankfinishflower desc,createtime asc
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+              order by rankfinishflower desc,createtime asc
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              order by flowers desc,createtime asc
+          </if>
       </if>
       <if test="sortType == 0">
           order by sortnum asc,createtime asc

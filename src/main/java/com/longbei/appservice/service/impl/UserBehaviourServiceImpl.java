@@ -111,7 +111,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         if(!StringUtils.isBlank(origin)){
             impIcon = getImpIcon(userInfo,operateType);
             if(impIcon>0){
-                //进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
+            	//进步币 origin 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
+           	    //				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
+        	    // 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
+        	    // 					11:取消订单返还龙币     12:兑换鲜花
                 //long userid, String origin, int number, long impid, long friendid)
                 userImpCoinDetailService.insertPublic(userInfo.getUserid(),origin,impIcon,impid,friendid);
             }
@@ -445,16 +448,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @return
      */
     public boolean updateToUserPLDetail(UserInfo userInfo,int iPoint,String pType,int level){
+        Date date = new Date();
         UserPlDetail userPlDetail = new UserPlDetail();
         userPlDetail.setScorce(iPoint);
         userPlDetail.setUserid(userInfo.getUserid());
         userPlDetail.setPtype(pType);
         userPlDetail.setLeve(level);
         userPlDetail.setToplevel("1");
-        userPlDetail.setUpdatetime(new Date());
+        userPlDetail.setUpdatetime(date);
+
+        UserPlDetail userPlDetail2 = new UserPlDetail();
+        userPlDetail2.setUserid(userInfo.getUserid());
+        userPlDetail2.setScorce(iPoint);
+        userPlDetail2.setPtype("a");
+        userPlDetail2.setUpdatetime(date);
         try{
             int n = userPlDetailMapper.updateScorce(userPlDetail);
-            if (n>0)
+            int m = userPlDetailMapper.updateByPrimaryKeySelective(userPlDetail2);
+            if (n>0 && m>0)
                 return true;
         }catch(Exception e){
             logger.error("userPlDetailMapper.updateScorce error and msg={}",e);

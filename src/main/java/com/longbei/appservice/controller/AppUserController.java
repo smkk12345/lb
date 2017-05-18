@@ -418,8 +418,7 @@ public class AppUserController extends BaseController {
             userInfo.setConstellation(constellation); 
             userInfo.setBlood(blood);  
             userInfo.setFeeling(feeling);
-    		Date date = new Date();
-    		userInfo.setUpdatetime(date);
+    		userInfo.setUpdatetime(new Date());
             return userService.updateUserInfo(userInfo);
         } catch (Exception e) {
             logger.error("updateUserInfo params userid={},avatar={},username={},nickname={},realname={},sex={},city={},area={},brief={},birthday={},constellation={},blood={},feeling={}"

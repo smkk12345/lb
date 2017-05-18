@@ -36,7 +36,8 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
     public void saveImproveLfd(ImproveLFD improveLFD,String businessid,String businesstype){
         Criteria criteria = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid())
-                .and("opttype").is(improveLFD.getOpttype());
+                .and("opttype").is(improveLFD.getOpttype())
+                .and("avatar").is(improveLFD.getAvatar());
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("createtime",improveLFD.getCreatetime());
@@ -48,7 +49,10 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         improveLFDDetail.setBusinessid(businessid);
         improveLFDDetail.setBusinesstype(businesstype);
         mongoTemplate.save(improveLFDDetail);
-        mongoTemplate.upsert(query,update,ImproveLFD.class);
+        Criteria criteria1 = Criteria.where("impid").is(improveLFD.getImpid())
+                .and("userid").is(improveLFD.getUserid());
+        Query query1 = new Query(criteria1);
+        mongoTemplate.upsert(query1,update,ImproveLFD.class);
         Criteria removecriteria = Criteria.where("impid").is(improveLFD.getImpid());
         Query removequery = new Query(removecriteria);
         Long count = mongoTemplate.count(removequery,ImproveLFD.class);

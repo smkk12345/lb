@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
 						//判断支付的总价是否大于等于总价
 						double moneytocoin = AppserviceConfig.moneytocoin;
 						double zong = moneyprice*moneytocoin + impiconprice;
-						if(zong < zongPrice.longValue()){
+						if(zong - zongPrice.longValue() > 9 || zong<zongPrice.longValue()){
 							baseResp.initCodeAndDesp(Constant.STATUS_SYS_101, Constant.RTNINFO_SYS_101);
 							return baseResp;
 						}
@@ -151,6 +151,7 @@ public class OrderServiceImpl implements OrderService {
 						userImpCoinDetailService.insertPublic(userid, "7",
 								impiconprice, Long.parseLong(orderid), 0l);
 					}
+					iProductBasicService.updateOrderPrice(userid, orderid, moneyprice, impiconprice);
 				}
 			}
 		}catch (Exception e){
