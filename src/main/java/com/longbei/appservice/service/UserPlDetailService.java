@@ -6,6 +6,7 @@ import com.longbei.appservice.entity.UserPlDetail;
 
 
 import java.util.Date;
+import java.util.List;
 
 public interface UserPlDetailService {
 
@@ -30,10 +31,11 @@ public interface UserPlDetailService {
 	BaseResp<Object> selectUserPerfectListByUserId(long userid,int startNum,int pageSize);
 
 	/**
-	 * @Title: insertUserPlDetail
+	 * @Title: insertBatchUserPlDetail
 	 * @Description: 添加用户十全十美的信息
 	 * @auther IngaWu
 	 * @currentdate:2017年5月3日
 	 */
-	Integer insertUserPlDetail (UserPlDetail userPlDetail);
+	Integer insertBatchUserPlDetails (List<UserPlDetail> userPlDetailList);
+
 }

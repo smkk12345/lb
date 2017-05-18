@@ -32,6 +32,6 @@ public interface UserPlDetailMapper {
      */
     int updateUserPLDetailToplevel(UserPlDetail record);
 
-
+    int insertBatchUserPlDetails(List<UserPlDetail> userPlDetailList);
 
 }

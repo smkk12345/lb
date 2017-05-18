@@ -1466,7 +1466,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
             if(currentUserid != null && !currentUserid.equals(userId)){
-                appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
+            	//获取好友昵称
+    			String remark = userRelationService.selectRemark(currentUserid, userId);
+    			if(!StringUtils.isBlank(remark)){
+    				appUserMongoEntity.setNickname(remark);
+    			}
+//                appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
             }
             rankMembers.setAppUserMongoEntity(appUserMongoEntity);
 

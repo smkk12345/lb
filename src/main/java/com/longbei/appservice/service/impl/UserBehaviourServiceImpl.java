@@ -448,16 +448,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @return
      */
     public boolean updateToUserPLDetail(UserInfo userInfo,int iPoint,String pType,int level){
+        Date date = new Date();
         UserPlDetail userPlDetail = new UserPlDetail();
         userPlDetail.setScorce(iPoint);
         userPlDetail.setUserid(userInfo.getUserid());
         userPlDetail.setPtype(pType);
         userPlDetail.setLeve(level);
         userPlDetail.setToplevel("1");
-        userPlDetail.setUpdatetime(new Date());
+        userPlDetail.setUpdatetime(date);
+
+        UserPlDetail userPlDetail2 = new UserPlDetail();
+        userPlDetail2.setUserid(userInfo.getUserid());
+        userPlDetail2.setScorce(iPoint);
+        userPlDetail2.setPtype("a");
+        userPlDetail2.setUpdatetime(date);
         try{
             int n = userPlDetailMapper.updateScorce(userPlDetail);
-            if (n>0)
+            int m = userPlDetailMapper.updateByPrimaryKeySelective(userPlDetail2);
+            if (n>0 && m>0)
                 return true;
         }catch(Exception e){
             logger.error("userPlDetailMapper.updateScorce error and msg={}",e);
