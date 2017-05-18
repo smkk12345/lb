@@ -444,6 +444,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
+					map.put("brief",userInfo.getBrief());
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());
 					}else{

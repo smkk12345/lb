@@ -620,6 +620,7 @@
           username,
           upfashionmantime,
           sortno,
+          brief,
           nickname
       from user_info
       where 
