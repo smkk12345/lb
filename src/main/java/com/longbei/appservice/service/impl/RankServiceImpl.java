@@ -216,7 +216,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            } else {
+                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }
+
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -1461,7 +1466,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
             if(currentUserid != null && !currentUserid.equals(userId)){
-                appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
+            	//获取好友昵称
+    			String remark = userRelationService.selectRemark(currentUserid, userId);
+    			if(!StringUtils.isBlank(remark)){
+    				appUserMongoEntity.setNickname(remark);
+    			}
+//                appUserMongoEntity.setNickname(this.friendService.getNickName(currentUserid,userId));
             }
             rankMembers.setAppUserMongoEntity(appUserMongoEntity);
 

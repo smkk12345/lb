@@ -732,6 +732,7 @@ public class UserServiceImpl implements UserService {
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
+				baseResp.setData(null);
 				return baseResp;
 			}else{
 				//验证码是否正确
