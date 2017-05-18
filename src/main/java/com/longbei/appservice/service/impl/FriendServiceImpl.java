@@ -215,34 +215,17 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             jsonObject.put("content",message);
             JSONArray jsonArray = friendAddAsk.getMessage();
             jsonArray.add(jsonObject);
-            //注释掉的代码是为了满足当初的需求 同一个用户不能连续回复三次消息
-//            if(jsonArray.size() < 3){
-                friendMongoDao.updateFriendAddAsk(id,jsonArray,tempFlag,false,null,null);
-                //JPUSH通知用户
-                JSONObject pushMessage = new JSONObject();
-                pushMessage.put("status","消息标识");
-                pushMessage.put("userid",receiveUserId);
-                pushMessage.put("content","有用户回复了消息");
-                pushMessage.put("msgid",friendAddAsk.getId());
-                pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1002);
-                ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
+            friendMongoDao.updateFriendAddAsk(id,jsonArray,tempFlag,false,null,null);
+            //JPUSH通知用户
+            JSONObject pushMessage = new JSONObject();
+            pushMessage.put("status","消息标识");
+            pushMessage.put("userid",receiveUserId);
+            pushMessage.put("content","有用户回复了消息");
+            pushMessage.put("msgid",friendAddAsk.getId());
+            pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1002);
+            ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
 
-                return baseResp.ok("回复成功");
-//            }
-//            int repeat = 0;
-//            for(int i = jsonArray.size()-1;i > -1;i--){
-//                JSONObject beforeJSONObject = jsonArray.getJSONObject(i);
-//                if(userId.equals(beforeJSONObject.get("senderId"))){
-//                    repeat ++;
-//                }else{
-//                    break;
-//                }
-//                if(repeat > 3){
-//                    jsonArray.remove(i);
-//                }
-//            }
-//            friendMongoDao.updateFriendAddAsk(id,jsonArray,tempFlag,false,null,null);
-//            return baseResp.ok("回复成功");
+            return baseResp.ok("回复成功");
         }catch(Exception e){
             logger.error("reply friendAddAsk id:{} userId:{} message:{}",id,userId,message);
             printException(e);

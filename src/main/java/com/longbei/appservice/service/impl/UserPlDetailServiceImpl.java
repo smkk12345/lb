@@ -102,9 +102,9 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 
 
 	@Override
-	public Integer insertUserPlDetail (UserPlDetail userPlDetail){
+	public Integer insertBatchUserPlDetails (List<UserPlDetail> userPlDetailList){
 		try{
-			int n = userPlDetailMapper.insertSelective(userPlDetail);
+			int n = userPlDetailMapper.insertBatchUserPlDetails(userPlDetailList);
 			if (n>0)
 				return n;
 		}catch(Exception e){
