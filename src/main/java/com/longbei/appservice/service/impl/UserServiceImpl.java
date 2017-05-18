@@ -732,6 +732,7 @@ public class UserServiceImpl implements UserService {
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
+				baseResp.setData(null);
 				return baseResp;
 			}else{
 				//验证码是否正确
@@ -1247,6 +1248,8 @@ public class UserServiceImpl implements UserService {
 				//第三方绑定获得龙分
 				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
 				thirdregisterGainPoint(userInfo,utype);
+			}else{
+				baseResp.setData(null);
 			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
