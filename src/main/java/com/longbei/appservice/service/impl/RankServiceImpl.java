@@ -1101,7 +1101,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             //添加消息---榜@我通知
             //sourcetype 来源类型。0 运营端创建   1  b端创建 2 app用户创建。
-            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
+			String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+			if(null != rank){
+				remark = remark.replace("n", rank.getRanktitle());
+			}else{
+				remark = remark.replace("n", "");
+			}
+//            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
             if("0".equals(rank.getSourcetype())){
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 								//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
@@ -3329,7 +3335,23 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if ("1".equals(status)) {
                 //删除
                 improveService.removeImprove(userid, improveid, "2", rankid);
-                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
+                Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid), 
+                		userid, "2", rankid);
+				String remark = Constant.MSG_IMP_DEL_MODEL;
+				if(null != improve){
+					if(!StringUtils.isBlank(improve.getBrief())){
+						if(improve.getBrief().length()>=20){
+							//抓取内容20个字
+							String brief = improve.getBrief().substring(0, 20);
+							remark = remark.replace("n", brief);
+						}else{
+							remark = remark.replace("n", improve.getBrief());
+						}
+					}else{
+						remark = remark.replace("n", "");
+					}
+				}
+//                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
@@ -3349,7 +3371,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //下榜
                 improveService.removeImproveFromBusiness(improveid, rankid, "2");
                 
-            	String remark = Constant.MSG_QUITRANK_QUIT_MODEL.replace("n", rank.getRanktitle());
+				String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+				if(null != rank){
+					remark = remark.replace("n", rank.getRanktitle());
+				}else{
+					remark = remark.replace("n", "");
+				}
+//            	String remark = Constant.MSG_QUITRANK_QUIT_MODEL.replace("n", rank.getRanktitle());
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
