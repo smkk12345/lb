@@ -277,25 +277,25 @@ public class UserServiceImpl implements UserService {
 	 * @currentdate:2017年5月3日
 	 */
 	public boolean initUserPerfectTen(long userid){
-		Integer sum = 0;
-		Integer i;
 		Date date = new Date();
-		for(i = 0 ;i < 10; i++) {
+		List<UserPlDetail> userPlDetailList =new ArrayList<>();
+		for(Integer i = 0 ;i < 10; i++) {
 			UserPlDetail userPlDetail = new UserPlDetail();
 			userPlDetail.setUserid(userid);
+			userPlDetail.setLeve(1);
 			userPlDetail.setPtype(i.toString());
+			userPlDetail.setScorce(0);
 			userPlDetail.setToplevel("0");
 			userPlDetail.setCreatetime(date);
-			Integer n = null;
-			try {
-				n = userPlDetailService.insertUserPlDetail(userPlDetail);
-				userBehaviourService.updateUserPLDetailToplevel(userid,"2");
-			} catch (Exception e) {
-				logger.error("initUserPerfectTen error and msg = {}",e);
-			}
-			sum = sum + n;
+			userPlDetailList.add(userPlDetail);
 		}
-        if(sum == 10){
+		Integer n = null;
+		try {
+			n = userPlDetailService.insertBatchUserPlDetails(userPlDetailList);
+		} catch (Exception e) {
+			logger.error("initUserPerfectTen error and msg = {}",e);
+		}
+        if(n > 0){
 			return true;
 		}
 		return false;
@@ -732,6 +732,7 @@ public class UserServiceImpl implements UserService {
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
+				baseResp.setData(null);
 				return baseResp;
 			}else{
 				//验证码是否正确
@@ -1247,11 +1248,13 @@ public class UserServiceImpl implements UserService {
 				//第三方绑定获得龙分
 				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
 				thirdregisterGainPoint(userInfo,utype);
+			}else{
+				baseResp.setData(null);
 			}
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}
-		return BaseResp.fail();
+		return baseResp;
 	}
 
 	/**

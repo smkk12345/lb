@@ -45,6 +45,13 @@
       #{ptype,jdbcType=CHAR}, #{perfectname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{scorce,jdbcType=VARCHAR})
   </insert>
+  <insert id="insertBatchUserPlDetails" parameterType="java.util.List">
+    insert into user_pl_detail (userid,leve, ptype,scorce,toplevel,createtime)
+    values
+    <foreach collection="list" item="userPlDetail" index="index" separator="," >
+      (#{userPlDetail.userid},#{userPlDetail.leve},#{userPlDetail.ptype},#{userPlDetail.scorce},#{userPlDetail.toplevel},#{userPlDetail.createtime})
+    </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserPlDetail" >
     insert into user_pl_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -139,9 +146,6 @@
       <if test="leve != null" >
         leve = #{leve,jdbcType=INTEGER},
       </if>
-      <if test="ptype != null" >
-        ptype = #{ptype,jdbcType=CHAR},
-      </if>
       <if test="perfectname != null" >
         perfectname = #{perfectname,jdbcType=VARCHAR},
       </if>
@@ -152,10 +156,10 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="scorce != null" >
-        scorce = #{scorce,jdbcType=VARCHAR},
+        scorce = scorce + #{scorce,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where userid = #{userid,jdbcType=BIGINT} and ptype = #{ptype,jdbcType=CHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserPlDetail" >
     update user_pl_detail

@@ -2823,12 +2823,16 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
         if(ResultUtil.isSuccess(baseResp)){
+            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
             List<Improve> list = baseResp.getData();
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
                 initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                if (!StringUtils.isBlank(remark)){
+                    improve.getAppUserMongoEntity().setNickname(remark);
+                }
             }
         }
         String icount = rankMembersMapper.getRankImproveCount(businessid);

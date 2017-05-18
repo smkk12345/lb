@@ -468,18 +468,6 @@
   <update id="updateByUseridSelective" parameterType="com.longbei.appservice.entity.UserInfo" >
     update user_info
     <set >
-      <if test="totalflower != null" >
-        totalflower = #{totalflower,jdbcType=INTEGER},
-      </if>
-      <if test="totaldiamond != null" >
-        totaldiamond = #{totaldiamond,jdbcType=INTEGER},
-      </if>
-      <if test="totalmoney != null" >
-        totalmoney = #{totalmoney,jdbcType=INTEGER},
-      </if>
-      <if test="totalcoin != null" >
-        totalcoin = #{totalcoin,jdbcType=INTEGER},
-      </if>
       <if test="nickname != null" >
         nickname = #{nickname,jdbcType=VARCHAR},
       </if>
