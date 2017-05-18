@@ -852,7 +852,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     parameterMap.put("startNum",0);
                     parameterMap.put("pageSize",9);
                     SnsGroupMembers snsGroupMembers = snsGroupMembersMapper.findByUserIdAndGroupId(userid,String.valueOf(snsGroup.getGroupid()));
-                    if(null == snsGroupMembers){
+                    if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                         snsGroup.setHasjoin("0");
                     }else {
                         snsGroup.setHasjoin("1");

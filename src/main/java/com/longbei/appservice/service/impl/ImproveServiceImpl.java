@@ -951,6 +951,15 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public boolean removeRankImprove(String userid, String rankid, String improveid) {
+        //查询该榜单,校验该榜单是否已经结束
+        Rank rank = this.rankMapper.selectRankByRankid(Long.parseLong(rankid));
+        if(rank == null){
+            return false;
+        }
+        if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
+            return false;
+        }
+
         int res = 0;
         Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
 //        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid);
