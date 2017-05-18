@@ -1251,7 +1251,7 @@ public class UserServiceImpl implements UserService {
 		}catch (Exception e){
 			logger.error("thirdbinding error userid={},utype={},opendid={}",userid,utype,opendid);
 		}
-		return BaseResp.fail();
+		return baseResp;
 	}
 
 	/**
