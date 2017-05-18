@@ -263,7 +263,7 @@
     SELECT *
       FROM
     (SELECT <include refid="Base_Column_List" /> FROM rank_members
-    WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' limit #{totalcount}) temp
+    WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' ORDER BY temp.sortnum ASC limit #{totalcount}) temp
     WHERE 1=1
     <if test="rankmember.isfashionman != null">
       AND temp.isfashionman = #{rankmember.isfashionman}
@@ -274,7 +274,7 @@
         #{item.id}
       </foreach>
     </if>
-    ORDER BY temp.sortnum DESC ,temp.likes DESC
+    ORDER BY temp.sortnum ASC ,temp.likes DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
