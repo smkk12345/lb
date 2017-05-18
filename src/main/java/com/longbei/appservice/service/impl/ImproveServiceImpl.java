@@ -2879,8 +2879,15 @@ public class ImproveServiceImpl implements ImproveService{
                 //清除数据
                 clearDirtyData(improve);
                 //发送消息
+                Rank rank = rankMapper.selectRankByRankid(Long.parseLong(businessid));
+				String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+				if(null != rank){
+					remark = remark.replace("n", rank.getRanktitle());
+				}else{
+					remark = remark.replace("n", "");
+				}
                 userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, 
-                		"榜中下榜", "0", "41", "下榜", 0, "", "");
+                		remark, "0", "41", "下榜", 0, "", "");
                 baseResp = BaseResp.ok();
             }
         } catch (Exception e) {
