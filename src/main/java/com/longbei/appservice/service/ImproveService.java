@@ -186,7 +186,7 @@ public interface ImproveService {
      * @param businessid  所属业务类型id
      * @return
      */
-    boolean removeImprove(String userid,String improveid,
+    BaseResp<Object> removeImprove(String userid,String improveid,
                           String businesstype,String businessid);
 
 
@@ -196,7 +196,7 @@ public interface ImproveService {
      * @param improveid  进步id
      * @return
      */
-    boolean removeSingleImprove(String userid,String improveid);
+    BaseResp<Object> removeSingleImprove(String userid,String improveid);
 
     /**
      * 删除榜中进步
@@ -205,7 +205,7 @@ public interface ImproveService {
      * @param improveid  进步id
      * @return
      */
-    boolean removeRankImprove(String userid,String rankid,String improveid);
+    BaseResp<Object> removeRankImprove(String userid,String rankid,String improveid);
 
     /**
      * 删除圈子中进步
@@ -214,7 +214,7 @@ public interface ImproveService {
      * @param improveid   进步id
      * @return
      */
-    boolean removeCircleImprove(String userid,String circleid,String improveid);
+    BaseResp<Object> removeCircleImprove(String userid,String circleid,String improveid);
 
     /**
      * 删除教室中的进步
@@ -223,7 +223,7 @@ public interface ImproveService {
      * @param improveid 进步id
      * @return
      */
-    boolean removeClassroomImprove(String userid,String classroomid,String improveid);
+    BaseResp<Object> removeClassroomImprove(String userid,String classroomid,String improveid);
 
     /**
      * 删除目标中的进步
@@ -232,7 +232,7 @@ public interface ImproveService {
      * @param improveid  进步id
      * @return
      */
-    boolean removeGoalImprove(String userid,String goalid,String improveid);
+    BaseResp<Object> removeGoalImprove(String userid,String goalid,String improveid);
 
 
     /**

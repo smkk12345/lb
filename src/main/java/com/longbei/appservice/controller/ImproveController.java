@@ -202,24 +202,19 @@ public class ImproveController {
     @RequestMapping(value = "remove", method = RequestMethod.POST)
     public BaseResp<Object> removeImprove(String userid, String improveid, String businesstype, String businessid) {
         logger.debug("remove improve userid:{} improveid:{} businesstype:{} businessid:{}", userid, improveid, businesstype, businessid);
+        BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userid, improveid, businesstype)) {
-            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         if (!"0".equals(businesstype) && StringUtils.isBlank(businessid)) {
-            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        boolean flag = false;
         try {
-            flag = improveService.removeImprove(userid, improveid, businesstype, businessid);
-            if (flag) {
-                logger.debug("remove improve success");
-                return BaseResp.ok(Constant.RTNINFO_SYS_46);
-            }
+            baseResp = improveService.removeImprove(userid, improveid, businesstype, businessid);
         } catch (Exception e) {
             logger.error("remove improve is error:{}", e);
         }
-        logger.info("remove improve fail");
-        return new BaseResp(Constant.STATUS_SYS_47, Constant.RTNINFO_SYS_47);
+        return baseResp;
     }
 
     /**
