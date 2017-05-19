@@ -1,6 +1,8 @@
 package com.longbei.appservice.common.service.mq.reciver;
 
 
+import org.springframework.stereotype.Service;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
@@ -8,11 +10,12 @@ import javax.jms.MessageListener;
  * mq 广播消息处理
  * Created by luye on 2017/1/18.
  */
-//@Service
+@Service
 public class TopicMessageReciverService implements MessageListener{
 
     @Override
     public void onMessage(Message message) {
         //业务处理
+        System.out.println(message);
     }
 }

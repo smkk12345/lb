@@ -1002,7 +1002,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
                 //跟新榜中进步条数
-                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
+//                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
                 //更新redis中排名by lixb
                 rankSortService.updateRankSortScore(improve.getBusinessid(),
                     improve.getUserid(),Constant.OperationType.like,-like);
@@ -1832,7 +1832,9 @@ public class ImproveServiceImpl implements ImproveService{
     			if(null != appUserMongoEntity){
                     if (null != snsFriends){
                         appUserMongoEntity.setIsfriend("1");
-                        appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        if (!StringUtils.isBlank(snsFriends.getRemark())){
+                            appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        }
                     }
     				impAllDetail.setAppUser(appUserMongoEntity);
     			}else{
@@ -2820,7 +2822,8 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
     @Override
-    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
+    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
+                                                    String businesstype, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
         if(ResultUtil.isSuccess(baseResp)){
             String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
@@ -2835,8 +2838,10 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         }
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(curuserid));
         String icount = rankMembersMapper.getRankImproveCount(businessid);
         baseResp.getExpandData().put("rankTotalImpCount",icount);
+        baseResp.getExpandData().put("currentUserImpCount",rankMembers.getIcount());
         return baseResp;
     }
 
