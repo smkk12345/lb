@@ -119,7 +119,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean insertRank(RankImage rankImage) {
+    public BaseResp insertRank(RankImage rankImage) {
+        BaseResp baseResp = new BaseResp();
 
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
@@ -127,16 +128,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
-            //PC端发榜
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-            }else{
-                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            if(res>0){
+                baseResp=BaseResp.ok();
+                baseResp.setData(rankImage.getRankid());
+                //PC端发榜
+                if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                    insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }else{
+                    insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
-        return res != 0;
+        return baseResp;
     }
 
     @Override
