@@ -49,9 +49,20 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         improveLFDDetail.setBusinessid(businessid);
         improveLFDDetail.setBusinesstype(businesstype);
         mongoTemplate.save(improveLFDDetail);
+
         Criteria criteria1 = Criteria.where("impid").is(improveLFD.getImpid())
                 .and("userid").is(improveLFD.getUserid());
         Query query1 = new Query(criteria1);
+
+        ImproveLFD improveLFD1 = mongoTemplate.findOne(query1,ImproveLFD.class);
+        if (null == improveLFD1){
+            update.set("opttype",improveLFD.getOpttype());
+        } else {
+            if (Constant.MONGO_IMPROVE_LFD_OPT_LIKE.equals(improveLFD1.getOpttype())){
+                update.set("opttype",improveLFD.getOpttype());
+            }
+        }
+
         mongoTemplate.upsert(query1,update,ImproveLFD.class);
         Criteria removecriteria = Criteria.where("impid").is(improveLFD.getImpid());
         Query removequery = new Query(removecriteria);
@@ -61,6 +72,9 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
             removequery.skip(Constant.DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM + 5);
             mongoTemplate.remove(removequery,ImproveLFD.class);
         }
+
+
+
     }
 
     /**

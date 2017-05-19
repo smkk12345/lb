@@ -124,10 +124,10 @@ public interface RankMembersMapper {
 
     /**
      * 查询可以挤走的榜单用户id
-     * @param rankId
+     * @param map
      * @return
      */
-    Long removeOverTimeRankMemberUserId(Long rankId);
+    Long removeOverTimeRankMemberUserId(Map<String,Object> map);
 
     /**
      * 查询中奖的用户
