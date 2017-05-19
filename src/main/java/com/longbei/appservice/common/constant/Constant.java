@@ -131,6 +131,7 @@ public class Constant {
 	public static final int STATUS_SYS_616 = -616;
 	public static final int STATUS_SYS_617 = -617;
 	public static final int STATUS_SYS_618 = -618;
+	public static final int STATUS_SYS_619 = -619;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -253,6 +254,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_616 = "该榜单不存在";
 	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
+	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
@@ -335,7 +337,8 @@ public class Constant {
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
-			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea";
+			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,"+
+			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser";
 
 	/**
 	 * 进步相关配置
@@ -522,6 +525,7 @@ public class Constant {
 //	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
 	public static final String  MSG_IMP_DEL_MODEL = "您此条微进步(n)因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
+	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	
 	
 	

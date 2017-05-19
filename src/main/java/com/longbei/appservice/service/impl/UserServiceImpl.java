@@ -822,23 +822,24 @@ public class UserServiceImpl implements UserService {
 	 * 2017年1月17日
 	 */
 	@Override
-	public BaseResp<Object> updateUserInfo(UserInfo userInfo) {
+	public BaseResp<Object> updateUserInfo(UserInfo newUserInfo) {
 		BaseResp<Object> baseResp = new BaseResp<>(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		try {
-			UserInfo infos = userInfoMapper.getByNickName(userInfo.getNickname());
-			if(null != infos){
-				if(infos.getUserid() != (userInfo.getUserid())) {
+			UserInfo oldUserInfo = userInfoMapper.selectByUserid(newUserInfo.getUserid());
+			if(StringUtils.isNotEmpty(newUserInfo.getNickname()) && !newUserInfo.getNickname().equals(oldUserInfo.getNickname())){
+				UserInfo infos = userInfoMapper.getByNickName(newUserInfo.getNickname());
+				if(null != infos && !infos.getUserid().equals(newUserInfo.getUserid())){
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 				}
 			}
+			UserInfo updateUserInfo = compareUserInfo(oldUserInfo,newUserInfo);
 
-			int n = userInfoMapper.updateByUseridSelective(userInfo);
+			int n = userInfoMapper.updateByUseridSelective(updateUserInfo);
 			if(n == 1){
-				UserInfo userInfo1 = userInfoMapper.selectByUserid(userInfo.getUserid());
-				BeanUtils.copyProperties(userInfo,userInfo1);
-				userMongoDao.updateAppUserMongoEntity(userInfo1);
+				//BeanUtils.copyProperties(userInfo,userInfo1);
+				userMongoDao.updateAppUserMongoEntity(updateUserInfo);
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
-						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(userInfo.getUserid()));
+						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(updateUserInfo.getUserid()));
 			}
 
 		} catch (Exception e) {
@@ -846,6 +847,51 @@ public class UserServiceImpl implements UserService {
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
 		return baseResp;
+	}
+
+	private UserInfo compareUserInfo(UserInfo oldUserInfo,UserInfo newUserInfo){
+		UserInfo updateUserInfo = new UserInfo();
+		updateUserInfo.setUserid(oldUserInfo.getUserid());
+		if(StringUtils.isNotEmpty(newUserInfo.getAvatar()) && !newUserInfo.getAvatar().equals(oldUserInfo.getAvatar())){
+			updateUserInfo.setAvatar(newUserInfo.getAvatar());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getNickname()) && !newUserInfo.getNickname().equals(oldUserInfo.getNickname())){
+			updateUserInfo.setNickname(newUserInfo.getNickname());
+		}
+		if(StringUtils.isEmpty(newUserInfo.getRealname()) && StringUtils.isNotEmpty(oldUserInfo.getRealname())){
+			updateUserInfo.setRealname("");
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getRealname()) && !newUserInfo.getRealname().equals(oldUserInfo.getRealname())){
+			updateUserInfo.setRealname(newUserInfo.getRealname());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getSex()) && !newUserInfo.getSex().equals(oldUserInfo.getSex())){
+			updateUserInfo.setSex(newUserInfo.getSex());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getCity()) && !newUserInfo.getCity().equals(oldUserInfo.getCity())){
+			updateUserInfo.setCity(newUserInfo.getCity());
+		}
+		if((StringUtils.isEmpty(newUserInfo.getBrief()) && StringUtils.isNotEmpty(oldUserInfo.getBrief()))){
+			updateUserInfo.setBrief("");
+		}
+		if((StringUtils.isNotEmpty(newUserInfo.getBrief()) && !newUserInfo.getBrief().equals(oldUserInfo.getBrief()))){
+			updateUserInfo.setBrief(newUserInfo.getBrief());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getArea()) && !newUserInfo.getArea().equals(oldUserInfo.getArea())){
+			updateUserInfo.setArea(newUserInfo.getArea());
+		}
+		if(newUserInfo.getBirthday() != null && (oldUserInfo.getBirthday() == null || oldUserInfo.getBirthday().getTime() != newUserInfo.getBirthday().getTime())){
+			updateUserInfo.setBirthday(newUserInfo.getBirthday());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getConstellation()) && !newUserInfo.getConstellation().equals(oldUserInfo.getConstellation())){
+			updateUserInfo.setConstellation(newUserInfo.getConstellation());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getBlood()) && !newUserInfo.getBlood().equals(oldUserInfo.getBlood())){
+			updateUserInfo.setBlood(newUserInfo.getBlood());
+		}
+		if(StringUtils.isNotEmpty(newUserInfo.getFeeling()) && !newUserInfo.getFeeling().equals(oldUserInfo.getFeeling())){
+			updateUserInfo.setFeeling(newUserInfo.getFeeling());
+		}
+		return updateUserInfo;
 	}
 
 	@Override
@@ -1138,10 +1184,10 @@ public class UserServiceImpl implements UserService {
 					//是龙杯用户,送分.....
 					//建立好友关系
 					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
-					//给推荐人添加龙分
-					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+					//给推荐人添加龙分 //给推荐人添加龙币
+					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
 					//给推荐人添加龙币
-					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
+//					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}

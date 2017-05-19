@@ -46,7 +46,7 @@ public class Constant_Imp_Icon {
 
     //以下两类需要单独接口
     public static int DAILY_FLOWERED = 0;//被送花 进步币系数
-    public static int DAILY_DIAMONDED = 0;//被送钻着获取进步币系数
+//    public static int DAILY_DIAMONDED = 0;//被送钻着获取进步币系数
 
     /**
      * 随机数规则
