@@ -131,6 +131,7 @@ public class Constant {
 	public static final int STATUS_SYS_616 = -616;
 	public static final int STATUS_SYS_617 = -617;
 	public static final int STATUS_SYS_618 = -618;
+	public static final int STATUS_SYS_619 = -619;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -253,6 +254,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_616 = "该榜单不存在";
 	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
+	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";

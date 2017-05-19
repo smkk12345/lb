@@ -113,7 +113,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
     }
 
     public void deleteImproveByBusinessid(String businessid,String businesstype,String userid){
-        Criteria criteria = Criteria.where("improveId").is(businessid)
+        Criteria criteria = Criteria.where("businessid").is(Long.parseLong(businessid))
                 .and("businesstype").is(businesstype);
         Query query = new Query(criteria);
         List<TimeLineDetail> lists = mongoTemplate.find(query,TimeLineDetail.class);
@@ -126,7 +126,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Query query = Query.query(Criteria.where("improveId").is(improveid));
         TimeLineDetail timeLineDetail = mongoTemplate.findOne(query, TimeLineDetail.class);
         if(timeLineDetail != null){
-            Query deletequery = Query.query(Criteria.where("timeLineDetail.$id").is(timeLineDetail.getImproveId()));
+            Query deletequery = Query.query(Criteria.where("timeLineDetail.$id").is(timeLineDetail.getId()));
             mongoTemplate.remove(deletequery, TimeLine.class);
         }
         mongoTemplate.remove(query, TimeLineDetail.class);

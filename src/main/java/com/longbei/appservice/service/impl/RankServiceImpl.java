@@ -525,7 +525,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(StringUtils.isNotEmpty(codeword)){
                 map.put("codeword",codeword);
             }
-            if(status != 0 && StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
+            if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
             }
             if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankscope) && !"-1".equals(rankscope)){
