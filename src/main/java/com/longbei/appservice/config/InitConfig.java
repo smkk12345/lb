@@ -4,9 +4,11 @@ import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService;
+import com.longbei.appservice.common.service.mq.reciver.TopicMessageReciverService;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.SysSensitiveService;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +56,13 @@ public class InitConfig implements CommandLineRunner {
     private SysSensitiveService sysSensitiveService;
     @Autowired
     private ConnectionFactory activeMQConnectionFactory;
+    @Autowired
+    private TopicMessageReciverService topicMessageReciverService;
 
     @Autowired
     private Queue addqueue;
+    @Autowired
+    private Topic topic;
     @Autowired
     private Queue updatequeue;
     @Autowired
@@ -104,13 +110,14 @@ public class InitConfig implements CommandLineRunner {
             Session session = getSession();
             //进步相关监听
             initImproveListener(session,addqueue,addMessageReceiveService);
+            initImproveListener(session,topic,topicMessageReciverService);
             //其他监听
         } catch (Exception e) {
             logger.error("initListener ",e);
         }
     }
 
-    private void initImproveListener(Session session,Queue queue,MessageListener mssageListener){
+    private void initImproveListener(Session session,Destination queue,MessageListener mssageListener){
         try {
             MessageConsumer messageConsumer=session.createConsumer(queue); // 创建消息消费者
             messageConsumer.setMessageListener(mssageListener); // 注册消息监听

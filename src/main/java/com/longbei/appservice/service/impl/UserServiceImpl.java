@@ -1184,10 +1184,10 @@ public class UserServiceImpl implements UserService {
 					//是龙杯用户,送分.....
 					//建立好友关系
 					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
-					//给推荐人添加龙分
-					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+					//给推荐人添加龙分 //给推荐人添加龙币
+					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
 					//给推荐人添加龙币
-					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
+//					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}

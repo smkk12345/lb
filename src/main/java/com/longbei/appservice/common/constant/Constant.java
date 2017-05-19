@@ -131,6 +131,7 @@ public class Constant {
 	public static final int STATUS_SYS_616 = -616;
 	public static final int STATUS_SYS_617 = -617;
 	public static final int STATUS_SYS_618 = -618;
+	public static final int STATUS_SYS_619 = -619;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -253,6 +254,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_616 = "该榜单不存在";
 	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
+	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
@@ -335,7 +337,7 @@ public class Constant {
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
-			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list";
+			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea";
 
 	/**
 	 * 进步相关配置
@@ -418,7 +420,7 @@ public class Constant {
 	
 	
 	/**
-	 * 进步币添加来源   0:签到   1:分享 2：邀请好友注册 3：被送花 4，被送钻石 5 发进步 6 榜单奖品
+	 * 进步币添加来源   
 	 * 0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
      *				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
      * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
@@ -522,6 +524,7 @@ public class Constant {
 //	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
 	public static final String  MSG_IMP_DEL_MODEL = "您此条微进步(n)因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
+	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	
 	
 	

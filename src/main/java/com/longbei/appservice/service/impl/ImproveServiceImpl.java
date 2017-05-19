@@ -871,32 +871,32 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeImprove(String userid,String improveid,
+    public BaseResp<Object> removeImprove(String userid,String improveid,
                                  String businesstype,String businessid) {
-
+        BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
         try {
             switch (businesstype){
                 case Constant.IMPROVE_SINGLE_TYPE:
-                    isok = removeSingleImprove(userid,improveid);
+                    baseResp = removeSingleImprove(userid,improveid);
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
-                    isok = removeRankImprove(userid,businessid,improveid);
+                    baseResp = removeRankImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
-                    isok = removeClassroomImprove(userid,businessid,improveid);
+                    baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
-                    isok = removeCircleImprove(userid,businessid,improveid);
+                    baseResp = removeCircleImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_GOAL_TYPE:
-                    isok = removeGoalImprove(userid,businessid,improveid);
+                    baseResp = removeGoalImprove(userid,businessid,improveid);
                     break;
                 default:
-                    isok = removeSingleImprove(userid,improveid);
+                    baseResp = removeSingleImprove(userid,improveid);
                     break;
             }
-            if (isok){
+            if (ResultUtil.isSuccess(baseResp)){
                 //将收藏了该进步的用户进步状态修改为已删除
                 deleteUserCollectImprove("0",improveid);
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
@@ -907,7 +907,7 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
             logger.error("remove improve is error:",e);
         }
-        return isok;
+        return baseResp;
     }
 
     /**
@@ -927,11 +927,12 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeSingleImprove(String userid, String improveid) {
-
+    public BaseResp<Object> removeSingleImprove(String userid, String improveid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         int res = 0;
         try {
             res = improveMapper.remove(userid,improveid);
+
         } catch (Exception e) {
             logger.error("remove single immprove: improveid:{} userid:{} is error:{}",
                     improveid,userid,e);
@@ -939,9 +940,10 @@ public class ImproveServiceImpl implements ImproveService{
         if(res != 0){
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
-            return true;
+            baseResp = BaseResp.ok();
+            return baseResp;
         }
-        return false;
+        return baseResp;
     }
     /**
      *  @author luye
@@ -950,14 +952,17 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeRankImprove(String userid, String rankid, String improveid) {
+    public BaseResp<Object> removeRankImprove(String userid, String rankid, String improveid) {
         //查询该榜单,校验该榜单是否已经结束
+        BaseResp<Object> baseResp = new BaseResp<>();
         Rank rank = this.rankMapper.selectRankByRankid(Long.parseLong(rankid));
         if(rank == null){
-            return false;
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_613,Constant.RTNINFO_SYS_613);
+            return baseResp;
         }
         if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
-            return false;
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_619,Constant.RTNINFO_SYS_619);
+            return baseResp;
         }
 
         int res = 0;
@@ -976,9 +981,10 @@ public class ImproveServiceImpl implements ImproveService{
                     "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),-1);
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
-            return true;
+            baseResp = BaseResp.ok();
+            return baseResp;
         }
-        return false;
+        return baseResp;
     }
 
     //进步删除之后清理脏数据
@@ -1002,7 +1008,7 @@ public class ImproveServiceImpl implements ImproveService{
                 //更新赞 花 进步条数
                 improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
                 //跟新榜中进步条数
-                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
+//                rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
                 //更新redis中排名by lixb
                 rankSortService.updateRankSortScore(improve.getBusinessid(),
                     improve.getUserid(),Constant.OperationType.like,-like);
@@ -1021,7 +1027,8 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeCircleImprove(String userid, String circleid, String improveid) {
+    public BaseResp<Object> removeCircleImprove(String userid, String circleid, String improveid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         int res = 0;
         try {
             res = improveCircleMapper.remove(userid,circleid,improveid);
@@ -1032,9 +1039,10 @@ public class ImproveServiceImpl implements ImproveService{
         if(res != 0){
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
-            return true;
+            baseResp = BaseResp.ok();
+            return baseResp;
         }
-        return false;
+        return baseResp;
     }
     /**
      *  @author luye
@@ -1043,7 +1051,8 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeClassroomImprove(String userid, String classroomid, String improveid) {
+    public BaseResp<Object> removeClassroomImprove(String userid, String classroomid, String improveid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         int res = 0;
         try {
             res = improveClassroomMapper.remove(userid,classroomid,improveid);
@@ -1054,9 +1063,10 @@ public class ImproveServiceImpl implements ImproveService{
         if(res != 0){
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
-            return true;
+            baseResp = BaseResp.ok();
+            return baseResp;
         }
-        return false;
+        return baseResp;
     }
     /**
      *  @author luye
@@ -1065,7 +1075,8 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean removeGoalImprove(String userid, String goalid, String improveid) {
+    public BaseResp<Object> removeGoalImprove(String userid, String goalid, String improveid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
         int res = 0;
 //        Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,goalid,Constant.IMPROVE_GOAL_TYPE);
         Improve improve = selectImprove((Long.parseLong(improveid)),userid,Constant.IMPROVE_GOAL_TYPE,goalid,null,null);
@@ -1083,9 +1094,10 @@ public class ImproveServiceImpl implements ImproveService{
 
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
-            return true;
+            baseResp = BaseResp.ok();
+            return baseResp;
         }
-        return false;
+        return baseResp;
     }
 
 
@@ -1201,10 +1213,9 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 improve.setBusinessid(timeLine.getBusinessid());
                 improve.setPtype(timeLine.getPtype());
-
+                improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
                     initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     initImproveInfo(improve,Long.parseLong(userid));
                 }
                 //初始化 赞 花 数量
@@ -1797,7 +1808,8 @@ public class ImproveServiceImpl implements ImproveService{
                 //用户送钻获得龙分
                 BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_DIAMOND", Constant_Perfect.PERFECT_GAM,null,0,0);
                 if(ResultUtil.isSuccess(resp)){
-                    int icon = diamondnum* Constant_Imp_Icon.DAILY_DIAMONDED;
+//                    int icon = diamondnum* Constant_Imp_Icon.DAILY_DIAMONDED;
+                    int icon = 0;
                     //进步币明细  进步币总数
                     userImpCoinDetailService.insertPublic(Long.parseLong(friendid),Constant.USER_IMP_COIN_FLOWERD,icon,Long.parseLong(impid),Long.parseLong(userid));
                 }
@@ -1832,7 +1844,9 @@ public class ImproveServiceImpl implements ImproveService{
     			if(null != appUserMongoEntity){
                     if (null != snsFriends){
                         appUserMongoEntity.setIsfriend("1");
-                        appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        if (!StringUtils.isBlank(snsFriends.getRemark())){
+                            appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        }
                     }
     				impAllDetail.setAppUser(appUserMongoEntity);
     			}else{
@@ -2258,6 +2272,10 @@ public class ImproveServiceImpl implements ImproveService{
             if(null != improve){
                 Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
                 List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+                for (ImproveLFD improveLFD : improveLFDs){
+                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+                }
                 improve.setLfdcount(count);
                 improve.setImproveLFDs(improveLFDs);
             }
@@ -2820,7 +2838,8 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
     @Override
-    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid, String businesstype, Integer startno, Integer pagesize) {
+    public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
+                                                    String businesstype, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,businesstype,startno,pagesize);
         if(ResultUtil.isSuccess(baseResp)){
             String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
@@ -2835,8 +2854,10 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         }
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(curuserid));
         String icount = rankMembersMapper.getRankImproveCount(businessid);
         baseResp.getExpandData().put("rankTotalImpCount",icount);
+        baseResp.getExpandData().put("currentUserImpCount",rankMembers.getIcount());
         return baseResp;
     }
 

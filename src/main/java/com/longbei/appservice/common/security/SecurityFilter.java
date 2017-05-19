@@ -50,6 +50,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 			return ;
 		}
 
+//		if(true){
+//			arg2.doFilter(request, response);
+//			return ;
+//		}
+
 		//服务器之间api调用
 		if(url.contains("/api/")){
 //			String authorization = request.getHeader("Authorization");

@@ -525,7 +525,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(StringUtils.isNotEmpty(codeword)){
                 map.put("codeword",codeword);
             }
-            if(status != 0 && StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
+            if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
                 map.put("ptype",pType);
             }
             if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankscope) && !"-1".equals(rankscope)){
@@ -1121,9 +1121,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  44: 榜中成员下榜)
                 if ("1".equals(opttype)){
+                	String rem = Constant.MSG_RANK_CLOSS_MODEL;
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
                             "", "10",
-                            rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0, "", "");
+                            rankMembers.getRankid().toString(), rem, "2", "46", "榜关闭", 0, "", "");
                 } else {
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
                             "", "10",
@@ -1133,9 +1134,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if("2".equals(rank.getSourcetype())){
                 if ("1".equals(opttype)){
+                	String rem = Constant.MSG_RANK_CLOSS_MODEL;
                     userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
                             "", "10",
-                            rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0, "", "");
+                            rankMembers.getRankid().toString(), rem, "2", "46", "榜关闭", 0, "", "");
                 } else {
                     userMsgService.insertMsg(rank.getCreateuserid().toString(), rankMembers.getUserid().toString(),
                             "", "10",
