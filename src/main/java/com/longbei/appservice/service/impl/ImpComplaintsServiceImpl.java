@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
@@ -242,7 +243,25 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//删除
 						improveService.removeImprove(impComplaints.getComuserid().toString(), impComplaints.getImpid().toString(), 
 								impComplaints.getBusinesstype().toString(), impComplaints.getBusinessid().toString());
-						String remark = "您的进步已被删除,原因：" + checkoption;
+						Improve improve = improveService.selectImproveByImpidMuc(impComplaints.getImpid(), 
+								impComplaints.getComuserid().toString(), 
+								impComplaints.getBusinesstype().toString(), impComplaints.getBusinessid().toString());
+						String remark = Constant.MSG_IMP_DEL_MODEL;
+						if(null != improve){
+							if(!StringUtils.isBlank(improve.getBrief())){
+								if(improve.getBrief().length()>=20){
+									//抓取内容20个字
+									String brief = improve.getBrief().substring(0, 20);
+									remark = remark.replace("n", brief);
+								}else{
+									remark = remark.replace("n", improve.getBrief());
+								}
+							}else{
+								remark = remark.replace("n", "");
+							}
+						}
+//						remark = Constant.MSG_IMP_DEL_MODEL.replace("n", flowernum + "");
+//						String remark = "您的进步已被删除,原因：" + checkoption;
 		            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 						//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 						//						25:订单发货N天后自动确认收货    26：实名认证审核结果
@@ -264,8 +283,14 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//下榜
 						improveService.removeImproveFromBusiness(impComplaints.getImpid().toString(), 
 								impComplaints.getBusinessid().toString(), impComplaints.getBusinesstype().toString());
-						
-						String remark = "您的进步已被下榜,原因：" + checkoption;
+						Rank rank = rankMapper.selectRankByRankid(impComplaints.getBusinessid());
+						String remark = Constant.MSG_RANKIMP_QUIT_MODEL;
+						if(null != rank){
+							remark = remark.replace("n", rank.getRanktitle());
+						}else{
+							remark = remark.replace("n", "");
+						}
+//						String remark = "您的进步已被下榜,原因：" + checkoption;
 		            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 						//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 						//						25:订单发货N天后自动确认收货    26：实名认证审核结果

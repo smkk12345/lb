@@ -570,7 +570,12 @@
   <!-- 获取用户在榜单中的排名 -->
   <select id="selectUserSort" resultMap="BaseResultMap">
       select
-          <include refid="Base_Finish_List" />
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+            <include refid="Base_Finish_List" />
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              <include refid="Base_Column_List" />
+          </if>
       from
         rank_members
       <where>
@@ -578,10 +583,20 @@
           and rankId = #{rankId}
       </where>
       <if test="sortType == 1">
-        order by rankfinishlikes desc,createtime asc
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+              order by rankfinishlikes desc,createtime asc
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              order by likes desc,createtime asc
+          </if>
       </if>
       <if test="sortType == 2">
-        order by rankfinishflower desc,createtime asc
+          <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
+              order by rankfinishflower desc,createtime asc
+          </if>
+          <if test="searchIsfinishFiled == null or searchIsfinishFiled != 1">
+              order by flowers desc,createtime asc
+          </if>
       </if>
       <if test="sortType == 0">
           order by sortnum asc,createtime asc

@@ -9,7 +9,7 @@
     <result column="rankdetail" property="rankdetail" jdbcType="VARCHAR" />
     <result column="ranklimite" property="ranklimite" jdbcType="INTEGER" />
     <result column="rankinvolved" property="rankinvolved" jdbcType="INTEGER" />
-    <result column="rankscope" property="rankscope" jdbcType="CHAR" />
+    <result column="rankscope" property="rankscope" jdbcType="INTEGER" />
     <result column="rankphotos" property="rankphotos" jdbcType="VARCHAR" />
     <result column="rankrate" property="rankrate" jdbcType="INTEGER" />
     <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
@@ -206,7 +206,7 @@
       ptype)
     values (#{id,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
       #{rankdetail,jdbcType=VARCHAR}, #{ranklimite,jdbcType=INTEGER}, #{rankinvolved,jdbcType=INTEGER}, 
-      #{rankscope,jdbcType=CHAR}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER}, 
+      #{rankscope,jdbcType=INTEGER}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER},
       #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{areaname,jdbcType=VARCHAR}, 
       #{coordinate,jdbcType=VARCHAR}, #{isfinish,jdbcType=CHAR}, #{createuserid,jdbcType=BIGINT}, 
       #{ranktype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, #{rankcateid,jdbcType=INTEGER}, 
@@ -636,7 +636,7 @@
       rankdetail = #{rankdetail,jdbcType=VARCHAR},
       ranklimite = #{ranklimite,jdbcType=INTEGER},
       rankinvolved = #{rankinvolved,jdbcType=INTEGER},
-      rankscope = #{rankscope,jdbcType=CHAR},
+      rankscope = #{rankscope,jdbcType=INTEGER},
       rankphotos = #{rankphotos,jdbcType=VARCHAR},
       rankrate = #{rankrate,jdbcType=INTEGER},
       starttime = #{starttime,jdbcType=TIMESTAMP},

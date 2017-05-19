@@ -167,11 +167,11 @@ public class GoalController extends BaseController {
     public BaseResp<UserGoal> getGoalDetail(String userid, String goalid){
         BaseResp<UserGoal> baseResp = new BaseResp<>();
         logger.info("getGoalDetail userid = {}, goalid = {}", userid, goalid);
-        if(StringUtils.hasBlankParams(userid, goalid)){
+        if(StringUtils.hasBlankParams(goalid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try{
-            baseResp = goalService.selectUserGoal(Long.parseLong(userid), Long.parseLong(goalid));
+            baseResp = goalService.selectUserGoal(StringUtils.isEmpty(userid)?null:Long.parseLong(userid), Long.parseLong(goalid));
             if(ResultUtil.isSuccess(baseResp)){
                 baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_goal_detail);
             }
