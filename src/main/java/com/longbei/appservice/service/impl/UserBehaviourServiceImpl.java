@@ -590,8 +590,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
                     return Constant_Imp_Icon.checkInImpIconMap.get(1);
                 }else{
-                    if(Constant_Imp_Icon.checkInImpIconMap.containsKey(redisvalue)){
-                        return Constant_Imp_Icon.checkInImpIconMap.get(redisvalue);
+                    if(Constant_Imp_Icon.checkInImpIconMap.containsKey(Integer.parseInt(redisvalue))){
+                        return Constant_Imp_Icon.checkInImpIconMap.get(Integer.parseInt(redisvalue));
                     }else{
                         return Constant_Imp_Icon.checkInImpIconMap.get(7);
                     }
