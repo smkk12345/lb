@@ -2464,21 +2464,24 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankMembers rankMembers:rankMembersList){
             	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
             	//获取好友昵称
-				String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
-
-                if(userid != null && userid.equals(rankMembers.getUserid())){
-                    if(!"1".equals(rankMembers.getIswinning())){
-                        showBtn = 2;//在榜中 未中奖
-                    }else if("0".equals(rankMembers.getAcceptaward())){
-                        showBtn = 3;//中奖 但未领取
-                    }else{
-                        showBtn = 4;//中奖 且已领奖
+                if (!Constant.VISITOR_UID.equals(userid)){
+                    String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
+                    if(!StringUtils.isBlank(remark)){
+                        appUserMongoEntity.setNickname(remark);
+                    }
+                    if(userid != null && userid.equals(rankMembers.getUserid())){
+                        if(!"1".equals(rankMembers.getIswinning())){
+                            showBtn = 2;//在榜中 未中奖
+                        }else if("0".equals(rankMembers.getAcceptaward())){
+                            showBtn = 3;//中奖 但未领取
+                        }else{
+                            showBtn = 4;//中奖 且已领奖
+                        }
                     }
                 }
+                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
+
+
             }
             baseResp.setData(rankMembersList);
 
