@@ -2860,10 +2860,12 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         }
+        int currentUserImpCount = 0;
         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(curuserid));
-        String icount = rankMembersMapper.getRankImproveCount(businessid);
-        baseResp.getExpandData().put("rankTotalImpCount",icount);
-        baseResp.getExpandData().put("currentUserImpCount",rankMembers.getIcount());
+        if(null != rankMembers){
+            currentUserImpCount = rankMembers.getIcount();
+        }
+        baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
         return baseResp;
     }
 
