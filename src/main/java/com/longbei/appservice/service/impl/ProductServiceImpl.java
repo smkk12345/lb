@@ -188,7 +188,11 @@ public class ProductServiceImpl implements ProductService {
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-				baseResp = iProductBasicService.getCart(userid, userLevel.getDiscount(), startNo, pageSize);
+				double discount = 1;
+				if (null != userLevel){
+					discount = userLevel.getDiscount();
+				}
+				baseResp = iProductBasicService.getCart(userid, discount, startNo, pageSize);
 				Map<String, Object> expandData = new HashMap<>();
 				expandData.put("totalcoin", userInfo.getTotalcoin());
 				baseResp.setExpandData(expandData);

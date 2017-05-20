@@ -1247,8 +1247,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //榜单设置奖品数
         int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
         //审核通过数
-        rankMembers.setCheckstatus("3");
-        int okcount = rankMembersMapper.selectCount(rankMembers);
+        RankMembers rankMembers1 = new RankMembers();
+        rankMembers1.setRankid(rankMembers.getRankid());
+        rankMembers1.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers1);
         if (okcount < awardcount){
             return true;
         }

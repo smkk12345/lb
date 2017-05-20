@@ -1,8 +1,10 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.service.mq.send.TopicMessageSendService;
 import com.longbei.appservice.dao.BehaviorRuleMapper;
 import com.longbei.appservice.entity.BehaviorRule;
 import com.longbei.appservice.service.BehaviorRuleService;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
 
     @Autowired
     private BehaviorRuleMapper behaviorRuleMapper;
+
+    @Autowired
+    private TopicMessageSendService topicMessageSendService;
 
     @Override
     public boolean insertBehaviorRule(BehaviorRule behaviorRule) {
@@ -50,6 +55,7 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
         try {
             int res = behaviorRuleMapper.updateByPrimaryKeySelective(behaviorRule);
             if(res>0){
+                topicMessageSendService.send(null,null,"1");
                 return true;
             }
         } catch (Exception e) {

@@ -4,12 +4,14 @@ import com.longbei.appservice.common.activemq.ActivemqJmsProducer;
 import com.longbei.appservice.common.activemq.BaseActiveMQJmsTemplate;
 import com.longbei.appservice.common.activemq.IActiveMq.BaseJmsProducer;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTempTopic;
 
 import javax.jms.*;
 
+import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +56,9 @@ public class ActiveMQJmsConfiguration {
         return new ActiveMQQueue(addqueue);
     }
 
+
+
+
     @Bean(name = "updatequeue")
     public Queue updateQueue(){
         return new ActiveMQQueue(updatequeue);
@@ -94,7 +99,7 @@ public class ActiveMQJmsConfiguration {
         return jmsTemplate;
     }
 
-    public BaseActiveMQJmsTemplate initDestination(Queue queue){
+    public BaseActiveMQJmsTemplate initDestination(Destination queue){
         jmsTemplate = baseActiveMQJmsTemplateBean();
         jmsTemplate.setDefaultDestination(queue);
         return jmsTemplate;
@@ -105,6 +110,16 @@ public class ActiveMQJmsConfiguration {
     public BaseJmsProducer baseJmsProducerBean() {
         ActivemqJmsProducer producer = new ActivemqJmsProducer();
         producer.setJmsTemplate(initDestination(addQueue()));
+        logger.debug("oooo init improveJmsProducer ....");
+        return producer;
+    }
+
+
+    @Bean(name="topicJmsProducer")
+    public BaseJmsProducer baseTopicProducerBean() {
+        ActivemqJmsProducer producer = new ActivemqJmsProducer();
+        ActiveMQTempTopic activeMQTempTopic = new ActiveMQTempTopic();
+        producer.setJmsTemplate(initDestination(topic()));
         logger.debug("oooo init improveJmsProducer ....");
         return producer;
     }
