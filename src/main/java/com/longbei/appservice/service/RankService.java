@@ -22,7 +22,7 @@ public interface RankService extends BaseService{
      * @return
      * @author luye
      */
-    boolean insertRank(RankImage rankImage);
+    BaseResp insertRank(RankImage rankImage);
 
     /**
      * 更新榜单 审核状态，发布专题，删除等操作

@@ -153,24 +153,18 @@ public class RankApiController {
 
     /**
      * 添加榜单
-
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "insert")
-    public BaseResp<Object> insertRank(@RequestBody RankImage rankImage){
-
-        boolean issuccess = false;
-
+    public BaseResp insertRank(@RequestBody RankImage rankImage){
+        BaseResp baseResp = new BaseResp();
         try {
-            issuccess = rankService.insertRank(rankImage);
-            if(issuccess){
-                return BaseResp.ok(Constant.RTNINFO_SYS_50);
-            }
+            baseResp = rankService.insertRank(rankImage);
         } catch (Exception e) {
             logger.error("insert rank is error:{}",e);
         }
-        return BaseResp.fail(Constant.RTNINFO_SYS_51);
+        return baseResp;
     }
 
     /**
