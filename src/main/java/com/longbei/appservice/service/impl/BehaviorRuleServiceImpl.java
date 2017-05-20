@@ -21,8 +21,8 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
     @Autowired
     private BehaviorRuleMapper behaviorRuleMapper;
 
-    @Autowired
-    private TopicMessageSendService topicMessageSendService;
+//    @Autowired
+//    private TopicMessageSendService topicMessageSendService;
 
     @Override
     public boolean insertBehaviorRule(BehaviorRule behaviorRule) {
@@ -55,7 +55,7 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
         try {
             int res = behaviorRuleMapper.updateByPrimaryKeySelective(behaviorRule);
             if(res>0){
-                topicMessageSendService.send(null,null,"1");
+//                topicMessageSendService.send(null,null,"1");
                 return true;
             }
         } catch (Exception e) {

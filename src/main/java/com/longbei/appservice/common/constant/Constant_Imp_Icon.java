@@ -88,7 +88,7 @@ public class Constant_Imp_Icon {
         try{
             if(null == fieldsMap){
                 fieldsMap = new HashMap<>();
-                Class ownerClass = Class.forName(Constant_point.class.getName());
+                Class ownerClass = Class.forName(Constant_Imp_Icon.class.getName());
                 Field[] fields = ownerClass.getFields();
                 for (int i = 0; i < fields.length; i++) {
                     Field field = fields[i];

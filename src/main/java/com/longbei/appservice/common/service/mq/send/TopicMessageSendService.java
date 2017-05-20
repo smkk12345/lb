@@ -16,7 +16,7 @@ import javax.jms.Session;
  * 广播消息发送
  * Created by luye on 2017/1/18.
  */
-@Service
+//@Service
 public class TopicMessageSendService {
 
     private  static Logger logger = LoggerFactory.getLogger(TopicMessageSendService.class);

@@ -115,14 +115,14 @@ public class ActiveMQJmsConfiguration {
     }
 
 
-    @Bean(name="topicJmsProducer")
-    public BaseJmsProducer baseTopicProducerBean() {
-        ActivemqJmsProducer producer = new ActivemqJmsProducer();
-        ActiveMQTempTopic activeMQTempTopic = new ActiveMQTempTopic();
-        producer.setJmsTemplate(initDestination(topic()));
-        logger.debug("oooo init improveJmsProducer ....");
-        return producer;
-    }
+//    @Bean(name="topicJmsProducer")
+//    public BaseJmsProducer baseTopicProducerBean() {
+//        ActivemqJmsProducer producer = new ActivemqJmsProducer();
+//        ActiveMQTempTopic activeMQTempTopic = new ActiveMQTempTopic();
+//        producer.setJmsTemplate(initDestination(topic()));
+//        logger.debug("oooo init improveJmsProducer ....");
+//        return producer;
+//    }
 
 //    @Bean(name="improveJmsConsumer")
 //    public BaseJmsConsumer baseJmsConsumerBean() {
