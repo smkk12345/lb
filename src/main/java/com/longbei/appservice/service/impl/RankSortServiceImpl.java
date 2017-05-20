@@ -125,6 +125,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
                 int row = this.rankMembersMapper.updateRank(map);
                 i++;
             }
+
             //3.机审过滤未满足条件的榜单成员 修改机审状态为通过 机审条件,只审核是否满足总条数
             Map<String,Object> updateMap = new HashMap<String,Object>();
             updateMap.put("rankId",rank.getRankid());
@@ -163,7 +164,7 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             //缓存花，赞到快照中
             int updateRankMemberRow = rankMembersMapper.updateSortSource(rank.getRankid());
             //缓存 花，赞到单个进步快照中
-            int updateImproves = improveService.updateSortSource(rank.getRankid());
+//            int updateImproves = improveService.updateSortSource(rank.getRankid());
 
             updateRank.setIsrecommend("0");//榜单结束去掉推荐属性
             int updateRankRow = this.rankMapper.updateSymbolByRankId(updateRank);
