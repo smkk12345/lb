@@ -338,9 +338,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @param userInfo
      * @param iPoint
      */
-    private void updateToUserInfo(UserInfo userInfo,int iPoint){
+    private void updateToUserInfo(UserInfo userInfo,int iPoint) throws Exception {
         userInfo.setPoint(userInfo.getPoint()+iPoint);
         userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
+        if (0 == userInfo.getGrade()){
+            throw new Exception("user grade is must can not be 0");
+        }
         userInfoMapper.updatePointByUserid(userInfo);
     }
 

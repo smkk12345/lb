@@ -826,8 +826,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 //            resultMap.put("groupList",resultList);
 //            resultMap.put("updateTime",DateUtils.getDateTime());
                 baseResp.setData(resultList);
-                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select user group list error userId:{} startNum:{} pageSize:{} updateTime:{}",userId,startNum,pageSize,updateTime);
             printException(e);

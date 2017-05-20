@@ -1449,6 +1449,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(isExitsForRedis(impid,userid)){
             return baseResp;
         }
+        if ("0".equals(businesstype)){
+            businessid = null;
+        }
         springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
 
         boolean islike = improveMongoDao.exits(String.valueOf(impid),
@@ -1693,6 +1696,9 @@ public class ImproveServiceImpl implements ImproveService{
 //        if (!ResultUtil.isSuccess(baseResp)){
 //            return baseResp;
 //        }
+        if ("0".equals(businesstype)){
+            businessid = null;
+        }
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         if(null == improve || null == userInfo){
@@ -2854,10 +2860,12 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         }
+        int currentUserImpCount = 0;
         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(curuserid));
-        String icount = rankMembersMapper.getRankImproveCount(businessid);
-        baseResp.getExpandData().put("rankTotalImpCount",icount);
-        baseResp.getExpandData().put("currentUserImpCount",rankMembers.getIcount());
+        if(null != rankMembers){
+            currentUserImpCount = rankMembers.getIcount();
+        }
+        baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
         return baseResp;
     }
 

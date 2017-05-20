@@ -119,7 +119,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public boolean insertRank(RankImage rankImage) {
+    public BaseResp insertRank(RankImage rankImage) {
+        BaseResp baseResp = new BaseResp();
 
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
@@ -127,16 +128,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
-            //PC端发榜
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-            }else{
-                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            if(res>0){
+                baseResp=BaseResp.ok();
+                baseResp.setData(rankImage.getRankid());
+                //PC端发榜
+                if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                    insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }else{
+                    insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
-        return res != 0;
+        return baseResp;
     }
 
     @Override
@@ -1249,8 +1254,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //榜单设置奖品数
         int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
         //审核通过数
-        rankMembers.setCheckstatus("3");
-        int okcount = rankMembersMapper.selectCount(rankMembers);
+        RankMembers rankMembers1 = new RankMembers();
+        rankMembers1.setRankid(rankMembers.getRankid());
+        rankMembers1.setCheckstatus("3");
+        int okcount = rankMembersMapper.selectCount(rankMembers1);
         if (okcount < awardcount){
             return true;
         }
@@ -2458,21 +2465,24 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankMembers rankMembers:rankMembersList){
             	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
             	//获取好友昵称
-				String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
-
-                if(userid != null && userid.equals(rankMembers.getUserid())){
-                    if(!"1".equals(rankMembers.getIswinning())){
-                        showBtn = 2;//在榜中 未中奖
-                    }else if("0".equals(rankMembers.getAcceptaward())){
-                        showBtn = 3;//中奖 但未领取
-                    }else{
-                        showBtn = 4;//中奖 且已领奖
+                if (!Constant.VISITOR_UID.equals(userid)){
+                    String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
+                    if(!StringUtils.isBlank(remark)){
+                        appUserMongoEntity.setNickname(remark);
+                    }
+                    if(userid != null && userid.equals(rankMembers.getUserid())){
+                        if(!"1".equals(rankMembers.getIswinning())){
+                            showBtn = 2;//在榜中 未中奖
+                        }else if("0".equals(rankMembers.getAcceptaward())){
+                            showBtn = 3;//中奖 但未领取
+                        }else{
+                            showBtn = 4;//中奖 且已领奖
+                        }
                     }
                 }
+                rankMembers.setAppUserMongoEntity(appUserMongoEntity);
+
+
             }
             baseResp.setData(rankMembersList);
 
