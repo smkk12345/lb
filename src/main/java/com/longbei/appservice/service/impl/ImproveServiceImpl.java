@@ -1215,8 +1215,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
                 improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
-//                    initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-//                    initImproveInfo(improve,Long.parseLong(userid));
+                    initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+                    initImproveInfo(improve,Long.parseLong(userid));
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
