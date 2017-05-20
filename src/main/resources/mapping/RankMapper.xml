@@ -789,7 +789,7 @@
             order by endtime DESC
         </if>
         <if test="orderByType != null and orderByType == 'recommend'">
-          order by weight DESC
+          order by weight DESC,starttime DESC
         </if>
         <if test="orderByType != null and orderByType == 'starttimeAsc'">
           order by starttime

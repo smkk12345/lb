@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao.mongo.dao;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -9,6 +10,7 @@ import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 
+import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 import net.sf.json.JSONArray;
@@ -34,6 +36,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private MongoTemplate mongoTemplate1;
+	@Autowired
+	private IRongYunService rongYunService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserMongoDao.class);
 
@@ -62,6 +66,10 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 		if(!StringUtils.isBlank(user.getSex())){
 			update.set("sex", user.getSex());
+		}
+		if(StringUtils.isNotEmpty(user.getNickname()) || StringUtils.isNotEmpty(user.getAvatar())){
+			//如果用户更改了用户昵称或者用户头像,则更新融云的用户昵称和头像
+			BaseResp<Object> rongyunUpdateResp = this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
 		}
 		try {
 			mongoTemplate1.updateMulti(query, update, AppUserMongoEntity.class);

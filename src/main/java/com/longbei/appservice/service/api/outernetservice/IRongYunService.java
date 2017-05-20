@@ -27,6 +27,17 @@ public interface IRongYunService {
                                 @RequestParam("portraitUri") String portraitUri);
 
     /**
+     * 更新用户的信息
+     * @param userid
+     * @param nickname 用户昵称
+     * @param portraitUri 用户头像
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET,value = "/rongyun/refreshUserInfo")
+    BaseResp<Object> refreshUserInfo(@RequestParam("userid") String userid,@RequestParam("nickname") String nickname,
+                                        @RequestParam("portraitUri") String portraitUri);
+
+    /**
      * 新建群组
      * @param userIdss 新建群组的用户id
      * @param groupId 群组的id

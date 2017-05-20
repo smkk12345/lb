@@ -584,9 +584,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.getExpandData().put("totalCount",totalCount);
             //如果是按照口令搜索,则返回用户是否可以入榜
             if(StringUtils.isNotEmpty(codeword) && ranks != null && ranks.size() > 0){
-                if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                if(userid != null && !Constant.VISITOR_UID.equals(String.valueOf(userid))){
                     int userRankMemberStatus = getInsertUserRankMemberStatus(userid,ranks.get(0));
                     baseResp.getExpandData().put("userRankMemberStatus",userRankMemberStatus);
+                }else{
+                    baseResp.getExpandData().put("userRankMemberStatus",0);
                 }
             }
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
