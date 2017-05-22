@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,10 @@ import java.util.List;
 public class InitConfig implements CommandLineRunner {
 
     private static Logger logger = LoggerFactory.getLogger(InitConfig.class);
+
+
+    @Value("${spring.lbactivemq.topic.name.common}")
+    private String topiccommon;
 
        //签到规则
     @Autowired
@@ -110,7 +115,8 @@ public class InitConfig implements CommandLineRunner {
             Session session = getSession();
             //进步相关监听
             initImproveListener(session,addqueue,addMessageReceiveService);
-            initImproveListener(session,topic,topicMessageReciverService);
+            initImproveListenerTopic(session,session.createTopic(topiccommon),topicMessageReciverService);
+//            initImproveListenerTopic(session,topic,topicMessageReciverService);
             //其他监听
         } catch (Exception e) {
             logger.error("initListener ",e);
@@ -121,6 +127,15 @@ public class InitConfig implements CommandLineRunner {
         try {
             MessageConsumer messageConsumer=session.createConsumer(queue); // 创建消息消费者
             messageConsumer.setMessageListener(mssageListener); // 注册消息监听
+        }catch (Exception e){
+            logger.error("set messageConsumer lister error");
+        }
+
+    }
+    private void initImproveListenerTopic(Session session,Topic topic,MessageListener mssageListener){
+        try {
+            MessageConsumer messageConsumertopic=session.createConsumer(topic); // 创建消息消费者
+            messageConsumertopic.setMessageListener(mssageListener);
         }catch (Exception e){
             logger.error("set messageConsumer lister error");
         }
@@ -210,5 +225,11 @@ public class InitConfig implements CommandLineRunner {
         }
     }
 
+    public String getTopiccommon() {
+        return topiccommon;
+    }
 
+    public void setTopiccommon(String topiccommon) {
+        this.topiccommon = topiccommon;
+    }
 }
