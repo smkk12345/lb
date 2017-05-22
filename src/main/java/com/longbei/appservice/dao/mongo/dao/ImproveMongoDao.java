@@ -102,7 +102,7 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         Criteria criteria = Criteria.where("impid").is(impid);
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC, "createtime"));
-        query.limit(5);
+        query.limit(6);
         List<ImproveLFD> improveLFDs = mongoTemplate.find(query,ImproveLFD.class);
         return improveLFDs;
     }
