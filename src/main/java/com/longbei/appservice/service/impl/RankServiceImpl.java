@@ -509,7 +509,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
             if(awardList != null && awardList.size() > 0){
-                awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getAwardid())));
+                if (!StringUtils.isBlank(awardList.get(0).getAwardid())){
+                    awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getAwardid())));
+                }
                 rank.setRankAwards(awardList);
             }
         }catch(Exception e){
