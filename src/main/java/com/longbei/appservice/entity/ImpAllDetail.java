@@ -20,7 +20,7 @@ public class ImpAllDetail {
 
     private Date updatetime;//更新时间
 
-    private String gtype;//0 零散 1 目标中 2 榜中 3 圈中 4教室中
+    private String businesstype;//0 零散 1 目标中 2 榜中 3 圈中 4教室中
 
     private String detailtype; //明细类型 0 - 赞  1 - 花  2 - 钻
 
@@ -31,6 +31,24 @@ public class ImpAllDetail {
     private Integer startno;
 
     private Integer pagesize;
+
+    private Integer businessid;
+
+    public String getBusinesstype() {
+        return businesstype;
+    }
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public Integer getBusinessid() {
+        return businessid;
+    }
+
+    public void setBusinessid(Integer businessid) {
+        this.businessid = businessid;
+    }
 
     public AppUserMongoEntity getAppUser() {
         return appUser;
@@ -188,19 +206,5 @@ public class ImpAllDetail {
         this.updatetime = updatetime;
     }
 
-    /**
-     * 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     * @return gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     */
-    public String getGtype() {
-        return gtype;
-    }
 
-    /**
-     * 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     * @param gtype 0 零散 1 目标中 2 榜中 3 圈中 4教室中
-     */
-    public void setGtype(String gtype) {
-        this.gtype = gtype == null ? null : gtype.trim();
-    }
 }

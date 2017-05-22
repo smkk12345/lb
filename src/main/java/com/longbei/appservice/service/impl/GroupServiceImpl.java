@@ -860,7 +860,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         String[] avatarArray = new String[maxLength];
         for(int i = 0;i<maxLength;i++){
             AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-            avatarArray[i] = appUserMongoEntity.getAvatar();
+            if(!StringUtils.isBlank(appUserMongoEntity.getAvatar())){
+                avatarArray[i] = appUserMongoEntity.getAvatar();
+            }
         }
         return avatarArray;
     }
