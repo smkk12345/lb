@@ -238,8 +238,7 @@
   <select id="selectLikeListByUnameAndNname" resultMap="BaseResultMap"  >
     select userid, avatar, username, nickname 
     from user_info
-    where userid != #{userid} 
-    and 
+    where
     (nickname LIKE concat(concat('%', #{nickname}),'%') 
        or username LIKE concat(concat('%', #{nickname}),'%'))
     <if test="type == 0" >

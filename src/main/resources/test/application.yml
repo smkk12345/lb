@@ -64,7 +64,7 @@ spring:
                              update: improvecircle.update.test
                 topic:
                        name:
-                             common: common.dev.luye
+                             common: common.test
 oss:
     endpoint: https://pic1.longbei.ren
     accessKeyId: bmb3uihjoxyWYaQ3

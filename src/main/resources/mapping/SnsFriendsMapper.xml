@@ -49,7 +49,7 @@
     </if>
   </select>
   
-  <select id="selectByUidAndFid" resultMap="BaseResultMap" >
+  <select id="selectByUidAndFid" parameterType="Long" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from sns_friends

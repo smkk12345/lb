@@ -110,6 +110,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         int impIcon = 0 ;
         if(!StringUtils.isBlank(origin)){
             impIcon = getImpIcon(userInfo,operateType);
+            logger.info("pointChange impIcon = {}", impIcon);
             if(impIcon>0){
             	//进步币 origin 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
            	    //				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
@@ -309,23 +310,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         String key = getPerKey(userid);
         if(Constant_point.hasContain(limitField)){
             int limitValue = Constant_point.getStaticProperty(limitField);
-            String value = springJedisDao.getHashValue(key, dateStr+limitField);
+            String value = springJedisDao.getHashValue(key, "point"+dateStr+limitField);
             if(StringUtils.isBlank(value)){
-                springJedisDao.put(key, dateStr+limitField,result+"");
+                springJedisDao.put(key, "point"+dateStr+limitField,result+"");
                 return result;
             }else{
                 int curValue = Integer.parseInt(value);
                 if(curValue+result > limitValue){//就不给了
                     return 0;
                 }else{
-                    springJedisDao.put(key, dateStr+limitField,result+"");
+                    springJedisDao.put(key, "point"+dateStr+limitField,result+"");
                     return result;
                 }
             }
         }else{
             //签到的时候把过期时间添加上
             if(operateType.equals(Constant_point.DAILY_CHECKIN)){
-                springJedisDao.expire(key,Constant.CACHE_24X60X60);
+//                springJedisDao.expire(key,Constant.CACHE_24X60X60);
+                springJedisDao.expire(key, DateUtils.getLastTime());
             }
             return result;
         }
@@ -608,15 +610,17 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             //次数有限制
             if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
                 int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
-                String cacheStr = springJedisDao.getHashValue(key,dateStr+operateTypeLimit);
+//                logger.info("getImpIcon key = {}, dateStr+operateTypeLimit = {}", key, dateStr+operateTypeLimit);
+                String cacheStr = springJedisDao.getHashValue(key,"icon"+dateStr+operateTypeLimit);
                 int cacheTime = 0;
                 if(!StringUtils.isBlank(cacheStr)){
                     cacheTime = Integer.parseInt(cacheStr);
                 }
+                logger.info("getImpIcon userid = {}, limit = {}, cacheTime = {}", userInfo.getUserid(), limit, cacheTime);
                 if(limit > cacheTime){//还送
                     int randomRule = Constant_Imp_Icon.getStaticProperty(operateTypeRandom);
                     int randomCode = Constant_Imp_Icon.getRandomCode(randomRule);
-                    springJedisDao.put(key,dateStr+operateTypeLimit,(cacheTime+1)+"");
+                    springJedisDao.put(key,"icon"+dateStr+operateTypeLimit,(cacheTime+1)+"");
                     return randomCode;
                 }else{//不送了
                     return 0;

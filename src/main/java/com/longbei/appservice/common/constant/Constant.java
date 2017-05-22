@@ -7,6 +7,8 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Constant {
 
+	public static final String UPDATE_RULE = "updaterule";
+
 	public static final double DISTANCE_CONVERT_2D = 111.12;
 
 	public static final Integer AUTO_CONFIRM_RECEIPT = 10*24*60;//自动确认收货时间 10天
@@ -98,6 +100,7 @@ public class Constant {
 	public static final int STATUS_SYS_47 = -47;
 	public static final int STATUS_SYS_48 = -48;
 	public static final int STATUS_SYS_49 = -49;
+	public static final int STATUS_SYS_401 = -401;
 
 
 	public static final int STATUS_SYS_50 = -50;
@@ -224,6 +227,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_47 = "删除进步失败";
 	public static final String RTNINFO_SYS_48 = "送花失败，龙币扣除";
 	public static final String RTNINFO_SYS_49 = "送钻失败，龙币扣除";
+	public static final String RTNINFO_SYS_401 = "进步不存在，或进步已经被删除";
 
 	public static final String RTNINFO_SYS_54 = "还有内容没有审核";
 	public static final String RTNINFO_SYS_55 = "该进步不存在";

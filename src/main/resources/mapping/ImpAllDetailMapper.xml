@@ -9,12 +9,13 @@
     <result column="times" property="times" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
-    <result column="gtype" property="gtype" jdbcType="CHAR" />
+    <result column="businesstype" property="businesstype" jdbcType="CHAR" />
     <result column="detailtype" property="detailtype" jdbcType="CHAR" />
     <result column="giftnum" property="giftnum" jdbcType="INTEGER" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, impid, status, times, createtime, updatetime, gtype, detailtype, giftnum
+    id, userid, impid, status, times, createtime, updatetime, businesstype, detailtype, giftnum
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -42,7 +43,7 @@
     WHERE
     userid = #{userid}
     AND  impid=#{impid}
-    AND  gtype=#{gtype}
+    AND  businesstype=#{businesstype}
     AND  detailtype=#{detailtype}
     limit 0,1
   </select>
@@ -60,8 +61,8 @@
     <if test="impid != null">
       AND impid=#{impid}
     </if>
-    <if test="gtype != null">
-      AND gtype=#{gtype}
+    <if test="businesstype != null">
+      AND businesstype=#{businesstype}
     </if>
     <if test="detailtype != null">
       AND detailtype=#{detailtype}
@@ -72,10 +73,10 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     insert into imp_like_detail (id, userid, impid, 
       status, times, createtime, 
-      updatetime, gtype)
+      updatetime, businesstype)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, 
       #{status,jdbcType=CHAR}, #{times,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP}, #{gtype,jdbcType=CHAR})
+      #{updatetime,jdbcType=TIMESTAMP}, #{businesstype,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImpAllDetail" >
     insert into imp_all_detail
@@ -101,14 +102,17 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
-      <if test="gtype != null" >
-        gtype,
+      <if test="businesstype != null" >
+        businesstype,
       </if>
       <if test="detailtype != null">
         detailtype,
       </if>
       <if test="giftnum">
         giftnum,
+      </if>
+      <if test="businessid != null">
+        businessid,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -133,14 +137,17 @@
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
-      <if test="gtype != null" >
-        #{gtype,jdbcType=CHAR},
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=CHAR},
       </if>
       <if test="detailtype != null" >
         #{detailtype,jdbcType=CHAR},
       </if>
       <if test="giftnum != null" >
         #{giftnum,jdbcType=INTEGER},
+      </if>
+      <if test="businessid != null" >
+        #{businessid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -165,8 +172,8 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
-      <if test="gtype != null" >
-        gtype = #{gtype,jdbcType=CHAR},
+      <if test="businesstype != null" >
+        businesstype = #{businesstype,jdbcType=CHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -179,7 +186,7 @@
       times = #{times,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      gtype = #{gtype,jdbcType=CHAR}
+      businesstype = #{businesstype,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
