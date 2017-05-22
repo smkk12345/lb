@@ -852,6 +852,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private String[] getGroupAvatarArray(Long groupId){
         Map<String,Object> parameterMap = new HashMap<String,Object>();
         parameterMap.put("groupId",groupId);
+        parameterMap.put("status",1);
         parameterMap.put("startNum",0);
         parameterMap.put("pageSize",9);
         List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
@@ -859,7 +860,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         String[] avatarArray = new String[maxLength];
         for(int i = 0;i<maxLength;i++){
             AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-            avatarArray[i] = appUserMongoEntity.getAvatar();
+            if(!StringUtils.isBlank(appUserMongoEntity.getAvatar())){
+                avatarArray[i] = appUserMongoEntity.getAvatar();
+            }
         }
         return avatarArray;
     }
