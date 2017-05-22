@@ -225,6 +225,9 @@
         <if test="updateTime != null">
             and updatetime > #{updateTime}
         </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
         and groupid=#{groupId}
       </where>
       order by id

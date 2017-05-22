@@ -1029,6 +1029,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             boolean updateRankMemberCount = updateRankMemberCount(rankId,-1);
             //删除reids中榜单的该用户排名
             boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userid+"");
+            String remark = "由于您加入榜后,长时间未在榜中发微进步,已被其他新成员挤下榜,如您还想继续参榜,请到帮详情页重新参榜!";
+            //给该用户发送系统消息,通知该用户被挤走了
+            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid.toString(),null, "10",
+                    rankId.toString(), remark, "2", "44", "榜中成员下榜", 0, "", "");
+
             return updateRankMemberCount;
         }
         return false;

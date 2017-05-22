@@ -397,7 +397,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
 			List<String> fansList = snsFansMapper.selectListidByUid(userid);
 			//读取拼接ids
-			String ids = selectids(userid, friendList, fansList);
+			String ids = selectids(friendList, fansList);
 			//type 0：本地 1：远程
 			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
 			if(null != list && list.size()>0){
@@ -524,7 +524,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * return_type
 	 * UserRelationServiceImpl
 	 */
-	private String selectids(long userid, List<String> friendList, List<String> fansList){
+	private String selectids(List<String> friendList, List<String> fansList){
 		friendList.addAll(fansList);
 		//通过HashSet剔除     删除ArrayList中重复元素
 		HashSet<String> h = new HashSet<String>(friendList);

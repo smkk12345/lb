@@ -852,6 +852,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private String[] getGroupAvatarArray(Long groupId){
         Map<String,Object> parameterMap = new HashMap<String,Object>();
         parameterMap.put("groupId",groupId);
+        parameterMap.put("status",1);
         parameterMap.put("startNum",0);
         parameterMap.put("pageSize",9);
         List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
