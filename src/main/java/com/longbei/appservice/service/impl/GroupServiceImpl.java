@@ -167,18 +167,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 //通知群成员 发送群组通知消息,通知创建了群组
                 this.iRongYunService.noticeCreateGroup(mainGroupUserId,mainGroupUser.getNickname(),groupId+"",groupName);
 
-                Map<String,Object> parameterMap = new HashMap<String,Object>();
-                parameterMap.put("groupId",snsGroup.getGroupid());
-                parameterMap.put("startNum",0);
-                parameterMap.put("pageSize",9);
-                List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                int maxLength = groupMembersList.size();
-                String[] avatarArray = new String[maxLength];
-                for(int i = 0;i<maxLength;i++){
-                    AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-                    avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
-                }
-                snsGroup.setAvatarArray(avatarArray);
+                snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
                 baseResp.setData(snsGroup);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
@@ -788,18 +777,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     resultList.add(snsGroup);
 //                    Map<String,Object> map = new HashMap<String,Object>();
 //
-                    Map<String,Object> parameterMap = new HashMap<String,Object>();
-                    parameterMap.put("groupId",snsGroup.getGroupid());
-                    parameterMap.put("startNum",0);
-                    parameterMap.put("pageSize",9);
-                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                    int maxLength = groupMembersList.size();
-                    String[] avatarArray = new String[maxLength];
-                    for(int i = 0;i<maxLength;i++){
-                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-                        avatarArray[i] = appUserMongoEntity == null?null:appUserMongoEntity.getAvatar();
-                    }
-                    snsGroup.setAvatarArray(avatarArray);
+                    snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
 //
 //                    map.put("groupid",snsGroup.getGroupid());
 //                    map.put("groupname",snsGroup.getGroupname());
@@ -847,24 +825,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             List<SnsGroup> groupList = this.snsGroupMapper.selectGroup(keyword,startNum,pageSize);
             if(groupList != null && groupList.size() > 0){
                 for(SnsGroup snsGroup:groupList){
-                    Map<String,Object> parameterMap = new HashMap<String,Object>();
-                    parameterMap.put("groupId",snsGroup.getGroupid());
-                    parameterMap.put("startNum",0);
-                    parameterMap.put("pageSize",9);
+                    snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
+
+                    //是否加入群组
                     SnsGroupMembers snsGroupMembers = snsGroupMembersMapper.findByUserIdAndGroupId(userid,String.valueOf(snsGroup.getGroupid()));
                     if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                         snsGroup.setHasjoin("0");
                     }else {
                         snsGroup.setHasjoin("1");
                     }
-                    List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
-                    int maxLength = groupMembersList.size();
-                    String[] avatarArray = new String[maxLength];
-                    for(int i = 0;i<maxLength;i++){
-                        AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
-                        avatarArray[i] = appUserMongoEntity.getAvatar();
-                    }
-                    snsGroup.setAvatarArray(avatarArray);
                 }
             }
 
@@ -877,7 +846,23 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         return baseResp;
     }
 
-
+    /***
+     * 获取群组头像
+     */
+    private String[] getGroupAvatarArray(Long groupId){
+        Map<String,Object> parameterMap = new HashMap<String,Object>();
+        parameterMap.put("groupId",groupId);
+        parameterMap.put("startNum",0);
+        parameterMap.put("pageSize",9);
+        List<SnsGroupMembers> groupMembersList = snsGroupMembersMapper.selectSnsGroupMembersList(parameterMap);
+        int maxLength = groupMembersList.size();
+        String[] avatarArray = new String[maxLength];
+        for(int i = 0;i<maxLength;i++){
+            AppUserMongoEntity appUserMongoEntity= userMongoDao.getAppUser(groupMembersList.get(i).getUserid()+"");
+            avatarArray[i] = appUserMongoEntity.getAvatar();
+        }
+        return avatarArray;
+    }
 
 
     /**
@@ -927,6 +912,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroup == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }
+            //群组头像
+            snsGroup.setAvatarArray(getGroupAvatarArray(groupId));
             int status = 0;//0.可加群 1.已提交入群申请 2.已经在群中
             //校验该用户是否已经在这个群中
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");

@@ -583,9 +583,7 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            if(!Constant.VISITOR_UID.equals(userid)){
-                initImproveListOtherInfo(userid,improves);
-            }
+            initImproveListOtherInfo(userid,improves);
             initSortInfo(rank,improves);
             if(null == improves){
                 improves = new ArrayList<>();
@@ -1305,12 +1303,10 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveCommentInfo(improve);
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
-            if(!Constant.VISITOR_UID.equals(userid)){
-                //初始化进步用户信息
-                initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
-                //初始化是否 点赞 送花 送钻 收藏
-                initIsOptionForImprove(userid,improve);
-            }
+            //初始化进步用户信息
+            initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
+            //初始化是否 点赞 送花 送钻 收藏
+            initIsOptionForImprove(userid,improve);
         }
     }
 
@@ -1323,7 +1319,9 @@ public class ImproveServiceImpl implements ImproveService{
             apuser.setIsfriend("0");
             return ;
         }
-        if(userid == apuser.getUserid()){
+        if(userid.equals(apuser.getUserid())){
+            apuser.setIsfans("1");
+            apuser.setIsfriend("1");
             return;
         }
         initFriendInfo(userid,apuser);

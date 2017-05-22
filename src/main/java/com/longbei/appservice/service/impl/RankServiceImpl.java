@@ -566,6 +566,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
+                    rank1.setHasjoin("0");
                     if(userid != null && !Constant.VISITOR_UID.equals(String.valueOf(userid))){
                         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userid);
                         if(null != rankMembers && rankMembers.getStatus() == 1){
@@ -2899,10 +2900,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             int userRankMemberStatus = 0;//可参榜
+            //用户是否可参榜
+            userRankMemberStatus = getInsertUserRankMemberStatus(userId,rank);
             if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
-                //用户是否可参榜
-                userRankMemberStatus = getInsertUserRankMemberStatus(userId,rank);
-
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put("businessType","2");
                 map.put("businessId",rankId);
@@ -2913,6 +2913,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfollow",false);
                 }
+            }else{
+                resultMap.put("isfollow",false);
             }
             resultMap.put("userRankMemberStatus",userRankMemberStatus);
 
@@ -2950,25 +2952,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private int getInsertUserRankMemberStatus(Long userId, Rank rank) {
         int userRankMemberStatus = 0;
-        if(userId == null || Constant.VISITOR_UID.equals(userId+"")){
-            return userRankMemberStatus;
-        }
         if("5".equals(rank.getIsfinish())){
             userRankMemberStatus = 4;//榜已结束 查看
         }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
             userRankMemberStatus = 5;//榜单获奖结果审核中
         }
-        if(userRankMemberStatus < 1){
-            //查看是否已经加入榜单
-            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
-            if(rankMembers != null && rankMembers.getStatus() == 1){
-                userRankMemberStatus = 1;//已入榜
-            }else if(rankMembers != null && rankMembers.getStatus() == 0){
-                userRankMemberStatus = 2;//已入榜 待审核
-            }
-            if(userRankMemberStatus == 0 && rank.getRankinvolved() >= rank.getRanklimite()){
-                userRankMemberStatus = 3;//已满,无法参榜
-            }
+        if(userRankMemberStatus > 0){
+            return userRankMemberStatus;
+        }
+        if(userId == null || Constant.VISITOR_UID.equals(userId+"")){
+            return userRankMemberStatus;
+        }
+        //查看是否已经加入榜单
+        RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
+        if(rankMembers != null && rankMembers.getStatus() == 1){
+            userRankMemberStatus = 1;//已入榜
+        }else if(rankMembers != null && rankMembers.getStatus() == 0){
+            userRankMemberStatus = 2;//已入榜 待审核
+        }
+        if(userRankMemberStatus == 0 && rank.getRankinvolved() >= rank.getRanklimite()){
+            userRankMemberStatus = 3;//已满,无法参榜
         }
         return userRankMemberStatus;
     }
