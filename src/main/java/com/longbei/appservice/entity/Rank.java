@@ -50,7 +50,7 @@ public class Rank {
 
     private String isfinish;//是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
 
-    private Long createuserid;//榜单创建人id
+    private String createuserid;//榜单创建人id
 
     private String ranktype;//榜单类型。0—公共榜 1--定制榜
 
@@ -638,7 +638,7 @@ public class Rank {
      * 榜单创建人id
      * @return createuserid 榜单创建人id
      */
-    public Long getCreateuserid() {
+    public String getCreateuserid() {
         return createuserid;
     }
 
@@ -646,7 +646,7 @@ public class Rank {
      * 榜单创建人id
      * @param createuserid 榜单创建人id
      */
-    public void setCreateuserid(Long createuserid) {
+    public void setCreateuserid(String createuserid) {
         this.createuserid = createuserid;
     }
 

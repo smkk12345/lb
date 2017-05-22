@@ -50,7 +50,7 @@ public class RankImage {
 
     private String isfinish;//是否结束。0—为结束 1—一结束
 
-    private Long createuserid;//榜单创建人id
+    private String createuserid;//榜单创建人id
 
     private String ranktype;//榜单类型。0—公共榜 1--定制榜
 
@@ -617,7 +617,7 @@ public class RankImage {
      * 榜单创建人id
      * @return createuserid 榜单创建人id
      */
-    public Long getCreateuserid() {
+    public String getCreateuserid() {
         return createuserid;
     }
 
@@ -625,7 +625,7 @@ public class RankImage {
      * 榜单创建人id
      * @param createuserid 榜单创建人id
      */
-    public void setCreateuserid(Long createuserid) {
+    public void setCreateuserid(String createuserid) {
         this.createuserid = createuserid;
     }
 
