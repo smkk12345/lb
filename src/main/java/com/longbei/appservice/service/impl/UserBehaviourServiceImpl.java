@@ -613,7 +613,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(!StringUtils.isBlank(cacheStr)){
                     cacheTime = Integer.parseInt(cacheStr);
                 }
-                if(limit < cacheTime){//还送
+                if(limit > cacheTime){//还送
                     int randomRule = Constant_Imp_Icon.getStaticProperty(operateTypeRandom);
                     int randomCode = Constant_Imp_Icon.getRandomCode(randomRule);
                     springJedisDao.put(key,dateStr+operateTypeLimit,(cacheTime+1)+"");
