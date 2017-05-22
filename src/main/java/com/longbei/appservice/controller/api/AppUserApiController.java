@@ -7,6 +7,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.UserLevelService;
+import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
