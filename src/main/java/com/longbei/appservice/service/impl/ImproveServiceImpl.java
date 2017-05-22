@@ -1965,7 +1965,7 @@ public class ImproveServiceImpl implements ImproveService{
         ImpAllDetail impAllDetail = new ImpAllDetail();
         impAllDetail.setUserid(Long.parseLong(userid));
         impAllDetail.setImpid(Long.parseLong(impid));
-        impAllDetail.setGtype(businesstype);
+        impAllDetail.setBusinesstype(businesstype);
         impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectOneDetail(impAllDetail);
@@ -2236,7 +2236,7 @@ public class ImproveServiceImpl implements ImproveService{
         impAllDetail.setId(idGenerateService.getUniqueIdAsLong());
         impAllDetail.setUserid(Long.parseLong(userid));
         impAllDetail.setImpid(Long.parseLong(impid));
-        impAllDetail.setGtype(businesstype);
+        impAllDetail.setBusinesstype(businesstype);
         impAllDetail.setGiftnum(giftnum);
         impAllDetail.setDetailtype(detailtype);
         impAllDetail.setCreatetime(new Date());
@@ -2260,7 +2260,7 @@ public class ImproveServiceImpl implements ImproveService{
         ImpAllDetail impAllDetail = new ImpAllDetail();
         impAllDetail.setUserid(Long.parseLong(userid));
         impAllDetail.setImpid(Long.parseLong(impid));
-        impAllDetail.setGtype(businesstype);
+        impAllDetail.setBusinesstype(businesstype);
         impAllDetail.setDetailtype(detailtype);
         int res = 0;
         try {
@@ -2425,7 +2425,7 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
-            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
@@ -2491,8 +2491,11 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                 }
                 baseResp.setData(improve);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            } else {
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_401,Constant.RTNINFO_SYS_401);
             }
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+
         }catch (Exception e){
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }
