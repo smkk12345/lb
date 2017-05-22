@@ -7,6 +7,8 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Constant {
 
+	public static final String UPDATE_RULE = "updaterule";
+
 	public static final double DISTANCE_CONVERT_2D = 111.12;
 
 	public static final Integer AUTO_CONFIRM_RECEIPT = 10*24*60;//自动确认收货时间 10天

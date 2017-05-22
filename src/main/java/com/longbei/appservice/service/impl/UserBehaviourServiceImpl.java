@@ -609,12 +609,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             //次数有限制
             if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
                 int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
+                logger.info("getImpIcon key = {}, dateStr+operateTypeLimit = {}", key, dateStr+operateTypeLimit);
                 String cacheStr = springJedisDao.getHashValue(key,dateStr+operateTypeLimit);
                 int cacheTime = 0;
                 if(!StringUtils.isBlank(cacheStr)){
                     cacheTime = Integer.parseInt(cacheStr);
                 }
-                logger.info("getImpIcon limit = {}, cacheTime = {}", limit, cacheTime);
+                logger.info("getImpIcon userid = {}, limit = {}, cacheTime = {}", userInfo.getUserid(), limit, cacheTime);
                 if(limit > cacheTime){//还送
                     int randomRule = Constant_Imp_Icon.getStaticProperty(operateTypeRandom);
                     int randomCode = Constant_Imp_Icon.getRandomCode(randomRule);
