@@ -179,7 +179,7 @@ public class UserRelationController extends BaseController {
 		try {
 			return userRelationService.delete(Long.parseLong(userid), Long.parseLong(friendid));
 		} catch (Exception e) {
-			logger.error("delete error and msg={}",e);
+			logger.error("user delete userid = {}, friendid = {}", userid, friendid, e);
 		}
 		return baseResp;
 	}
