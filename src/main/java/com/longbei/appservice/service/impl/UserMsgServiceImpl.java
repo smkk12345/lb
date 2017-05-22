@@ -287,7 +287,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			parameterMap.put("isread","0");
 			resultMap = this.userMsgMapper.selectUserMsgCountByMsgTypeList(parameterMap);
 
-			int count = Integer.parseInt(resultMap.get("count").toString());
+			int count = resultMap.containsKey("count")?Integer.parseInt(resultMap.get("count").toString()):0;
 			if(commentMaxDate == null){
 				if(count < 1){
 					resultMap.remove("maxtime");
@@ -302,7 +302,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				resultMap.put("mymaxtime", commentMaxDate.getTime());
 				return resultMap;
 			}
-			Date maxtime = DateUtils.parseDate(resultMap.get("maxtime"));
+			Date maxtime = DateUtils.formatDate(resultMap.get("mymaxtime").toString(),null);
 			count ++;
 			if(maxtime.getTime() > commentMaxDate.getTime()){
 				resultMap.put("mymaxtime", commentMaxDate.getTime());
@@ -908,8 +908,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}else if("2".equals(userMsg.getGtype())){
 			//2 榜中   进步点赞消息
 			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-			userMsg.setImpItype(improve.getItype());
+			if(improve != null){
+				userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+				userMsg.setImpItype(improve.getItype());
+			}
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
 			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
