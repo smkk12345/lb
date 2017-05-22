@@ -446,7 +446,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public String getNickName(Long userId, Long friendId) {
         logger.info("getNickName, userid={},friendId={}",userId,friendId);
-        if (null != userId && !userId.equals(-1) && !userId.equals(friendId)){
+        if (null != userId && userId != -1 && !userId.equals(friendId)){
             SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId);
             if(snsFriends != null && snsFriends.getIsdel() == 0 && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
                 return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
