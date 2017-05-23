@@ -1503,8 +1503,10 @@ public class ImproveServiceImpl implements ImproveService{
             //添加评论消息---点赞
             //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-            userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
-            		Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
+            if(!userid.equals(improve.getUserid().toString())){
+            	userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
+                		Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
+            }
 //            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
             baseResp.getExpandData().put("haslike","1");
             baseResp.getExpandData().put("likes",improve.getLikes()+1);
@@ -1731,7 +1733,9 @@ public class ImproveServiceImpl implements ImproveService{
                 String remark = Constant.MSG_FLOWER_MODEL.replace("n", flowernum + "");
                 //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
                 //10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
+                if(!userid.equals(friendid)){
+                	userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
+                }
                 //用户送花获得龙分
                 userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
