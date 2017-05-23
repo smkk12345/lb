@@ -235,14 +235,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     @Override
     public BaseResp<RankImage> selectRankImage(String rankimageid) {
+        BaseResp<RankImage> baseResp = new BaseResp<>();
         try {
             RankImage rankImage = rankImageMapper.selectByRankImageId(rankimageid);
+            if (null == rankImage){
+                return baseResp;
+            }
             //PC端榜单
-            AppUserMongoEntity appUser = userMongoDao.getAppUser(rankImage.getCreateuserid());
-            rankImage.setCreateuserid(appUser.getNickname());
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(rankImage.getCreateuserid());
+                rankImage.setCreateuserid(appUser.getNickname());
+            }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid,rankImage.getSourcetype()));
             logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
-            BaseResp<RankImage> baseResp = BaseResp.ok();
+            baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
         } catch (Exception e) {
