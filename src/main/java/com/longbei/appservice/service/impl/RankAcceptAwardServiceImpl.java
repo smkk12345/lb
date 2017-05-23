@@ -68,12 +68,12 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                     continue;
                 }
                 res = rankAcceptAwardMapper.insertSelective(rankAcceptAward);
-                if (res > 0){
-                    userMsgService.insertMsg(Constant.SQUARE_USER_ID,
-                            String.valueOf(rankAcceptAward.getUserid()),
-                            null,Constant.IMPROVE_RANK_TYPE,String.valueOf(rankAcceptAward.getRankid()),
-                            remark,"2","15","获奖消息",0,"","");
-                }
+//                if (res > 0){
+//                    userMsgService.insertMsg(Constant.SQUARE_USER_ID,
+//                            String.valueOf(rankAcceptAward.getUserid()),
+//                            null,Constant.IMPROVE_RANK_TYPE,String.valueOf(rankAcceptAward.getRankid()),
+//                            remark,"2","15","获奖消息",0,"","");
+//                }
             } catch (Exception e) {
                 logger.error("insert batch rank accept award is error:",e);
             }

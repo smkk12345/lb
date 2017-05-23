@@ -1410,6 +1410,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             //添加中奖名单信息
             insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
+            //发送获奖消息
+            try {
+                sendRankEndUserMsg(rank);
+            } catch (Exception e) {
+                logger.error("send rank rankid={} end msg is error:",rank.getRankid(),e);
+            }
             return baseResp;
         }
         return BaseResp.fail();
@@ -3332,8 +3338,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
 
         //添加领奖信息
-        rankAcceptAwardService.insertAcceptAwardInfoBatch(rankAcceptAwards);
-        return true;
+        try {
+            rankAcceptAwardService.insertAcceptAwardInfoBatch(rankAcceptAwards);
+            return true;
+        } catch (Exception e) {
+            logger.error("insert rank rankid={} accept award info is error:",rank.getRankid(),e);
+        }
+        return false;
     }
 
 
