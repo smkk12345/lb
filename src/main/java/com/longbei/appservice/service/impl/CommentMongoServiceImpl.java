@@ -76,9 +76,11 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				//msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 等等
 				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-				userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
-						comment.getImpid(), comment.getBusinesstype(), 
-						comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
+				if(!comment.getUserid().equals(comment.getFriendid())){
+					userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
+							comment.getImpid(), comment.getBusinesstype(), 
+							comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
+				}
 //				insertMsg(comment);
 			}
 
