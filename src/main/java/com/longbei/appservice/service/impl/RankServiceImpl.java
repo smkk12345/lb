@@ -586,6 +586,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
                         rank1.setRankCard(rankCard);
                     }
+
+                    if(rank1.getRankinvolved() >= rank1.getRanklimite()){
+                        //获取可以挤掉的用户数量
+                        int removeCount = getSureRemoveRankMemberCount(rank1.getRankid());
+                        if(removeCount > 0){
+                            rank1.setRankinvolved(rank1.getRankinvolved()-removeCount);
+                        }
+                    }
                 }
             }
             baseResp.setData(ranks);
@@ -2473,11 +2481,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankMembers rankMembers:rankMembersList){
             	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
             	//获取好友昵称
-                if (!Constant.VISITOR_UID.equals(userid)){
-                    String remark = userRelationService.selectRemark(userid, rankMembers.getUserid());
-                    if(!StringUtils.isBlank(remark)){
-                        appUserMongoEntity.setNickname(remark);
-                    }
+                if (userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid)){
+                    appUserMongoEntity.setNickname(this.friendService.getNickName(userid,rankMembers.getUserid()));
                     if(userid != null && userid.equals(rankMembers.getUserid())){
                         if(!"1".equals(rankMembers.getIswinning())){
                             showBtn = 2;//在榜中 未中奖
@@ -2489,8 +2494,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
                 rankMembers.setAppUserMongoEntity(appUserMongoEntity);
-
-
             }
             baseResp.setData(rankMembersList);
 
@@ -2892,10 +2895,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(queryAward != null && queryAward){
                 rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
             }
-            //获取可以挤掉的用户数量
-            int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
-            if(removeCount > 0){
-                rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+            //只有当参榜人数满的时候,才获取可以挤掉的榜成员
+            if(rank.getRankinvolved() >= rank.getRanklimite()){
+                //获取可以挤掉的用户数量
+                int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
+                if(removeCount > 0){
+                    rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+                }
             }
 
             if(rank.getRankcardid() != null){
