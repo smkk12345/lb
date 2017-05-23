@@ -700,7 +700,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			idList.add(userRe.getFriendid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(userRe.getFriendid()));
 			appUserMongEntity.setIsfriend("1");
-			appUserMongEntity.setRemark(this.friendService.getNickName(userid,userRe.getFriendid()));
+			appUserMongEntity.setRemark(userRe.getRemark());
 			initFanInfo(userid,appUserMongEntity);
 			resultList.add(appUserMongEntity);
 		}
