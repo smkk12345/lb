@@ -3,10 +3,12 @@ package com.longbei.appservice.controller.api;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.UserLevelService;
+import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * 用户详情接口
@@ -28,6 +31,8 @@ public class AppUserApiController {
     private UserService userService;
     @Autowired
     private UserLevelService userLevelService;
+    @Autowired
+    private UserRelationService userRelationService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -165,6 +170,48 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    /**
+     * @Description: 查询好友列表 通过好友id
+     * @param @param userid
+     * @param updateTime 上次同步的时间,如果是获取整个好友列表,则不需要传该参数或仅限于传0
+     *                  如果传入updateTime ,请传入格式为 2017-03-16 10:00:00 的时间格式
+     * @param @return
+     * @auther smkk
+     * @currentdate:2017年1月20日
+     * @update by smkk on 2017-05-12  该方法暂时不用了
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "selectListByUserId")
+    @ResponseBody
+    public BaseResp<Object> selectListByUserId(String userid ,Integer startNum,Integer pageSize,String updateTime){
+        logger.info("userid={},startNum={},pageSize={},updateTime={}",userid,startNum,pageSize,updateTime);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(startNum != null && startNum < 0){
+            startNum = 0;
+        }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+
+        Date updateDate = null;
+        if(StringUtils.isNotEmpty(updateTime) && !"0".equals(updateTime)){
+            try{
+                updateDate = DateUtils.formatDate(updateTime,null);
+            }catch (Exception e){
+                logger.error("select friend list by userId userId:{} startNum:{} pageSize:{} updateTime;{}",userid,startNum,pageSize,updateTime);
+                updateDate = null;
+            }
+        }
+        try {
+            return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, pageSize,updateDate);
+        } catch (Exception e) {
+            logger.error("selectListByUserId userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
+        }
+        return baseResp;
+    }
 
 
 }

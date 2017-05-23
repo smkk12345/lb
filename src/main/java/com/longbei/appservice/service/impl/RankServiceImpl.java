@@ -235,12 +235,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     @Override
     public BaseResp<RankImage> selectRankImage(String rankimageid) {
+        BaseResp<RankImage> baseResp = new BaseResp<>();
         try {
             RankImage rankImage = rankImageMapper.selectByRankImageId(rankimageid);
+            if (null == rankImage){
+                return baseResp;
+            }
             //PC端榜单
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(rankImage.getCreateuserid());
+                rankImage.setCreateuserid(appUser.getNickname());
+            }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid,rankImage.getSourcetype()));
             logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
-            BaseResp<RankImage> baseResp = BaseResp.ok();
+            baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
         } catch (Exception e) {
@@ -384,6 +392,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int totalcount = rankImageMapper.selectListCount(rankImage);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            for(RankImage rankImage1: rankImages){
+                //pc端发榜
+                if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
+                    AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
+                    rankImage1.setCreateuserid(appUer.getNickname());
+                }
+            }
             page.setTotalCount(totalcount);
             page.setList(rankImages);
         } catch (Exception e) {
@@ -431,6 +446,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 String icount = rankMembersMapper.getRankImproveCount
                         (String.valueOf(rank1.getRankid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()));
                 rank1.setIcount(Integer.parseInt(icount));
+                //pc端发榜：createUserId转nickname显示
+                if(Constant.RANK_SOURCE_TYPE_1.equals(rank1.getSourcetype())){
+                    AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(rank1.getCreateuserid()));
+                    rank1.setCreateuserid(appUser.getNickname());
+                }
             }
             page.setTotalCount(totalcount);
             page.setList(ranks);
@@ -915,7 +935,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
                     //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                    boolean sendMsgFlag = sendUserMsg(true,rank.getCreateuserid(),userId,"17",rank.getRankid(),remark,"10");
+                    boolean sendMsgFlag = sendUserMsg(true,Long.parseLong(rank.getCreateuserid()),userId,"17",rank.getRankid(),remark,"10");
 
                 }
 
@@ -952,7 +972,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 // 发送消息给榜主
                 String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
                 try {
-                    boolean sendMsgFlag = sendUserMsg(true, rank.getCreateuserid(), userId, "17", rank.getRankid(), remark, "10");
+                    boolean sendMsgFlag = sendUserMsg(true, Long.parseLong(rank.getCreateuserid()), userId, "17", rank.getRankid(), remark, "10");
                 } catch (Exception e) {
                     logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
                 }
@@ -1341,7 +1361,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     remark = "抱歉,您提交的加入龙榜\""+rank.getRanktitle()+"\"申请,已被榜主拒绝!";
                 }
                 UserMsg userMsg = new UserMsg();
-                userMsg.setFriendid(rank.getCreateuserid());
+                userMsg.setFriendid(Long.parseLong(rank.getCreateuserid()));
                 userMsg.setMsgtype("17");
 //                userMsg.setSnsid(rank.getRankid());
                 userMsg.setRemark(remark);
@@ -2084,6 +2104,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
+            //获取好友昵称
+            String remark = userRelationService.selectRemark(currentUserId, userid);
+            if(!StringUtils.isBlank(remark)){
+                appUserMongoEntity.setNickname(remark);
+            }
             if(appUserMongoEntity == null) return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             Map<String,Object> resultMap = new HashMap<String,Object>();
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userid);
@@ -2892,15 +2917,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
                 }
             }
-            if(queryAward != null && queryAward){
-                rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
+            //pc端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
+                rank.setCreateuserid(appUser.getNickname());
             }
             //只有当参榜人数满的时候,才获取可以挤掉的榜成员
-            if(rank.getRankinvolved() >= rank.getRanklimite()){
+            if(rank.getRankinvolved() >= rank.getRanklimite()) {
                 //获取可以挤掉的用户数量
                 int removeCount = getSureRemoveRankMemberCount(Long.parseLong(rankId));
-                if(removeCount > 0){
-                    rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+                if (removeCount > 0) {
+                    rank.setRankinvolved(rank.getRankinvolved() - removeCount);
+                }
+            }
+            if(queryAward != null && queryAward ){
+                //pc端榜单没有awardid
+                if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                    rank.setRankAwards(rankAwardReleaseMapper.selectListByRankid(String.valueOf(rankId)));
+                }else{
+                    rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
                 }
             }
 
