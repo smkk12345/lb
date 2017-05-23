@@ -760,7 +760,7 @@ public class UserServiceImpl implements UserService {
 					thirdregisterGainPoint(userInfo,utype);
 					return baseResp;
 				}else{//验证码或者密码错误
-					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_12, Constant.RTNINFO_SYS_12);
+					return baseResp;
 				}
 			}
 		}
