@@ -45,11 +45,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private SnsFansMapper snsFansMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
-	
-	@Autowired
-	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private FriendService friendService;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
 	@Autowired
@@ -63,8 +62,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Autowired
 	private UserRelationService userRelationService;
 	@Autowired
-	private UserService userService;
-	
+	private JPushService jPushService;
+
 	/**
 	* @Title: selectRemark 
 	* @Description: 获取好友备注信息
@@ -198,7 +197,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 				String message = userid+"&"+friendid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_REMOVEFRIEND, message);
+				//给friendid发送一条极光推送,通知该用户删除好友
+				String memo = userid+"删除了好友您";
+				//JPush推送 消息
+				boolean pushFlag = this.jPushService.pushMessage("消息标识",friendid+"","",memo,userid+"",Constant.JPUSH_TAG_COUNT_1005);
 			}
+
 			//删除好友的加好友申请
 			this.friendMongoDao.deleteFriendAddAsk(userid,friendid);
 
@@ -696,7 +700,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			idList.add(userRe.getFriendid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(userRe.getFriendid()));
 			appUserMongEntity.setIsfriend("1");
-			appUserMongEntity.setRemark;
+			appUserMongEntity.setRemark(this.friendService.getNickName(userid,userRe.getFriendid()));
 			initFanInfo(userid,appUserMongEntity);
 			resultList.add(appUserMongEntity);
 		}

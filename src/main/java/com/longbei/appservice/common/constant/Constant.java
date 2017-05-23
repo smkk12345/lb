@@ -646,6 +646,7 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1002 = "1002";//用户回复了添加好友的消息
 	public static final String JPUSH_TAG_COUNT_1003 = "1003";//加好友申请被拒绝
 	public static final String JPUSH_TAG_COUNT_1004 = "1004";//加好友申请被同意
+	public static final String JPUSH_TAG_COUNT_1005 = "1005";//删除好友
 	//11开头的代表群组相关的通知  前端推送
 	public static final String JPUSH_TAG_COUNT_1101 = "1101";//群消息
 	//12开头 代表实名认证

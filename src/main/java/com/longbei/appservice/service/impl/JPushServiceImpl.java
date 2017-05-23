@@ -18,7 +18,7 @@ public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
     private IJPushService iJPushService;
     /**
      * 发送push消息
-     * @param status 消息表示
+     * @param status 消息标识
      * @param userId 接受消息的用户id
      * @param title 消息的标题
      * @param content 消息内容
