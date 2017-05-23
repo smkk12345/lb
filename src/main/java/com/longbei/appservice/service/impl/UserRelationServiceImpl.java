@@ -130,21 +130,21 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
 			if(list != null && list.size()>0){
 				for (SnsFriends snsFriends : list) {
-					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
+					AppUserMongoEntity appUser =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
 
-					if(appUserMongoEntit == null){
+					if(appUser == null){
 						continue;
 					}
 					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("userid",snsFriends.getFriendid());
-					map.put("nickname",StringUtils.formatMobileOrUsername(appUserMongoEntit.getNickname()));
-					map.put("avatar",appUserMongoEntit.getAvatar());
-					map.put("username",appUserMongoEntit.getUsername());
+					map.put("userid",snsFriends.getFriendid()+"");
+					map.put("nickname",StringUtils.formatMobileOrUsername(appUser.getNickname()));
+					map.put("avatar",appUser.getAvatar());
+					map.put("username",appUser.getUsername());
 
 					if(StringUtils.isNotEmpty(snsFriends.getRemark())){
 						map.put("remark",snsFriends.getRemark());
 					}else{
-						map.put("remark",appUserMongoEntit.getNickname());
+						map.put("remark",appUser.getNickname());
 					}
 
 					if(!"1".equals(snsFriends.getIsdel())){

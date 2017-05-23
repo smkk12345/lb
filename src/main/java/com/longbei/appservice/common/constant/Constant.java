@@ -461,7 +461,7 @@ public class Constant {
 
 
 	public static final String RANK_ISUP_YES = "1"; //已发布
-	public static final String RANK_ISUP_NO = "0"; //为发布
+	public static final String RANK_ISUP_NO = "0"; //未发布
 
 	
 	/**
