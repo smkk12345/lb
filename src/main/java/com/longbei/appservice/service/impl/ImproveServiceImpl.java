@@ -1703,6 +1703,7 @@ public class ImproveServiceImpl implements ImproveService{
         if ("0".equals(businesstype)){
             businessid = null;
         }
+
         Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         if(null == improve || null == userInfo){

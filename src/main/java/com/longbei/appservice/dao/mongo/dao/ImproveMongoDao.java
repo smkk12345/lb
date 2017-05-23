@@ -6,14 +6,12 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
 import com.longbei.appservice.entity.ImproveLFDDetail;
-import com.longbei.appservice.entity.TimeLineDetail;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,10 +68,15 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         if (count > Constant.DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM + 5){
             removequery.with(new Sort(Sort.Direction.DESC, "createtime"));
             removequery.skip(Constant.DEFAULT_IMPROVE_ALL_DETAIL_LIST_NUM + 5);
-            mongoTemplate.remove(removequery,ImproveLFD.class);
+            List<ImproveLFD> list = mongoTemplate.find(removequery,ImproveLFD.class);
+            if (null != list && list.size() != 0){
+                for (ImproveLFD improveLFD2 : list){
+                    Criteria cr = Criteria.where("id").is(improveLFD2.getId());
+                    Query q = new Query(cr);
+                    mongoTemplate.remove(q,ImproveLFD.class);
+                }
+            }
         }
-
-
 
     }
 

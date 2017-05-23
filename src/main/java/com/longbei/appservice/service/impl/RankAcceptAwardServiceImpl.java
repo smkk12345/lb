@@ -61,6 +61,12 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
             try {
                 String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
                         +rankAcceptAward.getAwardlevel()+"等奖品";
+
+                RankAcceptAward rankAcceptAward2 = rankAcceptAwardMapper.selectByRankIdAndUserid(String.valueOf(rankAcceptAward.getRankid()),
+                        String.valueOf(rankAcceptAward.getUserid()));
+                if (null != rankAcceptAward2){
+                    continue;
+                }
                 res = rankAcceptAwardMapper.insertSelective(rankAcceptAward);
                 if (res > 0){
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID,
