@@ -786,19 +786,19 @@
             and isrecommend = #{isrecommend}
         </if>
         <if test="orderByType != null and orderByType == 'endtime'.toString()">
-            order by endtime DESC
+            order by endtime DESC,starttime
         </if>
         <if test="orderByType != null and orderByType == 'recommend'.toString()">
           order by weight DESC,starttime DESC
         </if>
         <if test="orderByType != null and orderByType == 'starttimeAsc'.toString()">
-          order by starttime
+          order by starttime,createtime desc
         </if>
         <if test="orderByType != null and orderByType == 'starttimeDesc'.toString()">
-          order by starttime DESC
+          order by starttime DESC,createtime desc
         </if>
         <if test="orderByType == null or orderByType == ''.toString()">
-          order by starttime DESC
+          order by starttime DESC,createtime desc
         </if>
           limit #{startNum},#{pageSize}
   </select>

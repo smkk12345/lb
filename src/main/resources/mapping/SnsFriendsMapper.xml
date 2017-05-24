@@ -187,6 +187,9 @@
         <if test="isDel != null">
             isdel = #{isDel},
         </if>
+        <if test="status != null">
+          status = #{status},
+        </if>
         <if test="createtime != null">
           createtime = #{createtime},
         </if>

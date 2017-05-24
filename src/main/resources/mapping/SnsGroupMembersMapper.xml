@@ -183,7 +183,7 @@
   </insert>
 
   <!-- 根据群组id和用户id查询群组成员 -->
-  <select id="findByUserIdAndGroupId" parameterType="String" resultMap="BaseResultMap">
+  <select id="findByUserIdAndGroupId" resultMap="BaseResultMap">
       SELECT
         <include refid="Base_Column_List" />
       from sns_group_members
