@@ -50,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 //			return ;
 //		}
 
-		if(true){
+		if(isTest(request)){
 			arg2.doFilter(request, response);
 			return ;
 		}
