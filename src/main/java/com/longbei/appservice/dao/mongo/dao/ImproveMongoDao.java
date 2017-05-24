@@ -6,7 +6,11 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ImproveLFD;
 import com.longbei.appservice.entity.ImproveLFDDetail;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.mapreduce.GroupBy;
+import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -117,10 +121,12 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * @author luye
      */
     public Long selectTotalCountImproveLFD(String impid){
-        Criteria criteria = Criteria.where("impid").is(impid);
-        Query query = new Query(criteria);
-        Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
-        return count;
+        DBObject object = new BasicDBObject("impid",impid);
+        return Long.parseLong(mongoTemplate.getCollection("improveLFDDetail").distinct("userid",object).size()+"");
+//        return group.getRawResults().
+////        Dist
+//        Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
+////        return count;
     }
 
     /**
