@@ -45,15 +45,15 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 		MDC.put("ip", localAddress);
 		//是否需要过滤逻辑
-		if(isTest(request)){
-			arg2.doFilter(request, response);
-			return ;
-		}
-
-//		if(true){
+//		if(isTest(request)){
 //			arg2.doFilter(request, response);
 //			return ;
 //		}
+
+		if(true){
+			arg2.doFilter(request, response);
+			return ;
+		}
 
 		//服务器之间api调用
 		if(url.contains("/api/")){

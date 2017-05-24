@@ -1246,12 +1246,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if("1".equals(rankMembers.getIsfashionman())){
                     String remark = "你被选为榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "选为榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "选为榜单达人",0, "", "");
                 }
                 if ("0".equals(rankMembers.getIsfashionman())){
                     String remark = "你被取消榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "取消榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "取消榜单达人",0, "", "");
                 }
                 return BaseResp.ok();
             }
@@ -2044,7 +2044,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId) {
+    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Long userAddressId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
@@ -2551,6 +2551,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rankMemberses == null || rankMemberses.size() == 0){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
+            rank = rankMapper.selectRankByRankid(rank.getRankid());
             List<UserMsg> winningUserMsgList = new ArrayList<UserMsg>();
             List<Long> noWinningUserIdList = new ArrayList<Long>();
             for(RankMembers rankMember:rankMemberses){
@@ -2590,7 +2591,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if(rankAward == null){
             return null;
         }
-        String remark = "恭喜您在龙榜“"+rank.getRanktitle()+"”中获得"+rankAward.getAwardnickname()+"，快去领奖吧！";
+        String remark = "";
+        if(null != rank){
+        	if(!StringUtils.isBlank(rank.getRanktitle())){
+        		remark = "恭喜您在龙榜'"+rank.getRanktitle()+"'中获得"+rankAward.getAwardnickname()+"，快去领奖吧！";
+        	}else{
+        		Rank rank1 = rankMapper.selectRankByRankid(rank.getRankid());
+    	    	if(null != rank1){
+    	    		remark = "恭喜您在龙榜'"+rank1.getRanktitle()+"'中获得"+rankAward.getAwardnickname()+"，快去领奖吧！";
+    	    	}else{
+    	    		remark = "恭喜您在龙榜中获得"+rankAward.getAwardnickname()+"，快去领奖吧！";
+    	    	}
+        	}
+        }else{
+        	remark = "恭喜您在龙榜中获得"+rankAward.getAwardnickname()+"，快去领奖吧！";
+        }
         UserMsg userMsg = new UserMsg();
         userMsg.setUserid(userId);
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
@@ -2617,7 +2632,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     public UserMsg createNoWinningUserMsg(Rank rank){
-        String remark = "您参与的龙榜\""+rank.getRanktitle()+"\"已结束,中奖名单已公布,快去围观吧！";
+    	String remark = "";
+    	if(null != rank && !StringUtils.isBlank(rank.getRankid().toString())){
+    		if(!StringUtils.isBlank(rank.getRanktitle())){
+    	    	remark = "您参与的龙榜\""+rank.getRanktitle()+"\"已结束,中奖名单已公布,快去围观吧！";
+    	    }else{
+    	    	Rank rank1 = rankMapper.selectRankByRankid(rank.getRankid());
+    	    	if(null != rank1){
+    	    		remark = "您参与的龙榜\""+rank1.getRanktitle()+"\"已结束,中奖名单已公布,快去围观吧！";
+    	    	}else{
+    	    		remark = "您参与的龙榜已结束,中奖名单已公布,快去围观吧！";	
+    	    	}
+    	    }
+    	}else{
+    		remark = "您参与的龙榜已结束,中奖名单已公布,快去围观吧！";
+    	}
         UserMsg userMsg = new UserMsg();
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息

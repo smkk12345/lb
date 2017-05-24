@@ -126,7 +126,7 @@ public class UserAddressController extends BaseController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		UserAddress record = new UserAddress(Long.parseLong(userid), region, address, isdefault, mobile, receiver, "0");
-		record.setId(Integer.parseInt(id));
+		record.setId(Long.parseLong(id));
 		try {
 			baseResp = userAddressService.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {

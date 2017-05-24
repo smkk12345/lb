@@ -18,7 +18,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	BaseResp<Object> deleteByPrimaryKey(Integer id);
+	BaseResp<Object> deleteByPrimaryKey(Long id);
 	
 	/**
 	 * @author yinxc
@@ -34,7 +34,7 @@ public interface UserAddressService {
 	 * 2017年1月18日
 	 * return_type
 	 */
-	UserAddress selectByPrimaryKey(long userid, Integer id);
+	UserAddress selectByPrimaryKey(long userid, Long id);
 	
 	/**
 	 * @author yinxc

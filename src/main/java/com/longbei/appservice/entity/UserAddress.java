@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class UserAddress {
-    private Integer id;
+    private Long id;
 
     private Long userid;
 
@@ -46,7 +46,7 @@ public class UserAddress {
      * 
      * @return id 
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -54,7 +54,7 @@ public class UserAddress {
      * 
      * @param id 
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -101,7 +101,7 @@ public class UserAddress {
 
     /**
      * 收获地址
-     * @param addresses 收获地址
+     * @param address 收获地址
      */
     public void setAddress(String address) {
         this.address = address == null ? null : address.trim();
@@ -150,7 +150,7 @@ public class UserAddress {
 
     /**
      * 收获人
-     * @param reveiver 收获人
+     * @param receiver 收获人
      */
     public void setReceiver(String receiver) {
         this.receiver = receiver == null ? null : receiver.trim();

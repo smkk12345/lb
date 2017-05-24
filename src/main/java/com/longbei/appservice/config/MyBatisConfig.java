@@ -72,6 +72,14 @@ public class MyBatisConfig implements TransactionManagementConfigurer {
         //添加插件
         bean.setPlugins(new Interceptor[]{pageHelper});
 
+        //开启懒加载
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setLazyLoadingEnabled(true);
+        configuration.setAggressiveLazyLoading(false);
+        //开启缓存
+        configuration.setCacheEnabled(true);
+        bean.setConfiguration(configuration);
+
         //添加XML目录
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
