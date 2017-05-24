@@ -87,7 +87,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
 			AppUserMongoEntity mongoUser = findOne(query);
-			if(null != mongoUser){
+			if(null != mongoUser && StringUtils.isNotEmpty(mongoUser.getNickname())){
 				return mongoUser;
 			}else{
 				UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
