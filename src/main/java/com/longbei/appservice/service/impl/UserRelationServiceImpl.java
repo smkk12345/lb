@@ -130,21 +130,21 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
 			if(list != null && list.size()>0){
 				for (SnsFriends snsFriends : list) {
-					AppUserMongoEntity appUserMongoEntit =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
+					AppUserMongoEntity appUser =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
 
-					if(appUserMongoEntit == null){
+					if(appUser == null){
 						continue;
 					}
 					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("userid",snsFriends.getFriendid());
-					map.put("nickname",StringUtils.formatMobileOrUsername(appUserMongoEntit.getNickname()));
-					map.put("avatar",appUserMongoEntit.getAvatar());
-					map.put("username",appUserMongoEntit.getUsername());
+					map.put("userid",snsFriends.getFriendid()+"");
+					map.put("nickname",StringUtils.formatMobileOrUsername(appUser.getNickname()));
+					map.put("avatar",appUser.getAvatar());
+					map.put("username",appUser.getUsername());
 
 					if(StringUtils.isNotEmpty(snsFriends.getRemark())){
 						map.put("remark",snsFriends.getRemark());
 					}else{
-						map.put("remark",appUserMongoEntit.getNickname());
+						map.put("remark",appUser.getNickname());
 					}
 
 					if(!"1".equals(snsFriends.getIsdel())){
@@ -640,6 +640,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 			idList.add(userRe.getChangeuid());
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(userRe.getChangeuid());
 			initUserRelateInfo(Long.parseLong(userid),appUserMongEntity);
+//			String remark = selectRemark(Long.parseLong(userid), Long.parseLong(userRe.getChangeuid()));
+//			if(!StringUtils.isBlank(remark)){
+//				appUserMongEntity.setNickname(remark);
+//			}
+			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
+				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
+			}
 			dataList.add(appUserMongEntity);
 		}
 		baseResp.setData(dataList);
@@ -664,10 +671,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
 		SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
 		if(null != snsFriends){
-			if(!StringUtils.isBlank(snsFriends.getRemark())){
-//				apuser.setNickname(snsFriends.getRemark());
-				apuser.setRemark(snsFriends.getRemark());
-			}
+//			if(!StringUtils.isBlank(snsFriends.getRemark())){
+////				apuser.setNickname(snsFriends.getRemark());
+//				apuser.setRemark(snsFriends.getRemark());
+//			}
 			apuser.setIsfriend("1");
 		}else{
 			apuser.setIsfriend("0");
@@ -702,6 +709,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			appUserMongEntity.setIsfriend("1");
 			appUserMongEntity.setRemark(userRe.getRemark());
 			initFanInfo(userid,appUserMongEntity);
+			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
+				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
+			}
 			resultList.add(appUserMongEntity);
 		}
 
@@ -714,6 +724,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			idList.add(fans.getLikeuserid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(fans.getLikeuserid()));
 			appUserMongEntity.setIsfans("1");
+			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
+				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
+			}
 			resultList.add(appUserMongEntity);
 		}
 		return resultList;
