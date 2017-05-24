@@ -2044,7 +2044,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId) {
+    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Long userAddressId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);

@@ -297,7 +297,7 @@ public class RankController {
      * @return
      */
     @RequestMapping(value="acceptRealAard")
-    public BaseResp<Object> acceptRealAard(Long userid,Long rankId,Integer addressId){
+    public BaseResp<Object> acceptRealAard(Long userid,Long rankId,Long addressId){
         logger.info("userid={},rankId={},addressId={}",userid,rankId,addressId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || rankId == null || addressId == null){

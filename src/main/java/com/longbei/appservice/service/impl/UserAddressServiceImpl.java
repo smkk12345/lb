@@ -23,7 +23,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	private static Logger logger = LoggerFactory.getLogger(UserAddressServiceImpl.class);
 	
 	@Override
-	public BaseResp<Object> deleteByPrimaryKey(Integer id) {
+	public BaseResp<Object> deleteByPrimaryKey(Long id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			boolean temp = delete(id);
@@ -36,7 +36,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 		return reseResp;
 	}
 	
-	private boolean delete(Integer id){
+	private boolean delete(Long id){
 		int temp = userAddressMapper.deleteByPrimaryKey(id);
 		return temp > 0 ? true : false;
 	}
@@ -71,7 +71,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	}
 
 	@Override
-	public UserAddress selectByPrimaryKey(long userid, Integer id) {
+	public UserAddress selectByPrimaryKey(long userid, Long id) {
 		UserAddress userAddress = null;
 		try {
 			userAddress = userAddressMapper.selectByPrimaryKey(userid, id);
@@ -105,7 +105,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 			}
 			int temp = userAddressMapper.updateByPrimaryKeySelective(record);
 			if (temp > 0) {
-				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(record.getUserid(), record.getId());
+				UserAddress userAddress = userAddressMapper.selectByPrimaryKey(record.getUserid(),record.getId());
 				reseResp.setData(userAddress);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
