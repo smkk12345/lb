@@ -322,7 +322,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 map.put("userId",tempSnsFriends.getUserid());
                 map.put("friendId",tempSnsFriends.getFriendid());
                 map.put("isDel","0");
-                map.put("status",status);
+//                map.put("status",status);
                 map.put("createtime",new Date());
                 map.put("updatetime",new Date());
                 int row = this.snsFriendsMapper.updateByUidAndFid(map);
