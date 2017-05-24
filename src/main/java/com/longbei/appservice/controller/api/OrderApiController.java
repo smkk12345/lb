@@ -27,8 +27,8 @@ public class OrderApiController {
 	
 	
 	/**
-    * @Title: http://ip:port/app_service/api/order/adminlist
-    * @Description: 订单列表(所有的)
+    * @Title: http://ip:port/app_service/api/order/adminConsumeList
+    * @Description: 兑换商品订单列表(所有的)
     * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
 	* 						为null   则查全部 
     * @param @param startNo  pageSize
@@ -37,18 +37,18 @@ public class OrderApiController {
     * @desc  
     * @currentdate:2017年3月22日
 	*/
-  	@RequestMapping(value = "/adminlist")
-    public BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize) {
+  	@RequestMapping(value = "/adminConsumeList")
+    public BaseResp<List<ProductOrders>> adminConsumeList(String orderstatus, int startNo, int pageSize) {
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
   		try {
-  			baseResp = orderService.adminlist(orderstatus, startNo, pageSize);
+  			baseResp = orderService.adminConsumeList(orderstatus, startNo, pageSize);
 		} catch (Exception e) {
-			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
+			logger.error("adminConsumeList orderstatus = {}, startNo = {}, pageSize = {}",
 					orderstatus, startNo, pageSize, e);
 		}
   		return baseResp;
 	}
-  	
+
   	/**
      * @Title: http://ip:port/app_service/api/order/searchList
      * @Description: 订单搜索

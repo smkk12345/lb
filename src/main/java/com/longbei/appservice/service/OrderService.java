@@ -102,7 +102,7 @@ public interface OrderService {
 	//--------------------------------adminservice调用-------------------------------------
 	 
 	 /**
-	 * 我的订单列表(所有的)
+	 * 兑换商品订单列表(所有的)
 	 * @author yinxc
 	 * @param @param userid 
 	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成    
@@ -110,7 +110,7 @@ public interface OrderService {
 	 * @param @param startNo  pageSize
 	 * 2017年3月22日
 	 */
-	 BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize);
+	 BaseResp<List<ProductOrders>> adminConsumeList(String orderstatus, int startNo, int pageSize);
 	 
 	 /**
 	 * 订单详情

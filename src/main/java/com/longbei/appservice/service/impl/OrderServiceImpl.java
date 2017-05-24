@@ -323,15 +323,15 @@ public class OrderServiceImpl implements OrderService {
 //	}
 
 	@Override
-	public BaseResp<List<ProductOrders>> adminlist(String orderstatus, int startNo, int pageSize) {
+	public BaseResp<List<ProductOrders>> adminConsumeList(String orderstatus, int startNo, int pageSize) {
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
 		try{
 			if(StringUtils.isBlank(orderstatus) || "null".equals(orderstatus)){
 				orderstatus = null;
 			}
-			baseResp = iProductBasicService.adminlist(orderstatus, startNo, pageSize);
+			baseResp = iProductBasicService.adminConsumeList(orderstatus, startNo, pageSize);
 		}catch (Exception e){
-			logger.error("adminlist orderstatus = {}, startNo = {}, pageSize = {}", 
+			logger.error("adminConsumeList orderstatus = {}, startNo = {}, pageSize = {}",
 					orderstatus, startNo, pageSize, e);
 		}
 		return baseResp;
