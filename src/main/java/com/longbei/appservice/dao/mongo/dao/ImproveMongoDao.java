@@ -121,9 +121,6 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      * @author luye
      */
     public Long selectTotalCountImproveLFD(String impid){
-        Criteria criteria = Criteria.where("impid").is(impid);
-        Query query = new Query(criteria);
-        GroupByResults<ImproveLFDDetail> group = mongoTemplate.group(criteria,"",new GroupBy("userid"),ImproveLFDDetail.class);
         DBObject object = new BasicDBObject("impid",impid);
         return Long.parseLong(mongoTemplate.getCollection("improveLFDDetail").distinct("userid",object).size()+"");
 //        return group.getRawResults().

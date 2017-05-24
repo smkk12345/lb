@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.List;
 
+import com.longbei.appservice.common.IdGenerateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ public class UserAddressServiceImpl implements UserAddressService {
 
 	@Autowired
 	private UserAddressMapper userAddressMapper;
-	
+	@Autowired
+	private IdGenerateService idGenerateService;
 	private static Logger logger = LoggerFactory.getLogger(UserAddressServiceImpl.class);
 	
 	@Override
@@ -46,6 +48,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			logger.info("UserAddress insertSelective record = {}", JSONArray.toJSON(record).toString());
+			record.setId(idGenerateService.getUniqueIdAsLong());
 //			List<UserAddress> list = userAddressMapper.selectByUserId(record.getUserid().toString(), 0, 10);
 //			if(null == list){
 //				//第一次添加收货地址时，设为默认地址
@@ -67,6 +70,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	}
 	
 	private boolean insert(UserAddress record){
+		record.setId(idGenerateService.getUniqueIdAsLong());
 		int temp = userAddressMapper.insertSelective(record);
 		return temp > 0 ? true : false;
 	}
