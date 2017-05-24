@@ -322,6 +322,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 map.put("userId",tempSnsFriends.getUserid());
                 map.put("friendId",tempSnsFriends.getFriendid());
                 map.put("isDel","0");
+                map.put("status",status);
                 map.put("createtime",new Date());
                 map.put("updatetime",new Date());
                 int row = this.snsFriendsMapper.updateByUidAndFid(map);
@@ -330,6 +331,15 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 map.put("friendId",tempSnsFriends.getUserid());
                 int row1 = this.snsFriendsMapper.updateByUidAndFid(map);
                 if(row > 0 && row1 > 0){
+                    //JPUSH通知用户
+                    JSONObject pushMessage = new JSONObject();
+                    pushMessage.put("status","消息标识");
+                    pushMessage.put("userid",friendAddAsk.getSenderUserId());
+                    pushMessage.put("content","同意了加好友申请");
+                    pushMessage.put("msgid",friendAddAsk.getId());
+                    pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
+                    ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+
                     return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 }
             }

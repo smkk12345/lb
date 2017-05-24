@@ -2132,8 +2132,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userid,currentUserId);
-                if(snsFriends != null && "0".equals(snsFriends.getIsdel())){
+                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid);
+                if(snsFriends != null && snsFriends.getIsdel() == 0){
                     resultMap.put("isFriends",1);
                 }else{
                     resultMap.put("isFriends",0);
@@ -2525,6 +2525,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
                 rankMembers.setAppUserMongoEntity(appUserMongoEntity);
+                rankMembers.setAwardlevel(rankMembers.getRankAward().getAwardlevel());
             }
             baseResp.setData(rankMembersList);
 
@@ -3284,7 +3285,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    rankMembers.setUserid(rkmember.getUserid());
 //                    rankMembers.setIswinning("2");
                     rkmember.setIswinning("2");
-                    rkmember.setIcount(0);//不改变进步数
+//                    rkmember.setIcount(0);//不改变进步数
 //                    rankMembersMapper.updateRankMemberState(rankMembers);
                     rankMembersMapper.updateRankMemberState(rkmember);
                 }

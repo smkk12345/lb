@@ -206,7 +206,7 @@ public class AppUserApiController {
             }
         }
         try {
-            return userRelationService.selectListByUserId(Long.parseLong(userid), startNum, pageSize,updateDate);
+            baseResp = userRelationService.selectListByUserId(Long.parseLong(userid), startNum, pageSize,updateDate);
         } catch (Exception e) {
             logger.error("selectListByUserId userid = {}, startNum = {}, pageSize = {}", userid, startNum, pageSize, e);
         }
