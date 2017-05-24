@@ -45,6 +45,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 	public BaseResp<Object> insertSelective(UserAddress record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			logger.info("UserAddress insertSelective record = {}", JSONArray.toJSON(record).toString());
 //			List<UserAddress> list = userAddressMapper.selectByUserId(record.getUserid().toString(), 0, 10);
 //			if(null == list){
 //				//第一次添加收货地址时，设为默认地址
@@ -60,7 +61,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
-			logger.error("insertSelective record = {}, msg = {}", JSONArray.toJSON(record).toString(), e);
+			logger.error("insertSelective record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
 	}
