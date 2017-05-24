@@ -38,12 +38,10 @@
     <include refid="Base_Column_List" />
     from user_flower_detail
     where userid = #{userid} 
-    <if test="origin != null and origin != ''" >
-      <if test="origin == '3'" >
+      <if test="origin == 3" >
         and (origin = 3 OR origin = 5)
       </if>
-    </if>
-    order by drawdate desc 
+    order by drawdate desc
     <if test="pageSize != 0" >
       LIMIT #{pageNo},#{pageSize}
     </if>
