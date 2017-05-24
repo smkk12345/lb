@@ -379,15 +379,15 @@ public interface IProductBasicService {
 	//--------------------------------adminservice调用-------------------------------------
 
 	/**
-	 * 我的订单列表(所有的)
+	 * 兑换商品订单列表(所有的)
 	 * @author yinxc
 	 * @param @param orderstatus 订单状态   0：待付款   1：待发货   2：待收货  3：已完成
 	 * 						为null   则查全部
 	 * @param @param startNo  pageSize
 	 * 2017年3月22日
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/api/order/adminlist")
-	BaseResp<List<ProductOrders>> adminlist(@RequestParam("orderstatus") String orderstatus,
+	@RequestMapping(method = RequestMethod.GET, value = "/api/order/adminConsumeList")
+	BaseResp<List<ProductOrders>> adminConsumeList(@RequestParam("orderstatus") String orderstatus,
 											@RequestParam("startNo") int startNo,
 											@RequestParam("pageSize") int pageSize);
 
