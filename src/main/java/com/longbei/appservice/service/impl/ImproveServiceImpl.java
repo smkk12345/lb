@@ -1403,7 +1403,7 @@ public class ImproveServiceImpl implements ImproveService{
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
         initUserRelateInfo(userid,appUserMongoEntity);
         if(null != appUserMongoEntity){
-            if(userid != null){
+            if(userid != null && !"-1".equals(userid+"")){
                 //获取好友昵称
                 String remark = userRelationService.selectRemark(userid, improve.getUserid());
                 if(!StringUtils.isBlank(remark)){
