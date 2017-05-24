@@ -48,7 +48,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			logger.info("UserAddress insertSelective record = {}", JSONArray.toJSON(record).toString());
-			record.setId(idGenerateService.getUniqueIdAsLong());
+//			record.setId(idGenerateService.getUniqueIdAsLong());
 //			List<UserAddress> list = userAddressMapper.selectByUserId(record.getUserid().toString(), 0, 10);
 //			if(null == list){
 //				//第一次添加收货地址时，设为默认地址
