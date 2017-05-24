@@ -1246,12 +1246,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if("1".equals(rankMembers.getIsfashionman())){
                     String remark = "你被选为榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "选为榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "选为榜单达人",0, "", "");
                 }
                 if ("0".equals(rankMembers.getIsfashionman())){
                     String remark = "你被取消榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "取消榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "取消榜单达人",0, "", "");
                 }
                 return BaseResp.ok();
             }

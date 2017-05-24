@@ -2283,13 +2283,13 @@ public class ImproveServiceImpl implements ImproveService{
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
             if(null != improve){
-//                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
                 List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
                 for (ImproveLFD improveLFD : improveLFDs){
                     AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
                     improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
                 }
-                improve.setLfdcount(improveLFDs == null?0:Long.parseLong(improveLFDs.size()+""));
+                improve.setLfdcount(count);
                 improve.setImproveLFDs(improveLFDs);
             }
         }catch (Exception e){
