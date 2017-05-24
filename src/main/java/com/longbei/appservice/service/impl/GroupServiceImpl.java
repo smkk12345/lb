@@ -512,9 +512,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             UserMsg userMsg = new UserMsg();
             userMsg.setFriendid(snsGroup.getMainuserid());
             userMsg.setMtype("0");
-            userMsg.setMsgtype("17");
-            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
             userMsg.setGtype("5");
 //            userMsg.setSnsid(snsGroup.getGroupid());
             userMsg.setGtypeid(snsGroup.getGroupid());
@@ -526,9 +523,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             String remark;
             String inviteRemark;
             if(status == 2){
+                userMsg.setMsgtype("48");
                 remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
                 inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核未通过，请联系管理员再次申请！";
             }else {
+                userMsg.setMsgtype("17");
                 remark =  "您申请加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
                 inviteRemark = "您邀请好友加入群组:"+snsGroup.getGroupname()+"的申请审核通过了,快去群组聊天吧!";
             }
