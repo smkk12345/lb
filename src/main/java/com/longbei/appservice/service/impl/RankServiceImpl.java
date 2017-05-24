@@ -1246,12 +1246,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if("1".equals(rankMembers.getIsfashionman())){
                     String remark = "你被选为榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "选为榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "选为榜单达人",0, "", "");
                 }
                 if ("0".equals(rankMembers.getIsfashionman())){
                     String remark = "你被取消榜单达人";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(rankMembers.getUserid()),null,"9",
-                            String.valueOf(rankMembers.getRankid()),remark,"0","45", "取消榜单达人",0, "", "");
+                            String.valueOf(rankMembers.getRankid()),remark,"0","47", "取消榜单达人",0, "", "");
                 }
                 return BaseResp.ok();
             }
@@ -2044,7 +2044,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId) {
+    public BaseResp<Object> acceptRealAward(Long userId, Long rankId, Long userAddressId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
@@ -3075,17 +3075,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rankMembers.setAppUserMongoEntities(users);
             int totalcount = rankMembersMapper.selectCount(rankMembers);
+            Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
             List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,pageSize*(pageNo-1),pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
                     rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
                 }
-                long sortNum =0;
-                if(null!=rankMembers1.getRankid()+""&&null!=rankMembers1.getUserid()){
-                    sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
+                if("1".equals(rank.getIsfinish())){
+                    long sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
+                    rankMembers1.setSortnum(Integer.parseInt(sortNum+""));
                 }
-                rankMembers1.setSortnum(Integer.parseInt(String.valueOf(sortNum)));
             }
             page.setTotalCount(totalcount);
             page.setList(rankMemberses);

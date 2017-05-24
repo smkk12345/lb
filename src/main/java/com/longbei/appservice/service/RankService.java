@@ -396,7 +396,7 @@ public interface RankService extends BaseService{
      * @param userAddressId 收货地址id
      * @return
      */
-    BaseResp<Object> acceptRealAward(Long userId, Long rankId, Integer userAddressId);
+    BaseResp<Object> acceptRealAward(Long userId, Long rankId, Long userAddressId);
 
     /**
      * 查看单个用户在榜中的信息

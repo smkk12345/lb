@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.longbei.appservice.dao.UserAddressMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserAddress" >
-    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="region" property="region" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="VARCHAR" />
@@ -57,16 +57,16 @@
     </if>
   </select>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from user_address
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserAddress"  useGeneratedKeys="true" keyProperty="id">
     insert into user_address (id, userid, region, 
       address, isdefault, mobile, 
       receiver, isdel, createtime, 
       updatetime)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{region,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{region,jdbcType=VARCHAR},
       #{address,jdbcType=VARCHAR}, #{isdefault,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{receiver,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
@@ -107,7 +107,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
@@ -190,7 +190,7 @@
   <update id="updateIsdefaultByAddressId">
     update user_address 
     set isdefault = #{isdefault,jdbcType=CHAR} 
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   
   <update id="updateIsdefaultByUserId">
