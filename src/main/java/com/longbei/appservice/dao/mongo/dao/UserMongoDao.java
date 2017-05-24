@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao.mongo.dao;
 
+import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -45,6 +46,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		try {
 			save(user);
 		} catch (Exception e) {
+			//TODO 这个loggerd的参数应该是有问题的，虽然也能工作
 			logger.error("saveAppUserMongoEntity user = {}", 
 					com.alibaba.fastjson.JSON.toJSON(user).toString(), e);
 		}
@@ -69,8 +71,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 			mongoTemplate1.updateMulti(query, update, AppUserMongoEntity.class);
 			if(StringUtils.isNotEmpty(user.getNickname()) || StringUtils.isNotEmpty(user.getAvatar())){
 				//如果用户更改了用户昵称或者用户头像,则更新融云的用户昵称和头像
-//				BaseResp<Object> rongyunUpdateResp = this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
-				this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
+				BaseResp<Object> rongyunUpdateResp = this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
 			}
 		}catch (Exception e) {
 			logger.error("updateAppUserMongoEntity user = {}",
@@ -142,28 +143,12 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());
 		userMongoEntity.setCreatetime(DateUtils.formatDateTime1(userInfo.getCreatetime()));
-//		saveAppUserMongoEntity(userMongoEntity);
-		
-		Query query = Query.query(Criteria.where("_id").is(userInfo.getUserid().toString()));
-		Update update = new Update();
-		if(!StringUtils.isBlank(userInfo.getUsername())){
-			update.set("username", userInfo.getUsername());
-		}
-		if(!StringUtils.isBlank(userInfo.getNickname())){
-			update.set("nickname", userInfo.getNickname());
-		}
-		if(!StringUtils.isBlank(userInfo.getAvatar())){
-			update.set("avatar",userInfo.getAvatar());
-		}
-		if(!StringUtils.isBlank(userInfo.getSex())){
-			update.set("sex", userInfo.getSex());
-		}
-		mongoTemplate.upsert(query, update, AppUserMongoEntity.class);
+		saveAppUserMongoEntity(userMongoEntity);
 		return userMongoEntity;
 	}
 	
 	public boolean existsUser(String userid){
-		Query query = Query.query(Criteria.where("_id").is(userid));
+		Query query = Query.query(Criteria.where("userid").is(userid));
 		return mongoTemplate.exists(query, AppUserMongoEntity.class);
 	}
 
