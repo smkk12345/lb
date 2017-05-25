@@ -99,7 +99,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
                                         String pType,String origin,long impid,long friendid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        int point = getPointByType(userInfo.getUserid(),operateType,0);
+        int point = getPointByType(userInfo.getUserid(),operateType);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
             levelUp(userInfo,point,pType);
@@ -323,19 +323,15 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * 通过用户id和操作类型获取龙分
      * @param userid 用户id
      * @param operateType 操作类型
-     *@param fnum 送花的数量
+
      *
      * @return
      */
-    private int getPointByType(long userid, String operateType,int fnum) {
+    private int getPointByType(long userid, String operateType) {
         BaseResp<Object> baseResp = new BaseResp<>();
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         int result = Constant_point.getStaticProperty(operateType);
-        if(fnum>0){
-            result = result*fnum;
-        }
-        result = result*fnum;
         String limitField = operateType+"_LIMIT";
         String key = getPerKey(userid);
         if(Constant_point.hasContain(limitField)){
@@ -363,6 +359,38 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
     }
 
+    /**
+     *@param fnum 送花的数量
+     */
+    private int getPointByType(long userid, String operateType,int fnum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        //如果有限制  去redis中去找
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = Constant_point.getStaticProperty(operateType);
+        if(fnum>0){
+            result = result*fnum;
+        }
+//        String limitField = operateType+"_LIMIT";
+//        String key = getPerKey(userid);
+//        if(Constant_point.hasContain(limitField)){
+//            int limitValue = Constant_point.getStaticProperty(limitField);
+//            String field = "point"+dateStr+limitField;
+//            String value = springJedisDao.getHashValue(key, field);
+//            if(StringUtils.isBlank(value)){
+//                springJedisDao.put(key, field,String.valueOf(result));
+//                return result;
+//            }else{
+//                int curValue = Integer.parseInt(value);
+//                if(curValue+result > limitValue){//就不给了
+//                    return 0;
+//                }else{
+//                    springJedisDao.put(key, field,String.valueOf(result+curValue));
+//                    return result;
+//                }
+//            }
+//        }
+        return result;
+    }
 
     /**
      * 更新用户当前龙分  总龙分
