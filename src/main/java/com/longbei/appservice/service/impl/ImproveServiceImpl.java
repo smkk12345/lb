@@ -1333,24 +1333,56 @@ public class ImproveServiceImpl implements ImproveService{
         initFanInfo(userid,apuser);
     }
 
+//    private void initFanInfo(long userid,AppUserMongoEntity apuser){
+//        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+//        if(null != snsFans){
+//            apuser.setIsfans("1");
+//        }else{
+//            apuser.setIsfans("0");
+//        }
+//    }
+//
+//    private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
+//        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
+//        if(null != snsFriends){
+//            if(!StringUtils.isBlank(snsFriends.getRemark())){
+//                apuser.setNickname(snsFriends.getRemark());
+//            }
+//            apuser.setIsfriend("1");
+//        }else{
+//            apuser.setIsfriend("0");
+//        }
+//    }
+
     private void initFanInfo(long userid,AppUserMongoEntity apuser){
-        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
-        if(null != snsFans){
-            apuser.setIsfans("1");
-        }else{
-            apuser.setIsfans("0");
+        apuser.setIsfans("0");
+        String fansIds = springJedisDao.get("userFans"+userid);
+        if (StringUtils.isBlank(fansIds)){
+            List<String> lists = snsFansMapper.selectListidByUid(userid);
+            springJedisDao.set("userFans"+userid,JSON.toJSONString(lists),5);
+            if (lists.contains(apuser.getUserid())){
+                apuser.setIsfans("1");
+            }
+        } else {
+            if (fansIds.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }
         }
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
-        if(null != snsFriends){
-            if(!StringUtils.isBlank(snsFriends.getRemark())){
-                apuser.setNickname(snsFriends.getRemark());
+        apuser.setIsfriend("0");
+        String friendids = springJedisDao.get("userFriend"+userid);
+        if (StringUtils.isBlank(friendids)){
+            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
+            springJedisDao.set("userFriend"+userid,JSON.toJSONString(lists),5);
+            if(lists.contains(apuser.getUserid())){
+                apuser.setIsfriend("1");
             }
-            apuser.setIsfriend("1");
-        }else{
-            apuser.setIsfriend("0");
+        } else {
+            if (friendids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfriend("1");
+            }
         }
     }
 
