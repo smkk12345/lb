@@ -160,6 +160,9 @@
         <if test="snsGroupMembers.inviteuserid != null">
             ,inviteuserid
         </if>
+          <if test="snsGroupMembers.remark != null">
+              ,remark
+          </if>
       )values
       <foreach collection="userList" item="user" separator=",">
         (
@@ -177,6 +180,9 @@
           #{user.avatar}
           <if test="snsGroupMembers.inviteuserid != null">
               ,#{snsGroupMembers.inviteuserid}
+          </if>
+          <if test="snsGroupMembers.remark != null">
+              ,#{snsGroupMembers.remark}
           </if>
         )
       </foreach>

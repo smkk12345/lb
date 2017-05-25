@@ -675,7 +675,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			userMsg.setFriendid(friendId);
 		}
 		userMsg.setMsgtype(msgType);
-//		userMsg.setSnsid(Long.parseLong(snsId+""));
 		userMsg.setGtypeid(snsId);
 		userMsg.setRemark(remark);
 		userMsg.setGtype(gType);

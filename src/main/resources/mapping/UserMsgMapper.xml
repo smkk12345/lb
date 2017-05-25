@@ -526,7 +526,7 @@
       WHERE userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </select>
 
   <!-- 更改用户消息的已读状态 -->
@@ -539,7 +539,7 @@
       where userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </update>
 
   <!-- 批量插入消息 -->
