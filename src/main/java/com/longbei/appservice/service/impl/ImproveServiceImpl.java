@@ -2360,12 +2360,31 @@ public class ImproveServiceImpl implements ImproveService{
 //            improve.setHasdiamond("1");
 //        }
         //是否收藏
-        UserCollect userCollect = new UserCollect();
-        userCollect.setUserid(Long.parseLong(userid));
-        userCollect.setCid(improve.getImpid());
-        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
-        if (null != userCollects && userCollects.size() > 0 ){
-            improve.setHascollect("1");
+//        UserCollect userCollect = new UserCollect();
+//        userCollect.setUserid(Long.parseLong(userid));
+//        userCollect.setCid(improve.getImpid());
+//        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
+//        if (null != userCollects && userCollects.size() > 0 ){
+//            improve.setHascollect("1");
+//        }
+        initCollect(userid,improve);
+    }
+
+
+    private void initCollect(String userid,Improve improve){
+
+        String collectids = springJedisDao.get("userCollect"+userid);
+        improve.setHascollect("0");
+        if (StringUtils.isBlank(collectids)){
+            List<String> ids = userCollectMapper.selectCollectIdsByUser(userid);
+            springJedisDao.set("userCollect"+userid,JSON.toJSONString(ids),5);
+            if (ids.contains(userid)){
+                improve.setHascollect("1");
+            }
+        } else {
+            if (collectids.contains(userid)){
+                improve.setHascollect("1");
+            }
         }
     }
 
