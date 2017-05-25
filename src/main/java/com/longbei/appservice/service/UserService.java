@@ -237,14 +237,14 @@ public interface UserService {
 
 	/**
 	 * 给用户发消息
-	 * @param userid
-	 * @param friendid
+	 * @param friendid //消息发送者
+	 * @param userids //消息接收者
 	 * @param businesstype
 	 * @param businessid
 	 * @param remark
 	 * @param title
 	 * @return
 	 */
-	BaseResp<Object> sendMessagesBatch(String userid, String[] friendid, String businesstype,
+	BaseResp<Object> sendMessagesBatch(String friendid, String[] userids , String businesstype,
 								 String businessid, String remark,String title);
 }
