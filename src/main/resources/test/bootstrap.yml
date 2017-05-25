@@ -64,3 +64,4 @@ h5:
   agreementurl: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-agreement.html
   levelprivilege: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-privilege.html
 
+articleurl: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/article-detail.html
