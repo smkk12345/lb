@@ -9,6 +9,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -1186,10 +1187,15 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectImproveListByUser(String userid,String ptype,
                                                  String ctype,Date lastdate,int pagesize,Integer ispublic) {
 
+        long l = System.currentTimeMillis();
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
                 (userid,ptype,ctype,lastdate,pagesize,ispublic);
+        long w = System.currentTimeMillis();
+        logger.info("select time line time={}",w-l);
         List<Improve> improves = new ArrayList<>();
-
+        Long uid = Long.parseLong(userid);
+        String friendids = getFriendIds(uid);
+        String funids = getFunIds(uid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
@@ -1218,8 +1224,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
                 improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
-                    initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-                    initImproveInfo(improve,Long.parseLong(userid));
+                    initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
+                    initImproveInfo(improve,uid);
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
@@ -1333,25 +1339,114 @@ public class ImproveServiceImpl implements ImproveService{
         initFanInfo(userid,apuser);
     }
 
-    private void initFanInfo(long userid,AppUserMongoEntity apuser){
-        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
-        if(null != snsFans){
-            apuser.setIsfans("1");
-        }else{
+    private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,String friendids,String funids){
+        if(userid == null){
             apuser.setIsfans("0");
+            apuser.setIsfriend("0");
+            return ;
+        }
+        if(userid.equals(apuser.getUserid())){
+            apuser.setIsfans("1");
+            apuser.setIsfriend("1");
+            return;
+        }
+        if(!StringUtils.isBlank(friendids)){
+            if (friendids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }else{
+                apuser.setIsfans("0");
+            }
+        }
+        if(!StringUtils.isBlank(funids)){
+            if (funids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }
+        }
+    }
+
+//    private void initFanInfo(long userid,AppUserMongoEntity apuser){
+//        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+//        if(null != snsFans){
+//            apuser.setIsfans("1");
+//        }else{
+//            apuser.setIsfans("0");
+//        }
+//    }
+//
+//    private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
+//        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
+//        if(null != snsFriends){
+//            if(!StringUtils.isBlank(snsFriends.getRemark())){
+//                apuser.setNickname(snsFriends.getRemark());
+//            }
+//            apuser.setIsfriend("1");
+//        }else{
+//            apuser.setIsfriend("0");
+//        }
+//    }
+
+    private void initFanInfo(long userid,AppUserMongoEntity apuser){
+        apuser.setIsfans("0");
+        String fansIds = springJedisDao.get("userFans"+userid);
+        if (StringUtils.isBlank(fansIds)){
+            List<String> lists = snsFansMapper.selectListidByUid(userid);
+            springJedisDao.set("userFans"+userid,JSON.toJSONString(lists),5);
+            if (lists.contains(apuser.getUserid())){
+                apuser.setIsfans("1");
+            }
+        } else {
+            if (fansIds.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }
         }
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
-        if(null != snsFriends){
-            if(!StringUtils.isBlank(snsFriends.getRemark())){
-                apuser.setNickname(snsFriends.getRemark());
+        apuser.setIsfriend("0");
+        String friendids = springJedisDao.get("userFriend"+userid);
+        if (StringUtils.isBlank(friendids)){
+            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
+            springJedisDao.set("userFriend"+userid,JSON.toJSONString(lists),5);
+            if(lists.contains(apuser.getUserid())){
+                apuser.setIsfriend("1");
             }
-            apuser.setIsfriend("1");
-        }else{
-            apuser.setIsfriend("0");
+        } else {
+            if (friendids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfriend("1");
+            }
         }
+    }
+
+    /**
+     * 获取好友id字符串
+     * @param userid
+     * @return
+     */
+    private String getFriendIds(Long userid){
+        String friendids = springJedisDao.get("userFriend"+userid);
+        if (StringUtils.isBlank(friendids)){
+            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
+            friendids = JSON.toJSONString(lists);
+            springJedisDao.set("userFriend"+userid,friendids,5);
+
+        }
+        return friendids;
+    }
+
+    /**
+     * 获取用户关注列表id字符串
+     * @param userid
+     * @return
+     */
+    private String getFunIds(Long userid){
+        String fansIds = springJedisDao.get("userFans"+userid);
+        if (StringUtils.isBlank(fansIds)){
+            List<String> lists = snsFansMapper.selectListidByUid(userid);
+            fansIds = JSON.toJSONString(lists);
+            springJedisDao.set("userFans"+userid,fansIds,5);
+
+        }
+        return fansIds;
     }
 
     /**
@@ -1359,6 +1454,11 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      * @author:luye
      */
+
+
+
+
+
     private void initImproveCommentInfo(Improve improve){
 
         if (null == improve){
@@ -1366,21 +1466,24 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //对进步的评论数赋值
         String businessid = "";
-
         //businesstype 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
         if(improve.getBusinesstype().equals("0")){
             businessid = improve.getImpid().toString();
         }else{
             businessid = improve.getBusinessid().toString();
         }
-        BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-                        (businessid, improve.getBusinesstype(), improve.getImpid().toString());
-        if (ResultUtil.isSuccess(baseResp)){
-            improve.setCommentnum(baseResp.getData());
-        } else {
-            improve.setCommentnum(0);
+        String count = springJedisDao.get("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString());
+        if (StringUtils.isBlank(count)){
+            BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
+                    (businessid, improve.getBusinesstype(), improve.getImpid().toString());
+            if (ResultUtil.isSuccess(baseResp)){
+                count = baseResp.getData()+"";
+            } else {
+                count = "0";
+            }
+            springJedisDao.set("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString(),count,2);
         }
-
+        improve.setCommentnum(Integer.parseInt(count));
     }
 
     /**
@@ -1388,10 +1491,10 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,4);
-        if(null != list){
-            improve.setImproveTopicList(list);
-        }
+//        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,4);
+//        if(null != list){
+//            improve.setImproveTopicList(list);
+//        }
     }
 
     /**
@@ -1738,7 +1841,7 @@ public class ImproveServiceImpl implements ImproveService{
                 	userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
                 }
                 //用户送花获得龙分
-                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0,flowernum);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
@@ -2283,19 +2386,46 @@ public class ImproveServiceImpl implements ImproveService{
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
             if(null != improve){
-                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-                for (ImproveLFD improveLFD : improveLFDs){
-                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
-                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
-                }
+//                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+                Long count = getImproveLFDCount(String.valueOf(improve.getImpid()));
+//                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+//                for (ImproveLFD improveLFD : improveLFDs){
+//                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+//                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+//                }
+                List<ImproveLFD> improveLFDs = getImproveLFDList(String.valueOf(improve.getImpid()));
                 improve.setLfdcount(count);
                 improve.setImproveLFDs(improveLFDs);
             }
         }catch (Exception e){
             logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
         }
+    }
 
+
+    private Long getImproveLFDCount(String improveid){
+        String count = springJedisDao.get("ImpLFD"+improveid);
+        if (StringUtils.isBlank(count)){
+            count = improveMongoDao.selectTotalCountImproveLFD(improveid)+"";
+            springJedisDao.set("ImpLFD"+improveid,count,3);
+        }
+        return Long.parseLong(count);
+    }
+
+
+    private List<ImproveLFD> getImproveLFDList(String improveid){
+        String improveLFDstr = springJedisDao.get("ImpLFDList"+improveid);
+        if (StringUtils.isBlank(improveLFDstr)){
+            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(improveid);
+            for (ImproveLFD improveLFD : improveLFDs){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+                improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+            }
+            improveLFDstr = JSON.toJSONString(improveLFDs);
+            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,2);
+        }
+        List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
+        return list;
     }
 
     /**
@@ -2322,50 +2452,103 @@ public class ImproveServiceImpl implements ImproveService{
 //        impAllDetail.setStartno(0);
 //        impAllDetail.setPagesize(1);
         //是否点赞
-        boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
-        if (islike) {
-            improve.setHaslike("1");
-        }else
-        {
-            improve.setHaslike("0");
-        }
+        isLike(userid,improve);
+//        boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
+//        if (islike) {
+//            improve.setHaslike("1");
+//        }else
+//        {
+//            improve.setHaslike("0");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
 //        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailLikes && impAllDetailLikes.size() > 0) {
 //            improve.setHaslike("1");
 //        }
         //是否送花
-        boolean isflower = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
-        if (isflower) {
-            improve.setHasflower("1");
-        }else{
-            improve.setHasflower("0");
-        }
+        isFlower(userid,improve);
+//        boolean isflower = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
+//        if (isflower) {
+//            improve.setHasflower("1");
+//        }else{
+//            improve.setHasflower("0");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
 //        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailFlowers && impAllDetailFlowers.size() > 0) {
 //            improve.setHasflower("1");
 //        }
         //是否送钻
-        boolean isdiamond = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
-        if (isdiamond) {
-            improve.setHasdiamond("1");
-        }
+//        boolean isdiamond = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
+//        if (isdiamond) {
+//            improve.setHasdiamond("1");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_DIAMOND);
 //        List<ImpAllDetail> impAllDetailDiamonds = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailDiamonds && impAllDetailDiamonds.size() > 0) {
 //            improve.setHasdiamond("1");
 //        }
         //是否收藏
-        UserCollect userCollect = new UserCollect();
-        userCollect.setUserid(Long.parseLong(userid));
-        userCollect.setCid(improve.getImpid());
-        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
-        if (null != userCollects && userCollects.size() > 0 ){
-            improve.setHascollect("1");
+//        UserCollect userCollect = new UserCollect();
+//        userCollect.setUserid(Long.parseLong(userid));
+//        userCollect.setCid(improve.getImpid());
+//        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
+//        if (null != userCollects && userCollects.size() > 0 ){
+//            improve.setHascollect("1");
+//        }
+        isCollect(userid,improve);
+    }
+
+
+    private void isLike(String userid,Improve improve){
+        String likeListStr = springJedisDao.get("impLikeList"+improve.getImpid());
+        if (StringUtils.isBlank(likeListStr)){
+            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
+                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_LIKE);
+            likeListStr = JSON.toJSONString(list);
+            springJedisDao.set("impLikeList"+improve.getImpid(),likeListStr,2);
+        }
+        if (likeListStr.contains(userid)){
+            improve.setHaslike("1");
+        } else {
+            improve.setHaslike("0");
+        }
+
+    }
+
+    private void isFlower(String userid,Improve improve){
+        String likeListStr = springJedisDao.get("impFlowerList"+improve.getImpid());
+        if (StringUtils.isBlank(likeListStr)){
+            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
+                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_FLOWER);
+            likeListStr = JSON.toJSONString(list);
+            springJedisDao.set("impFlowerList"+improve.getImpid(),likeListStr,2);
+        }
+        if (likeListStr.contains(userid)){
+            improve.setHasflower("1");
+        } else {
+            improve.setHasflower("0");
+        }
+    }
+
+
+    private void isCollect(String userid,Improve improve){
+
+        String collectids = springJedisDao.get("userCollect"+userid);
+        improve.setHascollect("0");
+        if (StringUtils.isBlank(collectids)){
+            List<String> ids = userCollectMapper.selectCollectIdsByUser(userid);
+            springJedisDao.set("userCollect"+userid,JSON.toJSONString(ids),5);
+            if (ids.contains(userid)){
+                improve.setHascollect("1");
+            }
+        } else {
+            if (collectids.contains(userid)){
+                improve.setHascollect("1");
+            }
         }
     }
 
@@ -2525,14 +2708,22 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午4:06
      */
     public void initImproveInfo(Improve improve,Long userid) {
+//        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);
+//        long s1 = System.currentTimeMillis();
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
+//        long s2 = System.currentTimeMillis();
         //初始化是否 点赞 送花 送钻 收藏
         initIsOptionForImprove(userid != null?userid+"":null,improve);
+//        long s3 = System.currentTimeMillis();
         //初始化超级话题列表
         initTopicInfo(improve);
+//        long s4 = System.currentTimeMillis();
+//        logger.info("init comment time=" + (s1-s) +
+//                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
+//                "");
     }
 
     /**
@@ -2943,6 +3134,44 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return result;
     }
+
+    /**
+     * 查询用户对进步献花的总数
+     * @param userid
+     * @param improveid 
+     * @param num
+     */
+	@Override
+	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Integer flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
+			if(flowerSum != null){
+				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+					int fnum = Constant_point.DAILY_IMPFLOWER_LIMIT - flowerSum;
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" + fnum+"朵花");
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}else{
+				if("2".equals(businesstype)){
+					if(Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" 
+								+ Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花");
+					}else{
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+					}
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);
+		}
+		return reseResp;
+	}
 
 
 }

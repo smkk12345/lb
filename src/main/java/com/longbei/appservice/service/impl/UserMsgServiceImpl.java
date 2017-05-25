@@ -132,6 +132,47 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 
+	@Override
+	public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
+									  String businessid, String remark, String title) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		if(null == userids){
+			return reseResp;
+		}
+		try {
+			List<UserMsg> userMsgs = new ArrayList<>();
+			for(int i=0;i<userids.length;i++){
+				UserMsg record = new UserMsg();
+				if(!StringUtils.isBlank(userids[i])){
+					record.setUserid(Long.valueOf(userids[i]));//消息接收者
+				}
+				record.setFriendid(Long.valueOf(friendid));//消息发送者
+				record.setGtype(businesstype);
+				if(!StringUtils.isBlank(businessid)){
+					record.setGtypeid(Long.parseLong(businessid));
+				}
+				record.setRemark(remark);
+				record.setTitle(title);
+				record.setMtype("2");//mtype:@我消息-2
+				record.setMsgtype("10");//msgtype:邀请－10
+				record.setIsdel("0");//未删除-0
+				record.setIsread("0");//未读-0
+				record.setCreatetime(new Date());
+				userMsgs.add(record);
+			}
+
+			try {
+				userMsgMapper.insertSelectiveBatch(userMsgs);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			} catch (Exception e) {
+				logger.error("insertSelectiveBatch", e);
+			}
+		} catch (Exception e) {
+			logger.error("sendMessagesBatch error ", e);
+		}
+		return reseResp;
+	}
+
 
 	@Override
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
@@ -595,11 +636,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param msgType 消息类型
 	 * @param snsId 业务id
 	 * @param gType
+	 * @param remark 备注
 	 * @return
 	 */
 	@Override
-	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType) {
-		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType);
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
 	}
 
 	/**
@@ -622,7 +664,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
 			if(count > 0){
 				//直接更改已读状态
-				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType);
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
 				if(updateRow > 0){
 					return true;
 				}
@@ -634,7 +676,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			userMsg.setFriendid(friendId);
 		}
 		userMsg.setMsgtype(msgType);
-//		userMsg.setSnsid(Long.parseLong(snsId+""));
 		userMsg.setGtypeid(snsId);
 		userMsg.setRemark(remark);
 		userMsg.setGtype(gType);

@@ -47,7 +47,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 			save(user);
 		} catch (Exception e) {
 			//TODO 这个loggerd的参数应该是有问题的，虽然也能工作
-			logger.error("saveAppUserMongoEntity user = {}", 
+			logger.error("saveAppUserMongoEntity user = {}",
 					com.alibaba.fastjson.JSON.toJSON(user).toString(), e);
 		}
 	}
@@ -91,6 +91,12 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 				return mongoUser;
 			}else{
 				UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+				if(userInfo == null){
+					return null;
+				}
+				if(mongoUser != null){
+					return updateAppUserMongoEntity(userInfo);
+				}
 				if(null != userInfo){
 					mongoUser = saveUserInfoToMongo(userInfo);
 				}

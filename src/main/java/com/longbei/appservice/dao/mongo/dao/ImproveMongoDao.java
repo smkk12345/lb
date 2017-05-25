@@ -11,6 +11,7 @@ import com.mongodb.DBObject;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.mapreduce.GroupBy;
 import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -178,6 +179,19 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         Query query = new Query(criteria);
         boolean isexits = mongoTemplate.exists(query,ImproveLFDDetail.class);
         return isexits;
+    }
+
+
+
+    public List<ImproveLFDDetail> getImproveLFDUserIds(String impid,String opttype){
+        DBObject dbObject = new BasicDBObject();
+        dbObject.put("impid", impid);
+        dbObject.put("opttype", opttype);
+        BasicDBObject fieldsObject=new BasicDBObject();
+        fieldsObject.put("userid", true);
+        Query query = new BasicQuery(dbObject,fieldsObject);
+        List<ImproveLFDDetail> user = mongoTemplate.find(query, ImproveLFDDetail.class);
+        return user;
     }
 
 

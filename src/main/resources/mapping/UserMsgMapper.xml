@@ -325,6 +325,17 @@
       </if>
     </trim>
   </insert>
+
+  <insert id="insertSelectiveBatch" parameterType="java.util.List" >
+    insert into user_msg
+    ( userid, friendid, msgtype, remark, isdel, isread, gtype, gtypeid, title, mtype,createtime )
+    values
+    <foreach collection="list" item="msg" index="index" separator="," >
+      ( #{msg.userid},#{msg.friendid},#{msg.msgtype},#{msg.remark},#{msg.isdel},#{msg.isread},#{msg.gtype},
+      #{msg.gtypeid},#{msg.title},#{msg.mtype},#{msg.createtime} )
+    </foreach>
+
+  </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserMsg" >
     update user_msg
     <set >
@@ -515,17 +526,20 @@
       WHERE userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </select>
 
   <!-- 更改用户消息的已读状态 -->
   <update id="updateUserMsgStatus">
       update user_msg
       set isdel = 0,isread = 0,updatetime = now()
+        <if test="remark != null and remark != ''">
+          ,remark = #{remark}
+        </if>
       where userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </update>
 
   <!-- 批量插入消息 -->

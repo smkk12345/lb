@@ -24,6 +24,7 @@ public class ImproveLFD implements Serializable{
     private String businesstype;
     private Long businessid;
 
+
     private Date createtime;
 
     public void setBusinessid(Long businessid) {

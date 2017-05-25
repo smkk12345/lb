@@ -571,10 +571,11 @@ public class AppUserController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/addFeedback")
     @ResponseBody
-    public BaseResp<Object> addFeedback(@RequestParam("userid") String userid, String content, String photos) {
+    public BaseResp<Object> addFeedback(HttpServletRequest request,@RequestParam("userid") String userid, String content) {
+        String photos = request.getParameter("photos");
         logger.info("addFeedback userid={},content={},photos={}", userid, content,photos);
         BaseResp<Object> baseResp = new BaseResp<>();
-    	if (StringUtils.hasBlankParams(userid, content, photos)) {
+    	if (StringUtils.hasBlankParams(userid, content)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         if(StringUtils.hasBlankParams(content)){

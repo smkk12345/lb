@@ -1303,12 +1303,40 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	/*
+	 * @param userid 消息推送者id
+     * @param friendid 消息接受者id
+     * @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+	 *									22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+	 *									25:订单发货N天后自动确认收货    26：实名认证审核结果
+	 *									27:工作认证审核结果      28：学历认证审核结果
+	 *									29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+	 *									32：创建的龙榜/教室/圈子被选中推荐
+	 *									40：订单已取消 41 榜中进步下榜)
+	 *				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
+	 *				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
+	 *						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+	 *
+	 */
+	@Override
+	public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
+										String businessid, String remark,String title) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			baseResp = userMsgService.sendMessagesBatch(friendid,userids,businesstype,businessid,remark,title);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return baseResp;
+	}
+
 	/**
 	 * 用户注册初始化用户显示菜单
 	 */
 	private void initUserCommonMenuInfo(Long userid){
 //		List<UserSettingMenu> list = userSettingMenuMapper.selectDefaultMenu();
 	}
+
 
 
 }

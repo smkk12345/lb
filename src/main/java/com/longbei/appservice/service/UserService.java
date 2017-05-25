@@ -234,4 +234,17 @@ public interface UserService {
 	 * @return
 	 */
 	BaseResp<Object> thirdbinding(String userid,String utype,String opendid);
+
+	/**
+	 * 给用户发消息
+	 * @param friendid //消息发送者
+	 * @param userids //消息接收者
+	 * @param businesstype
+	 * @param businessid
+	 * @param remark
+	 * @param title
+	 * @return
+	 */
+	BaseResp<Object> sendMessagesBatch(String friendid, String[] userids , String businesstype,
+								 String businessid, String remark,String title);
 }

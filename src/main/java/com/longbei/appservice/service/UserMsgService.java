@@ -31,6 +31,19 @@ public interface UserMsgService {
 			String commentid, String commentlowerid);
 
 	/**
+	 * 消息批量插入
+	 * @param friendid
+	 * @param userids
+	 * @param businesstype
+	 * @param businessid
+	 * @param remark
+	 * @param title
+	 * @return
+	 */
+	BaseResp<Object> sendMessagesBatch(String friendid , String[] userids,
+					  String businesstype, String businessid, String remark, String title);
+
+	/**
 	 * 和上面的方法差不多 就是多了一个href参数，图省事不想改了 先这样吧 陆也
 	 * @param userid
 	 * @param friendid
@@ -318,9 +331,10 @@ public interface UserMsgService {
 	 * @param msgType 消息类型
 	 * @param snsId 业务id
 	 * @param gType
+	 * @param remark 备注
      * @return
      */
-	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType);
+	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark);
 
 	/**
 	 * 发送消息
