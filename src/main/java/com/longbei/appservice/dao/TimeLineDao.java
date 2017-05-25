@@ -41,6 +41,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
             criteria.and("createdate").lt(lastdate);
         }
         Query query = new Query(criteria);
+//        Query query = new Query();
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
         query.limit(pagesize);
         List<TimeLine> timeLines = super.find(query);

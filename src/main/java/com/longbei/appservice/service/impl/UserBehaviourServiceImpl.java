@@ -126,6 +126,33 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     }
 
     /**
+     * 送花多加参数  fnum 并且不送币
+     * @param userInfo
+     * @param operateType
+     * @param pType
+     * @param origin
+     * @param impid
+     * @param friendid
+     * @param fnum  花 数量
+     * @return
+     */
+    @Override
+    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
+                                        String pType, String origin,
+                                        long impid, long friendid, int fnum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        int point = getPointByType(userInfo.getUserid(),operateType,fnum);
+        baseResp.getExpandData().put("point",point);
+        if(point > 0){
+            levelUp(userInfo,point,pType);
+            saveUserPointDetail(userInfo,point,pType,operateType);
+            putPointToCache(point,userInfo.getUserid(),operateType);
+        }
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        return baseResp;
+    }
+
+    /**
      * 统计每日得分
      * 缓存到当天24点
      * lixb
@@ -296,12 +323,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * 通过用户id和操作类型获取龙分
      * @param userid 用户id
      * @param operateType 操作类型
-     *
+
      *
      * @return
      */
-//    @Override
-    public int getPointByType(long userid, String operateType) {
+    private int getPointByType(long userid, String operateType) {
         BaseResp<Object> baseResp = new BaseResp<>();
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
@@ -333,7 +359,38 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
     }
 
-
+    /**
+     *@param fnum 送花的数量
+     */
+    private int getPointByType(long userid, String operateType,int fnum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        //如果有限制  去redis中去找
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        int result = Constant_point.getStaticProperty(operateType);
+        if(fnum>0){
+            result = result*fnum;
+        }
+//        String limitField = operateType+"_LIMIT";
+//        String key = getPerKey(userid);
+//        if(Constant_point.hasContain(limitField)){
+//            int limitValue = Constant_point.getStaticProperty(limitField);
+//            String field = "point"+dateStr+limitField;
+//            String value = springJedisDao.getHashValue(key, field);
+//            if(StringUtils.isBlank(value)){
+//                springJedisDao.put(key, field,String.valueOf(result));
+//                return result;
+//            }else{
+//                int curValue = Integer.parseInt(value);
+//                if(curValue+result > limitValue){//就不给了
+//                    return 0;
+//                }else{
+//                    springJedisDao.put(key, field,String.valueOf(result+curValue));
+//                    return result;
+//                }
+//            }
+//        }
+        return result;
+    }
 
     /**
      * 更新用户当前龙分  总龙分

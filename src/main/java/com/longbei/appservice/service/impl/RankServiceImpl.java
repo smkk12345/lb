@@ -1022,7 +1022,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
             if(count > 0){
                 //直接更改已读状态
-                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType);
+                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
                 if(updateRow > 0){
                     return true;
                 }
