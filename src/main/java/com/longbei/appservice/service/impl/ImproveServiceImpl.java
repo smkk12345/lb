@@ -1189,7 +1189,9 @@ public class ImproveServiceImpl implements ImproveService{
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
                 (userid,ptype,ctype,lastdate,pagesize,ispublic);
         List<Improve> improves = new ArrayList<>();
-
+        Long uid = Long.parseLong(userid);
+        String friendids = getFriendIds(uid);
+        String funids = getFunIds(uid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
@@ -1218,8 +1220,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
                 improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
-                    initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-                    initImproveInfo(improve,Long.parseLong(userid));
+                    initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
+                    initImproveInfo(improve,uid);
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
@@ -1333,6 +1335,31 @@ public class ImproveServiceImpl implements ImproveService{
         initFanInfo(userid,apuser);
     }
 
+    private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,String friendids,String funids){
+        if(userid == null){
+            apuser.setIsfans("0");
+            apuser.setIsfriend("0");
+            return ;
+        }
+        if(userid.equals(apuser.getUserid())){
+            apuser.setIsfans("1");
+            apuser.setIsfriend("1");
+            return;
+        }
+        if(!StringUtils.isBlank(friendids)){
+            if (friendids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }else{
+                apuser.setIsfans("0");
+            }
+        }
+        if(!StringUtils.isBlank(funids)){
+            if (funids.contains(String.valueOf(apuser.getUserid()))){
+                apuser.setIsfans("1");
+            }
+        }
+    }
+
 //    private void initFanInfo(long userid,AppUserMongoEntity apuser){
 //        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
 //        if(null != snsFans){
@@ -1384,6 +1411,38 @@ public class ImproveServiceImpl implements ImproveService{
                 apuser.setIsfriend("1");
             }
         }
+    }
+
+    /**
+     * 获取好友id字符串
+     * @param userid
+     * @return
+     */
+    private String getFriendIds(Long userid){
+        String friendids = springJedisDao.get("userFriend"+userid);
+        if (StringUtils.isBlank(friendids)){
+            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
+            friendids = JSON.toJSONString(lists);
+            springJedisDao.set("userFriend"+userid,friendids,5);
+
+        }
+        return friendids;
+    }
+
+    /**
+     * 获取用户关注列表id字符串
+     * @param userid
+     * @return
+     */
+    private String getFunIds(Long userid){
+        String fansIds = springJedisDao.get("userFans"+userid);
+        if (StringUtils.isBlank(fansIds)){
+            List<String> lists = snsFansMapper.selectListidByUid(userid);
+            fansIds = JSON.toJSONString(lists);
+            springJedisDao.set("userFans"+userid,fansIds,5);
+
+        }
+        return fansIds;
     }
 
     /**
