@@ -2752,7 +2752,7 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(String brief, String usernickname,
                                                                      Date starttime, Integer pageno,Integer pagesize) {
         BaseResp<Page<TimeLineDetail>> baseResp = new BaseResp<>();
-        Page<TimeLineDetail> page = new Page<>();
+        Page<TimeLineDetail> page = new Page<TimeLineDetail>(pageno,pagesize);
         try {
             List<String> userids = new ArrayList<>();
             if (!StringUtils.isBlank(usernickname)){
@@ -2766,6 +2766,7 @@ public class ImproveServiceImpl implements ImproveService{
             int totalcount = Integer.parseInt(String.valueOf
                     (timeLineDetailDao.selectRecommendImproveCount(brief,userids,
                             starttime)));
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
                     (brief,userids,pagesize*(pageno-1),pagesize);
             page.setTotalCount(totalcount);

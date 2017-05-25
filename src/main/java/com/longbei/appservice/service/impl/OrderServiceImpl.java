@@ -181,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
 		try{
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
 			if(null != userInfo){
-				UserAddress userAddress = userAddressMapper.selectByIdAndUserid(Integer.parseInt(addressid), userid);
+				UserAddress userAddress = userAddressMapper.selectByIdAndUserid(Long.parseLong(addressid), userid);
 				//省市+详细地址
 				String address = userAddress.getRegion() + userAddress.getAddress();
 				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());

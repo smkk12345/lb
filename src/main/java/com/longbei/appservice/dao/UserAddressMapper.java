@@ -25,7 +25,7 @@ public interface UserAddressMapper {
 
     UserAddress selectByPrimaryKey(@Param("userid") long userid, @Param("id") Long id);
     
-    UserAddress selectByIdAndUserid(@Param("id") int id, @Param("userid") long userid);
+    UserAddress selectByIdAndUserid(@Param("id") long id, @Param("userid") long userid);
     
     /**
 	 * @author yinxc
