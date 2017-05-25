@@ -517,5 +517,13 @@ public interface ImproveService {
      * @return
      */
     int updateSortSource(Long rankId);
+    
+    /**
+     * 查询用户对进步献花的总数
+     * @param userid
+     * @param improveid 
+     * @param num
+     */
+    BaseResp<Object> canGiveFlower(long userid, String improveid, String number);
 
 }

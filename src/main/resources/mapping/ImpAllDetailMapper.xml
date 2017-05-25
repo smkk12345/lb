@@ -205,4 +205,14 @@
     order by userid,detailtype
   </select>
 
+  <select id="selectSumByImp" resultType="java.lang.Integer">
+    SELECT SUM(giftnum) from imp_all_detail
+    where userid = #{userid}
+    AND detailtype = 1
+    AND businesstype = 2
+    <if test="impid != null and impid != ''" >
+      and impid = #{impid}
+    </if>
+  </select>
+
 </mapper>
