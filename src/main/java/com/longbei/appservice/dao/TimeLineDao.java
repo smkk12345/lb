@@ -30,19 +30,19 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
-//        Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-//        if ("1".equals(timelinetype)){
-//            criteria.and("ispublic").gte(ispublic);
-//        }
-//        if (!StringUtils.isEmpty(ptype) && !"-1".equals(ptype)){
-//            criteria.and("ptype").is(ptype);
-//        }
-//        if (null != lastdate) {
-//            criteria.and("createdate").lt(lastdate);
-//        }
-//        Query query = new Query(criteria);
-        Query query = new Query();
-//        query.with(new Sort(Sort.Direction.DESC, "createdate"));
+        Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
+        if ("1".equals(timelinetype)){
+            criteria.and("ispublic").gte(ispublic);
+        }
+        if (!StringUtils.isEmpty(ptype) && !"-1".equals(ptype)){
+            criteria.and("ptype").is(ptype);
+        }
+        if (null != lastdate) {
+            criteria.and("createdate").lt(lastdate);
+        }
+        Query query = new Query(criteria);
+//        Query query = new Query();
+        query.with(new Sort(Sort.Direction.DESC, "createdate"));
         query.limit(pagesize);
         List<TimeLine> timeLines = super.find(query);
         return timeLines;
