@@ -2451,38 +2451,40 @@ public class ImproveServiceImpl implements ImproveService{
 //        impAllDetail.setStartno(0);
 //        impAllDetail.setPagesize(1);
         //是否点赞
-        boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
-        if (islike) {
-            improve.setHaslike("1");
-        }else
-        {
-            improve.setHaslike("0");
-        }
+        isLike(userid,improve);
+//        boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
+//        if (islike) {
+//            improve.setHaslike("1");
+//        }else
+//        {
+//            improve.setHaslike("0");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
 //        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailLikes && impAllDetailLikes.size() > 0) {
 //            improve.setHaslike("1");
 //        }
         //是否送花
-        boolean isflower = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
-        if (isflower) {
-            improve.setHasflower("1");
-        }else{
-            improve.setHasflower("0");
-        }
+        isFlower(userid,improve);
+//        boolean isflower = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
+//        if (isflower) {
+//            improve.setHasflower("1");
+//        }else{
+//            improve.setHasflower("0");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
 //        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailFlowers && impAllDetailFlowers.size() > 0) {
 //            improve.setHasflower("1");
 //        }
         //是否送钻
-        boolean isdiamond = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-                userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
-        if (isdiamond) {
-            improve.setHasdiamond("1");
-        }
+//        boolean isdiamond = improveMongoDao.exits(String.valueOf(improve.getImpid()),
+//                userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
+//        if (isdiamond) {
+//            improve.setHasdiamond("1");
+//        }
 //        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_DIAMOND);
 //        List<ImpAllDetail> impAllDetailDiamonds = impAllDetailMapper.selectOneDetail(impAllDetail);
 //        if (null != impAllDetailDiamonds && impAllDetailDiamonds.size() > 0) {
@@ -2496,11 +2498,43 @@ public class ImproveServiceImpl implements ImproveService{
 //        if (null != userCollects && userCollects.size() > 0 ){
 //            improve.setHascollect("1");
 //        }
-        initCollect(userid,improve);
+        isCollect(userid,improve);
     }
 
 
-    private void initCollect(String userid,Improve improve){
+    private void isLike(String userid,Improve improve){
+        String likeListStr = springJedisDao.get("impLikeList"+improve.getImpid());
+        if (StringUtils.isBlank(likeListStr)){
+            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
+                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_LIKE);
+            likeListStr = JSON.toJSONString(list);
+            springJedisDao.set("impLikeList"+improve.getImpid(),likeListStr,2);
+        }
+        if (likeListStr.contains(userid)){
+            improve.setHaslike("1");
+        } else {
+            improve.setHaslike("0");
+        }
+
+    }
+
+    private void isFlower(String userid,Improve improve){
+        String likeListStr = springJedisDao.get("impFlowerList"+improve.getImpid());
+        if (StringUtils.isBlank(likeListStr)){
+            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
+                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_FLOWER);
+            likeListStr = JSON.toJSONString(list);
+            springJedisDao.set("impFlowerList"+improve.getImpid(),likeListStr,2);
+        }
+        if (likeListStr.contains(userid)){
+            improve.setHasflower("1");
+        } else {
+            improve.setHasflower("0");
+        }
+    }
+
+
+    private void isCollect(String userid,Improve improve){
 
         String collectids = springJedisDao.get("userCollect"+userid);
         improve.setHascollect("0");
@@ -2673,22 +2707,22 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午4:06
      */
     public void initImproveInfo(Improve improve,Long userid) {
-        Long s = System.currentTimeMillis();
+//        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);
-        long s1 = System.currentTimeMillis();
+//        long s1 = System.currentTimeMillis();
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
-        long s2 = System.currentTimeMillis();
+//        long s2 = System.currentTimeMillis();
         //初始化是否 点赞 送花 送钻 收藏
         initIsOptionForImprove(userid != null?userid+"":null,improve);
-        long s3 = System.currentTimeMillis();
+//        long s3 = System.currentTimeMillis();
         //初始化超级话题列表
         initTopicInfo(improve);
-        long s4 = System.currentTimeMillis();
-        logger.info("init comment time=" + (s1-s) +
-                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
-                "");
+//        long s4 = System.currentTimeMillis();
+//        logger.info("init comment time=" + (s1-s) +
+//                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
+//                "");
     }
 
     /**
