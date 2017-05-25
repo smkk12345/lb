@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserAddress;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.OrderService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 
@@ -27,6 +29,8 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private UserFlowerDetailService userFlowerDetailService;
+	@Autowired
+	private ImproveService improveService;
 
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
@@ -383,6 +387,10 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
+  			BaseResp<Object> resResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, number);
+  			if(ResultUtil.fail(resResp)){
+  				return resResp;
+  			}
   			//payType 1:龙币兑换  2：进步币兑换
   			if("1".equals(payType)){
   				baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 

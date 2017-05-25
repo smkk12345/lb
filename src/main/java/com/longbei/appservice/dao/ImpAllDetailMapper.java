@@ -44,5 +44,5 @@ public interface ImpAllDetailMapper {
     /**
      * 查询用户对进步献花的总数
      */
-    int selectSumByImp(@Param("userid") long userid, @Param("impid") String impid);
+    Integer selectSumByImp(@Param("userid") long userid, @Param("impid") String impid);
 }

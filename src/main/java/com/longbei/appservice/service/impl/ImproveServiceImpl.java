@@ -3142,14 +3142,30 @@ public class ImproveServiceImpl implements ImproveService{
      * @param num
      */
 	@Override
-	public BaseResp<Object> canGiveFlower(long userid, String improveid, String number) {
+	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			int flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
-			if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "一条微进步每人最多只能送"+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花哦~");
+			Integer flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
+			if(flowerSum != null){
+				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+					int fnum = Constant_point.DAILY_IMPFLOWER_LIMIT - flowerSum;
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" + fnum+"朵花");
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				if("2".equals(businesstype)){
+					if(Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" 
+								+ Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花");
+					}else{
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+					}
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
 			}
 		} catch (Exception e) {
 			logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);
