@@ -276,6 +276,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             resultMap.put("appUserMongoEntity",friendAddAsk.getAppUserMongoEntity());
 
             baseResp.setData(resultMap);
+            baseResp.getExpandData().put("area",this.userService.selectJustInfo(userId).getArea());
 
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){

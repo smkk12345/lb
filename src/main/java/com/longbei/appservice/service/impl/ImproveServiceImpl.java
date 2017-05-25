@@ -9,6 +9,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -3133,6 +3134,44 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return result;
     }
+
+    /**
+     * 查询用户对进步献花的总数
+     * @param userid
+     * @param improveid 
+     * @param num
+     */
+	@Override
+	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Integer flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
+			if(flowerSum != null){
+				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+					int fnum = Constant_point.DAILY_IMPFLOWER_LIMIT - flowerSum;
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" + fnum+"朵花");
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}else{
+				if("2".equals(businesstype)){
+					if(Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
+								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" 
+								+ Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花");
+					}else{
+						reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+					}
+				}else{
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);
+		}
+		return reseResp;
+	}
 
 
 }
