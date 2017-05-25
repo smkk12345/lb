@@ -526,17 +526,20 @@
       WHERE userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </select>
 
   <!-- 更改用户消息的已读状态 -->
   <update id="updateUserMsgStatus">
       update user_msg
       set isdel = 0,isread = 0,updatetime = now()
+        <if test="remark != null and remark != ''">
+          ,remark = #{remark}
+        </if>
       where userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}
-          and snsid = #{snsId}
+          and gtypeid = #{snsId}
   </update>
 
   <!-- 批量插入消息 -->

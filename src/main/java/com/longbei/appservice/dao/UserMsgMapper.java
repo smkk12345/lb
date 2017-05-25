@@ -234,9 +234,10 @@ public interface UserMsgMapper {
 	 * @param msgType 消息类型
 	 * @param snsId 业务id
 	 * @param gType
+	 * @param remark
 	 * @return
 	 */
-	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType);
+	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType,@Param("remark") String remark);
 
 	/**
 	 * 批量插入消息
