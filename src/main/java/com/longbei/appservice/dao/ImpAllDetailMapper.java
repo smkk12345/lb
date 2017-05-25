@@ -40,4 +40,9 @@ public interface ImpAllDetailMapper {
      * @return
      */
     List<ImpAllDetail> userStatistic(@Param("startDate")Date startDate,@Param("endDate") Date endDate);
+
+    /**
+     * 查询用户对进步献花的总数
+     */
+    Integer selectSumByImp(@Param("userid") long userid, @Param("impid") String impid);
 }
