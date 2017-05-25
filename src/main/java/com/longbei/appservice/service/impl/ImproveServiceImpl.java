@@ -1186,8 +1186,11 @@ public class ImproveServiceImpl implements ImproveService{
     public List<Improve> selectImproveListByUser(String userid,String ptype,
                                                  String ctype,Date lastdate,int pagesize,Integer ispublic) {
 
+        long l = System.currentTimeMillis();
         List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndType
                 (userid,ptype,ctype,lastdate,pagesize,ispublic);
+        long w = System.currentTimeMillis();
+        logger.info("select time line time={}",w-l);
         List<Improve> improves = new ArrayList<>();
         Long uid = Long.parseLong(userid);
         String friendids = getFriendIds(uid);
@@ -1220,7 +1223,10 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
                 improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
+                    long s = System.currentTimeMillis();
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
+                    long s1 = System.currentTimeMillis();
+                    logger.info("init user relatin info time={}",s1-s);
                     initImproveInfo(improve,uid);
                 }
                 //初始化 赞 花 数量
@@ -1479,10 +1485,10 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      */
     private void initTopicInfo(Improve improve){
-        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,4);
-        if(null != list){
-            improve.setImproveTopicList(list);
-        }
+//        List<ImproveTopic> list = improveTopicMapper.selectByImpId(improve.getImpid(),0,4);
+//        if(null != list){
+//            improve.setImproveTopicList(list);
+//        }
     }
 
     /**
@@ -2635,14 +2641,22 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午4:06
      */
     public void initImproveInfo(Improve improve,Long userid) {
+        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);
+        long s1 = System.currentTimeMillis();
         //初始化点赞，送花，送钻简略信息
         initLikeFlowerDiamondInfo(improve);
+        long s2 = System.currentTimeMillis();
         //初始化是否 点赞 送花 送钻 收藏
         initIsOptionForImprove(userid != null?userid+"":null,improve);
+        long s3 = System.currentTimeMillis();
         //初始化超级话题列表
         initTopicInfo(improve);
+        long s4 = System.currentTimeMillis();
+        logger.info("init comment time=" + (s1-s) +
+                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
+                "");
     }
 
     /**
