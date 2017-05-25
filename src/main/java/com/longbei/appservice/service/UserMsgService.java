@@ -30,7 +30,17 @@ public interface UserMsgService {
 			String mtype, String msgtype, String title, int num, 
 			String commentid, String commentlowerid);
 
-	BaseResp<Object> sendMessagesBatch(String userid, String[] friendid,
+	/**
+	 * 消息批量插入
+	 * @param friendid
+	 * @param userids
+	 * @param businesstype
+	 * @param businessid
+	 * @param remark
+	 * @param title
+	 * @return
+	 */
+	BaseResp<Object> sendMessagesBatch(String friendid , String[] userids,
 					  String businesstype, String businessid, String remark, String title);
 
 	/**

@@ -1319,11 +1319,11 @@ public class UserServiceImpl implements UserService {
 	 *
 	 */
 	@Override
-	public BaseResp<Object> sendMessagesBatch(String userid, String[] friendid, String businesstype,
+	public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
 										String businessid, String remark,String title) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			baseResp = userMsgService.sendMessagesBatch(userid,friendid,businesstype,businessid,remark,title);
+			baseResp = userMsgService.sendMessagesBatch(friendid,userids,businesstype,businessid,remark,title);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

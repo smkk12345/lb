@@ -133,25 +133,26 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 
 	@Override
-	public BaseResp<Object> sendMessagesBatch(String userid, String[] friendid, String businesstype,
+	public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
 									  String businessid, String remark, String title) {
 		BaseResp<Object> reseResp = new BaseResp<>();
-		if(null == friendid){
+		if(null == userids){
 			return reseResp;
 		}
 		try {
 			List<UserMsg> userMsgs = new ArrayList<>();
-			for(int i=0;i<friendid.length;i++){
+			for(int i=0;i<userids.length;i++){
 				UserMsg record = new UserMsg();
-				if(!StringUtils.isBlank(friendid[i])){
-					record.setUserid(Long.valueOf(friendid[i]));
+				if(!StringUtils.isBlank(userids[i])){
+					record.setUserid(Long.valueOf(userids[i]));//消息接收者
 				}
-				record.setFriendid(Long.valueOf(userid));
+				record.setFriendid(Long.valueOf(friendid));//消息发送者
 				record.setGtype(businesstype);
-				//record.setGtypeid(Long.parseLong(businessid));
+				if(!StringUtils.isBlank(businessid)){
+					record.setGtypeid(Long.parseLong(businessid));
+				}
 				record.setRemark(remark);
 				record.setTitle(title);
-
 				record.setMtype("2");//mtype:@我消息-2
 				record.setMsgtype("10");//msgtype:邀请－10
 				record.setIsdel("0");//未删除-0
@@ -167,7 +168,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				logger.error("insertSelectiveBatch", e);
 			}
 		} catch (Exception e) {
-			logger.error("insertMsg userid = {}", userid, e);
+			logger.error("sendMessagesBatch error ", e);
 		}
 		return reseResp;
 	}
