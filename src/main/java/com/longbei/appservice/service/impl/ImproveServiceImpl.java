@@ -1840,7 +1840,7 @@ public class ImproveServiceImpl implements ImproveService{
                 	userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
                 }
                 //用户送花获得龙分
-                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0,flowernum);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;

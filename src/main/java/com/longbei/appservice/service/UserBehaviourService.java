@@ -29,6 +29,20 @@ public interface UserBehaviourService {
                                  String pType,String origin,long impid,long friendid);
 
     /**
+     * @param userInfo
+     * @param operateType
+     * @param pType
+     * @param origin
+     * @param impid
+     * @param friendid
+     * @param fnum
+     * @return
+     */
+    BaseResp<Object> pointChange(UserInfo userInfo,String operateType,
+                                  String pType,String origin,long impid,long friendid,int fnum);
+
+
+    /**
      * 用户特权
      * 通过用户信息判断用户是否拥有该权限
      * operateType  添加榜

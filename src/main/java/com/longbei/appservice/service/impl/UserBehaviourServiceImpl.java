@@ -99,7 +99,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
                                         String pType,String origin,long impid,long friendid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        int point = getPointByType(userInfo.getUserid(),operateType);
+        int point = getPointByType(userInfo.getUserid(),operateType,0);
         baseResp.getExpandData().put("point",point);
         if(point > 0){
             levelUp(userInfo,point,pType);
@@ -120,6 +120,33 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 userImpCoinDetailService.insertPublic(userInfo.getUserid(),origin,impIcon,impid,friendid);
             }
             baseResp.getExpandData().put("impIcon",impIcon);
+        }
+        baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        return baseResp;
+    }
+
+    /**
+     * 送花多加参数  fnum 并且不送币
+     * @param userInfo
+     * @param operateType
+     * @param pType
+     * @param origin
+     * @param impid
+     * @param friendid
+     * @param fnum  花 数量
+     * @return
+     */
+    @Override
+    public BaseResp<Object> pointChange(UserInfo userInfo, String operateType,
+                                        String pType, String origin,
+                                        long impid, long friendid, int fnum) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        int point = getPointByType(userInfo.getUserid(),operateType,fnum);
+        baseResp.getExpandData().put("point",point);
+        if(point > 0){
+            levelUp(userInfo,point,pType);
+            saveUserPointDetail(userInfo,point,pType,operateType);
+            putPointToCache(point,userInfo.getUserid(),operateType);
         }
         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         return baseResp;
@@ -296,16 +323,19 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * 通过用户id和操作类型获取龙分
      * @param userid 用户id
      * @param operateType 操作类型
-     *
+     *@param fnum 送花的数量
      *
      * @return
      */
-//    @Override
-    public int getPointByType(long userid, String operateType) {
+    private int getPointByType(long userid, String operateType,int fnum) {
         BaseResp<Object> baseResp = new BaseResp<>();
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         int result = Constant_point.getStaticProperty(operateType);
+        if(fnum>0){
+            result = result*fnum;
+        }
+        result = result*fnum;
         String limitField = operateType+"_LIMIT";
         String key = getPerKey(userid);
         if(Constant_point.hasContain(limitField)){
@@ -332,7 +362,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             return result;
         }
     }
-
 
 
     /**
