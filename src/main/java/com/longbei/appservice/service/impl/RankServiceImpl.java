@@ -284,6 +284,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("copy rankimage to rank is error:{}",e);
         }
         try {
+            rank.setAutotime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+            rank.setIsup("1");
             rank.setIsfinish(null);
             Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
             int res = 0;
@@ -2944,6 +2946,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankId));
+            if(null != rank && null != rank.getAutotime()) {
+                Date autotimeformate = DateUtils.formatDate(rank.getAutotime(), "yyyy-MM-dd HH:mm:ss");
+                rank.setAutotime(DateUtils.formatDateTime1(autotimeformate));
+            }
             if(rank == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }

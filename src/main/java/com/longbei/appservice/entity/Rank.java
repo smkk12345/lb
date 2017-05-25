@@ -86,6 +86,9 @@ public class Rank {
 
     private Integer icount; //榜中进步数
 
+    private String autotime; //榜单发布时间
+
+
     //-------
     private String joinlastday; //入榜截止天数
 
@@ -885,6 +888,16 @@ public class Rank {
 
     public String getHasjoin() {
         return hasjoin;
+    }
+
+    public String getAutotime() {
+        return autotime;
+    }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",locale ="UTC+8")
+    public void setAutotime(String autotime) {
+        this.autotime = autotime;
     }
 
 }
