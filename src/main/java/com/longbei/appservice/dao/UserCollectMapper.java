@@ -22,6 +22,8 @@ public interface UserCollectMapper {
      */
     List<UserCollect> selectListByUserCollect(UserCollect userCollect);
 
+    List<String> selectCollectIdsByUser(@Param("userid") String userid);
+
     int updateByPrimaryKeySelective(UserCollect record);
 
     int updateByPrimaryKey(UserCollect record);

@@ -30,6 +30,9 @@ public interface UserMsgService {
 			String mtype, String msgtype, String title, int num, 
 			String commentid, String commentlowerid);
 
+	BaseResp<Object> sendMessagesBatch(String userid, String[] friendid,
+					  String businesstype, String businessid, String remark, String title);
+
 	/**
 	 * 和上面的方法差不多 就是多了一个href参数，图省事不想改了 先这样吧 陆也
 	 * @param userid

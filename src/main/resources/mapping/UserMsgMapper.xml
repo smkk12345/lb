@@ -325,6 +325,17 @@
       </if>
     </trim>
   </insert>
+
+  <insert id="insertSelectiveBatch" parameterType="java.util.List" >
+    insert into user_msg
+    ( userid, friendid, msgtype, remark, isdel, isread, gtype, gtypeid, title, mtype,createtime )
+    values
+    <foreach collection="list" item="msg" index="index" separator="," >
+      ( #{msg.userid},#{msg.friendid},#{msg.msgtype},#{msg.remark},#{msg.isdel},#{msg.isread},#{msg.gtype},
+      #{msg.gtypeid},#{msg.title},#{msg.mtype},#{msg.createtime} )
+    </foreach>
+
+  </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserMsg" >
     update user_msg
     <set >

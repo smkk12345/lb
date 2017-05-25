@@ -132,6 +132,46 @@ public class UserMsgServiceImpl implements UserMsgService {
 		return reseResp;
 	}
 
+	@Override
+	public BaseResp<Object> sendMessagesBatch(String userid, String[] friendid, String businesstype,
+									  String businessid, String remark, String title) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		if(null == friendid){
+			return reseResp;
+		}
+		try {
+			List<UserMsg> userMsgs = new ArrayList<>();
+			for(int i=0;i<friendid.length;i++){
+				UserMsg record = new UserMsg();
+				if(!StringUtils.isBlank(friendid[i])){
+					record.setUserid(Long.valueOf(friendid[i]));
+				}
+				record.setFriendid(Long.valueOf(userid));
+				record.setGtype(businesstype);
+				//record.setGtypeid(Long.parseLong(businessid));
+				record.setRemark(remark);
+				record.setTitle(title);
+
+				record.setMtype("2");//mtype:@我消息-2
+				record.setMsgtype("10");//msgtype:邀请－10
+				record.setIsdel("0");//未删除-0
+				record.setIsread("0");//未读-0
+				record.setCreatetime(new Date());
+				userMsgs.add(record);
+			}
+
+			try {
+				userMsgMapper.insertSelectiveBatch(userMsgs);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			} catch (Exception e) {
+				logger.error("insertSelectiveBatch", e);
+			}
+		} catch (Exception e) {
+			logger.error("insertMsg userid = {}", userid, e);
+		}
+		return reseResp;
+	}
+
 
 	@Override
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,

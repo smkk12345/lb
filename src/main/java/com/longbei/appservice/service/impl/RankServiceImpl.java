@@ -3075,17 +3075,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rankMembers.setAppUserMongoEntities(users);
             int totalcount = rankMembersMapper.selectCount(rankMembers);
+            Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
             List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,pageSize*(pageNo-1),pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
                     rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
                 }
-                long sortNum =0;
-                if(null!=rankMembers1.getRankid()+""&&null!=rankMembers1.getUserid()){
-                    sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
+                if("1".equals(rank.getIsfinish())){
+                    long sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
+                    rankMembers1.setSortnum(Integer.parseInt(sortNum+""));
                 }
-                rankMembers1.setSortnum(Integer.parseInt(String.valueOf(sortNum)));
             }
             page.setTotalCount(totalcount);
             page.setList(rankMemberses);
