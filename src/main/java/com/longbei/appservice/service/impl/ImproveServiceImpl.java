@@ -1223,10 +1223,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setPtype(timeLine.getPtype());
                 improve.setAppUserMongoEntity(timeLineDetail.getUser());
                 if(!Constant.VISITOR_UID.equals(userid)){
-                    long s = System.currentTimeMillis();
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
-                    long s1 = System.currentTimeMillis();
-                    logger.info("init user relatin info time={}",s1-s);
                     initImproveInfo(improve,uid);
                 }
                 //初始化 赞 花 数量
@@ -1456,6 +1453,11 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      * @author:luye
      */
+
+
+
+
+
     private void initImproveCommentInfo(Improve improve){
 
         if (null == improve){
@@ -1463,21 +1465,24 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //对进步的评论数赋值
         String businessid = "";
-
         //businesstype 微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
         if(improve.getBusinesstype().equals("0")){
             businessid = improve.getImpid().toString();
         }else{
             businessid = improve.getBusinessid().toString();
         }
-        BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
-                        (businessid, improve.getBusinesstype(), improve.getImpid().toString());
-        if (ResultUtil.isSuccess(baseResp)){
-            improve.setCommentnum(baseResp.getData());
-        } else {
-            improve.setCommentnum(0);
+        String count = springJedisDao.get("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString());
+        if (StringUtils.isBlank(count)){
+            BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum
+                    (businessid, improve.getBusinesstype(), improve.getImpid().toString());
+            if (ResultUtil.isSuccess(baseResp)){
+                count = baseResp.getData()+"";
+            } else {
+                count = "0";
+            }
+            springJedisDao.set("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString(),count,2);
         }
-
+        improve.setCommentnum(Integer.parseInt(count));
     }
 
     /**
