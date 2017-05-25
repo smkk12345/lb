@@ -2385,19 +2385,46 @@ public class ImproveServiceImpl implements ImproveService{
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
             if(null != improve){
-                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-                for (ImproveLFD improveLFD : improveLFDs){
-                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
-                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
-                }
+//                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
+                Long count = getImproveLFDCount(String.valueOf(improve.getImpid()));
+//                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+//                for (ImproveLFD improveLFD : improveLFDs){
+//                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+//                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+//                }
+                List<ImproveLFD> improveLFDs = getImproveLFDList(String.valueOf(improve.getImpid()));
                 improve.setLfdcount(count);
                 improve.setImproveLFDs(improveLFDs);
             }
         }catch (Exception e){
             logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
         }
+    }
 
+
+    private Long getImproveLFDCount(String improveid){
+        String count = springJedisDao.get("ImpLFD"+improveid);
+        if (StringUtils.isBlank(count)){
+            count = improveMongoDao.selectTotalCountImproveLFD(improveid)+"";
+            springJedisDao.set("ImpLFD"+improveid,count,3);
+        }
+        return Long.parseLong(count);
+    }
+
+
+    private List<ImproveLFD> getImproveLFDList(String improveid){
+        String improveLFDstr = springJedisDao.get("ImpLFDList"+improveid);
+        if (StringUtils.isBlank(improveLFDstr)){
+            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(improveid);
+            for (ImproveLFD improveLFD : improveLFDs){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+                improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+            }
+            improveLFDstr = JSON.toJSONString(improveLFDs);
+            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,2);
+        }
+        List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
+        return list;
     }
 
     /**
