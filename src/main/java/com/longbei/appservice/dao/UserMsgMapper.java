@@ -58,6 +58,8 @@ public interface UserMsgMapper {
 
     int insertSelective(UserMsg record);
 
+	int insertSelectiveBatch(List<UserMsg> records);
+
     UserMsg selectByPrimaryKey(Integer id);
     
     /**
