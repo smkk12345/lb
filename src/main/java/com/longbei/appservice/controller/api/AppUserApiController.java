@@ -216,8 +216,8 @@ public class AppUserApiController {
 
     /**
      *
-     * @param userid 消息推送者id
-     * @param friendid 消息接受者id
+     * @param friendid 消息推送者id
+     * @param userids 消息接受者id
      * @param businesstype
      * @param businessid
      * @param remark
@@ -227,17 +227,17 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "sendmessage")
     @ResponseBody
-    public BaseResp<Object> sendMessagesBatch(String userid, String[] friendid, String businesstype,
+    public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
                                         String businessid, String remark,String title){
         BaseResp<Object> baseResp = new BaseResp<>();
-        if (StringUtils.hasBlankParams(friendid)) {
+        if (StringUtils.hasBlankParams(userids)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = userService.sendMessagesBatch(userid,friendid,businesstype,businessid,remark,title);
+            baseResp = userService.sendMessagesBatch(friendid,userids,businesstype,businessid,remark,title);
             return baseResp;
         } catch (Exception e) {
-            logger.error("sendMessage to friendid = {} is error", friendid, e);
+            logger.error("sendMessage is error", e);
         }
         return baseResp;
     }
