@@ -318,9 +318,10 @@ public interface UserMsgService {
 	 * @param msgType 消息类型
 	 * @param snsId 业务id
 	 * @param gType
+	 * @param remark 备注
      * @return
      */
-	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType);
+	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark);
 
 	/**
 	 * 发送消息

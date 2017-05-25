@@ -174,7 +174,7 @@ public class Constant {
 	 * 服务端返回描述
 	 */
 	//1-19  lxb
-	public static final String RTNINFO_SYS_00 = "系统正常";
+	public static final String RTNINFO_SYS_00 = "操作成功!";
 	public static final String RTNINFO_SYS_01 = "系统异常";
 	public static final String RTNINFO_SYS_02 = "您已注册，请您直接登录";
 	public static final String RTNINFO_SYS_03 = "密码错误";
