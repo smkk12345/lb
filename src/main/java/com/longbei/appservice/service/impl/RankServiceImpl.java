@@ -389,11 +389,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
         Page<RankImage> page = new Page<>(pageno,pagesize);
         try {
-            int totalcount = rankImageMapper.selectListCount(rankImage);
-            pageno = Page.setPageNo(pageno,totalcount,pagesize);
-            List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            int totalcount = 0;
+            List<RankImage> rankImages = new ArrayList<>();
+            //pc端发榜,根据需求imageRankList应包含审核未通过不可修改的
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                totalcount = rankImageMapper.selectPCListCount(rankImage);
+                pageno = Page.setPageNo(pageno,totalcount,pagesize);
+                rankImages = rankImageMapper.selectPCListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            }else{
+                totalcount = rankImageMapper.selectListCount(rankImage);
+                pageno = Page.setPageNo(pageno,totalcount,pagesize);
+                rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            }
             for(RankImage rankImage1: rankImages){
-                //pc端发榜
+                //pc端发榜,将id改为nickName用于显示
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
                     rankImage1.setCreateuserid(appUer.getNickname());

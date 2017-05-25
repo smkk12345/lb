@@ -117,6 +117,19 @@
     </if>
   </select>
 
+  <select id="selectPCListCount" parameterType="com.longbei.appservice.entity.RankImage" resultType="java.lang.Integer">
+    SELECT
+    COUNT(*)
+    FROM rankimage
+    WHERE 1=1
+    and isup = 0
+    and sourcetype = 1
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
+    </if>
+    AND (isdel=0 OR (isdel = 1 AND checkstatus = 3))
+  </select>
+
   <select id="selectByRankImageId" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
@@ -181,6 +194,19 @@
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>
 
+  <select id="selectPCListWithPage" parameterType="com.longbei.appservice.entity.RankImage" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rankimage
+    WHERE 1=1
+    and isup = 0
+    and sourcetype = 1
+    <if test="rankimage.createuserid != null" >
+      AND createuserid = #{rankimage.createuserid}
+    </if>
+    AND (isdel=0 OR (isdel = 1 AND checkstatus = 3))
+    ORDER BY createtime DESC limit #{startno},#{pagesize}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rankimage
