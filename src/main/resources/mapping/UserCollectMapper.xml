@@ -20,6 +20,10 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectCollectIdsByUser" resultType="java.lang.String">
+    SELECT cid from user_collect where userid=#{userid}
+  </select>
+
   <select id="selectListByUserCollect" parameterType="com.longbei.appservice.entity.UserCollect" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
