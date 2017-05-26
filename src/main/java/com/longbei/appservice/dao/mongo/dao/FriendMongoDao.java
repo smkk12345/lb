@@ -155,6 +155,37 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         }
         return mongoTemplate.find(query,FriendAddAsk.class);
     }
+    
+    /**
+     * 添加好友列表
+     * @param userId
+     * @param isRead 是否已读 true代表已读 false代表未读
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    public List<FriendAddAsk> friendAddAskDateList(Long userId, Date friendAskmaxDate,Boolean isRead, Integer startNo, Integer pageSize) {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        if(isRead != null){
+            query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId).and("senderIsRead").is(isRead),
+                    Criteria.where("receiveUserId").is(userId).and("receiveIsRead").is(isRead)));
+        }else{
+            query.addCriteria(criteria.orOperator(Criteria.where("senderUserId").is(userId),
+                    Criteria.where("receiveUserId").is(userId)));
+        }
+        if(friendAskmaxDate != null){
+        	query.addCriteria(criteria.and("createDate").gt(friendAskmaxDate));
+        }
+        query.with(new Sort(Sort.Direction.DESC,"createDate"));
+        if(startNo != null && startNo > -1){
+            query.skip(startNo);
+        }
+        if(pageSize != null && pageSize > 0){
+            query.limit(pageSize);
+        }
+        return mongoTemplate.find(query,FriendAddAsk.class);
+    }
 
     /**
      * 删除好友的加群申请

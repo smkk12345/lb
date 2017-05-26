@@ -4,8 +4,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserService;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ import com.longbei.appservice.dao.UserIdcardMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.service.UserIdcardService;
-import com.longbei.appservice.service.UserBehaviourService;
 
 import java.util.List;
 
@@ -38,6 +35,8 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private JPushService jPushService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserIdcardServiceImpl.class);
 	
@@ -134,11 +133,15 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 					String remark = "实名认证通过";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(record.getUserid())
 							,null,"9",null,remark,"0","26", "实名认证",0, "", "");
+					this.jPushService.pushMessage("消息标识",record.getUserid()+"","身份证审核",
+							"您的身份证验证审核通过","",Constant.JPUSH_TAG_COUNT_1201);
 				}
 				if ("2".equals(record.getValidateidcard())){
 					String remark = "实名认证未通过";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(record.getUserid())
 							,null,"9",null,remark,"0","26", "实名认证",0, "", "");
+					this.jPushService.pushMessage("消息标识",record.getUserid()+"","身份证审核",
+							"您的身份证验证审核未通过","",Constant.JPUSH_TAG_COUNT_1202);
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}

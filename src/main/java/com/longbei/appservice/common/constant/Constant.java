@@ -135,6 +135,7 @@ public class Constant {
 	public static final int STATUS_SYS_617 = -617;
 	public static final int STATUS_SYS_618 = -618;
 	public static final int STATUS_SYS_619 = -619;
+	public static final int STATUS_SYS_620 = -620;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -192,7 +193,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
-	
+
+
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
 	public static final String RTNINFO_SYS_21 = "暂无评论信息";
@@ -259,7 +261,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
 	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
-
+	public static final String RTNINFO_SYS_620 = "该内容不存在";
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
 	public static final String RTNINFO_SYS_101 = "结算总价不一致";
@@ -653,15 +655,15 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1201 = "1201";//实名认证通过
 	public static final String JPUSH_TAG_COUNT_1202 = "1202";//实名认证未通过
 	//13开头 代表被运营选中
-	public static final String JPUSH_TAG_COUNT_1301 = "1301";//实名认证未通过
+//	public static final String JPUSH_TAG_COUNT_1301 = "1301";//实名认证未通过
 	public static final String JPUSH_TAG_COUNT_1302 = "1302";//被选为达人
-	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
+//	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息
-	public static final String JPUSH_TAG_COUNT_1501 = "1501";//榜主@好友上榜
+//	public static final String JPUSH_TAG_COUNT_1501 = "1501";//榜主@好友上榜
 	public static final String JPUSH_TAG_COUNT_1502 = "1502";//龙榜获奖
-	public static final String JPUSH_TAG_COUNT_1503 = "1503";//创建的榜单通过审核
+//	public static final String JPUSH_TAG_COUNT_1503 = "1503";//创建的榜单通过审核
 	/**---------------自定义消息--设置title为空即可------------------**/
 	//100开始 10001
 

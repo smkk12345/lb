@@ -23,6 +23,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
+import com.longbei.appservice.dao.HotLineMongoDao;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
@@ -60,6 +61,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private UserSettingCommonService userSettingCommonService;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private HotLineMongoDao hotLineMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
 	
@@ -242,17 +245,124 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public int selectCountShowMyByMtype(long userid){
 		try{
 			Map<String,Object> resultMap = selectShowMyByMtype(userid);
-			int count = Integer.parseInt(resultMap.get("mycount").toString());
-			return count > 0?1:0;
+			String res = resultMap.get("mycount").toString();
+			if("true".equals(res)){
+				return 1;
+			}
 		}catch (Exception e){
 			logger.error("userid={}",userid,e);
 		}
 		return 0;
 	}
 	
+	private Date getShowCommentDate(long userid, Date mymaxtime){
+		//获取好友   粉丝ids
+		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
+		List<String> fansList = snsFansMapper.selectListidByUid(userid);
+		List<String> slist = selectListid(userid, friendList, fansList);
+		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
+		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
+				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
+		if(null != list && list.size()>0){
+			for (UserMsg userMsg : list) {
+				if(mymaxtime != null){
+					if(userMsg.getCreatetime().getTime() > mymaxtime.getTime()){
+						return userMsg.getCreatetime();
+					}
+				}else{
+					if(slist.contains(userMsg.getFriendid().toString())){
+						//好友   粉丝    评论含有未读消息
+						return userMsg.getCreatetime();
+					}	
+				}
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @author yinxc
 	 * 获取"我的"页面对话消息---红点是否显示
+	 * 2017年2月8日
+	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
+	 * isread 可为null  查全部
+	 * return_type  0:不显示   1：显示
+	 */
+	@Override
+	public Map<String,Object> selectShowMy(long userid) {
+		//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		try{
+			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
+			List<String> msgTypeList = new ArrayList<String>();
+			if(expandData.get("is_new_fans").toString().equals("1")){
+				msgTypeList.add(Constant.MSG_FANS_TYPE);
+			}
+			if(expandData.get("is_like").toString().equals("1")){
+				//点赞   打开提醒
+				msgTypeList.add(Constant.MSG_LIKE_TYPE);
+			}
+			if(expandData.get("is_flower").toString().equals("1")){
+				//献花   打开提醒
+				msgTypeList.add(Constant.MSG_FLOWER_TYPE);
+			}
+			
+			Date mymaxDate = null;
+			Date commentMaxDate = null;
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
+			if(null != hotLine && hotLine.getMymaxtime() != null){
+				mymaxDate = hotLine.getMymaxtime();
+			}
+			if(expandData.get("is_comment").toString().equals("2")){
+				//评论设置   打开提醒   ---所有人
+				msgTypeList.add(Constant.MSG_COMMENT_TYPE);
+			}else if(expandData.get("is_comment").toString().equals("1")){
+				commentMaxDate = getShowCommentDate(userid, mymaxDate);
+			}
+			if(msgTypeList.size() == 0 && commentMaxDate == null){
+				resultMap.put("mycount", false);
+				return resultMap;
+			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
+				resultMap.put("mycount", true);
+				return resultMap;
+			}
+			Map<String,Object> parameterMap = new HashMap<String,Object>();
+			parameterMap.put("userid",userid);
+			parameterMap.put("mtype",Constant.MSG_DIALOGUE_TYPE);
+			parameterMap.put("msgtypelist",msgTypeList);
+			parameterMap.put("isread","0");
+			parameterMap.put("mymaxdate", mymaxDate);
+			resultMap = this.userMsgMapper.selectUserMsgCountByMsgTypeList(parameterMap);
+
+			int count = resultMap.containsKey("count")?Integer.parseInt(resultMap.get("count").toString()):0;
+			if(count > 0){
+				resultMap.put("mycount", true);
+				return resultMap;
+			}
+			if(commentMaxDate == null){
+				resultMap.remove("count");
+				resultMap.remove("maxtime");
+				if(count < 1){
+					resultMap.put("mycount", false);
+				}else{
+					resultMap.put("mycount", true);
+				}
+				return resultMap;
+			}else{
+				resultMap.put("mycount", true);
+				return resultMap;
+			}
+			
+		}catch(Exception e){
+			logger.error("selectMapByUserid userid = {}", userid, e);
+		}
+		resultMap.put("mycount", false);
+		return resultMap;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 获取"我的"页面对话消息---红点是否显示------不用
 	 * 2017年2月8日
 	 * mtype 0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等)
 	 * isread 可为null  查全部
@@ -298,6 +408,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 //					return temp;
 //				}
 //			}
+			
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
 
 			Date commentMaxDate = null;//评论的最后消息时间
 			// 评论设置:0:关闭  1：与我相关（好友、Like、熟人） 2：所有人
@@ -312,12 +424,20 @@ public class UserMsgServiceImpl implements UserMsgService {
 				commentMaxDate = getShowComment(userid);
 			}
 			if(msgTypeList.size() == 0 && commentMaxDate == null){
-				resultMap.put("mycount",0);
-				resultMap.put("mymaxtime",0);
+				resultMap.put("mycount", false);
+//				resultMap.put("mymaxtime",0);
 				return resultMap;
 			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
-				resultMap.put("mycount",1);
-				resultMap.put("mymaxtime",commentMaxDate);
+				if(null != hotLine && hotLine.getMymaxtime() != null){
+					if(hotLine.getMymaxtime().getTime() >= commentMaxDate.getTime()){
+						resultMap.put("mycount", false);
+					}else{
+						resultMap.put("mycount", true);
+					}
+				}else{
+					resultMap.put("mycount", true);
+				}
+//				resultMap.put("mymaxtime",commentMaxDate);
 				return resultMap;
 			}
 
@@ -330,19 +450,36 @@ public class UserMsgServiceImpl implements UserMsgService {
 
 			int count = resultMap.containsKey("count")?Integer.parseInt(resultMap.get("count").toString()):0;
 			if(commentMaxDate == null){
-				if(count < 1){
-					resultMap.remove("maxtime");
-					resultMap.put("mymaxtime",0);
-				}
 				resultMap.remove("count");
-				resultMap.put("mycount", count);
-				return resultMap;
+				resultMap.remove("maxtime");
+				if(count < 1){
+//					resultMap.put("mymaxtime",0);
+					resultMap.put("mycount", false);
+					return resultMap;
+				}else{
+					resultMap.put("mycount", true);
+					return resultMap;
+				}
+			}else{
+				if(null != hotLine && hotLine.getMymaxtime() != null){
+					if(hotLine.getMymaxtime().getTime() >= commentMaxDate.getTime()){
+						resultMap.put("mycount", false);
+					}else{
+						resultMap.put("mycount", true);
+					}
+				}else{
+					resultMap.put("mycount", true);
+				}
+				
+				if(count < 1){
+					
+					resultMap.put("mycount", true);
+//					resultMap.put("mymaxtime", commentMaxDate.getTime());
+					return resultMap;
+				}
+				
 			}
-			if(count < 1){
-				resultMap.put("mycount",1);
-				resultMap.put("mymaxtime", commentMaxDate.getTime());
-				return resultMap;
-			}
+			
 			Date maxtime = DateUtils.formatDate(resultMap.get("mymaxtime").toString(),null);
 			count ++;
 			if(maxtime.getTime() > commentMaxDate.getTime()){
@@ -506,9 +643,21 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public BaseResp<Object> selectByUserid(long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//是否显示红点      mongo中当前数据修改---informmaxtime
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
+			HotLine line = new HotLine();
+			line.setUserid(userid + "");
+			line.setInformmaxtime(new Date());
+			if(null != hotLine){
+				//修改
+				hotLineMongoDao.updateHotLine(line);
+			}else{
+				//添加
+				hotLineMongoDao.insertHotLine(line);
+			}
+			
+			
 			List<UserMsg> list = userMsgMapper.selectByUserid(userid, startNum, endNum);
-			
-			
 			if (startNum == 0 && list.size() == 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_28);
 			}else{
@@ -690,6 +839,29 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}
 		return false;
 	}
+	
+	/**
+	 * 获取添加好友的申请 消息数量和最大的createtime
+	 * @param userid
+	 * @return
+     */
+	@Override
+	public Map<String, Object> selectAddFriendAskMsgDate(long userid) {
+		Date friendAskmaxtime = null;
+		HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
+		if(null != hotLine && hotLine.getFriendAskmaxtime() != null){
+			friendAskmaxtime = hotLine.getFriendAskmaxtime();
+		}
+		List<FriendAddAsk> friendAddAskList = this.friendMongoDao.friendAddAskDateList(userid, friendAskmaxtime, false, null, null);
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		int count = friendAddAskList != null?friendAddAskList.size():0;
+		if(count > 0){
+			resultMap.put("friendAskcount", true);
+		}else{
+			resultMap.put("friendAskcount", false);
+		}
+		return resultMap;
+	}
 
 	/**
 	 * 获取添加好友的申请 消息数量和最大的createtime
@@ -733,6 +905,19 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public BaseResp<Object> selectOtherList(long userid, String mtype, String msgtype, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//是否显示红点      mongo中当前数据修改---rankmaxtime
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
+			HotLine line = new HotLine();
+			line.setUserid(userid + "");
+			line.setRankmaxtime(new Date());
+			if(null != hotLine){
+				//修改
+				hotLineMongoDao.updateHotLine(line);
+			}else{
+				//添加
+				hotLineMongoDao.insertHotLine(line);
+			}
+			
 			List<UserMsg> list = userMsgMapper.selectOtherList(userid, mtype, msgtype, startNum, endNum);
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
@@ -831,6 +1016,19 @@ public class UserMsgServiceImpl implements UserMsgService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		logger.info("select except list: userid={} startnum={}",userid,startNum);
 		try {
+			//是否显示红点      mongo中当前数据修改---mymaxtime
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
+			HotLine line = new HotLine();
+			line.setUserid(userid + "");
+			line.setMymaxtime(new Date());
+			if(null != hotLine){
+				//修改
+				hotLineMongoDao.updateHotLine(line);
+			}else{
+				//添加
+				hotLineMongoDao.insertHotLine(line);
+			}
+			
 			final List<UserMsg> list = userMsgMapper.selectExceptList(userid, startNum, endNum);
 			//key 新粉丝：is_new_fans  点赞:is_like
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
@@ -1152,28 +1350,47 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public Map<String,Object> selectCountByType(long userid, String mtype, String msgtype, String isread) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		try {
-			Map<String,Object> resultmap = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread);
-			long count = 0;
-			if(!resultmap.isEmpty()){
-				count = (long)resultmap.get("count");
-			}
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
 			if("0".equals(mtype)){
+				Date informmaxtime = null;
+				if(null != hotLine && hotLine.getInformmaxtime() != null){
+					informmaxtime = hotLine.getInformmaxtime();
+				}
+				Map<String,Object> resultmap = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread, informmaxtime);
+				long count = 0;
+				if(!resultmap.isEmpty()){
+					count = (long)resultmap.get("count");
+				}
 				//通知消息
-				map.put("informcount", count);
-				if(resultmap.containsKey("maxtime")){
-					map.put("informmaxtime", resultmap.get("maxtime"));
+				if(count > 0){
+					map.put("informcount", true);
 				}else{
-					map.put("informmaxtime", 0);
+					map.put("informcount", false);
 				}
 			}
 			if("2".equals(mtype)){
 				//@我消息
-				map.put("rankcount", count);
-				if(resultmap.containsKey("maxtime")){
-					map.put("rankmaxtime", resultmap.get("maxtime"));
-				}else{
-					map.put("rankmaxtime", 0);
+				Date rankmaxtime = null;
+				if(null != hotLine && hotLine.getRankmaxtime() != null){
+					rankmaxtime = hotLine.getRankmaxtime();
 				}
+				Map<String,Object> resultmap = userMsgMapper.selectCountAndMaxDatetimeByType(userid, mtype, msgtype, isread, rankmaxtime);
+				long count = 0;
+				if(!resultmap.isEmpty()){
+					count = (long)resultmap.get("count");
+				}
+				//通知消息
+				if(count > 0){
+					map.put("rankcount", true);
+				}else{
+					map.put("rankcount", false);
+				}
+//				map.put("rankcount", count);
+//				if(resultmap.containsKey("maxtime")){
+//					map.put("rankmaxtime", resultmap.get("maxtime"));
+//				}else{
+//					map.put("rankmaxtime", 0);
+//				}
 			}
 		} catch (Exception e) {
 			logger.error("selectCountByType userid = {}, mtype = {}", userid, mtype, e);
