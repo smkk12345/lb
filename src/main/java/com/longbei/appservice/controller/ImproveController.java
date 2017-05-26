@@ -866,5 +866,32 @@ public class ImproveController {
         return null;
     }
 
+    /**
+     * @Title: http://ip:port/app_service/improve/canGiveFlower
+     * @Description: 判断进步送花  是否超过限制
+     * @param @param userid  
+     * @param @param improveid
+     * @param @param number
+     * @param @param 正确返回 code 0 参数错误，未知错误返回相应状态码
+     * @auther yxc
+     * @currentdate:2017年5月25日
+ 	*/
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/canGiveFlower")
+	@ResponseBody
+	public BaseResp<Object> canGiveFlower(String userid, String improveid, String businesstype, String number) {
+        logger.info("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(improveid, userid, number)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, number);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);
+        }
+        return null;
+    }
 
 }

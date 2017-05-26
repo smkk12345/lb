@@ -3150,7 +3150,7 @@ public class ImproveServiceImpl implements ImproveService{
 				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
 					int fnum = Constant_point.DAILY_IMPFLOWER_LIMIT - flowerSum;
 					reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
-							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" + fnum+"朵花");
+							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大献花数量为" + fnum+"朵花");
 				}else{
 					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				}
@@ -3158,7 +3158,7 @@ public class ImproveServiceImpl implements ImproveService{
 				if("2".equals(businesstype)){
 					if(Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
 						reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
-								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" 
+								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大献花数量为"
 								+ Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花");
 					}else{
 						reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

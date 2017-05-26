@@ -7,6 +7,7 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.HotLineMongoDao;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
@@ -58,6 +59,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private UserBehaviourService userBehaviourService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private HotLineMongoDao hotLineMongoDao;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -393,6 +396,20 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     public BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
+        	//是否显示红点      mongo中当前数据修改---friendAskmaxtime
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userId.toString());
+			HotLine line = new HotLine();
+			line.setUserid(userId.toString());
+			line.setFriendAskmaxtime(new Date());
+			if(null != hotLine){
+				//修改
+				hotLineMongoDao.updateHotLine(line);
+			}else{
+				//添加
+				hotLineMongoDao.insertHotLine(line);
+			}
+			
+			
             List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,null,startNo,pageSize);
             if(list != null && list.size() > 0){
                 for(FriendAddAsk friendAddAsk:list){
