@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,9 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
+import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Circle;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.ImpComplaints;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserMsgService;
@@ -34,6 +30,8 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ImpComplaintsMapper impComplaintsMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private UserGoalMapper userGoalMapper;
 	@Autowired
 	private RankMapper rankMapper;
 	@Autowired
@@ -79,7 +77,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		try {
             int totalcount = impComplaintsMapper.selectCountByStatus(status);
 //            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
-            List<ImpComplaints> list = impComplaintsMapper.selectListByStatus(status, pageNo, pageSize);
+			List<ImpComplaints> list = impComplaintsMapper.selectListByStatus(status, pageSize*(pageNo-1), pageSize);
             if(null != list && list.size()>0){
             	for (ImpComplaints impComplaints : list) {
             		//获取各类型标题
@@ -111,7 +109,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
             int totalcount = impComplaintsMapper.searchCount(status, username, businesstype, sdealtime, edealtime);
 //            pageNo = Page.setPageNo(pageNo, totalcount, pageSize);
             List<ImpComplaints> list = impComplaintsMapper.searchList(status, username, businesstype, sdealtime, 
-            		edealtime, pageNo, pageSize);
+            		edealtime, (pageNo-1)*pageSize, pageSize);
             if(null != list && list.size()>0){
             	for (ImpComplaints impComplaints : list) {
             		//获取各类型标题
@@ -154,37 +152,45 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		if(contenttypes.length>1){
 			for (int i = 0; i < contenttypes.length; i++) {
 				if("1".equals(contenttypes[i])){
-					contenttype += "垃圾营销信息,";
+					contenttype += "微进步内容与龙榜无关,";
 				}else if("2".equals(contenttypes[i])){
-					contenttype += "虚假/恶意中伤信息,";
+					contenttype += "垃圾营销信息,";
 				}else if("3".equals(contenttypes[i])){
-					contenttype += "敏感信息,";
+					contenttype += "虚假/恶意中伤信息,";
 				}else if("4".equals(contenttypes[i])){
-					contenttype += "淫秽色情信息,";
+					contenttype += "敏感信息,";
 				}else if("5".equals(contenttypes[i])){
-					contenttype += "冒名顶替其他用户,";
+					contenttype += "淫秽色情信息,";
 				}else if("6".equals(contenttypes[i])){
+					contenttype += "冒名顶替其他用户,";
+				}else if("7".equals(contenttypes[i])){
 					contenttype += "涉嫌抄袭,";
+				}else if("8".equals(contenttypes[i])){
+					contenttype += "泄露Ta人隐私,";
 				}else{
-					contenttype += "内容与榜主题不符,";
+					contenttype += "其他,";
 				}
 			}
 			contenttype = contenttype.substring(0, contenttype.length()-1);
 		}else{
 			if("1".equals(contenttypes[0])){
-				contenttype = "垃圾营销信息";
+				contenttype += "微进步内容与龙榜无关,";
 			}else if("2".equals(contenttypes[0])){
-				contenttype = "虚假/恶意中伤信息";
+				contenttype += "垃圾营销信息";
 			}else if("3".equals(contenttypes[0])){
-				contenttype = "敏感信息";
+				contenttype += "虚假/恶意中伤信息";
 			}else if("4".equals(contenttypes[0])){
-				contenttype = "淫秽色情信息";
+				contenttype += "敏感信息";
 			}else if("5".equals(contenttypes[0])){
-				contenttype = "冒名顶替其他用户";
+				contenttype += "淫秽色情信息";
 			}else if("6".equals(contenttypes[0])){
+				contenttype += "冒名顶替其他用户";
+			}else if("7".equals(contenttypes[0])){
 				contenttype += "涉嫌抄袭";
+			}else if("8".equals(contenttypes[0])){
+				contenttype += "泄露Ta人隐私";
 			}else{
-				contenttype = "内容与榜主题不符";
+				contenttype += "其他";
 			}
 		}
 		impComplaints.setContenttype(contenttype);
@@ -199,7 +205,11 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private void getImpComplaintsTitle(ImpComplaints impComplaints){
 		//businesstype 类型    0 零散进步(无标题)   1 目标进步(无标题)    2 榜中  3圈子中进步 4 教室     
 		if("1".equals(impComplaints.getBusinesstype())){
-			//1  目标进步(无标题) 
+			//1  目标进步 获取目标标题
+			UserGoal userGoal = userGoalMapper.selectByGoalId(impComplaints.getBusinessid());
+			if(null != userGoal){
+				impComplaints.setBusinesstitle(userGoal.getGoaltag());
+			}
 			impComplaints.setBusinessname("目标");
 		}else if("2".equals(impComplaints.getBusinesstype())){
 			//2 榜中   获取榜标题
@@ -234,7 +244,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		try {
 			ImpComplaints impComplaints = impComplaintsMapper.selectByPrimaryKey(id);
 			boolean temp = updateStatus(status, dealtime, dealuser, checkoption, impComplaints.getImpid(), 
-					impComplaints.getBusinessid(), impComplaints.getBusinesstype());
+					impComplaints.getBusinessid(), impComplaints.getBusinesstype(),id);
 			if (temp) {
 				//status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
 				if("1".equals(status)){
@@ -317,9 +327,9 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	}
 	
 	private boolean updateStatus(String status, Date dealtime, String dealuser,
-			String checkoption, long impid, long businessid, String businesstype){
+			String checkoption, long impid, long businessid, String businesstype,long  id){
 		int temp = impComplaintsMapper.updateImpComplaintsByStatus(status, dealtime, dealuser, 
-				checkoption, impid, businessid, businesstype);
+				checkoption, impid, businessid, businesstype, id);
 		return temp > 0 ? true : false;
 	}
 
