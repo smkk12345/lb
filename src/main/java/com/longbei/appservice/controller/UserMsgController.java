@@ -374,11 +374,15 @@ public class UserMsgController extends BaseController {
 //  			int temp = 0;
 //  			if("1".equals(type)){
   				//type 1   获取"我的"页面是否显示红点
-			Map<String,Object> myMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
+//			Map<String,Object> myMap = userMsgService.selectShowMyByMtype(Long.parseLong(userid));
 //  			}else if("3".equals(type)){
 				//获取添加好友的申请 消息数量和最大的createtime
-			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
+//			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
 //			}else{
+//  			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
+			Map<String,Object> myMap = userMsgService.selectShowMy(Long.parseLong(userid));
+			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsgDate(Long.parseLong(userid));
+			
 			Map<String,Object> informMap = userMsgService.selectCountByType(Long.parseLong(userid), "0", null, "0");
 			Map<String,Object> rankMap = userMsgService.selectCountByType(Long.parseLong(userid), "2", null, "0");
 //  			}
