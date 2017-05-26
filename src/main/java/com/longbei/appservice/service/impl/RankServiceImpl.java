@@ -3097,6 +3097,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
                     rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
                 }
+                if ("1".equals(rankMembers1.getCheckstatus())
+                        || "2".equals(rankMembers1.getCheckstatus())) {
+                    rankMembers1.setAwardid(-1);
+                    rankMembers1.setAwardlevel(-1);
+                    rankMembers1.setRankAward(new RankAward());
+                }
                 if("1".equals(rank.getIsfinish())){
                     long sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
                     rankMembers1.setSortnum(Integer.parseInt(sortNum+""));
