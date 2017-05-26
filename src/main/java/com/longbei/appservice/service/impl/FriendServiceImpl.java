@@ -223,7 +223,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("content","有用户回复了消息");
             pushMessage.put("msgid",friendAddAsk.getId());
             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1002);
-            ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
+            ijPushService.messagePush(receiveUserId+"","申请加好友回复消息","申请加好友回复消息",pushMessage.toString());
 
             return baseResp.ok("回复成功");
         }catch(Exception e){

@@ -1752,9 +1752,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         					if(!StringUtils.isBlank(remark)){
         						appUserMongoEntity.setNickname(remark);
         					}
-//                            appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(tempUserId)));
                         }
                         rankMembers.setAppUserMongoEntity(appUserMongoEntity);
+                        rankMembers.setRankAward(new RankAward());
                         userList.add(rankMembers);
                         i++;
                     }
@@ -1803,7 +1803,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                 rankMember.setIswinning("2");//审核未通过
                             }
                         }else{
-//                            rankMember.setIswinning("0");
+                            rankMember.setRankAward(new RankAward());
                         }
 
                         i++;

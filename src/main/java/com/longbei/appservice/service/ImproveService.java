@@ -522,8 +522,22 @@ public interface ImproveService {
      * 查询用户对进步献花的总数
      * @param userid
      * @param improveid 
-     * @param num
+     * @param number
      */
     BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number);
+
+    /**
+     * 获取用户的关注用户id列表
+     * @param userid
+     * @return
+     */
+    String getFansIds(Long userid);
+
+    /**
+     * 获取用户的好友用户id列表
+     * @param userid
+     * @return
+     */
+    String getFriendIds(Long userid);
 
 }
