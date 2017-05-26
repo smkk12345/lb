@@ -14,6 +14,36 @@ import java.util.Map;
  */
 public class Constant_point {
 
+
+    public static void init(){
+        NEW_REGISTER = SysRulesCache.behaviorRule.getRegistergoals();//用户注册
+        NEW_LOGIN_QQ = SysRulesCache.behaviorRule.getQqbindgoals();//绑定qq
+        NEW_LOGIN_WX = SysRulesCache.behaviorRule.getWechatbindgoals();//绑定微信
+        NEW_LOGIN_WB = SysRulesCache.behaviorRule.getWebbindgoals();//绑定微博
+        NEW_BINDING_EMAIL = 10;//绑定邮箱
+        NEW_CERTIFY_USERCARD = SysRulesCache.behaviorRule.getCertificationgoals();//身份证认证
+        NEW_CERTIFY_ACADEMIC = 30;//学历认证 academic
+        NEW_CERTIFY_JOB = 30;//用作认证
+        NEW_USERINFO = SysRulesCache.behaviorRule.getInfocompletegoals();//更新用户信息
+        DAILY_CHECKIN = SysRulesCache.behaviorRule.getLikegoals();//点赞
+        DAILY_SHARE= SysRulesCache.behaviorRule.getInfocompletegoals();//每日分享
+        DAILY_SHARE_OUT= SysRulesCache.behaviorRule.getOutsharegoals();//每日分享(站外)
+        DAILY_SHARE_LIMIT = SysRulesCache.behaviorRule.getInnersharegoalsmax();//每日分享上限限制
+        DAILY_SHARE_OUT_LIMIT = SysRulesCache.behaviorRule.getOutshareawardtimes();//每日分享(站外)
+        DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendgoals();//每日添加好友
+        DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendgoalsmax();//每日添加好友限制
+        DAILY_LIKE = SysRulesCache.behaviorRule.getLikegoals();//点赞
+        DAILY_LIKE_LIMIT = SysRulesCache.behaviorRule.getLikegoalsmax();//点赞限制
+        DAILY_COMMENT = SysRulesCache.behaviorRule.getImpcommentgoals();//评论
+        DAILY_COMMENT_LIMIT = SysRulesCache.behaviorRule.getImpcommentgoalsmax();//评论限制
+        DAILY_FLOWER = SysRulesCache.behaviorRule.getFlowergoals();//送花
+        DAILY_FLOWER_LIMIT = SysRulesCache.behaviorRule.getFlowergoalsmax();//送花限制
+        DAILY_IMPFLOWER_LIMIT = SysRulesCache.behaviorRule.getEachimproveflowersmax();
+        LOTTERY = SysRulesCache.behaviorRule.getLotterygoals();//lottery 抽奖
+        INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();
+
+    }
+
     /**
      * 新手任务
      */
@@ -70,6 +100,7 @@ public class Constant_point {
     public static int LOTTERY = SysRulesCache.behaviorRule.getLotterygoals();//lottery 抽奖
 
     /**
+     *
      * 邀请好友注册赠送的龙分
      */
     public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();
