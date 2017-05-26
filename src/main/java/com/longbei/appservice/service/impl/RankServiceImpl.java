@@ -3355,7 +3355,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    rankMembers.setUserid(rkmember.getUserid());
 //                    rankMembers.setIswinning("2");
                     rkmember.setIswinning("2");
-//                    rkmember.setIcount(0);//不改变进步数
+                    rkmember.setIcount(0);//不改变进步数
 //                    rankMembersMapper.updateRankMemberState(rankMembers);
                     rankMembersMapper.updateRankMemberState(rkmember);
                 }
