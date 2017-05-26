@@ -284,6 +284,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("copy rankimage to rank is error:{}",e);
         }
         try {
+            rank.setAutotime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+            rank.setIsup("1");
             rank.setIsfinish(null);
             Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
             int res = 0;
@@ -389,11 +391,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
         Page<RankImage> page = new Page<>(pageno,pagesize);
         try {
-            int totalcount = rankImageMapper.selectListCount(rankImage);
-            pageno = Page.setPageNo(pageno,totalcount,pagesize);
-            List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            int totalcount = 0;
+            List<RankImage> rankImages = new ArrayList<>();
+            //pc端发榜,根据需求imageRankList应包含审核未通过不可修改的
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                totalcount = rankImageMapper.selectPCListCount(rankImage);
+                pageno = Page.setPageNo(pageno,totalcount,pagesize);
+                rankImages = rankImageMapper.selectPCListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            }else{
+                totalcount = rankImageMapper.selectListCount(rankImage);
+                pageno = Page.setPageNo(pageno,totalcount,pagesize);
+                rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
+            }
             for(RankImage rankImage1: rankImages){
-                //pc端发榜
+                //pc端发榜,将id改为nickName用于显示
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
                     rankImage1.setCreateuserid(appUer.getNickname());
@@ -2944,6 +2955,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankId));
+            if(null != rank && null != rank.getAutotime()) {
+                Date autotimeformate = DateUtils.formatDate(rank.getAutotime(), "yyyy-MM-dd HH:mm:ss");
+                rank.setAutotime(DateUtils.formatDateTime1(autotimeformate));
+            }
             if(rank == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             }

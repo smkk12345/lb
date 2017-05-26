@@ -1403,6 +1403,9 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
         apuser.setIsfriend("0");
+        if(userid == null || userid == -1 || "-1".equals(userid.toString())){
+            return ;
+        }
         String friendids = springJedisDao.get("userFriend"+userid);
         if (StringUtils.isBlank(friendids)){
             List<String> lists = snsFriendsMapper.selectListidByUid(userid);
@@ -1841,7 +1844,7 @@ public class ImproveServiceImpl implements ImproveService{
                 	userMsgService.insertMsg(userid, friendid, impid, businesstype, businessid, remark, "1", "3", "送礼物", 0, "", "");
                 }
                 //用户送花获得龙分
-                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0);
+                userBehaviourService.pointChange(userInfo,"DAILY_FLOWER",Constant_Perfect.PERFECT_GAM,null,0,0,flowernum);
 //                BaseResp<Object> resp = userBehaviourService.pointChange(userInfo,"DAILY_FLOWERED", Constant_Perfect.PERFECT_GAM,null,0,0);
 //                if(ResultUtil.isSuccess(resp)){
 //                    int icon = flowernum* Constant_Imp_Icon.DAILY_FLOWERED;
@@ -3139,7 +3142,7 @@ public class ImproveServiceImpl implements ImproveService{
      * 查询用户对进步献花的总数
      * @param userid
      * @param improveid 
-     * @param num
+     * @param number
      */
 	@Override
 	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
