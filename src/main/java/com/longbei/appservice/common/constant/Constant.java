@@ -135,6 +135,7 @@ public class Constant {
 	public static final int STATUS_SYS_617 = -617;
 	public static final int STATUS_SYS_618 = -618;
 	public static final int STATUS_SYS_619 = -619;
+	public static final int STATUS_SYS_620 = -620;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -192,7 +193,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
-	
+
+
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
 	public static final String RTNINFO_SYS_21 = "暂无评论信息";
@@ -259,7 +261,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
 	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
-
+	public static final String RTNINFO_SYS_620 = "该内容不存在";
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
 	public static final String RTNINFO_SYS_101 = "结算总价不一致";
