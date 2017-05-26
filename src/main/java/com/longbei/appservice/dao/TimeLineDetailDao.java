@@ -86,7 +86,7 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         query.with(new Sort(Sort.Direction.DESC,"sort")).with(new Sort(Sort.Direction.DESC, "recommendtime"));
         query.skip(startno);
         query.limit(pagesize);
-        System.out.println(query);
+//        System.out.println(query);
         List<TimeLineDetail> timeLineDetails = mongoTemplate.find(query,TimeLineDetail.class);
         return timeLineDetails;
     }
@@ -98,8 +98,8 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Update update = new Update();
         update.set("isrecommend",isrecommend);
         update.set("recommendtime",new Date());
-        System.out.println(query);
-        System.out.println(update);
+//        System.out.println(query);
+//        System.out.println(update);
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
     }
 
