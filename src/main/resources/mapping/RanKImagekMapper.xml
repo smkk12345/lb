@@ -44,6 +44,7 @@
     <result column="notice" property="notice" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="joincode" property="joincode" jdbcType="VARCHAR" />
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
   </resultMap>
 
@@ -53,7 +54,7 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,rankrule
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -366,6 +367,9 @@
       <if test="isdel != null" >
         isdel,
       </if>
+      <if test="joincode != null" >
+        joincode,
+      </if>
       <if test="rankrule != null" >
         rankrule,
       </if>
@@ -494,6 +498,9 @@
       <if test="isdel != null" >
         #{isdel},
       </if>
+      <if test="joincode != null" >
+        #{joincode},
+      </if>
       <if test="rankrule != null" >
         #{rankrule},
       </if>
@@ -618,6 +625,9 @@
       </if>
       <if test="isdel != null" >
         isdel = #{isdel},
+      </if>
+      <if test="joincode != null" >
+        joincode = #{joincode},
       </if>
       <if test="rankrule != null" >
         rankrule = #{rankrule},

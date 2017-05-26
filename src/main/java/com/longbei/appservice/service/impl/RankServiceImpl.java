@@ -127,6 +127,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         int res = 0;
         try {
+            //pc端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                //定制榜:生成榜单口令
+                if("1".equals(rankImage.getRanktype()) || "2".equals(rankImage.getRanktype())){
+                    rankImage.setJoincode(codeDao.getCode(null));
+                }
+            }
+
             res = rankImageMapper.insertSelective(rankImage);
             if(res>0){
                 baseResp=BaseResp.ok();
@@ -295,7 +303,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
                     if ("1".equals(rankImage.getRanktype())){
-                        rank.setJoincode(codeDao.getCode(null));
+                        // PC端定制榜，添加时已有joinCode
+                        if(StringUtils.isEmpty(rankImage.getJoincode())){
+                            rank.setJoincode(codeDao.getCode(null));
+                        }
                     }
                     Date starttime = rank.getStarttime();
                     if (new Date().getTime() >= starttime.getTime()){
