@@ -121,7 +121,11 @@ public class ImproveController {
             record.setImpid(Long.parseLong(impid));
             record.setStatus("0");
             record.setUserid(Long.parseLong(userid));
-            record.setBusinessid(Long.parseLong(businessid));
+            if(!StringUtils.isBlank(businessid)){
+                record.setBusinessid(Long.parseLong(businessid));
+            }else{
+                record.setBusinessid(0l);
+            }
             record.setBusinesstype(businesstype);
             record.setComuserid(Long.parseLong(friendid));
             baseResp = impComplaintsService.insertSelective(record, Long.parseLong(friendid));
