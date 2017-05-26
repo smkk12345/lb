@@ -1165,7 +1165,9 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setBusinesstype(timeLineDetail.getBusinesstype());
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
-            initImproveLikeAndFlower(improve);
+            improve.setFlowers(timeLineDetail.getFlowers());
+            improve.setLikes(timeLineDetail.getLikes());
+//            initImproveLikeAndFlower(improve);
             //初始化进步用户信息
             initImproveUserInfo(improve,Long.parseLong(userid));
             improves.add(improve);
@@ -1403,6 +1405,9 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
         apuser.setIsfriend("0");
+        if(userid == null || userid == -1 || "-1".equals(userid.toString())){
+            return ;
+        }
         String friendids = springJedisDao.get("userFriend"+userid);
         if (StringUtils.isBlank(friendids)){
             List<String> lists = snsFriendsMapper.selectListidByUid(userid);
@@ -2542,11 +2547,11 @@ public class ImproveServiceImpl implements ImproveService{
         if (StringUtils.isBlank(collectids)){
             List<String> ids = userCollectMapper.selectCollectIdsByUser(userid);
             springJedisDao.set("userCollect"+userid,JSON.toJSONString(ids),5);
-            if (ids.contains(userid)){
+            if (ids.contains(String.valueOf(improve.getImpid()))){
                 improve.setHascollect("1");
             }
         } else {
-            if (collectids.contains(userid)){
+            if (collectids.contains(String.valueOf(improve.getImpid()))){
                 improve.setHascollect("1");
             }
         }
@@ -2948,7 +2953,9 @@ public class ImproveServiceImpl implements ImproveService{
                     }
 
                     //初始化 赞 花 数量
-                    initImproveLikeAndFlower(improve);
+//                    initImproveLikeAndFlower(improve);
+                    improve.setFlowers(timeLineDetail.getFlowers());
+                    improve.setLikes(timeLineDetail.getLikes());
                     improves.add(improve);
                 }
             }
@@ -3139,7 +3146,7 @@ public class ImproveServiceImpl implements ImproveService{
      * 查询用户对进步献花的总数
      * @param userid
      * @param improveid 
-     * @param num
+     * @param number
      */
 	@Override
 	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
