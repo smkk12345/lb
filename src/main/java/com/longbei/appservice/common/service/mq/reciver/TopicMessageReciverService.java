@@ -3,6 +3,8 @@ package com.longbei.appservice.common.service.mq.reciver;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.dao.BehaviorRuleMapper;
 import com.longbei.appservice.entity.BehaviorRule;
 import org.slf4j.Logger;
@@ -36,8 +38,10 @@ public class TopicMessageReciverService implements MessageListener{
             System.out.println(msg);
             if (Constant.UPDATE_RULE.equals(msg)){
                 initUserBehaviorRule(0);
+                Constant_Imp_Icon.init();
+                Constant_point.init();
             }
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

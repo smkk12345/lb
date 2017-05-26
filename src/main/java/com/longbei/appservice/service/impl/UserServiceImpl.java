@@ -1097,7 +1097,7 @@ public class UserServiceImpl implements UserService {
 //			● 加入教室+7分；
 //			● 加入圈子+7分；
 //			● 公益抽奖+XX分；
-	private List<String> getPointOriginate(){
+	public List<String> getPointOriginate(){
 		List<String> list = new ArrayList<>();
 		list.add("注册成功+"+ Constant_point.NEW_REGISTER+"分");
 //		list.add("绑定QQ成功+"+Constant_point.+"分");
