@@ -123,6 +123,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         int res = 0;
         try {
+            //pc端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                //定制榜:生成榜单口令
+                if("1".equals(rankImage.getRanktype()) || "2".equals(rankImage.getRanktype())){
+                    rankImage.setJoincode(codeDao.getCode(null));
+                }
+            }
+
             res = rankImageMapper.insertSelective(rankImage);
             if(res>0){
                 baseResp=BaseResp.ok();
@@ -291,7 +299,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
                     if ("1".equals(rankImage.getRanktype())){
-                        rank.setJoincode(codeDao.getCode(null));
+                        // PC端定制榜，添加时已有joinCode
+                        if(StringUtils.isEmpty(rankImage.getJoincode())){
+                            rank.setJoincode(codeDao.getCode(null));
+                        }
                     }
                     Date starttime = rank.getStarttime();
                     if (new Date().getTime() >= starttime.getTime()){
@@ -400,8 +411,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
             }
             for(RankImage rankImage1: rankImages){
-                //pc端发榜,将id改为nickName用于显示
+                //pc端发榜
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
+                    //榜单审核列表
+                    List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
+                    rankImage1.setRankCheckDetails(list);
+                    //将id改为nickName用于显示
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
                     rankImage1.setCreateuserid(appUer.getNickname());
                 }
@@ -3109,6 +3124,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
                     rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
+                }
+                if ("1".equals(rankMembers1.getCheckstatus())
+                        || "2".equals(rankMembers1.getCheckstatus())) {
+                    rankMembers1.setAwardid(-1);
+                    rankMembers1.setAwardlevel(-1);
+                    rankMembers1.setRankAward(new RankAward());
                 }
                 if("1".equals(rank.getIsfinish())){
                     long sortNum = springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+rankMembers1.getRankid(),rankMembers1.getUserid()+"");
