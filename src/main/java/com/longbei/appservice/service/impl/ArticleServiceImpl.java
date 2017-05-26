@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.ArticleBusinessMapper;
 import com.longbei.appservice.dao.ArticleMapper;
@@ -11,6 +12,7 @@ import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.service.ArticleService;
 import com.longbei.appservice.service.RankService;
+import org.apache.tools.ant.taskdefs.Concat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,10 @@ public class ArticleServiceImpl implements ArticleService{
         Article article = new Article();
         try {
             article = articleMapper.selectByPrimaryKey(Integer.parseInt(articleid));
+            if (null == article){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_620,Constant.RTNINFO_SYS_620);
+                return baseResp;
+            }
             List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
             for (ArticleBusiness articleBusiness : articleBusinesses){
                 Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());

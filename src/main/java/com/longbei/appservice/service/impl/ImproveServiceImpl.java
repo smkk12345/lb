@@ -1197,7 +1197,7 @@ public class ImproveServiceImpl implements ImproveService{
         List<Improve> improves = new ArrayList<>();
         Long uid = Long.parseLong(userid);
         String friendids = getFriendIds(uid);
-        String funids = getFunIds(uid);
+        String funids = getFansIds(uid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
@@ -1317,7 +1317,7 @@ public class ImproveServiceImpl implements ImproveService{
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
             //初始化进步用户信息
-            initImproveUserInfo(improve,userid != null?Long.parseLong(userid):null);
+            initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
             //初始化是否 点赞 送花 送钻 收藏
             initIsOptionForImprove(userid,improve);
         }
@@ -1327,7 +1327,7 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化用户关系信息
      */
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
-        if(userid == null){
+        if(userid == null || userid == -1){
             apuser.setIsfans("0");
             apuser.setIsfriend("0");
             return ;
@@ -1342,7 +1342,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,String friendids,String funids){
-        if(userid == null){
+        if(userid == null || userid == -1){
             apuser.setIsfans("0");
             apuser.setIsfriend("0");
             return ;
@@ -1352,14 +1352,14 @@ public class ImproveServiceImpl implements ImproveService{
             apuser.setIsfriend("1");
             return;
         }
-        if(!StringUtils.isBlank(friendids)){
+        if(StringUtils.isNotEmpty(friendids)){
             if (friendids.contains(String.valueOf(apuser.getUserid()))){
                 apuser.setIsfans("1");
             }else{
                 apuser.setIsfans("0");
             }
         }
-        if(!StringUtils.isBlank(funids)){
+        if(StringUtils.isNotEmpty(funids)){
             if (funids.contains(String.valueOf(apuser.getUserid()))){
                 apuser.setIsfans("1");
             }
@@ -1427,7 +1427,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @param userid
      * @return
      */
-    private String getFriendIds(Long userid){
+    @Override
+    public String getFriendIds(Long userid){
         String friendids = springJedisDao.get("userFriend"+userid);
         if (StringUtils.isBlank(friendids)){
             List<String> lists = snsFriendsMapper.selectListidByUid(userid);
@@ -1443,7 +1444,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @param userid
      * @return
      */
-    private String getFunIds(Long userid){
+    @Override
+    public String getFansIds(Long userid){
         String fansIds = springJedisDao.get("userFans"+userid);
         if (StringUtils.isBlank(fansIds)){
             List<String> lists = snsFansMapper.selectListidByUid(userid);
@@ -1511,7 +1513,7 @@ public class ImproveServiceImpl implements ImproveService{
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
         initUserRelateInfo(userid,appUserMongoEntity);
         if(null != appUserMongoEntity){
-            if(userid != null && !"-1".equals(userid+"")){
+            if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 //获取好友昵称
                 String remark = userRelationService.selectRemark(userid, improve.getUserid());
                 if(!StringUtils.isBlank(remark)){
@@ -2440,7 +2442,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private void initIsOptionForImprove(String userid,Improve improve){
-        if(StringUtils.isEmpty(userid)){
+        if(StringUtils.isEmpty(userid) || "-1".equals(userid)){
             improve.setHaslike("0");
             improve.setHasflower("0");
             improve.setHasdiamond("0");
@@ -2631,6 +2633,9 @@ public class ImproveServiceImpl implements ImproveService{
                         break;
                     case Constant.IMPROVE_RANK_TYPE:
                         {
+                            if("1".equals(improve.getIsbusinessdel())){
+                                break;
+                            }
                             Rank rank = rankService.selectByRankid(improve.getBusinessid());
                             if (null != rank){
                                 int sortnum = 0;
@@ -3157,7 +3162,7 @@ public class ImproveServiceImpl implements ImproveService{
 				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
 					int fnum = Constant_point.DAILY_IMPFLOWER_LIMIT - flowerSum;
 					reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
-							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" + fnum+"朵花");
+							+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大献花数量为" + fnum+"朵花");
 				}else{
 					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 				}
@@ -3165,7 +3170,7 @@ public class ImproveServiceImpl implements ImproveService{
 				if("2".equals(businesstype)){
 					if(Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){
 						reseResp.initCodeAndDesp(Constant.STATUS_SYS_86, "榜中微进步每人最多只能送"
-								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大鲜花数量为" 
+								+Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花,您当前最大献花数量为"
 								+ Constant_point.DAILY_IMPFLOWER_LIMIT+"朵花");
 					}else{
 						reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

@@ -18,6 +18,7 @@ import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private UserRelationService userRelationService;
 	@Autowired
 	private JPushService jPushService;
+	@Autowired
+	private ImproveService improveService;
 
 	/**
 	* @Title: selectRemark 
@@ -277,34 +280,34 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
 			if(null != list && list.size()>0){
+				String fansIds = null;
+				String friendIds = null;
+				if(userid == friendid){
+					fansIds = this.improveService.getFansIds(friendid);
+					friendIds = this.improveService.getFriendIds(friendid);
+				}
 				for (SnsFans snsFans : list) {
-					if("1".equals(ftype)){
-						//1：粉丝列表
-						initMsgUserInfoByUserid(snsFans, friendid);
-						//判断是否已经关注
-						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getUserid());
-						if(null != fans){
-							snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
-							snsFans.setIsfocus("1");
-						}
-					}else{
-						initMsgUserInfoByLikeuserid(snsFans, friendid);
-						//判断是否已经是粉丝
-						SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, snsFans.getLikeuserid());
-						if(null != fans){
-							snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
-							snsFans.setIsfans("1");
-						}
+					//初始化用户信息
+					initMsgUserInfoByUserid(snsFans, friendid);
+					if(userid != friendid){
+						continue;
 					}
-					//判断已关注者是否是好友关系
-					SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid());
-					if(null != snsFriends){
-						if(!StringUtils.isBlank(snsFriends.getRemark())){
-							//好友备注
-							snsFans.getAppUserMongoEntityLikeuserid().setNickname(snsFriends.getRemark());
-						}
+
+					Long tempUserid = snsFans.getUserid();
+					if(!"1".equals(ftype)){
+						tempUserid = snsFans.getLikeuserid();
+					}
+
+					if(StringUtils.isNotEmpty(fansIds) && fansIds.contains(tempUserid.toString())){
+						snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
+						snsFans.setIsfocus("1");
+					}
+
+					if(StringUtils.isNotEmpty(friendIds) && friendIds.contains(tempUserid.toString())){
 						snsFans.getAppUserMongoEntityLikeuserid().setIsfriend("1");
 						snsFans.setIsfriend("1");
+
+						snsFans.getAppUserMongoEntityLikeuserid().setNickname(this.friendService.getNickName(friendid,tempUserid));
 					}
 				}
 			}

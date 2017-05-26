@@ -7,6 +7,7 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.HotLineMongoDao;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
@@ -23,6 +24,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,10 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     private UserBehaviourService userBehaviourService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private HotLineMongoDao hotLineMongoDao;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     private Logger logger = LoggerFactory.getLogger(FriendServiceImpl.class);
 
@@ -223,7 +229,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             pushMessage.put("content","有用户回复了消息");
             pushMessage.put("msgid",friendAddAsk.getId());
             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1002);
-            ijPushService.messagePush(receiveUserId+"","申请加为好友","申请加为好友",pushMessage.toString());
+            ijPushService.messagePush(receiveUserId+"","申请加好友回复消息","申请加好友回复消息",pushMessage.toString());
 
             return baseResp.ok("回复成功");
         }catch(Exception e){
@@ -298,7 +304,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     @Override
     public BaseResp<Object> updateFriendAddAskStatus(Long id, Integer status, Long userId) {
         try{
-            FriendAddAsk friendAddAsk = friendMongoDao.findFriendAddAskById(id);
+            final FriendAddAsk friendAddAsk = friendMongoDao.findFriendAddAskById(id);
             if(friendAddAsk == null || !userId.equals(friendAddAsk.getReceiveUserId())){
                 return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
@@ -331,14 +337,19 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 map.put("friendId",tempSnsFriends.getUserid());
                 int row1 = this.snsFriendsMapper.updateByUidAndFid(map);
                 if(row > 0 && row1 > 0){
-                    //JPUSH通知用户
-                    JSONObject pushMessage = new JSONObject();
-                    pushMessage.put("status","消息标识");
-                    pushMessage.put("userid",friendAddAsk.getSenderUserId());
-                    pushMessage.put("content","同意了加好友申请");
-                    pushMessage.put("msgid",friendAddAsk.getId());
-                    pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
-                    ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+                    threadPoolTaskExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            //JPUSH通知用户
+                            JSONObject pushMessage = new JSONObject();
+                            pushMessage.put("status","消息标识");
+                            pushMessage.put("userid",friendAddAsk.getSenderUserId());
+                            pushMessage.put("content","同意了加好友申请");
+                            pushMessage.put("msgid",friendAddAsk.getId());
+                            pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
+                            ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+                        }
+                    });
 
                     return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 }
@@ -359,21 +370,26 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             snsFriends.setFriendid(friendAddAsk.getSenderUserId());
             snsFriendsMapper.insertSelective(snsFriends);
 
-            //JPUSH通知用户
-            JSONObject pushMessage = new JSONObject();
-            pushMessage.put("status","消息标识");
-            pushMessage.put("userid",friendAddAsk.getSenderUserId());
-            pushMessage.put("content","同意了加好友申请");
-            pushMessage.put("msgid",friendAddAsk.getId());
-            pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
-            ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
-            String message = friendAddAsk.getReceiveUserId()+"&"+friendAddAsk.getSenderUserId();
-            queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
-                    Constant.MQDOMAIN_USER_ADDFRIEND, message);
-
             //添加好友成功获得龙分
             UserInfo userInfo = userService.selectJustInfo(friendAddAsk.getSenderUserId());
             userBehaviourService.pointChange(userInfo,"DAILY_ADDFRIEND",Constant_Perfect.PERFECT_GAM,null,0,0);
+
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //JPUSH通知用户
+                    JSONObject pushMessage = new JSONObject();
+                    pushMessage.put("status","消息标识");
+                    pushMessage.put("userid",friendAddAsk.getSenderUserId());
+                    pushMessage.put("content","同意了加好友申请");
+                    pushMessage.put("msgid",friendAddAsk.getId());
+                    pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
+                    ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
+                    String message = friendAddAsk.getReceiveUserId()+"&"+friendAddAsk.getSenderUserId();
+                    queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
+                            Constant.MQDOMAIN_USER_ADDFRIEND, message);
+                }
+            });
 
             return new BaseResp<Object>().ok();
         }catch(Exception e){
@@ -394,6 +410,20 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     public BaseResp<Object> friendAddAskList(Long userId, Integer startNo, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try {
+        	//是否显示红点      mongo中当前数据修改---friendAskmaxtime
+			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userId.toString());
+			HotLine line = new HotLine();
+			line.setUserid(userId.toString());
+			line.setFriendAskmaxtime(new Date());
+			if(null != hotLine){
+				//修改
+				hotLineMongoDao.updateHotLine(line);
+			}else{
+				//添加
+				hotLineMongoDao.insertHotLine(line);
+			}
+			
+			
             List<FriendAddAsk> list = friendMongoDao.friendAddAskList(userId,null,startNo,pageSize);
             if(list != null && list.size() > 0){
                 for(FriendAddAsk friendAddAsk:list){
