@@ -61,12 +61,13 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         }
         Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
         if (!StringUtils.isEmpty(searchDate)) {
-        	Date start = DateUtils.getDateStart(searchDate);
-        	Date end = DateUtils.getDateEnd(searchDate);
-            criteria.and("createdate").gte(start).lte(end);
-        }
-        if (null != lastdate) {
-            criteria.and("createdate").lt(lastdate);
+            Date start = DateUtils.getDateStart(searchDate);
+            if (null != lastdate) {
+                criteria.and("createdate").gte(start).lt(lastdate);
+            } else {
+                Date end = DateUtils.getDateEnd(searchDate);
+                criteria.and("createdate").gte(start).lte(end);
+            }
         }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
