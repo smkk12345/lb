@@ -100,6 +100,8 @@ public class UserServiceImpl implements UserService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserImpCoinDetailService userImpCoinDetailService;
+	@Autowired
+	private JPushService jPushService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -1097,7 +1099,7 @@ public class UserServiceImpl implements UserService {
 //			● 加入教室+7分；
 //			● 加入圈子+7分；
 //			● 公益抽奖+XX分；
-	private List<String> getPointOriginate(){
+	public List<String> getPointOriginate(){
 		List<String> list = new ArrayList<>();
 		list.add("注册成功+"+ Constant_point.NEW_REGISTER+"分");
 //		list.add("绑定QQ成功+"+Constant_point.+"分");
@@ -1248,6 +1250,8 @@ public class UserServiceImpl implements UserService {
 					String remark = "你被选为达人";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
 							remark,"0","30", "选为达人",0, "", "");
+					this.jPushService.pushMessage("消息标识",userInfo.getUserid()+"","设置为达人",
+							"恭喜，您被选为龙杯达人！","",Constant.JPUSH_TAG_COUNT_1302);
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";

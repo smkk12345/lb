@@ -785,11 +785,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param msgType 消息类型
 	 * @param snsId 业务id
 	 * @param gType
+	 * @param remark 备注
 	 * @return
 	 */
 	@Override
-	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType) {
-		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType);
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
 	}
 
 	/**
@@ -812,7 +813,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
 			if(count > 0){
 				//直接更改已读状态
-				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType);
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
 				if(updateRow > 0){
 					return true;
 				}
@@ -824,7 +825,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			userMsg.setFriendid(friendId);
 		}
 		userMsg.setMsgtype(msgType);
-//		userMsg.setSnsid(Long.parseLong(snsId+""));
 		userMsg.setGtypeid(snsId);
 		userMsg.setRemark(remark);
 		userMsg.setGtype(gType);

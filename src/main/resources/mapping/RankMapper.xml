@@ -49,6 +49,7 @@
     <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
     <result column="ishomerecommend" property="ishomerecommend" jdbcType="VARCHAR" />
     <result column="weight" property="weight" jdbcType="INTEGER" />
+    <result column="autotime" property="autotime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
@@ -56,7 +57,7 @@
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
-    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime
   </sql>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
@@ -260,8 +261,8 @@
       coordinate, isfinish, createuserid, 
       ranktype, ispublic, rankcateid, 
       createtime, updatetime, likescore, 
-      flowerscore, diamondscore, codeword, 
-      ptype)
+      flowerscore, diamondscore, codeword,
+      ptype,autotime)
     values (#{id,jdbcType=INTEGER},#{rankid,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
       #{rankdetail,jdbcType=VARCHAR}, #{ranklimite,jdbcType=INTEGER}, #{rankinvolved,jdbcType=INTEGER}, 
       #{rankscope,jdbcType=INTEGER}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER},
@@ -270,7 +271,7 @@
       #{ranktype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, #{rankcateid,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{likescore,jdbcType=INTEGER}, 
       #{flowerscore,jdbcType=INTEGER}, #{diamondscore,jdbcType=INTEGER}, #{codeword,jdbcType=VARCHAR}, 
-      #{ptype,jdbcType=CHAR})
+      #{ptype,jdbcType=CHAR},#{autotime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Rank" >
     insert into rank
@@ -398,6 +399,9 @@
       <if test="notice != null" >
         notice,
       </if>
+      <if test="autotime != null" >
+        autotime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -523,6 +527,9 @@
       <if test="notice != null" >
         #{notice},
       </if>
+      <if test="autotime != null" >
+        #{autotime},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Rank" >
@@ -637,6 +644,9 @@
       <if test="rankrule != null" >
         rankrule = #{rankrule},
       </if>
+      <if test="autotime != null" >
+        autotime = #{autotime},
+      </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>
@@ -665,7 +675,8 @@
       flowerscore = #{flowerscore,jdbcType=INTEGER},
       diamondscore = #{diamondscore,jdbcType=INTEGER},
       codeword = #{codeword,jdbcType=VARCHAR},
-      ptype = #{ptype,jdbcType=CHAR}
+      ptype = #{ptype,jdbcType=CHAR},
+      autotime = #{autotime,jdbcType=TIMESTAMP}
     where rankid = #{rankid,jdbcType=INTEGER}
   </update>
   <update id="updateSponsornumAndSponsormoney" >
@@ -703,6 +714,9 @@
       </if>
       <if test="notice != null" >
         notice = #{notice},
+      </if>
+      <if test="autotime != null" >
+        autotime = #{autotime},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}

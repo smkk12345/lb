@@ -23,7 +23,7 @@ public class Constant_Imp_Icon {
             checkInImpIconMap.put(i+1,first);
             first = first + more;
         }
-
+        INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
     }
 
 

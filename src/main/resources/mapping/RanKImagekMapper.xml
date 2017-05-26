@@ -44,6 +44,7 @@
     <result column="notice" property="notice" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="joincode" property="joincode" jdbcType="VARCHAR" />
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
   </resultMap>
 
@@ -53,7 +54,7 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,rankrule
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -115,6 +116,19 @@
     <if test="createuserid != null" >
       AND createuserid = #{createuserid}
     </if>
+  </select>
+
+  <select id="selectPCListCount" parameterType="com.longbei.appservice.entity.RankImage" resultType="java.lang.Integer">
+    SELECT
+    COUNT(*)
+    FROM rankimage
+    WHERE 1=1
+    and isup = 0
+    and sourcetype = 1
+    <if test="createuserid != null" >
+      AND createuserid = #{createuserid}
+    </if>
+    AND (isdel=0 OR (isdel = 1 AND checkstatus = 3))
   </select>
 
   <select id="selectByRankImageId" resultMap="BaseResultMap">
@@ -181,6 +195,19 @@
     ORDER BY createtime DESC limit #{startno},#{pagesize}
   </select>
 
+  <select id="selectPCListWithPage" parameterType="com.longbei.appservice.entity.RankImage" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM rankimage
+    WHERE 1=1
+    and isup = 0
+    and sourcetype = 1
+    <if test="rankimage.createuserid != null" >
+      AND createuserid = #{rankimage.createuserid}
+    </if>
+    AND (isdel=0 OR (isdel = 1 AND checkstatus = 3))
+    ORDER BY createtime DESC limit #{startno},#{pagesize}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rankimage
@@ -340,6 +367,9 @@
       <if test="isdel != null" >
         isdel,
       </if>
+      <if test="joincode != null" >
+        joincode,
+      </if>
       <if test="rankrule != null" >
         rankrule,
       </if>
@@ -468,6 +498,9 @@
       <if test="isdel != null" >
         #{isdel},
       </if>
+      <if test="joincode != null" >
+        #{joincode},
+      </if>
       <if test="rankrule != null" >
         #{rankrule},
       </if>
@@ -592,6 +625,9 @@
       </if>
       <if test="isdel != null" >
         isdel = #{isdel},
+      </if>
+      <if test="joincode != null" >
+        joincode = #{joincode},
       </if>
       <if test="rankrule != null" >
         rankrule = #{rankrule},
