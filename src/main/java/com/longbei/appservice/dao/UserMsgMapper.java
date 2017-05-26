@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -152,8 +153,8 @@ public interface UserMsgMapper {
      * @return
      */
 	Map<String,Object> selectCountAndMaxDatetimeByType(@Param("userid") long userid, @Param("mtype") String mtype, @Param("msgtype") String msgtype,
-													   @Param("isread") String isread);
-
+													   @Param("isread") String isread, @Param("maxDate") Date maxDate);
+	
     /**
 	 * @author yinxc
 	 * 根据mtype,msgtype获取不同类型消息List(对话消息-----已读，未读消息  0 未读  1 已读)

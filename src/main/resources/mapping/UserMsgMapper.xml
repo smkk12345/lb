@@ -127,6 +127,9 @@
       <if test="msgtype != null and msgtype != ''" >
         and msgtype = #{msgtype}
       </if>
+      <if test="maxDate != null" >
+        and createtime &gt; #{maxDate}
+      </if>
       <if test="isread != null and isread != ''" >
         and isread = #{isread}
       </if>
@@ -669,6 +672,9 @@
           </if>
           <if test="isread != null" >
             and isread = #{isread}
+          </if>
+          <if test="mymaxdate != null" >
+            and createtime &gt; #{mymaxdate}
           </if>
          and userid = #{userid}
       </where>
