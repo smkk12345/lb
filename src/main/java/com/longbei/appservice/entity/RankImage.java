@@ -128,6 +128,15 @@ public class RankImage {
 
     private List<RankAward> rankAwards; //榜单奖品
 
+    private List<RankCheckDetail> rankCheckDetails;//榜单审核列表
+
+    public List<RankCheckDetail> getRankCheckDetails() {
+        return rankCheckDetails;
+    }
+
+    public void setRankCheckDetails(List<RankCheckDetail> rankCheckDetails) {
+        this.rankCheckDetails = rankCheckDetails;
+    }
 
     public String getRankrule() {
         return rankrule;

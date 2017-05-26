@@ -404,8 +404,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
             }
             for(RankImage rankImage1: rankImages){
-                //pc端发榜,将id改为nickName用于显示
+                //pc端发榜
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
+                    //榜单审核列表
+                    List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
+                    rankImage1.setRankCheckDetails(list);
+                    //将id改为nickName用于显示
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
                     rankImage1.setCreateuserid(appUer.getNickname());
                 }
