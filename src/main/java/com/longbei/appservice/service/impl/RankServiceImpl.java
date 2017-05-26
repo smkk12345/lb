@@ -4,7 +4,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -16,20 +15,15 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
-import com.netflix.discovery.converters.Auto;
-import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import scala.collection.immutable.Stream;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -111,6 +105,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserRelationService userRelationService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private JPushService jPushService;
 
     /**
      *  @author luye
@@ -2576,6 +2572,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if(winningUserMsgList.size() > 0){
                 int row = this.userMsgService.batchInsertUserMsg(winningUserMsgList);
+                pushMsgToRankMember(winningUserMsgList,String.valueOf(rank.getRankid()));
             }
             if(noWinningUserIdList.size() > 0){
                 UserMsg userMsg = createNoWinningUserMsg(rank);
@@ -2587,6 +2584,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             printException(e);
         }
         return baseResp;
+    }
+
+    private boolean pushMsgToRankMember(final List<UserMsg> list,final String rankid){
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < list.size(); i++) {
+                    UserMsg us = list.get(i);
+                    //String status,String userId,String title,String content,String msgid,String tag
+                    jPushService.pushMessage("消息标识",us.getUserid()+"","获奖消息",us.getRemark(),rankid,
+                            Constant.JPUSH_TAG_COUNT_1502);
+
+                }
+            }
+        });
+        return true;
     }
 
     /**
