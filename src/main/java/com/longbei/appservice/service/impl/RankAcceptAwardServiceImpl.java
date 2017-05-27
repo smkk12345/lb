@@ -225,8 +225,12 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
             List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
                 Rank rank = this.rankMapper.selectRankByRankid(rankAcceptAward.getRankid());
+                if (rank == null || !"5".equals(rank.getIsfinish())){
+                    continue;
+                }
+
                 Award award = this.awardMapper.selectByPrimaryKey(rankAcceptAward.getAwardid());
-                if(rank == null || award == null){
+                if(award == null){
                     continue;
                 }
                 Map<String,Object> map = new HashMap<String,Object>();
@@ -240,6 +244,9 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 resultList.add(map);
             }
             baseResp.setData(resultList);
+            Map<String,Object> expenddate = new HashMap<>();
+            expenddate.put("startNum",startNum + pageSize);
+            baseResp.setExpandData(expenddate);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("user rank accept award list error userid:{} startNum:{} pageSize:{}",userid,startNum,pageSize);
