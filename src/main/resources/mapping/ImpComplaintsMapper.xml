@@ -41,7 +41,7 @@
     </if>
     order by createtime desc 
     <if test="pageSize != 0">
-    	LIMIT #{pageNo},#{pageSize}
+    	LIMIT #{startNum},#{pageSize}
     </if>
   </select>
   
@@ -80,7 +80,7 @@
     </if>
     order by createtime desc 
     <if test="pageSize != 0">
-    	LIMIT #{pageNo},#{pageSize} 
+    	LIMIT #{startNum},#{pageSize}
     </if>
   </select>
   
@@ -307,7 +307,10 @@
         checkoption = #{checkoption},
       </if>
       status = #{status} 
-    where 1=1 
+    where 1=1
+    <if test="id != null and id != ''" >
+      and id = #{id}
+    </if>
     <if test="impid != 0" >
       and impid = #{impid} 
     </if>
