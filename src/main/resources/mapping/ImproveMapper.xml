@@ -35,7 +35,7 @@
   <sql id="Base_Column_List" >
     impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
-    ispublic,sourcekey,complaincount,duration
+    ispublic,sourcekey,complaincount,duration,isbusinessdel
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >

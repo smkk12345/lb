@@ -352,7 +352,7 @@ public interface UserMsgService {
 	 * @param remark 备注
      * @return
      */
-	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark);
+	int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark,Boolean updateCreatetime);
 
 	/**
 	 * 发送消息
@@ -364,9 +364,10 @@ public interface UserMsgService {
 	 * @param snsId 业务id
 	 * @param remark 备注
      * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+	 * @param updateCreateTime 是否更新createtime true代表更新
      * @return
      */
-	boolean sendMessage(boolean isOnly,Long userId,Long friendId,String mType,String msgType,Long snsId,String remark,String gType);
+	boolean sendMessage(boolean isOnly,Long userId,Long friendId,String mType,String msgType,Long snsId,String remark,String gType,Boolean updateCreateTime);
 
 	/**
 	 * 获取添加好友申请的消息数量 和最大的createTime

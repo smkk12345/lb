@@ -238,7 +238,7 @@ public interface UserMsgMapper {
 	 * @param remark
 	 * @return
 	 */
-	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType,@Param("remark") String remark);
+	int updateUserMsgStatus(@Param("userId") Long userId,@Param("msgType") String msgType,@Param("snsId") Long snsId,@Param("gType") String gType,@Param("remark") String remark,@Param("updateCreatetime") Boolean updateCreatetime);
 
 	/**
 	 * 批量插入消息

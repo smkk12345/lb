@@ -36,6 +36,8 @@ public interface SnsFriendsMapper {
 
 	List<SnsFriends> selectListByUsrid(@Param("userid") long userid, @Param("startNum") Integer startNum,
 			@Param("endNum") Integer endNum,@Param("updateTime") Date updateTime,@Param("isDel") Integer isDel);
+	
+	List<SnsFriends> selectListByUid(@Param("userid") long userid);
 
 	int deleteByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid);
 
