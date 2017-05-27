@@ -1203,6 +1203,7 @@ public class ImproveServiceImpl implements ImproveService{
         Long uid = Long.parseLong(userid);
         String friendids = getFriendIds(uid);
         String funids = getFansIds(uid);
+        Map<String, String> map = userRelationService.selectRemarkImpLine(Long.parseLong(userid));
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
@@ -1230,7 +1231,15 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setBusinessid(timeLine.getBusinessid());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
-
+                //获取好友昵称
+                String remark = "";
+                if(!map.isEmpty()){
+                	remark = map.get(userid + "_" + user.getId() + "_value");
+                }
+//                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
+                if(!StringUtils.isBlank(remark)){
+                    user.setNickname(remark);
+                }
                 improve.setAppUserMongoEntity(user);
                 if(!Constant.VISITOR_UID.equals(userid)){
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
@@ -1238,11 +1247,6 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
-                //获取好友昵称
-                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(improve.getAppUserMongoEntity().getId()));
-                if(!StringUtils.isBlank(remark)){
-                    improve.getAppUserMongoEntity().setNickname(remark);
-                }
                 improves.add(improve);
             } catch (Exception e) {
                 logger.error("select time line userid={} list is error:",userid,e);
@@ -2635,6 +2639,11 @@ public class ImproveServiceImpl implements ImproveService{
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                //获取好友昵称
+    			String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
+    			if(!StringUtils.isBlank(remark)){
+					appUserMongoEntity.setNickname(remark);
+				}
                 improve.setAppUserMongoEntity(appUserMongoEntity);
                 if (!StringUtils.isBlank(userid)){
                     initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
@@ -2949,6 +2958,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
                     (null,null,startno,pagesize);
+            Map<String, String> map = userRelationService.selectRemarkImpLine(Long.parseLong(userid));
             if (null != timeLineDetails && timeLineDetails.size() != 0){
                 for (int i = 0 ; i < timeLineDetails.size() ; i++){
                     TimeLineDetail timeLineDetail = timeLineDetails.get(i);
@@ -2962,7 +2972,17 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setBusinesstype(timeLineDetail.getBusinesstype());
                     improve.setItype(timeLineDetail.getItype());
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
-                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
+//                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
+                    AppUserMongoEntity user = timeLineDetail.getUser();
+                    //获取好友昵称
+                    String remark = "";
+                    if(!map.isEmpty()){
+                        remark = map.get(userid + "_" + user.getId() + "_value");
+                    }
+                    if(!StringUtils.isBlank(remark)){
+                        user.setNickname(remark);
+                    }
+                    improve.setAppUserMongoEntity(user);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
                         improve.setAppUserMongoEntity(timeLineDetail.getUser());

@@ -41,7 +41,7 @@ public class ProductBasic {
 
     private String updatetime;//更新时间
     
-    private Double discount; // 折扣价
+    private Integer discount; // 折扣价
     
     private Integer goodsCount; //购物车提交时带的该商品数量
 
@@ -319,11 +319,11 @@ public class ProductBasic {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public Double getDiscount() {
+	public Integer getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(Double discount) {
+	public void setDiscount(Integer discount) {
 		this.discount = discount;
 	}
 

@@ -13,6 +13,7 @@ import com.longbei.appservice.entity.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smkk
@@ -29,6 +30,15 @@ public interface UserRelationService {
 	* @return String    返回类型
 	 */
 	String selectRemark(Long userid, Long friendid);
+	
+	/**
+	* @Title: selectRemark 
+	* @Description: 获取好友备注信息---redis
+	* @param @param userid
+	* @param @param friendid
+	* @return Map<String,String>    返回类型
+	 */
+	Map<String,String> selectRemarkImpLine(Long userid);
 	
 	/**
 	* @Title: insertFriend

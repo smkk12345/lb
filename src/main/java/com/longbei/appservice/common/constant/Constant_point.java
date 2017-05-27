@@ -41,7 +41,7 @@ public class Constant_point {
         DAILY_IMPFLOWER_LIMIT = SysRulesCache.behaviorRule.getEachimproveflowersmax();
         LOTTERY = SysRulesCache.behaviorRule.getLotterygoals();//lottery 抽奖
         INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();
-
+        fieldsMap = null;
     }
 
     /**

@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
 					ProductOrders productOrders = reseResp.getData();
 					//price:进步币最低要求   impiconprice:总进步币
 					Double productPrice = Math.ceil(Double.parseDouble(productOrders.getPrice()));
-					Double zongPrice = productOrders.getImpiconprice();
+					Double zongPrice = productOrders.getImpiconprice().doubleValue();
 					//ptype 0:Android 1：IOS
 					if("0".equals(ptype)){
 						//判断进步币是否大于最低要求进步币数量
