@@ -320,10 +320,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 				commentMaxDate = getShowCommentDate(userid, mymaxDate);
 			}
 			if(msgTypeList.size() == 0 && commentMaxDate == null){
-				resultMap.put("mycount", false);
+				resultMap.put("mycount", 0);
 				return resultMap;
 			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
-				resultMap.put("mycount", true);
+				resultMap.put("mycount", 1);
 				return resultMap;
 			}
 			Map<String,Object> parameterMap = new HashMap<String,Object>();
@@ -336,27 +336,27 @@ public class UserMsgServiceImpl implements UserMsgService {
 
 			int count = resultMap.containsKey("count")?Integer.parseInt(resultMap.get("count").toString()):0;
 			if(count > 0){
-				resultMap.put("mycount", true);
+				resultMap.put("mycount", 1);
 				return resultMap;
 			}
 			if(commentMaxDate == null){
 				resultMap.remove("count");
 				resultMap.remove("maxtime");
 				if(count < 1){
-					resultMap.put("mycount", false);
+					resultMap.put("mycount", 0);
 				}else{
-					resultMap.put("mycount", true);
+					resultMap.put("mycount", 1);
 				}
 				return resultMap;
 			}else{
-				resultMap.put("mycount", true);
+				resultMap.put("mycount", 1);
 				return resultMap;
 			}
 			
 		}catch(Exception e){
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
-		resultMap.put("mycount", false);
+		resultMap.put("mycount", 0);
 		return resultMap;
 	}
 	
@@ -858,9 +858,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		int count = friendAddAskList != null?friendAddAskList.size():0;
 		if(count > 0){
-			resultMap.put("friendAskcount", true);
+			resultMap.put("friendAskcount", 1);
 		}else{
-			resultMap.put("friendAskcount", false);
+			resultMap.put("friendAskcount", 0);
 		}
 		return resultMap;
 	}
@@ -937,12 +937,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 								//如果是定制榜---显示榜主的信息
 								initMsgUserInfoByFriendid(userMsg, userid);
 							}else{
+								appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 								appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 								appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
 								userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 							}
 						}else{
 							//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
+							appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 							appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 							appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
 							userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
@@ -1365,9 +1367,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				//通知消息
 				if(count > 0){
-					map.put("informcount", true);
+					map.put("informcount", 1);
 				}else{
-					map.put("informcount", false);
+					map.put("informcount", 0);
 				}
 			}
 			if("2".equals(mtype)){
@@ -1383,9 +1385,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				//通知消息
 				if(count > 0){
-					map.put("rankcount", true);
+					map.put("rankcount", 1);
 				}else{
-					map.put("rankcount", false);
+					map.put("rankcount", 0);
 				}
 //				map.put("rankcount", count);
 //				if(resultmap.containsKey("maxtime")){
