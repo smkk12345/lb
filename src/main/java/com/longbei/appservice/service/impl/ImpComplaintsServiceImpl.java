@@ -174,7 +174,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 			contenttype = contenttype.substring(0, contenttype.length()-1);
 		}else{
 			if("1".equals(contenttypes[0])){
-				contenttype += "微进步内容与龙榜无关,";
+				contenttype += "微进步内容与龙榜无关";
 			}else if("2".equals(contenttypes[0])){
 				contenttype += "垃圾营销信息";
 			}else if("3".equals(contenttypes[0])){
@@ -249,7 +249,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 				//status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
 				if("1".equals(status)){
 					//businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
-					if("2".equals(impComplaints.getBusinesstype())){
+					if("0".equals(impComplaints.getBusinesstype()) || "1".equals(impComplaints.getBusinesstype())){
 						//删除
 						improveService.removeImprove(impComplaints.getComuserid().toString(), impComplaints.getImpid().toString(), 
 								impComplaints.getBusinesstype().toString(), impComplaints.getBusinessid().toString());
