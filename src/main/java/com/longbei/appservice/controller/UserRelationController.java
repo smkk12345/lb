@@ -48,19 +48,23 @@ public class UserRelationController extends BaseController {
      * @param @param userid
 	 * @param @param nickname
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-     * @auther yinxc
+	 * @param  searchFashinMan 搜索的是否是达人 不传或者0 代表搜索的是所有用户 1.代表只搜索达人
+	  * @auther yinxc
      * @currentdate:2017年2月7日
 	 */
 	 @SuppressWarnings("unchecked")
      @RequestMapping(value = "searchLongRange")
-	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int pageSize){
+	 public BaseResp<Object> searchLongRange(String userid, String nickname, int startNum, int pageSize,Integer searchFashinMan){
 		 logger.info("seachLongRange params userid={},nickname={},startNum={},pageSize={}",userid,nickname,startNum,pageSize);
 		 BaseResp<Object> baseResp = new BaseResp<>();
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
+		 if(searchFashinMan != null && searchFashinMan != 1){
+			 searchFashinMan = null;
+		 }
 		 try {
-			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, pageSize);
+			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, pageSize,searchFashinMan);
 		 } catch (Exception e) {
 			 logger.error("searchLongRange userid = {}, nickname = {}, msg = {}", userid, nickname, e);
 		 }
@@ -202,6 +206,9 @@ public class UserRelationController extends BaseController {
 		if (StringUtils.hasBlankParams(userid, friendid, remark)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+		if(remark.length() > 13){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
+		}
 		try {
 			return userRelationService.updateRemarkByUidAndFid(Long.parseLong(userid), Long.parseLong(friendid), remark);
 		} catch (Exception e) {

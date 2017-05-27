@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import scala.collection.immutable.Stream;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -604,16 +605,18 @@ public class RankController {
      * 查询用户榜单获奖列表
      * @url http://ip:port/app_service/rank/userRankAcceptAwardList
      * @param userid 用户id
-     * @param startNum
+     * @param startNum  最后一条的时间
+     * @param pageSize
      */
     @RequestMapping(value="userRankAcceptAwardList")
     public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer pageSize){
-        logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
+        logger.info("userid={},startNum={},pageSize={}",userid,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        startNum = (startNum == null|| startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
+        Date lastAcceptDate = null;
+        startNum = (startNum == null || startNum < 0)?Integer.parseInt(Constant.DEFAULT_START_NO):startNum;
         if(null == pageSize){
              pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }

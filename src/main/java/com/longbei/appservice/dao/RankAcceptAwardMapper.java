@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.RankAcceptAward;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

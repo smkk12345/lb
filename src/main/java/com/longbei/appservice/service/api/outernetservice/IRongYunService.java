@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by smkk on 17/2/15.
  */
-@FeignClient("outernetServiceYXC")
+@FeignClient("outernetService")
 @RequestMapping("outernetService")
 public interface IRongYunService {
 

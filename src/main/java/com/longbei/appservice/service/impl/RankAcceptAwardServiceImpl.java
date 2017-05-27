@@ -218,11 +218,11 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     public BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             List<RankAcceptAward> rankAcceptAwardList = this.rankAcceptAwardMapper.userRankAcceptAwardList(userid,startNum,pageSize);
             if(rankAcceptAwardList == null || rankAcceptAwardList.size() == 0){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
-            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
                 Rank rank = this.rankMapper.selectRankByRankid(rankAcceptAward.getRankid());
                 Award award = this.awardMapper.selectByPrimaryKey(rankAcceptAward.getAwardid());
