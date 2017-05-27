@@ -1,0 +1,23 @@
+﻿server:
+      port: 8080 #definded in application-osrad.yml
+      session-timeout: 1800 # session timeout in seconds
+      context-path: /app_service # the context path, defaults to '/'
+      servlet-path: / # the servlet path, defaults to '/'
+spring:
+    application:
+        name: appService
+    cloud:
+        config:
+            enabled: true
+            name: app_service
+            profile: test_temp
+            discovery:
+              enabled: true
+              serviceId: config-server
+eureka:
+  instance:
+    preferIpAddress: true #就可以将IP注册到Eureka Server上，而如果不配置就是机器的主机名。
+
+  client:
+    serviceUrl:
+        defaultZone: http://172.19.3.4:8080/eureka/,http://172.19.2.3:8080,http://172.19.5.4:8080
