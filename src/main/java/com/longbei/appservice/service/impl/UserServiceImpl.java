@@ -772,7 +772,7 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * 第三方注册获得龙分
 	 */
-	public void thirdregisterGainPoint(UserInfo userInfo,String utype) {
+	private void thirdregisterGainPoint(UserInfo userInfo,String utype) {
 		try {
 			switch (utype) {
 				case "qq":
