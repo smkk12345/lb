@@ -269,7 +269,7 @@
   <!-- 批量删除群成员 -->
   <update id="batchDeleteGroupMember" parameterType="map">
       update sns_group_members
-      set status = 4,updatetime = now()
+      set status = 4,updatetime = now(),remark=null,nickname=null
     <where>
       <if test="userIds != null">
         userid in (
