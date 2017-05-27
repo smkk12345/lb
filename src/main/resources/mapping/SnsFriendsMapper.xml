@@ -32,6 +32,14 @@
       and userid = #{userid}
   </select>
   
+  <select id="selectListByUid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from sns_friends
+    where isdel = 0
+      and userid = #{userid}
+  </select>
+  
   <select id="selectListByUsrid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
