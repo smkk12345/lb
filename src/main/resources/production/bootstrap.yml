@@ -9,8 +9,8 @@ spring:
     cloud:
         config:
             enabled: true
-            name: app_service
-            profile: test_temp
+            name: app
+            profile: application
             discovery:
               enabled: true
               serviceId: config-server
