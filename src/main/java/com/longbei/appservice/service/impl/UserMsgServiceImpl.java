@@ -786,11 +786,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param snsId 业务id
 	 * @param gType
 	 * @param remark 备注
+	 * @param updateCreatetime 是否更新创建时间
 	 * @return
 	 */
 	@Override
-	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark) {
-		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark,Boolean updateCreatetime) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark,updateCreatetime);
 	}
 
 	/**
@@ -803,17 +804,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param snsId 业务id
 	 * @param remark 备注
 	 * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+	 * @param updateCreatetime 如果存在该类型的消息,是否更新创建时间
      * @return
      */
 	@Override
 	public boolean sendMessage(boolean isOnly, Long userId, Long friendId,
-							   String mType, String msgType, Long snsId, String remark, String gType) {
+							   String mType, String msgType, Long snsId, String remark, String gType,Boolean updateCreatetime) {
 		if(isOnly){
 			//先查询是否有该类型的 消息 根据接收人userid, msytype 业务id snsId
 			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
 			if(count > 0){
-				//直接更改已读状态
-				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
+				//直接更改未读状态
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark,updateCreatetime);
 				if(updateRow > 0){
 					return true;
 				}

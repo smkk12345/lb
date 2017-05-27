@@ -2972,6 +2972,7 @@ public class ImproveServiceImpl implements ImproveService{
 //                    initImproveLikeAndFlower(improve);
                     improve.setFlowers(timeLineDetail.getFlowers());
                     improve.setLikes(timeLineDetail.getLikes());
+                    improve.setIspublic("2");
                     improves.add(improve);
                 }
             }
