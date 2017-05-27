@@ -1230,7 +1230,11 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setBusinessid(timeLine.getBusinessid());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
-
+                //获取好友昵称
+                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
+                if(!StringUtils.isBlank(remark)){
+                    user.setNickname(remark);
+                }
                 improve.setAppUserMongoEntity(user);
                 if(!Constant.VISITOR_UID.equals(userid)){
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
@@ -1238,11 +1242,6 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
-                //获取好友昵称
-                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(improve.getAppUserMongoEntity().getId()));
-                if(!StringUtils.isBlank(remark)){
-                    improve.getAppUserMongoEntity().setNickname(remark);
-                }
                 improves.add(improve);
             } catch (Exception e) {
                 logger.error("select time line userid={} list is error:",userid,e);

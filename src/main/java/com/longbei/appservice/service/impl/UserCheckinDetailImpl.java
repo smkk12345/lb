@@ -106,11 +106,12 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_VALUE + userid);
 				int cha = Integer.parseInt(day) - Integer.parseInt(redisDate);
-				if(cha == Integer.parseInt(redisvalue)){
-					//当天已签到
-					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_30);
-					return reseResp;
-				}else if(cha > Integer.parseInt(redisvalue)){
+//				if(cha == Integer.parseInt(redisvalue)){
+//					//当天已签到
+//					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_30);
+//					return reseResp;
+//				}else 
+				if(cha > Integer.parseInt(redisvalue)){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
 					operate(userid);

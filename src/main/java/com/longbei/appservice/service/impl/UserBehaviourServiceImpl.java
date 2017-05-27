@@ -345,7 +345,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(curValue+result > limitValue){//就不给了
                     return 0;
                 }else{
-                    springJedisDao.put(key, "point"+dateStr+limitField,result+"");
+                    int res = result+curValue;
+                    springJedisDao.put(key, "point"+dateStr+limitField, res + "");
                     return result;
                 }
             }
