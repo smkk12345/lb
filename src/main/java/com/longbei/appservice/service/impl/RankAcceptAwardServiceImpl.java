@@ -59,8 +59,8 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
 
         for (RankAcceptAward rankAcceptAward : rankAcceptAwards){
             try {
-                String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
-                        +rankAcceptAward.getAwardlevel()+"等奖品";
+//                String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
+//                        +rankAcceptAward.getAwardlevel()+"等奖品";
 
                 RankAcceptAward rankAcceptAward2 = rankAcceptAwardMapper.selectByRankIdAndUserid(String.valueOf(rankAcceptAward.getRankid()),
                         String.valueOf(rankAcceptAward.getUserid()));

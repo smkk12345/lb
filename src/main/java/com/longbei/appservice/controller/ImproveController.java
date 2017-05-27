@@ -594,6 +594,7 @@ public class ImproveController {
      * s获取收藏列表  带分页数据  improve/selectCollect
      *
      * @param userid
+     * @param currentUserId 当前登录用户Id
      * @param startNum
      * @param pageSize
      * @return
