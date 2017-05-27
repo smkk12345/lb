@@ -24,6 +24,7 @@ public class Constant_Imp_Icon {
             first = first + more;
         }
         INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
+        fieldsMap = null;
     }
 
 
