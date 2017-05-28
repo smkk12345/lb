@@ -3,7 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.HomePictureMapper;
 import com.longbei.appservice.dao.HomeRecommendMapper;
@@ -14,7 +14,7 @@ import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SysCommon;
 import com.longbei.appservice.service.PageService;
-import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class PageServiceImpl implements PageService{
     @Autowired
     private RankMapper rankMapper;
     @Autowired
-    private SysCommonMapper sysCommonMapper;
+    private SysSettingService sysSettingService;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -227,23 +227,13 @@ public class PageServiceImpl implements PageService{
     public BaseResp<Object> saveOrUpdatePublishBg(String pickey) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.PUBLISH_BG_KEY);
-            SysCommon sysCommon1 = new SysCommon();
-            sysCommon1.setKey(Constant.PUBLISH_BG_KEY);
-            sysCommon1.setInfo(pickey);
-            int res = 0;
-            if (null == sysCommon){
-                res = sysCommonMapper.insertSelective(sysCommon1);
-            } else {
-                res = sysCommonMapper.updateByKey(sysCommon1);
-            }
-            if (res > 0){
-                baseResp = BaseResp.ok();
+            boolean sueecss = sysSettingService.insertSysCommon(Constant.SYS_COMMON_KEYS.publishbg.toString(),pickey, DateUtils.getDate());
+            if (sueecss){
+                baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
             logger.error("save or update publisbg is error:",e);
         }
-
         return baseResp;
     }
 
@@ -251,9 +241,9 @@ public class PageServiceImpl implements PageService{
     public BaseResp<String> selectPublishBg() {
         BaseResp<String> baseResp = new BaseResp<>();
         try {
-            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.PUBLISH_BG_KEY);
+            SysCommon sysCommon = sysSettingService.getSysCommonByKey(Constant.SYS_COMMON_KEYS.publishbg.toString());
             if (null != sysCommon){
-                baseResp = BaseResp.ok();
+                baseResp.initCodeAndDesp();
                 baseResp.setData(sysCommon.getInfo());
             }
         } catch (Exception e) {
@@ -266,18 +256,9 @@ public class PageServiceImpl implements PageService{
     public BaseResp<Object> saveOrUpdateRegisterProtocol(String regPro) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.REGISTER_PROTOCOL_KEY);
-            SysCommon sysCommon1 = new SysCommon();
-            sysCommon1.setKey(Constant.REGISTER_PROTOCOL_KEY);
-            sysCommon1.setInfo(regPro);
-            int res = 0;
-            if (null == sysCommon){
-                res = sysCommonMapper.insertSelective(sysCommon1);
-            } else {
-                res = sysCommonMapper.updateByKey(sysCommon1);
-            }
-            if (res > 0){
-                baseResp = BaseResp.ok();
+            boolean res = sysSettingService.insertSysCommon(Constant.SYS_COMMON_KEYS.regprotocol.toString(),regPro,DateUtils.getDate());
+            if (res){
+                baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
             logger.error("save or update register protocol is error:",e);
@@ -289,9 +270,9 @@ public class PageServiceImpl implements PageService{
     public BaseResp<String> selectRegisterProtocol() {
         BaseResp<String> baseResp = new BaseResp<>();
         try {
-            SysCommon sysCommon = sysCommonMapper.selectByKey(Constant.REGISTER_PROTOCOL_KEY);
+            SysCommon sysCommon = sysSettingService.getSysCommonByKey(Constant.SYS_COMMON_KEYS.regprotocol.toString());
             if (null != sysCommon){
-                baseResp = BaseResp.ok();
+                baseResp.initCodeAndDesp();
                 baseResp.setData(sysCommon.getInfo());
             }
         } catch (Exception e) {

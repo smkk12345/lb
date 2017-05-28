@@ -24,6 +24,14 @@
     where `key` = #{key}
   </select>
 
+
+  <select id="getSysCommons" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_common
+    where 1=1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_common
     where id = #{id,jdbcType=INTEGER}
