@@ -543,7 +543,6 @@
       </if>
       <if test="rankdetail != null" >
         rankdetail = #{rankdetail,jdbcType=VARCHAR},
-        rankdetail = #{rankdetail,jdbcType=VARCHAR},
       </if>
       <if test="ranklimite != null" >
         ranklimite = #{ranklimite,jdbcType=INTEGER},
@@ -922,6 +921,7 @@
       <include refid="Base_Column_List" />
     FROM rank r
     where EXISTS (select rm.rankid from rank_members rm where r.rankid=rm.rankid and rm.iswinning = 1)
+      and rank.isfinish = 5
     order by r.endtime DESC
     limit #{startNum},#{pageSize}
   </select>

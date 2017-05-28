@@ -27,9 +27,9 @@ public class ProductOrders {
 
     private String mobile;//收件人手机
     
-    private Double impiconprice;//成交价格---进步币
+    private Integer impiconprice;//成交价格---进步币
     
-    private Double moneyprice;  //成交价格---龙币
+    private Integer moneyprice;  //成交价格---龙币
 
     private String paytype;//paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
     						// 3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
@@ -181,20 +181,20 @@ public class ProductOrders {
     }
 
     @JsonInclude(Include.ALWAYS)
-    public Double getImpiconprice() {
+    public Integer getImpiconprice() {
 		return impiconprice;
 	}
 
-	public void setImpiconprice(Double impiconprice) {
+	public void setImpiconprice(Integer impiconprice) {
 		this.impiconprice = impiconprice;
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public Double getMoneyprice() {
+	public Integer getMoneyprice() {
 		return moneyprice;
 	}
 
-	public void setMoneyprice(Double moneyprice) {
+	public void setMoneyprice(Integer moneyprice) {
 		this.moneyprice = moneyprice;
 	}
 

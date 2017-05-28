@@ -314,21 +314,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         }else{
                             status = 0;
                         }
-                        sb.append(",").append(snsGroupMembers.getNickname());
-                        updateGroupMemberList.add(snsGroupMembers.getUserid()+"");
-                    }
-                }
-                if(updateGroupMemberList.size() > 0){
-                    boolean flag =true;
-                    if(status == 1){
-                        flag = insertRongYunGroupMember(operatorUserId,invitationAppUserMongoEntity.getNickname(),
-                                sb.toString().substring(1),updateGroupMemberList.toArray(new String[]{}),snsGroup.getGroupid()+"",snsGroup.getGroupname());
-                    }
-                    if(flag){
+
+                        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(snsGroupMembers.getUserid()+"");
                         Map<String,Object> updateMap = new HashMap<String,Object>();
-                        updateMap.put("updateUserIds",updateGroupMemberList);
+                        ArrayList<Long> tempUserArrayList = new ArrayList<Long>();
+                        tempUserArrayList.add(appUserMongoEntity.getUserid());
+                        updateMap.put("updateUserIds",tempUserArrayList);
                         updateMap.put("groupId",groupId);
                         updateMap.put("status",status);
+                        updateMap.put("nickname",appUserMongoEntity.getNickname());
+                        if(StringUtils.isNotEmpty(remark)){
+                            updateMap.put("remark",remark);
+                        }
                         if(invitationUserId != null){
                             updateMap.put("inviteuserid",invitationUserId);
                         }
@@ -337,6 +334,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         if(updateStatusRow > 0 && status == 1){
                             insertGroupNum += updateGroupMemberList.size();
                         }
+                        sb.append(",").append(appUserMongoEntity.getNickname());
+                        if(updateStatusRow > 0){
+                            updateGroupMemberList.add(snsGroupMembers.getUserid()+"");
+                        }
+                    }
+                }
+                if(updateGroupMemberList.size() > 0){
+                    if(status == 1){
+                        insertRongYunGroupMember(operatorUserId,invitationAppUserMongoEntity.getNickname(),
+                                sb.toString().substring(1),updateGroupMemberList.toArray(new String[]{}),snsGroup.getGroupid()+"",snsGroup.getGroupname());
                     }
                 }
             }

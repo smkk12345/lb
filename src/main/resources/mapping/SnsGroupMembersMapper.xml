@@ -252,6 +252,12 @@
           <if test="inviteuserid != null">
              ,inviteuserid = #{inviteuserid}
           </if>
+          <if test="nickname != null and nickname != ''">
+              ,nickname = #{nickname}
+          </if>
+          <if test="remark != null and remark != ''">
+              ,remark = #{remark}
+          </if>
       </set>
 
       <where>

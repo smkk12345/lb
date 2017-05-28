@@ -102,6 +102,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 newFriendAddAsk.setSource(source);
                 newFriendAddAsk.setSenderIsRead(true);
                 newFriendAddAsk.setReceiveIsRead(false);
+                newFriendAddAsk.setUpdateDate(new Date());
 
                 JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject = new JSONObject();

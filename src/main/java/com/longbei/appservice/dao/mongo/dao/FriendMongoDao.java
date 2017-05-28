@@ -54,6 +54,7 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         update.set("status",status);
         update.set("receiveIsRead",false);
         update.set("senderIsRead",true);
+        update.set("updateDate",new Date());
         if(messages != null){
             update.set("message",messages);
         }
@@ -111,6 +112,7 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         if(updateCreateDate != null && updateCreateDate){
             update.set("createDate",new Date());
         }
+        update.set("updateDate",new Date());
         mongoTemplate.updateFirst(query,update,FriendAddAsk.class);
     }
 
@@ -175,9 +177,9 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
                     Criteria.where("receiveUserId").is(userId)));
         }
         if(friendAskmaxDate != null){
-        	query.addCriteria(criteria.and("createDate").gt(friendAskmaxDate));
+        	query.addCriteria(criteria.and("updateDate").gt(friendAskmaxDate));
         }
-        query.with(new Sort(Sort.Direction.DESC,"createDate"));
+        query.with(new Sort(Sort.Direction.DESC,"updateDate"));
         if(startNo != null && startNo > -1){
             query.skip(startNo);
         }

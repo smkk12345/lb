@@ -1160,6 +1160,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
             }
             rankMembers.setIcount(0);
+            rankMembers.setIsfashionman("0");
             int updateRow = this.rankMembersMapper.updateRankMemberState(rankMembers);
             if(updateRow < 1){
                 return baseResp.fail("退榜失败");

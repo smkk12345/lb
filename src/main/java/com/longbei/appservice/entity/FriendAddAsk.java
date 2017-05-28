@@ -32,7 +32,7 @@ public class FriendAddAsk {
     private JSONArray message;//回复的消息内容
     private boolean senderIsRead;//请求发送者 是否已读
     private boolean receiveIsRead;//被加为好友的用户 消息是否已读
-
+    private Date updateDate;//更新时间
 
     private AppUserMongoEntity appUserMongoEntity;//请求人/被请求人的用户详细信息
 
@@ -170,5 +170,21 @@ public class FriendAddAsk {
      */
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    /**
+     * 获取更新时间
+     * @return
+     */
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * 设置更新时间
+     * @param updateDate
+     */
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

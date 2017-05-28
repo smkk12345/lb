@@ -236,7 +236,7 @@
   </select>
   
   <select id="selectLikeListByUnameAndNname" resultMap="BaseResultMap"  >
-    select userid, avatar, username, nickname 
+    select userid, avatar, username, nickname ,brief
     from user_info
     where
     (nickname LIKE concat(concat('%', #{nickname}),'%') 
@@ -245,6 +245,9 @@
     	<if test="ids != ''" >
       		and userid in (${ids})
       	</if> 
+    </if>
+    <if test = "searchFashinMan != null">
+      and isfashionman = 1
     </if>
     <!-- <if test="type == 1" >
     	<if test="ids != ''" >

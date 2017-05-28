@@ -432,7 +432,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年2月6日
 	 * 搜索屏蔽当前访问userid
 	 */
-	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
+	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum,Integer searchFashinMan) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
@@ -440,7 +440,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum,searchFashinMan);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getId())){
