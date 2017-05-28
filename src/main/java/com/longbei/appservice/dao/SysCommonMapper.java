@@ -3,6 +3,8 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.SysCommon;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface SysCommonMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -19,4 +21,7 @@ public interface SysCommonMapper {
     int updateByKey(SysCommon record);
 
     int updateByPrimaryKey(SysCommon record);
+
+    List<SysCommon> getSysCommons();
+
 }

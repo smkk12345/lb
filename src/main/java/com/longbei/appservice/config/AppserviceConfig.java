@@ -19,13 +19,17 @@ public class AppserviceConfig {
     public static String host_product_service;
 
     //人民币兑换龙币比例
-    public static double yuantomoney;
+    public static double yuantomoney;//系统初始化
     //花兑换龙币比例
-    public static double flowertomoney;
+    public static double flowertomoney;//系统初始化
     //龙币兑换进步币比例
-    public static double moneytocoin;
+    public static double moneytocoin;//系统初始化
     //花兑换进步币比例
-    public static double flowertocoin;
+    public static double flowertocoin;//系统初始化
+
+    public static String shareip;//系统初始化
+
+    public static String shareport;//系统初始化
     
     public static String ios_buyflower;
     
@@ -44,27 +48,7 @@ public class AppserviceConfig {
         this.host_user_service = host_user_service;
     }
     
-    
-    @Value("${yuantomoney}")
-	public void setYuantomoney(double yuantomoney) {
-    	this.yuantomoney = yuantomoney;
-	}
-    
-	@Value("${flowertomoney}")
-	public void setFlowertomoney(double flowertomoney) {
-    	this.flowertomoney = flowertomoney;
-	}
-	
-    @Value("${moneytocoin}")
-	public void setMoneytocoin(double moneytocoin) {
-    	this.moneytocoin = moneytocoin;
-	}
-    
-    @Value("${flowertocoin}")
-	public void setFlowertocoin(double flowertocoin) {
-    	this.flowertocoin = flowertocoin;
-	}
-    
+
     @Value("${ios_buyflower}")
 	public void setIos_buyflower(String ios_buyflower) {
     	this.ios_buyflower = ios_buyflower;
@@ -97,48 +81,4 @@ public class AppserviceConfig {
     public static String h5_agreementurl;
     public static String h5_levelprivilege;
     public static String articleurl;
-
-    @Value("${articleurl}")
-    public static void setArticleurl(String articleurl) {
-        AppserviceConfig.articleurl = articleurl;
-    }
-
-    @Value("${h5.helper}")
-    public void setH5_helper(String h5_helper){
-        this.h5_helper = h5_helper;
-    }
-
-    @Value("${h5.rankcard}")
-    public void setH5_rankCard(String h5_rankcard){
-        this.h5_rankcard = h5_rankcard;
-    }
-    @Value("${h5.share.improve.detail}")
-    public void setH5_share_improve_detail(String h5_share_improve_detail){
-        this.h5_share_improve_detail = h5_share_improve_detail;
-    }
-    @Value("${h5.share.rank.detail}")
-    public void setH5_share_rank_detail(String h5_share_rank_detail){
-        this.h5_share_rank_detail = h5_share_rank_detail;
-    }
-    @Value("${h5.share.rank.award}")
-    public void setH5_share_rank_award(String h5_share_rank_award){
-        this.h5_share_rank_award = h5_share_rank_award;
-    }
-    @Value("${h5.share.rank.improve}")
-    public void setH5_share_rank_improve(String h5_share_rank_improve){
-        this.h5_share_rank_improve = h5_share_rank_improve;
-    }
-    @Value("${h5.share.goal.detail}")
-    public void setH5_share_goal_detail(String h5_share_goal_detail){
-        this.h5_share_goal_detail = h5_share_goal_detail;
-    }
-    @Value("${h5.agreementurl}")
-    public void setH5_agreementurl(String h5_agreementurl){
-        this.h5_agreementurl = h5_agreementurl;
-    }
-
-    @Value("${h5.share.invite}")
-    public void setH5_share_invite(String h5_share_invite){
-        this.h5_share_invite = h5_share_invite;
-    }
 }

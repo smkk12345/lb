@@ -392,9 +392,17 @@ public class Constant {
 	public static final String RANK_TYEP_B = "1";
 	public static final String RANK_TYEP_C = "0";
 
-	public static final String PUBLISH_BG_KEY = "publishbg";
+	public enum SYS_COMMON_KEYS{
+		publishbg,//首页背景图
+		regprotocol,//协议
+		shareip,	//分享ip
+		shareport,	//分享端口
+		flowertomoney,//花转换龙币比例
+		moneytocoin,//龙币兑换进步币比例
+		flowertocoin,//花兑换进步币比例
+		yuantomoney //人民币兑换龙币比例
+	}
 
-	public static final String REGISTER_PROTOCOL_KEY = "regprotocol";
 
 	/**
 	 * 进步时间线类型

@@ -2446,6 +2446,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
             improveLFDstr = JSON.toJSONString(improveLFDs);
             springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,2);
+            return improveLFDs;
         }
         List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
         return list;

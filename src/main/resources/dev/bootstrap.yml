@@ -46,22 +46,3 @@ feign:
         enabled: true
     hystrix:
         enabled: false
-
-h5:
-  hostname: 192.168.0.110
-  port: 7777
-  helper: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-index.html
-  rankcard: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/rank-master.html
-  share:
-    improve:
-      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/improve-detail.html
-    rank:
-      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-detail.html
-      award: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-award.html
-      improve: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/rank-improve.html
-    goal:
-      detail: http://${h5.hostname}:${h5.port}/share_service/html/sharetpl/goal-detail.html
-  agreementurl: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-agreement.html
-  levelprivilege: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/help-privilege.html
-
-articleurl: http://${h5.hostname}:${h5.port}/share_service/html/apptpl/article-detail.html

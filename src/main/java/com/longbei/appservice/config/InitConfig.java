@@ -1,6 +1,7 @@
 package com.longbei.appservice.config;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService;
@@ -8,6 +9,7 @@ import com.longbei.appservice.common.service.mq.reciver.TopicMessageReciverServi
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.SysSensitiveService;
+import com.longbei.appservice.service.SysSettingService;
 import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -72,6 +74,8 @@ public class InitConfig implements CommandLineRunner {
     private Queue updatequeue;
     @Autowired
     private AddMessageReceiveService addMessageReceiveService;
+    @Autowired
+    private SysSettingService sysSettingService;
 
 
 
@@ -92,6 +96,8 @@ public class InitConfig implements CommandLineRunner {
         Constant_Imp_Icon.init();
 
         initListener();
+        //初始化sys——common
+        initSysCommon();
     }
 
     private void initUserBehaviorRule(int num){
@@ -232,4 +238,44 @@ public class InitConfig implements CommandLineRunner {
     public void setTopiccommon(String topiccommon) {
         this.topiccommon = topiccommon;
     }
+
+    private void initSysCommon(){
+        List<SysCommon> list = sysSettingService.getSysCommons();
+        for (SysCommon sysCommon:list){
+            String value = sysCommon.getInfo();
+            if (sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.flowertocoin.toString())){
+                AppserviceConfig.flowertocoin = Double.parseDouble(value);
+            }else if(sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.flowertomoney.toString())){
+                AppserviceConfig.flowertomoney = Double.parseDouble(value);
+            }else if(sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.moneytocoin.toString())){
+                AppserviceConfig.moneytocoin = Double.parseDouble(value);
+            }else if(sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.yuantomoney.toString())){
+                AppserviceConfig.yuantomoney = Double.parseDouble(value);
+            }else if(sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.shareip.toString())){
+                AppserviceConfig.shareip = value;
+            }else if(sysCommon.getKey().equals(Constant.SYS_COMMON_KEYS.shareport.toString())){
+                AppserviceConfig.shareport = value;
+            }else {
+                //
+            }
+        }
+        initUrl();
+    }
+
+    private void initUrl(){
+        String prefix = "http://"+AppserviceConfig.shareip+":"+AppserviceConfig.shareport+"/share_service/html/";
+        AppserviceConfig.h5_helper = prefix+"apptpl/help-index.html";
+        AppserviceConfig.h5_rankcard = prefix+"apptpl/rank-master.html";
+        AppserviceConfig.h5_share_improve_detail = prefix+"sharetpl/improve-detail.html";
+        AppserviceConfig.h5_share_rank_detail = prefix+"sharetpl/rank-detail.html";
+        AppserviceConfig.h5_share_rank_award = prefix+"sharetpl/rank-award.html";
+        AppserviceConfig.h5_share_rank_improve = prefix+"sharetpl/rank-improve.html";
+        AppserviceConfig.h5_share_goal_detail = prefix+"sharetpl/goal-detail.html";
+        AppserviceConfig.h5_share_invite = prefix+"sharetpl/invite.html";
+        AppserviceConfig.h5_agreementurl = prefix+"apptpl/help-agreement.html";
+        AppserviceConfig.h5_levelprivilege = prefix+"apptpl/help-privilege.html";
+        AppserviceConfig.articleurl = prefix+"apptpl/article-detail.html";
+    }
+
+
 }

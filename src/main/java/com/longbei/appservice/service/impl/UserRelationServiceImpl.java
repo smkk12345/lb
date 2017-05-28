@@ -760,6 +760,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 			idList.add(fans.getLikeuserid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(fans.getLikeuserid()));
+			if(null == appUserMongEntity){
+				continue;
+			}
 			appUserMongEntity.setIsfans("1");
 			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
 				appUserMongEntity.setNickname(appUserMongEntity.getRemark());

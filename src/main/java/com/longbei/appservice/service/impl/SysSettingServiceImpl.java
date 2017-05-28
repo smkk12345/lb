@@ -6,8 +6,10 @@ import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SysAppupdateMapper;
+import com.longbei.appservice.dao.SysCommonMapper;
 import com.longbei.appservice.dao.SysLongbeiinfoMapper;
 import com.longbei.appservice.entity.SysAppupdate;
+import com.longbei.appservice.entity.SysCommon;
 import com.longbei.appservice.entity.SysLongbeiinfo;
 import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +31,8 @@ public class SysSettingServiceImpl implements SysSettingService {
     private SysLongbeiinfoMapper sysLongbeiinfoMapper;
     @Autowired
     private SysAppupdateMapper sysAppupdateMapper;
+    @Autowired
+    private SysCommonMapper sysCommonMapper;
 
     private static Logger logger = LoggerFactory.getLogger(SysSettingServiceImpl.class);
 
@@ -141,5 +146,37 @@ public class SysSettingServiceImpl implements SysSettingService {
         baseResp.setData(map);
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
+
+    @Override
+    public boolean insertSysCommon(String key, String info, String remark) {
+        SysCommon sysCommon = sysCommonMapper.selectByKey(key);
+        SysCommon sysCommon1 = new SysCommon();
+        sysCommon1.setKey(Constant.SYS_COMMON_KEYS.regprotocol.toString());
+        sysCommon1.setInfo(info);
+        sysCommon1.setRemark(remark);
+        int res = 0;
+        if (null == sysCommon){
+            res = sysCommonMapper.insertSelective(sysCommon1);
+        } else {
+            res = sysCommonMapper.updateByKey(sysCommon1);
+        }
+        if(res == 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
+    public SysCommon getSysCommonByKey(String key) {
+        SysCommon sysCommon = sysCommonMapper.selectByKey(key);
+        return sysCommon;
+    }
+
+    @Override
+    public List<SysCommon> getSysCommons() {
+        return sysCommonMapper.getSysCommons();
+    }
+
 
 }
