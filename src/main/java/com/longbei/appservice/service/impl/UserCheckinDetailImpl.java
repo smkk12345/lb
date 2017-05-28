@@ -15,7 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
@@ -276,13 +278,13 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 
 	private List<String> getPointInfoPerDay(){
 		List<String> list = new ArrayList<>();
-		Map<Integer,SysRuleCheckin> sysRuleCheckinMap = SysRulesCache.sysRuleCheckinMap;
-		logger.info("getPointInfoPerDay sysRuleCheckinMap = {}", sysRuleCheckinMap);
-		Iterator<Integer> iterator = sysRuleCheckinMap.keySet().iterator();
+		Map<Integer,Integer> checkInImpIconMap = Constant_Imp_Icon.checkInImpIconMap;
+		logger.info("getPointInfoPerDay sysRuleCheckinMap = {}", checkInImpIconMap);
+		Iterator<Integer> iterator = checkInImpIconMap.keySet().iterator();
 		while (iterator.hasNext()){
 			Integer subKey = iterator.next();
-			SysRuleCheckin sysRuleCheckin = sysRuleCheckinMap.get(subKey);
-			int value = sysRuleCheckin.getAwardmoney();
+			Integer value = checkInImpIconMap.get(subKey);
+//			int value = sysRuleCheckin.getAwardmoney();
 			String disStr = "";
 			switch (subKey){
 				case 1:
@@ -294,8 +296,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			}
 			list.add(disStr);
 		}
-		list.add("连续签到第7天开始,每天都能获得"+sysRuleCheckinMap.get(7).getAwardmoney()+
-				"个进步币,一旦中断就要从"+sysRuleCheckinMap.get(1).getAwardmoney()+"进步币开始咯~");
+		list.add("连续签到第7天开始,每天都能获得"+checkInImpIconMap.get(7)+
+				"个进步币,一旦中断就要从"+checkInImpIconMap.get(1)+"进步币开始咯~");
 		return list;
 	}
 

@@ -596,7 +596,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private void levelUpAsyn(UserInfo userInfo,int iPoint,int leftpoint){
         try{
             //等级升级  update UserInfo
-            userInfo.setGrade(userInfo.getGrade()+1);
+            int currentPoint = userInfo.getCurpoint();
+            int nowPoint = currentPoint + iPoint;
+            int grade = 0;
+            Map<Integer,UserLevel> userLevelMap = SysRulesCache.levelPointMap;
+            for (Map.Entry<Integer,UserLevel> map : userLevelMap.entrySet()){
+                int tempgrade = map.getKey();
+                UserLevel userLevel = map.getValue();
+                if (nowPoint > userLevel.getPoint()){
+                    if (grade == 100){
+                        grade = 100;
+                        break;
+                    }
+                    if (nowPoint < userLevelMap.get(tempgrade+1).getPoint()){
+                        grade = tempgrade + 1;
+                    }
+                }
+            }
+            userInfo.setGrade(grade);
             userInfo.setPoint(userInfo.getPoint()+iPoint);
             userInfo.setCurpoint(leftpoint);
             userInfoMapper.updatePointByUserid(userInfo);
