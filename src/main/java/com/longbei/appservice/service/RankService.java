@@ -283,7 +283,7 @@ public interface RankService extends BaseService{
      * @param isUpdateRank 是否需要更新榜单
      * @return
      */
-    BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank);
+    BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank,boolean isGtAwardCount);
 
     /**
      * 获取成员列表 预览

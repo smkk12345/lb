@@ -332,7 +332,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         //更改用户加群的状态
                         int updateStatusRow = this.snsGroupMembersMapper.batchUpdateSnsGroupMemberStatus(updateMap);
                         if(updateStatusRow > 0 && status == 1){
-                            insertGroupNum += updateGroupMemberList.size();
+                            insertGroupNum += updateStatusRow;
                         }
                         sb.append(",").append(appUserMongoEntity.getNickname());
                         if(updateStatusRow > 0){
