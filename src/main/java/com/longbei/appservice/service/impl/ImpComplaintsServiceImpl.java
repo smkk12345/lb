@@ -282,9 +282,24 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
 		            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 						//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
-		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
-		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
-		            			impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+						if("1".equals(impComplaints.getBusinesstype())){
+							if(!StringUtils.isBlank(impComplaints.getBusinessid().toString())){
+								userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
+				            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
+				            			impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+							}else{
+								if(!StringUtils.isBlank(improve.getGoalid().toString())){
+									userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
+					            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
+					            			improve.getGoalid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+								}
+								
+							}
+						}else{
+							userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
+			            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
+			            			impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+						}
 					}
 				}
 				if("2".equals(status)){
