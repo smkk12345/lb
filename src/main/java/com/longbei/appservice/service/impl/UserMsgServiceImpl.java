@@ -937,6 +937,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 								//如果是定制榜---显示榜主的信息
 								initMsgUserInfoByFriendid(userMsg, userid);
 							}else{
+								appUserMongoEntity.setId(Constant.SQUARE_USER_ID);
 								appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 								appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 								appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
@@ -944,6 +945,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 							}
 						}else{
 							//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
+							appUserMongoEntity.setId(Constant.SQUARE_USER_ID);
 							appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 							appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 							appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
