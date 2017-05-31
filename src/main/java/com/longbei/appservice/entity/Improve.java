@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.longbei.appservice.common.utils.StringUtils;
+import net.sf.json.JSONArray;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Improve {
@@ -297,7 +299,19 @@ public class Improve {
      * @param pickey 图片的key 
      */
     public void setPickey(String pickey) {
+        if(!StringUtils.isBlank(pickey)&&!pickey.contains("[")){
+            pickey = arrayToJsonArr(pickey);
+        }
         this.pickey = pickey == null ? null : pickey.trim();
+    }
+
+    private String arrayToJsonArr(String pickey){
+        JSONArray jsonArray = new JSONArray();
+        String[] pArr = pickey.split(",");
+        for (int i = 0; i < pArr.length; i++) {
+            jsonArray.add(pArr[i]);
+        }
+        return jsonArray.toString();
     }
 
     /**
