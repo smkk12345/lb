@@ -67,6 +67,10 @@ public class Constant {
 	public static final int STATUS_SYS_15 = -15;
 	public static final int STATUS_SYS_16 = -16;
 	public static final int STATUS_SYS_17 = -17;
+	public static final int STATUS_SYS_18 = -18;
+	public static final int STATUS_SYS_19 = -19;
+	public static final int STATUS_SYS_110 = -110;
+	public static final int STATUS_SYS_111 = -111;
 	
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
@@ -193,7 +197,10 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
-
+	public static final String RTNINFO_SYS_18 = "发布的公开榜单已达上限";
+	public static final String RTNINFO_SYS_19 = "发布的私有榜单已达上限";
+	public static final String RTNINFO_SYS_110 = "根据你当前的用户等级,您创建的公开榜单人数上限为";
+	public static final String RTNINFO_SYS_111 = "根据你当前的用户等级,您创建的私有榜单人数上限为";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -748,6 +755,7 @@ public class Constant {
 	public enum PrivilegeType{
 		joinranknum,//加入榜单限制
 		createRank, //创建榜单时  私有榜单数量参与人数  公共榜单数量 参与人数
+		publishRank,//发布榜单时
 		createCircle
 	}
 

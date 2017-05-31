@@ -3030,6 +3030,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int userRankMemberStatus = 0;//可参榜
             //用户是否可参榜
             userRankMemberStatus = getInsertUserRankMemberStatus(userId,rank);
+            //是否已经关注榜单
             if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put("businessType","2");

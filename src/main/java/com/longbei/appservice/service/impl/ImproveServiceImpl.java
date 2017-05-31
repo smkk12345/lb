@@ -1237,7 +1237,7 @@ public class ImproveServiceImpl implements ImproveService{
                 	remark = map.get(userid + "_" + user.getId() + "_value");
                 }
 //                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
-                if(!StringUtils.isBlank(remark)){
+                if(StringUtils.isNotBlank(remark)){
                     user.setNickname(remark);
                 }
                 improve.setAppUserMongoEntity(user);
@@ -1532,7 +1532,7 @@ public class ImproveServiceImpl implements ImproveService{
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 //获取好友昵称
                 String remark = userRelationService.selectRemark(userid, improve.getUserid());
-                if(!StringUtils.isBlank(remark)){
+                if(StringUtils.isNotBlank(remark)){
                     appUserMongoEntity.setNickname(remark);
                 }
             }
@@ -2323,7 +2323,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private String firstPhotos(String photos){
-        if(!StringUtils.isBlank(photos)){
+        if(StringUtils.isNotBlank(photos)){
             JSONArray jsonArray = JSONArray.fromObject(photos);
             if(jsonArray.size()>0){
                 photos = jsonArray.getString(0);
@@ -2641,14 +2641,14 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 //获取好友昵称
-                if (!StringUtils.isBlank(userid)){
+                if (StringUtils.isNotBlank(userid)){
                     String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
-                    if(!StringUtils.isBlank(remark)){
+                    if(StringUtils.isNotEmpty(remark)){
                         appUserMongoEntity.setNickname(remark);
                     }
-                    improve.setAppUserMongoEntity(appUserMongoEntity);
                     initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 }
+                improve.setAppUserMongoEntity(appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
                 switch(businesstype){
                     case Constant.IMPROVE_SINGLE_TYPE:
