@@ -187,14 +187,14 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }
             //加榜单个数
             if(privilegeType.equals(Constant.PrivilegeType.joinranknum)){
-//                RankMembers rankMembers = new RankMembers();
-//                rankMembers.setUserid(userInfo.getUserid());
-//                int count = rankMembersMapper.selectCount(rankMembers);
-//                if(count < userLevel.getJoinranknum()){
+                RankMembers rankMembers = new RankMembers();
+                rankMembers.setUserid(userInfo.getUserid());
+                int count = rankMembersMapper.selectCount(rankMembers);
+                if(count < userLevel.getJoinranknum()){
                     return BaseResp.ok();
-//                }else{
-//                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
-//                }
+                }else{
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
+                }
             }else {
                 //发榜  判断发布榜单个数  暂时不做
                 Rank r = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
