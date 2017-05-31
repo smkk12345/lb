@@ -109,11 +109,12 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 		try {
 			userFeedback = userFeedbackMapper.selectByPrimaryKey(Long.parseLong(id));
 			initMsgUserInfoByFriendid(userFeedback, userid);
-			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
-			appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
-			appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
-			appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
-			userFeedback.setAppUserMongoEntityLongbei(appUserMongoEntity);;
+			AppUserMongoEntity appUserMongoEntitys = new AppUserMongoEntity();
+			appUserMongoEntitys.setId(Constant.SQUARE_USER_ID);
+			appUserMongoEntitys.setUserid(Constant.SQUARE_USER_ID);
+			appUserMongoEntitys.setNickname(Constant.MSG_LONGBEI_NICKNAME);
+			appUserMongoEntitys.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
+			userFeedback.setAppUserMongoEntityLongbei(appUserMongoEntitys);
 			baseResp.setData(userFeedback);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

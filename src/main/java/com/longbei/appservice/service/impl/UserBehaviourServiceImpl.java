@@ -49,6 +49,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private UserLevelMapper userLevelMapper;
     @Autowired
     private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private RankMapper rankMapper;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -185,32 +187,54 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             if(null == userLevel){
                 return baseResp.initCodeAndDesp();
             }
-            //加榜单个数
-            if(privilegeType.equals(Constant.PrivilegeType.joinranknum)){
-//                RankMembers rankMembers = new RankMembers();
-//                rankMembers.setUserid(userInfo.getUserid());
-//                int count = rankMembersMapper.selectCount(rankMembers);
-//                if(count < userLevel.getJoinranknum()){
-                    return BaseResp.ok();
-//                }else{
-//                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
-//                }
-            }else {
-                //发榜  判断发布榜单个数  暂时不做
-                Rank r = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
-                if(r.getIspublic().equals("0")){ //公开榜单参与人数限制
-                    if(r.getRanklimite() <=  userLevel.getPubrankjoinnum()){
+            switch (privilegeType){
+                case joinranknum:
+                    RankMembers rankMembers = new RankMembers();
+                    rankMembers.setUserid(userInfo.getUserid());
+                    int count = rankMembersMapper.selectCount(rankMembers);
+                    if(count < userLevel.getJoinranknum()){
                         return BaseResp.ok();
                     }else{
-                        //后面处理
+                        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                     }
-                }else{//私有榜单参与人数限制
-                    if(r.getRanklimite() <=  userLevel.getPrirankjoinnum()){
-                        return BaseResp.ok();
+                case publishRank:
+                    //发榜  判断发布榜单个数
+                    Rank publishRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+                    //查询该用户创建的进行中的榜数量
+                    Map<String,Object> paraMap = new HashMap<String,Object>();
+                    paraMap.put("ispublic",publishRank.getIspublic());
+                    paraMap.put("isfinish",1);
+                    paraMap.put("createuserid",userInfo.getUserid());
+                    int publishCount = this.rankMapper.selectRankListCount(paraMap);
+                    if("0".equals(publishRank.getIspublic())){
+                        if(publishCount < userLevel.getPubranknum()){
+                            return BaseResp.ok();
+                        }else{
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_18,Constant.RTNINFO_SYS_18);
+                        }
                     }else{
-                        //operate later
+                        if(publishCount < userLevel.getPriranknum()){
+                            return BaseResp.ok();
+                        }else{
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_18,Constant.RTNINFO_SYS_18);
+                        }
                     }
-                }
+                case createRank:
+                    //发榜  判断发布榜单个数
+                    Rank createRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+                    if(createRank.getIspublic().equals("0")){ //公开榜单参与人数限制
+                        if(createRank.getRanklimite() <=  userLevel.getPubrankjoinnum()){
+                            return BaseResp.ok();
+                        }else{
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_110,Constant.RTNINFO_SYS_110+userLevel.getPubrankjoinnum()+"人");
+                        }
+                    }else{//私有榜单参与人数限制
+                        if(createRank.getRanklimite() <=  userLevel.getPrirankjoinnum()){
+                            return BaseResp.ok();
+                        }else{
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_111,Constant.RTNINFO_SYS_111+userLevel.getPubrankjoinnum()+"人");
+                        }
+                    }
             }
         }catch(Exception e){
             logger.error("hasPrivilege error msg:{}",e);

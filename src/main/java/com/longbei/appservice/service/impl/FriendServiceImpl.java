@@ -353,6 +353,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                             pushMessage.put("content","同意了加好友申请");
                             pushMessage.put("msgid",friendAddAsk.getId());
                             pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
+                            pushMessage.put("userInfo",userMongoDao.getAppUser(friendAddAsk.getReceiveUserId().toString()));
                             ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
                         }
                     });
@@ -390,6 +391,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     pushMessage.put("content","同意了加好友申请");
                     pushMessage.put("msgid",friendAddAsk.getId());
                     pushMessage.put("tag",Constant.JPUSH_TAG_COUNT_1004);
+                    pushMessage.put("userInfo",userMongoDao.getAppUser(friendAddAsk.getReceiveUserId().toString()));
                     ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","同意了加好友申请","同意了加好友申请",pushMessage.toString());
                     String message = friendAddAsk.getReceiveUserId()+"&"+friendAddAsk.getSenderUserId();
                     queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
