@@ -3188,9 +3188,25 @@ public class ImproveServiceImpl implements ImproveService{
      * @param number
      */
 	@Override
-	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
+	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String businessid, String number) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+            if("2".equals(businesstype)){
+                //判断榜中的进步是否已删除，已下榜
+                Improve improve = selectImproveByImpidMuc(Long.parseLong(improveid), userid + "",
+                        businesstype, businessid);
+                if(null != improve){
+                    if("1".equals(improve.getIsdel())){
+                        reseResp.initCodeAndDesp(Constant.STATUS_SYS_401,Constant.RTNINFO_SYS_401);
+                        return reseResp;
+                    }
+                    if("1".equals(improve.getIsbusinessdel())){
+                        //下榜的进步送花无限制
+                        reseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                        return reseResp;
+                    }
+                }
+            }
 			Integer flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
 			if(flowerSum != null){
 				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){

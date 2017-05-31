@@ -144,8 +144,18 @@ public class Rank {
 
     private String hasjoin = "0";//0 未加入  1 加入
 
+    private String maxtotalimprovenum;//榜单最多发布总微进步数量
+
     //--------
 
+
+    public String getMaxtotalimprovenum() {
+        return maxtotalimprovenum;
+    }
+
+    public void setMaxtotalimprovenum(String maxtotalimprovenum) {
+        this.maxtotalimprovenum = maxtotalimprovenum;
+    }
 
     public Integer getCommentCount() {
         return commentCount;

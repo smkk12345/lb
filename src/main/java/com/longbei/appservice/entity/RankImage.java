@@ -124,6 +124,10 @@ public class RankImage {
 
     private String joincode; //入榜口令
 
+    private String needconfirm;//成员参榜验证。0 - 不开启。1 - 开启
+
+    private String maxtotalimprovenum;//榜单最多发布总微进步数量
+
     //--------
 
     private List<RankAward> rankAwards; //榜单奖品
@@ -136,6 +140,23 @@ public class RankImage {
 
     public void setRankCheckDetails(List<RankCheckDetail> rankCheckDetails) {
         this.rankCheckDetails = rankCheckDetails;
+    }
+
+
+    public String getNeedconfirm() {
+        return needconfirm;
+    }
+
+    public void setNeedconfirm(String needconfirm) {
+        this.needconfirm = needconfirm;
+    }
+
+    public String getMaxtotalimprovenum() {
+        return maxtotalimprovenum;
+    }
+
+    public void setMaxtotalimprovenum(String maxtotalimprovenum) {
+        this.maxtotalimprovenum = maxtotalimprovenum;
     }
 
     public String getRankrule() {
