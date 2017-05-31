@@ -252,6 +252,12 @@
           <if test="inviteuserid != null">
              ,inviteuserid = #{inviteuserid}
           </if>
+          <if test="nickname != null and nickname != ''">
+              ,nickname = #{nickname}
+          </if>
+          <if test="remark != null and remark != ''">
+              ,remark = #{remark}
+          </if>
       </set>
 
       <where>
@@ -269,7 +275,7 @@
   <!-- 批量删除群成员 -->
   <update id="batchDeleteGroupMember" parameterType="map">
       update sns_group_members
-      set status = 4,updatetime = now()
+      set status = 4,updatetime = now(),remark=null,nickname=null
     <where>
       <if test="userIds != null">
         userid in (

@@ -28,9 +28,14 @@
     <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, userid, acceptdate, confirmacceptdate, awardlevel, awardid, status, reciverusername, 
+    id, rankid, userid, acceptdate, confirmacceptdate, awardlevel, awardid, status, reciverusername,
     reciverusertel, reciveruseraddr, logisticscompany, logisticsnum, dispatchdate, remarker, 
     handleuserid, createdate,username,ranktitle,awardcateid,receivecode,sortnum,publishawardtype,awardnickname
+  </sql>
+  <sql id="RankAcceptAward_Base_Column_List" >
+    rank_accept_award.id, rank_accept_award.rankid, rank_accept_award.userid, rank_accept_award.acceptdate, rank_accept_award.confirmacceptdate, rank_accept_award.awardlevel, rank_accept_award.awardid, rank_accept_award.status, rank_accept_award.reciverusername,
+    rank_accept_award.reciverusertel, rank_accept_award.reciveruseraddr, rank_accept_award.logisticscompany, rank_accept_award.logisticsnum, rank_accept_award.dispatchdate, rank_accept_award.remarker,
+    rank_accept_award.handleuserid, rank_accept_award.createdate,rank_accept_award.username,rank_accept_award.ranktitle,rank_accept_award.awardcateid,rank_accept_award.receivecode,rank_accept_award.sortnum,rank_accept_award.publishawardtype,rank_accept_award.awardnickname
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -561,17 +566,21 @@
   <!-- 查询用户的榜单获奖列表 -->
   <select id="userRankAcceptAwardList" resultMap="BaseResultMap">
     select
-      <include refid="Base_Column_List" />
+      <include refid="RankAcceptAward_Base_Column_List" />
     from rank_accept_award
-    where userid = #{userid}
-    order by createdate desc
+      inner join rank on rank_accept_award.rankid = rank.rankid
+    where
+      rank.isfinish = 5
+      and rank_accept_award.userid = #{userid}
+    order by rank_accept_award.createdate desc
     limit #{startNum},#{pageSize}
   </select>
 
   <select id="userRankAcceptAwardCount" resultType="Integer">
     select
       count(1)
-    from rank_accept_award
-    where userid = #{userid}
+    from rank_accept_award inner join rank on rank_accept_award.rankid = rank.rankid
+    where rank.isfinish = 5
+      and rank_accept_award.userid = #{userid}
   </select>
 </mapper>

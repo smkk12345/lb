@@ -159,7 +159,7 @@ public class Constant {
 	public static final int STATUS_SYS_98 = -98;
 	public static final int STATUS_SYS_99 = -99;
 	public static final int STATUS_SYS_910 = -910;
-
+	public static final int STATUS_SYS_911 = -911;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -300,7 +300,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_98 = "您已在龙榜中,无需再次提交申请";
 	public static final String RTNINFO_SYS_99 = "由于您被榜主剔除了该龙榜,因此无法再次申请加入!";
 	public static final String RTNINFO_SYS_910 = "您当前还未加入该榜单,或已退出该榜单";
-
+	public static final String RTNINFO_SYS_911 = "您的昵称备注超过了长度限制";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -392,9 +392,17 @@ public class Constant {
 	public static final String RANK_TYEP_B = "1";
 	public static final String RANK_TYEP_C = "0";
 
-	public static final String PUBLISH_BG_KEY = "publishbg";
+	public enum SYS_COMMON_KEYS{
+		publishbg,//首页背景图
+		regprotocol,//协议
+		shareip,	//分享ip
+		shareport,	//分享端口
+		flowertomoney,//花转换龙币比例
+		moneytocoin,//龙币兑换进步币比例
+		flowertocoin,//花兑换进步币比例
+		yuantomoney //人民币兑换龙币比例
+	}
 
-	public static final String REGISTER_PROTOCOL_KEY = "regprotocol";
 
 	/**
 	 * 进步时间线类型

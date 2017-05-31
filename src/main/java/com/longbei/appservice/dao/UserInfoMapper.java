@@ -52,7 +52,7 @@ public interface UserInfoMapper {
 	 * 搜索屏蔽当前访问userid
 	 */
 	List<UserInfo> selectLikeListByUnameAndNname(@Param("userid") long userid, @Param("nickname") String nickname, @Param("ids") String ids,
-			@Param("type") String type, @Param("startNum") int startNum, @Param("endNum") int endNum);
+			@Param("type") String type, @Param("startNum") int startNum, @Param("endNum") int endNum,@Param("searchFashinMan") Integer searchFashinMan);
 
 	/**
 	 * 更新设备号和设备类型

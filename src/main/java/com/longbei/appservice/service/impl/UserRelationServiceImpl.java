@@ -16,6 +16,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.MongoUtils;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import com.netflix.discovery.converters.Auto;
@@ -66,6 +67,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private JPushService jPushService;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private SpringJedisDao springJedisDao;
 
 	/**
 	* @Title: selectRemark 
@@ -89,6 +92,37 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 		}
 		return "";
+	}
+	
+	/**
+	* @Title: selectRemark 
+	* @Description: 获取好友备注信息---redis
+	* @param @param userid
+	* @param @param friendid
+	* @return Map<String,String>    返回类型
+	 */
+	@Override
+	public Map<String, String> selectRemarkImpLine(Long userid) {
+		if(userid == null){
+			return null;
+		}
+		Map<String, String> map = springJedisDao.entries("imptimeline_" + userid);
+		if(!map.isEmpty()){
+//			String remark = map.get(userid + "_" + friendid + "_value");
+			return map;
+		}else{
+			List<SnsFriends> list = snsFriendsMapper.selectListByUid(userid);
+			Map<String, String> mapFriend = new HashMap<String, String>();
+			for (SnsFriends snsFriends : list) {
+				if(!StringUtils.isBlank(snsFriends.getRemark())){
+					mapFriend.put(userid + "_" + snsFriends.getFriendid() + "_value", snsFriends.getRemark());
+				}
+			}
+			if(!mapFriend.isEmpty()){
+				springJedisDao.putAll("imptimeline_" + userid, mapFriend, 5*60);
+			}
+			return mapFriend;
+		}
 	}
 	
 	/* smkk
@@ -398,7 +432,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 * 2017年2月6日
 	 * 搜索屏蔽当前访问userid
 	 */
-	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum) {
+	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum,Integer searchFashinMan) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
@@ -406,7 +440,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//读取拼接ids
 			String ids = selectids(friendList, fansList);
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum,searchFashinMan);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getId())){
@@ -709,6 +743,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 			idList.add(userRe.getFriendid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(userRe.getFriendid()));
+			if(null == appUserMongEntity){
+				continue;
+			}
 			appUserMongEntity.setIsfriend("1");
 			appUserMongEntity.setRemark(userRe.getRemark());
 			initFanInfo(userid,appUserMongEntity);
@@ -726,6 +763,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 			idList.add(fans.getLikeuserid()+"");
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(String.valueOf(fans.getLikeuserid()));
+			if(null == appUserMongEntity){
+				continue;
+			}
 			appUserMongEntity.setIsfans("1");
 			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
 				appUserMongEntity.setNickname(appUserMongEntity.getRemark());

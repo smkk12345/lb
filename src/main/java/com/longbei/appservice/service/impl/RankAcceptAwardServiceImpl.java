@@ -59,8 +59,8 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
 
         for (RankAcceptAward rankAcceptAward : rankAcceptAwards){
             try {
-                String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
-                        +rankAcceptAward.getAwardlevel()+"等奖品";
+//                String remark = "恭喜您！你在榜单【"+rank.getRanktitle()+"】中获得了"
+//                        +rankAcceptAward.getAwardlevel()+"等奖品";
 
                 RankAcceptAward rankAcceptAward2 = rankAcceptAwardMapper.selectByRankIdAndUserid(String.valueOf(rankAcceptAward.getRankid()),
                         String.valueOf(rankAcceptAward.getUserid()));
@@ -218,15 +218,19 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     public BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             List<RankAcceptAward> rankAcceptAwardList = this.rankAcceptAwardMapper.userRankAcceptAwardList(userid,startNum,pageSize);
             if(rankAcceptAwardList == null || rankAcceptAwardList.size() == 0){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
-            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
             for(RankAcceptAward rankAcceptAward:rankAcceptAwardList){
                 Rank rank = this.rankMapper.selectRankByRankid(rankAcceptAward.getRankid());
+                if (rank == null || !"5".equals(rank.getIsfinish())){
+                    continue;
+                }
+
                 Award award = this.awardMapper.selectByPrimaryKey(rankAcceptAward.getAwardid());
-                if(rank == null || award == null){
+                if(award == null){
                     continue;
                 }
                 Map<String,Object> map = new HashMap<String,Object>();
@@ -240,6 +244,9 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 resultList.add(map);
             }
             baseResp.setData(resultList);
+            Map<String,Object> expenddate = new HashMap<>();
+            expenddate.put("startNum",startNum + pageSize);
+            baseResp.setExpandData(expenddate);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("user rank accept award list error userid:{} startNum:{} pageSize:{}",userid,startNum,pageSize);

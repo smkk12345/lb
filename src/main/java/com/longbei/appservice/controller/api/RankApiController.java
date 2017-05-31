@@ -690,7 +690,7 @@ public class RankApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = rankService.submitRankMemberCheckResult(rank,true);
+            baseResp = rankService.submitRankMemberCheckResult(rank,true,false);
         } catch (Exception e) {
             logger.error("submit rank member check result rankid={} is error:",rank.getRankid(),e);
         }

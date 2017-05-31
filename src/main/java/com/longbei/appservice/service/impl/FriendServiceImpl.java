@@ -102,6 +102,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 newFriendAddAsk.setSource(source);
                 newFriendAddAsk.setSenderIsRead(true);
                 newFriendAddAsk.setReceiveIsRead(false);
+                newFriendAddAsk.setUpdateDate(new Date());
 
                 JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject = new JSONObject();
@@ -258,10 +259,16 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+""));
                 //更改用户消息为已读
                 friendMongoDao.updateFriendAddAsk(id,null,"sender",true,null,null);
+
+                //用户所在地
+                baseResp.getExpandData().put("area",this.userService.selectJustInfo(friendAddAsk.getReceiveUserId()).getArea());
             }else{
                 friendAddAsk.setAppUserMongoEntity(userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+""));
                 //更改用户消息为已读
                 friendMongoDao.updateFriendAddAsk(id,null,"receive",true,null,null);
+
+                //用户所在地
+                baseResp.getExpandData().put("area",this.userService.selectJustInfo(friendAddAsk.getSenderUserId()).getArea());
             }
             //更改用户新消息提示为没有新消息(会校验是否还有未读消息,如果有未读消息,则不会更新新消息提示的状态)
             updateUserNewMessageTip(userId,false);
@@ -282,7 +289,6 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             resultMap.put("appUserMongoEntity",friendAddAsk.getAppUserMongoEntity());
 
             baseResp.setData(resultMap);
-            baseResp.getExpandData().put("area",this.userService.selectJustInfo(userId).getArea());
 
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){

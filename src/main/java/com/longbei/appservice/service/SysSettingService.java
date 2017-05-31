@@ -2,7 +2,10 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.SysAppupdate;
+import com.longbei.appservice.entity.SysCommon;
 import com.longbei.appservice.entity.SysLongbeiinfo;
+
+import java.util.List;
 
 /**
  * Created by smkk on 17/2/17.
@@ -30,4 +33,11 @@ public interface SysSettingService {
      * @return
      */
     BaseResp<Object> getShareInfo();
+
+    boolean insertSysCommon(String key,String info,String remark);
+
+    SysCommon getSysCommonByKey(String key);
+
+    List<SysCommon> getSysCommons();
+
 }

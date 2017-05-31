@@ -539,6 +539,9 @@
         <if test="remark != null and remark != ''">
           ,remark = #{remark}
         </if>
+        <if test="updateCreatetime != null and updateCreatetime == true">
+          ,createtime = now()
+        </if>
       where userid = #{userId}
           and msgtype = #{msgType}
           and gtype = #{gType}

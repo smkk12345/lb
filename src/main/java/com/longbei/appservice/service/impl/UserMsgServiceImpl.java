@@ -786,11 +786,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param snsId 业务id
 	 * @param gType
 	 * @param remark 备注
+	 * @param updateCreatetime 是否更新创建时间
 	 * @return
 	 */
 	@Override
-	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark) {
-		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
+	public int updateUserMsgStatus(Long userId, String msgType, Long snsId, String gType,String remark,Boolean updateCreatetime) {
+		return this.userMsgMapper.updateUserMsgStatus(userId,msgType,snsId,gType,remark,updateCreatetime);
 	}
 
 	/**
@@ -803,17 +804,18 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * @param snsId 业务id
 	 * @param remark 备注
 	 * @param gType 0 零散 1 目标中 2 榜中 3圈子中 4 教室中 5.龙群
+	 * @param updateCreatetime 如果存在该类型的消息,是否更新创建时间
      * @return
      */
 	@Override
 	public boolean sendMessage(boolean isOnly, Long userId, Long friendId,
-							   String mType, String msgType, Long snsId, String remark, String gType) {
+							   String mType, String msgType, Long snsId, String remark, String gType,Boolean updateCreatetime) {
 		if(isOnly){
 			//先查询是否有该类型的 消息 根据接收人userid, msytype 业务id snsId
 			int count = this.findSameTypeMessage(userId,msgType,snsId,gType);
 			if(count > 0){
-				//直接更改已读状态
-				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
+				//直接更改未读状态
+				int updateRow = this.updateUserMsgStatus(userId,msgType,snsId,gType,remark,updateCreatetime);
 				if(updateRow > 0){
 					return true;
 				}
@@ -935,12 +937,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 								//如果是定制榜---显示榜主的信息
 								initMsgUserInfoByFriendid(userMsg, userid);
 							}else{
+								appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 								appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 								appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
 								userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 							}
 						}else{
 							//15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝-----统一为龙杯公司推送的消息
+							appUserMongoEntity.setUserid(Constant.SQUARE_USER_ID);
 							appUserMongoEntity.setNickname(Constant.MSG_LONGBEI_NICKNAME);
 							appUserMongoEntity.setAvatar(Constant.MSG_LONGBEI_DIFAULT_AVATAR);
 							userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
@@ -1310,8 +1314,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 		Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-		userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-		userMsg.setImpItype(improve.getItype());
+		if(null != improve){
+			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+			userMsg.setImpItype(improve.getItype());
+		}
 	}
 	
 	/**

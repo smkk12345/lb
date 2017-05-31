@@ -1035,7 +1035,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
             if(count > 0){
                 //直接更改已读状态
-                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark);
+                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark,null);
                 if(updateRow > 0){
                     return true;
                 }
@@ -1160,6 +1160,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
             }
             rankMembers.setIcount(0);
+            rankMembers.setIsfashionman("0");
             int updateRow = this.rankMembersMapper.updateRankMemberState(rankMembers);
             if(updateRow < 1){
                 return baseResp.fail("退榜失败");
@@ -1427,7 +1428,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
     @Override
-    public BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank) {
+    public BaseResp<Object> submitRankMemberCheckResult(Rank rank,boolean isUpdateRank,boolean isGtAwardCount) {
         BaseResp<Object>  baseResp = submitRankMemberCheckResultPreview(String.valueOf(rank.getRankid()));
         if (ResultUtil.isSuccess(baseResp)){
             if(isUpdateRank){
@@ -3315,7 +3316,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int waitcount = rankMembersMapper.selectCount(rankMembers);
 
         //通过数等于奖品数
-        if (okcount == awardcount){
+        if (okcount >= awardcount){
             return true;
         } else if (okcount < awardcount){
             if (waitcount==0){
@@ -3390,7 +3391,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         for (int j = 0 ; j < rankMemberses.size();j++){
             RankMembers rkmember = rankMemberses.get(j);
-            if ("3".equals(rkmember.getCheckstatus())){
+            if ("3".equals(rkmember.getCheckstatus()) && "1".equals(rkmember.getIswinning())){
                 //生成获奖订单
                 RankAcceptAward rankAcceptAward = new RankAcceptAward();
                 rankAcceptAward.setRankid(Long.parseLong(rankid));
