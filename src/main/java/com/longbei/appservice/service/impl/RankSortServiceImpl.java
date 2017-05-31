@@ -145,8 +145,8 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
             //4.如果是不需要人工审核,则修改rankMember的中奖状态以及通知中奖用户 并将用户获得的什么奖插入imp_award
             if("0".equals(rank.getIscheck())){
                 this.rankService.submitRankMemberCheckResult(rank,false,true);
-                //发送通知消息给参榜的所有用户
-                this.rankService.rankEndNotice(rank);
+                //发送通知消息给参榜的所有用户,发奖里面已经包含了发送系统通知,所以此处可以不用再次发送消息
+//                this.rankService.rankEndNotice(rank);
             }
 
             //5.更改rank的活动标识为已结束

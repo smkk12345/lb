@@ -609,7 +609,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                         break;
                     }
                     if (nowPoint < userLevelMap.get(tempgrade+1).getPoint()){
-                        grade = tempgrade + 1;
+                        grade = tempgrade;
                     }
                 }
             }
