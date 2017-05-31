@@ -884,14 +884,14 @@ public class ImproveController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/canGiveFlower")
 	@ResponseBody
-	public BaseResp<Object> canGiveFlower(String userid, String improveid, String businesstype, String number) {
+	public BaseResp<Object> canGiveFlower(String userid, String improveid, String businesstype, String businessid, String number) {
         logger.info("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(improveid, userid, number)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, number);
+            baseResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, businessid, number);
             return baseResp;
         } catch (Exception e) {
             logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);

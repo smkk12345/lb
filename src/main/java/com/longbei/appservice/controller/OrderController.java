@@ -387,7 +387,7 @@ public class OrderController {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
   		try {
-  			BaseResp<Object> resResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, number);
+  			BaseResp<Object> resResp = improveService.canGiveFlower(Long.parseLong(userid), improveid, businesstype, businessid, number);
   			if(ResultUtil.fail(resResp)){
   				return resResp;
   			}

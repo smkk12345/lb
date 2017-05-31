@@ -41,7 +41,7 @@
     <result column="notice" property="notice" jdbcType="VARCHAR" />
     <result column="isup" property="isup" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
-    <result column="needConfirm" property="needConfirm" jdbcType="CHAR" />
+    <result column="needconfirm" property="needConfirm" jdbcType="CHAR" />
     <result column="sponsornum" property="sponsornum" jdbcType="INTEGER" />
     <result column="sponsormoney" property="sponsormoney" jdbcType="INTEGER" />
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
@@ -50,6 +50,7 @@
     <result column="ishomerecommend" property="ishomerecommend" jdbcType="VARCHAR" />
     <result column="weight" property="weight" jdbcType="INTEGER" />
     <result column="autotime" property="autotime" jdbcType="VARCHAR" />
+    <result column="maxtotalimprovenum" property="maxtotalimprovenum" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id,rankid, ranktitle, rankbrief, rankdetail, ranklimite, rankinvolved, rankscope, rankphotos,
@@ -57,7 +58,7 @@
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
-    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime,maxtotalimprovenum
   </sql>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
@@ -262,16 +263,16 @@
       ranktype, ispublic, rankcateid, 
       createtime, updatetime, likescore, 
       flowerscore, diamondscore, codeword,
-      ptype,autotime)
+      ptype,autotime,maxtotalimprovenum)
     values (#{id,jdbcType=INTEGER},#{rankid,jdbcType=INTEGER}, #{ranktitle,jdbcType=VARCHAR}, #{rankbrief,jdbcType=VARCHAR}, 
       #{rankdetail,jdbcType=VARCHAR}, #{ranklimite,jdbcType=INTEGER}, #{rankinvolved,jdbcType=INTEGER}, 
       #{rankscope,jdbcType=INTEGER}, #{rankphotos,jdbcType=VARCHAR}, #{rankrate,jdbcType=INTEGER},
       #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{areaname,jdbcType=VARCHAR}, 
       #{coordinate,jdbcType=VARCHAR}, #{isfinish,jdbcType=CHAR}, #{createuserid,jdbcType=BIGINT}, 
-      #{ranktype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, #{rankcateid,jdbcType=INTEGER}, 
+      #{ranktype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, #{rankcateid,jdbcType=INTEGER},
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{likescore,jdbcType=INTEGER}, 
       #{flowerscore,jdbcType=INTEGER}, #{diamondscore,jdbcType=INTEGER}, #{codeword,jdbcType=VARCHAR}, 
-      #{ptype,jdbcType=CHAR},#{autotime,jdbcType=TIMESTAMP})
+      #{ptype,jdbcType=CHAR},#{autotime,jdbcType=TIMESTAMP},#{maxtotalimprovenum,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Rank" >
     insert into rank
@@ -399,8 +400,14 @@
       <if test="notice != null" >
         notice,
       </if>
+      <if test="needConfirm != null" >
+        needConfirm,
+      </if>
       <if test="autotime != null" >
         autotime,
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        maxtotalimprovenum,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -527,8 +534,14 @@
       <if test="notice != null" >
         #{notice},
       </if>
+      <if test="needConfirm != null" >
+        #{needConfirm},
+      </if>
       <if test="autotime != null" >
         #{autotime},
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        #{maxtotalimprovenum},
       </if>
     </trim>
   </insert>
@@ -646,6 +659,9 @@
       <if test="autotime != null" >
         autotime = #{autotime},
       </if>
+      <if test="maxtotalimprovenum != null" >
+        maxtotalimprovenum = #{maxtotalimprovenum},
+      </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
   </update>
@@ -675,7 +691,8 @@
       diamondscore = #{diamondscore,jdbcType=INTEGER},
       codeword = #{codeword,jdbcType=VARCHAR},
       ptype = #{ptype,jdbcType=CHAR},
-      autotime = #{autotime,jdbcType=TIMESTAMP}
+      autotime = #{autotime,jdbcType=TIMESTAMP},
+      maxtotalimprovenum = #{maxtotalimprovenum,jdbcType=VARCHAR}
     where rankid = #{rankid,jdbcType=INTEGER}
   </update>
   <update id="updateSponsornumAndSponsormoney" >
@@ -696,9 +713,6 @@
       <if test="isdel != null" >
         isdel = #{isdel},
       </if>
-      <if test="notice != null" >
-        notice = #{notice},
-      </if>
       <if test="isrecommend != null" >
         isrecommend = #{isrecommend},
       </if>
@@ -716,6 +730,9 @@
       </if>
       <if test="autotime != null" >
         autotime = #{autotime},
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        maxtotalimprovenum = #{maxtotalimprovenum},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
