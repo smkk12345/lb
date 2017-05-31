@@ -46,6 +46,8 @@
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
+    <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
+    <result column="maxtotalimprovenum" property="maxtotalimprovenum" jdbcType="VARCHAR" />
   </resultMap>
 
 
@@ -54,7 +56,7 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule,needconfirm,maxtotalimprovenum
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -373,6 +375,12 @@
       <if test="rankrule != null" >
         rankrule,
       </if>
+      <if test="needconfirm != null" >
+        needconfirm,
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        maxtotalimprovenum,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -504,6 +512,12 @@
       <if test="rankrule != null" >
         #{rankrule},
       </if>
+      <if test="needconfirm != null" >
+        #{needconfirm},
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        #{maxtotalimprovenum},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
@@ -631,6 +645,12 @@
       </if>
       <if test="rankrule != null" >
         rankrule = #{rankrule},
+      </if>
+      <if test="needconfirm != null" >
+        needconfirm = #{needconfirm},
+      </if>
+      <if test="maxtotalimprovenum != null" >
+        maxtotalimprovenum = #{maxtotalimprovenum},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}

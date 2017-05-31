@@ -2641,12 +2641,12 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 //获取好友昵称
-    			String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
-    			if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-                improve.setAppUserMongoEntity(appUserMongoEntity);
                 if (!StringUtils.isBlank(userid)){
+                    String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
+                    if(!StringUtils.isBlank(remark)){
+                        appUserMongoEntity.setNickname(remark);
+                    }
+                    improve.setAppUserMongoEntity(appUserMongoEntity);
                     initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 }
                 //初始化目标，榜单，圈子，教室等信息
