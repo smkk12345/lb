@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -921,7 +922,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-
+//            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+//            if(!ResultUtil.isSuccess(baseResp1)){
+//                return baseResp1;
+//            }
             //校验用户是否已经在榜单中
             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
             if(rankMembers != null && rankMembers.getStatus() == 0 ){
@@ -970,10 +974,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,status==1?"入榜成功":"入榜申请已提交,正在等待榜主审核");
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
-            if(!ResultUtil.isSuccess(baseResp1)){
-                return baseResp1;
-            }
+
 
             RankMembers rankMember = new RankMembers();
             rankMember.setCreatetime(new Date());
@@ -1125,6 +1126,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 updateMap.put("rankId",rankId);
                 updateMap.put("userId",userId);
                 updateMap.put("status","2");
+                updateMap.put("isfashionman","0");
                 updateMap.put("updateTime",new Date());
                 int updateRow = this.rankMembersMapper.updateRank(updateMap);
                 if(updateRow < 1){
@@ -1696,7 +1698,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
     }
 
-
+//    @Transactional(propagation= Propagation.SUPPORTS)
     @Override
     public BaseResp<Object> insertNotice(Rank rank, String noticetype) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -2952,6 +2954,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     /**
+     *pc榜单奖品封装
+     * @param rankid
+     * @return
+     */
+    private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        String photoPath = "40d4f8f6-111c-43c3-b341-236809881296";
+        for (RankAwardRelease rankAward : rankAwards){
+            Award award = new Award();
+            award.setAwardphotos(photoPath);
+            award.setAwardtitle("龙币");
+            award.setAwardbrief("用户发的榜单奖品都是龙币");
+            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/10);
+            rankAward.setAward(award);
+        }
+        return rankAwards;
+    }
+
+    /**
      * 更改榜中的参榜人数
      * @param rankId 榜id
      * @param count 新增人数
@@ -2997,11 +3018,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
                 }
             }
-            //pc端发榜
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(appUser.getNickname());
-            }
+
             //只有当参榜人数满的时候,才获取可以挤掉的榜成员
             if(rank.getRankinvolved() >= rank.getRanklimite()) {
                 //获取可以挤掉的用户数量
@@ -3013,7 +3030,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(queryAward != null && queryAward ){
                 //pc端榜单没有awardid
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                    rank.setRankAwards(rankAwardReleaseMapper.selectListByRankid(String.valueOf(rankId)));
+                    rank.setRankAwards(selectPCRankListByRankidRelease(String.valueOf(rankId)));
                 }else{
                     rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
                 }
@@ -3022,7 +3039,23 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rank.getRankcardid() != null){
                 RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
-                    rankCard.setRankCardUrl(rankCard.getId());
+                    rankCard.setRankCardUrl(rankCard.getId().toString());
+                    rank.setRankCard(rankCard);
+                }
+            }
+
+            //pc端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
+                rank.setCreateuserid(appUser.getNickname());
+
+                //封装pc榜主名片
+                if(rank.getRankCard() == null){
+                    RankCard rankCard = new RankCard();
+                    rankCard.setAdminname(appUser.getNickname());
+                    rankCard.setAdminpic(appUser.getAvatar());
+                    rankCard.setAdminbrief(appUser.getBrief());
+                    rankCard.setRankCardUrl(null);//pc端没有榜主名片id
                     rank.setRankCard(rankCard);
                 }
             }

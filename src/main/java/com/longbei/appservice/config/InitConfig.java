@@ -200,7 +200,7 @@ public class InitConfig implements CommandLineRunner {
     private void initSysRuleLevelPointCache(){
         Map<Integer,UserLevel> map = new HashMap<>();
         //这里做初始化
-        List<UserLevel> list = userLevelMapper.selectAll();
+        List<UserLevel> list = userLevelMapper.selectAll(null,null);
         for (int i = 0; i < list.size(); i++) {
             UserLevel userLevel = list.get(i);
             map.put(userLevel.getGrade(),userLevel);

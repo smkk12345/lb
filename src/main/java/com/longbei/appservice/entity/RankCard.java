@@ -25,7 +25,7 @@ public class RankCard {
     /**
      * 创建人id
      */
-    private Integer createuserid;
+    private String createuserid;
 
     /**
      * 头像
@@ -74,11 +74,11 @@ public class RankCard {
         this.adminbrief = adminbrief == null ? null : adminbrief.trim();
     }
 
-    public Integer getCreateuserid() {
+    public String getCreateuserid() {
         return createuserid;
     }
 
-    public void setCreateuserid(Integer createuserid) {
+    public void setCreateuserid(String createuserid) {
         this.createuserid = createuserid;
     }
 
@@ -122,7 +122,7 @@ public class RankCard {
         return rankCardUrl;
     }
 
-    public void setRankCardUrl(Integer rankCardId) {
+    public void setRankCardUrl(String rankCardId) {
         this.rankCardUrl = AppserviceConfig.h5_rankcard+"?rankCardId="+rankCardId;
     }
 }

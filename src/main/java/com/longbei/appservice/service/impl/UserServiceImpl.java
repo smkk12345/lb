@@ -104,9 +104,9 @@ public class UserServiceImpl implements UserService {
 	private JPushService jPushService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-	
-	
-	
+
+
+
 
 	@Override
 	public BaseResp<UserInfo> selectInfoMore(long userid,long lookid) {
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
 			//查询粉丝总数
 //			int fansCount = snsFansMapper.selectCountFans(userid);
 			expandData.put("fansCount", userInfo.getTotalfans());
-			
+
 			//获取用户被赠与的进步花
 //			int flowernum = 0;
 //			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return reseResp;
 	}
-	
+
 
 	@Override
 	public BaseResp<Object> selectByUserid(long userid) {
@@ -315,7 +315,7 @@ public class UserServiceImpl implements UserService {
 		UserInfo userInfo =  getByNickName(nickname);
 		return userInfo != null;
 	}
-	
+
 	/**
 	* @Title: registerOther
 	* @Description: 注册其他信息
@@ -357,7 +357,7 @@ public class UserServiceImpl implements UserService {
 		return true	;
 	}
 
-	
+
 	/**
 	 * 初始化用户设置
 	 */
@@ -448,7 +448,7 @@ public class UserServiceImpl implements UserService {
 			return baseResp;
 		}
 		//Long userid,String username, String nickname,String inviteuserid
-		//获取唯一昵称 
+		//获取唯一昵称
 		String nickname = NickNameUtils.getSingleNickName("LB",username);
 		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
@@ -700,10 +700,10 @@ public class UserServiceImpl implements UserService {
          */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> registerthird(String username, String password, 
+	public BaseResp<Object> registerthird(String username, String password,
 			String utype, String openid,String inviteuserid,String deviceindex,
 			String devicetype,String randomcode,String avatar) {
-		
+
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 
 		//手机号未注册
@@ -976,10 +976,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	* @Title: getPointInfoLevel 
+	* @Title: getPointInfoLevel
 	* @Description: 拼接用户特权
 	* @param @param userid
-	* @param @return    设定文件 
+	* @param @return    设定文件
 	* @return List<String>    返回类型
 	 */
 	private List<String> getPointInfoLevel(long userid, UserLevel userLevel){
@@ -1341,6 +1341,19 @@ public class UserServiceImpl implements UserService {
 //		List<UserSettingMenu> list = userSettingMenuMapper.selectDefaultMenu();
 	}
 
-
-
+	@Override
+	public Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize) {
+		Integer pageNo = startNum/pageSize+1;
+		Page<UserLevel> page = new Page<>(pageNo,pageSize);
+		try {
+			int totalcount = userLevelMapper.selectUserLevelListCount();
+			pageNo = Page.setPageNo(pageNo,totalcount,pageSize);
+			List<UserLevel> userLevelList = userLevelMapper.selectAll(startNum,pageSize);
+			page.setTotalCount(totalcount);
+			page.setList(userLevelList);
+		} catch (Exception e) {
+			logger.error("selectUserLevelList for adminservice error and msg={}",e);
+		}
+		return page;
+	}
 }
