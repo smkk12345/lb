@@ -2952,6 +2952,25 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     /**
+     *pc榜单奖品封装
+     * @param rankid
+     * @return
+     */
+    private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        String photoPath = "40d4f8f6-111c-43c3-b341-236809881296";
+        for (RankAwardRelease rankAward : rankAwards){
+            Award award = new Award();
+            award.setAwardphotos(photoPath);
+            award.setAwardtitle("龙币");
+            award.setAwardbrief("龙币");
+            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/10);
+            rankAward.setAward(award);
+        }
+        return rankAwards;
+    }
+
+    /**
      * 更改榜中的参榜人数
      * @param rankId 榜id
      * @param count 新增人数
@@ -2997,11 +3016,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
                 }
             }
-            //pc端发榜
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(appUser.getNickname());
-            }
+
             //只有当参榜人数满的时候,才获取可以挤掉的榜成员
             if(rank.getRankinvolved() >= rank.getRanklimite()) {
                 //获取可以挤掉的用户数量
@@ -3013,7 +3028,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(queryAward != null && queryAward ){
                 //pc端榜单没有awardid
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                    rank.setRankAwards(rankAwardReleaseMapper.selectListByRankid(String.valueOf(rankId)));
+                    rank.setRankAwards(selectPCRankListByRankidRelease(String.valueOf(rankId)));
                 }else{
                     rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
                 }
@@ -3023,6 +3038,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
                     rankCard.setRankCardUrl(rankCard.getId());
+                    rank.setRankCard(rankCard);
+                }
+            }
+
+            //pc端发榜
+            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
+                rank.setCreateuserid(appUser.getNickname());
+
+                //封装pc榜主名片
+                if(rank.getRankCard() == null){
+                    RankCard rankCard = new RankCard();
+                    rankCard.setAdminname(appUser.getNickname());
+                    rankCard.setAdminpic(appUser.getAvatar());
+                    rankCard.setAdminbrief(appUser.getBrief());
+//                    rankCard.setRankCardUrl(null);
                     rank.setRankCard(rankCard);
                 }
             }

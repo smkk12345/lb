@@ -69,8 +69,9 @@
         count(1)
     from rank_members
     <where>
+     	1 = 1 
         <if test="isfashionman != null and isfashionman != ''">
-          isfashionman = #{isfashionman}
+          and isfashionman = #{isfashionman}
         </if>
         <if test="checkstatus != null">
           <choose>
