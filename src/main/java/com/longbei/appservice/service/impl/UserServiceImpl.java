@@ -476,8 +476,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> sms(String mobile, String operateType) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-//		String randomCode = StringUtils.getValidateCode();
-		String randomCode = "0000";
+		String randomCode = StringUtils.getValidateCode();
+//		String randomCode = "0000";
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了
@@ -509,31 +509,31 @@ public class UserServiceImpl implements UserService {
 			BaseResp<Object> resp = new BaseResp<>();
 			resp.initCodeAndDesp();
 //			BaseResp resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
-			if (mobile.contains("136836")){
-				iAlidayuService.sendMsg("13683691417", randomCode, operateName);
-			}
-			else if (mobile.contains("1861207")){
-				iAlidayuService.sendMsg("18612073860", randomCode, operateName);
-			}else if(mobile.contains("1501158")){
-				iAlidayuService.sendMsg("15011587112", randomCode, operateName);
-			}
-			else if (mobile.contains("1501151")){
-				iAlidayuService.sendMsg("15011516059", randomCode, operateName);
-			}
-			else if(mobile.contains("1851128")){
-				iAlidayuService.sendMsg("18511285918", randomCode, operateName);
-			}else{
-//				resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
-			}
+//			if (mobile.contains("136836")){
+//				iAlidayuService.sendMsg("13683691417", randomCode, operateName);
+//			}
+//			else if (mobile.contains("1861207")){
+//				iAlidayuService.sendMsg("18612073860", randomCode, operateName);
+//			}else if(mobile.contains("1501158")){
+//				iAlidayuService.sendMsg("15011587112", randomCode, operateName);
+//			}
+//			else if (mobile.contains("1501151")){
+//				iAlidayuService.sendMsg("15011516059", randomCode, operateName);
+//			}
+//			else if(mobile.contains("1851128")){
+//				iAlidayuService.sendMsg("18511285918", randomCode, operateName);
+//			}else{
+				resp = iAlidayuService.sendMsg(mobile, randomCode, operateName);
+//			}
 
-//            if (ResultUtil.isSuccess(resp)) {
+            if (ResultUtil.isSuccess(resp)) {
 				springJedisDao.set(mobile, randomCode, (int)Constant.EXPIRE_USER_RANDOMCODE);
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
                 logger.info("向手机  {} 发送验证码 {} 成功", mobile, randomCode);
-//            } else {
-////            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
-//                logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
-//            }
+            } else {
+//            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+                logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
+            }
         } catch (Exception e) {
             logger.error("向手机  {} 发送验证码 {} 时出现异常：{}", mobile, randomCode,e);
         }
