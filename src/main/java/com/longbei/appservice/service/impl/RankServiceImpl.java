@@ -921,7 +921,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-
+//            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+//            if(!ResultUtil.isSuccess(baseResp1)){
+//                return baseResp1;
+//            }
             //校验用户是否已经在榜单中
             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
             if(rankMembers != null && rankMembers.getStatus() == 0 ){
@@ -970,10 +973,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,status==1?"入榜成功":"入榜申请已提交,正在等待榜主审核");
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
-            if(!ResultUtil.isSuccess(baseResp1)){
-                return baseResp1;
-            }
+
 
             RankMembers rankMember = new RankMembers();
             rankMember.setCreatetime(new Date());
