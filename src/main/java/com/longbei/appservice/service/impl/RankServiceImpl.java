@@ -3037,7 +3037,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rank.getRankcardid() != null){
                 RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
-                    rankCard.setRankCardUrl(rankCard.getId());
+                    rankCard.setRankCardUrl(rankCard.getId().toString());
                     rank.setRankCard(rankCard);
                 }
             }
