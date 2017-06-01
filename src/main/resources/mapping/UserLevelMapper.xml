@@ -41,6 +41,15 @@
     <include refid="Base_Column_List" />
     from user_level
     where 1=1
+    order by grade
+    <if test="startNum != null">
+      limit #{startNum},#{pageSize}
+    </if>
+  </select>
+  <select id="selectUserLevelListCount" resultType="java.lang.Integer">
+    select count(1)
+    from user_level
+    where 1=1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from user_level
