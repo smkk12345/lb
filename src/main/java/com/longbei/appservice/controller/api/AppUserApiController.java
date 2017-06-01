@@ -242,5 +242,34 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    /**
+     * @Description: 查看用户等级列表
+     * @param startNum 分页起始值
+     * @param pageSize 每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年6月1日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "selectUserLevelList")
+    public BaseResp<Page<UserLevel>> selectUserLevelList(String startNum, String pageSize){
+        logger.info("selectUserLevelList for adminservice startNum={},pageSize={}",startNum,pageSize);
+        Page.initPageNoAndPageSize(startNum,pageSize);
+        BaseResp<Page<UserLevel>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(startNum)) {
+            startNum = Constant.DEFAULT_START_NO;
+        }
+        if (StringUtils.isBlank(pageSize)) {
+            pageSize = "50";
+        }
+        try {
+            Page<UserLevel> page = userService.selectUserLevelList(Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("selectUserLevelList for adminservice startNum={},pageSize={}", startNum,pageSize,e);
+        }
+        return baseResp;
+    }
+
 
 }

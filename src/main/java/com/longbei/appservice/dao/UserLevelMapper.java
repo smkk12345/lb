@@ -23,7 +23,19 @@ public interface UserLevelMapper {
 	 */
     UserLevel selectByGrade(@Param("grade") Integer grade);
 
-    List<UserLevel> selectAll();
+    /**
+     * @Description: 查看用户等级列表
+     * @param startNum 分页起始值
+     * @param pageSize 每页显示条数
+     */
+    List<UserLevel> selectAll(@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * @Description: 查看用户等级列表数量
+     * @auther IngaWu
+     * @currentdate:2017年6月1日
+     */
+    Integer selectUserLevelListCount();
 
     int updateByPrimaryKeySelective(UserLevel record);
 

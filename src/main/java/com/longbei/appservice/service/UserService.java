@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.entity.UserSettingMenu;
 
 import java.util.List;
@@ -247,4 +248,15 @@ public interface UserService {
 	 */
 	BaseResp<Object> sendMessagesBatch(String friendid, String[] userids , String businesstype,
 								 String businessid, String remark,String title);
+
+	/**
+	 * @Description: 查看用户等级列表
+	 * @param startNum 分页起始值
+	 * @param pageSize 每页显示条数
+	 * @auther IngaWu
+	 * @currentdate:2017年6月1日
+	 */
+	Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize);
+
+
 }
