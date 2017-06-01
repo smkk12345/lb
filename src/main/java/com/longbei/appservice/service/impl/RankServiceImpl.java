@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -1125,6 +1126,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 updateMap.put("rankId",rankId);
                 updateMap.put("userId",userId);
                 updateMap.put("status","2");
+                updateMap.put("isfashionman","0");
                 updateMap.put("updateTime",new Date());
                 int updateRow = this.rankMembersMapper.updateRank(updateMap);
                 if(updateRow < 1){
@@ -1696,7 +1698,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
     }
 
-
+//    @Transactional(propagation= Propagation.SUPPORTS)
     @Override
     public BaseResp<Object> insertNotice(Rank rank, String noticetype) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -2963,7 +2965,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Award award = new Award();
             award.setAwardphotos(photoPath);
             award.setAwardtitle("龙币");
-            award.setAwardbrief("龙币");
+            award.setAwardbrief("用户发的榜单奖品都是龙币");
             award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/10);
             rankAward.setAward(award);
         }
@@ -3053,7 +3055,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankCard.setAdminname(appUser.getNickname());
                     rankCard.setAdminpic(appUser.getAvatar());
                     rankCard.setAdminbrief(appUser.getBrief());
-//                    rankCard.setRankCardUrl(null);
+                    rankCard.setRankCardUrl(null);//pc端没有榜主名片id
                     rank.setRankCard(rankCard);
                 }
             }
