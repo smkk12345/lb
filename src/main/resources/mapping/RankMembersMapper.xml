@@ -177,6 +177,45 @@
       limit 0,6
   </select>
 
+    <select id="getJoinRankCount" parameterType="map" resultType="Integer">
+        select
+          count(1)
+        from rank_members
+          <if test="isfinish != null">
+              inner join rank on rank_members.rankid = rank.rankid
+          </if>
+        <where>
+            <if test="isfashionman != null and isfashionman != ''">
+                isfashionman = #{isfashionman}
+            </if>
+            <if test="checkstatus != null">
+                <choose>
+                    <when test="checkstatus == '2'.toString()">
+                        AND (checkstatus = '2' OR checkstatus = '3')
+                    </when>
+                    <when test="checkstatus == '-1'.toString()">
+                        AND (checkstatus != '0')
+                    </when>
+                    <otherwise>
+                        AND checkstatus = #{checkstatus}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="isfinish != null">
+                and rank.isfinish = #{isfinish}
+            </if>
+            <if test="status != null">
+                and rank_members.status = #{status}
+            </if>
+            <if test="rankid != null">
+                and rank_members.rankid=#{rankid}
+            </if>
+            <if test="userid != null">
+                and rank_members.userid=#{userid}
+            </if>
+        </where>
+    </select>
+
   <!--<select id="selectRankAcceptAwardCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">-->
     <!--SELECT-->
       <!--count(*)-->
