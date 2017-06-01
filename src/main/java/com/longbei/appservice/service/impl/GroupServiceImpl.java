@@ -306,6 +306,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         continue;
                     }else{
                         if(snsGroup.getNeedconfirm() && snsGroupMembers.getStatus() == 0 && (invitationUserId == null || (invitationUserId != null && !invitationUserId.equals(snsGroup.getMainuserid())))){
+                            if(StringUtils.isNotEmpty(remark) && !remark.equals(snsGroupMembers.getRemark())){
+                                Map<String,Object> updateMap = new HashMap<String,Object>();
+                                ArrayList<Long> tempUserArrayList = new ArrayList<Long>();
+                                tempUserArrayList.add(snsGroupMembers.getUserid());
+                                updateMap.put("updateUserIds",tempUserArrayList);
+                                updateMap.put("groupId",groupId);
+                                updateMap.put("remark",remark);
+                                //更改用户加群的状态
+                                int updateStatusRow = this.snsGroupMembersMapper.batchUpdateSnsGroupMemberStatus(updateMap);
+                            }
                             continue;
                         }
 
