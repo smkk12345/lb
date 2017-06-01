@@ -490,7 +490,10 @@
             acceptaward = #{acceptaward},
         </if>
         <if test="updateTime != null">
-            updatetime = #{updateTime}
+            updatetime = #{updateTime},
+        </if>
+        <if test="isfashionman != null">
+            isfashionman = #{isfashionman}
         </if>
     </set>
     where userid = #{userId} and rankid = #{rankId}

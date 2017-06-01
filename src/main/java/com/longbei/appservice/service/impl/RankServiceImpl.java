@@ -1125,6 +1125,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 updateMap.put("rankId",rankId);
                 updateMap.put("userId",userId);
                 updateMap.put("status","2");
+                updateMap.put("isfashionman","0");
                 updateMap.put("updateTime",new Date());
                 int updateRow = this.rankMembersMapper.updateRank(updateMap);
                 if(updateRow < 1){
