@@ -1237,7 +1237,7 @@ public class ImproveServiceImpl implements ImproveService{
                 	remark = map.get(userid + "_" + user.getId() + "_value");
                 }
 //                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
-                if(!StringUtils.isBlank(remark)){
+                if(StringUtils.isNotBlank(remark)){
                     user.setNickname(remark);
                 }
                 improve.setAppUserMongoEntity(user);
@@ -1532,7 +1532,7 @@ public class ImproveServiceImpl implements ImproveService{
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 //获取好友昵称
                 String remark = userRelationService.selectRemark(userid, improve.getUserid());
-                if(!StringUtils.isBlank(remark)){
+                if(StringUtils.isNotBlank(remark)){
                     appUserMongoEntity.setNickname(remark);
                 }
             }
@@ -2323,7 +2323,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private String firstPhotos(String photos){
-        if(!StringUtils.isBlank(photos)){
+        if(StringUtils.isNotBlank(photos)){
             JSONArray jsonArray = JSONArray.fromObject(photos);
             if(jsonArray.size()>0){
                 photos = jsonArray.getString(0);
@@ -2641,14 +2641,14 @@ public class ImproveServiceImpl implements ImproveService{
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 //获取好友昵称
-    			String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
-    			if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-                improve.setAppUserMongoEntity(appUserMongoEntity);
-                if (!StringUtils.isBlank(userid)){
+                if (StringUtils.isNotBlank(userid)){
+                    String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
+                    if(StringUtils.isNotEmpty(remark)){
+                        appUserMongoEntity.setNickname(remark);
+                    }
                     initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 }
+                improve.setAppUserMongoEntity(appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
                 switch(businesstype){
                     case Constant.IMPROVE_SINGLE_TYPE:
@@ -3188,9 +3188,25 @@ public class ImproveServiceImpl implements ImproveService{
      * @param number
      */
 	@Override
-	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number) {
+	public BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String businessid, String number) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+            if("2".equals(businesstype)){
+                //判断榜中的进步是否已删除，已下榜
+                Improve improve = selectImproveByImpidMuc(Long.parseLong(improveid), userid + "",
+                        businesstype, businessid);
+                if(null != improve){
+                    if("1".equals(improve.getIsdel())){
+                        reseResp.initCodeAndDesp(Constant.STATUS_SYS_401,Constant.RTNINFO_SYS_401);
+                        return reseResp;
+                    }
+                    if("1".equals(improve.getIsbusinessdel())){
+                        //下榜的进步送花无限制
+                        reseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                        return reseResp;
+                    }
+                }
+            }
 			Integer flowerSum = impAllDetailMapper.selectSumByImp(userid, improveid);
 			if(flowerSum != null){
 				if(flowerSum+Integer.parseInt(number) > Constant_point.DAILY_IMPFLOWER_LIMIT){

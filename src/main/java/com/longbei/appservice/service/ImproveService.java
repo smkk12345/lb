@@ -524,7 +524,7 @@ public interface ImproveService {
      * @param improveid 
      * @param number
      */
-    BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String number);
+    BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String businessid, String number);
 
     /**
      * 获取用户的关注用户id列表
