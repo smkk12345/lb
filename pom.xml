@@ -41,11 +41,11 @@
         <repository>
             <id>longbei-repos</id>
             <name>Longbei Releases</name>
-            <url>http://210.51.191.183:9081/content/groups/public/</url>
+            <url>http://47.92.154.32:9999/nexus/content/groups/public/</url>
         </repository>
         <repository>
             <id>longbei</id>
-            <url>http://210.51.191.183:9081/content/repositories/thirdparty/</url>
+            <url>http://47.92.154.32:9999/nexus/content/repositories/thirdparty/</url>
         </repository>
 
         <repository>
@@ -436,9 +436,9 @@
     <pluginRepositories>
 
         <pluginRepository>
-            <id>public</id>
-            <name>Public Repositories</name>
-            <url>http://210.51.191.183:9081/content/groups/public</url>
+            <id>longbei-repos</id>
+            <name>Longbei Releases</name>
+            <url>http://47.92.154.32:9999/nexus/content/groups/public/</url>
             <snapshots><enabled>true</enabled></snapshots>
 
         </pluginRepository>
