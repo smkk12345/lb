@@ -684,7 +684,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
 				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
 			}
-			dataList.add(appUserMongEntity);
+			if(!userid.equals(userRe.getChangeuid())){
+				dataList.add(appUserMongEntity);
+			}
 		}
 		baseResp.setData(dataList);
 		baseResp.getExpandData().put("updateTime",DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));

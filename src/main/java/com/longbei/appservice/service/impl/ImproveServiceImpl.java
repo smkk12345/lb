@@ -1343,15 +1343,18 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化用户关系信息
      */
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
+    	
         if(userid == null || userid == -1){
             apuser.setIsfans("0");
             apuser.setIsfriend("0");
             return ;
         }
-        if(userid.equals(apuser.getUserid())){
-            apuser.setIsfans("1");
-            apuser.setIsfriend("1");
-            return;
+        if(null != apuser){
+        	if(userid.equals(apuser.getUserid())){
+                apuser.setIsfans("1");
+                apuser.setIsfriend("1");
+                return;
+            }
         }
         initFriendInfo(userid,apuser);
         initFanInfo(userid,apuser);
