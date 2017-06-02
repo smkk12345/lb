@@ -689,8 +689,27 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         if(Constant_Imp_Icon.hasContain(operateType)){ //key 直接存在  目前有两种情况 签到  邀请好友注册
             if(operateType.equals("INVITE_LEVEL1")){
                 result = Constant_Imp_Icon.getStaticProperty(operateType);
+                //邀请好友注册成功可得X个进步币，上限值
+                String operateTypeLimit = operateType+"_LIMIT";
+                if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
+                	int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
+//                  logger.info("getImpIcon key = {}, dateStr+operateTypeLimit = {}", key, dateStr+operateTypeLimit);
+	                String cacheStr = springJedisDao.getHashValue(key,"invite_icon"+dateStr+operateTypeLimit);
+	                int cacheTime = 0;
+	             	if(!StringUtils.isBlank(cacheStr)){
+	                  	cacheTime = Integer.parseInt(cacheStr);
+	             	}
+	             	if(limit > cacheTime){
+	             		springJedisDao.put(key,"invite_icon"+dateStr+operateTypeLimit,(cacheTime+result)+"");
+	                    return result;
+	                }else{
+	                    return 0;
+	                }
+                }else{
+                	//-------
+                }
                 //
-                return result;
+                return 0;
             }else if(operateType.equals("DAILY_CHECKIN")){
                 String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userInfo.getUserid(),
                         Constant.RP_USER_CHECK_VALUE + userInfo.getUserid());

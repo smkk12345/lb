@@ -105,6 +105,8 @@ public class Constant_point {
      */
     public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();
 
+    public static int INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregistergoalsmax();
+
     
 
     private static Map<String,Integer> fieldsMap = null;
