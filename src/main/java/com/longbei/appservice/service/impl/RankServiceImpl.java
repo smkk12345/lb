@@ -3524,9 +3524,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 						if(improve.getBrief().length()>=20){
 							//抓取内容20个字
 							String brief = improve.getBrief().substring(0, 20);
-							remark = remark.replace("n", brief);
+							remark = remark.replace("n", "(" + brief + ")");
 						}else{
-							remark = remark.replace("n", improve.getBrief());
+							remark = remark.replace("n", "(" + improve.getBrief() + ")");
 						}
 					}else{
 						remark = remark.replace("n", "");
