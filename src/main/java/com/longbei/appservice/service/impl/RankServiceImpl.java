@@ -604,11 +604,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("pageSize",pageSize);
-            List<Rank> ranks = rankMapper.selectRankList(map);
             int totalCount = 0;
             if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
                  totalCount = rankMapper.selectRankListCount(map);
             }
+            List<Rank> ranks = totalCount == 0?new ArrayList<Rank>():rankMapper.selectRankList(map);
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     rank1.setHasjoin("0");
@@ -2838,12 +2838,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //查询所有的中奖用户 按照中奖等级排列
             List<RankMembers> rankMemberses = this.rankMembersMapper.getWinningRankAwardUser(rankid,null,null);
             if(rankMemberses != null && rankMemberses.size() > 0){
-                Integer awardLevel = -1;
-                Integer awardCount = 0;
+                int awardLevel = -1;
+                int awardCount = 0;
                 Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
                 List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
                 for(RankMembers rankMembers:rankMemberses){
-                    if(awardLevel != rankMembers.getAwardlevel()){
+                    if(awardLevel != rankMembers.getAwardlevel().intValue()){
                         if(awards.size() > 0){
                             awardMap.put("awardcount",awardCount);
                             awardMap.put("awardMembers",awards);
@@ -2851,7 +2851,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardMap = new HashMap<String,Object>();
                             awards = new ArrayList<Map<String,Object>>();
                             awardCount = 0;
-                            awardLevel = rankMembers.getAwardlevel();
+                            awardLevel = rankMembers.getAwardlevel().intValue();
+                        }else{
+                            awardLevel = rankMembers.getAwardlevel().intValue();
                         }
                         Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                         RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankMembers.getRankAward().getAwardid()+"");
