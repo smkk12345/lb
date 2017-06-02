@@ -1133,7 +1133,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setAppUserMongoEntity(appUserMongoEntity);
                 }
             }
-            baseResp = BaseResp.ok();
+            baseResp.initCodeAndDesp();
             baseResp.setData(list);
         } catch (Exception e) {
             logger.error("select other user improve targetuserid={} list is error:",targetuserid,e);

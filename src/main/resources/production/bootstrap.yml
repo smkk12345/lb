@@ -1,7 +1,7 @@
 ﻿server:
       port: 8080 #definded in application-osrad.yml
       session-timeout: 1800 # session timeout in seconds
-      context-path: /appService # the context path, defaults to '/'
+      context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
 spring:
     application:
