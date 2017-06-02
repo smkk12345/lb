@@ -544,7 +544,7 @@ public class Constant {
 //	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主剔除了该龙榜!";      //下榜
 //	public static final String  MSG_QUITRANK_IMP_MODEL = "您在龙榜'n'中的进步已删除!";      //下榜
 //	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
-	public static final String  MSG_IMP_DEL_MODEL = "您的微进步n因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
+	public static final String  MSG_IMP_DEL_MODEL = "您此条微进步(n)因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	

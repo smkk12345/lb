@@ -13,13 +13,11 @@ spring:
             profile: application
             discovery:
               enabled: true
-              serviceId: config-service
+              serviceId: config-server
 eureka:
   instance:
     preferIpAddress: true #就可以将IP注册到Eureka Server上，而如果不配置就是机器的主机名。
 
-
-
   client:
     serviceUrl:
-        defaultZone: http://172.16.129.6:8888/eureka/,http://172.16.129.7:8888/eureka
+        defaultZone: http://172.19.3.4:8080/eureka/,http://172.19.2.3:8080/eureka,http://172.19.5.4:8080/eureka
