@@ -81,7 +81,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Override
 	public String selectRemark(Long userid, Long friendid) {
 		if(userid == null || friendid == null){
-			return null;
+			return "";
 		}
 		//判断已关注者是否是好友关系
 		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
@@ -104,7 +104,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Override
 	public Map<String, String> selectRemarkImpLine(Long userid) {
 		if(userid == null || "-1".equals(userid.toString())){
-			return null;
+			return new HashMap<String,String>();
 		}
 		Map<String, String> map = springJedisDao.entries("imptimeline_" + userid);
 		if(!map.isEmpty()){
