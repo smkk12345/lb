@@ -40,7 +40,10 @@ public class Constant_point {
         DAILY_FLOWER_LIMIT = SysRulesCache.behaviorRule.getFlowergoalsmax();//送花限制
         DAILY_IMPFLOWER_LIMIT = SysRulesCache.behaviorRule.getEachimproveflowersmax();
         LOTTERY = SysRulesCache.behaviorRule.getLotterygoals();//lottery 抽奖
-        INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();
+        INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();//邀请好友
+        INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregistergoalsmax();//邀请好友限制
+        DAILY_ADDRANK = SysRulesCache.behaviorRule.getJoinrankgoals();//加榜
+        DAILY_ADDRANK_LIMIT = SysRulesCache.behaviorRule.getJoinrankgoalstimes()*DAILY_ADDRANK;//加榜限制
         fieldsMap = null;
     }
 
@@ -87,7 +90,7 @@ public class Constant_point {
     public static int DAILY_ADDIMP = SysRulesCache.behaviorRule.getImprovegoals();//发进步
     public static int DAILY_ADDIMP_LIMIT = SysRulesCache.behaviorRule.getImprovegoalsmax();//发进步限制
     public static int DAILY_ADDRANK = SysRulesCache.behaviorRule.getJoinrankgoals();//加榜
-    public static int DAILY_ADDRANK_LIMIT = SysRulesCache.behaviorRule.getJoinrankgoalstimes();//加榜限制
+    public static int DAILY_ADDRANK_LIMIT = SysRulesCache.behaviorRule.getJoinrankgoalstimes()*DAILY_ADDRANK;//加榜限制
     public static int DAILY_ADDCLASSROOM = SysRulesCache.behaviorRule.getJoinclassgoals();//加教室
     public static int DAILY_ADDCLASSROOM_LIMIT = 35;//加教室限制
     public static int DAILY_ADDCIRCLE = SysRulesCache.behaviorRule.getJoincirclegoals();//加圈子

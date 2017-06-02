@@ -379,7 +379,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
 
             //添加好友成功获得龙分
             UserInfo userInfo = userService.selectJustInfo(friendAddAsk.getSenderUserId());
-            userBehaviourService.pointChange(userInfo,"DAILY_ADDFRIEND",Constant_Perfect.PERFECT_GAM,null,0,0);
+            userBehaviourService.pointChange(userInfo,"DAILY_ADDFRIEND",Constant_Perfect.PERFECT_GAM,"13",0,0);
 
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
