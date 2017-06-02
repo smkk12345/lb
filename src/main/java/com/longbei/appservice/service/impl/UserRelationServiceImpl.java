@@ -103,7 +103,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 */
 	@Override
 	public Map<String, String> selectRemarkImpLine(Long userid) {
-		if(userid == null){
+		if(userid == null || "-1".equals(userid.toString())){
 			return null;
 		}
 		Map<String, String> map = springJedisDao.entries("imptimeline_" + userid);
