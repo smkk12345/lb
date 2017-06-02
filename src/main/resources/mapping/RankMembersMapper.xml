@@ -788,7 +788,7 @@
         where iswinning = 1
             and checkstatus = 3
             and rankid = #{rankid}
-        order by awardlevel
+        order by awardlevel,sortnum
         <if test="startNum != null">
             limit #{startNum},#{pageSize}
         </if>
