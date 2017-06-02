@@ -250,7 +250,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 						try {
 							payService.testWx();
 						}catch (Exception e){
-							e.printStackTrace();
+							logger.error("testWx ", e);
 						}
 				}
 			});
