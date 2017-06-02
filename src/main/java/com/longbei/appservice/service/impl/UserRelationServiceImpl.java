@@ -461,6 +461,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 				list = new ArrayList<>();
 			}
 			reseResp.setData(list);
+			reseResp.initCodeAndDesp();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}", userid, nickname, e);

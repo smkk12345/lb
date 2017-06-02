@@ -94,6 +94,9 @@ public class ArticleServiceImpl implements ArticleService{
             List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
             for (ArticleBusiness articleBusiness : articleBusinesses){
                 Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());
+                if(rank == null){
+                    continue;
+                }
                 BaseResp<List<RankAwardRelease>> baseResp1 = rankService.selectRankAward(rank.getRankid());
                 if (ResultUtil.isSuccess(baseResp1)){
                     List<RankAwardRelease> rankAwardRelease = baseResp1.getData();
