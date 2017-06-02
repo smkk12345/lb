@@ -326,7 +326,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }else{
                 //通过级别获取升级下以及所需分数  进行缓存
                 int curpoint = userInfo.getCurpoint();//这里需要改
-                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade()+1);
+                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
                 int upCount = userLevel.getDiff();
                 int leftPoint = upCount -curpoint - iPoint;
                 if(leftPoint > 0){

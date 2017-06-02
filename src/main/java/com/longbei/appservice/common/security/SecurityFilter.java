@@ -36,6 +36,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 	 
 	/**
 	 * 需要验证需要做两件事 验证token token保存在redis上 处理参数
+	 * eth0
 	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain arg2) throws ServletException, IOException {

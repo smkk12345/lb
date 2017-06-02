@@ -81,7 +81,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	@Override
 	public String selectRemark(Long userid, Long friendid) {
 		if(userid == null || friendid == null){
-			return null;
+			return "";
 		}
 		//判断已关注者是否是好友关系
 		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
@@ -103,8 +103,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 */
 	@Override
 	public Map<String, String> selectRemarkImpLine(Long userid) {
-		if(userid == null){
-			return null;
+		if(userid == null || "-1".equals(userid.toString())){
+			return new HashMap<String,String>();
 		}
 		Map<String, String> map = springJedisDao.entries("imptimeline_" + userid);
 		if(!map.isEmpty()){
@@ -461,6 +461,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 				list = new ArrayList<>();
 			}
 			reseResp.setData(list);
+			reseResp.initCodeAndDesp();
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("selectLongRangeListByUnameAndNname userid = {}, nickname = {}", userid, nickname, e);
@@ -684,7 +685,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
 				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
 			}
-			dataList.add(appUserMongEntity);
+			if(!userid.equals(userRe.getChangeuid())){
+				dataList.add(appUserMongEntity);
+			}
 		}
 		baseResp.setData(dataList);
 		baseResp.getExpandData().put("updateTime",DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));

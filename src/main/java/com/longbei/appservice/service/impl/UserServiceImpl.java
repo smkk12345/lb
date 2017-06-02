@@ -130,7 +130,12 @@ public class UserServiceImpl implements UserService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 			}
-			userInfo.setDetailList(detailList);
+			if(null != detailList && detailList.size()>0){
+				userInfo.setDetailList(detailList);
+			}else{
+				userInfo.setDetailList(new ArrayList<UserPlDetail>());
+			}
+			
 			//获取用户星级
 //			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
 //			expandData.put("userStar", userLevel.getStar());

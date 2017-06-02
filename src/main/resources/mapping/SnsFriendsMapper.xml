@@ -45,6 +45,7 @@
     <include refid="Base_Column_List" />
     from sns_friends
     where userid = #{userid}
+        and friendid != #{userid}
         <if test="updateTime != null">
             and updateTime > #{updateTime}
         </if>
