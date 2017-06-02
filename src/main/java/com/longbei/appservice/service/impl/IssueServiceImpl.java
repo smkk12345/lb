@@ -125,8 +125,14 @@ public class IssueServiceImpl implements IssueService{
         try {
             List<IssueClassify> classifyList = new ArrayList<IssueClassify>(){
                 {
-                add(new IssueClassify(0,"0","关于龙进步",8,"2017-04-27 12:25:30","2017-04-29 15:25:30"));
-                add(new IssueClassify(1,"1","关于龙榜",10,"2017-04-26 11:25:30","2017-04-28 10:25:30"));
+                add(new IssueClassify(0,"0","微进步",8,"2017-04-27 12:25:30","2017-04-29 15:25:30"));
+                add(new IssueClassify(1,"1","龙榜",10,"2017-04-26 11:25:30","2017-04-28 10:25:30"));
+                add(new IssueClassify(2,"2","我的",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
+                add(new IssueClassify(3,"3","钱包",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
+                add(new IssueClassify(4,"4","账号设置",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
+                add(new IssueClassify(5,"5","龙信",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
+                add(new IssueClassify(6,"6","兑换商城",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
+                add(new IssueClassify(7,"7","奖品",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
                 }
             };
             baseResp.setData(classifyList);

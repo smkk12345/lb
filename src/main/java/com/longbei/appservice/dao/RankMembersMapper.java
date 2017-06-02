@@ -151,4 +151,10 @@ public interface RankMembersMapper {
      */
     int updateSortSource(@Param("rankid") Long rankid);
 
+    /**
+     * 获取用户参与的榜单 数量
+     * @param map
+     * @return
+     */
+    int getJoinRankCount(Map<String, Object> map);
 }

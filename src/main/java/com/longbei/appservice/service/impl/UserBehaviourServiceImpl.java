@@ -189,9 +189,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }
             switch (privilegeType){
                 case joinranknum:
-                    RankMembers rankMembers = new RankMembers();
-                    rankMembers.setUserid(userInfo.getUserid());
-                    int count = rankMembersMapper.selectCount(rankMembers);
+                    //查询用户当前参与的榜数量 只查询当前榜正在进行中的
+                    Map<String,Object> map = new HashMap<String,Object>();
+                    map.put("userid",userInfo.getUserid());
+                    map.put("isfinish",1);
+                    map.put("status",1);
+                    int count = this.rankMembersMapper.getJoinRankCount(map);
+
                     if(count < userLevel.getJoinranknum()){
                         return BaseResp.ok();
                     }else{

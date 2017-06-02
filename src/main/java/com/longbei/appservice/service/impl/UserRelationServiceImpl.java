@@ -458,7 +458,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_27, Constant.RTNINFO_SYS_27);
+				list = new ArrayList<>();
 			}
 			reseResp.setData(list);
 		} catch (Exception e) {
