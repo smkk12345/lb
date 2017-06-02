@@ -1235,6 +1235,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 //					List<SnsFans> fanslist = snsFansMapper.selectFansByLikeUserid(userid, startNum, endNum);
 //					fanslists(fanslist, userid, msgtype);
 					for (UserMsg userMsg : list) {
+						userMsg.setRemark("关注了您");
 						//初始化消息中用户信息----friendid
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}
