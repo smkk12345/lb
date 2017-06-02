@@ -485,7 +485,7 @@
       <if test="area != null" >
         area = #{area,jdbcType=VARCHAR},
       </if>
-      <if test="brief != null" >
+      <if test="brief != null and brief != ''" >
         brief = #{brief,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null" >

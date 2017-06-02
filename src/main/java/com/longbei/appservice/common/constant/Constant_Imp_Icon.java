@@ -44,6 +44,8 @@ public class Constant_Imp_Icon {
      */
 //    public static int INVITE_LEVEL1 = 10;
     public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
+    
+    public static int INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
 
     //以下两类需要单独接口
     public static int DAILY_FLOWERED = 0;//被送花 进步币系数
