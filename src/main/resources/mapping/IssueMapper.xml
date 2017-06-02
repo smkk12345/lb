@@ -28,7 +28,7 @@
     <if test="issue.typeid != null and issue.typeid != ''" >
       AND typeid = #{issue.typeid}
     </if>
-    ORDER BY sortnum DESC
+    ORDER BY  sortnum, createtime DESC
     limit #{startNum},#{pageSize}
   </select>
   <select id="selectIssueListCount" parameterType="com.longbei.appservice.entity.Issue" resultType="java.lang.Integer">
