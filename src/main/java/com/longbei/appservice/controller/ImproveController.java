@@ -434,7 +434,9 @@ public class ImproveController {
             improves = improveService.selectImproveListByUser(userid, ptype, ctype,
                     lastDate == null ? null : DateUtils.parseDate(lastDate),
                     Integer.parseInt(pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize),0);
-            BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+//            BaseResp<List<Improve>> baseres = BaseResp.ok(Constant.RTNINFO_SYS_44);
+            BaseResp<List<Improve>> baseres = new BaseResp<>();
+            baseres.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_44);
             baseres.setData(improves);
 
             if(StringUtils.isBlank(lastDate)&&ctype.equals("1")){

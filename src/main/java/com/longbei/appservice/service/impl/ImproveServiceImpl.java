@@ -1133,7 +1133,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setAppUserMongoEntity(appUserMongoEntity);
                 }
             }
-            baseResp = BaseResp.ok();
+            baseResp.initCodeAndDesp();
             baseResp.setData(list);
         } catch (Exception e) {
             logger.error("select other user improve targetuserid={} list is error:",targetuserid,e);
@@ -1349,10 +1349,12 @@ public class ImproveServiceImpl implements ImproveService{
             apuser.setIsfriend("0");
             return ;
         }
-        if(userid.equals(apuser.getUserid())){
-            apuser.setIsfans("1");
-            apuser.setIsfriend("1");
-            return;
+        if(null != apuser){
+        	if(userid.equals(apuser.getUserid())){
+                apuser.setIsfans("1");
+                apuser.setIsfriend("1");
+                return;
+            }
         }
         initFriendInfo(userid,apuser);
         initFanInfo(userid,apuser);
