@@ -1297,8 +1297,8 @@ public class ImproveServiceImpl implements ImproveService{
                     }
                     if (null != rank) {
                         logger.info("select rank is not null rank={}", JSON.toJSONString(rank));
-                        if (rank.getIsfinish().equals("1")) {
-                            baseResp.initCodeAndDesp();
+                        if (!"1".equals(rank.getIsfinish())) {
+                            baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
                         if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
                             baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
