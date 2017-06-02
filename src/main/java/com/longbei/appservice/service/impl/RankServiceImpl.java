@@ -608,7 +608,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
                  totalCount = rankMapper.selectRankListCount(map);
             }
-            List<Rank> ranks = totalCount == 0?new ArrayList<Rank>():rankMapper.selectRankList(map);
+            List<Rank> ranks = new ArrayList<Rank>();
+            if(StringUtils.isNotEmpty(rankTitle) && startNo == 0 && totalCount == 0){
+                ranks = new ArrayList<Rank>();
+            }else{
+                ranks =rankMapper.selectRankList(map);
+            }
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     rank1.setHasjoin("0");
@@ -3049,11 +3054,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(appUser.getNickname());
+                rank.setCreateuserid(rank.getCreateuserid());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
                     RankCard rankCard = new RankCard();
+                    rankCard.setCreateuserid(rank.getCreateuserid());
                     rankCard.setAdminname(appUser.getNickname());
                     rankCard.setAdminpic(appUser.getAvatar());
                     rankCard.setAdminbrief(appUser.getBrief());
@@ -3433,7 +3439,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankAcceptAward.setRankid(Long.parseLong(rankid));
                 rankAcceptAward.setUserid(rkmember.getUserid());
                 rankAcceptAward.setReceivecode(rkmember.getReceivecode());
-                if(null == rkmember.getRankAward()){
+                if(null == rkmember.getRankAward() || rkmember.getRankAward().getAwardid() == null){
                     continue;
 //                    rkmember.setRankAward(rankAwardMapper.selectRankAwardByRankIdAndAwardId(rkmember.getRankid(),rkmember.getAwardid()));
                 }

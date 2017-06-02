@@ -1133,7 +1133,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setAppUserMongoEntity(appUserMongoEntity);
                 }
             }
-            baseResp = BaseResp.ok();
+            baseResp.initCodeAndDesp();
             baseResp.setData(list);
         } catch (Exception e) {
             logger.error("select other user improve targetuserid={} list is error:",targetuserid,e);
@@ -1343,8 +1343,7 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化用户关系信息
      */
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
-    	
-        if(userid == null || userid == -1){
+        if(apuser == null || userid == null || userid == -1){
             apuser.setIsfans("0");
             apuser.setIsfriend("0");
             return ;
@@ -2962,7 +2961,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
                     (null,null,startno,pagesize);
-            Map<String, String> map = userRelationService.selectRemarkImpLine(Long.parseLong(userid));
+            Map<String, String> map = userRelationService.selectRemarkImpLine(userid != null?Long.parseLong(userid):null);
             if (null != timeLineDetails && timeLineDetails.size() != 0){
                 for (int i = 0 ; i < timeLineDetails.size() ; i++){
                     TimeLineDetail timeLineDetail = timeLineDetails.get(i);
