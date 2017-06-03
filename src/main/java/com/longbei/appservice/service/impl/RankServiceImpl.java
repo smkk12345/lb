@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -170,8 +171,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankMapper.updateSymbolByRankId(rank);
+            if("5".equals(rank.getIsfinish())){
+//            	rank = rankMapper.selectRankByRankid(rank.getRankid());
+            	//发送获奖消息
+	         	try {
+	               	sendRankEndUserMsg(rank);
+	           	} catch (Exception e) {
+	             	logger.error("send rank rankid={}",rank.getRankid(),e);
+	           	}
+            }
         } catch (Exception e) {
-            logger.error("update rank symbol is error:",e);
+            logger.error("updateRankSymbol rank = {}", JSON.toJSON(rank).toString(), e);
         }
         return res>0;
     }
@@ -1449,11 +1459,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //添加中奖名单信息
             insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
             //发送获奖消息
-            try {
-                sendRankEndUserMsg(rank);
-            } catch (Exception e) {
-                logger.error("send rank rankid={} end msg is error:",rank.getRankid(),e);
-            }
+//            try {
+//                sendRankEndUserMsg(rank);
+//            } catch (Exception e) {
+//                logger.error("send rank rankid={} end msg is error:",rank.getRankid(),e);
+//            }
             return baseResp;
         }
         return BaseResp.fail();
