@@ -337,7 +337,7 @@
       <if test="createtime != null" >
         createtime,
       </if>
-      <if test="updatetime != null" >
+      <if test="createtime != null" >
         updatetime,
       </if>
       <if test="likescore != null" >
@@ -471,8 +471,8 @@
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="likescore != null" >
         #{likescore,jdbcType=INTEGER},
@@ -733,6 +733,9 @@
       </if>
       <if test="maxtotalimprovenum != null" >
         maxtotalimprovenum = #{maxtotalimprovenum},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
