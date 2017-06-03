@@ -1661,6 +1661,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if(StringUtils.isNotEmpty(notice)){
                 updateRank.setNotice(notice);
             }
+            updateRank.setUpdatetime(new Date());
             int row = this.rankMapper.updateSymbolByRankId(updateRank);
             if(row > 0 && StringUtils.isNotEmpty(notice) && noticeUser != null && noticeUser){
                 rankNoticeMessage(rankId,notice);

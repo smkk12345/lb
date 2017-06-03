@@ -240,7 +240,7 @@
     from user_info
     where
     (nickname LIKE concat(concat('%', #{nickname}),'%') 
-       or username LIKE concat(concat('%', #{nickname}),'%'))
+       or username = #{nickname})
     <if test="type == 0" >
     	<if test="ids != ''" >
       		and userid in (${ids})
