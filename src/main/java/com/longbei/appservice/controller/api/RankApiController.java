@@ -196,12 +196,12 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "updateimagesymbol")
     public BaseResp<Object> updateRankImageSymbol(@RequestBody RankImage rankImage){
-
         boolean issuccess = false;
         try {
             issuccess = rankService.updateRankImageSymbol(rankImage);
             if(issuccess){
                 BaseResp baseResp = BaseResp.ok(Constant.RTNINFO_SYS_52);
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
                 if (null != rankImage.getAutotime()){
                     baseResp.setData(rankImage.getAutotime());
                 }

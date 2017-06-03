@@ -265,7 +265,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_614 = "当前系统正忙或您已经关注了该榜单!";
 	public static final String RTNINFO_SYS_615 = "抱歉,您没有权限修改该榜单信息!";
 	public static final String RTNINFO_SYS_616 = "该榜单不存在";
-	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
+	public static final String RTNINFO_SYS_617 = "抱歉,你当天在榜单中所发进步已达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
 	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 	public static final String RTNINFO_SYS_620 = "该内容不存在";

@@ -47,7 +47,7 @@
     <result column="joincode" property="joincode" jdbcType="VARCHAR" />
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
     <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
-    <result column="maxtotalimprovenum" property="maxtotalimprovenum" jdbcType="VARCHAR" />
+    <result column="maxtotalimprovenum" property="maxtotalimprovenum" jdbcType="INTEGER" />
   </resultMap>
 
 
@@ -378,7 +378,7 @@
       <if test="needconfirm != null" >
         needconfirm,
       </if>
-      <if test="maxtotalimprovenum != null" >
+      <if test="maxtotalimprovenum != null and maxtotalimprovenum != ''" >
         maxtotalimprovenum,
       </if>
     </trim>
@@ -515,7 +515,7 @@
       <if test="needconfirm != null" >
         #{needconfirm},
       </if>
-      <if test="maxtotalimprovenum != null" >
+      <if test="maxtotalimprovenum != null and  maxtotalimprovenum != ''" >
         #{maxtotalimprovenum},
       </if>
     </trim>
@@ -619,10 +619,10 @@
       <if test="joinlastday != null" >
         joinlastday = #{joinlastday},
       </if>
-      <if test="maximprovenum != null" >
+      <if test="maximprovenum != null and  maximprovenum != ''"  >
         maximprovenum = #{maximprovenum},
       </if>
-      <if test="minimprovenum != null" >
+      <if test="minimprovenum != null and  minimprovenum != ''" >
         minimprovenum = #{minimprovenum},
       </if>
       <if test="ischeck != null" >
@@ -649,7 +649,7 @@
       <if test="needconfirm != null" >
         needconfirm = #{needconfirm},
       </if>
-      <if test="maxtotalimprovenum != null" >
+      <if test="maxtotalimprovenum != null and  maxtotalimprovenum != ''" >
         maxtotalimprovenum = #{maxtotalimprovenum},
       </if>
     </set>
