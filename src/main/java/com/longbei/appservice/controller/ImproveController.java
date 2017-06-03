@@ -164,7 +164,7 @@ public class ImproveController {
         if (StringUtils.hasBlankParams(userid, businesstype, ptype, ispublic, itype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(brief) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
+        if (StringUtils.isBlank(brief.trim()) && StringUtils.isBlank(pickey) && StringUtils.isBlank(filekey)) {
             return new BaseResp(Constant.STATUS_SYS_40, Constant.RTNINFO_SYS_40);
         }
         BaseResp baseResp = sysSensitiveService.getSensitiveWordSet(brief);

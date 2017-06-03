@@ -117,7 +117,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             	//进步币 origin 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
            	    //				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
         	    // 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
-        	    // 					11:取消订单返还龙币     12:兑换鲜花
+        	    // 					11:取消订单返还龙币     12:兑换鲜花  13:添加好友
                 //long userid, String origin, int number, long impid, long friendid)
                 userImpCoinDetailService.insertPublic(userInfo.getUserid(),origin,impIcon,impid,friendid);
             }
@@ -299,6 +299,44 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return levelUp(userInfo,iPoint,pType);
     }
 
+    //异步线程跑升级
+    private void levelUpAsyn(UserInfo userInfo,int iPoint,int leftpoint){
+        try{
+            //等级升级  update UserInfo
+            int currentPoint = userInfo.getCurpoint();
+            int nowPoint = currentPoint + iPoint;
+            int grade = 0;
+            Map<Integer,UserLevel> userLevelMap = SysRulesCache.levelPointMap;
+            for (Map.Entry<Integer,UserLevel> map : userLevelMap.entrySet()){
+                int tempgrade = map.getKey();
+                UserLevel userLevel = map.getValue();
+                if (nowPoint > userLevel.getPoint()){
+                    if (grade == 100){
+                        grade = 100;
+                        break;
+                    }
+                    if (nowPoint < userLevelMap.get(tempgrade+1).getPoint()){
+                        grade = tempgrade;
+                    }
+                }
+            }
+            userInfo.setGrade(grade);
+            userInfo.setPoint(userInfo.getPoint()+iPoint);
+            userInfo.setCurpoint(leftpoint);
+            userInfoMapper.updatePointByUserid(userInfo);
+            //插入一条 等级升级消息  不升级就不插入这个表
+            saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+            //推送一条消息
+            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
+            //mtype 0 系统消息      msgtype  18:升龙级
+            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(),
+                    "", "6", "", remark, "0", "18", "升级", 0, "", "");
+//            levelMsg(userInfo.getUserid(), "18", remark);
+        }catch (Exception e){
+            logger.error("levelUpAsyn error and msg = {}",e);
+        }
+    }
+
     /**
      * 是否升级以及升级之后的操作
      * 关于用户的龙分 通过计算获取
@@ -310,34 +348,64 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private BaseResp<Object> levelUp(UserInfo userInfo, int iPoint,String pType) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-            String key = getPerKey(userInfo.getUserid());
-            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT);
-            if(hasKey){
-                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT);
-                int leftPoint = point - iPoint;
-                if(point > 0 && leftPoint > 0){//未升级
-                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT,-iPoint);
-                    updateToUserInfo(userInfo,iPoint);
-                }else{//升级
-                    levelUpAsyn(userInfo,iPoint,leftPoint);
-                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
+            int newPoint=userInfo.getPoint()+iPoint;
+            //下一个等级
+            UserLevel nextUserLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade()+1);
+            if(newPoint >= (nextUserLevel.getPoint()+nextUserLevel.getDiff())) {//不止升一级
+                Map<Integer,UserLevel> userLevelMap = SysRulesCache.levelPointMap;
+                int nextGrade = nextUserLevel.getGrade();
+                for(int i=nextGrade;i< userLevelMap.size();i++){
+                    //下下个等级
+                    UserLevel nextNextUserLevel = userLevelMap.get(i+1);
+                    if(newPoint >= nextNextUserLevel.getPoint() && newPoint < (nextNextUserLevel.getPoint()+ nextNextUserLevel.getDiff())){
+                        int userinfoCurPoint = newPoint - nextNextUserLevel.getPoint();
+                        userInfo.setGrade(nextNextUserLevel.getGrade());
+                        userInfo.setPoint(newPoint);
+                        userInfo.setCurpoint(userinfoCurPoint);
+                        userInfoMapper.updatePointByUserid(userInfo);
+                        break;
+                    }
                 }
-            }else{
-                //通过级别获取升级下以及所需分数  进行缓存
-                int curpoint = userInfo.getCurpoint();//这里需要改
-                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
-                int upCount = userLevel.getDiff();
-                int leftPoint = upCount -curpoint - iPoint;
-                if(leftPoint > 0){
-                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");
-                    springJedisDao.expire(key,Constant.CACHE_24X60X60);
-                    updateToUserInfo(userInfo,iPoint);
-                }else{//升级
-                    levelUpAsyn(userInfo,iPoint,leftPoint);
-                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
-                }
+
+            }else if(newPoint >= nextUserLevel.getPoint()){//只升一级
+                //该等级中他所获得的point
+                int userinfoCurPoint = newPoint - nextUserLevel.getPoint();
+                userInfo.setGrade(nextUserLevel.getGrade());
+                userInfo.setPoint(newPoint);
+                userInfo.setCurpoint(userinfoCurPoint);
+                userInfoMapper.updatePointByUserid(userInfo);
+            }else{//不升级
+                updateToUserInfo(userInfo,iPoint);
             }
+
+            String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+//            String key = getPerKey(userInfo.getUserid());
+//            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT);
+//            if(hasKey){
+//                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT);
+//                int leftPoint = point - iPoint;
+//                if(point > 0 && leftPoint > 0){//未升级
+//                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT,-iPoint);
+//                    updateToUserInfo(userInfo,iPoint);
+//                }else{//升级
+//                    levelUpAsyn(userInfo,iPoint,leftPoint);
+//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
+//                }
+//            }else{
+//                //通过级别获取升级下以及所需分数  进行缓存
+//                int curpoint = userInfo.getCurpoint();//这里需要改
+//                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
+//                int upCount = userLevel.getDiff();
+//                int leftPoint = upCount -curpoint - iPoint;
+//                if(leftPoint > 0){
+//                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");
+//                    springJedisDao.expire(key,Constant.CACHE_24X60X60);
+//                    updateToUserInfo(userInfo,iPoint);
+//                }else{//升级
+//                    levelUpAsyn(userInfo,iPoint,leftPoint);
+//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
+//                }
+//            }
             //userPointDetailMapper.insert();
             //不管升级不升级  userpldetail  userpoint
             subLevelUp(userInfo,iPoint,pType,dateStr);
@@ -619,45 +687,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         }
     }
 
-
-    //异步线程跑升级
-    private void levelUpAsyn(UserInfo userInfo,int iPoint,int leftpoint){
-        try{
-            //等级升级  update UserInfo
-            int currentPoint = userInfo.getCurpoint();
-            int nowPoint = currentPoint + iPoint;
-            int grade = 0;
-            Map<Integer,UserLevel> userLevelMap = SysRulesCache.levelPointMap;
-            for (Map.Entry<Integer,UserLevel> map : userLevelMap.entrySet()){
-                int tempgrade = map.getKey();
-                UserLevel userLevel = map.getValue();
-                if (nowPoint > userLevel.getPoint()){
-                    if (grade == 100){
-                        grade = 100;
-                        break;
-                    }
-                    if (nowPoint < userLevelMap.get(tempgrade+1).getPoint()){
-                        grade = tempgrade;
-                    }
-                }
-            }
-            userInfo.setGrade(grade);
-            userInfo.setPoint(userInfo.getPoint()+iPoint);
-            userInfo.setCurpoint(leftpoint);
-            userInfoMapper.updatePointByUserid(userInfo);
-            //插入一条 等级升级消息  不升级就不插入这个表
-            saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
-            //推送一条消息
-            String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
-            //mtype 0 系统消息      msgtype  18:升龙级
-            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(), 
-            		"", "6", "", remark, "0", "18", "升级", 0, "", "");
-//            levelMsg(userInfo.getUserid(), "18", remark);
-        }catch (Exception e){
-            logger.error("levelUpAsyn error and msg = {}",e);
-        }
-    }
-    
     /**
 	 * @author yinxc
 	 * 等级升降级添加消息
@@ -686,21 +715,21 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         String key = getPerKey(userInfo.getUserid());
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         int result = 0;
-        if(Constant_Imp_Icon.hasContain(operateType)){ //key 直接存在  目前有两种情况 签到  邀请好友注册
-            if(operateType.equals("INVITE_LEVEL1")){
+        if(Constant_Imp_Icon.hasContain(operateType)){ //key 直接存在  目前有的情况 签到  邀请好友注册 添加好友
+            if(operateType.equals("INVITE_LEVEL1") || operateType.equals("DAILY_ADDFRIEND")){
                 result = Constant_Imp_Icon.getStaticProperty(operateType);
-                //邀请好友注册成功可得X个进步币，上限值
+                //可得X个进步币，上限值
                 String operateTypeLimit = operateType+"_LIMIT";
                 if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
                 	int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
 //                  logger.info("getImpIcon key = {}, dateStr+operateTypeLimit = {}", key, dateStr+operateTypeLimit);
-	                String cacheStr = springJedisDao.getHashValue(key,"invite_icon"+dateStr+operateTypeLimit);
+	                String cacheStr = springJedisDao.getHashValue(key,operateType+"_icon"+dateStr+operateTypeLimit);
 	                int cacheTime = 0;
 	             	if(!StringUtils.isBlank(cacheStr)){
 	                  	cacheTime = Integer.parseInt(cacheStr);
 	             	}
 	             	if(limit > cacheTime){
-	             		springJedisDao.put(key,"invite_icon"+dateStr+operateTypeLimit,(cacheTime+result)+"");
+	             		springJedisDao.put(key,operateType+"_icon"+dateStr+operateTypeLimit,(cacheTime+result)+"");
 	                    return result;
 	                }else{
 	                    return 0;

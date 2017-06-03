@@ -52,7 +52,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 	 * param origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
 	 * 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
 	 * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
-	 * 					11:取消订单返还龙币   12:兑换鲜花
+	 * 					11:取消订单返还龙币   12:兑换鲜花 13:添加好友
 	 *
 	 * param number 数量 --- 消耗：(7:兑换商品    9：公益抽奖消耗进步币 12:兑换鲜花)value值为负---方法里面已做判断
 	 * param impid 业务id  类型：

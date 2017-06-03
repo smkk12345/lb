@@ -122,7 +122,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 					//origin： 来源   0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物
 					// 					6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币
 					// 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
-					// 					11:取消订单返还龙币   12:兑换鲜花
+					// 					11:取消订单返还龙币   12:兑换鲜花 13:添加好友
 					userImpCoinDetailService.insertPublic(userid, "12", num, 0, 0l);
 				}else if("3".equals(origin)){
 					//   3:被赠与---龙币兑换
@@ -250,7 +250,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 						try {
 							payService.testWx();
 						}catch (Exception e){
-							e.printStackTrace();
+							logger.error("testWx ", e);
 						}
 				}
 			});

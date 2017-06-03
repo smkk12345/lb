@@ -132,8 +132,6 @@ public class UserServiceImpl implements UserService {
 			}
 			if(null != detailList && detailList.size()>0){
 				userInfo.setDetailList(detailList);
-			}else{
-				userInfo.setDetailList(new ArrayList<UserPlDetail>());
 			}
 			
 			//获取用户星级
@@ -1191,7 +1189,7 @@ public class UserServiceImpl implements UserService {
 					//是龙杯用户,送分.....
 					//建立好友关系
 					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
-					//给推荐人添加龙分 //给推荐人添加龙币
+					//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
 					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
 					//给推荐人添加龙币
 //					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
@@ -1361,4 +1359,20 @@ public class UserServiceImpl implements UserService {
 		}
 		return page;
 	}
+
+	@Override
+	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney){
+		BaseResp baseResp = new BaseResp();
+		try {
+			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
+			if(res>0){
+				baseResp.initCodeAndDesp();
+			}
+		} catch (Exception e) {
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+			logger.error("update Totalmoney By Userid {} is error",userid,e);
+		}
+		return baseResp;
+	}
+
 }

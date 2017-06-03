@@ -258,5 +258,13 @@ public interface UserService {
 	 */
 	Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize);
 
+	/**
+	 * 修改用户龙币数
+	 * @param userid
+	 * @param totalmoney
+	 * @return
+	 */
+	BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney);
+
 
 }

@@ -265,7 +265,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_614 = "当前系统正忙或您已经关注了该榜单!";
 	public static final String RTNINFO_SYS_615 = "抱歉,您没有权限修改该榜单信息!";
 	public static final String RTNINFO_SYS_616 = "该榜单不存在";
-	public static final String RTNINFO_SYS_617 = "榜单中所发进步达到最大数量";
+	public static final String RTNINFO_SYS_617 = "抱歉,你当天在榜单中所发进步已达到最大数量";
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
 	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 	public static final String RTNINFO_SYS_620 = "该内容不存在";
@@ -446,7 +446,7 @@ public class Constant {
 	 * 0:签到   1:发进步  2:分享  3：邀请好友  4：榜获奖  5：收到钻石礼物 
      *				    6：收到鲜花礼物  7:兑换商品  8：公益抽奖获得进步币  
      * 					9：公益抽奖消耗进步币  10.消耗进步币(例如超级用户扣除进步币)
-     * 					11:取消订单返还龙币     12:兑换鲜花
+     * 					11:取消订单返还龙币     12:兑换鲜花   13:添加好友
 	 */
 	public static final String USER_IMP_COIN_CHECKIN="0";
 	public static final String USER_IMP_COIN_ADDIMPROVE="1";
@@ -544,7 +544,7 @@ public class Constant {
 //	public static final String  MSG_QUITRANK_MODEL = "您在龙榜'n'中,被榜主剔除了该龙榜!";      //下榜
 //	public static final String  MSG_QUITRANK_IMP_MODEL = "您在龙榜'n'中的进步已删除!";      //下榜
 //	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
-	public static final String  MSG_IMP_DEL_MODEL = "您此条微进步(n)因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
+	public static final String  MSG_IMP_DEL_MODEL = "您的微进步n因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	

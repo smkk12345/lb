@@ -152,7 +152,7 @@ public class ImproveServiceImpl implements ImproveService{
 
         //添加进步之前的过滤
         BaseResp<Object> baseResp = insertImproveFilter(improve,businesstype);
-;       if(ResultUtil.fail(baseResp)){
+       if(ResultUtil.fail(baseResp)){
             return baseResp;
         }
         boolean isok = false;
@@ -1298,11 +1298,12 @@ public class ImproveServiceImpl implements ImproveService{
                     if (null != rank) {
                         logger.info("select rank is not null rank={}", JSON.toJSONString(rank));
                         if (!"1".equals(rank.getIsfinish())) {
-                            baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
                         if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
-                            baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
+                        return baseResp.initCodeAndDesp();
                     } else {
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
                     }
@@ -1447,6 +1448,9 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public String getFriendIds(Long userid){
+        if(userid == null || "-1".equals(userid.toString())){
+            return null;
+        }
         String friendids = springJedisDao.get("userFriend"+userid);
         if (StringUtils.isBlank(friendids)){
             List<String> lists = snsFriendsMapper.selectListidByUid(userid);
@@ -1464,6 +1468,9 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public String getFansIds(Long userid){
+        if(userid == null || "-1".equals(userid.toString())){
+            return null;
+        }
         String fansIds = springJedisDao.get("userFans"+userid);
         if (StringUtils.isBlank(fansIds)){
             List<String> lists = snsFansMapper.selectListidByUid(userid);

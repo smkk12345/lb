@@ -19,11 +19,18 @@ public class Constant_Imp_Icon {
     public static void init(){
         int first = SysRulesCache.behaviorRule.getFirstsignimpcoins();
         int more = SysRulesCache.behaviorRule.getContinuesignimpcoinsmore();
-        for (int i = 0 ; i < 7 ; i++){
+        int impcoinsmax = SysRulesCache.behaviorRule.getSignimpcoinsmax();
+        for (int i = 0 ; i < impcoinsmax ; i++){
+        	if(first>impcoinsmax){
+            	break;
+            }
             checkInImpIconMap.put(i+1,first);
             first = first + more;
         }
         INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
+        INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
+        DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendimpcoins();
+        DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendimpcoinsmax();
         fieldsMap = null;
     }
 
@@ -46,6 +53,13 @@ public class Constant_Imp_Icon {
     public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
     
     public static int INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
+
+    /**
+     * 添加好友赠送的进步币
+     */
+    public static int DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendimpcoins();
+
+    public static int DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendimpcoinsmax();
 
     //以下两类需要单独接口
     public static int DAILY_FLOWERED = 0;//被送花 进步币系数
