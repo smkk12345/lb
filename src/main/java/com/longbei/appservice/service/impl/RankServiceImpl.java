@@ -128,7 +128,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
                 //定制榜:生成榜单口令
-                if("1".equals(rankImage.getRanktype()) || "2".equals(rankImage.getRanktype())){
+                if(!"0".equals(rankImage.getRanktype())){
                     rankImage.setJoincode(codeDao.getCode(null));
                 }
             }
@@ -2978,13 +2978,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        String photoPath = "40d4f8f6-111c-43c3-b341-236809881296";
+        String photoPath = "b132bbc6-a336-4c9c-9e12-75243db968c7";//img/img_jinbubi.jpg
         for (RankAwardRelease rankAward : rankAwards){
             Award award = new Award();
             award.setAwardphotos(photoPath);
-            award.setAwardtitle("龙币");
-            award.setAwardbrief("用户发的榜单奖品都是龙币");
-            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/10);
+            award.setAwardtitle("进步币");
+            award.setAwardbrief("用户发的榜单奖品都是进步币");
+            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/100);
             rankAward.setAward(award);
         }
         return rankAwards;
@@ -3074,7 +3074,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankCard.setAdminname(appUser.getNickname());
                     rankCard.setAdminpic(appUser.getAvatar());
                     rankCard.setAdminbrief(appUser.getBrief());
-                    rankCard.setRankCardUrl(null);//pc端没有榜主名片id
+                    //rankCard.setRankCardUrl(null);//pc端没有榜主名片id
                     rank.setRankCard(rankCard);
                 }
             }

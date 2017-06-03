@@ -19,7 +19,11 @@ public class Constant_Imp_Icon {
     public static void init(){
         int first = SysRulesCache.behaviorRule.getFirstsignimpcoins();
         int more = SysRulesCache.behaviorRule.getContinuesignimpcoinsmore();
-        for (int i = 0 ; i < 7 ; i++){
+        int impcoinsmax = SysRulesCache.behaviorRule.getSignimpcoinsmax();
+        for (int i = 0 ; i < impcoinsmax ; i++){
+        	if(first>impcoinsmax){
+            	break;
+            }
             checkInImpIconMap.put(i+1,first);
             first = first + more;
         }

@@ -132,8 +132,6 @@ public class UserServiceImpl implements UserService {
 			}
 			if(null != detailList && detailList.size()>0){
 				userInfo.setDetailList(detailList);
-			}else{
-				userInfo.setDetailList(new ArrayList<UserPlDetail>());
 			}
 			
 			//获取用户星级
@@ -1361,4 +1359,20 @@ public class UserServiceImpl implements UserService {
 		}
 		return page;
 	}
+
+	@Override
+	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney){
+		BaseResp baseResp = new BaseResp();
+		try {
+			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
+			if(res>0){
+				baseResp.initCodeAndDesp();
+			}
+		} catch (Exception e) {
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+			logger.error("update Totalmoney By Userid {} is error",userid,e);
+		}
+		return baseResp;
+	}
+
 }

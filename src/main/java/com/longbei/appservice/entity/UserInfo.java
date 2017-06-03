@@ -440,7 +440,7 @@ public class UserInfo {
     }
     /**
      * 所在区域
-     * @param  所在区域
+     * @param  area 所在区域
      */
     public String getArea() {
 		return area;
