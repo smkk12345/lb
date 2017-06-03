@@ -33,7 +33,8 @@
         from dict_area
         where 
           id in (
-          <foreach collection="areaIdList" item="id" separator=",">#{id}
+          <foreach collection="areaIdList" item="id" separator=",">
+              #{id}
           </foreach>
         )
         and id != 0

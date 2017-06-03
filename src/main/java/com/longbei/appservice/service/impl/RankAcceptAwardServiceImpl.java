@@ -104,8 +104,9 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
             for (RankAcceptAward rankAcceptAward1 : rankAcceptAwards){
                 rankAcceptAward1.setAppUserMongoEntity(userMongoDao.getAppUser
                         (String.valueOf(rankAcceptAward1.getUserid())));
-                rankAcceptAward1.setAwardtitle
-                        (awardMapper.selectByPrimaryKey(rankAcceptAward1.getAwardid()).getAwardtitle());
+                Award award = awardMapper.selectByPrimaryKey(rankAcceptAward1.getAwardid());
+                rankAcceptAward1.setAwardtitle(award.getAwardtitle());
+                rankAcceptAward1.setAwardcateid(award.getAwardClassify().getClassifytype()+"");
             }
             page.setTotalCount(totalcount);
             page.setList(rankAcceptAwards);
