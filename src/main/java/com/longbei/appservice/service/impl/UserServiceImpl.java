@@ -132,8 +132,6 @@ public class UserServiceImpl implements UserService {
 			}
 			if(null != detailList && detailList.size()>0){
 				userInfo.setDetailList(detailList);
-			}else{
-				userInfo.setDetailList(new ArrayList<UserPlDetail>());
 			}
 			
 			//获取用户星级

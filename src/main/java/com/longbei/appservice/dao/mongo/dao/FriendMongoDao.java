@@ -52,7 +52,7 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("status",status);
-        update.set("receiveIsRead",false);
+        update.set("receiveIsRead",true);
         update.set("senderIsRead",true);
         update.set("updateDate",new Date());
         if(messages != null){

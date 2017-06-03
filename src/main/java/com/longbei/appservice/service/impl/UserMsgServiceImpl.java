@@ -854,7 +854,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 		if(null != hotLine && hotLine.getFriendAskmaxtime() != null){
 			friendAskmaxtime = hotLine.getFriendAskmaxtime();
 		}
-		List<FriendAddAsk> friendAddAskList = this.friendMongoDao.friendAddAskDateList(userid, friendAskmaxtime, false, null, null);
+		List<FriendAddAsk> friendAddAskList = this.friendMongoDao.friendAddAskDateList(userid, friendAskmaxtime, false, null, 1);
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		int count = friendAddAskList != null?friendAddAskList.size():0;
 		if(count > 0){
