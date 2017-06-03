@@ -2967,7 +2967,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        String photoPath = "40d4f8f6-111c-43c3-b341-236809881296";
+        String photoPath = "89cd28e8-1968-4754-954c-9a8e63362e08";//img/img_longbi.jpg
         for (RankAwardRelease rankAward : rankAwards){
             Award award = new Award();
             award.setAwardphotos(photoPath);
@@ -3063,7 +3063,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankCard.setAdminname(appUser.getNickname());
                     rankCard.setAdminpic(appUser.getAvatar());
                     rankCard.setAdminbrief(appUser.getBrief());
-                    rankCard.setRankCardUrl(null);//pc端没有榜主名片id
+                    //rankCard.setRankCardUrl(null);//pc端没有榜主名片id
                     rank.setRankCard(rankCard);
                 }
             }
