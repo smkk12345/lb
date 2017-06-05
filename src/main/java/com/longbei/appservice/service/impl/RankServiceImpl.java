@@ -127,13 +127,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                logger.debug("rank type:",rankImage.getRanktype());//test
                 //定制榜:生成榜单口令
                 if(!"0".equals(rankImage.getRanktype())){
-                    rankImage.setJoincode(codeDao.getCode(null));
+                    String joincode = codeDao.getCode(null);
+                    logger.debug("rank joincode:",joincode);//test
+                    rankImage.setJoincode(joincode);
+                    logger.debug("get rank joincode:",rankImage.getJoincode());//test
                 }
+
             }
 
+            //test
             res = rankImageMapper.insertSelective(rankImage);
+            RankImage rankImage1 = rankImageMapper.selectByRankImageId(rankImage.getRankid().toString());
+            logger.debug("get rank joincode after insert:",rankImage1.getJoincode());
+
             if(res>0){
                 baseResp=BaseResp.ok();
                 baseResp.setData(rankImage.getRankid());
@@ -309,10 +318,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != rank1){
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
-                    if ("1".equals(rankImage.getRanktype())){
-                        // PC端定制榜，添加时已有joinCode
-                        if(StringUtils.isEmpty(rankImage.getJoincode())){
-                            rank.setJoincode(codeDao.getCode(null));
+                    if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                        if (!"0".equals(rankImage.getRanktype())){
+                            // PC端定制榜，添加时已有joinCode
+                            if(StringUtils.isEmpty(rankImage.getJoincode())){
+                                rank.setJoincode(codeDao.getCode(null));
+                            }
                         }
                     }
                     Date starttime = rank.getStarttime();
