@@ -328,7 +328,7 @@ public class Constant {
 	 */
 	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms," +
 			"/user/registerbasic,/user/thirdlogin,/user/thirdregister," +
-			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade";
+			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade,/rank/selectOwnRankList";
 
 	public static final String VISITOR_UID = "-1";
 	/**
@@ -781,5 +781,11 @@ public class Constant {
 	 * 内购生产环境支付
 	 */
 	public static final String 	PAY_TYPE_05 = "4";
+	
+	
+	/**
+	 * 微信回掉
+	 */
+	public static final String NOTIFY_URL_WEIXIN = "api/notify/verify/wx";
 
 }
