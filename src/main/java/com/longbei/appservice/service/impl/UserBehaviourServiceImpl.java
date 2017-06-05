@@ -451,8 +451,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 return result;
             }else{
                 int curValue = Integer.parseInt(value);
-                if(curValue+result > limitValue){//就不给了
-                    return 0;
+                if(curValue+result > limitValue){//给限制最高分与当前分数的差值或0
+                    int returnPoint = ((limitValue-curValue)>0)?(limitValue-curValue):0;
+                    return returnPoint;
                 }else{
                     int res = result+curValue;
                     springJedisDao.put(key, "point"+dateStr+limitField, res + "");
@@ -736,16 +737,18 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 if(Constant_Imp_Icon.hasContain(operateTypeLimit)){
                 	int limit = Constant_Imp_Icon.getStaticProperty(operateTypeLimit);
 //                  logger.info("getImpIcon key = {}, dateStr+operateTypeLimit = {}", key, dateStr+operateTypeLimit);
-	                String cacheStr = springJedisDao.getHashValue(key,operateType+"_icon"+dateStr+operateTypeLimit);
-	                int cacheTime = 0;
-	             	if(!StringUtils.isBlank(cacheStr)){
-	                  	cacheTime = Integer.parseInt(cacheStr);
+	                String redisValue = springJedisDao.getHashValue(key,operateType+"_icon"+dateStr+operateTypeLimit);
+	                int curValue = 0;
+	             	if(!StringUtils.isBlank(redisValue)){
+                        curValue = Integer.parseInt(redisValue);
 	             	}
-	             	if(limit > cacheTime){
-	             		springJedisDao.put(key,operateType+"_icon"+dateStr+operateTypeLimit,(cacheTime+result)+"");
+	             	if(limit > curValue){
+	             		springJedisDao.put(key,operateType+"_icon"+dateStr+operateTypeLimit,(curValue+result)+"");
 	                    return result;
 	                }else{
-	                    return 0;
+                        //给限制最高值与当前值的差值或0
+                        int returnImpCoin = ((limit-curValue)>0)?(limit-curValue):0;
+                        return returnImpCoin;
 	                }
                 }else{
                 	//-------
