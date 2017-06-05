@@ -128,7 +128,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
                 //定制榜:生成榜单口令
-                if("1".equals(rankImage.getRanktype()) || "2".equals(rankImage.getRanktype())){
+                if(!"0".equals(rankImage.getRanktype())){
                     rankImage.setJoincode(codeDao.getCode(null));
                 }
             }
@@ -1661,6 +1661,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if(StringUtils.isNotEmpty(notice)){
                 updateRank.setNotice(notice);
             }
+            updateRank.setUpdatetime(new Date());
             int row = this.rankMapper.updateSymbolByRankId(updateRank);
             if(row > 0 && StringUtils.isNotEmpty(notice) && noticeUser != null && noticeUser){
                 rankNoticeMessage(rankId,notice);
@@ -2977,13 +2978,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        String photoPath = "89cd28e8-1968-4754-954c-9a8e63362e08";//img/img_longbi.jpg
+        String photoPath = "b132bbc6-a336-4c9c-9e12-75243db968c7";//img/img_jinbubi.jpg
         for (RankAwardRelease rankAward : rankAwards){
             Award award = new Award();
             award.setAwardphotos(photoPath);
-            award.setAwardtitle("龙币");
-            award.setAwardbrief("用户发的榜单奖品都是龙币");
-            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/10);
+            award.setAwardtitle("进步币");
+            award.setAwardbrief("用户发的榜单奖品都是进步币");
+            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/100);
             rankAward.setAward(award);
         }
         return rankAwards;

@@ -270,5 +270,25 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    /**
+     * 更改用户龙币余额
+     * @param userid
+     * @param totalMoney
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @ResponseBody
+    @RequestMapping(value = "updateMoney")
+    public BaseResp updateTotalmoneyByUserid(Long userid,Integer totalMoney){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp =userService.updateTotalmoneyByUserid(userid,totalMoney);
+        } catch (Exception e) {
+            logger.error("update Totalmoney By Userid {} is error", userid, e);
+        }
+        return baseResp;
+    }
+
+
 
 }
