@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import scala.collection.immutable.Stream;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -425,7 +426,8 @@ public class RankController {
         logger.info("userid={},searchType={},startNum={},pageSize={}",userid,searchType,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            baseResp.setData(new ArrayList<Rank>());
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }
         if(searchType == null){
             searchType = 1;

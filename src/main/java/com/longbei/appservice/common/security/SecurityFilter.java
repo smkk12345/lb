@@ -120,7 +120,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				String urlPath = request.getRequestURI();
 				urlPath = urlPath.replace("/app_service/", "");
 				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1
-						|| (uid.equals(Constant.VISITOR_UID)
+						|| (Constant.VISITOR_UID.equals(uid)
 						&&Constant.VISITOR_URL.indexOf(urlPath)>-1)) {
 					token = "longbei2017";
 				} else {
