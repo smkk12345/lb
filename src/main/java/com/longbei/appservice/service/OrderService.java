@@ -3,6 +3,8 @@ package com.longbei.appservice.service;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.entity.UserAddress;
@@ -206,4 +208,11 @@ public interface OrderService {
 	 * @return
      */
 	BaseResp<Object> autoConfirmReceipt(Date currentDate);
+	
+	
+	
+	
+	
+	BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, 
+    		String notifyURL, String ip);
 }

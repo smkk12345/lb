@@ -2922,6 +2922,7 @@ public class ImproveServiceImpl implements ImproveService{
                         Constant.IMPROVE_GOAL_TYPE,String.valueOf(userId));
                 return baseResp.initCodeAndDesp();
             }
+            return baseResp.ok();
         }catch (Exception e){
             logger.error("delGoalToImprove goalid={},userid={}",goalId,userId,e);
         }

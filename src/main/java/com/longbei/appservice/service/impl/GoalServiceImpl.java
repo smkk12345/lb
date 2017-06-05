@@ -226,7 +226,7 @@ public class GoalServiceImpl implements GoalService {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
             int res = userGoalMapper.delGoal(goalId, userid);
-            if(res == 1){
+            if(res > 0){
             	if("1".equals(gtype)){
             		return improveService.delGoal(goalId,userid);
             	}

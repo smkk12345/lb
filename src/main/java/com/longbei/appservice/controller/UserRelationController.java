@@ -60,9 +60,11 @@ public class UserRelationController extends BaseController {
 		 if (StringUtils.hasBlankParams(userid, nickname)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
-		 if(searchFashinMan != null && searchFashinMan != 1){
-			 searchFashinMan = null;
-		 }
+//		 if(searchFashinMan != null && searchFashinMan != 1){
+//			 searchFashinMan = null;
+//		 }
+		 //由于搜索达人那儿产品需求是搜索所有用户,所以暂时把搜索推荐达人的搜索条件注释掉
+		 searchFashinMan = null;
 		 try {
 			 return userRelationService.selectLongRangeListByUnameAndNname(Long.parseLong(userid), nickname, startNum, pageSize,searchFashinMan);
 		 } catch (Exception e) {

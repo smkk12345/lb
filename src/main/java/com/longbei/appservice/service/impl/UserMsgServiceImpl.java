@@ -924,10 +924,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
 				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  44: 榜中成员下榜)
+				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜)
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
-							&& !"17".equals(userMsg.getMsgtype()) ){
+							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype())){
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
