@@ -33,6 +33,7 @@ public class ProductOrders {
 
     private String paytype;//paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
     						// 3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
+    						//5:web_sercvice购买
 
     private String orderstatus;//订单状态   0：待付款   1：待发货   2：待收货  3：已完成     4：已取消
     

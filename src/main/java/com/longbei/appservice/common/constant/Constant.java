@@ -781,5 +781,11 @@ public class Constant {
 	 * 内购生产环境支付
 	 */
 	public static final String 	PAY_TYPE_05 = "4";
+	
+	
+	/**
+	 * 微信回掉
+	 */
+	public static final String NOTIFY_URL_WEIXIN = "api/notify/verify/wx";
 
 }
