@@ -73,6 +73,12 @@ public interface UserMsgService {
 			String commentid, String commentlowerid);
 
 	/**
+	 * 删除赞信息
+	 */
+	int deleteLikeCommentMsg(String impid, String businesstype, String businessid,
+						 String userid);
+
+	/**
 	 * @author yinxc
 	 * 删除消息
 	 * 2017年2月7日
@@ -241,7 +247,7 @@ public interface UserMsgService {
 	 * @author yinxc
 	 * 获取"我的"页面对话消息---红点是否显示---不用
 	 * 2017年2月8日
-	 * @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
+	 * mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 	 *										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 	 *										25:订单发货N天后自动确认收货    26：实名认证审核结果   
 	 *										27:工作认证审核结果      28：学历认证审核结果   
@@ -259,7 +265,7 @@ public interface UserMsgService {
 	 * @author yinxc
 	 * 获取"我的"页面对话消息---红点是否显示
 	 * 2017年2月8日
-	 * @param mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知 
+	 *  mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 	 *										22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 	 *										25:订单发货N天后自动确认收货    26：实名认证审核结果   
 	 *										27:工作认证审核结果      28：学历认证审核结果   

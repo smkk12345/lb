@@ -1722,7 +1722,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }catch (Exception e){
                     logger.error("pointChange,userSumInfo error",e);
                 }
-
+                //取消赞后，删除消息中的记录    2017-06-05
+                userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
