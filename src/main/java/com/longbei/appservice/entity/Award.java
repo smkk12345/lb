@@ -24,6 +24,8 @@ public class Award {
 
     private String awardtype;//奖品类型。0 — 实物。1—虚拟
 
+    private String createtype;//奖品来源：1 -运营创建;2-用户发榜单自定义奖品
+
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
@@ -38,6 +40,14 @@ public class Award {
 
     public void setAwardClassify(AwardClassify awardClassify) {
         this.awardClassify = awardClassify;
+    }
+
+    public String getCreatetype() {
+        return createtype;
+    }
+
+    public void setCreatetype(String createtype) {
+        this.createtype = createtype;
     }
 
     /**
