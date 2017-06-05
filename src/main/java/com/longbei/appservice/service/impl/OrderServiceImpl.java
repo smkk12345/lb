@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.api.outernetservice.OrderSercviceApi;
 import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,8 @@ public class OrderServiceImpl implements OrderService {
 	private IProductBasicService iProductBasicService;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private OrderSercviceApi orderSercviceApi;
 //	@Autowired
 //	private IProductCategoryService iProductCategoryService;
 
@@ -607,5 +610,11 @@ public class OrderServiceImpl implements OrderService {
     	}
     	
     }
+
+
+	@Override
+	public BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, String notifyURL, String ip) {
+		return orderSercviceApi.weixinSaoMa(price, remark, orderid, notifyURL, ip);
+	}
 
 }

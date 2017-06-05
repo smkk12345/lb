@@ -3,6 +3,8 @@ package com.longbei.appservice.controller.api;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.ProductOrders;
 import com.longbei.appservice.service.OrderService;
+
+import net.sf.json.JSONObject;
 
 @RestController
 @RequestMapping(value = "/api/order")
@@ -330,6 +336,74 @@ public class OrderApiController {
 		Date currentDate = new Date(currentTime);
 		baseResp = this.orderService.autoConfirmReceipt(currentDate);
 		return baseResp;
+	}
+	
+	
+	
+	
+	//-----------------------web_service调用----------------------------
+	/**
+	 * @Title: http://ip:port/app_service/api/order/buyMoney
+	 * @Description: 购买龙币---生成订单
+	 * @param userid 用户id
+	 * @param number 购买的龙币数量
+	 * @param paytype 支付方式  0：龙币支付 1：微信支付 2：支付宝支付
+     *                       3:IOS内购测试帐号购买 4：IOS内购正式帐号购买
+     *                       5:web_sercvice购买
+     * @param btype  0:支付宝   1 微信支付   
+	 * @auther yinxc
+     * @desc  
+     * @currentdate:2017年4月7日
+	 */
+	@RequestMapping(value = "/buyMoney", method = RequestMethod.POST)
+	public BaseResp<Object> buyMoney(String userid, String number, String paytype, String btype, 
+			HttpServletRequest request) {
+		logger.info(userid + "购买 " + number + " 龙币，订单生成中....");
+		BaseResp<Object> resResp = new BaseResp<>();
+  		try {
+  			//人民币兑换龙币比例       
+  		    double yuantomoney = AppserviceConfig.yuantomoney;
+  		    //price 获取真实价格    已分为单位
+  		    double minute = Integer.parseInt(number)*yuantomoney*100;
+  		    String price = minute + "";
+  			int num = 0;
+  			if(!"3".equals(paytype) && !"4".equals(paytype)){
+  				num = getMoneyNum(Integer.parseInt(number));
+  			}else{
+  				num = Integer.parseInt(number);
+  			}
+  			BaseResp<ProductOrders> baseResp = new BaseResp<>();
+  			baseResp = orderService.buyMoney(Long.parseLong(userid), num, paytype, price);
+  			if(ResultUtil.isSuccess(baseResp)){
+  				ProductOrders orders = baseResp.getData();
+  				//btype  0:支付宝   1 微信支付   
+  				
+  				if("1".equals(btype)){
+  					String basePath = request.getScheme() + "://192.168.0.170:9090/app_service/";
+  					String notifyURL = basePath + Constant.NOTIFY_URL_WEIXIN + "/"+orders.getUserid();
+  					String ip = request.getRemoteAddr();
+  					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), notifyURL, ip);
+  					return resResp;
+  				}else{
+  					
+  				}
+  			}
+			logger.info("buyMoney success and baseResp={}", JSONObject.fromObject(baseResp).toString());
+		} catch (Exception e) {
+			logger.error("buyMoney userid = {}, number = {}, paytype = {}", 
+					userid, number, paytype, e);
+		}
+  		return resResp;
+	}
+	
+	private int getMoneyNum(int num){
+		 long xs = num/100 - 1;
+       double a = (xs*0.145) + 1;
+       long lastNum = (long)(num/100);
+       lastNum = lastNum*100;
+       Double giveFlower = lastNum * (a/100);
+       long giveNum = Math.round(giveFlower);
+       return giveNum>0?num+Integer.parseInt(giveNum+""):num;
 	}
   	
 }
