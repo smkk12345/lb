@@ -234,6 +234,15 @@ public class UserMsgServiceImpl implements UserMsgService {
 		int temp = userMsgMapper.deleteCommentMsg(impid, businesstype, businessid, commentid, commentlowerid);
 		return temp;
 	}
+	
+	/**
+	 * 删除赞信息
+	 */
+	@Override
+	public int deleteLikeCommentMsg(String impid, String businesstype, String businessid, String userid) {
+		int temp = userMsgMapper.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
+		return temp;
+	}
 
 
 	/**
@@ -924,10 +933,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
 				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  44: 榜中成员下榜)
+				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜)
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
-							&& !"17".equals(userMsg.getMsgtype()) ){
+							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype())){
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
@@ -1277,7 +1286,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 					snsFans.setIsfriend("1");
 				}
 				//判断已关注者是否是好友关系
-				SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid());
+				SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid(), "0");
 				if(null != snsFriends){
 					snsFans.setIsfriend("1");
 				}
@@ -1429,7 +1438,7 @@ public class UserMsgServiceImpl implements UserMsgService {
     private void initMsgUserInfoByFriendid(UserMsg userMsg, long userid){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
 			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userMsg.getFriendid());
+			String remark = userRelationService.selectRemark(userid, userMsg.getFriendid(), "0");
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
 			if(null != appUserMongoEntity){
 				if(!StringUtils.isBlank(remark)){

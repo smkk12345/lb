@@ -102,10 +102,8 @@ public class ArticleServiceImpl implements ArticleService{
                     List<RankAwardRelease> rankAwardRelease = baseResp1.getData();
                     List<RankAwardRelease> rkaward = new ArrayList<>();
                     for (RankAwardRelease rankAwardRelease1 : rankAwardRelease){
-                        if (rankAwardRelease1.getAwardlevel() == 1){
-                            rkaward.add(rankAwardRelease1);
-                            break;
-                        }
+                        rkaward.add(rankAwardRelease1);
+                        break;
                     }
                     rank.setRankAwards(rkaward);
                 }

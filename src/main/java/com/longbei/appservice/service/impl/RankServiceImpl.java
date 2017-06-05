@@ -1750,11 +1750,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     int i = 0;
                     for(String tempUserId:userIdList){
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
+                        if(rankMembers == null){
+                            continue;
+                        }
                         rankMembers.setSortnum(startNum+i+1);
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
-        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid());
+        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid(), "0");
         					if(!StringUtils.isBlank(remark)){
         						appUserMongoEntity.setNickname(remark);
         					}
@@ -1865,7 +1868,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }else{
                             map.put("isfans","0");
                         }
-                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid(), "0");
                         if(snsFriends != null){
                             map.put("isfriend","1");
                         }else{
@@ -2128,7 +2131,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
             //获取好友昵称
-            String remark = userRelationService.selectRemark(currentUserId, userid);
+            String remark = userRelationService.selectRemark(currentUserId, userid, "0");
             if(!StringUtils.isBlank(remark)){
                 appUserMongoEntity.setNickname(remark);
             }
@@ -2149,7 +2152,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid);
+                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
                 if(snsFriends != null && snsFriends.getIsdel() == 0){
                     resultMap.put("isFriends",1);
                 }else{
@@ -2835,7 +2838,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
                 List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
                 for(RankMembers rankMembers:rankMemberses){
-                    if(awardLevel != rankMembers.getAwardlevel().intValue()){
+                    if(awardLevel != rankMembers.getRankAward().getAwardlevel().intValue()){
                         if(awards.size() > 0){
                             awardMap.put("awardcount",awardCount);
                             awardMap.put("awardMembers",awards);
@@ -2843,9 +2846,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardMap = new HashMap<String,Object>();
                             awards = new ArrayList<Map<String,Object>>();
                             awardCount = 0;
-                            awardLevel = rankMembers.getAwardlevel().intValue();
+                            awardLevel = rankMembers.getRankAward().getAwardlevel().intValue();
                         }else{
-                            awardLevel = rankMembers.getAwardlevel().intValue();
+                            awardLevel = rankMembers.getRankAward().getAwardlevel().intValue();
                         }
                         Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                         RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankMembers.getRankAward().getAwardid()+"");

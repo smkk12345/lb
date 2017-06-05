@@ -328,7 +328,7 @@ public class Constant {
 	 */
 	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms," +
 			"/user/registerbasic,/user/thirdlogin,/user/thirdregister," +
-			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade,/rank/selectOwnRankList";
+			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade";
 
 	public static final String VISITOR_UID = "-1";
 	/**
@@ -546,6 +546,7 @@ public class Constant {
 //	public static final String  MSG_QUITRANK_QUIT_MODEL = "您在龙榜'n'中的进步已下榜!";      //下榜
 	public static final String  MSG_IMP_DEL_MODEL = "您的微进步n因严重违反龙杯相关规则和倡导精神,已被删除"; //删除进步
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
+	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	
 	

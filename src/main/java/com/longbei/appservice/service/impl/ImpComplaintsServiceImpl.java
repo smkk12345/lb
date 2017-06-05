@@ -18,6 +18,8 @@ import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.dao.ImproveMapper;
+import com.longbei.appservice.dao.RankMembersMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
@@ -42,6 +44,10 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ImproveService improveService;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private ImproveMapper improveMapper;
+	@Autowired
+	private RankMembersMapper rankMembersMapper;
 //	@Autowired
 //	private RankService rankService;
 	
@@ -332,6 +338,17 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 		            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(), 
 		            			impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(), 
 		            			impComplaints.getBusinessid().toString(), remark, "0", "41", "榜中进步下榜", 0, "", "");
+						int finish = Integer.parseInt(rank.getIsfinish());
+						if (finish >= 2){//假删
+							int res = improveMapper.removeImproveFromBusiness("improve_rank",impComplaints.getBusinessid().toString(),impComplaints.getImpid().toString());
+							if(res > 0){//更新新榜中进步条数
+							rankMembersMapper.updateRankImproveCount(impComplaints.getBusinessid(),impComplaints.getComuserid(),-1);
+							String remark1 = Constant.MSG_RANKIMP_REMOVE_MODEL;
+							userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(),
+										impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(),
+										impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+							}
+						}
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

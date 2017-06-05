@@ -313,7 +313,7 @@ public class UserImpCoinDetailServiceImpl extends BaseServiceImpl implements Use
 		}
     	if(null != userImpCoinDetail.getFriendid()&&userImpCoinDetail.getFriendid() != 0){
 			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userImpCoinDetail.getFriendid());
+			String remark = userRelationService.selectRemark(userid, userImpCoinDetail.getFriendid(), "0");
 	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userImpCoinDetail.getFriendid()));
 	       if(null != appUserMongoEntity){
 		       	if(!StringUtils.isBlank(remark)){
