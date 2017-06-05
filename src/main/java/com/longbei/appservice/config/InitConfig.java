@@ -273,7 +273,7 @@ public class InitConfig implements CommandLineRunner {
         AppserviceConfig.h5_share_goal_detail = prefix+"sharetpl/goal-detail.html";
         AppserviceConfig.h5_share_invite = prefix+"sharetpl/invite.html";
         AppserviceConfig.h5_agreementurl = prefix+"apptpl/help-agreement.html";
-        AppserviceConfig.h5_levelprivilege = prefix+"apptpl/help-privilege.html";
+        AppserviceConfig.h5_levelprivilege = prefix+"apptpl/help-detail.html?issueId=46";
         AppserviceConfig.articleurl = prefix+"apptpl/article-detail.html";
     }
 

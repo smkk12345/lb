@@ -11,6 +11,7 @@
     <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
     <result column="awardphotos" property="awardphotos" jdbcType="VARCHAR" />
     <result column="awardtype" property="awardtype" jdbcType="CHAR" />
+    <result column="createtype" property="createtype" jdbcType="CHAR" />
     <result column="sponsor" property="sponsor" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
@@ -21,12 +22,12 @@
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype, sponsor,
+    id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype,createtype, sponsor,
     createtime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
+    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,createtype,sponsor,
     a.createtime, a.updatetime,classifyname,classifytype
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     where a.id = #{id,jdbcType=INTEGER}
@@ -35,6 +36,7 @@
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
     SELECT count(1) FROM award
     where isdel=0
+    and createtype = 1
   </select>
 
   <select id="awardCountsUnderClassify" parameterType="java.lang.Integer" resultType="java.lang.Integer">
@@ -56,10 +58,11 @@
 
   <select id="selectAwardList" resultMap="BaseResultMap" parameterType="com.longbei.appservice.entity.Award">
     SELECT
-    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,sponsor,
+    a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,createtype,sponsor,
     a.createtime, a.updatetime,classifyname
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
     WHERE a.isdel=0
+    and a.createtype = 1
     <if test="award.awardtitle != null">
       AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
     </if>
@@ -109,14 +112,14 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.Award" >
     insert into award (id, awardtitle, awardbrief, 
       awardcateid, awardprice, awardlevel,
-      awardphotos, awardtype, sponsor,
+      awardphotos, awardtype, createtype,sponsor,
       createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{awardtitle,jdbcType=VARCHAR}, #{awardbrief,jdbcType=VARCHAR}, 
       #{awardcateid,jdbcType=INTEGER}, #{awardprice,jdbcType=DOUBLE}, #{awardlevel,jdbcType=INTEGER},
-      #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR}, #{sponsor,jdbcType=VARCHAR},
+      #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR},#{createtype,jdbcType=CHAR}, #{sponsor,jdbcType=VARCHAR},
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Award" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.longbei.appservice.entity.Award" >
     insert into award
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -142,6 +145,9 @@
       </if>
       <if test="awardtype != null" >
         awardtype,
+      </if>
+      <if test="createtype != null" >
+        createtype,
       </if>
       <if test="sponsor != null" >
         sponsor,
@@ -177,6 +183,9 @@
       </if>
       <if test="awardtype != null" >
         #{awardtype,jdbcType=CHAR},
+      </if>
+      <if test="createtype != null" >
+        #{createtype,jdbcType=CHAR},
       </if>
       <if test="sponsor != null" >
         #{sponsor,jdbcType=VARCHAR},
@@ -216,6 +225,9 @@
       <if test="awardtype != null" >
         awardtype = #{awardtype,jdbcType=CHAR},
       </if>
+      <if test="createtype != null" >
+        createtype = #{createtype,jdbcType=CHAR},
+      </if>
       <if test="sponsor != null" >
         sponsor = #{sponsor,jdbcType=VARCHAR},
       </if>
@@ -238,6 +250,7 @@
       awardlevel = #{awardlevel,jdbcType=INTEGER},
       awardphotos = #{awardphotos,jdbcType=VARCHAR},
       awardtype = #{awardtype,jdbcType=CHAR},
+      createtype = #{createtype,jdbcType=CHAR},
       sponsor = #{sponsor,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}

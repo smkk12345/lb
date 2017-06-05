@@ -43,7 +43,7 @@ public class FindServiceImpl implements FindService{
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
                 //获取好友昵称
-				String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(appuser.getId()));
+				String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(appuser.getId()), "0");
 				if(!StringUtils.isBlank(remark)){
 					appuser.setNickname(remark);
 				}

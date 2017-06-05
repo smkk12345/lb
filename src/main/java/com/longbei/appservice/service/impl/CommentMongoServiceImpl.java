@@ -345,7 +345,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 					}else{
 						//获取好友昵称
 						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
-								Long.parseLong(commentLower.getSeconduserid()));
+								Long.parseLong(commentLower.getSeconduserid()), "0");
 						if(StringUtils.isNotEmpty(remark)){
 							commentLower.setSecondNickname(remark);
 						}else{
@@ -361,7 +361,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 					}else{
 						//获取好友昵称
 						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
-								Long.parseLong(commentLower.getFirstuserid()));
+								Long.parseLong(commentLower.getFirstuserid()), "0");
 						if(StringUtils.isNotEmpty(remark)){
 							commentLower.setFirstNickname(remark);
 						}else{
@@ -383,7 +383,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
         if(null != appUserMongoEntity){
 			if(StringUtils.isNotEmpty(friendid)){
 				//获取好友昵称
-				String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()));
+				String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()), "0");
 				if(StringUtils.isNotEmpty(remark)){
 					appUserMongoEntity.setNickname(remark);
 				}

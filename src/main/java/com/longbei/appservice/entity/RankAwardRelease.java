@@ -28,16 +28,6 @@ public class RankAwardRelease {
 
     private Long userid;
 
-    private String pccoins;
-
-    public String getPccoins() {
-        return pccoins;
-    }
-
-    public void setPccoins(String pccoins) {
-        this.pccoins = pccoins;
-    }
-
     public Award getAward() {
         return award;
     }

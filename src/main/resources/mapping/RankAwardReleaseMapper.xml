@@ -8,7 +8,6 @@
     <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
     <result column="awardrate" property="awardrate" jdbcType="DOUBLE" />
     <result column="awardcount" property="awardcount" jdbcType="INTEGER" />
-    <result column="pccoins" property="pccoins" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="awardnickname" property="awardnickname" jdbcType="VARCHAR" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
@@ -20,7 +19,7 @@
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, rankid, awardid, awardlevel, awardrate, awardcount,pccoins,awardnickname, createtime
+    id, rankid, awardid, awardlevel, awardrate, awardcount,awardnickname, createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -60,18 +59,18 @@
   </delete>
   <insert id="insertRankAwardRe" >
     insert into rank_award_release (rankid, awardid,
-      awardlevel, awardrate,awardnickname,awardcount,pccoins,
+      awardlevel, awardrate,awardnickname,awardcount,
       createtime)
     values
       (#{rankaward.rankid},#{rankaward.awardid},#{rankaward.awardlevel},#{rankaward.awardrate},
-      #{rankaward.awardnickname},#{rankaward.awardcount},#{rankaward.pccoins},#{rankaward.createtime})
+      #{rankaward.awardnickname},#{rankaward.awardcount},#{rankaward.createtime})
   </insert>
   <insert id="insert" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
     insert into rank_award_release (id, rankid, awardid,
-      awardlevel, awardrate, awardcount, pccoins,
+      awardlevel, awardrate, awardcount,
       createtime)
     values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=VARCHAR}, #{awardid,jdbcType=VARCHAR}, 
-      #{awardlevel,jdbcType=INTEGER}, #{awardrate,jdbcType=DOUBLE}, #{awardcount,jdbcType=INTEGER}, #{pccoins,jdbcType=INTEGER},
+      #{awardlevel,jdbcType=INTEGER}, #{awardrate,jdbcType=DOUBLE}, #{awardcount,jdbcType=INTEGER},
       #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.RankAwardRelease" >
@@ -94,9 +93,6 @@
       </if>
       <if test="awardcount != null" >
         awardcount,
-      </if>
-      <if test="pccoins != null" >
-        pccoins,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -121,9 +117,6 @@
       <if test="awardcount != null" >
         #{awardcount,jdbcType=INTEGER},
       </if>
-      <if test="pccoins != null" >
-        #{pccoins,jdbcType=INTEGER},
-      </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -147,9 +140,6 @@
       <if test="awardcount != null" >
         awardcount = #{awardcount,jdbcType=INTEGER},
       </if>
-      <if test="pccoins != null" >
-        pccoins = #{pccoins,jdbcType=INTEGER},
-      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
@@ -163,7 +153,6 @@
       awardlevel = #{awardlevel,jdbcType=INTEGER},
       awardrate = #{awardrate,jdbcType=DOUBLE},
       awardcount = #{awardcount,jdbcType=INTEGER},
-      pccoins = #{pccoins,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -175,8 +164,7 @@
       awardlevel,
       awardnickname,
       awardrate,
-      awardcount,
-      pccoins
+      awardcount
     from rank_award_release
     where rankid = #{rankid}
     order by awardlevel

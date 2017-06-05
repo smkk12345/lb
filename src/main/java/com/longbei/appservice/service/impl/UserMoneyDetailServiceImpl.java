@@ -197,7 +197,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
    private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail, long userid){
 	   if(userMoneyDetail.getFriendid() != 0){
 			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userMoneyDetail.getFriendid());
+			String remark = userRelationService.selectRemark(userid, userMoneyDetail.getFriendid(), "0");
 	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
 	       if(null != appUserMongoEntity){
 		       	if(!StringUtils.isBlank(remark)){

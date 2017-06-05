@@ -23,7 +23,8 @@ public interface SnsFriendsMapper {
 	 * return_type
 	 * SnsFriendsService
 	 */
-	SnsFriends selectByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid);
+	SnsFriends selectByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid,
+								 @Param("isdel") String isdel);
 	
 	List<String> selectListidByUid(@Param("userid") long userid);
 
