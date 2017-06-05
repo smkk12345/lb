@@ -29,7 +29,7 @@ public interface UserRelationService {
 	* @param @return    设定文件 
 	* @return String    返回类型
 	 */
-	String selectRemark(Long userid, Long friendid);
+	String selectRemark(Long userid, Long friendid, String isdel);
 	
 	/**
 	* @Title: selectRemark 
