@@ -1792,7 +1792,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
-        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid());
+        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid(), "0");
         					if(!StringUtils.isBlank(remark)){
         						appUserMongoEntity.setNickname(remark);
         					}
@@ -1903,7 +1903,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }else{
                             map.put("isfans","0");
                         }
-                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid(), "0");
                         if(snsFriends != null){
                             map.put("isfriend","1");
                         }else{
@@ -2166,7 +2166,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
             //获取好友昵称
-            String remark = userRelationService.selectRemark(currentUserId, userid);
+            String remark = userRelationService.selectRemark(currentUserId, userid, "0");
             if(!StringUtils.isBlank(remark)){
                 appUserMongoEntity.setNickname(remark);
             }
@@ -2187,7 +2187,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid);
+                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
                 if(snsFriends != null && snsFriends.getIsdel() == 0){
                     resultMap.put("isFriends",1);
                 }else{
