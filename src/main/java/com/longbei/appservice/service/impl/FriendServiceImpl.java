@@ -330,10 +330,13 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             if(tempSnsFriends != null && tempSnsFriends.getIsdel() == 0){
                 return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_90,Constant.RTNINFO_SYS_90);
             }else if(tempSnsFriends != null){
+                AppUserMongoEntity userMongoEntity = this.userMongoDao.getAppUser(userId+"");
+                AppUserMongoEntity friendMongoEntity = this.userMongoDao.getAppUser(tempSnsFriends.getFriendid()+"");
                 //更改好友状态
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put("userId",tempSnsFriends.getUserid());
                 map.put("friendId",tempSnsFriends.getFriendid());
+                map.put("remark",friendMongoEntity.getNickname());
                 map.put("isDel","0");
                 map.put("createtime",new Date());
                 map.put("updatetime",new Date());
@@ -341,6 +344,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
 
                 map.put("userId",tempSnsFriends.getFriendid());
                 map.put("friendId",tempSnsFriends.getUserid());
+                map.put("remark",userMongoEntity.getNickname());
                 int row1 = this.snsFriendsMapper.updateByUidAndFid(map);
                 if(row > 0 && row1 > 0){
                     threadPoolTaskExecutor.execute(new Runnable() {

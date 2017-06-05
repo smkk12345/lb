@@ -2873,7 +2873,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Map<String,Object> awardMap = new HashMap<String,Object>();//用于存放 一等奖的详情
                 List<Map<String,Object>> awards = new ArrayList<Map<String,Object>>();//用于存放一等奖中哪些用户中奖
                 for(RankMembers rankMembers:rankMemberses){
-                    if(awardLevel != rankMembers.getAwardlevel().intValue()){
+                    if(awardLevel != rankMembers.getRankAward().getAwardlevel().intValue()){
                         if(awards.size() > 0){
                             awardMap.put("awardcount",awardCount);
                             awardMap.put("awardMembers",awards);
@@ -2881,9 +2881,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             awardMap = new HashMap<String,Object>();
                             awards = new ArrayList<Map<String,Object>>();
                             awardCount = 0;
-                            awardLevel = rankMembers.getAwardlevel().intValue();
+                            awardLevel = rankMembers.getRankAward().getAwardlevel().intValue();
                         }else{
-                            awardLevel = rankMembers.getAwardlevel().intValue();
+                            awardLevel = rankMembers.getRankAward().getAwardlevel().intValue();
                         }
                         Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
                         RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankMembers.getRankAward().getAwardid()+"");

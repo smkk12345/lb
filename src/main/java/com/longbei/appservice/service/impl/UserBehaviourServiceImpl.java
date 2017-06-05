@@ -366,7 +366,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                         break;
                     }
                 }
-
+                //插入一条 等级升级消息  不升级就不插入这个表
+                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+                //推送一条消息
+                String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
+                //mtype 0 系统消息      msgtype  18:升龙级
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(),
+                        "", "6", "", remark, "0", "18", "升级", 0, "", "");
             }else if(newPoint >= nextUserLevel.getPoint()){//只升一级
                 //该等级中他所获得的point
                 int userinfoCurPoint = newPoint - nextUserLevel.getPoint();
@@ -374,6 +380,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 userInfo.setPoint(newPoint);
                 userInfo.setCurpoint(userinfoCurPoint);
                 userInfoMapper.updatePointByUserid(userInfo);
+                //插入一条 等级升级消息  不升级就不插入这个表
+                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+                //推送一条消息
+                String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
+                //mtype 0 系统消息      msgtype  18:升龙级
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(),
+                        "", "6", "", remark, "0", "18", "升级", 0, "", "");
             }else{//不升级
                 updateToUserInfo(userInfo,iPoint);
             }

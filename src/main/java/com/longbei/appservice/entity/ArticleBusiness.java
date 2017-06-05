@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -14,6 +16,7 @@ public class ArticleBusiness {
     /**
      * 
      */
+    @JsonSerialize(using=ToStringSerializer.class)
     private Long businessid;
 
     /**
