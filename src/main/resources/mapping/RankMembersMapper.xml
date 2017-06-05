@@ -302,7 +302,7 @@
     (SELECT <include refid="Base_Column_List" /> FROM rank_members
     WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' ORDER BY sortnum ASC limit #{totalcount}) temp
     WHERE 1=1
-    <if test="rankmember.isfashionman != null">
+    <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
       AND temp.isfashionman = #{rankmember.isfashionman}
     </if>
     <if test="rankmember.appUserMongoEntities != null">
