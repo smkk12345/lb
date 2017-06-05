@@ -25,7 +25,7 @@ public class Constant_point {
         NEW_CERTIFY_ACADEMIC = 30;//学历认证 academic
         NEW_CERTIFY_JOB = 30;//用作认证
         NEW_USERINFO = SysRulesCache.behaviorRule.getInfocompletegoals();//更新用户信息
-        DAILY_CHECKIN = SysRulesCache.behaviorRule.getLikegoals();//点赞
+        DAILY_CHECKIN = SysRulesCache.behaviorRule.getSigngoals();//签到
         DAILY_SHARE= SysRulesCache.behaviorRule.getInfocompletegoals();//每日分享
         DAILY_SHARE_OUT= SysRulesCache.behaviorRule.getOutsharegoals();//每日分享(站外)
         DAILY_SHARE_LIMIT = SysRulesCache.behaviorRule.getInnersharegoalsmax();//每日分享上限限制
@@ -63,7 +63,7 @@ public class Constant_point {
     /**
      * 日常行为
      */
-    public static int DAILY_CHECKIN = SysRulesCache.behaviorRule.getLikegoals();//点赞
+    public static int DAILY_CHECKIN = SysRulesCache.behaviorRule.getSigngoals();//签到
     public static int DAILY_SHARE= SysRulesCache.behaviorRule.getInfocompletegoals();//每日分享
     public static int DAILY_SHARE_OUT= SysRulesCache.behaviorRule.getOutsharegoals();//每日分享(站外)
     public static int DAILY_SHARE_LIMIT = SysRulesCache.behaviorRule.getInnersharegoalsmax();//每日分享上限限制
