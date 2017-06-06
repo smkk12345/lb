@@ -791,4 +791,15 @@ public class Constant {
 	 */
 	public static final String NOTIFY_URL_WEIXIN = "api/notify/verify/wx";
 
+	/**
+	 * 用户消息 设置 开关
+	 */
+	public enum userSettingCommen{
+		comment,diamond,
+		flower,like,new_fans,
+		nick_search,page_tool,
+		phone_search,
+		newfriendask
+	}
+
 }
