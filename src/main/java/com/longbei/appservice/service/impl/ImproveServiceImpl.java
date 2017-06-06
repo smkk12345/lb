@@ -880,6 +880,12 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<Object> baseResp = new BaseResp<>();
         boolean isok = false;
         try {
+        	Improve improves = selectImprove(Long.parseLong(improveid),userid,businesstype,businessid,null,null);
+        	if(null != improves){
+        		if(!userid.equals(improves.getUserid().toString())){
+        			return new BaseResp(Constant.STATUS_SYS_112, Constant.RTNINFO_SYS_112);
+        		}
+        	}
             switch (businesstype){
                 case Constant.IMPROVE_SINGLE_TYPE:
                     baseResp = removeSingleImprove(userid,improveid);
