@@ -37,7 +37,7 @@ public class Constant_point {
         DAILY_COMMENT = SysRulesCache.behaviorRule.getImpcommentgoals();//评论
         DAILY_COMMENT_LIMIT = SysRulesCache.behaviorRule.getImpcommentgoalsmax();//评论限制
         DAILY_FLOWER = SysRulesCache.behaviorRule.getFlowergoals();//送花
-        DAILY_FLOWER_LIMIT = SysRulesCache.behaviorRule.getFlowergoalsmax();//送花限制
+//        DAILY_FLOWER_LIMIT = SysRulesCache.behaviorRule.getFlowergoalsmax();//送花限制
         DAILY_IMPFLOWER_LIMIT = SysRulesCache.behaviorRule.getEachimproveflowersmax();
         LOTTERY = SysRulesCache.behaviorRule.getLotterygoals();//lottery 抽奖
         INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregistergoals();//邀请好友
