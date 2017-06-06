@@ -71,10 +71,22 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 	public BaseResp<Object> selectUserPerfectListByUserId(long userid,int startNum,int pageSize) {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
+			//已点亮图标的十项全能
 			List<UserPlDetail> list = userPlDetailMapper.selectUserPerfectListByUserId(userid,startNum,pageSize);
 			baseResp.initCodeAndDesp();
 			baseResp.setData(new ArrayList<UserPlDetail>());
 			String photos;
+			String[] ptypes = new String[list.size()];
+			List <String> strPtypes = new ArrayList <String> ();
+			for (int i = 0; i <list.size() ; i++) {
+				strPtypes.add(list.get(i).getPtype());
+			}
+			ptypes =strPtypes.toArray(ptypes);
+			//未点亮图标的十项全能
+			List<UserPlDetail> unLightenList = userPlDetailMapper.selectUnlightenListByUserId(userid,ptypes,null,null);
+			for (int i = 0; i <unLightenList.size() ; i++) {
+				list.add(unLightenList.get(i));
+			}
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
 				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));
@@ -84,9 +96,9 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-				baseResp.setData(list);
 			}
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			baseResp.setData(list);
 		} catch (Exception e) {
 			logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}

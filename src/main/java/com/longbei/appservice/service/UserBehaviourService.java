@@ -68,12 +68,14 @@ public interface UserBehaviourService {
      * @Title: updateUserPLDetailToplevel
      * @Description: 更新是否最高级
      * @param userid
+     * @param pType 十全十美类型
+     * @param isTopLevel //0非最高级 1最高级
      * @param @return
      * @return boolean 返回类型
      * @auther IngaWu
      * @currentdate:2017年5月3日
      */
-    boolean updateUserPLDetailToplevel(long userid,String pType);
+    boolean updateUserPLDetailToplevel(long userid,String pType,String isTopLevel);
 
 
 }

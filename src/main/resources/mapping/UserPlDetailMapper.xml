@@ -31,7 +31,23 @@
     SELECT
     <include refid="Base_Column" />
     FROM user_pl_detail
-    where userid=#{userid} and ptype != 'a' ORDER BY toplevel DESC, ptype limit #{startNum},#{pageSize}
+    where userid=#{userid} and ptype != 'a' and toplevel = 1 ORDER BY toplevel,ptype limit #{startNum},#{pageSize}
+  </select>
+  <select id="selectUnlightenListByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column" />
+    FROM user_pl_detail
+    where userid=#{userid} and ptype != 'a' and toplevel = 0
+    <if test="ptypes != null and ptypes!=''">
+      and ptype not in
+      <foreach item="item" collection="ptypes" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    ORDER BY toplevel,ptype
+    <if test="startNum != null" >
+      limit #{startNum},#{pageSize}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail
@@ -161,15 +177,12 @@
     </set>
     where userid = #{userid,jdbcType=BIGINT} and ptype = #{ptype,jdbcType=CHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserPlDetail" >
+  <update id="updateToUnTopLevel" parameterType="com.longbei.appservice.entity.UserPlDetail" >
     update user_pl_detail
-    set userid = #{userid,jdbcType=BIGINT},
-      leve = #{leve,jdbcType=INTEGER},
+    set
       ptype = #{ptype,jdbcType=CHAR},
-      perfectname = #{perfectname,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      scorce = #{scorce,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+      toplevel = #{toplevel,jdbcType=CHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where userid = #{userid,jdbcType=BIGINT} and ptype = #{ptype,jdbcType=CHAR}
   </update>
 </mapper>
