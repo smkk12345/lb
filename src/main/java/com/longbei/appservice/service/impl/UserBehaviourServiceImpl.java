@@ -746,9 +746,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 	             		springJedisDao.put(key,operateType+"_icon"+dateStr+operateTypeLimit,(curValue+result)+"");
 	                    return result;
 	                }else{
-                        //给限制最高值与当前值的差值或0
-                        int returnImpCoin = ((limit-curValue)>0)?(limit-curValue):0;
-                        return returnImpCoin;
+//                        //给限制最高值与当前值的差值或0
+//                        int returnImpCoin = ((limit-curValue)>0)?(limit-curValue):0;
+//                        return returnImpCoin;
+                          return 0;
 	                }
                 }else{
                 	//-------
