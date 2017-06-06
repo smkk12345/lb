@@ -73,6 +73,11 @@ public interface UserMsgService {
 			String commentid, String commentlowerid);
 
 	/**
+	 * 删除关注信息
+	 */
+	int deleteCommentMsgLike(String userid, String friendid);
+
+	/**
 	 * 删除赞信息
 	 */
 	int deleteLikeCommentMsg(String impid, String businesstype, String businessid,
