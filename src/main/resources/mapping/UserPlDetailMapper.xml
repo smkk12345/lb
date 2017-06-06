@@ -31,16 +31,7 @@
     SELECT
     <include refid="Base_Column" />
     FROM user_pl_detail
-    where userid=#{userid} and ptype != 'a' and  toplevel=1 GROUP BY ptype limit #{startNum},#{pageSize}
-  </select>
-  <select id="selectUnlightenListByUserId" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column" />
-    FROM user_pl_detail
-    where userid=#{userid} and ptype != 'a' and  toplevel !=1 GROUP BY ptype
-    <if test="startNum != null" >
-      limit #{startNum},#{pageSize}
-    </if>
+    where userid=#{userid} and ptype != 'a'  GROUP BY ptype limit #{startNum},#{pageSize}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail

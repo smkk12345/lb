@@ -17,14 +17,6 @@ public interface UserPlDetailMapper {
 
     List<UserPlDetail> selectUserPerfectListByUserId(@Param("userid") long userid,@Param("startNum") int startNum,@Param("pageSize")int pageSize);
 
-    /**
-     * @Title: selectUnlightenListByUserId
-     * @Description: 未点亮图标的十项全能
-     * @auther IngaWu
-     * @currentdate:2017年6月6日
-     */
-    List<UserPlDetail> selectUnlightenListByUserId(@Param("userid") long userid,@Param("startNum") Integer startNum,@Param("pageSize")Integer pageSize);
-
     int updateByPrimaryKeySelective(UserPlDetail record);
 
     int updateByPrimaryKey(UserPlDetail record);
