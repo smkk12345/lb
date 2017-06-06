@@ -42,18 +42,26 @@ public class FriendMongoDao extends BaseMongoDao<FriendAddAsk>{
 
     /**
      * 更改添加好友请求的记录 状态
-     * @param userId 用户id
-     * @param friendId 请求添加的好友id
+     * @param senderUserId 用户id
+     * @param receiveUserId 请求添加的好友id
      * @param status 更改的状态
      * @param updateTimeFlag 是否更改添加好友的申请时间
      */
-    public void updateFriendAddAskStatus(Long userId, Long friendId, Integer status,JSONArray messages, Boolean updateTimeFlag) {
-        Criteria  criteria = Criteria.where("userId").is(userId).and("friendId").is(friendId);
+    public void updateFriendAddAskStatus(Long senderUserId, Long receiveUserId, Integer status,JSONArray messages, Boolean updateTimeFlag) {
+        Criteria  criteria = Criteria.where("senderUserId").is(senderUserId).and("receiveUserId").is(receiveUserId);
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("status",status);
-        update.set("receiveIsRead",true);
-        update.set("senderIsRead",true);
+        if(status == FriendAddAsk.STATUS_PENDING){
+            update.set("receiveIsRead",false);
+            update.set("senderIsRead",true);
+        }else if(status == FriendAddAsk.STATUS_FAIL){
+            update.set("receiveIsRead",true);
+            update.set("senderIsRead",false);
+        }else{
+            update.set("receiveIsRead",true);
+            update.set("senderIsRead",true);
+        }
         update.set("updateDate",new Date());
         if(messages != null){
             update.set("message",messages);
