@@ -32,8 +32,6 @@ public class Award {
 
     private String sponsor;//赞助商
 
-    private Integer createtype;//1.运营创建的 2.用户创建的
-
     private AwardClassify awardClassify; //奖品分类信息 0 - 进步币 1 - 红包 3 - 实物
 
     public AwardClassify getAwardClassify() {
@@ -44,13 +42,13 @@ public class Award {
         this.awardClassify = awardClassify;
     }
 
-    public String getCreatetype() {
-        return createtype;
-    }
+//    public String getCreatetype() {
+//        return createtype;
+//    }
 
-    public void setCreatetype(String createtype) {
-        this.createtype = createtype;
-    }
+//    public void setCreatetype(String createtype) {
+//        this.createtype = createtype;
+//    }
 
     /**
      * 
@@ -238,19 +236,12 @@ public class Award {
         this.updatetime = updatetime;
     }
 
-    /**
-     * 设置创建的类型
-     * @return
-     */
-    public Integer getCreatetype() {
-        return createtype;
-    }
+	public String getCreatetype() {
+		return createtype;
+	}
 
-    /**
-     * 获取创建的类型
-     * @param createtype
-     */
-    public void setCreatetype(Integer createtype) {
-        this.createtype = createtype;
-    }
+	public void setCreatetype(String createtype) {
+		this.createtype = createtype;
+	}
+
 }
