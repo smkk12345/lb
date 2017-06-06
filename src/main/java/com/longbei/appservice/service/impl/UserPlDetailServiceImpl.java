@@ -83,10 +83,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			}
 			ptypes =strPtypes.toArray(ptypes);
 			//未点亮图标的十项全能
-			List<UserPlDetail> unLightenList = userPlDetailMapper.selectUnlightenListByUserId(userid,ptypes,null,null);
-			for (int i = 0; i <unLightenList.size() ; i++) {
-				list.add(unLightenList.get(i));
-			}
+//			List<UserPlDetail> unLightenList = userPlDetailMapper.selectUnlightenListByUserId(userid,ptypes,null,null);
+//			for (int i = 0; i <unLightenList.size() ; i++) {
+//				list.add(unLightenList.get(i));
+//			}
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
 				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));
