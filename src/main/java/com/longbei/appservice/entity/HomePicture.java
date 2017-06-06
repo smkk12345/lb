@@ -22,7 +22,7 @@ public class HomePicture {
     private String photos;
 
     /**
-     * 关联 内容类型 0 - 图文 1 - 专题  2 - 连接
+     * 关联 内容类型 0 - 图文/文章 1 - 专题  2 - 连接
      */
     private String contenttype;
 
@@ -77,7 +77,7 @@ public class HomePicture {
     private String href;
 
     /**
-     * 轮播图类型 0 - 首页轮播图。1 - 商城轮播图
+     * 轮播图类型 0 - 首页轮播图。1 - 商城轮播图 2.首页精选推荐
      */
     private String type;
 

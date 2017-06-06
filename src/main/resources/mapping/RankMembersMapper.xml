@@ -21,6 +21,8 @@
     <result column="checkuserid" property="checkuserid" jdbcType="VARCHAR" />
     <result column="receivecode" property="receivecode" jdbcType="VARCHAR" />
     <result column="checkdate" property="checkdate" jdbcType="TIMESTAMP" />
+    <result column="rankfinishlikes" property="rankfinishlikes" jdbcType="INTEGER" />
+    <result column="rankfinishflower" property="rankfinishflower" jdbcType="INTEGER" />
     <result column="publishawarddate" property="publishawarddate" jdbcType="TIMESTAMP" />
       <result column="upfashionmantime" property="upfashionmantime" jdbcType="TIMESTAMP" />
       <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
@@ -38,7 +40,7 @@
       id, rankid, userid, createtime, updatetime, sortnum, iswinning, icount,
     likes, flowers, status, acceptaward, isfashionman,complaintotalcount,checkstatus,
     checkresult,checkuserid,checkdate,awardid,awardlevel,receivecode,publishawarddate,
-    downfashionmantime,upfashionmantime,sort
+    downfashionmantime,upfashionmantime,sort,rankfinishlikes,rankfinishflower
   </sql>
 
     <sql id="Base_Finish_List" >

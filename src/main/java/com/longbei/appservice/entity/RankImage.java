@@ -52,6 +52,8 @@ public class RankImage {
 
     private String createuserid;//榜单创建人id
 
+    private String createusernickname;//榜单创建人昵称
+
     private String ranktype;//榜单类型。0—公共榜 1--定制榜
 
     private String ispublic;//是否公开  0—公开 1—不公开
@@ -657,6 +659,14 @@ public class RankImage {
      */
     public void setCreateuserid(String createuserid) {
         this.createuserid = createuserid;
+    }
+
+    public String getCreateusernickname() {
+        return createusernickname;
+    }
+
+    public void setCreateusernickname(String createusernickname) {
+        this.createusernickname = createusernickname;
     }
 
     /**

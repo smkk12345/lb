@@ -168,6 +168,7 @@ public class Constant {
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
 	public static final int STATUS_SYS_101 = -101;
+	public static final int STATUS_SYS_112 = -112;
 
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
@@ -201,6 +202,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_19 = "发布的私有榜单已达上限";
 	public static final String RTNINFO_SYS_110 = "根据你当前的用户等级,您创建的公开榜单人数上限为";
 	public static final String RTNINFO_SYS_111 = "根据你当前的用户等级,您创建的私有榜单人数上限为";
+	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -788,5 +790,16 @@ public class Constant {
 	 * 微信回掉
 	 */
 	public static final String NOTIFY_URL_WEIXIN = "api/notify/verify/wx";
+
+	/**
+	 * 用户消息 设置 开关
+	 */
+	public enum userSettingCommen{
+		comment,diamond,
+		flower,like,new_fans,
+		nick_search,page_tool,
+		phone_search,
+		newfriendask
+	}
 
 }

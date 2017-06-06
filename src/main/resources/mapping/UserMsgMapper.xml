@@ -172,6 +172,18 @@
     	and commentlowerid = #{commentlowerid} 
     </if>
   </delete>
+
+  <delete id="deleteCommentMsgLike">
+    delete from user_msg
+    where mtype = 1
+    and msgtype = 5
+    <if test="friendid != null" >
+      and friendid = #{friendid}
+    </if>
+    <if test="userid != null" >
+      and userid = #{userid}
+    </if>
+  </delete>
   
   <delete id="deleteLikeCommentMsg">
     delete from user_msg 

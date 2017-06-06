@@ -105,7 +105,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         baseResp.getExpandData().put("point",point);
         if(point > 0){
             levelUp(userInfo,point,pType);
-            saveUserPointDetail(userInfo,point,pType,operateType);
+            if(!"b".equals(pType)){
+                saveUserPointDetail(userInfo,point,pType,operateType);
+            }
             putPointToCache(point,userInfo.getUserid(),operateType);
         }
         //进步币发生变化
@@ -421,7 +423,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 //            }
             //userPointDetailMapper.insert();
             //不管升级不升级  userpldetail  userpoint
-            subLevelUp(userInfo,iPoint,pType,dateStr);
+            if(!"b".equals(pType)){
+            	subLevelUp(userInfo,iPoint,pType,dateStr);
+            }
         }catch(Exception e){
             logger.error("levelUp error and msg = {}",e);
         }

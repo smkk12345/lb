@@ -173,7 +173,7 @@ public class ArticleServiceImpl implements ArticleService{
         } catch (Exception e) {
             logger.error("select articleBusiness list is error:{}",e);
         }
-        return baseResp;
+        return baseResp.initCodeAndDesp();
     }
 
     @Override
