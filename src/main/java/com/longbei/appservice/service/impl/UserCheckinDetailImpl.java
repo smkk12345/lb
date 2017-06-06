@@ -116,14 +116,13 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				if(cha > Integer.parseInt(redisvalue)){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
-					operate(userid);
 					addRedisCheck(userid, day, "1");
-
-				}else{
 					operate(userid);
+				}else{
 					//连续签到 +1
-					springJedisDao.increment(Constant.RP_USER_CHECK + userid, 
+					springJedisDao.increment(Constant.RP_USER_CHECK + userid,
 							Constant.RP_USER_CHECK_VALUE + userid, 1);
+					operate(userid);
 					//查看是否已经连续签到5天以上    ---5天以上存库user_checkin_info
 //						String addDate = springJedisDao.getHashValue(Constant.RP_USER_CHECK + record.getUserid(), 
 //								Constant.RP_USER_CHECK_DATE + record.getUserid());
@@ -153,9 +152,9 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					}
 				}
 			}else{
-				operate(userid);
 				//不存在    添加
 				addRedisCheck(userid, day, "1");
+				operate(userid);
 			}
 			
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
