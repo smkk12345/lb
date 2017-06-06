@@ -116,18 +116,42 @@ public class PageServiceImpl implements PageService{
     @Override
     public BaseResp<List<HomePicture>> selectHomePicList(String type) {
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
+        List<HomePicture> homePictures = new ArrayList<HomePicture>();
         try {
-            HomePicture homePicture = new HomePicture();
-            homePicture.setIsup("1");
-            homePicture.setType(type);
-            List<HomePicture> homePictures = homePictureMapper.selectList(homePicture,null,null);
-            for (HomePicture homePicture1 : homePictures){
-                if ("0".equals(homePicture1.getContenttype())){
-                    homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());
+            if("0".equals(type)){
+                HomePicture homePicture = new HomePicture();
+                homePicture.setIsup("1");
+                homePicture.setType(type);
+                homePictures = homePictureMapper.selectList(homePicture,null,null);
+                for (HomePicture homePicture1 : homePictures){
+                    if ("0".equals(homePicture1.getContenttype())){
+                        homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());
+                    }
                 }
+            }else if("2".equals(type)){
+                HomePicture homePicture = new HomePicture();
+                homePicture.setPicname("叶圣陶听说读写能力展示活动简介");
+                homePicture.setPhotos("d0dded28-d919-4d9c-b836-672344bede9e");
+                homePicture.setContenttype("0");
+                homePicture.setIsup("1");
+                homePicture.setIsdel(0);
+                homePicture.setSort("0");
+                homePicture.setHref(AppserviceConfig.articleurl + "?articleid=101");
+
+                HomePicture homePicture2 = new HomePicture();
+                homePicture2.setPicname("北京公益基金会");
+                homePicture2.setPhotos("b8d75484-33d4-4a42-8b24-4f00ad4e902e");
+                homePicture2.setContenttype("0");
+                homePicture2.setIsup("1");
+                homePicture2.setIsdel(0);
+                homePicture2.setSort("0");
+                homePicture2.setHref(AppserviceConfig.articleurl + "?articleid=102");
+
+                homePictures.add(0,homePicture);
+                homePictures.add(1,homePicture2);
             }
-            baseResp = BaseResp.ok();
             baseResp.setData(homePictures);
+            return baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("select home pic list for app is error:",e);
         }
