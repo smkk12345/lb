@@ -314,7 +314,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             if(friendAddAsk == null || !userId.equals(friendAddAsk.getReceiveUserId())){
                 return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
-            friendMongoDao.updateFriendAddAsk(id,null,null,null,status,null);
+            friendMongoDao.updateFriendAddAskStatus(friendAddAsk.getSenderUserId(),friendAddAsk.getReceiveUserId(),status,null,false);
             if(status == 2){
                 //JPUSH通知用户
                 JSONObject pushMessage = new JSONObject();
