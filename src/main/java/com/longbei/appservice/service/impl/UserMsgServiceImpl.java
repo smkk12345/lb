@@ -234,6 +234,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 		int temp = userMsgMapper.deleteCommentMsg(impid, businesstype, businessid, commentid, commentlowerid);
 		return temp;
 	}
+
+	@Override
+	public int deleteCommentMsgLike(String userid, String friendid) {
+		int temp = userMsgMapper.deleteCommentMsgLike(userid, friendid);
+		return temp;
+	}
 	
 	/**
 	 * 删除赞信息

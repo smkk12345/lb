@@ -42,13 +42,13 @@ public class Award {
         this.awardClassify = awardClassify;
     }
 
-//    public String getCreatetype() {
-//        return createtype;
-//    }
+    public String getCreatetype() {
+        return createtype;
+    }
 
-//    public void setCreatetype(String createtype) {
-//        this.createtype = createtype;
-//    }
+    public void setCreatetype(String createtype) {
+        this.createtype = createtype;
+    }
 
     /**
      * 
@@ -235,13 +235,5 @@ public class Award {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
-
-	public String getCreatetype() {
-		return createtype;
-	}
-
-	public void setCreatetype(String createtype) {
-		this.createtype = createtype;
-	}
 
 }
