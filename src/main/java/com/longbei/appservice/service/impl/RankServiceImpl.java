@@ -126,11 +126,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
-            RankImage rankImage1 = rankImageMapper.selectByRankImageId(rankImage.getRankid().toString());
-            logger.debug("get rank joincode after insert:",rankImage1.getJoincode());
-
             if(res>0){
-                baseResp=BaseResp.ok();
+                baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
                 insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
             }
@@ -219,12 +216,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (null == rankImage){
                 return baseResp;
             }
-            //PC端榜单
-            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                AppUserMongoEntity appUser = userMongoDao.getAppUser(rankImage.getCreateuserid());
-                rankImage.setCreateusernickname(appUser.getNickname());
-            }
-            rankImage.setRankAwards(selectRankAwardByRankid(rankimageid,rankImage.getSourcetype()));
+            rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
             logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
@@ -235,7 +227,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return BaseResp.fail();
     }
 
-    private List<RankAward> selectRankAwardByRankid(String rankiamgeid,String sourcetype){
+    private List<RankAward> selectRankAwardByRankid(String rankiamgeid){
         List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankiamgeid);
         for (RankAward rankAward : rankAwards){
             Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
@@ -248,7 +240,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         logger.info("publish rank image : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
         BaseResp baseResp = new BaseResp();
         String rankImageId = rankImage.getRankid()+"";
-        rankImage.setRankAwards(selectRankAwardByRankid(rankImageId,rankImage.getSourcetype()));
+        rankImage.setRankAwards(selectRankAwardByRankid(rankImageId));
         if (!Constant.RANKIMAGE_STATUS_4.equals(rankImage.getCheckstatus())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_60, Constant.RTNINFO_SYS_60);
         }
