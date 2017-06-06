@@ -173,6 +173,24 @@
     </if>
   </delete>
   
+  <delete id="deleteLikeCommentMsg">
+    delete from user_msg 
+    where mtype = 1 
+    and msgtype = 2 
+    <if test="snsid != null" >
+    	and snsid = #{snsid}  
+    </if> 
+    <if test="gtype != null" >
+    	and gtype = #{gtype} 
+    </if> 
+    <if test="gtypeid != null" >
+    	and gtypeid = #{gtypeid} 
+    </if>
+    <if test="userid != null" >
+    	and friendid = #{userid} 
+    </if>
+  </delete>
+  
   <delete id="deleteByMtypeAndMsgtype">
     delete from user_msg 
     where userid = #{userid} 

@@ -146,12 +146,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp=BaseResp.ok();
                 baseResp.setData(rankImage.getRankid());
-                //PC端发榜
-                if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                    insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-                }else{
-                    insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-                }
+                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
@@ -195,28 +190,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return res>0;
     }
 
-    /**
-     * pc端发榜
-     * @param rankid
-     * @param rankAwards
-     * @return
-     */
-    private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
-        if (null != rankAwards){
-            for (RankAward rankAward:rankAwards){
-                rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
-            }
-            try {
-                int res = rankAwardMapper.insertPCBatch(rankAwards);
-                return true;
-            } catch (Exception e) {
-                logger.error("insert pc rank award rankid={} is error:",rankid,e);
-            }
-        }
-        return false;
-    }
-
     private boolean insertRankAward(String rankid, List<RankAward> rankAwards){
         if (null != rankAwards){
             for (RankAward rankAward:rankAwards){
@@ -245,12 +218,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-            } else {
-                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
-            }
-
+            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -283,12 +251,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private List<RankAward> selectRankAwardByRankid(String rankiamgeid,String sourcetype){
         List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankiamgeid);
-        //PC端榜单奖品无awradid
-        if(!Constant.RANK_SOURCE_TYPE_1.equals(sourcetype)){
-            for (RankAward rankAward : rankAwards){
-                Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-                rankAward.setAward(award);
-            }
+        for (RankAward rankAward : rankAwards){
+            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+            rankAward.setAward(award);
         }
         return rankAwards;
     }
@@ -1792,7 +1757,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
-        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid());
+        					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid(), "0");
         					if(!StringUtils.isBlank(remark)){
         						appUserMongoEntity.setNickname(remark);
         					}
@@ -1903,7 +1868,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }else{
                             map.put("isfans","0");
                         }
-                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid());
+                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid(), "0");
                         if(snsFriends != null){
                             map.put("isfriend","1");
                         }else{
@@ -2166,7 +2131,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
             //获取好友昵称
-            String remark = userRelationService.selectRemark(currentUserId, userid);
+            String remark = userRelationService.selectRemark(currentUserId, userid, "0");
             if(!StringUtils.isBlank(remark)){
                 appUserMongoEntity.setNickname(remark);
             }
@@ -2187,7 +2152,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid);
+                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
                 if(snsFriends != null && snsFriends.getIsdel() == 0){
                     resultMap.put("isFriends",1);
                 }else{
@@ -2986,25 +2951,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     /**
-     *pc榜单奖品封装
-     * @param rankid
-     * @return
-     */
-    private List<RankAwardRelease> selectPCRankListByRankidRelease(String rankid){
-        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        String photoPath = "b132bbc6-a336-4c9c-9e12-75243db968c7";//img/img_jinbubi.jpg
-        for (RankAwardRelease rankAward : rankAwards){
-            Award award = new Award();
-            award.setAwardphotos(photoPath);
-            award.setAwardtitle("进步币");
-            award.setAwardbrief("用户发的榜单奖品都是进步币");
-            award.setAwardprice(Double.parseDouble(rankAward.getPccoins())/100);
-            rankAward.setAward(award);
-        }
-        return rankAwards;
-    }
-
-    /**
      * 更改榜中的参榜人数
      * @param rankId 榜id
      * @param count 新增人数
@@ -3060,12 +3006,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             if(queryAward != null && queryAward ){
-                //pc端榜单没有awardid
-                if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                    rank.setRankAwards(selectPCRankListByRankidRelease(String.valueOf(rankId)));
-                }else{
-                    rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
-                }
+                rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
             }
 
             if(rank.getRankcardid() != null){

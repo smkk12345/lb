@@ -20,13 +20,6 @@ public interface RankAwardMapper {
 
     int insertBatch(List<RankAward> rankAwards);
 
-    /**
-     * pc端发榜批量插入奖品
-     * @param rankAwards
-     * @return
-     */
-    int insertPCBatch(List<RankAward> rankAwards);
-
     int updateByPrimaryKey(RankAward record);
 
     List<RankAward> selectListByRankid(@Param("rankid") String rankid);

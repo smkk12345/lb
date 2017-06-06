@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 					userInfo.setIsfans("1");
 				}
 				//获取好友昵称
-				String remark = userRelationService.selectRemark(lookid, userid);
+				String remark = userRelationService.selectRemark(lookid, userid, "0");
 				userInfo.setRemark(remark);
 			}
 			//判断对话消息是否显示红点    0:不显示   1：显示
@@ -988,8 +988,10 @@ public class UserServiceImpl implements UserService {
 	private List<String> getPointInfoLevel(long userid, UserLevel userLevel){
 		List<String> list = new ArrayList<>();
 		if(null != userLevel){
-			list.add("同时加入公开龙榜数升为" + userLevel.getJoinranknum() + "个");
-			list.add("兑换商城中商品打" + userLevel.getDiscount()*10 + "折兑换(特殊商品除外)");
+			list.add("可以同时加入" + userLevel.getJoinranknum() + "个公开龙榜");
+			if(userLevel.getDiscount().intValue() != 1){
+				list.add("兑换商城中商品打" + userLevel.getDiscount()*10 + "折兑换(特殊商品除外)");
+			}
 			list.add("可以发布" + userLevel.getPubrankjoinnum() + "人的公开龙榜");
 			list.add("可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
 			list.add("可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");

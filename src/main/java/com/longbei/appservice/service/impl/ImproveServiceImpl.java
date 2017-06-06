@@ -1109,7 +1109,7 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid,
                                                           Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid));
+        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid), "0");
         int ispublic = 2;
         if (null != snsFriends){
             ispublic = 1;
@@ -1121,7 +1121,7 @@ public class ImproveServiceImpl implements ImproveService{
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
             //获取好友昵称
-			String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(targetuserid));
+			String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(targetuserid), "0");
 			if(!StringUtils.isBlank(remark)){
 				appUserMongoEntity.setNickname(remark);
 			}
@@ -1540,7 +1540,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(null != appUserMongoEntity){
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 //获取好友昵称
-                String remark = userRelationService.selectRemark(userid, improve.getUserid());
+                String remark = userRelationService.selectRemark(userid, improve.getUserid(), "0");
                 if(StringUtils.isNotBlank(remark)){
                     appUserMongoEntity.setNickname(remark);
                 }
@@ -1722,7 +1722,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }catch (Exception e){
                     logger.error("pointChange,userSumInfo error",e);
                 }
-
+                //取消赞后，删除消息中的记录    2017-06-05
+                userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
             }
             baseResp.getExpandData().put("haslike","0");
             int likes = improve.getLikes()-1;
@@ -2651,7 +2652,7 @@ public class ImproveServiceImpl implements ImproveService{
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 //获取好友昵称
                 if (StringUtils.isNotBlank(userid)){
-                    String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid());
+                    String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid(), "0");
                     if(StringUtils.isNotEmpty(remark)){
                         appUserMongoEntity.setNickname(remark);
                     }

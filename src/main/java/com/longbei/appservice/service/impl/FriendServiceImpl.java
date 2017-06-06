@@ -77,8 +77,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     public BaseResp addFriendAsk(Long userId, Long friendId,FriendAddAsk.Source source,String message) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-            if(snsFriends != null && snsFriends.getIsdel() == 0){
+            SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
+            if(snsFriends != null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
             }
             AppUserMongoEntity senderUser = userMongoDao.getAppUser(userId+"");
@@ -132,8 +132,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_91, Constant.RTNINFO_SYS_91);
                 }
                 //校验用户现在是否还是好友
-                SnsFriends tempSnsFriend = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-                if(tempSnsFriend != null && tempSnsFriend.getIsdel() == 0){
+                SnsFriends tempSnsFriend = snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
+                if(tempSnsFriend != null){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_90, Constant.RTNINFO_SYS_90);
                 }
 
@@ -326,7 +326,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                 ijPushService.messagePush(friendAddAsk.getSenderUserId()+"","加好友申请被拒绝","加好友申请被拒绝",pushMessage.toString());
                 return new BaseResp<>().ok();
             }
-            SnsFriends tempSnsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendAddAsk.getSenderUserId());
+            SnsFriends tempSnsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendAddAsk.getSenderUserId(),null);
             if(tempSnsFriends != null && tempSnsFriends.getIsdel() == 0){
                 return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_90,Constant.RTNINFO_SYS_90);
             }else if(tempSnsFriends != null){
@@ -448,7 +448,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     if(userId.longValue() == friendAddAsk.getSenderUserId().longValue()){
                     	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+"");
                     	//获取好友昵称
-    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getReceiveUserId());
+    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getReceiveUserId(),"0");
     					if(!StringUtils.isBlank(remark)){
     						appUserMongoEntity.setNickname(remark);
     					}
@@ -456,7 +456,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     }else{
                     	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+"");
                     	//获取好友昵称
-    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getSenderUserId());
+    					String remark = userRelationService.selectRemark(userId, friendAddAsk.getSenderUserId(),"0");
     					if(!StringUtils.isBlank(remark)){
     						appUserMongoEntity.setNickname(remark);
     					}
@@ -482,8 +482,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
      */
     @Override
     public boolean checkIsFriend(Long userId, Long friendId) {
-        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId);
-        if(snsFriends != null && snsFriends.getIsdel() == 0){
+        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
+        if(snsFriends != null){
             return true;
         }
         return false;
@@ -499,8 +499,8 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     public String getNickName(Long userId, Long friendId) {
         logger.info("getNickName, userid={},friendId={}",userId,friendId);
         if (null != userId && userId != -1 && !userId.equals(friendId)){
-            SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId);
-            if(snsFriends != null && snsFriends.getIsdel() == 0 && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
+            SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
+            if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
                 return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
             }
         }

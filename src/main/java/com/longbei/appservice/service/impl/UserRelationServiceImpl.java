@@ -79,12 +79,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 	* @return String    返回类型
 	 */
 	@Override
-	public String selectRemark(Long userid, Long friendid) {
+	public String selectRemark(Long userid, Long friendid, String isdel) {
 		if(userid == null || friendid == null){
 			return "";
 		}
 		//判断已关注者是否是好友关系
-		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
+		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid, isdel);
 		if(null != snsFriends){
 			if(!StringUtils.isBlank(snsFriends.getRemark())){
 				//好友备注
@@ -359,7 +359,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	@Override
 	public SnsFriends selectByUidAndFid(long userid, long friendid) {
-		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid);
+		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid, "0");
 		return snsFriends;
 	}
 
@@ -491,7 +491,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 						map.put("usernickname",userInfo.getNickname());
 					}else{
 						//获取好友昵称
-						String remark = userRelationService.selectRemark(userId, userInfo.getUserid());
+						String remark = userRelationService.selectRemark(userId, userInfo.getUserid(), "0");
 						if(!StringUtils.isBlank(remark)){
 							map.put("usernickname", remark);
 						}else{
@@ -508,7 +508,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 						}else{
 							map.put("isfans","0");
 						}
-						SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,userInfo.getUserid());
+						SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,userInfo.getUserid(), "0");
 						if(null == snsFriends){
 							map.put("isfriend","0");
 						}else{
@@ -593,7 +593,7 @@ public class UserRelationServiceImpl implements UserRelationService {
      */
     private void initMsgUserInfoByLikeuserid(SnsFans snsFans, long userid){
     	//获取好友昵称
-		String remark = userRelationService.selectRemark(userid, snsFans.getLikeuserid());
+		String remark = userRelationService.selectRemark(userid, snsFans.getLikeuserid(), "0");
 		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
 		if(null != appUserMongoEntity){
 			if(!StringUtils.isBlank(remark)){
@@ -609,7 +609,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	private void initMsgUserInfoByUserid(SnsFans snsFans,long userid){
 		//获取好友昵称
-		String remark = userRelationService.selectRemark(userid, snsFans.getUserid());
+		String remark = userRelationService.selectRemark(userid, snsFans.getUserid(), "0");
 		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
 		if(null != appUserMongoEntity){
 			if(!StringUtils.isBlank(remark)){
@@ -709,7 +709,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 	}
 
 	private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
-		SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid());
+		SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid(), "0");
 		if(null != snsFriends){
 //			if(!StringUtils.isBlank(snsFriends.getRemark())){
 ////				apuser.setNickname(snsFriends.getRemark());

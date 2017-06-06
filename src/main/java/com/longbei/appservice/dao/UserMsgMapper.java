@@ -14,6 +14,10 @@ public interface UserMsgMapper {
 			@Param("gtypeid") String gtypeid, 
 			@Param("commentid") String commentid, @Param("commentlowerid") String commentlowerid);
 	
+	int deleteLikeCommentMsg(@Param("snsid") String snsid, @Param("gtype") String gtype, 
+			@Param("gtypeid") String gtypeid, 
+			@Param("userid") String userid);
+	
     int deleteByPrimaryKey(@Param("id") Integer id, @Param("userid") long userid);
     
     /**

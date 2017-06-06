@@ -45,7 +45,8 @@ public class AwardApiController {
         try {
             boolean flag = awardService.insertAward(award);
             if (flag){
-                baseResp = BaseResp.ok();
+                baseResp.setData(award.getId());
+                baseResp.initCodeAndDesp();
             }
         } catch (NumberFormatException e) {
             logger.error("add award  is error:{}",e);
