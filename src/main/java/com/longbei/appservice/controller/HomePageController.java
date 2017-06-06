@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
@@ -31,19 +32,20 @@ public class HomePageController {
     /**
      * 获取首页轮播图
      * @url http://ip:port/app_service/home/homepics
-     * 轮播图类型 0 - 首页轮播图。1 - 商城轮播图
-     * @param userid 用户id
+     * 轮播图类型 0 - 首页轮播图。1 - 商城轮播图 2.精品推荐(跳转到叶圣陶和北京公益基金)
      * @return
      */
     @RequestMapping(value = "homepics")
-    public BaseResp<List<HomePicture>> getHomePicList(String userid){
-        logger.info("user userid={} get home pic list",userid);
+    public BaseResp<List<HomePicture>> getHomePicList(String type){
+        logger.info("user userid={} get home pic list");
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         try {
-            String type = "0";
+            if(StringUtils.isEmpty(type)){
+                type = "0";
+            }
             baseResp = pageService.selectHomePicList(type);
         } catch (Exception e) {
-            logger.error("user userid={} get home pic list is error:",userid,e
+            logger.error("get home pic list is error:",e
             );
         }
         return baseResp;
