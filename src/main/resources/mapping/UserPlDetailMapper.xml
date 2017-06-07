@@ -29,15 +29,19 @@
   </select>
   <select id="selectUserPerfectListByUserId" resultMap="BaseResultMap">
     select
-      max(leve) as leve,ptype,userid,scorce,createtime,updatetime,toplevel
+      max(leve) as leve,ptype,userid,scorce,createtime,updatetime,max(toplevel) as toplevel
       FROM
         user_pl_detail
       WHERE
-        userid = #{userid}
-      AND ptype != 'a'
-
-      group by ptype
-      order by toplevel desc;
+        id IN (SELECT
+          MAX(id)
+          FROM
+            user_pl_detail
+        WHERE
+          userid = #{userid}
+        AND ptype != 'a'
+        GROUP BY ptype)
+      order by toplevel desc,createtime desc
     <if test="startNum != null" >
       limit #{startNum},#{pageSize}
     </if>
