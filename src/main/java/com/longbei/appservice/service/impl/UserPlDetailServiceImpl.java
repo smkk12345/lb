@@ -84,9 +84,9 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-				baseResp.setData(list);
 			}
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			baseResp.setData(list);
 		} catch (Exception e) {
 			logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}

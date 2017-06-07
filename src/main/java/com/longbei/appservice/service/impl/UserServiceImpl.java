@@ -375,12 +375,14 @@ public class UserServiceImpl implements UserService {
 		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
 		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
 		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", new Date(), new Date());
+		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", new Date(), new Date());
 		list.add(common);
 		list.add(common2);
 		list.add(common3);
 		list.add(common4);
 		list.add(common5);
 		list.add(common6);
+		list.add(common7);
 		userSettingCommonMapper.insertList(list);
 	}
 

@@ -95,15 +95,6 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	public BaseResp<Object> selectByUserid(String userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-//			List<UserSettingCommon> list = userSettingCommonMapper.selectByUserid(userid);
-//			if(null != list && list.size()>0){
-//				Map<String, Object> expandData = new HashMap<>();
-//				for (UserSettingCommon userSettingCommon : list) {
-//					expandData.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
-//				}
-//				reseResp.setExpandData(expandData);
-//				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-//			}
 			Map<String, Object> expandData = selectMapByUserid(userid);
 			//获取是否绑定qq,wx,wb  0:未绑定  1：绑定
 			String isqq = "0";
@@ -144,26 +135,37 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 				for (UserSettingCommon userSettingCommon : list) {
 					map.put(userSettingCommon.getUkey(), userSettingCommon.getUvalue());
 				}
+				//兼容注册帐号比较早的用户     2017-06-06   is_newfriendask---新好友申请
+				if(!map.containsKey("is_newfriendask")){
+					//不存在添加
+					UserSettingCommon common7 = new UserSettingCommon(Long.parseLong(userid), "is_newfriendask", "1", 
+							"新好友申请", new Date(), new Date());
+					userSettingCommonMapper.insert(common7);
+					map.put("is_newfriendask", "1");
+				}
 			}else{
-				List<UserSettingCommon> setlist = new ArrayList<UserSettingCommon>();
-				UserSettingCommon common = new UserSettingCommon(Long.parseLong(userid), "is_new_fans", "1",
-						"新粉丝", new Date(), new Date());
-				UserSettingCommon common2 = new UserSettingCommon(Long.parseLong(userid), "is_like", "1",
-						"点赞", new Date(), new Date());
-				UserSettingCommon common3 = new UserSettingCommon(Long.parseLong(userid), "is_flower", "1",
-						"送花", new Date(), new Date());
-				UserSettingCommon common4 = new UserSettingCommon(Long.parseLong(userid), "is_comment", "2",
-						"评论设置", new Date(), new Date());
-				UserSettingCommon common5 = new UserSettingCommon(Long.parseLong(userid), "is_nick_search", "1",
-						"允许通过昵称搜到我", new Date(), new Date());
-				UserSettingCommon common6 = new UserSettingCommon(Long.parseLong(userid), "is_phone_search", "1",
-						"允许通过此手机号搜到我", new Date(), new Date());
-				list.add(common);
-				list.add(common2);
-				list.add(common3);
-				list.add(common4);
-				list.add(common5);
-				list.add(common6);
+//				List<UserSettingCommon> setlist = new ArrayList<UserSettingCommon>();
+//				UserSettingCommon common = new UserSettingCommon(Long.parseLong(userid), "is_new_fans", "1",
+//						"新粉丝", new Date(), new Date());
+//				UserSettingCommon common2 = new UserSettingCommon(Long.parseLong(userid), "is_like", "1",
+//						"点赞", new Date(), new Date());
+//				UserSettingCommon common3 = new UserSettingCommon(Long.parseLong(userid), "is_flower", "1",
+//						"送花", new Date(), new Date());
+//				UserSettingCommon common4 = new UserSettingCommon(Long.parseLong(userid), "is_comment", "2",
+//						"评论设置", new Date(), new Date());
+//				UserSettingCommon common5 = new UserSettingCommon(Long.parseLong(userid), "is_nick_search", "1",
+//						"允许通过昵称搜到我", new Date(), new Date());
+//				UserSettingCommon common6 = new UserSettingCommon(Long.parseLong(userid), "is_phone_search", "1",
+//						"允许通过此手机号搜到我", new Date(), new Date());
+//				UserSettingCommon common7 = new UserSettingCommon(Long.parseLong(userid), "is_newfriendask", "1", 
+//						"新好友申请", new Date(), new Date());
+//				list.add(common);
+//				list.add(common2);
+//				list.add(common3);
+//				list.add(common4);
+//				list.add(common5);
+//				list.add(common6);
+//				list.add(common7);
 //				userSettingCommonMapper.insertList(setlist);
 //				map.put("is_acquaintance_look","1");
 				map.put("is_comment","1");
@@ -174,6 +176,7 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 				map.put("is_nick_search","1");
 				map.put("is_page_tool","1");
 				map.put("is_phone_search","1");
+				map.put("is_newfriendask","1");
 			}
 		} catch (Exception e) {
 			logger.error("selectByUserid userid={},msg={}",userid,e);
@@ -210,7 +213,17 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 		}
 		return reseResp;
 	}
-	
+
+	@Override
+	public boolean isPushMessage(String userid, Constant.userSettingCommen userSettingCommen) {
+		Map<String,Object> map = selectMapByUserid(userid);
+		switch (userSettingCommen){
+			case comment:
+				return true;
+		}
+		return false;
+	}
+
 	//map转换成lisy
 //	@SuppressWarnings("rawtypes")
 //	public static List<UserSettingCommon>  mapTransitionList(Map<String, String> map) {

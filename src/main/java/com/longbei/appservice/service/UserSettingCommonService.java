@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.util.Map;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.UserSettingCommon;
 
 public interface UserSettingCommonService {
@@ -71,4 +72,5 @@ public interface UserSettingCommonService {
 	 */
 	BaseResp<Object> updateByUseridMap(String userid, String value);
 
+	boolean isPushMessage(String userid, Constant.userSettingCommen userSettingCommen);
 }

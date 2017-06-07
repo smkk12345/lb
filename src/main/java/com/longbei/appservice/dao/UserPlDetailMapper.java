@@ -19,7 +19,7 @@ public interface UserPlDetailMapper {
 
     int updateByPrimaryKeySelective(UserPlDetail record);
 
-    int updateByPrimaryKey(UserPlDetail record);
+    int updateToUnTopLevel(UserPlDetail record);
 
     int updateScorce(UserPlDetail record);
 
