@@ -45,6 +45,7 @@ public class AwardApiController {
         try {
             boolean flag = awardService.insertAward(award);
             if (flag){
+                logger.info("insert award id = {}",award.getId());
                 baseResp.setData(award.getId());
                 baseResp.initCodeAndDesp();
             }

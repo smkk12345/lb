@@ -1,4 +1,4 @@
-server:
+﻿server:
       port: 9090 #definded in application-osrad.yml
       session-timeout: 1800 # session timeout in seconds
       context-path: /app_service # the context path, defaults to '/'
@@ -22,7 +22,7 @@ spring:
     jackson:
         time-zone: GMT+8
     application:
-        name: appServiceluye1
+        name: appService
     cloud:
         config:
             enabled: true

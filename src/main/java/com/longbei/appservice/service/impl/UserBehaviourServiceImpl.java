@@ -105,7 +105,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         baseResp.getExpandData().put("point",point);
         if(point > 0){
             levelUp(userInfo,point,pType);
-            saveUserPointDetail(userInfo,point,pType,operateType);
+            if(!"b".equals(pType)){
+                saveUserPointDetail(userInfo,point,pType,operateType);
+            }
             putPointToCache(point,userInfo.getUserid(),operateType);
         }
         //进步币发生变化
@@ -421,7 +423,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 //            }
             //userPointDetailMapper.insert();
             //不管升级不升级  userpldetail  userpoint
-            subLevelUp(userInfo,iPoint,pType,dateStr);
+            if(!"b".equals(pType)){
+            	subLevelUp(userInfo,iPoint,pType,dateStr);
+            }
         }catch(Exception e){
             logger.error("levelUp error and msg = {}",e);
         }
@@ -554,7 +558,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
                     updateToUserPLDetail(userInfo,iPoint,pType,level);
                 }else{//升级
-                    updateUserPLDetailToplevel(userInfo.getUserid(),pType);
+                    updateUserPLDetailToplevel(userInfo.getUserid(),pType,"1");
                     saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
                     springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
@@ -597,11 +601,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      * @currentdate:2017年5月3日
      */
     @Override
-    public boolean updateUserPLDetailToplevel(long userid,String pType){
+    public boolean updateUserPLDetailToplevel(long userid,String pType,String isTopLevel){
         UserPlDetail userPlDetail = new UserPlDetail();
         userPlDetail.setUserid(userid);
         userPlDetail.setPtype(pType);
-        userPlDetail.setToplevel("1");
+        userPlDetail.setToplevel(isTopLevel);
         try{
             int n = userPlDetailMapper.updateUserPLDetailToplevel(userPlDetail);
             if (n>0)
@@ -673,8 +677,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
     private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level){
         try{
+            Date date =new Date();
             UserPlDetail userPlDetail = new UserPlDetail();
-            userPlDetail.setCreatetime(new Date());
+            userPlDetail.setCreatetime(date);
             userPlDetail.setLeve(level);
             if(iPoint == 0){
                 userPlDetail.setScorce(userInfo.getPoint());
@@ -685,6 +690,15 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userPlDetail.setPtype(ptype);
 
             userPlDetail.setUserid(userInfo.getUserid());
+
+            //更新用户该类型的其它明细为非最高级
+            UserPlDetail userPlDetail1 = new UserPlDetail();
+            userPlDetail1.setUserid(userInfo.getUserid());
+            userPlDetail1.setPtype(ptype);
+            userPlDetail1.setToplevel("0");
+            userPlDetail1.setUpdatetime(date);
+            userPlDetailMapper.updateToUnTopLevel(userPlDetail1);
+
             userPlDetailMapper.insert(userPlDetail);
             
             //推送一条消息

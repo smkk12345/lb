@@ -34,6 +34,8 @@ import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
 import scala.collection.immutable.Stream;
 
+import static com.longbei.appservice.entity.NewMessageTip.MessageType.friendAddAsk;
+
 /**
  * 创建时间：2015-1-27 下午5:22:59
  * @author smkk
@@ -87,7 +89,8 @@ public class UserServiceImpl implements UserService {
 	private IUserBasicService iUserBasicService;
 	@Autowired
 	private IRongYunService iRongYunService;
-
+	@Autowired
+	private IJPushService ijPushService;
 	@Autowired
 	private UserPlDetailService userPlDetailService;
 	@Autowired
@@ -217,9 +220,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-	public BaseResp<Object> register(Long userid,String username,
-			String nickname,String inviteuserid,
-			String deviceindex,String devicetype,String avatar) {
+	public BaseResp<Object> register(final Long userid, String username,
+									 String nickname, final String inviteuserid,
+									 String deviceindex, String devicetype, String avatar) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//判断昵称是否存在
 		if(existNickName(nickname)){
@@ -258,7 +261,7 @@ public class UserServiceImpl implements UserService {
 		if (ri) {
 			if(null != userInfo1){
 				//建立好友关系
-				userRelationService.insertFriend(userid,userInfo1.getUserid());
+				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
 				//给推荐人添加龙分
 				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
 				//给推荐人添加龙币
@@ -372,12 +375,14 @@ public class UserServiceImpl implements UserService {
 		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
 		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
 		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", new Date(), new Date());
+		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", new Date(), new Date());
 		list.add(common);
 		list.add(common2);
 		list.add(common3);
 		list.add(common4);
 		list.add(common5);
 		list.add(common6);
+		list.add(common7);
 		userSettingCommonMapper.insertList(list);
 	}
 
@@ -1165,7 +1170,7 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateNickName(String userid, String nickname, String invitecode,String sex,String pl) {
+	public BaseResp<Object> updateNickName(final String userid, String nickname,final String invitecode,String sex,String pl) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserid(Long.parseLong(userid));
@@ -1186,11 +1191,34 @@ public class UserServiceImpl implements UserService {
 			}
 			//判断邀请人是否是龙杯用户
 			if(!StringUtils.hasBlankParams(invitecode)){
-				UserInfo info = userInfoMapper.getByUserName(invitecode);
+				final UserInfo info = userInfoMapper.getByUserName(invitecode);
 				if(null != info){
 					//是龙杯用户,送分.....
 					//建立好友关系
-					userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
+					BaseResp<Object> insertFriendBaseResp=userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
+					if(insertFriendBaseResp.getCode() == 0) {
+						final AppUserMongoEntity newUser = new AppUserMongoEntity();
+						newUser.setUserid(userInfo.getUserid() + "");
+						newUser.setNickname(userInfo.getNickname());
+						newUser.setUsername(userInfo.getUsername());
+						newUser.setRemark(userInfo.getRemark());
+						newUser.setAvatar(userInfo.getAvatar());
+						newUser.setSex(userInfo.getSex());
+						threadPoolTaskExecutor.execute(new Runnable() {
+							@Override
+							public void run() {
+								//JPUSH通知用户
+								JSONObject pushMessage = new JSONObject();
+								pushMessage.put("status", "消息标识");
+								pushMessage.put("userid", info.getUserid());
+								pushMessage.put("content", "加好友通知");
+								pushMessage.put("msgid", userid);
+								pushMessage.put("tag", Constant.JPUSH_TAG_COUNT_1004);
+								pushMessage.put("userInfo", newUser);
+								ijPushService.messagePush(info.getUserid()+"", "加好友成功通知", "加好友成功通知", pushMessage.toString());
+							}
+						});
+					}
 					//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
 					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
 					//给推荐人添加龙币

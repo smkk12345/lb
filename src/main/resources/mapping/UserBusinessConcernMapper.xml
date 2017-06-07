@@ -42,7 +42,7 @@
             </if>
         </where>
         <if test="orderType != null and orderType == 'idDesc'">
-            order by id DESC
+            order by updatetime DESC
         </if>
         <if test="startNum != null">
             limit #{startNum},#{pageSize}

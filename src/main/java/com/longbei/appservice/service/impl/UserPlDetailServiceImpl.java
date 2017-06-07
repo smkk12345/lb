@@ -74,7 +74,6 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			List<UserPlDetail> list = userPlDetailMapper.selectUserPerfectListByUserId(userid,startNum,pageSize);
 			baseResp.initCodeAndDesp();
 			baseResp.setData(new ArrayList<UserPlDetail>());
-			String photos;
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
 				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));
@@ -84,9 +83,9 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
-				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-				baseResp.setData(list);
 			}
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			baseResp.setData(list);
 		} catch (Exception e) {
 			logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}

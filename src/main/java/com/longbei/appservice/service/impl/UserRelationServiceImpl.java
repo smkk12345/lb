@@ -296,6 +296,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 				String message = userid+"&"+likeuserid;
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_REMOVEFUN, message);
+				//删除关注消息
+				userMsgService.deleteCommentMsgLike(likeuserid + "", userid+ "");
 			}
 		} catch (Exception e) {
 			logger.error("deleteByUidAndLid error and smg = {}",e);

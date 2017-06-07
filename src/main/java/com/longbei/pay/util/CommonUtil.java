@@ -131,7 +131,7 @@ public class CommonUtil {
 	}
 
 	/**
-	 * @author : zhangchao
+	 * @author : 
 	 * @date : Dec 19, 2014 10:58:22 AM
 	 * @Description: 获取统一支付接口 返回的prepay_id
 	 */
