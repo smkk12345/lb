@@ -434,7 +434,7 @@
         #{payword,jdbcType=VARCHAR},
       </if>
       <if test="avatar != null and avatar != ''" >
-        #{avatar,jdbcType=VARCHAR},
+        #{avatar},
       </if>
       <if test="username != null and username != ''" >
         #{username,jdbcType=VARCHAR},
