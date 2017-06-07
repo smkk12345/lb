@@ -73,6 +73,9 @@
     <if test="ranktitle != null and ranktitle != ''" >
       AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
     </if>
+    <if test="rankid != null and rankid != ''" >
+      AND rankid LIKE concat(concat('%',#{rankid}),'%')
+    </if>
     <if test="rankbrief != null and rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
     </if>
@@ -148,6 +151,9 @@
     WHERE 1=1
     <if test="rankimage.ranktitle != null and rankimage.ranktitle != ''" >
       AND ranktitle LIKE concat(concat('%',#{rankimage.ranktitle}),'%')
+    </if>
+    <if test="rankimage.rankid != null and rankimage.rankid != ''" >
+      AND rankid LIKE concat(concat('%',#{rankimage.rankid}),'%')
     </if>
     <if test="rankimage.rankbrief != null and rankimage.rankbrief != ''" >
       AND rankbrief LIKE concat(concat('%',#{rankimage.rankbrief}),'%')
