@@ -384,8 +384,9 @@ public class OrderApiController {
   					String ip = request.getRemoteAddr();
   					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), notifyURL, ip);
   					return resResp;
-  				}else{
-  					
+  				}else if("0".equals(btype)){
+  					resResp = orderService.aliPaySaoMa(price,orders.getOrdernum());
+					return resResp;
   				}
   			}
 			logger.info("buyMoney success and baseResp={}", JSONObject.fromObject(baseResp).toString());

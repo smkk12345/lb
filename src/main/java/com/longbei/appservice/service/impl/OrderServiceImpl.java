@@ -611,10 +611,29 @@ public class OrderServiceImpl implements OrderService {
     	
     }
 
-
+	/**
+	 * 微信扫码支付
+	 * @param price
+	 * @param remark 备注
+	 * @param orderid
+	 * @param notifyURL 回调地址
+	 * @param ip
+     * @return
+     */
 	@Override
 	public BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, String notifyURL, String ip) {
 		return orderSercviceApi.weixinSaoMa(price, remark, orderid, notifyURL, ip);
+	}
+
+	/**
+	 * 微信扫码支付
+	 * @param price
+	 * @param ordernum
+     * @return
+     */
+	@Override
+	public BaseResp<Object> aliPaySaoMa(String price, String ordernum) {
+		return orderSercviceApi.aliPaySaoMa(price,ordernum);
 	}
 
 }

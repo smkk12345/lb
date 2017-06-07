@@ -676,7 +676,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if(searchType == 2){//我关注的
                 List<Rank> rankList = new ArrayList<Rank>();
                 Map<String,Object> map = new HashMap<String,Object>();
-                map.put("userid",userId);
+                map.put("userId",userId);
                 map.put("businessType","2");
                 map.put("orderType","idDesc");
                 map.put("startNum",startNum);

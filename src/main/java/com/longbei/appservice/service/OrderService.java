@@ -208,11 +208,24 @@ public interface OrderService {
 	 * @return
      */
 	BaseResp<Object> autoConfirmReceipt(Date currentDate);
-	
-	
-	
-	
-	
+
+	/**
+	 * 微信扫码支付
+	 * @param price
+	 * @param remark 备注
+	 * @param orderid
+	 * @param notifyURL 回调地址
+	 * @param ip
+     * @return
+     */
 	BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, 
     		String notifyURL, String ip);
+
+	/**
+	 * 支付宝扫码支付
+	 * @param price
+	 * @param ordernum
+     * @return
+     */
+	BaseResp<Object> aliPaySaoMa(String price, String ordernum);
 }
