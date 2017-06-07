@@ -10,9 +10,26 @@ import com.longbei.appservice.common.BaseResp;
 @RequestMapping("outernetService")
 public interface OrderSercviceApi {
 
+	/**
+	 * 微信扫码支付
+	 * @param price
+	 * @param remark
+	 * @param orderid
+	 * @param notifyURL
+	 * @param ip
+     * @return
+     */
 	@RequestMapping(value = "new_wxpay/weixinSaoMa")
     BaseResp<Object> weixinSaoMa(@RequestParam("price") String price, 
     		@RequestParam("remark") String remark, @RequestParam("orderid") String orderid, 
     		@RequestParam("notifyURL") String notifyURL, @RequestParam("ip")  String ip);
-	
+
+	/**
+	 * 支付宝扫码支付
+	 * @param price
+	 * @param ordernum
+     * @return
+     */
+	@RequestMapping(value="aliPay/aliSaoMa")
+	BaseResp<Object> aliPaySaoMa(@RequestParam("price")String price,@RequestParam("ordernum")String ordernum);
 }
