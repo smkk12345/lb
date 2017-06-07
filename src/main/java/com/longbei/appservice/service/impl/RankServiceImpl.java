@@ -264,9 +264,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     // PC端定制榜，添加参榜口令joinCode
                     if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
                         if (!"0".equals(rankImage.getRanktype())){
-                            if(StringUtils.isEmpty(rankImage.getJoincode())){
-                                rank.setJoincode(codeDao.getCode(null));
-                            }
+                            rank.setJoincode(codeDao.getCode(null));
                         }
                     }
                     Date starttime = rank.getStarttime();
