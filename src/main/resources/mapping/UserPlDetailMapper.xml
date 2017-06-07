@@ -29,14 +29,15 @@
   </select>
   <select id="selectUserPerfectListByUserId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column" />
-    from user_pl_detail
-    WHERE userid=#{userid}
-    and ptype not in
-    (select ptype from user_pl_detail where userid=#{userid} and toplevel = 1)
-    union
-    (select <include refid="Base_Column" /> from user_pl_detail where userid=#{userid} and toplevel = 1 and ptype != 'a')
-    order by toplevel DESC,ptype
+      max(leve) as leve,ptype,userid,scorce,createtime,updatetime,toplevel
+      FROM
+        user_pl_detail
+      WHERE
+        userid = #{userid}
+      AND ptype != 'a'
+
+      group by ptype
+      order by toplevel desc;
     <if test="startNum != null" >
       limit #{startNum},#{pageSize}
     </if>
