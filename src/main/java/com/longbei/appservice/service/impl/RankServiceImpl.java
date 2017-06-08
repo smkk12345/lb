@@ -2052,7 +2052,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             if(award.getAwardClassify().getClassifytype() == 0){//进步币
                 //加进步币
-                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
+                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_POINT),rankId,null);
                 newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
@@ -2980,8 +2980,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
         for (RankAwardRelease rankAward : rankAwards){
-            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award != null?award:new Award());
+            if(!StringUtils.isBlank(rankAward.getAwardid())){
+                Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+                rankAward.setAward(award != null?award:new Award());
+            }
         }
         return rankAwards;
     }
