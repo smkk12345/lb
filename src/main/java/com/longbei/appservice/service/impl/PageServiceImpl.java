@@ -118,7 +118,7 @@ public class PageServiceImpl implements PageService{
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         List<HomePicture> homePictures = new ArrayList<HomePicture>();
         try {
-            if("0".equals(type) || "1".equals(type)){
+            if(!"2".equals(type)){
                 HomePicture homePicture = new HomePicture();
                 homePicture.setIsup("1");
                 homePicture.setType(type);
