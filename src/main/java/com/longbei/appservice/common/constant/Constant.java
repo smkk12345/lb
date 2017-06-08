@@ -624,6 +624,8 @@ public class Constant {
 	 */
 	public static final String RP_USER_CHECK = "user_check_";
 	public static final String RP_USER_CHECK_DATE = "user_check_date_";
+//	public static final String RP_USER_CHECK = "user_check_util_";
+//	public static final String RP_USER_CHECK_DATE = "user_check_date_util_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
 	
 	/*
