@@ -165,6 +165,8 @@ public class Constant {
 	public static final int STATUS_SYS_99 = -99;
 	public static final int STATUS_SYS_910 = -910;
 	public static final int STATUS_SYS_911 = -911;
+	public static final int STATUS_SYS_912 = -912;
+	public static final int STATUS_SYS_913 = -913;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -311,6 +313,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_99 = "由于您被榜主剔除了该龙榜,因此无法再次申请加入!";
 	public static final String RTNINFO_SYS_910 = "您当前还未加入该榜单,或已退出该榜单";
 	public static final String RTNINFO_SYS_911 = "您的昵称备注超过了长度限制";
+	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
+	public static final String RTNINFO_SYS_913 = "取消关注成功";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -798,15 +802,15 @@ public class Constant {
 	 * 用户消息 设置 开关
 	 */
 	public enum userSettingCommen{
-		comment,
-		diamond,
-		flower,
-		like,
-		new_fans,
-		nick_search,
+		comment,//评论 同意接收到这些人的评论通知
+		diamond,//
+		flower,//送花
+		like,//点赞:is_like
+		new_fans,//新粉丝
+		nick_search,//允许通过昵称搜到我
 		page_tool,
-		phone_search,
-		newfriendask
+		phone_search,//允许通过此手机号搜到我
+		newfriendask//请求加为好友时 是否接受消息
 	}
 
 }
