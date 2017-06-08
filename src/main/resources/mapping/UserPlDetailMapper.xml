@@ -29,7 +29,7 @@
   </select>
   <select id="selectUserPerfectListByUserId" resultMap="BaseResultMap">
     select
-      max(leve) as leve,ptype,userid,scorce,createtime,updatetime,max(toplevel) as toplevel
+      leve,ptype,userid,scorce,createtime,updatetime,toplevel
       FROM
         user_pl_detail
       WHERE
@@ -42,9 +42,7 @@
         AND ptype != 'a'
         GROUP BY ptype)
       order by toplevel desc,createtime desc
-    <if test="startNum != null" >
-      limit #{startNum},#{pageSize}
-    </if>
+
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail
