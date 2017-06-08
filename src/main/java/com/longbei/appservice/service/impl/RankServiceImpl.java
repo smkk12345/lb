@@ -98,6 +98,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
+    private AwardService awardService;
+    @Autowired
     private CommentMongoService commentMongoService;
     @Autowired
     private ImproveService improveService;
@@ -129,7 +131,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
-                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                    insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }else {
+                    insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+                }
+                logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//PC_test
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
@@ -190,6 +197,33 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     /**
+     * pc端发榜insertPCRankAward
+     * @param rankid
+     * @param rankAwards
+     * @return
+     */
+    private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
+        if (null != rankAwards){
+            for (RankAward rankAward:rankAwards){
+                Award award = rankAward.getAward();
+                boolean flag = awardService.insertAward(award);
+                if (flag){
+                    rankAward.setAwardid(award.getId().toString());
+                }
+                rankAward.setRankid(rankid);
+                rankAward.setCreatetime(new Date());
+            }
+            try {
+                int res = rankAwardMapper.insertBatch(rankAwards);
+                return true;
+            } catch (Exception e) {
+                logger.error("insert rank award rankid={} is error:",rankid,e);
+            }
+        }
+        return false;
+    }
+
+    /**
      *  @author luye
      *  @desp
      *  @create 2017/1/23 下午6:12
@@ -201,7 +235,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
-            insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }else {
+                insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
+            }
         } catch (Exception e) {
             logger.error("update rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
@@ -271,6 +309,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if (new Date().getTime() >= starttime.getTime()){
                         rank.setIsfinish("1");
                     }
+                    logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
+                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
                 }
                 if (res > 0){
@@ -2012,7 +2052,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             if(award.getAwardClassify().getClassifytype() == 0){//进步币
                 //加进步币
-                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_COIN),rankId,null);
+                BaseResp<Object> baseResp1 = userImpCoinDetailService.insertPublic(userId,"4",(int) (award.getAwardprice()*Constant.RMB_POINT),rankId,null);
                 newRankAcceptAward.setPublishawardtype("0");
 
                 if(baseResp1.getCode() == 0){
