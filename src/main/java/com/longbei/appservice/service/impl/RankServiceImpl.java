@@ -1668,7 +1668,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             final Rank rank = this.rankMapper.selectRankByRankid(rankId);
-            if(rank == null || !userid.equals(rank.getCreateuserid())){
+            if(rank == null || !(userid+"").equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_615,Constant.RTNINFO_SYS_615);
             }
             Rank updateRank = new Rank();
