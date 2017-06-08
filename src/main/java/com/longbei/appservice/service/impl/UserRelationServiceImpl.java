@@ -261,7 +261,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			//查看该用户是否已经关注此用户
 			SnsFans tempSnsFans = this.snsFansMapper.selectByUidAndLikeid(userid,likeuserid);
 			if(tempSnsFans != null){
-				return baseResp.fail("您已关注了该用户,不用再次关注!");
+				return baseResp.initCodeAndDesp();
 			}
 
 			SnsFans snsFans = new SnsFans(userid,likeuserid);
@@ -299,6 +299,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 				//删除关注消息
 				userMsgService.deleteCommentMsgLike(likeuserid + "", userid+ "");
 			}
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_913);
 		} catch (Exception e) {
 			logger.error("deleteByUidAndLid error and smg = {}",e);
 		}

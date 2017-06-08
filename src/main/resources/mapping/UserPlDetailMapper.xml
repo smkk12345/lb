@@ -38,8 +38,8 @@
           FROM
             user_pl_detail
         WHERE
-          userid = #{userid}
-        AND ptype != 'a'
+          ptype != 'a'
+          and userid = #{userid}
         GROUP BY ptype)
       order by toplevel desc,createtime desc
 
