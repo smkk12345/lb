@@ -3,6 +3,8 @@ package com.longbei.appservice.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.longbei.appservice.entity.UserSettingCommon;
+import com.longbei.appservice.service.UserSettingCommonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class UserMsgController extends BaseController {
 
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private UserSettingCommonService userSettingCommonService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgController.class);
 	
@@ -380,9 +384,18 @@ public class UserMsgController extends BaseController {
 //			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
 //			}else{
 //  			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsg(Long.parseLong(userid));
+
+			//获取新消息通知的开关
+			Map<String, Object> userMsgSwitch = userSettingCommonService.selectMapByUserid(userid+"");
+
 			Map<String,Object> myMap = userMsgService.selectShowMy(Long.parseLong(userid));
-			Map<String,Object> friendMap = userMsgService.selectAddFriendAskMsgDate(Long.parseLong(userid));
-			
+			Map<String,Object> friendMap = new HashMap<String,Object>();
+			if("1".equals(userMsgSwitch.get("is_newfriendask").toString())){
+				friendMap = userMsgService.selectAddFriendAskMsgDate(Long.parseLong(userid));
+			}else{
+				friendMap.put("friendAskcount", 0);
+			}
+
 			Map<String,Object> informMap = userMsgService.selectCountByType(Long.parseLong(userid), "0", null, "0");
 			Map<String,Object> rankMap = userMsgService.selectCountByType(Long.parseLong(userid), "2", null, "0");
 //  			}

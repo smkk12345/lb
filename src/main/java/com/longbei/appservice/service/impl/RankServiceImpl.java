@@ -909,7 +909,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if("0".equals(rank.getIsfinish())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_68,Constant.RTNINFO_SYS_68);
             }
-            if (!"1".equals(rank.getIsfinish()) || "1".equals(rank.getIspublic()) || "1".equals(rank.getIsdel())) {
+            if (!"1".equals(rank.getIsfinish()) || "1".equals(rank.getIsdel())) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_63, Constant.RTNINFO_SYS_63);
             }
             if (!DateUtils.compare(rank.getEndtime(), new Date())) {
@@ -923,7 +923,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             //查看口令是否正确
-            if("1".equals(rank.getRanktype()) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
+            if(("1".equals(rank.getRanktype()) || "1".equals(rank.getIspublic())) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_61,Constant.RTNINFO_SYS_61);
             }
             if("1".equals(rank.getIsrealname())){
@@ -1626,6 +1626,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }else if(!"0".equals(rank.getIsfinish()) && "1".equals(rankMembers.getIswinning())){
                 rankMembers.setIswinning("4");
+            }else if(!"0".equals(rank.getIsfinish()) && !"5".equals(rank.getIsfinish()) && "0".equals(rankMembers.getIswinning())){
+                rankMembers.setIswinning("4");
             }
 
             baseResp.setData(rankMembers);
@@ -1666,7 +1668,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             final Rank rank = this.rankMapper.selectRankByRankid(rankId);
-            if(rank == null || !userid.equals(rank.getCreateuserid())){
+            if(rank == null || !(userid+"").equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_615,Constant.RTNINFO_SYS_615);
             }
             Rank updateRank = new Rank();
@@ -1734,6 +1736,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> insertNotice(Rank rank, String noticetype) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            rank.setUpdatetime(new Date());
             int row = this.rankMapper.updateSymbolByRankId(rank);
             if(row > 0 && "1".equals(noticetype)){
                 rankNoticeMessage(rank.getRankid(),rank.getNotice());

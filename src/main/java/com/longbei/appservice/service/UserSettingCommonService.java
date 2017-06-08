@@ -72,5 +72,11 @@ public interface UserSettingCommonService {
 	 */
 	BaseResp<Object> updateByUseridMap(String userid, String value);
 
+	/**
+	 * 是否推送消息
+	 * @param userid
+	 * @param userSettingCommen
+     * @return
+     */
 	boolean isPushMessage(String userid, Constant.userSettingCommen userSettingCommen);
 }
