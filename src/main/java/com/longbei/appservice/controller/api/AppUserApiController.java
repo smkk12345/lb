@@ -71,7 +71,27 @@ public class AppUserApiController {
         }
         return baseResp;
     }
-    
+
+    /**
+     * 仅查询用户基本信息
+     * @param userid
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "selectJustInfo")
+    public BaseResp<UserInfo> selectJustInfo(String userid){
+        BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
+        if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+            baseResp.setData(userInfo);
+        } catch (Exception e) {
+            logger.error("userDetail userid = {}", userid, e);
+        }
+        return baseResp;
+    }
     /**
 	 * @author yinxc
 	 * 获取用户等级详情信息---用户享受的折扣
