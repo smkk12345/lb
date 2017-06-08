@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.dao.AwardClassifyMapper;
 import com.longbei.appservice.dao.AwardMapper;
@@ -31,11 +32,14 @@ public class AwardServiceImpl implements AwardService {
     private AwardMapper awardMapper;
     @Autowired
     private AwardClassifyMapper awardClassifyMapper;
+    @Autowired
+    private IdGenerateService idGenerateService;
 
 
     @Override
     public boolean insertAward(Award award) {
         try {
+            award.setId(idGenerateService.getUniqueIdAsLong());
             award.setCreatetime(new Date());
             award.setUpdatetime(new Date());
             int res = awardMapper.insertSelective(award);
@@ -63,7 +67,7 @@ public class AwardServiceImpl implements AwardService {
     }
 
     @Override
-    public boolean deleteAward(Integer id) {
+    public boolean deleteAward(Long id) {
         try {
             int res = awardMapper.deleteByPrimaryKey(id);
             if (res > 0){
@@ -132,7 +136,7 @@ public class AwardServiceImpl implements AwardService {
     public Award selectAward(String awardid) {
         Award award = null;
         try {
-            award = awardMapper.selectByPrimaryKey(Integer.parseInt(awardid));
+            award = awardMapper.selectByPrimaryKey(Long.valueOf(awardid));
         } catch (NumberFormatException e) {
             logger.error("select award awardid={} is error:{}",awardid,e);
         }

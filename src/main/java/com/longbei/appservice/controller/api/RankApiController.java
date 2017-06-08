@@ -174,7 +174,6 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "updateimage")
     public BaseResp<Object> updateRankImage(@RequestBody RankImage rankImage){
-
         boolean issuccess = false;
         try {
             issuccess = rankService.updateRankImage(rankImage);
@@ -234,8 +233,6 @@ public class RankApiController {
         return BaseResp.fail(Constant.RTNINFO_SYS_53);
     }
 
-
-
     /**
      * 发布公告
      * @return
@@ -251,9 +248,6 @@ public class RankApiController {
         }
         return baseResp;
     }
-
-
-
 
     /**
      * 发布榜单

@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 public class Award {
-    private Integer id;
+    private Long id;
 
     private String awardtitle;//奖品标题
 
@@ -54,7 +54,7 @@ public class Award {
      * 
      * @return id 
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -62,7 +62,7 @@ public class Award {
      * 
      * @param id 
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

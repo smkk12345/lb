@@ -87,7 +87,7 @@ public class AwardApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            boolean flag = awardService.deleteAward(Integer.parseInt(awardid));
+            boolean flag = awardService.deleteAward(Long.parseLong(awardid));
             if (flag){
                 baseResp = BaseResp.ok();
             }

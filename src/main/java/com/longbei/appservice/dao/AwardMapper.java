@@ -6,13 +6,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface AwardMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(Award record);
 
     int insertSelective(Award record);
 
-    Award selectByPrimaryKey(Integer id);
+    Award selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Award record);
 
@@ -30,5 +30,5 @@ public interface AwardMapper {
      * @param awardId
      * @return
      */
-    Award selectAwardAndAwardClassify(@Param("awardId") Integer awardId);
+    Award selectAwardAndAwardClassify(@Param("awardId") Long awardId);
 }
