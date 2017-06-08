@@ -16,6 +16,7 @@ public class Constant {
 	public static final int FLOWER_PRICE = 10; //鲜花和龙币兑换价格
 	public static final int DIAMOND_PRICE = 100; //钻石和龙币兑换价格
 	public static final int RMB_COIN = 10;//人民币 兑换 龙币 1元兑换10 龙币
+	public static final int RMB_POINT = 100;//人民币 兑换 龙分 1元兑换100 龙分
 
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
@@ -795,9 +796,13 @@ public class Constant {
 	 * 用户消息 设置 开关
 	 */
 	public enum userSettingCommen{
-		comment,diamond,
-		flower,like,new_fans,
-		nick_search,page_tool,
+		comment,
+		diamond,
+		flower,
+		like,
+		new_fans,
+		nick_search,
+		page_tool,
 		phone_search,
 		newfriendask
 	}
