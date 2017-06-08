@@ -207,7 +207,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
                 boolean flag = awardService.insertAward(award);
-                if (flag){
+                if (!flag){
+                    return false;
+                }
+                if (null != award.getId()){
                     rankAward.setAwardid(award.getId().toString());
                 }
                 rankAward.setRankid(rankid);
@@ -255,7 +258,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp;
             }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
-            logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
+            logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//pc_test
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
@@ -268,8 +271,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private List<RankAward> selectRankAwardByRankid(String rankiamgeid){
         List<RankAward> rankAwards = rankAwardMapper.selectListByRankid(rankiamgeid);
         for (RankAward rankAward : rankAwards){
-            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
-            rankAward.setAward(award);
+            if (!StringUtils.isEmpty(rankAward.getAwardid())){
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
+                rankAward.setAward(award);
+            }
         }
         return rankAwards;
     }
@@ -555,7 +560,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
             if(awardList != null && awardList.size() > 0){
                 if (!StringUtils.isBlank(awardList.get(0).getAwardid())){
-                    awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(awardList.get(0).getAwardid())));
+                    awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Long.parseLong(awardList.get(0).getAwardid())));
                 }
                 rank.setRankAwards(awardList);
             }
@@ -1610,7 +1615,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }else{
                     rankMembers.setIswinning("2");//审核未通过
                 }
-                RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Long.parseLong(rankMembers.getRankAward().getAwardid()));
                 rankMembers.setRankAward(rankAward);
             }else if("1".equals(rank.getIsfinish())){
                 String sn = rank.getMinimprovenum();
@@ -1838,8 +1843,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                     }
                                 }
                                 if(sortType == 0){
-                                    RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Integer.parseInt(rankMember.getRankAward().getAwardid()));
-                                    rankAward.setAward(this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid())));
+                                    RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Long.parseLong(rankMember.getRankAward().getAwardid()));
+                                    rankAward.setAward(this.awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid())));
                                     rankMember.setRankAward(rankAward);
                                 }
                             }else if("0".equals(rankMember.getCheckstatus())){
@@ -1965,7 +1970,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_66,Constant.RTNINFO_SYS_66);
             }
             //查询该用户获得的奖
-            Award award = this.awardMapper.selectAwardAndAwardClassify(Integer.parseInt(rankMember.getRankAward().getAwardid()));
+            Award award = this.awardMapper.selectAwardAndAwardClassify(Long.parseLong(rankMember.getRankAward().getAwardid()));
             if(award == null){
                 logger.error("query award null awardId:{}",rankMember.getAwardid());
                 return baseResp.fail("系统异常");
@@ -2113,7 +2118,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_65,Constant.RTNINFO_SYS_65);
             }
             //查询该用户获得的奖
-            Award award = this.awardMapper.selectAwardAndAwardClassify(Integer.parseInt(rankMember.getRankAward().getAwardid()));
+            Award award = this.awardMapper.selectAwardAndAwardClassify(Long.parseLong(rankMember.getRankAward().getAwardid()));
             if(award == null){
                 logger.error("query award null awardId:{}",rankMember.getAwardid());
                 return baseResp.fail("系统异常");
@@ -2235,7 +2240,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
 
-                    Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                    Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
                     map.put("awardnickname",award.getAwardtitle());
                     map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
                     resultList.add(map);
@@ -2613,7 +2618,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankMembers rankMember:rankMemberses){
                 if("1".equals(rankMember.getIswinning()) && "3".equals(rankMember.getCheckstatus())){
                     UserMsg userMsg = createWinningUserMsg(rank,rankMember.getUserid(),
-                            Integer.parseInt(rankMember.getRankAward().getAwardid()));
+                            Long.parseLong(rankMember.getRankAward().getAwardid()));
                     if(userMsg != null) winningUserMsgList.add(userMsg);
                     continue;
                 }
@@ -2658,7 +2663,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @awardId
      * @return
      */
-    private UserMsg createWinningUserMsg(Rank rank,Long userId,Integer awardId){
+    private UserMsg createWinningUserMsg(Rank rank,Long userId,Long awardId){
         //查询用户中的奖项
         RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rank.getRankid(),awardId);
         if(rankAward == null){
@@ -2820,7 +2825,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
 
                 Map<String,Object> awardMap = new HashMap<String,Object>();
-                Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAwardRelease.getAwardid()));
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
                 if(null != award){
                     awardMap.put("awardtitle",award.getAwardtitle());
                     awardMap.put("awardlevel",award.getAwardlevel());
@@ -2886,7 +2891,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }else{
                             awardLevel = rankMembers.getRankAward().getAwardlevel().intValue();
                         }
-                        Award award = this.awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers.getRankAward().getAwardid()));
+                        Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
                         RankAwardRelease rankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankMembers.getRankAward().getAwardid()+"");
                         awardMap.put("awardtitle",award.getAwardtitle());
                         awardMap.put("awardnickname", rankAwardRelease.getAwardnickname());
@@ -2980,7 +2985,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
         List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
         for (RankAwardRelease rankAward : rankAwards){
-            Award award = awardMapper.selectByPrimaryKey(Integer.parseInt(rankAward.getAwardid()));
+            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
             rankAward.setAward(award != null?award:new Award());
         }
         return rankAwards;
@@ -3168,11 +3173,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
-                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
+                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers1.getRankAward().getAwardid())));
                 }
                 if ("1".equals(rankMembers1.getCheckstatus())
                         || "2".equals(rankMembers1.getCheckstatus())) {
-                    rankMembers1.setAwardid(-1);
+                    rankMembers1.setAwardid(-1L);
                     rankMembers1.setAwardlevel(-1);
                     rankMembers1.setRankAward(new RankAward());
                 }
@@ -3446,7 +3451,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    rkmember.setRankAward(rankAwardMapper.selectRankAwardByRankIdAndAwardId(rkmember.getRankid(),rkmember.getAwardid()));
                 }
                 rankAcceptAward.setAwardlevel(rkmember.getRankAward().getAwardlevel());
-                rankAcceptAward.setAwardid(Integer.parseInt(rkmember.getRankAward().getAwardid()));
+                rankAcceptAward.setAwardid(Long.parseLong(rkmember.getRankAward().getAwardid()));
                 rankAcceptAward.setSortnum(rkmember.getSortnum());
                 rankAcceptAward.setAwardnickname(rkmember.getRankAward().getAwardnickname());
                 rankAcceptAward.setCreatedate(new Date());
@@ -3652,7 +3657,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
                     rankMembers1.getRankAward().setRank(rankMapper.selectRankByRankid(rankMembers1.getRankid()));
-                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Integer.parseInt(rankMembers1.getRankAward().getAwardid())));
+                    rankMembers1.getRankAward().setAward(awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers1.getRankAward().getAwardid())));
                 }
             }
             page.setTotalCount(totalcount);

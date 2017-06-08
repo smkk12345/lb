@@ -70,7 +70,7 @@ public class RankAcceptAward {
     /**
      * 奖品id
      */
-    private Integer awardid;
+    private Long awardid;
 
     /**
      * 奖品类别
@@ -292,11 +292,11 @@ public class RankAcceptAward {
         this.awardlevel = awardlevel;
     }
 
-    public Integer getAwardid() {
+    public Long getAwardid() {
         return awardid;
     }
 
-    public void setAwardid(Integer awardid) {
+    public void setAwardid(Long awardid) {
         this.awardid = awardid;
     }
 

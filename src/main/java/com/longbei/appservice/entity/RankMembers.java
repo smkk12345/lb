@@ -40,7 +40,7 @@ public class RankMembers {
 
     private Integer complaintotalcount; //投诉次数
 
-    private Integer awardid;//奖品id
+    private Long awardid;//奖品id
 
     private Integer awardlevel;//奖品等级
 
@@ -483,7 +483,7 @@ public class RankMembers {
      * 获取奖品id
      * @return
      */
-    public Integer getAwardid() {
+    public Long getAwardid() {
         return awardid;
     }
 
@@ -491,7 +491,7 @@ public class RankMembers {
      * 设置奖品id
      * @param awardid
      */
-    public void setAwardid(Integer awardid) {
+    public void setAwardid(Long awardid) {
         this.awardid = awardid;
     }
 
