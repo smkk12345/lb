@@ -8,7 +8,7 @@
     <result column="acceptdate" property="acceptdate" jdbcType="TIMESTAMP" />
     <result column="confirmacceptdate" property="confirmacceptdate" jdbcType="TIMESTAMP" />
     <result column="awardlevel" property="awardlevel" jdbcType="INTEGER" />
-    <result column="awardid" property="awardid" jdbcType="INTEGER" />
+    <result column="awardid" property="awardid" jdbcType="BIGINT" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="reciverusername" property="reciverusername" jdbcType="VARCHAR" />
     <result column="reciverusertel" property="reciverusertel" jdbcType="VARCHAR" />
@@ -206,7 +206,7 @@
           null,
         </if>
         <if test="acceptaward.awardid != null" >
-          #{acceptaward.awardid,jdbcType=INTEGER},
+          #{acceptaward.awardid,jdbcType=BIGINT},
         </if>
         <if test="acceptaward.awardid == null" >
           null,
@@ -315,7 +315,7 @@
       handleuserid, createdate)
     values (#{id,jdbcType=INTEGER}, #{rankid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, 
       #{acceptdate,jdbcType=TIMESTAMP}, #{confirmacceptdate,jdbcType=TIMESTAMP}, #{awardlevel,jdbcType=INTEGER}, 
-      #{awardid,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{reciverusername,jdbcType=VARCHAR}, 
+      #{awardid,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{reciverusername,jdbcType=VARCHAR},
       #{reciverusertel,jdbcType=VARCHAR}, #{reciveruseraddr,jdbcType=VARCHAR}, #{logisticscompany,jdbcType=VARCHAR}, 
       #{logisticsnum,jdbcType=VARCHAR}, #{dispatchdate,jdbcType=TIMESTAMP}, #{remarker,jdbcType=VARCHAR}, 
       #{handleuserid,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP})
@@ -416,7 +416,7 @@
         #{awardlevel,jdbcType=INTEGER},
       </if>
       <if test="awardid != null" >
-        #{awardid,jdbcType=INTEGER},
+        #{awardid,jdbcType=BIGINT},
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
@@ -523,7 +523,7 @@
       acceptdate = #{acceptdate,jdbcType=TIMESTAMP},
       confirmacceptdate = #{confirmacceptdate,jdbcType=TIMESTAMP},
       awardlevel = #{awardlevel,jdbcType=INTEGER},
-      awardid = #{awardid,jdbcType=INTEGER},
+      awardid = #{awardid,jdbcType=BIGINT},
       status = #{status,jdbcType=INTEGER},
       reciverusername = #{reciverusername,jdbcType=VARCHAR},
       reciverusertel = #{reciverusertel,jdbcType=VARCHAR},

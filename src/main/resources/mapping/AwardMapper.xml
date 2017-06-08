@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.longbei.appservice.dao.AwardMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Award" >
-    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="awardtitle" property="awardtitle" jdbcType="VARCHAR" />
     <result column="awardbrief" property="awardbrief" jdbcType="VARCHAR" />
     <result column="awardcateid" property="awardcateid" jdbcType="INTEGER" />
@@ -25,12 +25,12 @@
     id, awardtitle, awardbrief, awardcateid, isdel, awardprice, awardlevel, awardphotos, awardtype,createtype, sponsor,
     createtime, updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     a.id, awardtitle, awardbrief, awardcateid, a.isdel, awardprice, awardlevel, awardphotos, awardtype,createtype,sponsor,
     a.createtime, a.updatetime,classifyname,classifytype
     FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
-    where a.id = #{id,jdbcType=INTEGER}
+    where a.id = #{id,jdbcType=BIGINT}
   </select>
 
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
@@ -85,7 +85,7 @@
   <!--</select>-->
 
   <!-- 查询奖品 -->
-  <select id="selectAwardAndAwardClassify" parameterType="INTEGER" resultMap="BaseResultMap">
+  <select id="selectAwardAndAwardClassify" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     award.id,
     award.isdel,
@@ -104,9 +104,9 @@
   </select>
 
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from award
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insert" parameterType="com.longbei.appservice.entity.Award" >
@@ -114,12 +114,12 @@
       awardcateid, awardprice, awardlevel,
       awardphotos, awardtype, createtype,sponsor,
       createtime, updatetime)
-    values (#{id,jdbcType=INTEGER}, #{awardtitle,jdbcType=VARCHAR}, #{awardbrief,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{awardtitle,jdbcType=VARCHAR}, #{awardbrief,jdbcType=VARCHAR},
       #{awardcateid,jdbcType=INTEGER}, #{awardprice,jdbcType=DOUBLE}, #{awardlevel,jdbcType=INTEGER},
       #{awardphotos,jdbcType=VARCHAR}, #{awardtype,jdbcType=CHAR},#{createtype,jdbcType=CHAR}, #{sponsor,jdbcType=VARCHAR},
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.longbei.appservice.entity.Award" >
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Award" >
     insert into award
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -161,7 +161,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="awardtitle != null" >
         #{awardtitle,jdbcType=VARCHAR},
@@ -238,7 +238,7 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Award" >
     update award
@@ -254,6 +254,6 @@
       sponsor = #{sponsor,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
