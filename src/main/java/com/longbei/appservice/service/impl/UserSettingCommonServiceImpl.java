@@ -185,6 +185,48 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	}
 
 	@Override
+	public boolean isPushMessage(String userid, Constant.userSettingCommen userSettingCommen) {
+		if(userSettingCommen == null || StringUtils.isEmpty(userid)){
+			return false;
+		}
+		Map<String,Object> map = selectMapByUserid(userid);
+		String flag = "0";
+		switch (userSettingCommen){
+			case comment:
+				flag = map.get("is_comment").toString();
+				break;
+			case diamond:
+				flag = map.get("is_diamond").toString();
+				break;
+			case flower:
+				flag = map.get("is_flower").toString();
+				break;
+			case like:
+				flag = map.get("is_like").toString();
+				break;
+			case new_fans:
+				flag = map.get("is_new_fans").toString();
+				break;
+			case nick_search:
+				flag = map.get("is_nick_search").toString();
+				break;
+			case page_tool:
+				flag = map.get("is_page_tool").toString();
+				break;
+			case phone_search:
+				flag = map.get("is_phone_search").toString();
+				break;
+			case newfriendask:
+				flag = map.get("is_newfriendask").toString();
+				break;
+		}
+		if("1".equals(flag)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public BaseResp<Object> updateByUseridKey(String userid, String key, String value) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
@@ -212,16 +254,6 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			logger.error("updateByUseridMap userid = {}, msg = {}", userid, e);
 		}
 		return reseResp;
-	}
-
-	@Override
-	public boolean isPushMessage(String userid, Constant.userSettingCommen userSettingCommen) {
-		Map<String,Object> map = selectMapByUserid(userid);
-		switch (userSettingCommen){
-			case comment:
-				return true;
-		}
-		return false;
 	}
 
 	//map转换成lisy
