@@ -204,7 +204,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
-
+        logger.warn("insertPCRankAward rankid={} rankAwards={}",rankid,JSON.toJSONString(rankAwards));
         if (null != rankAwards){
             Date date = new Date();
             for (RankAward rankAward:rankAwards){
@@ -223,6 +223,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             try {
+                logger.warn("insertPCRankAward rankAwards={}",JSON.toJSONString(rankAwards));
                 int res = rankAwardMapper.insertBatch(rankAwards);
                 return true;
             } catch (Exception e) {
@@ -279,6 +280,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for (RankAward rankAward : rankAwards){
             if (!StringUtils.isEmpty(rankAward.getAwardid())){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
+                logger.warn("select Rank Image and Award={}",JSON.toJSONString(award));
                 rankAward.setAward(award);
             }
         }
@@ -521,17 +523,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         try{
-            List<Rank> rankList = new ArrayList<Rank>();
-            HomeRecommend homeRecommend = new HomeRecommend();
-            homeRecommend.setIsdel("0");
-            homeRecommend.setRecommendtype(0);
-            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
-            if(homeRecommend != null && homeRecommendList.size() > 0){
-                for(HomeRecommend homeRecommend1: homeRecommendList){
-                    Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                    if(rank == null || "1".equals(rank.getIsdel())){
-                        continue;
-                    }
+//            List<Rank> rankList = new ArrayList<Rank>();
+//            HomeRecommend homeRecommend = new HomeRecommend();
+//            homeRecommend.setIsdel("0");
+//            homeRecommend.setRecommendtype(0);
+//            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("isrecommend",1);
+            map.put("isdel",0);
+            map.put("orderByType","recommend");
+            map.put("startNum",startNum);
+            map.put("pageSize",pageSize);
+            List<Rank> homeRecommendRankList = this.rankMapper.selectRankList(map);
+            if(homeRecommendRankList != null && homeRecommendRankList.size() > 0){
+                for(Rank rank: homeRecommendRankList){
                     if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
                         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
                         if(null != rankMembers){
@@ -541,11 +547,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
                     if(awardList != null && awardList.size() > 0){
                         rank.setRankAwards(awardList);
-                        rankList.add(rank);
                     }
                 }
             }
-            baseResp.setData(rankList);
+            baseResp.setData(homeRecommendRankList);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select rank list for app error startNum:{} pageSize:{}",startNum,pageSize);

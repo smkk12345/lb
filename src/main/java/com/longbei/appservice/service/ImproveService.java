@@ -398,7 +398,7 @@ public interface ImproveService {
      * @param pagesize 分页每页条数
      * @return
      */
-    BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,
+    BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,String iscomplain,
                                                 String businesstype,Integer startno,Integer pagesize);
 
 
