@@ -478,7 +478,7 @@ public class RankApiController {
      */
     @ResponseBody
     @RequestMapping(value = "memberimproves/{pageNo}/{pageSize}")
-    public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,
+    public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,String iscomplain,
                                                               @PathVariable("pageNo") String pageno,
                                                               @PathVariable("pageSize") String pagesize){
         BaseResp<Page<Improve>> baseResp = new BaseResp<>();
@@ -497,14 +497,10 @@ public class RankApiController {
             RankMembers rankMembers = new RankMembers();
             rankMembers.setRankid(Long.parseLong(rankid));
             rankMembers.setUserid(Long.parseLong(userid));
-            BaseResp<RankMembers> rk = rankService.selectRankMemberInfo(rankid,userid);
-            int totalcount = 0;
-            if (null != rk.getData()){
-                totalcount = rk.getData().getIcount();
-            }
-            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,
+            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,iscomplain,
                     Constant.IMPROVE_RANK_TYPE,Integer.parseInt(pagesize)*(Integer.parseInt(pageno)-1),
                     Integer.parseInt(pagesize));
+            Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
             page.setTotalCount(totalcount);
             page.setList(listBaseResp.getData());
             baseResp = BaseResp.ok();

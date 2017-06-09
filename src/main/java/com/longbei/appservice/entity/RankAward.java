@@ -98,7 +98,7 @@ public class RankAward {
      * @param awardid 
      */
     public void setAwardid(String awardid) {
-        this.awardid = awardid == null ? null : awardid.trim();
+        this.awardid = awardid;
     }
 
     /**

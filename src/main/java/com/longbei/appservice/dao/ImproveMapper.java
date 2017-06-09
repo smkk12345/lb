@@ -21,7 +21,6 @@ public interface ImproveMapper {
     /**
      * @Title: updateImpComplaincount
      * @Description: 更新进步的被投诉次数
-     * @return boolean 返回类型
      * @auther IngaWu
      * @currentdate:2017年6月8日
      */
@@ -43,8 +42,22 @@ public interface ImproveMapper {
                                          @Param("ismainimp")String ismainimp,
                                          @Param("userid") String userid,
                                          @Param("orderby")String orderby,
+                                         @Param("iscomplain")String iscomplain,
                                          @Param("startno")int startno,
                                          @Param("pagesize")int pagesize);
+
+    /**
+     * @Title: selectListTotalcount
+     * @Description: 获取进步列表数量
+     * @auther IngaWu
+     * @currentdate:2017年6月9日
+     */
+    Integer selectListTotalcount(@Param("businessid")String businessid,
+                                         @Param("tablename")String tablename,
+                                         @Param("ismainimp")String ismainimp,
+                                         @Param("userid") String userid,
+                                         @Param("orderby")String orderby,
+                                         @Param("iscomplain")String iscomplain);
 
     /**
      * 获取榜单进步列表
