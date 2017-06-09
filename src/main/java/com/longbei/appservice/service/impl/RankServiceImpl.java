@@ -1624,6 +1624,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankMembers.setIswinning("2");//审核未通过
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Long.parseLong(rankMembers.getRankAward().getAwardid()));
+                if(rankAward.getAwardid() != null){
+                    rankAward.setAward(this.awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid())));
+                }
                 rankMembers.setRankAward(rankAward);
             }else if("1".equals(rank.getIsfinish())){
                 String sn = rank.getMinimprovenum();
