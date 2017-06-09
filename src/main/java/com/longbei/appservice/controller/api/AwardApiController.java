@@ -45,7 +45,6 @@ public class AwardApiController {
     public BaseResp addAward(@RequestBody Award award){
         BaseResp baseResp = new BaseResp<>();
         try {
-            award.setId(idGenerateService.getUniqueIdAsLong());
             boolean flag = awardService.insertAward(award);
             if (flag){
                 logger.info("insert award id = {}",award.getId());
