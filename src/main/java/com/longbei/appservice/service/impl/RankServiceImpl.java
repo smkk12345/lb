@@ -3332,7 +3332,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
 
             }
-            page.setTotalCount(totalcount);
+            Integer searchTotalcount = rankMembersMapper.selectWaitCheckListCount(rankMembers,totalcount);
+            page.setTotalCount(searchTotalcount);
             page.setList(rankMemberses);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
@@ -3354,11 +3355,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //榜单设置奖品数
         int awardcount = getRankAwardCount(String.valueOf(rankMembers.getRankid()));
         //审核通过数
-        rankMembers.setCheckstatus("3");
-        int okcount = rankMembersMapper.selectCount(rankMembers);
+        int okcount = rankMembersMapper.selectCountByStatusAndCheckstatus(rankMembers.getRankid(),1,"3");
         //未审核数
-        rankMembers.setCheckstatus("0");
-        int waitcount = rankMembersMapper.selectCount(rankMembers);
+        int waitcount = rankMembersMapper.selectCountByStatusAndCheckstatus(rankMembers.getRankid(),1,"0");
         if (awardcount > rankmnum){
             awardcount = rankmnum;
         }
