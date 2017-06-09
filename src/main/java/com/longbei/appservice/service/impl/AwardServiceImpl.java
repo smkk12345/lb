@@ -32,14 +32,10 @@ public class AwardServiceImpl implements AwardService {
     private AwardMapper awardMapper;
     @Autowired
     private AwardClassifyMapper awardClassifyMapper;
-    @Autowired
-    private IdGenerateService idGenerateService;
-
 
     @Override
     public boolean insertAward(Award award) {
         try {
-            award.setId(idGenerateService.getUniqueIdAsLong());
             award.setCreatetime(new Date());
             award.setUpdatetime(new Date());
             award.setId(idGenerateService.getUniqueIdAsLong());
