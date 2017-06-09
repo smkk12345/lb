@@ -67,6 +67,15 @@ public interface RankMembersMapper {
     int updateRankImproveCount(@Param("rankid")long rankid,@Param("userid")long userid,@Param("icount") int icount);
 
     /**
+     * @Title: updateRankMenberComplaincount
+     * @Description: 更新榜成员的被投诉次数
+     * @return boolean 返回类型
+     * @auther IngaWu
+     * @currentdate:2017年6月8日
+     */
+    int updateRankMenberComplaincount(@Param("rankid")long rankid,@Param("userid")long userid);
+
+    /**
      * 查询用户排名的集合
      * @param rankId 榜单id
      * @param sortType 排序字段

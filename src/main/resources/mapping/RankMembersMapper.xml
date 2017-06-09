@@ -88,6 +88,16 @@
             </otherwise>
           </choose>
         </if>
+        <if test="iscomplain != null and iscomplain != ''">
+            <choose>
+                <when test="iscomplain == '1'.toString()">
+                    and complaintotalcount > 0
+                </when>
+                <otherwise>
+                    and complaintotalcount = 0
+                </otherwise>
+            </choose>
+        </if>
         <if test="appUserMongoEntities != null and appUserMongoEntities.size() > 0">
           AND  userid in
           <foreach item="item" index="index" collection="appUserMongoEntities" open="(" separator="," close=")">
@@ -132,6 +142,16 @@
               AND checkstatus = #{rankmember.checkstatus}
             </otherwise>
           </choose>
+        </if>
+        <if test="rankmember.iscomplain != null and rankmember.iscomplain != ''">
+            <choose>
+                <when test="rankmember.iscomplain == '1'.toString()">
+                    and complaintotalcount > 0
+                </when>
+                <otherwise>
+                    and complaintotalcount = 0
+                </otherwise>
+            </choose>
         </if>
         <if test="rankmember.appUserMongoEntities != null and rankmember.appUserMongoEntities.size() > 0">
           AND  userid in
@@ -306,6 +326,16 @@
     WHERE 1=1
     <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
       AND temp.isfashionman = #{rankmember.isfashionman}
+    </if>
+    <if test="rankmember.iscomplain != null and rankmember.iscomplain != ''">
+      <choose>
+          <when test="rankmember.iscomplain == '1'.toString()">
+              and temp.complaintotalcount > 0
+          </when>
+          <otherwise>
+              and temp.complaintotalcount = 0
+          </otherwise>
+      </choose>
     </if>
     <if test="rankmember.appUserMongoEntities != null">
       AND  temp.userid in
@@ -600,8 +630,11 @@
     </set>
     where rankid = #{rankid} and userid = #{userid}
   </update>
-
-
+  <update id="updateRankMenberComplaincount">
+    UPDATE rank_members
+    set complaintotalcount = complaintotalcount+1
+    where rankid=#{rankid} and userid=#{userid}
+  </update>
   <update id="updateRankImproveCount">
     UPDATE rank_members
       set icount = icount+#{icount}
