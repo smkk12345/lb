@@ -111,6 +111,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserService userService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
 
     /**
      *  @author luye
@@ -167,6 +169,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankMapper.updateSymbolByRankId(rank);
+            if("1".equals(rank.getIsdel())){
+            	rank = rankMapper.selectRankByRankid(rank.getRankid());
+            	if(null != rank){
+            		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
+            		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
+            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            		}
+            	}
+            }
             if("5".equals(rank.getIsfinish())){
 //            	rank = rankMapper.selectRankByRankid(rank.getRankid());
             	//发送获奖消息
@@ -855,7 +867,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 int totalMoney = userInfo.getTotalmoney();
                 //返还后龙币数
                 int remainMoney = totalMoney + totalPrice;
-                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney);
+                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney,0);
+                //添加龙币返还记录
+                userMoneyDetailService.insertPublic(Long.parseLong(rankImage.getCreateuserid()), "7", totalPrice, 0);
             }
         }
 
@@ -1712,7 +1726,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             userIdList.add(rankMembers.getUserid());
                         }
                         UserMsg userMsg = new UserMsg();
-                        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        //sourcetype   来源类型。0 运营端创建   1  app 2   商户
+                		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                        	userMsg.setFriendid(Long.parseLong(rank.getCreateuserid()));
+                        }else{
+                        	userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        }
                         userMsg.setMtype("2");//系统消息
                         userMsg.setMsgtype("42");
                         userMsg.setSnsid(rank.getRankid());
