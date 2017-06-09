@@ -137,7 +137,9 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
     </if>
   </set>
-  where userid = #{userid,jdbcType=BIGINT} and ptype=#{ptype,jdbcType=CHAR} and leve=#{leve,jdbcType=INTEGER}
+  where userid = #{userid,jdbcType=BIGINT}
+      and ptype=#{ptype,jdbcType=CHAR}
+    and leve=#{leve,jdbcType=INTEGER}
 </update>
   <update id="updateUserPLDetailToplevel" parameterType="com.longbei.appservice.entity.UserPlDetail">
     UPDATE user_pl_detail

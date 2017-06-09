@@ -1030,6 +1030,52 @@ public class ImproveServiceImpl implements ImproveService{
         }
     }
 
+
+    @Override
+    public BaseResp<Object> removeFinishedRankImprove(String userid, String rankid, String improveid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        int res = 0;
+        Improve improve = selectImprove(Long.parseLong(improveid),userid,Constant.IMPROVE_RANK_TYPE,rankid,null,null);
+        try {
+            res = improveRankMapper.remove(userid,rankid,improveid);
+        } catch (Exception e) {
+            logger.error("remove rank immprove: rankid:{} improveid:{} userid:{} is error:{}",
+                    rankid,improveid,userid,e);
+        }
+        if(res != 0){
+            //清除数据
+            clearFinishedRankDirtyData(improve);
+            springJedisDao.increment("rankid"+improve.getBusinessid()+
+                    "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),-1);
+            String message = "updatetest";
+            queueMessageSendService.sendUpdateMessage(message);
+            //将收藏了该进步的用户进步状态修改为已删除
+            deleteUserCollectImprove("0",improveid);
+            timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+            userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
+                    Long.parseLong(userid),improve,0);
+            baseResp = BaseResp.ok();
+
+        }
+
+        return baseResp;
+    }
+
+    //删除已结束的榜进步之后清理脏数据  不更新榜中排名
+    private void clearFinishedRankDirtyData(Improve improve){
+        int flower = improve.getFlowers();
+        int like = improve.getLikes();
+        String tableName = getTableNameByBusinessType(improve.getBusinesstype());
+        String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
+        if(improve.getIsmainimp().equals("1")){
+            improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),tableName,"businessid");
+        }
+        //更新赞 花 进步条数
+        improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
+        //跟新榜中进步条数
+        rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
+    }
+
     /**
      *  @author luye
      *  @desp 
