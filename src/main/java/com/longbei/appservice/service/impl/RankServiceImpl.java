@@ -204,7 +204,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
-
+        logger.warn("insertPCRankAward rankid={} rankAwards={}",rankid,JSON.toJSONString(rankAwards));
         if (null != rankAwards){
             Date date = new Date();
             for (RankAward rankAward:rankAwards){
@@ -223,6 +223,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             try {
+                logger.warn("insertPCRankAward rankAwards={}",JSON.toJSONString(rankAwards));
                 int res = rankAwardMapper.insertBatch(rankAwards);
                 return true;
             } catch (Exception e) {
