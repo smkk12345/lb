@@ -121,7 +121,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Override
     public BaseResp insertRank(RankImage rankImage) {
         BaseResp baseResp = new BaseResp();
-
+        logger.info("insert rank image {}",JSON.toJSONString(rankImage));
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
 
@@ -131,7 +131,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
-                if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                logger.warn("insertRank  rankimage={}",JSON.toJSONString(rankImage));
+                if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype().trim())){
+                    logger.warn("insert rank iamge");
                     insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }else {
                     insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
@@ -182,9 +184,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private boolean insertRankAward(String rankid, List<RankAward> rankAwards){
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
+                rankAward.setCreatetime(date);
             }
             try {
                 int res = rankAwardMapper.insertBatch(rankAwards);
@@ -203,20 +206,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
+        logger.warn("insertPCRankAward rankid={} rankAwards={}",rankid,JSON.toJSONString(rankAwards));
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
-                boolean flag = awardService.insertAward(award);
-                if (!flag){
-                    return false;
-                }
-                if (null != award.getId()){
+                try{
+                    award.setUpdatetime(date);
+                    award.setCreatetime(date);
+                    awardService.insertAward(award);
+                    logger.info("insertPCRankAward={}",JSONObject.fromObject(award).toString());
                     rankAward.setAwardid(award.getId().toString());
+                    rankAward.setRankid(rankid);
+                    rankAward.setCreatetime(date);
+                }catch (Exception e){
+                    logger.error("insertPCRankAward={} and msg={}",
+                            JSONObject.fromObject(award).toString(),e);
                 }
-                rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
             }
             try {
+                logger.warn("insertPCRankAward rankAwards={}",JSON.toJSONString(rankAwards));
                 int res = rankAwardMapper.insertBatch(rankAwards);
                 return true;
             } catch (Exception e) {
@@ -273,6 +282,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for (RankAward rankAward : rankAwards){
             if (!StringUtils.isEmpty(rankAward.getAwardid())){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
+                logger.warn("select Rank Image and Award={}",JSON.toJSONString(award));
                 rankAward.setAward(award);
             }
         }
@@ -424,7 +434,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankImage1.setRankCheckDetails(list);
                     //将id改为nickName用于显示
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
-                    rankImage1.setCreateuserid(appUer.getNickname());
+                    if(null != appUer) {
+                        rankImage1.setCreateuserid(appUer.getNickname());
+                    }
                 }
             }
             page.setTotalCount(totalcount);
@@ -515,17 +527,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         try{
-            List<Rank> rankList = new ArrayList<Rank>();
-            HomeRecommend homeRecommend = new HomeRecommend();
-            homeRecommend.setIsdel("0");
-            homeRecommend.setRecommendtype(0);
-            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
-            if(homeRecommend != null && homeRecommendList.size() > 0){
-                for(HomeRecommend homeRecommend1: homeRecommendList){
-                    Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                    if(rank == null || "1".equals(rank.getIsdel())){
-                        continue;
-                    }
+//            List<Rank> rankList = new ArrayList<Rank>();
+//            HomeRecommend homeRecommend = new HomeRecommend();
+//            homeRecommend.setIsdel("0");
+//            homeRecommend.setRecommendtype(0);
+//            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("isrecommend",1);
+            map.put("isdel",0);
+            map.put("orderByType","recommend");
+            map.put("startNum",startNum);
+            map.put("pageSize",pageSize);
+            List<Rank> homeRecommendRankList = this.rankMapper.selectRankList(map);
+            if(homeRecommendRankList != null && homeRecommendRankList.size() > 0){
+                for(Rank rank: homeRecommendRankList){
                     if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
                         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
                         if(null != rankMembers){
@@ -535,11 +551,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
                     if(awardList != null && awardList.size() > 0){
                         rank.setRankAwards(awardList);
-                        rankList.add(rank);
                     }
                 }
             }
-            baseResp.setData(rankList);
+            baseResp.setData(homeRecommendRankList);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select rank list for app error startNum:{} pageSize:{}",startNum,pageSize);

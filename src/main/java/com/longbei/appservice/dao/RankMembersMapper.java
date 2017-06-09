@@ -69,7 +69,6 @@ public interface RankMembersMapper {
     /**
      * @Title: updateRankMenberComplaincount
      * @Description: 更新榜成员的被投诉次数
-     * @return boolean 返回类型
      * @auther IngaWu
      * @currentdate:2017年6月8日
      */

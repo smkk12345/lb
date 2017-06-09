@@ -1,8 +1,6 @@
 package com.longbei.appservice.dao;
 
-import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.RankAward;
-import com.longbei.appservice.entity.RankMembers;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

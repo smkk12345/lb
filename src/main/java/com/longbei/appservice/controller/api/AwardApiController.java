@@ -1,12 +1,12 @@
 package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.AwardClassify;
 import com.longbei.appservice.service.AwardService;
-import feign.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,8 @@ public class AwardApiController {
 
     @Autowired
     private AwardService awardService;
+    @Autowired
+    private IdGenerateService idGenerateService;
 
 
     /**
