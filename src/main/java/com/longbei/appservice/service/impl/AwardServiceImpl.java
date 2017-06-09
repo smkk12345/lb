@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.dao.AwardClassifyMapper;
 import com.longbei.appservice.dao.AwardMapper;
@@ -31,6 +32,8 @@ public class AwardServiceImpl implements AwardService {
     private AwardMapper awardMapper;
     @Autowired
     private AwardClassifyMapper awardClassifyMapper;
+    @Autowired
+    private IdGenerateService idGenerateService;
 
 
     @Override
@@ -38,6 +41,7 @@ public class AwardServiceImpl implements AwardService {
         try {
             award.setCreatetime(new Date());
             award.setUpdatetime(new Date());
+            award.setId(idGenerateService.getUniqueIdAsLong());
             int res = awardMapper.insertSelective(award);
             if (res > 0){
                 return true;
