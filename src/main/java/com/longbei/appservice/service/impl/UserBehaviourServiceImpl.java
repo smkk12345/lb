@@ -394,34 +394,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }
 
             String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-//            String key = getPerKey(userInfo.getUserid());
-//            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT);
-//            if(hasKey){
-//                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT);
-//                int leftPoint = point - iPoint;
-//                if(point > 0 && leftPoint > 0){//未升级
-//                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT,-iPoint);
-//                    updateToUserInfo(userInfo,iPoint);
-//                }else{//升级
-//                    levelUpAsyn(userInfo,iPoint,leftPoint);
-//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
-//                }
-//            }else{
-//                //通过级别获取升级下以及所需分数  进行缓存
-//                int curpoint = userInfo.getCurpoint();//这里需要改
-//                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
-//                int upCount = userLevel.getDiff();
-//                int leftPoint = upCount -curpoint - iPoint;
-//                if(leftPoint > 0){
-//                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");
-//                    springJedisDao.expire(key,Constant.CACHE_24X60X60);
-//                    updateToUserInfo(userInfo,iPoint);
-//                }else{//升级
-//                    levelUpAsyn(userInfo,iPoint,leftPoint);
-//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
-//                }
-//            }
-            //userPointDetailMapper.insert();
             //不管升级不升级  userpldetail  userpoint
             if(!"b".equals(pType)){
             	subLevelUp(userInfo,iPoint,pType,dateStr);
@@ -524,45 +496,86 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private BaseResp<Object> subLevelUp(UserInfo userInfo, int iPoint,String pType,String dateStr){
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            String key = getPerKey(userInfo.getUserid());
-            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT+pType);
             UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
-
-            int level=0;//等级
-            int levelPoint = 0;
+            int level = 0;//等级
+            int maxPoint=0;
             int curPoint = 0;
-            if(null == userPlDetail){
-                //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
+            if(userPlDetail == null){
+                //说明当前用户无十大分类信息 积分从缓存中获取 0级别
                 level = 1;
-                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1").getScore();
+                maxPoint = SysRulesCache.pLevelPointMap.get(pType+"&1").getMaxscore();
+                curPoint = 0;
             }else{
-                curPoint = userPlDetail.getScorce();
                 level = userPlDetail.getLeve();
-                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getScore();
+                curPoint = userPlDetail.getScorce();
+                maxPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getMaxscore();
             }
-            if(hasKey){
-                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT+pType);
-                int leftPoint = point - iPoint;
-                if(point > 0 && leftPoint > 0){//未升级
-                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
-                    //没有升级 更新userPlDetail数据
-                    updateToUserPLDetail(userInfo,iPoint,pType,level);
-                }else{//升级
+            curPoint = curPoint + iPoint;
+            if(curPoint >= maxPoint){//升级
+                int nextMaxPoint =SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()+1)).getMaxscore();
+                if(curPoint >= nextMaxPoint){//不止升一级
+                    Map<String,SysRulePerfectTen> ruleMap = SysRulesCache.pLevelPointMap;
+                    for(Map.Entry<String,SysRulePerfectTen> entry:ruleMap.entrySet()){
+                        if(curPoint >= entry.getValue().getMinscore() && curPoint < entry.getValue().getMinscore()){
+                            level = entry.getValue().getPlevel();
+                            break;
+                        }
+                    }
+                    saveLevelUpInfo(userInfo,pType,iPoint,level);
+                }else{
                     saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
-                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
-            }else{
-                //这里通过10大分类获取用户point分数
-                int leftPoint = levelPoint - curPoint - iPoint;
-                if(leftPoint > 0){
-                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
+            }else{//不升级
+                if(userPlDetail == null){
+                    UserPlDetail newUserPlDetail = new UserPlDetail();
+                    newUserPlDetail.setLeve(1);
+                    newUserPlDetail.setPtype(pType);
+                    newUserPlDetail.setScorce(curPoint);
+                    newUserPlDetail.setUserid(userInfo.getUserid());
+                    newUserPlDetail.setToplevel("1");
+                    newUserPlDetail.setCreatetime(new Date());
+                    newUserPlDetail.setUpdatetime(new Date());
+                    userPlDetailMapper.insertSelective(newUserPlDetail);
+                }else{
                     updateToUserPLDetail(userInfo,iPoint,pType,level);
-                }else{//升级
-                    updateUserPLDetailToplevel(userInfo.getUserid(),pType,"1");
-                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
-                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
                 }
             }
+
+//            String key = getPerKey(userInfo.getUserid());
+//            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT+pType);
+//
+//            if(null == userPlDetail){
+//                //如果是空 说明当前用户无十大分类信息 积分从缓存中获取 0级别
+//                level = 1;
+//                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&1").getScore();
+//            }else{
+//                curPoint = userPlDetail.getScorce();
+//                level = userPlDetail.getLeve();
+//                levelPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getScore();
+//            }
+//            if(hasKey){
+//                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT+pType);
+//                int leftPoint = point - iPoint;
+//                if(point > 0 && leftPoint > 0){//未升级
+//                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT+pType,-iPoint);
+//                    //没有升级 更新userPlDetail数据
+//                    updateToUserPLDetail(userInfo,iPoint,pType,level);
+//                }else{//升级
+//                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
+//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
+//                }
+//            }else{
+//                //这里通过10大分类获取用户point分数
+//                int leftPoint = levelPoint - curPoint - iPoint;
+//                if(leftPoint > 0){
+//                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT+pType,leftPoint+"");
+//                    updateToUserPLDetail(userInfo,iPoint,pType,level);
+//                }else{//升级
+//                    updateUserPLDetailToplevel(userInfo.getUserid(),pType,"1");
+//                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
+//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT+pType);
+//                }
+//            }
         }catch (Exception e){
             logger.error("subLevelUp error and msg = {}",e);
         }

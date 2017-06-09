@@ -48,7 +48,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	 * 2017年2月27日
 	 * param userid 
 	 * param origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
-	 * 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币
+	 * 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币    7: 设榜单后台审核不通过返还龙币   
 	 *
 	 * param number 数量 --- 消耗：(除 0:充值  购买  6:取消订单返还龙币)value值为负---方法里面已做判断
 	 * param friendid 
@@ -63,7 +63,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			userMoneyDetail.setFriendid(friendid);
 			userMoneyDetail.setOrigin(origin);
 			userMoneyDetail.setUserid(userid);
-			if("0".equals(origin) || "6".equals(origin)){
+			if("0".equals(origin) || "6".equals(origin) || "7".equals(origin)){
 				userMoneyDetail.setNumber(number);
 			}else{
 				number = 0 - number;
@@ -136,12 +136,12 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserMoneyDetail> list = userMoneyDetailMapper.selectListByUserid(userid, pageNo, pageSize);
-			if(null != list && list.size()>0){
-				for (UserMoneyDetail userMoneyDetail : list) {
-					//初始化用户信息
-					initMsgUserInfoByUserid(userMoneyDetail, userid);
-				}
-			}
+//			if(null != list && list.size()>0){
+//				for (UserMoneyDetail userMoneyDetail : list) {
+//					//初始化用户信息
+//					initMsgUserInfoByUserid(userMoneyDetail, userid);
+//				}
+//			}
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

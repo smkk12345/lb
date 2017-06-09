@@ -146,7 +146,6 @@ public class RankApiController {
     public BaseResp<RankImage> selectRankImageDetail(String rankid){
         logger.info("selectRankImageDetail rankid={}",rankid);
         BaseResp<RankImage>  baseResp = rankService.selectRankImage(rankid);
-        logger.warn("select rank image rankimage={}",JSON.toJSONString(baseResp));
         return baseResp;
     }
 
@@ -159,7 +158,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp insertRank(@RequestBody RankImage rankImage){
-        logger.warn("insert rank image controller");
+        logger.info("insert rankImage={}",rankImage);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.insertRank(rankImage);
@@ -284,6 +283,22 @@ public class RankApiController {
         }
         return baseResp;
     }
+
+    /**
+     * 撤回审核中的榜单
+     */
+    @ResponseBody
+    @RequestMapping(value = "back")
+    public BaseResp setBackCheckRank(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.setBackCheckRank(rankid);
+        } catch (Exception e) {
+            logger.error("set back rank rankid={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
 
     /**
      * 删除榜单

@@ -294,15 +294,16 @@ public class AppUserApiController {
      * 更改用户龙币余额
      * @param userid
      * @param totalMoney
+     * @param totalPrice  消耗的龙币数量
      * @return
      */
     @SuppressWarnings("unchecked")
     @ResponseBody
     @RequestMapping(value = "updateMoney")
-    public BaseResp updateTotalmoneyByUserid(Long userid,Integer totalMoney){
+    public BaseResp updateTotalmoneyByUserid(Long userid, Integer totalMoney, Integer totalPrice){
         BaseResp baseResp = new BaseResp();
         try {
-            baseResp =userService.updateTotalmoneyByUserid(userid,totalMoney);
+            baseResp =userService.updateTotalmoneyByUserid(userid,totalMoney,totalPrice);
         } catch (Exception e) {
             logger.error("update Totalmoney By Userid {} is error", userid, e);
         }
