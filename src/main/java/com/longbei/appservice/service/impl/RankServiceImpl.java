@@ -131,14 +131,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
-                logger.warn("rank image sourcetype = {}",rankImage.getSourcetype());
                 if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                    logger.warn("insert rank award");
                     insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }else {
                     insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }
-                logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//PC_test
+                logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//PC_test
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
@@ -184,9 +182,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private boolean insertRankAward(String rankid, List<RankAward> rankAwards){
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
+                rankAward.setCreatetime(date);
             }
             try {
                 int res = rankAwardMapper.insertBatch(rankAwards);
@@ -205,25 +204,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
-        logger.warn("insert");
+
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
-                award.setId(idGenerateService.getUniqueIdAsLong());
-                boolean flag = awardService.insertAward(award);
-                if (!flag){
-                    return false;
-                }
-                if (null != award.getId()){
+                try{
+                    award.setUpdatetime(date);
+                    award.setCreatetime(date);
+                    awardService.insertAward(award);
+                    logger.info("insertPCRankAward={}",JSONObject.fromObject(award).toString());
                     rankAward.setAwardid(award.getId().toString());
-                    logger.warn("insert award id " + award.getId().toString());
+                    rankAward.setRankid(rankid);
+                    rankAward.setCreatetime(date);
+                }catch (Exception e){
+                    logger.error("insertPCRankAward={} and msg={}",
+                            JSONObject.fromObject(award).toString(),e);
                 }
-                rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
             }
             try {
                 int res = rankAwardMapper.insertBatch(rankAwards);
-                logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankAwards));//PC_test
                 return true;
             } catch (Exception e) {
                 logger.error("insert rank award rankid={} is error:",rankid,e);
@@ -282,7 +282,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankAward.setAward(award);
             }
         }
-        logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankAwards));//pc_test
         return rankAwards;
     }
 
