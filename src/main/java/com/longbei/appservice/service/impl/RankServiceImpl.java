@@ -182,9 +182,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private boolean insertRankAward(String rankid, List<RankAward> rankAwards){
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
+                rankAward.setCreatetime(date);
             }
             try {
                 int res = rankAwardMapper.insertBatch(rankAwards);
@@ -203,20 +204,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
+        logger.warn("insertPCRankAward rankid={} rankAwards={}",rankid,JSON.toJSONString(rankAwards));
         if (null != rankAwards){
+            Date date = new Date();
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
-                boolean flag = awardService.insertAward(award);
-                if (!flag){
-                    return false;
-                }
-                if (null != award.getId()){
+                try{
+                    award.setUpdatetime(date);
+                    award.setCreatetime(date);
+                    awardService.insertAward(award);
+                    logger.info("insertPCRankAward={}",JSONObject.fromObject(award).toString());
                     rankAward.setAwardid(award.getId().toString());
+                    rankAward.setRankid(rankid);
+                    rankAward.setCreatetime(date);
+                }catch (Exception e){
+                    logger.error("insertPCRankAward={} and msg={}",
+                            JSONObject.fromObject(award).toString(),e);
                 }
-                rankAward.setRankid(rankid);
-                rankAward.setCreatetime(new Date());
             }
             try {
+                logger.warn("insertPCRankAward rankAwards={}",JSON.toJSONString(rankAwards));
                 int res = rankAwardMapper.insertBatch(rankAwards);
                 return true;
             } catch (Exception e) {

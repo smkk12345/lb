@@ -40,8 +40,6 @@ public class AwardServiceImpl implements AwardService {
     public boolean insertAward(Award award) {
         try {
             award.setId(idGenerateService.getUniqueIdAsLong());
-            award.setCreatetime(new Date());
-            award.setUpdatetime(new Date());
             int res = awardMapper.insertSelective(award);
             if (res > 0){
                 return true;
