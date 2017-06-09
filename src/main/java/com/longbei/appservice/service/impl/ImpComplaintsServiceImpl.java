@@ -86,7 +86,6 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	/**
 	 * @Title: updateImpComplaincount
 	 * @Description: 更新进步的被投诉次数
-	 * @return boolean 返回类型
 	 * @auther IngaWu
 	 * @currentdate:2017年6月8日
 	 */
