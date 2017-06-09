@@ -414,29 +414,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize) {
         Page<RankImage> page = new Page<>(pageno,pagesize);
         try {
-            int totalcount = 0;
-            List<RankImage> rankImages = new ArrayList<>();
-            //pc端发榜,根据需求imageRankList应包含审核未通过不可修改的
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                totalcount = rankImageMapper.selectPCListCount(rankImage);
-                pageno = Page.setPageNo(pageno,totalcount,pagesize);
-                rankImages = rankImageMapper.selectPCListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
-            }else{
-                totalcount = rankImageMapper.selectListCount(rankImage);
-                pageno = Page.setPageNo(pageno,totalcount,pagesize);
-                rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
-            }
+            int totalcount = rankImageMapper.selectListCount(rankImage);
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            List<RankImage> rankImages = rankImageMapper.selectListWithPage(rankImage,(pageno-1)*pagesize,pagesize);
             for(RankImage rankImage1: rankImages){
-                //pc端发榜
+                //pc端发榜,榜单审核意见列表
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
-                    //榜单审核列表
                     List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
                     rankImage1.setRankCheckDetails(list);
-                    //将id改为nickName用于显示
-                    AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
-                    if(null != appUer) {
-                        rankImage1.setCreateuserid(appUer.getNickname());
-                    }
                 }
             }
             page.setTotalCount(totalcount);
@@ -874,9 +859,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
         }
 
-        //审核不通过 不可以修改 直接删除
+        //审核不通过且不可以修改 运营端直接删除;pc端不删除
         if (Constant.RANKIMAGE_STATUS_3.equals(rankCheckDetail.getCheckstatus())){
-            deleteRankImage(String.valueOf(rankCheckDetail.getRankid()));
+            if (!Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                deleteRankImage(String.valueOf(rankCheckDetail.getRankid()));
+            }
         }
     }
 
