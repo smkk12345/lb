@@ -21,11 +21,20 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
-	 * 获取课程列表(未删除,转码成功的)
+	 * 获取课程列表(未删除,转码成功的)---排序coursesort课程序号desc
 	 * 2017年3月1日
 	 * param classroomid 教室id
 	 */
     List<ClassroomCourses> selectListByClassroomid(@Param("classroomid") long classroomid, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+	 * @author yinxc
+	 * 获取课程列表(未删除,转码成功的)---排序创建时间desc
+	 * 2017年6月9日
+	 * param classroomid 教室id
+	 */
+    List<ClassroomCourses> selectCroomidOrderByCtime(@Param("classroomid") long classroomid, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
