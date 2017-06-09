@@ -285,6 +285,22 @@ public class RankApiController {
     }
 
     /**
+     * 撤回审核中的榜单
+     */
+    @ResponseBody
+    @RequestMapping(value = "back")
+    public BaseResp setBackCheckRank(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.setBackCheckRank(rankid);
+        } catch (Exception e) {
+            logger.error("set back rank rankid={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+
+    /**
      * 删除榜单
      * @param rankid 榜单id
      * @param createuserid 创建人id

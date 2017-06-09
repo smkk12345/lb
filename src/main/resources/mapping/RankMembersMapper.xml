@@ -192,6 +192,23 @@
     </if>
   </select>
 
+
+    <select id="selectWinningRankAwardByRank" resultMap="BaseResultMap">
+        select
+        rank_award_release.awardnickname,
+        rank.rankid,
+        rank_members.userid,
+        rank.endtime,
+        rank_award_release.awardid awardid
+        from rank_members LEFT join rank_award_release on rank_award_release.rankid = rank_members.rankid
+        AND rank_members.awardid = rank_award_release.awardid
+        where
+        rank_members.iswinning = 1
+        and rank_members.rankid=#{rankid}
+    </select>
+
+
+
   <!-- 查询中奖的用户和奖项 -->
   <select id="selectWinningRankAward" resultMap="BaseResultMap">
       select
@@ -755,6 +772,9 @@
           </if>
           <if test="status != null">
               and status = #{status}
+          </if>
+          <if test="iswinning != null">
+              and iswinning = #{iswinning}
           </if>
 
       </where>
