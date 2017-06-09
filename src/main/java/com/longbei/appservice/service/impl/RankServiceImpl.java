@@ -131,7 +131,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
+                logger.warn("rank image sourcetype = {}",rankImage.getSourcetype());
                 if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                    logger.warn("insert rank award");
                     insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }else {
                     insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
@@ -203,6 +205,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
+        logger.warn("insert");
         if (null != rankAwards){
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
