@@ -173,4 +173,11 @@ public interface RankMembersMapper {
      * @return
      */
     int getJoinRankCount(Map<String, Object> map);
+
+    /**
+     * 根据榜单id获取获奖人员列表
+     * @param rankid
+     * @return
+     */
+    List<RankMembers> selectWinningRankAwardByRank(@Param("rankid") Long rankid);
 }

@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -25,7 +26,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * 榜单操作接口实现类
@@ -110,6 +113,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserService userService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
 
     /**
      *  @author luye
@@ -162,6 +167,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankMapper.updateSymbolByRankId(rank);
+            if("1".equals(rank.getIsdel())){
+            	rank = rankMapper.selectRankByRankid(rank.getRankid());
+            	if(null != rank){
+            		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
+            		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
+            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            		}
+            	}
+            }
             if("5".equals(rank.getIsfinish())){
 //            	rank = rankMapper.selectRankByRankid(rank.getRankid());
             	//发送获奖消息
@@ -890,7 +905,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 int totalPrice = rankAwardTotalPrice(rankImage);
                 //返还后龙币数
                 int remainMoney = totalMoney + totalPrice;
-                userInfoMapper.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney);
+                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney,0);
+                //添加龙币返还记录
+                userMoneyDetailService.insertPublic(Long.parseLong(rankImage.getCreateuserid()), "7", totalPrice, 0);
             }
         }
 
@@ -1510,6 +1527,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             //添加中奖名单信息
             insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
+
+            //返回奖品剩余龙币
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                handleRankFinishAward(rank);
+            }
+
             //发送获奖消息
 //            try {
 //                sendRankEndUserMsg(rank);
@@ -1519,6 +1542,36 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             return baseResp;
         }
         return BaseResp.fail();
+    }
+
+    private BaseResp handleRankFinishAward(Rank rank){
+        BaseResp baseResp = new BaseResp();
+        List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+        List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
+        int startMoneyNum = 0;
+        int finishMoneyNum = 0;
+        for (RankMembers rankMembers : rankMemberses){
+            Long rankawardid = rankMembers.getAwardid();
+            Award award = awardMapper.selectByPrimaryKey(rankawardid);
+            if (null != award){
+                finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin);
+            }
+        }
+
+        for (RankAwardRelease rankAwardRelease : rankAwardReleases){
+            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
+            if (null != award){
+                startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin)
+                        * rankAwardRelease.getAwardrate();
+            }
+        }
+        int leftNum = startMoneyNum - finishMoneyNum;
+        if (0 < leftNum){
+            userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
+            baseResp.initCodeAndDesp();
+            return baseResp;
+        }
+        return baseResp;
     }
 
     @Override
@@ -1651,6 +1704,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankMembers.setIswinning("2");//审核未通过
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Long.parseLong(rankMembers.getRankAward().getAwardid()));
+                if(rankAward.getAwardid() != null){
+                    rankAward.setAward(this.awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid())));
+                }
                 rankMembers.setRankAward(rankAward);
             }else if("1".equals(rank.getIsfinish())){
                 String sn = rank.getMinimprovenum();
@@ -1747,7 +1803,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             userIdList.add(rankMembers.getUserid());
                         }
                         UserMsg userMsg = new UserMsg();
-                        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        //sourcetype   来源类型。0 运营端创建   1  app 2   商户
+                		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                        	userMsg.setFriendid(Long.parseLong(rank.getCreateuserid()));
+                        }else{
+                        	userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        }
                         userMsg.setMtype("2");//系统消息
                         userMsg.setMsgtype("42");
                         userMsg.setSnsid(rank.getRankid());

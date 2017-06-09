@@ -394,34 +394,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }
 
             String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-//            String key = getPerKey(userInfo.getUserid());
-//            boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT);
-//            if(hasKey){
-//                int point = getHashValueFromCache(key,dateStr+Constant.PERDAY_POINT);
-//                int leftPoint = point - iPoint;
-//                if(point > 0 && leftPoint > 0){//未升级
-//                    springJedisDao.increment(key,dateStr+Constant.PERDAY_POINT,-iPoint);
-//                    updateToUserInfo(userInfo,iPoint);
-//                }else{//升级
-//                    levelUpAsyn(userInfo,iPoint,leftPoint);
-//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
-//                }
-//            }else{
-//                //通过级别获取升级下以及所需分数  进行缓存
-//                int curpoint = userInfo.getCurpoint();//这里需要改
-//                UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
-//                int upCount = userLevel.getDiff();
-//                int leftPoint = upCount -curpoint - iPoint;
-//                if(leftPoint > 0){
-//                    springJedisDao.put(key,dateStr+Constant.PERDAY_POINT,leftPoint+"");
-//                    springJedisDao.expire(key,Constant.CACHE_24X60X60);
-//                    updateToUserInfo(userInfo,iPoint);
-//                }else{//升级
-//                    levelUpAsyn(userInfo,iPoint,leftPoint);
-//                    springJedisDao.delete(key,dateStr+Constant.PERDAY_POINT);
-//                }
-//            }
-            //userPointDetailMapper.insert();
             //不管升级不升级  userpldetail  userpoint
             if(!"b".equals(pType)){
             	subLevelUp(userInfo,iPoint,pType,dateStr);
@@ -524,9 +496,14 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private BaseResp<Object> subLevelUp(UserInfo userInfo, int iPoint,String pType,String dateStr){
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
+            UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
+            if(userPlDetail == null){
+
+            }
+
+
             String key = getPerKey(userInfo.getUserid());
             boolean hasKey = springJedisDao.hasKey(key,dateStr+Constant.PERDAY_POINT+pType);
-            UserPlDetail userPlDetail = userPlDetailMapper.selectByUserIdAndType(userInfo.getUserid(),pType);
 
             int level=0;//等级
             int levelPoint = 0;
