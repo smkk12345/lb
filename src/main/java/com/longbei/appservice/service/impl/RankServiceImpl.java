@@ -366,6 +366,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private BaseResp updateUserMoney(String rankid,boolean flag){
+        logger.info("updateUserMoney");
         BaseResp baseResp = new BaseResp();
         try {
             RankImage rankImage = selectRankImage(rankid).getData();
@@ -890,13 +891,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         rankImage.setCheckstatus(Constant.RANKIMAGE_STATUS_1);
         try {
             int res = rankImageMapper.updateSymbolByRankId(rankImage);
-            if (res == 0){
+            if (res > 0) {
+                //提交成功,扣除龙币
+                baseResp = updateUserMoney(rankid, false);
+            } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提交审核失败");
                 return baseResp;
             }
-            //提交成功,扣除龙币
-
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("submit check rankImage={} is error:{}",rankid,e);
         }
         return baseResp;
@@ -910,15 +912,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         rankImage.setCheckstatus(Constant.RANKIMAGE_STATUS_0);
         try {
             int res = rankImageMapper.updateSymbolByRankId(rankImage);
-            if (res == 0){
+            if (res > 0) {
+                //撤回成功,返回龙币
+                baseResp = updateUserMoney(rankid, true);
+            } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
                 return baseResp;
             }
-            //撤回成功,返回龙币
-            if(ResultUtil.isSuccess(baseResp)){
-                baseResp = updateUserMoney(rankid,true);
-            }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("set back rankImage={} is error:{}",rankid,e);
         }
         return baseResp;
