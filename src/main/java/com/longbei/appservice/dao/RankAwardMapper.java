@@ -32,6 +32,6 @@ public interface RankAwardMapper {
      * @param awardId 奖品id
      * @return
      */
-    RankAward selectRankAwardByRankIdAndAwardId(@Param("rankId") Long rankId,@Param("awardId") Integer awardId);
+    RankAward selectRankAwardByRankIdAndAwardId(@Param("rankId") Long rankId,@Param("awardId") Long awardId);
 
 }

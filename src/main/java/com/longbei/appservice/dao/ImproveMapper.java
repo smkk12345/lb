@@ -18,6 +18,15 @@ public interface ImproveMapper {
 
     int insertSelective(@Param("improve") Improve improve,@Param("tablename") String tablename);
 
+    /**
+     * @Title: updateImpComplaincount
+     * @Description: 更新进步的被投诉次数
+     * @return boolean 返回类型
+     * @auther IngaWu
+     * @currentdate:2017年6月8日
+     */
+    int updateImpComplaincount(@Param("impid") String impid,@Param("tablename") String tablename);
+
     Improve selectByPrimaryKey(@Param("impid")Long impid,
                                @Param("businessid") String businessid,
                                @Param("tablename")String tablename,

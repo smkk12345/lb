@@ -22,7 +22,7 @@ public interface AwardService {
     boolean updateAward(Award award);
 
 
-    boolean deleteAward(Integer id);
+    boolean deleteAward(Long id);
 
     /**
      * 获取奖品信息列表（分页）

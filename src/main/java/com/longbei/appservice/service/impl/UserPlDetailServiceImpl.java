@@ -72,9 +72,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
 			List<UserPlDetail> list = userPlDetailMapper.selectUserPerfectListByUserId(userid,startNum,pageSize);
-			baseResp.initCodeAndDesp();
-			baseResp.setData(new ArrayList<UserPlDetail>());
-			String photos;
+			if(list == null || list.size() == 0 || list.get(0) == null){
+				baseResp.setData(new ArrayList<UserPlDetail>());
+				return baseResp.initCodeAndDesp();
+			}
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
 				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));

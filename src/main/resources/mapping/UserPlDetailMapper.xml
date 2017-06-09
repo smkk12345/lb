@@ -28,10 +28,21 @@
     where userid=#{userid} and ptype=#{ptype} ORDER BY leve desc limit 0,1
   </select>
   <select id="selectUserPerfectListByUserId" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column" />
-    FROM user_pl_detail
-    where userid=#{userid} and ptype != 'a' and toplevel =1 ORDER BY toplevel DESC, ptype limit #{startNum},#{pageSize}
+    select
+      leve,ptype,userid,scorce,createtime,updatetime,toplevel
+      FROM
+        user_pl_detail
+      WHERE
+        id IN (SELECT
+          MAX(id)
+          FROM
+            user_pl_detail
+        WHERE
+          ptype != 'a'
+          and userid = #{userid}
+        GROUP BY ptype)
+      order by toplevel desc,createtime desc
+
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_pl_detail

@@ -40,7 +40,7 @@ public class RankMembers {
 
     private Integer complaintotalcount; //投诉次数
 
-    private Integer awardid;//奖品id
+    private Long awardid;//奖品id
 
     private Integer awardlevel;//奖品等级
 
@@ -81,6 +81,8 @@ public class RankMembers {
     private Integer rankfinishlikes = 0;
 
     private Integer rankfinishflower = 0;
+
+    private String iscomplain; //是否已被投诉举报 0没投诉 1有投诉(查询使用)
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -481,7 +483,7 @@ public class RankMembers {
      * 获取奖品id
      * @return
      */
-    public Integer getAwardid() {
+    public Long getAwardid() {
         return awardid;
     }
 
@@ -489,7 +491,7 @@ public class RankMembers {
      * 设置奖品id
      * @param awardid
      */
-    public void setAwardid(Integer awardid) {
+    public void setAwardid(Long awardid) {
         this.awardid = awardid;
     }
 
@@ -523,5 +525,13 @@ public class RankMembers {
 
     public Integer getRankfinishlikes() {
         return rankfinishlikes;
+    }
+
+    public void setIscomplain(String iscomplain) {
+        this.iscomplain = iscomplain;
+    }
+
+    public String getIscomplain() {
+        return iscomplain;
     }
 }

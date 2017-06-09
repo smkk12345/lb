@@ -39,6 +39,7 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean insertAward(Award award) {
         try {
+            award.setId(idGenerateService.getUniqueIdAsLong());
             award.setCreatetime(new Date());
             award.setUpdatetime(new Date());
             award.setId(idGenerateService.getUniqueIdAsLong());
@@ -67,7 +68,7 @@ public class AwardServiceImpl implements AwardService {
     }
 
     @Override
-    public boolean deleteAward(Integer id) {
+    public boolean deleteAward(Long id) {
         try {
             int res = awardMapper.deleteByPrimaryKey(id);
             if (res > 0){
@@ -136,7 +137,7 @@ public class AwardServiceImpl implements AwardService {
     public Award selectAward(String awardid) {
         Award award = null;
         try {
-            award = awardMapper.selectByPrimaryKey(Integer.parseInt(awardid));
+            award = awardMapper.selectByPrimaryKey(Long.valueOf(awardid));
         } catch (NumberFormatException e) {
             logger.error("select award awardid={} is error:{}",awardid,e);
         }

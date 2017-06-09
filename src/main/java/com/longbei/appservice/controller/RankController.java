@@ -631,7 +631,7 @@ public class RankController {
      * 更改榜单的加榜验证 或 公告
      * @param rankId
      * @param userid 当前登录用户id
-     * @param needConfirm 加榜是否需要验证 该参数不可与notice参数同事传入
+     * @param needConfirm 加榜是否需要验证 该参数不可与notice参数同时传入
      * @param notice 公告内容
      * @param noticeUser 更改公告是否需要通知用户
      * @return

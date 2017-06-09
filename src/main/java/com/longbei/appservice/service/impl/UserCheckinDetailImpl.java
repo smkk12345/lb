@@ -95,7 +95,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			if(null != userCheckinDetail){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
-			String day = DateUtils.getDate("yyyyMMdd");
+//			String day = DateUtils.getDate("yyyyMMdd");
 			// 判断redis中是否存在 存在+1
 			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
 					Constant.RP_USER_CHECK_VALUE + userid);
@@ -107,16 +107,12 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				//连续签到天数
 				String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_VALUE + userid);
-				int cha = Integer.parseInt(day) - Integer.parseInt(redisDate);
-//				if(cha == Integer.parseInt(redisvalue)){
-//					//当天已签到
-//					reseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_30);
-//					return reseResp;
-//				}else 
+				int cha = DateUtils.daysBetween(redisDate, date);
+//				int cha = Integer.parseInt(day) - Integer.parseInt(redisDate);
 				if(cha > Integer.parseInt(redisvalue)){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
-					addRedisCheck(userid, day, "1");
+					addRedisCheck(userid, date, "1");
 					operate(userid);
 				}else{
 					//连续签到 +1
@@ -128,6 +124,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 //								Constant.RP_USER_CHECK_DATE + record.getUserid());
 //						int res = Integer.parseInt(day) - Integer.parseInt(addDate);
 					int res = Integer.parseInt(redisvalue) + 1;
+					//重新设置过期时间
+					addRedisCheck(userid, redisDate, res+"");
 					//+进步币
 					if(res >= 5){
 						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6) 
@@ -153,7 +151,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				}
 			}else{
 				//不存在    添加
-				addRedisCheck(userid, day, "1");
+				addRedisCheck(userid, date, "1");
 				operate(userid);
 			}
 			
@@ -295,7 +293,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			}
 			list.add(disStr);
 		}
-		list.add("连续签到第7天开始,每天都能获得"+checkInImpIconMap.get(7)+
+		list.add("连续签到第"+checkInImpIconMap.size()+"天开始,每天都能获得"+SysRulesCache.behaviorRule.getSignimpcoinsmax()+
 				"个进步币,一旦中断就要从"+checkInImpIconMap.get(1)+"进步币开始咯~");
 		return list;
 	}

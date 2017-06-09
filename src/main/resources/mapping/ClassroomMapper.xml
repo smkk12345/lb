@@ -39,7 +39,10 @@
     <include refid="Base_Column_List" />
     from classroom
     where isdel = 0
-    <if test="ispublic != null" >
+    <if test="ptype != null and ptype != ''" >
+      and ptype = #{ptype}
+    </if>
+    <if test="ispublic != null and ispublic != ''" >
     	and ispublic = #{ispublic}
     </if>
     order by createtime desc 
@@ -52,9 +55,12 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where userid = #{userid}
-    AND isdel = 0
-    <if test="ptype != null" >
+    where
+    isdel = 0
+    <if test="userid != null and userid != ''" >
+      and userid = #{userid}
+    </if>
+    <if test="ptype != null and ptype != ''" >
     	and ptype = #{ptype} 
     </if>
     order by createtime desc 
