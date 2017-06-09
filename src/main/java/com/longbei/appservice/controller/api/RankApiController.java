@@ -146,7 +146,6 @@ public class RankApiController {
     public BaseResp<RankImage> selectRankImageDetail(String rankid){
         logger.info("selectRankImageDetail rankid={}",rankid);
         BaseResp<RankImage>  baseResp = rankService.selectRankImage(rankid);
-        logger.warn("select rank image rankimage={}",JSON.toJSONString(baseResp));
         return baseResp;
     }
 
@@ -159,7 +158,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp insertRank(@RequestBody RankImage rankImage){
-        logger.warn("insert rank image controller");
+        logger.info("insert rankImage={}",rankImage);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.insertRank(rankImage);
