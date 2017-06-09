@@ -130,6 +130,13 @@ public interface RankService extends BaseService{
      */
     BaseResp checkRankImage(RankCheckDetail rankCheckDetail);
 
+    /**
+     * 撤回审核中的榜单
+     * @param rankid
+     * @return
+     */
+    BaseResp setBackCheckRank(String rankid);
+
     BaseResp<Object> selectRankByRankid(long rankid);
 
     Rank selectByRankid(long rankid);
