@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * 榜单操作接口实现类
@@ -1475,6 +1478,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             //添加中奖名单信息
             insertRankAcceptAwardInfo(String.valueOf(rank.getRankid()));
+
+            //返回奖品剩余龙币
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+
+            }
+
             //发送获奖消息
 //            try {
 //                sendRankEndUserMsg(rank);
@@ -1484,6 +1493,37 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             return baseResp;
         }
         return BaseResp.fail();
+    }
+
+
+    private BaseResp handleRankFinishAward(Rank rank){
+        BaseResp baseResp = new BaseResp();
+        List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+        List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
+        int startMoneyNum = 0;
+        int finishMoneyNum = 0;
+        for (RankMembers rankMembers : rankMemberses){
+            String rankawardid = rankMembers.getRankAward().getAwardid();
+            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankawardid));
+            if (null != award){
+                finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin);
+            }
+        }
+
+        for (RankAwardRelease rankAwardRelease : rankAwardReleases){
+            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
+            if (null != award){
+                startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin)
+                        * rankAwardRelease.getAwardrate();
+            }
+        }
+        int leftNum = startMoneyNum - finishMoneyNum;
+        if (0 < leftNum){
+
+            baseResp.initCodeAndDesp();
+            return baseResp;
+        }
+        return baseResp;
     }
 
     @Override

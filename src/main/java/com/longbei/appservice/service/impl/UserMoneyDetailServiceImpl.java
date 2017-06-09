@@ -136,12 +136,12 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<UserMoneyDetail> list = userMoneyDetailMapper.selectListByUserid(userid, pageNo, pageSize);
-			if(null != list && list.size()>0){
-				for (UserMoneyDetail userMoneyDetail : list) {
-					//初始化用户信息
-					initMsgUserInfoByUserid(userMoneyDetail, userid);
-				}
-			}
+//			if(null != list && list.size()>0){
+//				for (UserMoneyDetail userMoneyDetail : list) {
+//					//初始化用户信息
+//					initMsgUserInfoByUserid(userMoneyDetail, userid);
+//				}
+//			}
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
