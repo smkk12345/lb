@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.longbei.appservice.common.BaseResp;
 
-@FeignClient("outernetServiceWYZ")
+@FeignClient("outernetService")
 @RequestMapping("outernetService")
 public interface OrderSercviceApi {
 

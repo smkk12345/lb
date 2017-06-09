@@ -357,10 +357,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(res == 0){
 				list.remove(classroom);
 			} else {
-				ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroom.getClassroomid());
-				if(null != classroomCourses){
-					//课程默认封面    fileurl  视频文件url（转码后）
-					classroom.setFileurl(classroomCourses.getFileurl());
+//				ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroom.getClassroomid());
+//				if(null != classroomCourses){
+//					//课程默认封面    fileurl  视频文件url（转码后）
+//					classroom.setFileurl(classroomCourses.getFileurl());
+//				}
+				//获取最新课程视频截图key
+				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), 0, 1);
+				if(null != courseList && courseList.size()>0){
+					classroom.setPickey(courseList.get(0).getPickey());
 				}
 			}
 			//itype 0—加入教室 1—退出教室     为null查全部

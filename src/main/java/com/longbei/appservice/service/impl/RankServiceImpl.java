@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
@@ -114,6 +113,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserService userService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
 
     /**
      *  @author luye
@@ -124,7 +125,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Override
     public BaseResp insertRank(RankImage rankImage) {
         BaseResp baseResp = new BaseResp();
-        logger.info("insert rank image {}",JSON.toJSONString(rankImage));
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
 
@@ -134,14 +134,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
-                logger.warn("insertRank  rankimage={}",JSON.toJSONString(rankImage));
                 if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype().trim())){
-                    logger.warn("insert rank iamge");
                     insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }else {
                     insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }
-                logger.warn("rank image inof : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//PC_test
             }
         } catch (Exception e) {
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
@@ -170,6 +167,16 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankMapper.updateSymbolByRankId(rank);
+            if("1".equals(rank.getIsdel())){
+            	rank = rankMapper.selectRankByRankid(rank.getRankid());
+            	if(null != rank){
+            		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
+            		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
+            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            		}
+            	}
+            }
             if("5".equals(rank.getIsfinish())){
 //            	rank = rankMapper.selectRankByRankid(rank.getRankid());
             	//发送获奖消息
@@ -209,7 +216,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     private boolean insertPCRankAward(String rankid, List<RankAward> rankAwards){
-        logger.warn("insertPCRankAward rankid={} rankAwards={}",rankid,JSON.toJSONString(rankAwards));
         if (null != rankAwards){
             Date date = new Date();
             for (RankAward rankAward:rankAwards){
@@ -218,7 +224,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     award.setUpdatetime(date);
                     award.setCreatetime(date);
                     awardService.insertAward(award);
-                    logger.info("insertPCRankAward={}",JSONObject.fromObject(award).toString());
                     rankAward.setAwardid(award.getId().toString());
                     rankAward.setRankid(rankid);
                     rankAward.setCreatetime(date);
@@ -228,7 +233,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             try {
-                logger.warn("insertPCRankAward rankAwards={}",JSON.toJSONString(rankAwards));
                 int res = rankAwardMapper.insertBatch(rankAwards);
                 return true;
             } catch (Exception e) {
@@ -270,7 +274,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp;
             }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
-            logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));//pc_test
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
@@ -285,7 +288,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for (RankAward rankAward : rankAwards){
             if (!StringUtils.isEmpty(rankAward.getAwardid())){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
-                logger.warn("select Rank Image and Award={}",JSON.toJSONString(award));
                 rankAward.setAward(award);
             }
         }
@@ -858,7 +860,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 int totalMoney = userInfo.getTotalmoney();
                 //返还后龙币数
                 int remainMoney = totalMoney + totalPrice;
-                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney);
+                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney,0);
+                //添加龙币返还记录
+                userMoneyDetailService.insertPublic(Long.parseLong(rankImage.getCreateuserid()), "7", totalPrice, 0);
             }
         }
 
@@ -1656,6 +1660,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankMembers.setIswinning("2");//审核未通过
                 }
                 RankAward rankAward = this.rankAwardMapper.selectRankAwardByRankIdAndAwardId(rankId,Long.parseLong(rankMembers.getRankAward().getAwardid()));
+                if(rankAward.getAwardid() != null){
+                    rankAward.setAward(this.awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid())));
+                }
                 rankMembers.setRankAward(rankAward);
             }else if("1".equals(rank.getIsfinish())){
                 String sn = rank.getMinimprovenum();
@@ -1752,7 +1759,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             userIdList.add(rankMembers.getUserid());
                         }
                         UserMsg userMsg = new UserMsg();
-                        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        //sourcetype   来源类型。0 运营端创建   1  app 2   商户
+                		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+                        	userMsg.setFriendid(Long.parseLong(rank.getCreateuserid()));
+                        }else{
+                        	userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+                        }
                         userMsg.setMtype("2");//系统消息
                         userMsg.setMsgtype("42");
                         userMsg.setSnsid(rank.getRankid());
