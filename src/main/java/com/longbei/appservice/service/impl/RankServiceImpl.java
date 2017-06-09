@@ -2,7 +2,6 @@ package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -26,7 +25,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -93,8 +91,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private DictAreaMapper dictAreaMapper;
     @Autowired
     private CommentMongoService commonMongoService;
-    @Autowired
-    private HomeRecommendMapper homeRecommendMapper;
     @Autowired
     private RankCardMapper rankCardMapper;
     @Autowired
@@ -350,6 +346,62 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp publishRankImage(String rankImageid) {
         RankImage rankImage = rankImageMapper.selectByRankImageId(rankImageid);
         return publishRankImage(rankImage);
+    }
+
+    @Override
+    public BaseResp publishPCPrivateRank(String rankid){
+        BaseResp baseResp = publishRankImage(rankid);
+        //发榜成功，扣除龙币
+        if(ResultUtil.isSuccess(baseResp)){
+            baseResp = updateUserMoney(rankid,false);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * 更新用户龙币余额
+     * @param rankid
+     * @param flag  true加；false减
+     * @return
+     */
+    private BaseResp updateUserMoney(String rankid,boolean flag){
+        BaseResp baseResp = new BaseResp();
+        try {
+            RankImage rankImage = selectRankImage(rankid).getData();
+            String userid = rankImage.getCreateuserid();
+            //发榜人龙币数
+            UserInfo appUser = userInfoMapper.selectByUserid(Long.parseLong(userid));
+            int totalMoney = appUser.getTotalmoney();
+            //奖品总龙币数
+            int totalPrice = 0;
+            List<RankAward> awardList = rankImage.getRankAwards();
+            for(RankAward rankAward:awardList){
+                if (null != rankAward.getAward()){
+                    int coins = (int)((rankAward.getAward().getAwardprice())*100);//奖励进步币数
+                    int nums = rankAward.getAwardrate().intValue();//奖励人数
+                    totalPrice += coins * nums;
+                }
+            }
+            totalPrice = (int)(Math.ceil(totalPrice/10.0));//除10向上取整
+            //扣除后剩余龙币数
+            int remainMoney = 0;
+            if (flag){
+                remainMoney = totalMoney + totalPrice;
+            } else {
+                remainMoney = totalMoney - totalPrice;
+            }
+            //更新用户龙币数
+            int moneyRes = userInfoMapper.updateTotalmoneyByUserid(Long.parseLong(userid),remainMoney);
+            if(moneyRes > 0){
+                baseResp.setData(remainMoney);
+                baseResp.setRtnInfo(String.valueOf(totalPrice));
+                baseResp.initCodeAndDesp();
+            }
+        } catch (Exception e) {
+            logger.error("updateUserMoney is error:{}",e);
+        }
+        return baseResp;
     }
 
     @Override
@@ -831,56 +883,45 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp submitCheckRank(String rankid) {
+        BaseResp baseResp = new BaseResp();
+        RankImage rankImage = new RankImage();
+        rankImage.setRankid(Long.parseLong(rankid));
+        rankImage.setCheckstatus(Constant.RANKIMAGE_STATUS_1);
+        try {
+            int res = rankImageMapper.updateSymbolByRankId(rankImage);
+            if (res == 0){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提交审核失败");
+                return baseResp;
+            }
+            //提交成功,扣除龙币
+
+        } catch (NumberFormatException e) {
+            logger.error("submit check rankImage={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    @Override
     public BaseResp setBackCheckRank(String rankid) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();
         rankImage.setRankid(Long.parseLong(rankid));
         rankImage.setCheckstatus(Constant.RANKIMAGE_STATUS_0);
-        int res = rankImageMapper.updateSymbolByRankId(rankImage);
-        if (res == 0){
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
-            return baseResp;
-        }
-        //撤回成功,返回龙币
-        if(ResultUtil.isSuccess(baseResp)){
-            RankImage rankInfo = rankImageMapper.selectByRankImageId(rankid);
-            String userid = rankInfo.getCreateuserid();
-            //发榜人龙币数
-            int totalMoney = userRemainMoney(userid);
-            //奖品总龙币数
-            int totalPrice = rankAwardTotalPrice(rankInfo);
-            //返还后剩余龙币数
-            int remainMoney = totalMoney + totalPrice;
-            //更新用户龙币数
-            int moneyRes = userInfoMapper.updateTotalmoneyByUserid(Long.parseLong(userid),remainMoney);
-            if(moneyRes > 0){
-                baseResp.setData(remainMoney);
-                baseResp.initCodeAndDesp();
+        try {
+            int res = rankImageMapper.updateSymbolByRankId(rankImage);
+            if (res == 0){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
+                return baseResp;
             }
+            //撤回成功,返回龙币
+            if(ResultUtil.isSuccess(baseResp)){
+                baseResp = updateUserMoney(rankid,true);
+            }
+        } catch (NumberFormatException e) {
+            logger.error("set back rankImage={} is error:{}",rankid,e);
         }
         return baseResp;
-    }
-
-    private int userRemainMoney(String userid){
-        UserInfo appUser = userInfoMapper.selectByUserid(Long.parseLong(userid));
-        int totalMoney = appUser.getTotalmoney();
-        return totalMoney;
-    }
-
-    private int rankAwardTotalPrice(RankImage rankImage) {
-        //奖品总金额:进步币
-        Double tempPrice = 0.0;
-        List<RankAward> awardList = rankImage.getRankAwards();
-        for(RankAward rankAward:awardList){
-            if (null != rankAward.getAward()){
-                int coins = (int)((rankAward.getAward().getAwardprice())*100);//奖励进步币数
-                Double nums = rankAward.getAwardrate();//奖励人数
-                tempPrice += coins * nums;
-            }
-        }
-        //进步币折换成龙币
-        int totalPrice = (int)(Math.ceil(tempPrice/10.0));//除10向上取整
-        return totalPrice;
     }
 
     /**
@@ -900,13 +941,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc榜单审核不通过,返还龙币
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
                 //用户剩余龙币
-                int totalMoney = userRemainMoney(rankImage.getCreateuserid());
-                //发榜扣除龙币
-                int totalPrice = rankAwardTotalPrice(rankImage);
-                //返还后龙币数
-                int remainMoney = totalMoney + totalPrice;
-                userService.updateTotalmoneyByUserid(Long.parseLong(rankImage.getCreateuserid()),remainMoney,0);
+                if(ResultUtil.isSuccess(baseResp)){
+                    baseResp = updateUserMoney(rankImage.getCreateuserid(),true);
+                }
                 //添加龙币返还记录
+                int totalPrice = Integer.parseInt(baseResp.getRtnInfo());
                 userMoneyDetailService.insertPublic(Long.parseLong(rankImage.getCreateuserid()), "7", totalPrice, 0);
             }
         }
