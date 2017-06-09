@@ -206,6 +206,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (null != rankAwards){
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
+                award.setId(idGenerateService.getUniqueIdAsLong());
                 boolean flag = awardService.insertAward(award);
                 if (!flag){
                     return false;
