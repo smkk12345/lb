@@ -468,6 +468,7 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/selectClassroomList
     * @Description: 获取教室列表(所有人可见)
     * @param @param userid
+	 *@param @param ptype 类型
     * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
@@ -475,18 +476,18 @@ public class ClassroomController {
 	*/
  	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectClassroomList")
-    public BaseResp<Object> selectClassroomList(String userid, int startNum, int pageSize) {
-		logger.info("userid={},startNum={},pageSize={}",userid,startNum,pageSize);
+    public BaseResp<Object> selectClassroomList(String userid, String ptype, int startNo, int pageSize) {
+		logger.info("userid={},startNo={},pageSize={}",userid,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", startNum, pageSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", ptype, startNo, pageSize);
   		} catch (Exception e) {
-  			logger.error("selectClassroomList userid = {}, startNum = {}, pageSize = {}",
-  					userid, startNum, pageSize, e);
+  			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}",
+  					userid, startNo, pageSize, e);
   		}
   		return baseResp;
     }

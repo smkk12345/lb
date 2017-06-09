@@ -143,15 +143,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
-	/**
-	 * @author yinxc
-	 * 教室学员作业列表
-	 * 2017年3月6日
-	 * @param userId 当前登录用户id
-	 * @param classroomid 教室业务id
-	 * @param type 0.学员动态   1.按热度排列    2.按时间倒序排列 
-	 * @param 
-	 */
+//	/**
+//	 * @author yinxc
+//	 * 教室学员作业列表
+//	 * 2017年3月6日
+//	 * @param userId 当前登录用户id
+//	 * @param classroomid 教室业务id
+//	 * @param type 0.学员动态   1.按热度排列    2.按时间倒序排列
+//	 * @param
+//	 */
 //	@Override
 //	public BaseResp<Object> selectImprove(long classroomid, long userid, String type, int startNum, int endNum) {
 //		BaseResp<Object> reseResp = new BaseResp<>();
@@ -263,10 +263,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 	}
 
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, int startNum, int endNum) {
+	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Classroom> list = classroomMapper.selectClassroomListByIspublic(ispublic, startNum, endNum);
+			List<Classroom> list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, startNum, endNum);
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
