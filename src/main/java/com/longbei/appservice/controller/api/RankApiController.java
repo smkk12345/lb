@@ -146,6 +146,7 @@ public class RankApiController {
     public BaseResp<RankImage> selectRankImageDetail(String rankid){
         logger.info("selectRankImageDetail rankid={}",rankid);
         BaseResp<RankImage>  baseResp = rankService.selectRankImage(rankid);
+        logger.warn("select rank image rankimage={}",JSON.toJSONString(baseResp));
         return baseResp;
     }
 

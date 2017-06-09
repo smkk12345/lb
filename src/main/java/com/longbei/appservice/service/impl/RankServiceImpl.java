@@ -280,6 +280,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for (RankAward rankAward : rankAwards){
             if (!StringUtils.isEmpty(rankAward.getAwardid())){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
+                logger.warn("select Rank Image and Award={}",JSON.toJSONString(award));
                 rankAward.setAward(award);
             }
         }
