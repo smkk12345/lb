@@ -434,7 +434,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankImage1.setRankCheckDetails(list);
                     //将id改为nickName用于显示
                     AppUserMongoEntity appUer = userMongoDao.getAppUser(rankImage1.getCreateuserid());
-                    rankImage1.setCreateuserid(appUer.getNickname());
+                    if(null != appUer) {
+                        rankImage1.setCreateuserid(appUer.getNickname());
+                    }
                 }
             }
             page.setTotalCount(totalcount);
