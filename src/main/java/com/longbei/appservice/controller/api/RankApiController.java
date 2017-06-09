@@ -159,6 +159,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp insertRank(@RequestBody RankImage rankImage){
+        logger.warn("insert rank image controller");
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.insertRank(rankImage);

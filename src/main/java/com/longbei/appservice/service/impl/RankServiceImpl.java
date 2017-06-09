@@ -121,7 +121,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Override
     public BaseResp insertRank(RankImage rankImage) {
         BaseResp baseResp = new BaseResp();
-
+        logger.info("insert rank image {}",JSON.toJSONString(rankImage));
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
 
@@ -131,7 +131,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(res>0){
                 baseResp.initCodeAndDesp();
                 baseResp.setData(rankImage.getRankid());
-                if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                logger.warn("insertRank  rankimage={}",JSON.toJSONString(rankImage));
+                if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype().trim())){
+                    logger.warn("insert rank iamge");
                     insertPCRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
                 }else {
                     insertRankAward(String.valueOf(rankImage.getRankid()),rankImage.getRankAwards());
