@@ -34,7 +34,8 @@ public interface ClassroomMapper {
 	 * param pageNo   pageSize
 	 * 2017年3月3日
 	 */
-    List<Classroom> selectClassroomListByIspublic(@Param("ispublic") String ispublic, 
+    List<Classroom> selectClassroomListByIspublic(@Param("ispublic") String ispublic,
+												  @Param("ptype") String ptype,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**

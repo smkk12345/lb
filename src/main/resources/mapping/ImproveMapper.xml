@@ -356,7 +356,11 @@
         businessid = #{businessid}
       </if>
   </update>
-  
+  <update id="updateImpComplaincount">
+    UPDATE ${tablename} SET
+    complaincount = complaincount +1
+    WHERE impid=#{impid}
+  </update>
   <sql id="Classroom_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey, 

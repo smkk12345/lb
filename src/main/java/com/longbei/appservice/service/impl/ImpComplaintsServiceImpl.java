@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.common.constant.Constant_table;
 import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,11 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 			record.setUsername(username);
 			record.setCusername(cusername);
 			boolean temp = insert(record);
+			if("2".equals(record.getBusinesstype()))
+			{
+				rankMembersMapper.updateRankMenberComplaincount(record.getBusinessid(),record.getComuserid());
+			}
+			updateImpComplaincount(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -75,6 +81,29 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private boolean insert(ImpComplaints record){
 		int temp = impComplaintsMapper.insertSelective(record);
 		return temp > 0 ? true : false;
+	}
+
+	/**
+	 * @Title: updateImpComplaincount
+	 * @Description: 更新进步的被投诉次数
+	 * @return boolean 返回类型
+	 * @auther IngaWu
+	 * @currentdate:2017年6月8日
+	 */
+	private void updateImpComplaincount(ImpComplaints impComplaints){
+		String impid = impComplaints.getImpid()+"";
+		//businesstype 类型   0 零散进步  1 目标进步  2 榜中进步  3圈子中进步 4 教室进步
+		if("0".equals(impComplaints.getBusinesstype())){
+			improveMapper.updateImpComplaincount(impid,Constant_table.IMPROVE);
+		}else if("1".equals(impComplaints.getBusinesstype())){
+			improveMapper.updateImpComplaincount(impid, Constant_table.IMPROVE_GOAL);
+		}else if("2".equals(impComplaints.getBusinesstype())){
+			improveMapper.updateImpComplaincount(impid,Constant_table.IMPROVE_RANK);
+		}else if("3".equals(impComplaints.getBusinesstype())){
+			improveMapper.updateImpComplaincount(impid,Constant_table.IMPROVE_CIRCLE);
+		}else if("4".equals(impComplaints.getBusinesstype())){
+			improveMapper.updateImpComplaincount(impid,Constant_table.IMPROVE_CLASSROOM);
+		}
 	}
 
 	@Override
@@ -209,7 +238,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	* @return void    返回类型
 	 */
 	private void getImpComplaintsTitle(ImpComplaints impComplaints){
-		//businesstype 类型    0 零散进步(无标题)   1 目标进步(无标题)    2 榜中  3圈子中进步 4 教室     
+		//businesstype 类型    0 零散进步(无标题)   1 目标进步   2 榜中  3圈子中进步 4 教室
 		if("1".equals(impComplaints.getBusinesstype())){
 			//1  目标进步 获取目标标题
 			UserGoal userGoal = userGoalMapper.selectByGoalId(impComplaints.getBusinessid());

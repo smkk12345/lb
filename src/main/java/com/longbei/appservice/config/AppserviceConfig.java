@@ -81,4 +81,11 @@ public class AppserviceConfig {
     public static String h5_agreementurl;
     public static String h5_levelprivilege;
     public static String articleurl;
+
+
+    public static String pcurl;
+    @Value("${pcurl}")
+    public void setPcurl(String pcurl) {
+        this.pcurl = pcurl;
+    }
 }

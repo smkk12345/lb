@@ -82,7 +82,7 @@ public class RankMembers {
 
     private Integer rankfinishflower = 0;
 
-    private Integer impcomplaintimes; //被投诉举报次数(查询使用)
+    private String iscomplain; //是否已被投诉举报 0没投诉 1有投诉(查询使用)
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -527,11 +527,11 @@ public class RankMembers {
         return rankfinishlikes;
     }
 
-    public Integer getImpcomplaintimes() {
-        return impcomplaintimes;
+    public void setIscomplain(String iscomplain) {
+        this.iscomplain = iscomplain;
     }
 
-    public void setImpcomplaintimes(Integer impcomplaintimes) {
-        this.impcomplaintimes = impcomplaintimes;
+    public String getIscomplain() {
+        return iscomplain;
     }
 }
