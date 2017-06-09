@@ -44,7 +44,12 @@ public class Classroom {
 
     private String isdel; //0 未删除。1 删除
     
+    
+    //----------------扩展字段--------------------------
+    
     private UserCard userCard; //名片类
+    
+    private String pickey; //最新课程视频截图key
     
     private String fileurl; //课程默认封面---视频文件url（转码后）
     
@@ -325,5 +330,14 @@ public class Classroom {
     public void setIsdel(String isdel) {
         this.isdel = isdel;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getPickey() {
+		return pickey;
+	}
+
+	public void setPickey(String pickey) {
+		this.pickey = pickey;
+	}
 
 }

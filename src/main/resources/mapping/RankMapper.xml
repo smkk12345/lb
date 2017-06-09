@@ -92,11 +92,8 @@
     <if test="ptype != null and ptype != '-1'.toString()" >
       AND ptype = #{ptype}
     </if>
-    <if test="ranktype != null and ranktype != '-1'.toString() and ranktype != '-2'.toString()" >
+    <if test="ranktype != null and ranktype != '-1'.toString()" >
       AND ranktype = #{ranktype}
-    </if>
-    <if test="ranktype == '-2'.toString()" >
-      AND ranktype != 2
     </if>
     <if test="isfinish != null and isfinish != '-1'.toString()" >
       AND isfinish = #{isfinish}
@@ -147,11 +144,8 @@
     <if test="rank.ptype != null and rank.ptype != '-1'.toString()" >
       AND ptype = #{rank.ptype}
     </if>
-    <if test="rank.ranktype != null and rank.ranktype != '-1'.toString() and rank.ranktype != '-2'.toString()" >
+    <if test="rank.ranktype != null and rank.ranktype != '-1'.toString()" >
       AND ranktype = #{rank.ranktype}
-    </if>
-    <if test="rank.ranktype == '-2'.toString()" >
-      AND ranktype != 2
     </if>
     <if test="rank.isfinish != null and rank.isfinish != '-1'.toString()" >
       AND isfinish = #{rank.isfinish}
