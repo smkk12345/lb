@@ -1485,7 +1485,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             //返回奖品剩余龙币
             if (Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-
+                handleRankFinishAward(rank);
             }
 
             //发送获奖消息
@@ -1499,7 +1499,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return BaseResp.fail();
     }
 
-
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
         List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
@@ -1507,8 +1506,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int startMoneyNum = 0;
         int finishMoneyNum = 0;
         for (RankMembers rankMembers : rankMemberses){
-            String rankawardid = rankMembers.getRankAward().getAwardid();
-            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankawardid));
+            Long rankawardid = rankMembers.getAwardid();
+            Award award = awardMapper.selectByPrimaryKey(rankawardid);
             if (null != award){
                 finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin);
             }
@@ -1523,7 +1522,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         int leftNum = startMoneyNum - finishMoneyNum;
         if (0 < leftNum){
-
+            userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
             baseResp.initCodeAndDesp();
             return baseResp;
         }
