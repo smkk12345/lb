@@ -1400,7 +1400,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
 			if(res>0){
-				if(totalPrice != 0){
+				if(null != totalPrice && totalPrice != 0){
 					//添加一条消耗龙币的记录
 					userMoneyDetailService.insertPublic(userid, "3", totalPrice, 0);
 				}

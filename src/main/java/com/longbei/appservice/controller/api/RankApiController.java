@@ -267,6 +267,19 @@ public class RankApiController {
         return baseResp;
     }
 
+
+    @ResponseBody
+    @RequestMapping(value = "publishpcprivate")
+    public BaseResp<Object> publishPCPrivateRank(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.publishPCPrivateRank(rankid);
+        } catch (Exception e) {
+            logger.error("publish pc private rank id={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 审核榜单
      * @param rankCheckDetail
@@ -283,6 +296,34 @@ public class RankApiController {
         }
         return baseResp;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "submit")
+    public BaseResp submitCheckRank(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.submitCheckRank(rankid);
+        } catch (Exception e) {
+            logger.error("submit check rank id={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 撤回审核中的榜单
+     */
+    @ResponseBody
+    @RequestMapping(value = "back")
+    public BaseResp setBackCheckRank(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.setBackCheckRank(rankid);
+        } catch (Exception e) {
+            logger.error("set back rank rankid={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
 
     /**
      * 删除榜单

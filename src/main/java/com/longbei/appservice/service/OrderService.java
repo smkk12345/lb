@@ -214,12 +214,10 @@ public interface OrderService {
 	 * @param price
 	 * @param remark 备注
 	 * @param orderid
-	 * @param notifyURL 回调地址
 	 * @param ip
      * @return
      */
-	BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, 
-    		String notifyURL, String ip);
+	BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, String ip,String userid);
 
 	/**
 	 * 支付宝扫码支付
@@ -227,5 +225,5 @@ public interface OrderService {
 	 * @param ordernum
      * @return
      */
-	BaseResp<Object> aliPaySaoMa(String price, String ordernum);
+	BaseResp<Object> aliPaySaoMa(String price, String ordernum,String userid);
 }
