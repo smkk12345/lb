@@ -195,11 +195,7 @@
 
     <select id="selectWinningRankAwardByRank" resultMap="BaseResultMap">
         select
-        rank_award_release.awardnickname,
-        rank.rankid,
-        rank_members.userid,
-        rank.endtime,
-        rank_award_release.awardid awardid
+        <include refid="Base_Column_List" />
         from rank_members LEFT join rank_award_release on rank_award_release.rankid = rank_members.rankid
         AND rank_members.awardid = rank_award_release.awardid
         where
