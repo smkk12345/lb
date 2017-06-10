@@ -398,7 +398,7 @@
       </if>
       and businessid = #{businessid}
       and isdel = '0'
-     /* and isbusinessdel = '0'*/
+      and isbusinessdel = '0' 
     </where>
     <if test="orderby == null or orderby ==0">
         ORDER BY createtime DESC
