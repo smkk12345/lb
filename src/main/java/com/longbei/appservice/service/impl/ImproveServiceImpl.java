@@ -834,8 +834,8 @@ public class ImproveServiceImpl implements ImproveService{
   			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
   		}
   		if(null != improves && improves.size()>0){
-  			String isreply = "0";
   			for (Improve improve : improves) {
+  				String isreply = "0";
   				//获取教室微进步批复作业列表
   				List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
   				if(null != replyList && replyList.size()>0){
@@ -1345,6 +1345,7 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
+                baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
                 baseResp.initCodeAndDesp();
