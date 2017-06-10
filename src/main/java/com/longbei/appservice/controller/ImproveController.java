@@ -904,4 +904,34 @@ public class ImproveController {
         return null;
     }
 
+    /**
+     * url ： http://ip:port/app_service/improve/hotlist
+     * 获取热门进步（首页）
+     * @param userid  用户id
+     * @param startNum  开始条数
+     * @param pageSize  每页显示条数
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping("hotlist")
+    @ResponseBody
+    public BaseResp<List<Improve>> selectHotRecommendImproveList(String userid,String startNum,String pageSize){
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(startNum)){
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImprove(userid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select hot recommend improve list userid={} is error:",userid,e);
+        }
+        return baseResp;
+    }
+
 }

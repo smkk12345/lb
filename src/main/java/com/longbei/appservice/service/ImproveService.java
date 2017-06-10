@@ -551,7 +551,7 @@ public interface ImproveService {
 
 
     /**
-     * 获取推荐进步
+     * 获取热门推荐进步
      * @param startNum
      * @param pageSize
      * @return
