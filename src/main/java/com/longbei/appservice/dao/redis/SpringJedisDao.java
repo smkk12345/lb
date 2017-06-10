@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Repository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -305,6 +307,35 @@ public class SpringJedisDao {
         return false;
     }
 
+
+//    public static void main(String[] args) {
+//
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+//        System.out.println(dateFormat.format(new Date()));
+//        try {
+//            System.out.println(dateFormat.parse(dateFormat.format(new Date())).getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+////        // 指定一个日期
+////        Date date = dateFormat.parse("2013-6-1 13:24:16");
+////
+////
+////
+////        // 初始化 (重置) Calendar 对象
+////        Calendar calendar = Calendar.getInstance();
+////        // 或者用 Date 来初始化 Calendar 对象
+////        calendar.setTime(new Date());
+////
+////        calendar.add(Calendar.SECOND,0);
+//
+//
+//    }
+
+
+
+
     /**
      * 从zset中删除一个value
      * @param key redis的key
@@ -386,6 +417,18 @@ public class SpringJedisDao {
         return 0;
     }
 
+
+    public double zIncrby(String key,String value,double delta,Long secend){
+        try{
+            ZSetOperations<String,String> zSetOperations = redisTemplate.opsForZSet();
+            double d = zSetOperations.incrementScore(key,value,delta);
+            redisTemplate.expire(key,secend,TimeUnit.SECONDS);
+        }catch (Exception e){
+            logger.error("redis zset zCard error e:{}",e);
+        }
+        return 0;
+    }
+
     /**
      * 返回redis的key中从start到end结束的集合 start,end表示的是下标 下标从0开始 返回的数据中包含下标为start和end的值
      * 其中-1代表最后一个成员,-2代表倒数第二个成员 start=0 end=-1 代表返回整个有序集合
@@ -403,6 +446,21 @@ public class SpringJedisDao {
             logger.error("redis zset zRange error e:{}",e);
         }
         return new HashSet<String>();
+    }
+
+    public Map<String,Double> zRangeWithScores(String key,long start,long end){
+        try{
+            ZSetOperations<String,String> zSetOperations = redisTemplate.opsForZSet();
+            Set<ZSetOperations.TypedTuple<String>> set = zSetOperations.rangeWithScores(key,start,end);
+            Map<String,Double> idAndScores = new HashMap<>();
+            for (ZSetOperations.TypedTuple<String> z : set){
+                idAndScores.put(z.getValue(),z.getScore());
+            }
+            return idAndScores;
+        }catch (Exception e){
+            logger.error("redis zset zRange error e:{}",e);
+        }
+        return new HashMap<>();
     }
 
     /**

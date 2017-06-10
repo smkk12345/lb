@@ -29,13 +29,14 @@
     <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
+    <result column="picattribute" property="picattribute" jdbcType="VARCHAR" />
     <result column="duration" property="duration"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
     impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
-    ispublic,sourcekey,complaincount,duration,isbusinessdel
+    ispublic,sourcekey,complaincount,duration,isbusinessdel,picattribute
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
@@ -145,6 +146,9 @@
       <if test="improve.rankid != null" >
         rankid,
       </if>
+      <if test="improve.picattribute != null" >
+        picattribute,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="improve.id != null" >
@@ -209,6 +213,9 @@
       </if>
       <if test="improve.rankid != null" >
         #{improve.rankid,jdbcType=BIGINT},
+      </if>
+      <if test="improve.picattribute != null" >
+        #{improve.picattribute,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

@@ -35,7 +35,7 @@ public interface ImproveService {
      */
     BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                            String businesstype, String businessid, String ptype,
-                           String ispublic, String itype, String pimpid);
+                           String ispublic, String itype, String pimpid,String picattribute);
     /**
      * 添加独立进步
      * @param improve
@@ -548,5 +548,18 @@ public interface ImproveService {
      * @return
      */
     String getFriendIds(Long userid);
+
+
+    /**
+     * 获取推荐进步
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<List<Improve>> selectRecommendImprove(String userid,Integer startNum,Integer pageSize);
+
+
+
+    BaseResp recommendImproveOpt();
 
 }

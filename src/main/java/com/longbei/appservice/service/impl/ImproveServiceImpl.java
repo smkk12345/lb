@@ -2,12 +2,10 @@ package com.longbei.appservice.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.constant.Constant_table;
@@ -15,7 +13,6 @@ import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -24,17 +21,16 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 进步业务操作实现类
@@ -129,7 +125,7 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> insertImprove(String userid, String brief,
                                  String pickey, String filekey,
                                  String businesstype,String businessid, String ptype,
-                                 String ispublic, String itype, String pimpid) {
+                                 String ispublic, String itype, String pimpid,String picattribute) {
 
         Improve improve = new Improve();
         improve.setImpid(idGenerateService.getUniqueIdAsLong());
@@ -142,6 +138,7 @@ public class ImproveServiceImpl implements ImproveService{
         improve.setIspublic(ispublic);
         improve.setItype(itype);
         improve.setIsmainimp("1");
+        improve.setPicattribute(picattribute);
         Date date = new Date();
         improve.setCreatetime(date);
         improve.setUpdatetime(date);
@@ -1215,6 +1212,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setFilekey(timeLineDetail.getFileKey());
             improve.setSourcekey(timeLineDetail.getSourcekey());
             improve.setItype(timeLineDetail.getItype());
+            improve.setPicattribute(timeLineDetail.getPicattribute());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
             improve.setUserid(timeLineDetail.getUser().getUserid());
@@ -1273,6 +1271,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setLikes(timeLineDetail.getLikes());
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
+                improve.setPicattribute(timeLineDetail.getPicattribute());
                 improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
                 String businessType = timeLine.getBusinesstype();
                 if(StringUtils.isBlank(businessType)){
@@ -1668,7 +1667,8 @@ public class ImproveServiceImpl implements ImproveService{
             boolean flag = addLikeToImprove(improve,userid,impid,businessid,businesstype);
             if (flag){
                 //redis
-                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
+                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
+                        Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
                 //mongo
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                         userInfo.getAvatar())  ;
@@ -1760,7 +1760,7 @@ public class ImproveServiceImpl implements ImproveService{
             boolean flag = removeLikeToImprove(improve,userid,impid,businessid,businesstype);
             if (flag){
                 //redis
-                removeLikeToImproveForRedis(impid,userid);
+                removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
                 //mongo
                 removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
                 timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),-1);
@@ -1913,7 +1913,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
             if (res > 0){
                 //redis
-                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
+//                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
                 timeLineDetailDao.updateImproveFlower(businesstype,Long.valueOf(impid),flowernum);
                 addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER,
                         userInfo.getAvatar())  ;
@@ -2003,7 +2003,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
             if (res > 0){
                 //redis
-                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
+//                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
+//                        Constant.IMPROVE_ALL_DETAIL_DIAMOND);
 
                 //赠送龙分操作
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));
@@ -2208,7 +2209,11 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeOrFlowerOrDiamondToImproveForRedis(String impid,String userid,String opttype){
+    private void addLikeOrFlowerOrDiamondToImproveForRedis(final String impid,
+                                                           String userid,
+                                                           String opttype,
+                                                           final String businessid,
+                                                           final String businesstype){
         Map<String,String> map = new HashMap<>();
 //        switch (opttype) {
 //            case Constant.IMPROVE_ALL_DETAIL_LIKE:
@@ -2224,6 +2229,20 @@ public class ImproveServiceImpl implements ImproveService{
 //                break;
 //        }
         map.put("lfd"+userid,userid);
+
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+                try {
+                    String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (24*60*60));
+                } catch (ParseException e) {
+                    logger.error("date format is error:",e);
+                }
+            }
+        });
+
         //添加临时记录
         springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + impid + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
@@ -2235,7 +2254,29 @@ public class ImproveServiceImpl implements ImproveService{
      * @param userid
      * @author luye
      */
-    private void removeLikeToImproveForRedis(String impid,String userid){
+    private void removeLikeToImproveForRedis(final String impid,
+                                             String userid,
+                                             final String businessid,
+                                             final String businesstype){
+
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+                try {
+                    String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                    double score = springJedisDao.zScore(key,impid);
+                    if (score > 0){
+                        springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,-1, (long) (24*60*60));
+                    }
+                } catch (ParseException e) {
+                    logger.error("date format is error:",e);
+                }
+            }
+        });
+
+
+
         springJedisDao.del("improve_like_temp_"+impid+userid);
         //删除临时记录
         springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + impid + userid);
@@ -3303,4 +3344,74 @@ public class ImproveServiceImpl implements ImproveService{
 	}
 
 
+    @Override
+    public BaseResp<List<Improve>> selectRecommendImprove(String userid,Integer startNum, Integer pageSize) {
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H");
+        String key = simpleDateFormat.format(new Date());
+        List<Improve> improves = new ArrayList<>();
+        Set<String> impids = new HashSet<>();
+        Long uid = Long.parseLong(userid);
+        String friendids = getFriendIds(uid);
+        String funids = getFansIds(uid);
+        if(!springJedisDao.hasKey(key)){
+            if ("1".equals(key)){
+                key = "12";
+            } else {
+                key = String.valueOf((Integer.parseInt(key) - 1));
+            }
+        }
+        try {
+            impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
+            for (String impid : impids){
+                if (!StringUtils.isBlank(impid)){
+                    String []strattr = impid.split(",");
+                    if(StringUtils.isBlank(springJedisDao.get("reimp"+strattr[0]))){
+                        Improve improve = selectImprove(Long.parseLong(strattr[0]),null,
+                                strattr[2],strattr[1],"0",null);
+                        springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
+                    }
+                    Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
+                    if(!Constant.VISITOR_UID.equals(userid)){
+                        AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                        initUserRelateInfo(uid,appuser,friendids,funids);
+                        initImproveInfo(improve,uid);
+                    }
+                    improves.add(improve);
+                }
+            }
+            baseResp.initCodeAndDesp();
+            baseResp.setData(improves);
+        } catch (Exception e) {
+            logger.error("select recomment improve list is error:",e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp recommendImproveOpt() {
+
+        BaseResp baseResp = new BaseResp();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H");
+        String key = simpleDateFormat.format(new Date());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+        try {
+            Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
+            Map<String,Double> map = new HashMap<>();
+            if (!StringUtils.isBlank(springJedisDao.get(impkey-60*60+""))){
+                map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
+
+            } else if (!StringUtils.isBlank(springJedisDao.get(impkey+""))){
+                map = springJedisDao.zRangeWithScores(impkey+"",0,-1);
+            }
+            for (Map.Entry<String,Double> entry : map.entrySet()){
+                springJedisDao.zIncrby(key,entry.getKey(),entry.getValue(), (long) (2*60*60));
+            }
+            baseResp.initCodeAndDesp();
+        } catch (ParseException e) {
+            logger.error("option recommend improve is error:",e);
+        }
+        return baseResp;
+    }
 }

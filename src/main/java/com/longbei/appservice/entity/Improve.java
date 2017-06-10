@@ -83,6 +83,8 @@ public class Improve {
 
     private String duration;
 
+    private String picattribute; //图片属性
+
 
     /**
      * 以下扩展返回信息
@@ -119,6 +121,14 @@ public class Improve {
         this.isrecommend = isrecommend;
     }
 
+
+    public String getPicattribute() {
+        return picattribute;
+    }
+
+    public void setPicattribute(String picattribute) {
+        this.picattribute = picattribute;
+    }
 
     public Integer getComplaincount() {
         return complaincount;
