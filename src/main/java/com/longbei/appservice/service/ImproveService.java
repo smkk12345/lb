@@ -208,7 +208,7 @@ public interface ImproveService {
     BaseResp<Object> removeRankImprove(String userid,String rankid,String improveid);
 
     /**
-     * 删除榜中进步
+     * 删除已结束榜的进步
      * @param userid  用户id
      * @param rankid  榜id
      * @param improveid  进步id
