@@ -1279,6 +1279,7 @@ public class ImproveServiceImpl implements ImproveService{
             case Constant.IMPROVE_CIRCLE_TYPE:
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
+                baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
                 UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
