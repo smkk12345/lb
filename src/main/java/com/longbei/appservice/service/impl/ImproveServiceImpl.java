@@ -112,6 +112,12 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private UserRelationService userRelationService;
     @Autowired
+    private CommentMongoDao commentMongoDao;
+    @Autowired
+    private ClassroomService classroomService;
+    @Autowired
+    private UserCardMapper userCardMapper;
+    @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
@@ -769,7 +775,7 @@ public class ImproveServiceImpl implements ImproveService{
             improves = improveMapper.selectListByBusinessid
                     (classroomid, Constant_table.IMPROVE_CLASSROOM,null, null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
-            replyImp(improves);
+            replyImp(improves, userid, classroomid);
         } catch (Exception e) {
             logger.error("selectClassroomImproveList userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
@@ -810,7 +816,7 @@ public class ImproveServiceImpl implements ImproveService{
             improves = improveMapper.selectListByBusinessid
                     (classroomid, Constant_table.IMPROVE_CLASSROOM, "1",null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
-            replyImp(improves);
+            replyImp(improves, userid, classroomid);
         } catch (Exception e) {
             logger.error("selectClassroomImproveListByDate userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
@@ -818,18 +824,34 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     //批复信息
-  	private void replyImp(List<Improve> improves){
+  	private void replyImp(List<Improve> improves, String userid, String classroomid){
+  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+  		List<String> list = new ArrayList<>();
+  		if(null != classroom){
+  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
+  		}
   		if(null != improves && improves.size()>0){
-  			String isreply = "0";
   			for (Improve improve : improves) {
+  				String isreply = "0";
   				//获取教室微进步批复作业列表
   				List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
   				if(null != replyList && replyList.size()>0){
   					//已批复
   					isreply = "1";
+  					improve.setReplyImprove(replyList.get(0));
+  				}
+  				if(!"1".equals(isreply)){
+  					//判断当前用户是否是老师
+  					if(null != list && list.size()>0){
+  						if(!list.contains(userid)){
+  							isreply = "2";
+  						}
+  					}else{
+  						isreply = "2";
+  					}
   				}
   				improve.setIsreply(isreply);
-  				improve.setReplyList(replyList);
+  				
   			}
   		}
   	}
@@ -1322,8 +1344,12 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
+                baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
+                baseResp.initCodeAndDesp();
+                break;
+            case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
@@ -2787,6 +2813,34 @@ public class ImproveServiceImpl implements ImproveService{
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
+                    	//获取教室微进步批复作业列表
+                    	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
+                    	if(null != replyList && replyList.size()>0){
+                    		for (ImproveClassroom improveClassroom : replyList) {
+                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(),
+                    					businessid, "5", null, 0);
+                    			improveClassroom.setList(list);
+							}
+                    		improve.setReplyImprove(replyList.get(0));
+                    	}
+                    	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
+                    	if (null != classroom){
+                    		String teacher = "";
+                    		List<UserCard> list = userCardMapper.selectByCardid(classroom.getCardid());
+                    		if(null != list && list.size()>0){
+                    			for (UserCard userCard : list) {
+                    				teacher += userCard.getDisplayname() + ",";
+								}
+                    		}
+                    		if(teacher.length()>1){
+                    			teacher = teacher.substring(0, teacher.length()-1);
+                    		}
+                    		improve.setClassRoomEntity(classroom.getPtype(),
+                    				classroom.getClasstitle(),
+                    				classroom.getClassphotos(),
+                    				classroom.getClassinvoloed(),
+                    				teacher);
+                    	}
                         break;
                     case Constant.IMPROVE_CIRCLE_TYPE:
                         break;
@@ -3342,7 +3396,6 @@ public class ImproveServiceImpl implements ImproveService{
 		}
 		return reseResp;
 	}
-
 
     @Override
     public BaseResp<List<Improve>> selectRecommendImprove(String userid,Integer startNum, Integer pageSize) {

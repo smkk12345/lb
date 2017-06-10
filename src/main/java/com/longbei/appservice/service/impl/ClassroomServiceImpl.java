@@ -109,9 +109,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			String isadd = "0";
 			if(null != classroom){
-				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				List<UserCard> list = userCardMapper.selectByCardid(classroom.getCardid());
 				//名片信息
-				classroom.setUserCard(userCard);
+				classroom.setList(list);;
 				//获取成员列表
 //				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
 //				expandData.put("memberList", memberList);
@@ -350,8 +350,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		String isadd = "0";
 		for (Classroom classroom : list) {
 			//获取老师名片信息
-			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-			classroom.setUserCard(userCard);
+			List<UserCard> cardList = userCardMapper.selectByCardid(classroom.getCardid());
+			classroom.setList(cardList);;
 			//获取教室课程默认封面，把教室没有课程视频的去掉
 			int res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
 			if(res == 0){
