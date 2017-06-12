@@ -389,7 +389,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     }
 
     @Override
-    public BaseResp<Object> circleDetail(Long circleId) {
+    public BaseResp<Object> circleDetail(Long userid,Long circleId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Circle circle = circleMappler.selectByPrimaryKey(circleId);
@@ -403,9 +403,20 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
             //获取圈子的评论数量
             circle.setCommentCount(0);
-            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3", "");
-            if(result.getCode() == 0){
-                circle.setCommentCount(result.getData());
+//            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3", "");
+//            if(result.getCode() == 0){
+//                circle.setCommentCount(result.getData());
+//            }
+
+            if(userid != null && !Constant.VISITOR_UID.equals(userid+"")){
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("userId",userid);
+                map.put("circleId",circleId);
+                map.put("itype",1);
+                CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map);
+                if(circleMembers != null){
+                    circle.setHasjoin(1);
+                }
             }
 
             baseResp.setData(circle);

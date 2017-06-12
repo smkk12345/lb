@@ -214,9 +214,9 @@
           <if test="ptype != null">
               and ptype = #{ptype}
           </if>
-          <if test="isrecommend != null">
-              and isrecommend = #{isrecommend}
-          </if>
+          <!--<if test="isrecommend != null">-->
+              <!--and isrecommend = #{isrecommend}-->
+          <!--</if>-->
       </where>
   </select>
 </mapper>

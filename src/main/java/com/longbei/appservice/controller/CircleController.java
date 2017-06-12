@@ -320,17 +320,18 @@ public class CircleController {
     /**
      * 查询兴趣圈信息
      * @url http://ip:port/app_service/circle/circleDetail
+     * @param userid 用户id
      * @param circleId 兴趣圈id
      * @return
      */
     @RequestMapping(value="circleDetail")
-    public BaseResp<Object> circleDetail(Long circleId){
+    public BaseResp<Object> circleDetail(Long userid,Long circleId){
         logger.info("circleId={}",circleId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = circleService.circleDetail(circleId);
+        baseResp = circleService.circleDetail(userid,circleId);
 
         return baseResp;
     }
@@ -389,6 +390,7 @@ public class CircleController {
 
     /**
      * 查询圈子列表
+     * @url http://ip:port/app_service/circle/circleList
      * @param userid 用户id
      * @param pType 十项分类id
      * @param keyword 关键字

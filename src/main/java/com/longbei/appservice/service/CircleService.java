@@ -79,10 +79,11 @@ public interface CircleService extends BaseService{
 
     /**
      * 查询兴趣圈 详情
+     * @param userid 用户id
      * @param circleId 兴趣圈id
      * @return
      */
-    BaseResp<Object> circleDetail(Long circleId);
+    BaseResp<Object> circleDetail(Long userid,Long circleId);
 
     /**
      * 圈主审核用户的加圈子请求
