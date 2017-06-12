@@ -194,13 +194,16 @@
 
 
     <select id="selectWinningRankAwardByRank" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from rank_members LEFT join rank_award_release on rank_award_release.rankid = rank_members.rankid
-        AND rank_members.awardid = rank_award_release.awardid
+        select rm.id, rm.rankid, rm.userid, rm.createtime, rm.updatetime, rm.sortnum, rm.iswinning, rm.icount,
+    		rm.likes, rm.flowers, rm.status, rm.acceptaward, rm.isfashionman,rm.complaintotalcount,rm.checkstatus,
+    		rm.checkresult,rm.checkuserid,rm.checkdate,rm.awardid,rm.awardlevel,rm.receivecode,rm.publishawarddate,
+    		rm.downfashionmantime,rm.upfashionmantime,rm.sort,rm.rankfinishlikes,rm.rankfinishflower 
+		from rank_members rm 
+		LEFT join rank_award_release on rank_award_release.rankid = rm.rankid
+        	AND rm.awardid = rank_award_release.awardid
         where
-        rank_members.iswinning = 1
-        and rank_members.rankid=#{rankid}
+        rm.iswinning = 1
+        and rm.rankid=#{rankid}
     </select>
 
 

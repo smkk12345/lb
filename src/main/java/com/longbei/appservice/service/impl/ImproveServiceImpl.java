@@ -3414,14 +3414,18 @@ public class ImproveServiceImpl implements ImproveService{
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){
                     String []strattr = impid.split(",");
-                    if(StringUtils.isBlank(springJedisDao.get("reimp"+strattr[0]))){
+                    if(!springJedisDao.hasKey("reimp"+strattr[0])){
                         Improve improve = selectImprove(Long.parseLong(strattr[0]),null,
                                 strattr[2],strattr[1],"0",null);
                         springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
                     }
                     Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
+                    if(null == improve){
+                        continue;
+                    }
                     if(!Constant.VISITOR_UID.equals(userid)){
                         AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                        improve.setAppUserMongoEntity(appuser);
                         initUserRelateInfo(uid,appuser,friendids,funids);
                         initImproveInfo(improve,uid);
                     }
@@ -3449,8 +3453,10 @@ public class ImproveServiceImpl implements ImproveService{
             Map<String,Double> map = new HashMap<>();
             if (springJedisDao.hasKey(impkey-60*60+"")){
                 map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
-
             } else if (springJedisDao.hasKey(impkey.toString())){
+                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+            if(null != map&&map.isEmpty()){
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
             long lastImpKey = impkey-60*60-60*60*24;
