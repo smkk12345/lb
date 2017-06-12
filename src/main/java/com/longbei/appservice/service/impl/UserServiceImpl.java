@@ -219,7 +219,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserInfo selectJustInfo(long userid) {
-		UserInfo userInfo = userInfoMapper.selectByUserid(userid);
+		UserInfo userInfo = null;
+		try {
+			userInfo = userInfoMapper.selectByUserid(userid);
+		} catch (Exception e) {
+			logger.error("selectJustUserInfo userid = {}", userid, e);
+		}
 		return userInfo;
 	}
 

@@ -123,13 +123,14 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 //						int res = Integer.parseInt(day) - Integer.parseInt(addDate);
 					int res = Integer.parseInt(redisvalue) + 1;
 					//重新设置过期时间
-					addRedisCheck(userid, redisDate, res+"");
+					springJedisDao.expire(Constant.RP_USER_CHECK + userid, 60*60*24*2);
+//					addRedisCheck(userid, redisDate, res+"");
 					//+进步币
 					if(res >= 5){
-						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6) 
-							+ "-" + redisDate.substring(6, redisDate.length());
+//						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6)
+//							+ "-" + redisDate.substring(6, redisDate.length());
 						//需要先判断数据库里面是否已有这条记录    有：修改     无：添加
-						UserCheckinInfo checkinInfo = userCheckinInfoMapper.selectByStarttimeAndUserid(userid, start);
+						UserCheckinInfo checkinInfo = userCheckinInfoMapper.selectByStarttimeAndUserid(userid, redisDate);
 						if(null != checkinInfo){
 							userCheckinInfoMapper.updateContinuedaysByid(checkinInfo.getId(), res, new Date());
 						}else{
@@ -138,9 +139,9 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 							userCheckinInfo.setCreatetime(new Date());
 							userCheckinInfo.setEndtime(new Date());
 							//20170222
-							start = start + " 00:00:00";
+							redisDate = redisDate + " 00:00:00";
 							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-							Date starttime = sdf.parse(start);
+							Date starttime = sdf.parse(redisDate);
 							userCheckinInfo.setStarttime(starttime);
 							userCheckinInfo.setUserid(userid);
 							userCheckinInfoMapper.insertSelective(userCheckinInfo);

@@ -54,7 +54,7 @@ public class Rank {
 
     private String createuserid;//榜单创建人id
 
-    private String ranktype;//榜单类型。0—公共榜 1--定制榜
+    private String ranktype;//榜单类型。0—公共榜 1--定制榜   2：定制私密
 
     private String ispublic;//是否公开  0—公开 1—不公开
 
@@ -666,8 +666,8 @@ public class Rank {
     }
 
     /**
-     * 榜单类型。0—公共榜 1--定制榜
-     * @return ranktype 榜单类型。0—公共榜 1--定制榜
+     * 榜单类型。0—公共榜 1--定制榜  2：定制私密
+     * @return ranktype 榜单类型。0—公共榜 1--定制榜   2：定制私密
      */
     public String getRanktype() {
         return ranktype;

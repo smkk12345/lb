@@ -205,10 +205,10 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
-	public static final String RTNINFO_SYS_18 = "发布的公开榜单已达上限";
-	public static final String RTNINFO_SYS_19 = "发布的私有榜单已达上限";
-	public static final String RTNINFO_SYS_110 = "根据你当前的用户等级,您创建的公开榜单人数上限为";
-	public static final String RTNINFO_SYS_111 = "根据你当前的用户等级,您创建的私有榜单人数上限为";
+	public static final String RTNINFO_SYS_18 = "您发布的公开榜单数量已达上限";
+	public static final String RTNINFO_SYS_19 = "您发布的私密榜单数量已达上限";
+	public static final String RTNINFO_SYS_110 = "根据您当前的用户等级,您创建的公开榜单人数上限为";
+	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
 
 	//20-39  yxc

@@ -229,7 +229,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                         if(publishCount < userLevel.getPriranknum()){
                             return BaseResp.ok();
                         }else{
-                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_18,Constant.RTNINFO_SYS_18);
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_19,Constant.RTNINFO_SYS_19);
                         }
                     }
                 case createRank:
