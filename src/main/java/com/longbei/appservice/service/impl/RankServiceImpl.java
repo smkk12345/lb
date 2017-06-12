@@ -591,10 +591,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             rank.setHasjoin("1");
                         }
                     }
-                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
-                    if(awardList != null && awardList.size() > 0){
-                        rank.setRankAwards(awardList);
-                    }
+                    initRankAward(rank);
                 }
             }
             baseResp.setData(homeRecommendRankList);

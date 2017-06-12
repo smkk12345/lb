@@ -367,7 +367,7 @@ public class Constant {
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
 			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,"+
-			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser";
+			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
 
 	/**
 	 * 进步相关配置
