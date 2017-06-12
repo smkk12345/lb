@@ -78,8 +78,8 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 			}
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
-				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(userPlDetail.getPtype())));
 				String ptype = userPlDetail.getPtype();
+				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(ptype)));
 				SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
 				if (null != sysPerfectInfo) {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
@@ -98,7 +98,7 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 //		int currSource = userPlDetail.getScorce();
 		String key = userPlDetail.getPtype()+"&"+userPlDetail.getLeve();
 		SysRulePerfectTen sysRulePerfectTen = SysRulesCache.pLevelPointMap.get(key);
-		return sysRulePerfectTen.getScore();
+		return sysRulePerfectTen.getMaxscore();
 	}
 
 
