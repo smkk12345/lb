@@ -3449,8 +3449,10 @@ public class ImproveServiceImpl implements ImproveService{
             Map<String,Double> map = new HashMap<>();
             if (springJedisDao.hasKey(impkey-60*60+"")){
                 map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
-
             } else if (springJedisDao.hasKey(impkey.toString())){
+                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+            if(null != map&&map.isEmpty()){
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
             long lastImpKey = impkey-60*60-60*60*24;
