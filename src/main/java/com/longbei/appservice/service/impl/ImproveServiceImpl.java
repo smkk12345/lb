@@ -2826,14 +2826,9 @@ public class ImproveServiceImpl implements ImproveService{
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
-                    		List<UserCard> list = userCardMapper.selectByCardid(classroom.getCardid());
-                    		if(null != list && list.size()>0){
-                    			for (UserCard userCard : list) {
-                    				teacher += userCard.getDisplayname() + ",";
-								}
-                    		}
-                    		if(teacher.length()>1){
-                    			teacher = teacher.substring(0, teacher.length()-1);
+                    		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+                    		if(null != userCard){
+                    			teacher += userCard.getDisplayname();
                     		}
                     		improve.setClassRoomEntity(classroom.getPtype(),
                     				classroom.getClasstitle(),
