@@ -13,7 +13,7 @@ public interface UserCardMapper {
 
     int insertSelective(UserCard record);
 
-    List<UserCard> selectByCardid(@Param("cardid") long cardid);
+    UserCard selectByCardid(@Param("cardid") long cardid);
     
     List<String> selectUseridByCardid(@Param("cardid") long cardid);
 

@@ -25,6 +25,8 @@ public class ClassroomQuestions {
 	private List<ClassroomQuestionsLower> lowerList = new ArrayList<ClassroomQuestionsLower>();
 	@Transient
 	private AppUserMongoEntity appUserMongoEntityUserid; //问题用户信息----Userid
+	@Transient
+	private String isreply; //是否已回答  0：未回答  1：已回答  2:页面不显示天津唉回答(只有教室老师有回答权限)
 	
 	
 	@JsonInclude(Include.ALWAYS)
@@ -36,6 +38,15 @@ public class ClassroomQuestions {
 		this.id = id;
 	}
 	
+	@JsonInclude(Include.ALWAYS)
+	public String getIsreply() {
+		return isreply;
+	}
+
+	public void setIsreply(String isreply) {
+		this.isreply = isreply;
+	}
+
 	@JsonInclude(Include.ALWAYS)
 	public String getUserid() {
 		return userid;

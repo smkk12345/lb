@@ -37,6 +37,14 @@
     </if>
   </select>
   
+  <select id="selectMidByCid" resultMap="BaseResultMap" >
+    select userid 
+    from classroom_members
+    where classroomid = #{classroomid} 
+    and itype = 0 
+    order by createtime desc 
+  </select>
+  
   <select id="selectInsertByUserid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

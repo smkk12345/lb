@@ -177,6 +177,10 @@ public class Constant {
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
 	
+	public static final int STATUS_SYS_1100 = -1100;
+	public static final int STATUS_SYS_1101 = -1101;
+	public static final int STATUS_SYS_1102 = -1102;
+	
 	
 	
 	/**
@@ -315,6 +319,11 @@ public class Constant {
 	public static final String RTNINFO_SYS_911 = "您的昵称备注超过了长度限制";
 	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
 	public static final String RTNINFO_SYS_913 = "取消关注成功";
+	
+	//教室   1100 --- 1120
+	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
+	public static final String RTNINFO_SYS_1101 = "教室老师已回复的问题不能删除";
+	public static final String RTNINFO_SYS_1102 = "您未加入教室,请加入";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
