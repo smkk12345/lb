@@ -2392,13 +2392,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankMembers> winningRankAwardList = this.rankMembersMapper.selectWinningRankAward();
             if(winningRankAwardList != null && winningRankAwardList.size() > 0){
                 for(RankMembers rankMembers: winningRankAwardList){
+                	Rank rank = this.rankMapper.selectRankByRankid(rankMembers.getRankid());
+                    if (rank == null || !"5".equals(rank.getIsfinish())){
+                        continue;
+                    }
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
 
                     Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
-                    map.put("awardnickname",award.getAwardtitle());
-                    map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
-                    resultList.add(map);
+                    //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
+                    if("0".equals(rank.getRanktype())){
+                    	 map.put("awardnickname",award.getAwardtitle());
+                         map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
+                         resultList.add(map);
+                    }
+                   
                 }
             }
             baseResp.setData(resultList);
