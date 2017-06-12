@@ -2262,7 +2262,7 @@ public class ImproveServiceImpl implements ImproveService{
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
                 try {
                     String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (24*60*60));
+                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (25*60*60));
                 } catch (ParseException e) {
                     logger.error("date format is error:",e);
                 }
@@ -3306,7 +3306,7 @@ public class ImproveServiceImpl implements ImproveService{
 //            userMsg.setGtype("2");
 //            userMsg.setCreatetime(new Date());
 //            userMsgMapper.insertSelective(userMsg);
-            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 
             if (res > 0){
@@ -3320,7 +3320,7 @@ public class ImproveServiceImpl implements ImproveService{
 				}else{
 					remark = remark.replace("n", "");
 				}
-                userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid,
+                userMsgService.insertMsg(improve.getUserid().toString(), "", impid, "10", businessid, 
                 		remark, "0", "41", "下榜", 0, "", "");
                 baseResp = BaseResp.ok();
             }
@@ -3341,7 +3341,7 @@ public class ImproveServiceImpl implements ImproveService{
     /**
      * 查询用户对进步献花的总数
      * @param userid
-     * @param improveid
+     * @param improveid 
      * @param number
      */
 	@Override
@@ -3414,7 +3414,7 @@ public class ImproveServiceImpl implements ImproveService{
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){
                     String []strattr = impid.split(",");
-                    if(StringUtils.isBlank(springJedisDao.get("reimp"+strattr[0]))){
+                    if(!springJedisDao.hasKey("reimp"+strattr[0])){
                         Improve improve = selectImprove(Long.parseLong(strattr[0]),null,
                                 strattr[2],strattr[1],"0",null);
                         springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
@@ -3422,6 +3422,7 @@ public class ImproveServiceImpl implements ImproveService{
                     Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                        improve.setAppUserMongoEntity(appuser);
                         initUserRelateInfo(uid,appuser,friendids,funids);
                         initImproveInfo(improve,uid);
                     }
@@ -3447,14 +3448,29 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
             Map<String,Double> map = new HashMap<>();
-            if (!StringUtils.isBlank(springJedisDao.get(impkey-60*60+""))){
+            if (springJedisDao.hasKey(impkey-60*60+"")){
                 map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
+            } else if (springJedisDao.hasKey(impkey.toString())){
+                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+            if(null != map&&map.isEmpty()){
+                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+            long lastImpKey = impkey-60*60-60*60*24;
+            Map<String,Double> lastMap = new HashMap<>();
+            if (!springJedisDao.hasKey(String.valueOf(lastImpKey))){
+                lastMap = springJedisDao.zRangeWithScores(String.valueOf(lastImpKey),0,-1);
 
-            } else if (!StringUtils.isBlank(springJedisDao.get(impkey+""))){
-                map = springJedisDao.zRangeWithScores(impkey+"",0,-1);
             }
             for (Map.Entry<String,Double> entry : map.entrySet()){
-                springJedisDao.zIncrby(key,entry.getKey(),entry.getValue(), (long) (2*60*60));
+                int iValue = entry.getValue().intValue();
+                if(!lastMap.isEmpty()){
+                    if(lastMap.containsKey(entry.getKey())){
+                        int lastValue = lastMap.get(entry.getKey()).intValue();
+                        iValue = iValue-lastValue;
+                    }
+                }
+                springJedisDao.zIncrby(key,entry.getKey(),iValue, (long) (2*60*60));
             }
             baseResp.initCodeAndDesp();
         } catch (ParseException e) {
