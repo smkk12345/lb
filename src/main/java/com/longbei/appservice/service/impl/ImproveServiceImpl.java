@@ -2262,7 +2262,7 @@ public class ImproveServiceImpl implements ImproveService{
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
                 try {
                     String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (24*60*60));
+                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (25*60*60));
                 } catch (ParseException e) {
                     logger.error("date format is error:",e);
                 }
@@ -2826,14 +2826,9 @@ public class ImproveServiceImpl implements ImproveService{
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
-                    		List<UserCard> list = userCardMapper.selectByCardid(classroom.getCardid());
-                    		if(null != list && list.size()>0){
-                    			for (UserCard userCard : list) {
-                    				teacher += userCard.getDisplayname() + ",";
-								}
-                    		}
-                    		if(teacher.length()>1){
-                    			teacher = teacher.substring(0, teacher.length()-1);
+                    		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+                    		if(null != userCard){
+                    			teacher += userCard.getDisplayname();
                     		}
                     		improve.setClassRoomEntity(classroom.getPtype(),
                     				classroom.getClasstitle(),
@@ -3452,14 +3447,27 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
             Map<String,Double> map = new HashMap<>();
-            if (!StringUtils.isBlank(springJedisDao.get(impkey-60*60+""))){
+            if (springJedisDao.hasKey(impkey-60*60+"")){
                 map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
 
-            } else if (!StringUtils.isBlank(springJedisDao.get(impkey+""))){
-                map = springJedisDao.zRangeWithScores(impkey+"",0,-1);
+            } else if (springJedisDao.hasKey(impkey.toString())){
+                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+            long lastImpKey = impkey-60*60-60*60*24;
+            Map<String,Double> lastMap = new HashMap<>();
+            if (!springJedisDao.hasKey(String.valueOf(lastImpKey))){
+                lastMap = springJedisDao.zRangeWithScores(String.valueOf(lastImpKey),0,-1);
+
             }
             for (Map.Entry<String,Double> entry : map.entrySet()){
-                springJedisDao.zIncrby(key,entry.getKey(),entry.getValue(), (long) (2*60*60));
+                int iValue = entry.getValue().intValue();
+                if(!lastMap.isEmpty()){
+                    if(lastMap.containsKey(entry.getKey())){
+                        int lastValue = lastMap.get(entry.getKey()).intValue();
+                        iValue = iValue-lastValue;
+                    }
+                }
+                springJedisDao.zIncrby(key,entry.getKey(),iValue, (long) (2*60*60));
             }
             baseResp.initCodeAndDesp();
         } catch (ParseException e) {
