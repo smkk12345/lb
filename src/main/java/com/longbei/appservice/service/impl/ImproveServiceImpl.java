@@ -3420,6 +3420,9 @@ public class ImproveServiceImpl implements ImproveService{
                         springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
                     }
                     Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
+                    if(null == improve){
+                        continue;
+                    }
                     if(!Constant.VISITOR_UID.equals(userid)){
                         AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                         improve.setAppUserMongoEntity(appuser);
