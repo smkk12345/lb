@@ -177,6 +177,10 @@ public class Constant {
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
 	
+	public static final int STATUS_SYS_1100 = -1100;
+	public static final int STATUS_SYS_1101 = -1101;
+	public static final int STATUS_SYS_1102 = -1102;
+	
 	
 	
 	/**
@@ -201,10 +205,10 @@ public class Constant {
 	public static final String RTNINFO_SYS_15 = "邀请人不存在";
 	public static final String RTNINFO_SYS_16 = "昵称已存在";
 	public static final String RTNINFO_SYS_17 = "内容中含有敏感词";
-	public static final String RTNINFO_SYS_18 = "发布的公开榜单已达上限";
-	public static final String RTNINFO_SYS_19 = "发布的私有榜单已达上限";
-	public static final String RTNINFO_SYS_110 = "根据你当前的用户等级,您创建的公开榜单人数上限为";
-	public static final String RTNINFO_SYS_111 = "根据你当前的用户等级,您创建的私有榜单人数上限为";
+	public static final String RTNINFO_SYS_18 = "您发布的公开榜单数量已达上限";
+	public static final String RTNINFO_SYS_19 = "您发布的私密榜单数量已达上限";
+	public static final String RTNINFO_SYS_110 = "根据您当前的用户等级,您创建的公开榜单人数上限为";
+	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
 
 	//20-39  yxc
@@ -315,6 +319,11 @@ public class Constant {
 	public static final String RTNINFO_SYS_911 = "您的昵称备注超过了长度限制";
 	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
 	public static final String RTNINFO_SYS_913 = "取消关注成功";
+	
+	//教室   1100 --- 1120
+	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
+	public static final String RTNINFO_SYS_1101 = "教室老师已回复的问题不能删除";
+	public static final String RTNINFO_SYS_1102 = "您未加入教室,请加入";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -358,7 +367,7 @@ public class Constant {
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
 			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,"+
-			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser";
+			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
 
 	/**
 	 * 进步相关配置

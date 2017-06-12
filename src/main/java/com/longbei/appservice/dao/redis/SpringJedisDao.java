@@ -86,8 +86,7 @@ public class SpringJedisDao {
     public boolean hasKey(String key){
         boolean result = false;
         try{
-            redisTemplate.hasKey(key);
-            result = true;
+            result = redisTemplate.hasKey(key);
         }catch (Exception e){
             logger.error("redis hasKey error key = {}",key,e);
         }

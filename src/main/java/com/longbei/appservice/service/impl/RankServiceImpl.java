@@ -111,6 +111,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private JPushService jPushService;
     @Autowired
     private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private HomeRecommendMapper homeRecommendMapper;
 
     /**
      *  @author luye
@@ -570,34 +572,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         try{
-//            List<Rank> rankList = new ArrayList<Rank>();
-//            HomeRecommend homeRecommend = new HomeRecommend();
-//            homeRecommend.setIsdel("0");
-//            homeRecommend.setRecommendtype(0);
-//            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            List<Rank> rankList = new ArrayList<Rank>();
+            HomeRecommend homeRecommend = new HomeRecommend();
+            homeRecommend.setIsdel("0");
+            homeRecommend.setRecommendtype(0);
+            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            if(homeRecommendList == null){
+                homeRecommendList = new ArrayList<HomeRecommend>();
+            }
+            List<Rank> resultList = new ArrayList<Rank>();
 
-            Map<String,Object> map = new HashMap<String,Object>();
-            map.put("isrecommend",1);
-            map.put("isdel",0);
-            map.put("orderByType","recommend");
-            map.put("startNum",startNum);
-            map.put("pageSize",pageSize);
-            List<Rank> homeRecommendRankList = this.rankMapper.selectRankList(map);
-            if(homeRecommendRankList != null && homeRecommendRankList.size() > 0){
-                for(Rank rank: homeRecommendRankList){
-                    if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
-                        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
-                        if(null != rankMembers){
-                            rank.setHasjoin("1");
-                        }
-                    }
-                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
-                    if(awardList != null && awardList.size() > 0){
-                        rank.setRankAwards(awardList);
+            for(HomeRecommend homeRecommend1: homeRecommendList){
+                Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                if(rank == null || "1".equals(rank.getIsdel())){
+                    continue;
+                }
+                if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                    RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+                    if(null != rankMembers){
+                        rank.setHasjoin("1");
                     }
                 }
+                initRankAward(rank);
+                resultList.add(rank);
             }
-            baseResp.setData(homeRecommendRankList);
+            baseResp.setData(resultList);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select rank list for app error startNum:{} pageSize:{}",startNum,pageSize);
@@ -905,6 +904,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp hasPrivilege(String rankid) {
+        BaseResp baseResp = new BaseResp();
+        RankImage rankImage = selectRankImage(rankid).getData();
+        Rank rank = new Rank();
+        rank.setIspublic(rankImage.getIspublic());
+        String userid = rankImage.getCreateuserid();
+        UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+        try {
+            baseResp = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.publishRank,rank);
+        } catch (Exception e) {
+            logger.error("has privilege of rank id={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    @Override
     public BaseResp setBackCheckRank(String rankid) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();
@@ -1080,14 +1095,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
 
 
-                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
-                    //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
-                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
-                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
-					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                    boolean sendMsgFlag = sendUserMsg(true,Long.parseLong(rank.getCreateuserid()),userId,"17",rank.getRankid(),remark,"10");
-
-                }
+//                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+//                    //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
+//                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+//                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+//					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+//                    boolean sendMsgFlag = sendUserMsg(true,Long.parseLong(rank.getCreateuserid()),userId,"17",rank.getRankid(),remark,"10");
+//
+//                }
 
                 //初始化redis的排名
                 boolean redisInitFlag = initRedisRankSort(rank,userId);
@@ -1115,15 +1130,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMember.setStatus(1);
             }
             int row = rankMembersMapper.insertSelective(rankMember);
-            if(row > 0 && Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
-                // 发送消息给榜主
-                String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
-                try {
-                    boolean sendMsgFlag = sendUserMsg(true, Long.parseLong(rank.getCreateuserid()), userId, "17", rank.getRankid(), remark, "10");
-                } catch (Exception e) {
-                    logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
-                }
-            }
+//            if(row > 0 && Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+//                // 发送消息给榜主
+//                String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
+//                try {
+//                    boolean sendMsgFlag = sendUserMsg(true, Long.parseLong(rank.getCreateuserid()), userId, "17", rank.getRankid(), remark, "10");
+//                } catch (Exception e) {
+//                    logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
+//                }
+//            }
             if(row > 0 && rankMember.getStatus() == 1){
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
                 //往reids中放入初始化的排名值
@@ -1143,39 +1158,39 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
-    /**
-     * 给用户发送关于榜中 @我 消息
-     * @param isOnly 消息是否唯一
-     * @param userId 接收消息的用户id
-     * @param friendId 朋友id
-     * @param msgType 消息类型
-     * @param snsId 业务id
-     * @param remark
-     * @param gType
-     * @return
-     */
-    private Boolean sendUserMsg(boolean isOnly,Long userId,Long friendId,String msgType,Long snsId,String remark,String gType){
-        if(isOnly){
-            //先查询是否有该榜单的@我 消息
-            int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
-            if(count > 0){
-                //直接更改已读状态
-                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark,null);
-                if(updateRow > 0){
-                    return true;
-                }
-            }
-        }
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
-		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
-        		"", gType,
-        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0, "", "");
-        if(insertResult.getCode() == 0){
-            return true;
-        }
-        return false;
-    }
+//    /**
+//     * 给用户发送关于榜中 @我 消息
+//     * @param isOnly 消息是否唯一
+//     * @param userId 接收消息的用户id
+//     * @param friendId 朋友id
+//     * @param msgType 消息类型
+//     * @param snsId 业务id
+//     * @param remark
+//     * @param gType
+//     * @return
+//     */
+//    private Boolean sendUserMsg(boolean isOnly,Long userId,Long friendId,String msgType,Long snsId,String remark,String gType){
+//        if(isOnly){
+//            //先查询是否有该榜单的@我 消息
+//            int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
+//            if(count > 0){
+//                //直接更改已读状态
+//                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark,null);
+//                if(updateRow > 0){
+//                    return true;
+//                }
+//            }
+//        }
+//        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+//		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+//        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
+//        		"", gType,
+//        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0, "", "");
+//        if(insertResult.getCode() == 0){
+//            return true;
+//        }
+//        return false;
+//    }
 
     /**
      * 移除超时未发进步的榜成员 只移除一个成员
@@ -2041,7 +2056,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
                     //判断是否是好友
-                    if(!Constant.VISITOR_UID.equals(userId+"")){
+                    if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
                         SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
                         if(snsFans != null){
                             map.put("isfans","1");
@@ -2131,7 +2146,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 explain = "进步币可在\"我的钱包\"中查看";
             }else if(award.getAwardClassify().getClassifytype() == 1){//红包
                 if(acceptAwardStatus < 2){//0 未领奖 1 领奖 2 发货 3签收
-                    explain = "添加龙杯小编微信:15816987854\n发送你的领奖码给小编,领取微信红包";
+                    explain = "添加龙杯小编微信:17326827137\n发送你的领奖码给小编,领取微信红包";
                 }else{
                     explain = "你已领奖成功";
                 }
@@ -2376,13 +2391,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankMembers> winningRankAwardList = this.rankMembersMapper.selectWinningRankAward();
             if(winningRankAwardList != null && winningRankAwardList.size() > 0){
                 for(RankMembers rankMembers: winningRankAwardList){
+                	Rank rank = this.rankMapper.selectRankByRankid(rankMembers.getRankid());
+                    if (rank == null || !"5".equals(rank.getIsfinish())){
+                        continue;
+                    }
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("rankid",rankMembers.getRankid());
 
                     Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
-                    map.put("awardnickname",award.getAwardtitle());
-                    map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
-                    resultList.add(map);
+                    //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
+                    if("0".equals(rank.getRanktype())){
+                    	 map.put("awardnickname",award.getAwardtitle());
+                         map.put("nickname",this.friendService.getNickName(userid,rankMembers.getUserid()));
+                         resultList.add(map);
+                    }
+                   
                 }
             }
             baseResp.setData(resultList);

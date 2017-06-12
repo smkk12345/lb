@@ -102,4 +102,11 @@ public interface RankMapper {
 
     List<Rank> selectHasAwardRankList(@Param("startNum") int startNum,@Param("pageSize") int pageSize);
 
+    /**
+     * 查询待发布和审核中的榜单
+     * @param paraMap
+     * @return
+     */
+    int selectNoPublishRank(Map<String, Object> paraMap);
+
 }

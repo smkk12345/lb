@@ -957,4 +957,15 @@
     limit #{startNum},#{pageSize}
   </select>
 
+  <!-- 查询未发布的或者审核中的榜单 -->
+  <select id="selectNoPublishRank" parameterType="map" resultType="Integer">
+    select
+      count(1)
+    from rankimage
+    where isdel = 0
+	and ispublic = #{ispublic}
+    and (checkstatus = 4 or checkstatus = 1)
+	and createuserid = #{createuserid}
+  </select>
+
 </mapper>

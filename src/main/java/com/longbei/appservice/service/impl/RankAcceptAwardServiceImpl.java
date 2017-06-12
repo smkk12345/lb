@@ -211,12 +211,13 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     /**
      * 查看用户的榜单获奖列表
      * @param userid
+     * @param friendid 当前登录者id
      * @param startNum
      * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize) {
+    public BaseResp<Object> userRankAcceptAwardList(long userid, long friendid, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
@@ -234,15 +235,24 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 if(award == null){
                     continue;
                 }
-                Map<String,Object> map = new HashMap<String,Object>();
-                map.put("rankid",rankAcceptAward.getRankid());
-                map.put("ranktitle",rankAcceptAward.getRanktitle());
-                map.put("awardnickname",award.getAwardtitle());
-                map.put("endtime",DateUtils.formatDate(rank.getEndtime(),"yyyy-MM-dd HH:mm:ss"));
-                map.put("awardphotos",award.getAwardphotos());
-                map.put("status",rankAcceptAward.getStatus());//奖品领取状态
+                //非本人访问，屏蔽用户私密榜奖品信息
+                if(userid != friendid){
+                	//ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
+                	if(!"0".equals(rank.getRanktype())){
+                		continue;
+                    }
+                }else{
+                	Map<String,Object> map = new HashMap<String,Object>();
+                    map.put("rankid",rankAcceptAward.getRankid());
+                    map.put("ranktitle",rankAcceptAward.getRanktitle());
+                    map.put("awardnickname",award.getAwardtitle());
+                    map.put("endtime",DateUtils.formatDate(rank.getEndtime(),"yyyy-MM-dd HH:mm:ss"));
+                    map.put("awardphotos",award.getAwardphotos());
+                    map.put("status",rankAcceptAward.getStatus());//奖品领取状态
 
-                resultList.add(map);
+                    resultList.add(map);
+                }
+                
             }
             baseResp.setData(resultList);
             Map<String,Object> expenddate = new HashMap<>();
@@ -255,7 +265,7 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
         }
         return baseResp;
     }
-
+    
     /**
      * 查看用户的榜单获奖 总数
      * @param userid

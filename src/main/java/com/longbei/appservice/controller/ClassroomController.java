@@ -191,6 +191,7 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/questionsList
     * @Description: 获取教室提问答疑列表
     * @param @param classroomid  教室id
+    * @param @param userid  当前访问者id
     * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
@@ -198,14 +199,15 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(String classroomid, int startNo, int pageSize) {
-		logger.info("questionsList classroomid={},startNo={},pageSize={}",classroomid,startNo,pageSize);
+    public BaseResp<Object> questionsList(String classroomid, String userid, int startNo, int pageSize) {
+		logger.info("questionsList classroomid = {}, userid = {}, startNo = {}, pageSize = {}", 
+				classroomid, userid, startNo, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(classroomid)) {
+  		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, startNo, pageSize);
+  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, startNo, pageSize);
   		} catch (Exception e) {
   			logger.error("questionsList classroomid = {}, startNo = {}, pageSize = {}",
 					classroomid, startNo, pageSize, e);
