@@ -205,6 +205,17 @@ public class ImproveApiController {
         return baseResp;
     }
 
+    @RequestMapping(value = "recommendopt")
+    public BaseResp recommendImproveOpt(){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = improveService.recommendImproveOpt();
+        } catch (Exception e) {
+            logger.error("option recommend improve is error:",e);
+        }
+        return baseResp;
+    }
+
 
 
 }

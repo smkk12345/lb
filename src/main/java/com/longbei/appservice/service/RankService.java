@@ -63,6 +63,14 @@ public interface RankService extends BaseService{
      */
     BaseResp publishRankImage(String  rankImageid);
 
+
+    /**
+     * 发布PC端私密榜，同时扣除龙币
+     * @param rankid
+     * @return
+     */
+    BaseResp publishPCPrivateRank(String rankid);
+
     BaseResp<String> selectOwnRankIdsList(String userid);
 
     /**
@@ -129,6 +137,20 @@ public interface RankService extends BaseService{
      * @author luye
      */
     BaseResp checkRankImage(RankCheckDetail rankCheckDetail);
+
+    /**
+     * 撤回审核中的榜单
+     * @param rankid
+     * @return
+     */
+    BaseResp setBackCheckRank(String rankid);
+
+    /**
+     * 提交审核
+     * @param rankid
+     * @return
+     */
+    BaseResp submitCheckRank(String rankid);
 
     BaseResp<Object> selectRankByRankid(long rankid);
 

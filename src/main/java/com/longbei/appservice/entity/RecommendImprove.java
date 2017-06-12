@@ -7,10 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
-@Document(collection = "timelinedetail")
-public class TimeLineDetail {
+@Document(collection = "recommendlinedetail")
+public class RecommendImprove {
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
 	@DBRef

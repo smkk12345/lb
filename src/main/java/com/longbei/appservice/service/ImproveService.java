@@ -35,7 +35,7 @@ public interface ImproveService {
      */
     BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                            String businesstype, String businessid, String ptype,
-                           String ispublic, String itype, String pimpid);
+                           String ispublic, String itype, String pimpid,String picattribute);
     /**
      * 添加独立进步
      * @param improve
@@ -206,6 +206,15 @@ public interface ImproveService {
      * @return
      */
     BaseResp<Object> removeRankImprove(String userid,String rankid,String improveid);
+
+    /**
+     * 删除已结束榜的进步
+     * @param userid  用户id
+     * @param rankid  榜id
+     * @param improveid  进步id
+     * @return
+     */
+    BaseResp<Object> removeFinishedRankImprove(String userid,String rankid,String improveid);
 
     /**
      * 删除圈子中进步
@@ -539,5 +548,18 @@ public interface ImproveService {
      * @return
      */
     String getFriendIds(Long userid);
+
+
+    /**
+     * 获取热门推荐进步
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<List<Improve>> selectRecommendImprove(String userid,Integer startNum,Integer pageSize);
+
+
+
+    BaseResp recommendImproveOpt();
 
 }

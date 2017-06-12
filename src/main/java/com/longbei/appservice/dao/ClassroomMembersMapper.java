@@ -38,6 +38,11 @@ public interface ClassroomMembersMapper {
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
+     * 获取教室成员id集合
+     */
+    List<String> selectMidByCid(@Param("classroomid") long classroomid);
+    
+    /**
 	 * @author yinxc
 	 * 获取教室成员信息
 	 * 2017年2月28日

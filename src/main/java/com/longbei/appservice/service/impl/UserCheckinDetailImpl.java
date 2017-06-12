@@ -17,7 +17,6 @@ import java.util.Map;
 
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
-import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
@@ -39,7 +38,6 @@ import com.longbei.appservice.dao.UserImproveStatisticMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserCheckinDetailService;
-//import com.longbei.appservice.service.UserImpCoinDetailService;
 
 /**
  * @author yinxc 签到 2017年2月22日 return_type UserCheckinDetailImpl

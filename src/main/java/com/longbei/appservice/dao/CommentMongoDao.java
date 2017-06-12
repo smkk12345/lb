@@ -66,7 +66,9 @@ public class CommentMongoDao {
 		Query query = Query.query(criteria);
 		query.with(new Sort(Sort.Direction.DESC, "createtime"));
 //		query.with(new Sort(Direction.DESC, "createdate"));
-		query.limit(pageSize);
+		if(pageSize != 0){
+			query.limit(pageSize);
+		}
 		//long totalcount = mongoTemplate1.count(query, Comment.class);
 		List<Comment> comments = null;
 		try {

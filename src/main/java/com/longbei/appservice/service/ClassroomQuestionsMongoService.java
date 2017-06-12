@@ -35,7 +35,7 @@ public interface ClassroomQuestionsMongoService {
 	 * param classroomid 教室id
 	 * param startNo  pageSize
 	 */
-	BaseResp<Object> selectQuestionsListByClassroomid(String classroomid, int startNo,
+	BaseResp<Object> selectQuestionsListByClassroomid(String classroomid, String userid, int startNo,
 			int pageSize);
 	
 	/**

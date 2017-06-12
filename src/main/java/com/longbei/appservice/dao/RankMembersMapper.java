@@ -40,6 +40,14 @@ public interface RankMembersMapper {
                                           @Param("pagesize") Integer pagesize,
                                           @Param("totalcount") Integer totalcount);
 
+    Integer selectCountByStatusAndCheckstatus(@Param("rankid") Long rankid, @Param("status") Integer status, @Param("checkstatus") String checkstatus);
+
+    /**
+     * @Title: selectWaitCheckListCount
+     * @Description: 获取榜单待审核成员数量
+     */
+    Integer selectWaitCheckListCount(@Param("rankmember") RankMembers rankMembers, @Param("totalcount") Integer totalcount);
+
     int updateByPrimaryKey(RankMembers record);
 
     RankMembers selectByRankIdAndUserId(@Param("rankid") long rankid, @Param("userid") long userid);
@@ -165,4 +173,11 @@ public interface RankMembersMapper {
      * @return
      */
     int getJoinRankCount(Map<String, Object> map);
+
+    /**
+     * 根据榜单id获取获奖人员列表
+     * @param rankid
+     * @return
+     */
+    List<RankMembers> selectWinningRankAwardByRank(@Param("rankid") Long rankid);
 }

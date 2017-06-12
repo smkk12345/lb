@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.longbei.appservice.common.BaseResp;
 
-@FeignClient("outernetServiceWYZ")
+@FeignClient("outernetService")
 @RequestMapping("outernetService")
 public interface OrderSercviceApi {
 
@@ -15,21 +15,20 @@ public interface OrderSercviceApi {
 	 * @param price
 	 * @param remark
 	 * @param orderid
-	 * @param notifyURL
 	 * @param ip
      * @return
      */
 	@RequestMapping(value = "new_wxpay/weixinSaoMa")
     BaseResp<Object> weixinSaoMa(@RequestParam("price") String price, 
-    		@RequestParam("remark") String remark, @RequestParam("orderid") String orderid, 
-    		@RequestParam("notifyURL") String notifyURL, @RequestParam("ip")  String ip);
+    		@RequestParam("remark") String remark, @RequestParam("orderid") String orderid,
+			@RequestParam("ip")  String ip,@RequestParam("userid")String userid);
 
 	/**
 	 * 支付宝扫码支付
 	 * @param price
-	 * @param ordernum
+	 * @param orderid
      * @return
      */
 	@RequestMapping(value="aliPay/aliSaoMa")
-	BaseResp<Object> aliPaySaoMa(@RequestParam("price")String price,@RequestParam("ordernum")String ordernum);
+	BaseResp<Object> aliPaySaoMa(@RequestParam("price")String price,@RequestParam("orderid")String orderid,@RequestParam("userid")String userid);
 }

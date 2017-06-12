@@ -105,6 +105,8 @@ public class UserServiceImpl implements UserService {
 	private UserImpCoinDetailService userImpCoinDetailService;
 	@Autowired
 	private JPushService jPushService;
+	@Autowired
+	private UserMoneyDetailService userMoneyDetailService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -1393,11 +1395,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney){
+	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney, Integer totalPrice){
 		BaseResp baseResp = new BaseResp();
 		try {
 			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
 			if(res>0){
+				if(null != totalPrice && totalPrice != 0){
+					//添加一条消耗龙币的记录
+					userMoneyDetailService.insertPublic(userid, "3", totalPrice, 0);
+				}
 				baseResp.initCodeAndDesp();
 			}
 		} catch (Exception e) {

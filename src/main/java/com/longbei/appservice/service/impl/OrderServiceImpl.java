@@ -616,13 +616,12 @@ public class OrderServiceImpl implements OrderService {
 	 * @param price
 	 * @param remark 备注
 	 * @param orderid
-	 * @param notifyURL 回调地址
 	 * @param ip
      * @return
      */
 	@Override
-	public BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, String notifyURL, String ip) {
-		return orderSercviceApi.weixinSaoMa(price, remark, orderid, notifyURL, ip);
+	public BaseResp<Object> weixinSaoMa(String price, String remark, String orderid, String ip,String userid) {
+		return orderSercviceApi.weixinSaoMa(price, remark, orderid, ip,userid);
 	}
 
 	/**
@@ -632,8 +631,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
 	@Override
-	public BaseResp<Object> aliPaySaoMa(String price, String ordernum) {
-		return orderSercviceApi.aliPaySaoMa(price,ordernum);
+	public BaseResp<Object> aliPaySaoMa(String price, String ordernum,String userid) {
+		return orderSercviceApi.aliPaySaoMa(price,ordernum,userid);
 	}
 
 }

@@ -75,13 +75,15 @@ public class Improve {
     private Integer sortnum;
 
     //批复列表
-    protected List<ImproveClassroom> replyList = new ArrayList<ImproveClassroom>();
+    protected ImproveClassroom replyImprove;
     
-    protected String isreply; //是否已批复  0：未批复  1：已批复
+    protected String isreply; //是否已批复  0：未批复  1：已批复  2:不显示未批复(只有教室老师有批复权限)
 
     private Integer complaincount; //投诉次数
 
     private String duration;
+
+    private String picattribute; //图片属性
 
 
     /**
@@ -108,6 +110,8 @@ public class Improve {
     private List<ImproveTopic> improveTopicList = null;//超级话题
 
     private BusinessEntity businessEntity = null;
+    
+    private ClassRoomEntity classRoomEntity = null;
 
     private String isrecommend; //是否推荐 0 - 否 1 - 是
 
@@ -120,6 +124,14 @@ public class Improve {
     }
 
 
+    public String getPicattribute() {
+        return picattribute;
+    }
+
+    public void setPicattribute(String picattribute) {
+        this.picattribute = picattribute;
+    }
+
     public Integer getComplaincount() {
         return complaincount;
     }
@@ -127,8 +139,25 @@ public class Improve {
     public void setComplaincount(Integer complaincount) {
         this.complaincount = complaincount;
     }
+    
+    public ClassRoomEntity getClassRoomEntity(){
+    	return classRoomEntity;
+    }
 
-    public void setBusinessEntity(String ptype,
+	public void setClassRoomEntity(String ptype,
+            						String title,
+            						String photos,
+            						Integer involved,
+            						String teacher) {
+		this.classRoomEntity = new ClassRoomEntity();
+		this.classRoomEntity.setPtype(ptype);
+		this.classRoomEntity.setTitle(title);
+		this.classRoomEntity.setPhotos(photos);
+		this.classRoomEntity.setInvolved(involved);
+		this.classRoomEntity.setTeacher(teacher);
+	}
+
+	public void setBusinessEntity(String ptype,
                                   String title,
                                   Integer involved,
                                   Date startdate,
@@ -613,12 +642,12 @@ public class Improve {
 		this.isresponded = isresponded;
 	}
 
-	public List<ImproveClassroom> getReplyList() {
-		return replyList;
+	public ImproveClassroom getReplyImprove() {
+		return replyImprove;
 	}
 
-	public void setReplyList(List<ImproveClassroom> replyList) {
-		this.replyList = replyList;
+	public void setReplyImprove(ImproveClassroom replyImprove) {
+		this.replyImprove = replyImprove;
 	}
 
 	@JsonInclude(Include.ALWAYS)
@@ -749,5 +778,49 @@ public class Improve {
         }
     }
 
+    /*
+     * 进步---教室相关
+     */
+    public class ClassRoomEntity{
+        private String ptype; //十全十美类型
+        private String title; //教室标题
+        private String photos; //教室图片
+        private Integer involved; //参与人数 
+        private String teacher;  //老师
+        
+        
+		public String getPtype() {
+			return ptype;
+		}
+		public void setPtype(String ptype) {
+			this.ptype = ptype;
+		}
+		public String getTitle() {
+			return title;
+		}
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		public String getPhotos() {
+			return photos;
+		}
+		public void setPhotos(String photos) {
+			this.photos = photos;
+		}
+		public Integer getInvolved() {
+			return involved;
+		}
+		public void setInvolved(Integer involved) {
+			this.involved = involved;
+		}
+		public String getTeacher() {
+			return teacher;
+		}
+		public void setTeacher(String teacher) {
+			this.teacher = teacher;
+		}
+        
+    }
+        
 
 }

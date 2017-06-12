@@ -151,13 +151,15 @@ public class ImproveController {
      * @param ispublic     可见程度 0 私密 1 好友可见 2 全部可见
      * @param itype        类型 0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件
      * @param pimpid       : 批复父进步 id businesstype为5时传
+     * @param picattribute : 图片属性
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
-                                          String businesstype, String businessid, String ptype, String ispublic, String itype, String pimpid) {
+                                          String businesstype, String businessid, String ptype,
+                                          String ispublic, String itype, String pimpid,String picattribute) {
         logger.info("userid={},brief={},pickey={},filekey={},businesstype={},businessid={},ptype={},ispublic={},itype={},pimpid={}",
                 userid,brief,pickey, filekey, businesstype,businessid, ptype,ispublic,itype,pimpid);
 
@@ -179,8 +181,9 @@ public class ImproveController {
         }
 //		boolean flag = false;
         try {
-            baseResp = improveService.insertImprove(userid, brief, pickey, filekey, businesstype, businessid, ptype,
-                    ispublic, itype, pimpid);
+            baseResp = improveService.insertImprove(userid, brief, pickey, filekey,
+                    businesstype, businessid, ptype,
+                    ispublic, itype, pimpid,picattribute);
             if (ResultUtil.isSuccess(baseResp)) {
                 logger.debug("insert improve success");
             }
@@ -899,6 +902,36 @@ public class ImproveController {
             logger.error("canGiveFlower userid = {}, improveid = {}, number = {}", userid, improveid, number, e);
         }
         return null;
+    }
+
+    /**
+     * url ： http://ip:port/app_service/improve/hotlist
+     * 获取热门进步（首页）
+     * @param userid  用户id
+     * @param startNum  开始条数
+     * @param pageSize  每页显示条数
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping("hotlist")
+    @ResponseBody
+    public BaseResp<List<Improve>> selectHotRecommendImproveList(String userid,String startNum,String pageSize){
+        BaseResp<List<Improve>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(startNum)){
+            startNum = "0";
+        }
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = improveService.selectRecommendImprove(userid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
+        } catch (NumberFormatException e) {
+            logger.error("select hot recommend improve list userid={} is error:",userid,e);
+        }
+        return baseResp;
     }
 
 }

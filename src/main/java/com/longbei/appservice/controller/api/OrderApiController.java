@@ -379,13 +379,11 @@ public class OrderApiController {
   				//btype  0:支付宝   1 微信支付   
   				
   				if("1".equals(btype)){
-  					String basePath = request.getScheme() + "://192.168.0.170:9090/app_service/";
-  					String notifyURL = basePath + Constant.NOTIFY_URL_WEIXIN + "/"+orders.getUserid();
   					String ip = request.getRemoteAddr();
-  					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), notifyURL, ip);
+  					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), ip,orders.getUserid());
   					return resResp;
   				}else if("0".equals(btype)){
-  					resResp = orderService.aliPaySaoMa(price,orders.getOrdernum());
+  					resResp = orderService.aliPaySaoMa(price,orders.getOrdernum(),orders.getUserid());
 					return resResp;
   				}
   			}

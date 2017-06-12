@@ -66,6 +66,17 @@
         SELECT sum(icount) FROM rank_members WHERE rankid=#{rankid} AND status='1'
     </select>
 
+    <select id="selectCountByStatusAndCheckstatus" resultType="java.lang.Integer">
+        SELECT count(1) FROM rank_members
+        WHERE rankid=#{rankid}
+        <if test="status != null and status != ''">
+            AND status=#{status}
+        </if>
+        <if test="checkstatus != null and checkstatus != ''">
+            AND checkstatus=#{checkstatus}
+        </if>
+    </select>
+
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankMembers" resultType="java.lang.Integer">
     select
         count(1)
@@ -114,7 +125,7 @@
     </where>
   </select>
 
-    
+
     <select id="selectpasscount" resultType="java.lang.Integer">
         SELECT count(*) FROM rank_members where rankid=#{rankid} AND checkstatus != '1'
     </select>
@@ -180,6 +191,19 @@
       limit #{startno},#{pagesize}
     </if>
   </select>
+
+
+    <select id="selectWinningRankAwardByRank" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from rank_members LEFT join rank_award_release on rank_award_release.rankid = rank_members.rankid
+        AND rank_members.awardid = rank_award_release.awardid
+        where
+        rank_members.iswinning = 1
+        and rank_members.rankid=#{rankid}
+    </select>
+
+
 
   <!-- 查询中奖的用户和奖项 -->
   <select id="selectWinningRankAward" resultMap="BaseResultMap">
@@ -348,6 +372,34 @@
       limit #{startno},#{pagesize}
     </if>
   </select>
+
+    <select id="selectWaitCheckListCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+        (SELECT <include refid="Base_Column_List" /> FROM rank_members
+        WHERE rankid=#{rankmember.rankid} AND status = '1' AND checkstatus = '0' ORDER BY sortnum ASC limit #{totalcount}) temp
+        WHERE 1=1
+        <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
+            AND temp.isfashionman = #{rankmember.isfashionman}
+        </if>
+        <if test="rankmember.iscomplain != null and rankmember.iscomplain != ''">
+            <choose>
+                <when test="rankmember.iscomplain == '1'.toString()">
+                    and temp.complaintotalcount > 0
+                </when>
+                <otherwise>
+                    and temp.complaintotalcount = 0
+                </otherwise>
+            </choose>
+        </if>
+        <if test="rankmember.appUserMongoEntities != null">
+            AND  temp.userid in
+            <foreach item="item" index="index" collection="rankmember.appUserMongoEntities" open="(" separator="," close=")">
+                #{item.id}
+            </foreach>
+        </if>
+        ORDER BY temp.sortnum ASC ,temp.likes DESC
+    </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from rank_members
@@ -716,6 +768,9 @@
           </if>
           <if test="status != null">
               and status = #{status}
+          </if>
+          <if test="iswinning != null">
+              and iswinning = #{iswinning}
           </if>
 
       </where>
