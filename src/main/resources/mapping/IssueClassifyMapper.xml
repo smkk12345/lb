@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.IssueClassifyMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.IssueClassify" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="typeid" property="typeid" jdbcType="BIGINT" />
+    <result column="typetitle" property="typetitle" jdbcType="VARCHAR" />
+    <result column="contentcount" property="contentcount" jdbcType="INTEGER" />
+    <result column="sortno" property="sortno" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, typeid, typetitle, contentcount, sortno, createtime, updatetime
+  </sql>
+  <select id="selectIssueClassifyList"  parameterType="com.longbei.appservice.entity.IssueClassify" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_issue_classify
+    where 1=1
+    <if test="issueClassify.typeid != null and issueClassify.typeid != ''" >
+      AND typeid = #{issueClassify.typeid}
+    </if>
+    <if test="issueClassify.typetitle != null and issueClassify.typetitle != ''" >
+      AND typetitle LIKE concat(concat('%',#{issueClassify.typetitle}),'%')
+    </if>
+    ORDER BY  sortno, createtime DESC
+    <if test="startNum != null" >
+      limit #{startNum},#{pageSize}
+    </if>
+  </select>
+  <select id="selectIssueClassifyListCount" parameterType="com.longbei.appservice.entity.IssueClassify" resultType="java.lang.Integer">
+    select count(*) from sys_issue_classify
+    where 1=1
+    <if test="issueClassify.typeid != null and issueClassify.typeid != ''" >
+      AND typeid = #{issueClassify.typeid}
+    </if>
+    <if test="issueClassify.typetitle != null and issueClassify.typetitle != ''" >
+      AND typetitle LIKE concat(concat('%',#{issueClassify.typetitle}),'%')
+    </if>
+    ORDER BY  sortno, createtime DESC
+  </select>
+  <select id="selectAllIssueClassify"  resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_issue_classify
+    where 1=1
+  </select>
+  <select id="selectIssueClassifyByTypeId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_issue_classify
+    where typeid = #{issueClassifyTypeId}
+  </select>
+  <delete id="deleteByIssueClassifyTypeId" parameterType="java.lang.Long" >
+    delete from sys_issue_classify
+    where typeid = #{issueClassifyTypeId}
+  </delete>
+  <insert id="insertIssueClassify" parameterType="com.longbei.appservice.entity.IssueClassify" >
+    insert into sys_issue_classify
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="typeid != null" >
+        typeid,
+      </if>
+      <if test="typetitle != null" >
+        typetitle,
+      </if>
+      <if test="sortno != null" >
+        sortno,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="typeid != null" >
+        #{typeid,jdbcType=BIGINT},
+      </if>
+      <if test="typetitle != null" >
+        #{typetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null" >
+        #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIssueClassifyTypeId" parameterType="com.longbei.appservice.entity.IssueClassify" >
+    update sys_issue_classify
+    <set >
+      <if test="typetitle != null and typetitle != ''" >
+        typetitle = #{typetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null" >
+        sortno = #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime},
+      </if>
+    </set>
+    where typeid = #{typeid,jdbcType=BIGINT}
+  </update>
+</mapper>
