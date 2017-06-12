@@ -1,9 +1,6 @@
 package com.longbei.appservice.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -49,7 +46,7 @@ public class Classroom {
     
     //----------------扩展字段--------------------------
     
-    private List<UserCard> list = new ArrayList<UserCard>(); //名片类
+    private UserCard userCard; //名片类
     
     private String pickey; //最新课程视频截图key
     
@@ -300,12 +297,12 @@ public class Classroom {
 		this.cardid = cardid;
 	}
 
-	public List<UserCard> getList() {
-		return list;
+	public UserCard getUserCard() {
+		return userCard;
 	}
 
-	public void setList(List<UserCard> list) {
-		this.list = list;
+	public void setUserCard(UserCard userCard) {
+		this.userCard = userCard;
 	}
 
 	public String getFileurl() {
