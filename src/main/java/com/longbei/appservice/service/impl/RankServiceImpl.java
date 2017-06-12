@@ -111,6 +111,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private JPushService jPushService;
     @Autowired
     private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private HomeRecommendMapper homeRecommendMapper;
 
     /**
      *  @author luye
@@ -570,34 +572,34 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNum,Integer pageSize) {
         BaseResp<List<Rank>> baseResp = new BaseResp<>();
         try{
-//            List<Rank> rankList = new ArrayList<Rank>();
-//            HomeRecommend homeRecommend = new HomeRecommend();
-//            homeRecommend.setIsdel("0");
-//            homeRecommend.setRecommendtype(0);
-//            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            List<Rank> rankList = new ArrayList<Rank>();
+            HomeRecommend homeRecommend = new HomeRecommend();
+            homeRecommend.setIsdel("0");
+            homeRecommend.setRecommendtype(0);
+            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNum,pageSize);
+            if(homeRecommendList == null){
+                homeRecommendList = new ArrayList<HomeRecommend>();
+            }
+            List<Rank> resultList = new ArrayList<Rank>();
 
-            Map<String,Object> map = new HashMap<String,Object>();
-            map.put("isrecommend",1);
-            map.put("isdel",0);
-            map.put("orderByType","recommend");
-            map.put("startNum",startNum);
-            map.put("pageSize",pageSize);
-            List<Rank> homeRecommendRankList = this.rankMapper.selectRankList(map);
-            if(homeRecommendRankList != null && homeRecommendRankList.size() > 0){
-                for(Rank rank: homeRecommendRankList){
-                    if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
-                        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
-                        if(null != rankMembers){
-                            rank.setHasjoin("1");
-                        }
-                    }
-                    List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
-                    if(awardList != null && awardList.size() > 0){
-                        rank.setRankAwards(awardList);
+            for(HomeRecommend homeRecommend1: homeRecommendList){
+                Rank rank = this.rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                if(rank == null || "1".equals(rank.getIsdel())){
+                    continue;
+                }
+                if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                    RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+                    if(null != rankMembers){
+                        rank.setHasjoin("1");
                     }
                 }
+                List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
+                if(awardList != null && awardList.size() > 0){
+                    rank.setRankAwards(awardList);
+                }
+                resultList.add(rank);
             }
-            baseResp.setData(homeRecommendRankList);
+            baseResp.setData(resultList);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select rank list for app error startNum:{} pageSize:{}",startNum,pageSize);
@@ -2057,7 +2059,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
                     //判断是否是好友
-                    if(!Constant.VISITOR_UID.equals(userId+"")){
+                    if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
                         SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
                         if(snsFans != null){
                             map.put("isfans","1");
@@ -2147,7 +2149,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 explain = "进步币可在\"我的钱包\"中查看";
             }else if(award.getAwardClassify().getClassifytype() == 1){//红包
                 if(acceptAwardStatus < 2){//0 未领奖 1 领奖 2 发货 3签收
-                    explain = "添加龙杯小编微信:15816987854\n发送你的领奖码给小编,领取微信红包";
+                    explain = "添加龙杯小编微信:17326827137\n发送你的领奖码给小编,领取微信红包";
                 }else{
                     explain = "你已领奖成功";
                 }

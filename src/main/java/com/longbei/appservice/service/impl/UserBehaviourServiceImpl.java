@@ -212,6 +212,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     paraMap.put("isfinish",1);
                     paraMap.put("createuserid",userInfo.getUserid());
                     int publishCount = this.rankMapper.selectRankListCount(paraMap);
+                    if("0".equals(publishRank.getIspublic()) && publishCount >= userLevel.getPubranknum()){
+//                        int nopublishNum = this.rankMapper.selectNoPublishRank(paraMap);
+                    }else if(publishCount >= userLevel.getPriranknum()){
+
+                    }
+
+
                     if("0".equals(publishRank.getIspublic())){
                         if(publishCount < userLevel.getPubranknum()){
                             return BaseResp.ok();
