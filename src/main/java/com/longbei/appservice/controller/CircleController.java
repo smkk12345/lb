@@ -387,4 +387,27 @@ public class CircleController {
         return baseResp;
     }
 
+    /**
+     * 查询圈子列表
+     * @param userid 用户id
+     * @param pType 十项分类id
+     * @param keyword 关键字
+     * @param startNum 开始下标
+     * @param pageSize
+     * @return
+     */
+    public BaseResp<Object> circleList(Long userid,Integer pType,String keyword,Integer startNum,Integer pageSize){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(pType == null){
+            pType = 10;
+        }
+        if(startNum == null){
+            startNum = 0;
+        }
+        if(pageSize == null){
+            pageSize = 15;
+        }
+        return this.circleService.circleList(pType,keyword,startNum,pageSize);
+    }
+
 }

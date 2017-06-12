@@ -36,6 +36,8 @@ public class Circle {
 
     private String notice;//公告
 
+    private Boolean isrecommend;//是否是推荐榜单
+
     private AppUserMongoEntity appUserMongoEntity;
 
     /**
@@ -268,7 +270,7 @@ public class Circle {
 
     /**
      * 获取用户信息
-     * @param userInfo
+     * @param appUserMongoEntity
      */
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
@@ -280,5 +282,21 @@ public class Circle {
 
     public void setCommentCount(Integer commentCount) {
         this.commentCount = commentCount;
+    }
+
+    /**
+     * 获取是否是推荐榜单
+     * @return
+     */
+    public Boolean getIsrecommend() {
+        return isrecommend;
+    }
+
+    /**
+     * 设置是否是推荐榜单
+     * @param isrecommend
+     */
+    public void setIsrecommend(Boolean isrecommend) {
+        this.isrecommend = isrecommend;
     }
 }

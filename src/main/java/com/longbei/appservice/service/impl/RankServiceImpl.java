@@ -2041,7 +2041,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
                     //判断是否是好友
-                    if(!Constant.VISITOR_UID.equals(userId+"")){
+                    if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
                         SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
                         if(snsFans != null){
                             map.put("isfans","1");

@@ -91,17 +91,18 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             circle.setCirclebrief(circlebrief);
             circle.setCreateuserid(Long.parseLong(userId));
             circle.setCircleinvoloed(0);
+            circle.setCreategoup(creategoup);
             circle.setPtype(ptype);
             circle.setIspublic(ispublic);
             circle.setNeedconfirm(needconfirm);
-            int row = circleMappler.insert(circle);
+            int row = circleMappler.insertSelective(circle);
             if (row > 0) {
                 //将圈主放到圈子成员中
                 CircleMembers circleMembers = new CircleMembers();
                 circleMembers.setCreatetime(new Date());
                 circleMembers.setUpdatetime(new Date());
                 circleMembers.setItype(0);
-                circleMembers.setCircleid(new Long(circle.getId()));
+                circleMembers.setCircleid(circle.getCircleid());
                 circleMembers.setUserid(new Long(userId));
                 int insertCircleMember = circleMembersMapper.insert(circleMembers);
 
@@ -475,6 +476,36 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             return new ArrayList<Long>();
         }
 
+    }
+
+    /**
+     * 查询圈子列表
+     * @param pType 十项分类的id
+     * @param keyword 关键字
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> circleList(Integer pType, String keyword, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Map<String,Object> map = new HashMap<String,Object>();
+            if(pType == 10){
+                map.put("isrecommend",1);
+            }else{
+                map.put("pType",pType);
+            }
+            if(StringUtils.isNotEmpty(keyword)){
+                map.put("keyword",keyword);
+            }
+            map.put("startNum",startNum);
+            map.put("pageSize",pageSize);
+//            List<Circle> circleList =
+        }catch (Exception e){
+            logger.error("circle list error pType:{} keyword:{} startNum:{} pageSize:{} errorMsg:{}",pType,keyword,startNum,pageSize);
+        }
+        return baseResp;
     }
 
 }

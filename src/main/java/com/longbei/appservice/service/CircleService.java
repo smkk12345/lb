@@ -100,4 +100,13 @@ public interface CircleService extends BaseService{
      */
     List<Long> findCircleMemberId(Integer circleId);
 
+    /**
+     * 查询圈子列表
+     * @param pType 十项分类的id
+     * @param keyword 关键字
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> circleList(Integer pType, String keyword, Integer startNum, Integer pageSize);
 }
