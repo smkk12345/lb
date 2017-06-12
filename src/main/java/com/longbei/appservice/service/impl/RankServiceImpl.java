@@ -905,6 +905,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp hasPrivilege(String rankid) {
+        BaseResp baseResp = new BaseResp();
+        RankImage rankImage = selectRankImage(rankid).getData();
+        Rank rank = new Rank();
+        rank.setIspublic(rankImage.getIspublic());
+        String userid = rankImage.getCreateuserid();
+        UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+        try {
+            baseResp = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.publishRank,rank);
+        } catch (Exception e) {
+            logger.error("has privilege of rank id={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    @Override
     public BaseResp setBackCheckRank(String rankid) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();
