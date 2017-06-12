@@ -1080,14 +1080,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
 
 
-                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
-                    //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
-                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
-                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
-					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                    boolean sendMsgFlag = sendUserMsg(true,Long.parseLong(rank.getCreateuserid()),userId,"17",rank.getRankid(),remark,"10");
-
-                }
+//                if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+//                    //TODO 发送消息给榜主 直接参榜以及需要验证是否都需要发消息
+//                    String remark = "有新用户申请加入您创建的龙榜\""+rank.getRanktitle()+"\",赶快去处理吧!";
+//                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+//					//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+//                    boolean sendMsgFlag = sendUserMsg(true,Long.parseLong(rank.getCreateuserid()),userId,"17",rank.getRankid(),remark,"10");
+//
+//                }
 
                 //初始化redis的排名
                 boolean redisInitFlag = initRedisRankSort(rank,userId);
@@ -1115,15 +1115,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMember.setStatus(1);
             }
             int row = rankMembersMapper.insertSelective(rankMember);
-            if(row > 0 && Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
-                // 发送消息给榜主
-                String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
-                try {
-                    boolean sendMsgFlag = sendUserMsg(true, Long.parseLong(rank.getCreateuserid()), userId, "17", rank.getRankid(), remark, "10");
-                } catch (Exception e) {
-                    logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
-                }
-            }
+//            if(row > 0 && Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
+//                // 发送消息给榜主
+//                String remark = "有新用户申请加入您创建的龙榜\"" + rank.getRanktitle() + "\",赶快去处理吧!";
+//                try {
+//                    boolean sendMsgFlag = sendUserMsg(true, Long.parseLong(rank.getCreateuserid()), userId, "17", rank.getRankid(), remark, "10");
+//                } catch (Exception e) {
+//                    logger.error("sendUserMsg error createuserid={},userid={},rankid={},remark={}",rank.getCreateuserid(), userId, rank.getRankid(), remark, e);
+//                }
+//            }
             if(row > 0 && rankMember.getStatus() == 1){
                 boolean updateRankFlag = updateRankMemberCount(rankId,1);
                 //往reids中放入初始化的排名值
@@ -1143,39 +1143,39 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
-    /**
-     * 给用户发送关于榜中 @我 消息
-     * @param isOnly 消息是否唯一
-     * @param userId 接收消息的用户id
-     * @param friendId 朋友id
-     * @param msgType 消息类型
-     * @param snsId 业务id
-     * @param remark
-     * @param gType
-     * @return
-     */
-    private Boolean sendUserMsg(boolean isOnly,Long userId,Long friendId,String msgType,Long snsId,String remark,String gType){
-        if(isOnly){
-            //先查询是否有该榜单的@我 消息
-            int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
-            if(count > 0){
-                //直接更改已读状态
-                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark,null);
-                if(updateRow > 0){
-                    return true;
-                }
-            }
-        }
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
-		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
-        		"", gType,
-        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0, "", "");
-        if(insertResult.getCode() == 0){
-            return true;
-        }
-        return false;
-    }
+//    /**
+//     * 给用户发送关于榜中 @我 消息
+//     * @param isOnly 消息是否唯一
+//     * @param userId 接收消息的用户id
+//     * @param friendId 朋友id
+//     * @param msgType 消息类型
+//     * @param snsId 业务id
+//     * @param remark
+//     * @param gType
+//     * @return
+//     */
+//    private Boolean sendUserMsg(boolean isOnly,Long userId,Long friendId,String msgType,Long snsId,String remark,String gType){
+//        if(isOnly){
+//            //先查询是否有该榜单的@我 消息
+//            int count = this.userMsgService.findSameTypeMessage(userId,msgType,snsId,gType);
+//            if(count > 0){
+//                //直接更改已读状态
+//                int updateRow = this.userMsgService.updateUserMsgStatus(userId,msgType,snsId,gType,remark,null);
+//                if(updateRow > 0){
+//                    return true;
+//                }
+//            }
+//        }
+//        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+//		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+//        BaseResp<Object> insertResult = userMsgService.insertMsg(friendId.toString(), userId.toString(),
+//        		"", gType,
+//        		snsId+"", remark, "2", msgType, "用户申请加入您创建的龙榜", 0, "", "");
+//        if(insertResult.getCode() == 0){
+//            return true;
+//        }
+//        return false;
+//    }
 
     /**
      * 移除超时未发进步的榜成员 只移除一个成员
