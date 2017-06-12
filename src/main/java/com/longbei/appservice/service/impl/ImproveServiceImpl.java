@@ -3399,9 +3399,14 @@ public class ImproveServiceImpl implements ImproveService{
         String key = simpleDateFormat.format(new Date());
         List<Improve> improves = new ArrayList<>();
         Set<String> impids = new HashSet<>();
-        Long uid = Long.parseLong(userid);
-        String friendids = getFriendIds(uid);
-        String funids = getFansIds(uid);
+        String friendids = null;
+        String funids = null;
+        Long uid = null;
+        if(!Constant.VISITOR_UID.equals(userid)){
+            uid = Long.parseLong(userid);
+            friendids = getFriendIds(uid);
+            funids = getFansIds(uid);
+        }
         if(!springJedisDao.hasKey(key)){
             if ("1".equals(key)){
                 key = "12";
