@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ClassroomQuestionsLowerMongoDao;
 import com.longbei.appservice.dao.ClassroomQuestionsMongoDao;
 import com.longbei.appservice.dao.UserCardMapper;
@@ -37,6 +38,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private ClassroomService classroomService;
 	@Autowired
 	private UserCardMapper userCardMapper;
+	@Autowired
+	private ClassroomMembersMapper classroomMembersMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
@@ -53,11 +56,20 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		return 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertQuestions(ClassroomQuestions classroomQuestions) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			
+			//判断用户是否已加入教室，未加入教室的无法提交问题
+			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
+			if(null != list && list.size()>0){
+				if(!list.contains(classroomQuestions.getUserid())){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+				}
+			}else{
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+			}
 			insert(classroomQuestions);
 			reseResp.setData(classroomQuestions);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
