@@ -487,7 +487,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
      * @return
      */
     @Override
-    public BaseResp<Object> circleList(Integer pType, String keyword, Integer startNum, Integer pageSize) {
+    public BaseResp<Object> circleList(Long userId,Integer pType, String keyword, Integer startNum, Integer pageSize) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Map<String,Object> map = new HashMap<String,Object>();
@@ -499,9 +499,31 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if(StringUtils.isNotEmpty(keyword)){
                 map.put("keyword",keyword);
             }
+            map.put("ispublic",1);
             map.put("startNum",startNum);
             map.put("pageSize",pageSize);
-//            List<Circle> circleList =
+            List<Circle> circleList = this.circleMappler.findCircleList(map);
+            if(circleList == null){
+                circleList= new ArrayList<Circle>();
+            }
+            for(Circle circle:circleList){
+                //查询圈主
+                circle.setAppUserMongoEntity(this.userMongoDao.getAppUser(circle.getCreateuserid()+""));
+
+                if(userId != null){
+                    //判断该用户是否加入了圈子
+                    Map<String,Object> circleMemberMap = new HashMap<String,Object>();
+                    circleMemberMap.put("circleId",circle.getCircleid());
+                    circleMemberMap.put("userId",userId);
+                    circleMemberMap.put("itype",CircleMembers.normal);
+                    CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map) ;
+                    if(circleMembers != null){
+                        circle.setHasjoin(1);
+                    }
+                }
+            }
+            baseResp.setData(circleList);
+            return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("circle list error pType:{} keyword:{} startNum:{} pageSize:{} errorMsg:{}",pType,keyword,startNum,pageSize);
         }

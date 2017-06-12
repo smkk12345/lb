@@ -38,6 +38,8 @@ public class Circle {
 
     private Boolean isrecommend;//是否是推荐榜单
 
+    private Integer hasjoin = 0;//0 未加入  1 加入
+
     private AppUserMongoEntity appUserMongoEntity;
 
     /**
@@ -298,5 +300,21 @@ public class Circle {
      */
     public void setIsrecommend(Boolean isrecommend) {
         this.isrecommend = isrecommend;
+    }
+
+    /**
+     * 是否参加了该圈子
+     * @return
+     */
+    public Integer getHasjoin() {
+        return hasjoin;
+    }
+
+    /**
+     * 是否参加了圈子
+     * @param hasjoin
+     */
+    public void setHasjoin(Integer hasjoin) {
+        this.hasjoin = hasjoin;
     }
 }

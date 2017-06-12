@@ -199,4 +199,24 @@
      where id = #{circleId}
   </update>
 
+  <!-- 查询圈子列表 -->
+  <select id="findCircleList" parameterType="map" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from circle
+      <where>
+          <if test="keyword != null and keyword != ''">
+            circletitle like concat('%',concat(#{circleName},'%')
+          </if>
+          <if test="ispublic != null">
+            and ispublic = #{ispublic}
+          </if>
+          <if test="ptype != null">
+              and ptype = #{ptype}
+          </if>
+          <if test="isrecommend != null">
+              and isrecommend = #{isrecommend}
+          </if>
+      </where>
+  </select>
 </mapper>

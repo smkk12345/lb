@@ -28,4 +28,11 @@ public interface CircleMapper {
     int updateCircleInfo(Map<String, Object> map);
 
     int updateCircleInvoloed(Map<String, Object> map);
+
+    /**
+     * 查询圈子列表
+     * @param map
+     * @return
+     */
+    List<Circle> findCircleList(Map<String, Object> map);
 }

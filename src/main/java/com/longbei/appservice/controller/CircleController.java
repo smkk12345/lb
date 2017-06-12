@@ -396,6 +396,7 @@ public class CircleController {
      * @param pageSize
      * @return
      */
+    @RequestMapping(value="circleList")
     public BaseResp<Object> circleList(Long userid,Integer pType,String keyword,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(pType == null){
@@ -407,7 +408,10 @@ public class CircleController {
         if(pageSize == null){
             pageSize = 15;
         }
-        return this.circleService.circleList(pType,keyword,startNum,pageSize);
+        if(userid != null && Constant.VISITOR_UID.equals(userid+"")){
+            userid = null;
+        }
+        return this.circleService.circleList(userid,pType,keyword,startNum,pageSize);
     }
 
 }
