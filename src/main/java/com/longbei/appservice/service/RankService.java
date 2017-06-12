@@ -152,6 +152,13 @@ public interface RankService extends BaseService{
      */
     BaseResp submitCheckRank(String rankid);
 
+    /**
+     * 判断榜主是否有权限
+     * @param rankid
+     * @return
+     */
+    BaseResp hasPrivilege(String rankid);
+
     BaseResp<Object> selectRankByRankid(long rankid);
 
     Rank selectByRankid(long rankid);

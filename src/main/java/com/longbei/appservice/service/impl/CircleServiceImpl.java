@@ -91,17 +91,18 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             circle.setCirclebrief(circlebrief);
             circle.setCreateuserid(Long.parseLong(userId));
             circle.setCircleinvoloed(0);
+            circle.setCreategoup(creategoup);
             circle.setPtype(ptype);
             circle.setIspublic(ispublic);
             circle.setNeedconfirm(needconfirm);
-            int row = circleMappler.insert(circle);
+            int row = circleMappler.insertSelective(circle);
             if (row > 0) {
                 //将圈主放到圈子成员中
                 CircleMembers circleMembers = new CircleMembers();
                 circleMembers.setCreatetime(new Date());
                 circleMembers.setUpdatetime(new Date());
                 circleMembers.setItype(0);
-                circleMembers.setCircleid(new Long(circle.getId()));
+                circleMembers.setCircleid(circle.getCircleid());
                 circleMembers.setUserid(new Long(userId));
                 int insertCircleMember = circleMembersMapper.insert(circleMembers);
 
@@ -388,7 +389,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     }
 
     @Override
-    public BaseResp<Object> circleDetail(Long circleId) {
+    public BaseResp<Object> circleDetail(Long userid,Long circleId) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Circle circle = circleMappler.selectByPrimaryKey(circleId);
@@ -402,9 +403,20 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
             //获取圈子的评论数量
             circle.setCommentCount(0);
-            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3", "");
-            if(result.getCode() == 0){
-                circle.setCommentCount(result.getData());
+//            BaseResp<Integer> result = commentMongoService.selectCommentCountSum(circleId+"","3", "");
+//            if(result.getCode() == 0){
+//                circle.setCommentCount(result.getData());
+//            }
+
+            if(userid != null && !Constant.VISITOR_UID.equals(userid+"")){
+                Map<String,Object> map = new HashMap<String,Object>();
+                map.put("userId",userid);
+                map.put("circleId",circleId);
+                map.put("itype",1);
+                CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map);
+                if(circleMembers != null){
+                    circle.setHasjoin(1);
+                }
             }
 
             baseResp.setData(circle);
@@ -475,6 +487,58 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             return new ArrayList<Long>();
         }
 
+    }
+
+    /**
+     * 查询圈子列表
+     * @param pType 十项分类的id
+     * @param keyword 关键字
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public BaseResp<Object> circleList(Long userId,Integer pType, String keyword, Integer startNum, Integer pageSize) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            Map<String,Object> map = new HashMap<String,Object>();
+            if(pType == 10){
+                map.put("isrecommend",1);
+            }else{
+                map.put("pType",pType);
+            }
+            if(StringUtils.isNotEmpty(keyword)){
+                map.put("keyword",keyword);
+            }
+            map.put("ispublic",1);
+            map.put("startNum",startNum);
+            map.put("pageSize",pageSize);
+            List<Circle> circleList = this.circleMappler.findCircleList(map);
+            if(circleList == null){
+                circleList= new ArrayList<Circle>();
+            }
+            for(Circle circle:circleList){
+                //查询圈主
+                circle.setAppUserMongoEntity(this.userMongoDao.getAppUser(circle.getCreateuserid()+""));
+
+                if(userId != null){
+                    //判断该用户是否加入了圈子
+                    Map<String,Object> circleMemberMap = new HashMap<String,Object>();
+                    circleMemberMap.put("circleId",circle.getCircleid());
+                    circleMemberMap.put("userId",userId);
+                    circleMemberMap.put("itype",CircleMembers.normal);
+                    CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map) ;
+                    if(circleMembers != null){
+                        circle.setHasjoin(1);
+                    }
+                }
+            }
+            baseResp.setData(circleList);
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("circle list error pType:{} keyword:{} startNum:{} pageSize:{} errorMsg:{}",pType,keyword,startNum,pageSize);
+        }
+        return baseResp;
     }
 
 }

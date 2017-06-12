@@ -79,10 +79,11 @@ public interface CircleService extends BaseService{
 
     /**
      * 查询兴趣圈 详情
+     * @param userid 用户id
      * @param circleId 兴趣圈id
      * @return
      */
-    BaseResp<Object> circleDetail(Long circleId);
+    BaseResp<Object> circleDetail(Long userid,Long circleId);
 
     /**
      * 圈主审核用户的加圈子请求
@@ -100,4 +101,14 @@ public interface CircleService extends BaseService{
      */
     List<Long> findCircleMemberId(Integer circleId);
 
+    /**
+     * 查询圈子列表
+     * @param userId 用户id
+     * @param pType 十项分类的id
+     * @param keyword 关键字
+     * @param startNum
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Object> circleList(Long userId,Integer pType, String keyword, Integer startNum, Integer pageSize);
 }

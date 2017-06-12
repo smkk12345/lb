@@ -1175,8 +1175,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}else if("3".equals(userMsg.getGtype())){
 			//3圈子中      进步点赞消息
 			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-			userMsg.setImpItype(improve.getItype());
+			if(improve != null){
+				userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
+				userMsg.setImpItype(improve.getItype());
+			}
 		}else if("4".equals(userMsg.getGtype())){
 			//4 教室中   进步点赞消息
 			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));

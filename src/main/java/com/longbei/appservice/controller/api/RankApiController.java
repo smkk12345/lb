@@ -310,6 +310,23 @@ public class RankApiController {
     }
 
     /**
+     * 判断榜主是否有权限
+     * @param rankid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "privilege")
+    public BaseResp hasPrivilege(String rankid){
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = rankService.hasPrivilege(rankid);
+        } catch (Exception e) {
+            logger.error("has privilege of rank id={} is error:{}",rankid,e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 撤回审核中的榜单
      */
     @ResponseBody

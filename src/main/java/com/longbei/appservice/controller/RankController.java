@@ -607,14 +607,15 @@ public class RankController {
      * 查询用户榜单获奖列表
      * @url http://ip:port/app_service/rank/userRankAcceptAwardList
      * @param userid 用户id
+     * @param friendid 当前登录者id
      * @param startNum  最后一条的时间
      * @param pageSize
      */
     @RequestMapping(value="userRankAcceptAwardList")
-    public BaseResp<Object> userRankAcceptAwardList(Long userid,Integer startNum,Integer pageSize){
+    public BaseResp<Object> userRankAcceptAwardList(String userid, String friendid,Integer startNum,Integer pageSize){
         logger.info("userid={},startNum={},pageSize={}",userid,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(userid == null){
+        if(StringUtils.hasBlankParams(userid, friendid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         Date lastAcceptDate = null;
@@ -622,7 +623,8 @@ public class RankController {
         if(null == pageSize){
              pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(userid,startNum,pageSize);
+        baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(Long.parseLong(userid), 
+        		Long.parseLong(friendid), startNum, pageSize);
         return baseResp;
     }
 

@@ -66,11 +66,12 @@ public interface RankAcceptAwardService {
     /**
      * 查看用户的榜单获奖列表
      * @param userid
+     * @param friendid 当前登录者id
      * @param startNum
      * @param pageSize
      * @return
      */
-    BaseResp<Object> userRankAcceptAwardList(Long userid, Integer startNum, Integer pageSize);
+    BaseResp<Object> userRankAcceptAwardList(long userid, long friendid, Integer startNum, Integer pageSize);
 
     /**
      * 获取用户的榜单获奖总数

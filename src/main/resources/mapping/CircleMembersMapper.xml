@@ -136,8 +136,13 @@
       select
         <include refid="Base_Column_List" />
       from circle_members
-      where circleid = #{circleId}
+      <where>
+          <if test="itype != null">
+              itype = #{itype} AND
+          </if>
+          circleid = #{circleId}
           and userid = #{userId}
+      </where>
   </select>
 
   <!-- 退出该群 -->
