@@ -3414,7 +3414,7 @@ public class ImproveServiceImpl implements ImproveService{
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){
                     String []strattr = impid.split(",");
-                    if(StringUtils.isBlank(springJedisDao.get("reimp"+strattr[0]))){
+                    if(!springJedisDao.hasKey("reimp"+strattr[0])){
                         Improve improve = selectImprove(Long.parseLong(strattr[0]),null,
                                 strattr[2],strattr[1],"0",null);
                         springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
@@ -3422,6 +3422,7 @@ public class ImproveServiceImpl implements ImproveService{
                     Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                        improve.setAppUserMongoEntity(appuser);
                         initUserRelateInfo(uid,appuser,friendids,funids);
                         initImproveInfo(improve,uid);
                     }
