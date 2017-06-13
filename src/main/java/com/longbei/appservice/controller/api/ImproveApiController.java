@@ -208,6 +208,7 @@ public class ImproveApiController {
     @RequestMapping(value = "recommendopt")
     public BaseResp recommendImproveOpt(){
         BaseResp baseResp = new BaseResp();
+        logger.info("recommendopt start");
         try {
             baseResp = improveService.recommendImproveOpt();
         } catch (Exception e) {
