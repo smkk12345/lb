@@ -3417,7 +3417,7 @@ public class ImproveServiceImpl implements ImproveService{
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
-            while (impids.isEmpty()){
+            while (impids.isEmpty()&&startNum==0){
                 int ikey = Integer.parseInt(key);
                 if(ikey>1){
                     ikey = ikey -1;
