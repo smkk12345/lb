@@ -3318,12 +3318,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
+    public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, Integer startNum, Integer pageSize) {
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
         }
-        Page<RankMembers> page = new Page<>(pageNo,pageSize);
+        Page<RankMembers> page = new Page<>(startNum/pageSize+1,pageSize);
         try {
             AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
             List<AppUserMongoEntity> users = null;
@@ -3333,7 +3333,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             rankMembers.setAppUserMongoEntities(users);
             int totalcount = rankMembersMapper.selectCount(rankMembers);
             Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
-            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,pageSize*(pageNo-1),pageSize);
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,startNum,pageSize);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
                 if (null != rankMembers1.getRankAward() && null != rankMembers1.getRankAward().getAwardid()){
@@ -3458,12 +3458,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
 
     @Override
-    public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer pageNo, Integer pageSize) {
+    public BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers, Integer startNum, Integer pageSize) {
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
         }
-        Page<RankMembers> page = new Page<>(pageNo,pageSize);
+        Page<RankMembers> page = new Page<>(startNum/pageSize+1,pageSize);
         try {
             int totalcount = selectRankMemberWaitCount(rankMembers);
             AppUserMongoEntity user = rankMembers.getAppUserMongoEntity();
@@ -3473,7 +3473,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rankMembers.setAppUserMongoEntities(users);
             List<RankMembers> rankMemberses = rankMembersMapper.selectWaitCheckList
-                    (rankMembers,pageSize*(pageNo-1),pageSize,totalcount);
+                    (rankMembers,startNum,pageSize,totalcount);
             for (RankMembers rankMembers1 : rankMemberses){
                 rankMembers1.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(rankMembers1.getUserid())));
 

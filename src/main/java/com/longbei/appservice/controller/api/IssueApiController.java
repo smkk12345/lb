@@ -172,7 +172,7 @@ public class IssueApiController {
 	public String selectIssueTypesH5(HttpServletRequest request){
 		Page<IssueClassify> baseResp = new Page<IssueClassify>();
 		String callback = request.getParameter("callback");
-		baseResp = issueClassifyService.selectIssueClassifyList(null,null,null);
+		baseResp.setList(issueClassifyService.selectAllIssueClassify());
 		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
 		return callback + "("+jsonObjectStr+")";
 	}
@@ -199,7 +199,8 @@ public class IssueApiController {
 	private String getTitleByType(String typeId){
 		IssueClassify issueClassify = new IssueClassify();
 		issueClassify.setTypeid(Long.parseLong(typeId));
-		Page<IssueClassify> baseResp =issueClassifyService.selectIssueClassifyList(issueClassify,1,15);
+		Page<IssueClassify> baseResp = new Page<IssueClassify>();
+		baseResp.setList(issueClassifyService.selectAllIssueClassify());
 		List<IssueClassify> list = baseResp.getList();
 		for (int i = 0; i < list.size(); i++) {
 			IssueClassify iss = list.get(i);
