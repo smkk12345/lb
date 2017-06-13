@@ -63,4 +63,12 @@ public interface IssueClassifyMapper {
      * @currentdate:2017年6月12日
      */
     Integer updateByIssueClassifyTypeId(IssueClassify data);
+
+    /**
+     * 更新类型内容条数
+     * @title updateContentCount
+     * @author IngaWu
+     * @currentdate:2017年6月13日
+     */
+    Integer updateContentCount(Long issueClassifyTypeId);
 }

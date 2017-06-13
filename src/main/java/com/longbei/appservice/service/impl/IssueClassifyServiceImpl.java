@@ -88,6 +88,7 @@ public class IssueClassifyServiceImpl implements IssueClassifyService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         issueClassify.setTypeid(idGenerateService.getUniqueIdAsLong());
         issueClassify.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        issueClassify.setContentcount(0);
         try {
             int n = issueClassifyMapper.insertIssueClassify(issueClassify);
             if(n == 1){

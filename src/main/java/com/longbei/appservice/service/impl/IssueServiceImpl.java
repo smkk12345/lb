@@ -107,7 +107,8 @@ public class IssueServiceImpl implements IssueService{
         issue.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
         try {
             int n = issueMapper.insertIssue(issue);
-            if(n == 1){
+            Integer m = issueClassifyMapper.updateContentCount(Long.parseLong(issue.getTypeid()));
+            if(n == 1 && m > 0){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {

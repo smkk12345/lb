@@ -71,6 +71,9 @@
       <if test="createtime != null" >
         createtime,
       </if>
+      <if test="contentcount != null" >
+        contentcount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="typeid != null" >
@@ -84,6 +87,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime},
+      </if>
+      <if test="contentcount != null" >
+        #{contentcount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -101,5 +107,10 @@
       </if>
     </set>
     where typeid = #{typeid,jdbcType=BIGINT}
+  </update>
+  <update id="updateContentCount">
+    UPDATE sys_issue_classify SET
+    contentcount = contentcount +1
+    where typeid = #{issueClassifyTypeId}
   </update>
 </mapper>

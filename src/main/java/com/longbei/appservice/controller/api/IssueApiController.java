@@ -307,7 +307,7 @@ public class IssueApiController {
 	}
 
 	/**
-	 * 添加帮助中心问题
+	 * 添加帮助中类型
 	 * @title insertIssueClassify
 	 * @author IngaWu
 	 * @currentdate:2017年6月12日
