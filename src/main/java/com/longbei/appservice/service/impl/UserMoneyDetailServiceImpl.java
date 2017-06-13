@@ -10,29 +10,25 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.UserMoneyDetailMapper;
-import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMoneyDetail;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import com.longbei.appservice.service.UserRelationService;
 
 @Service("userMoneyDetailService")
 public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	
 	@Autowired
 	private UserMoneyDetailMapper userMoneyDetailMapper;
-	@Autowired
-	private UserMongoDao userMongoDao;
+//	@Autowired
+//	private UserMongoDao userMongoDao;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
 //	@Autowired
 //	private SpringJedisDao springJedisDao;
-	@Autowired
-	private UserRelationService userRelationService;
+//	@Autowired
+//	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMoneyDetailServiceImpl.class);
 
@@ -48,9 +44,11 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	 * 2017年2月27日
 	 * param userid 
 	 * param origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
-	 * 					3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币    7: 设榜单后台审核不通过返还龙币   
+	 * 					3：发布龙榜    4：赞助榜单    5：赞助教室  
+	 * 					6:取消订单返还龙币 7 龙榜审核未通过返回。8 龙榜撤回。   9 龙榜奖品剩余
 	 *
-	 * param number 数量 --- 消耗：(除 0:充值  购买  6:取消订单返还龙币)value值为负---方法里面已做判断
+	 * param number 数量 --- 消耗：(1：购买礼物(花,钻)  2:兑换商品时抵用进步币 3：发布龙榜    4：赞助榜单    5：赞助教室)
+	 * 						value值为负---方法里面已做判断
 	 * param friendid 
 	 */
 	@Override
@@ -63,7 +61,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			userMoneyDetail.setFriendid(friendid);
 			userMoneyDetail.setOrigin(origin);
 			userMoneyDetail.setUserid(userid);
-			if("0".equals(origin) || "6".equals(origin) || "7".equals(origin)){
+			if("0".equals(origin) || "6".equals(origin) || "7".equals(origin) 
+					|| "8".equals(origin) || "9".equals(origin)){
 				userMoneyDetail.setNumber(number);
 			}else{
 				number = 0 - number;
@@ -194,20 +193,20 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
     /**
      * 初始化用户龙币信息 ------Userid
      */
-   private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail, long userid){
-	   if(userMoneyDetail.getFriendid() != 0){
-			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userMoneyDetail.getFriendid(), "0");
-	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
-	       if(null != appUserMongoEntity){
-		       	if(!StringUtils.isBlank(remark)){
-		       		appUserMongoEntity.setNickname(remark);
-		       	}
-		       	userMoneyDetail.setAppUserMongoEntity(appUserMongoEntity);
-	       }else{
-	    	   userMoneyDetail.setAppUserMongoEntity(new AppUserMongoEntity());
-	       }
-		}
-   }
+//   private void initMsgUserInfoByUserid(UserMoneyDetail userMoneyDetail, long userid){
+//	   if(userMoneyDetail.getFriendid() != 0){
+//			//获取好友昵称
+//			String remark = userRelationService.selectRemark(userid, userMoneyDetail.getFriendid(), "0");
+//	       AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMoneyDetail.getFriendid()));
+//	       if(null != appUserMongoEntity){
+//		       	if(!StringUtils.isBlank(remark)){
+//		       		appUserMongoEntity.setNickname(remark);
+//		       	}
+//		       	userMoneyDetail.setAppUserMongoEntity(appUserMongoEntity);
+//	       }else{
+//	    	   userMoneyDetail.setAppUserMongoEntity(new AppUserMongoEntity());
+//	       }
+//		}
+//   }
 
 }
