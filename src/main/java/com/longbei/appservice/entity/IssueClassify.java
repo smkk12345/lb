@@ -11,9 +11,10 @@ import java.io.Serializable;
 public class IssueClassify implements Serializable {
 
     private Integer id;
-    private String typeid;//类型id
+    private Long typeid;//类型id
     private String typetitle;//类型名称
     private Integer contentcount;//内容条数
+    private Integer sortno;//排序
     private String createtime;//创建时间
     private String updatetime;//修改时间
 
@@ -41,11 +42,11 @@ public class IssueClassify implements Serializable {
         return typetitle;
     }
 
-    public String getTypeid() {
+    public Long getTypeid() {
         return typeid;
     }
 
-    public void setTypeid(String typeid) {
+    public void setTypeid(Long typeid) {
         this.typeid = typeid;
     }
 
@@ -65,15 +66,11 @@ public class IssueClassify implements Serializable {
         this.updatetime = updatetime;
     }
 
-    public IssueClassify() {
+    public Integer getSortno() {
+        return sortno;
     }
 
-    public IssueClassify(Integer id, String typeid, String typetitle, Integer contentcount, String createtime, String updatetime) {
-        this.id = id;
-        this.typeid = typeid;
-        this.typetitle = typetitle;
-        this.contentcount = contentcount;
-        this.createtime = createtime;
-        this.updatetime = updatetime;
+    public void setSortno(Integer sortno) {
+        this.sortno = sortno;
     }
 }

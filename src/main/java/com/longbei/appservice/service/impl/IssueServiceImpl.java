@@ -4,7 +4,9 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.IssueMapper;
+import com.longbei.appservice.dao.IssueClassifyMapper;
 import com.longbei.appservice.entity.Issue;
 import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
@@ -28,6 +30,8 @@ public class IssueServiceImpl implements IssueService{
     @Autowired
     private IssueMapper issueMapper;
     @Autowired
+    private IssueClassifyMapper issueClassifyMapper;
+    @Autowired
     private IssueService issueService;
 
     @Override
@@ -37,6 +41,14 @@ public class IssueServiceImpl implements IssueService{
             int totalcount = issueMapper.selectIssueListCount(issue);
             pageNo = Page.setPageNo(pageNo,totalcount,pageSize);
             List<Issue> issues = issueMapper.selectIssueList(issue,(pageNo-1)*pageSize,pageSize);
+            if (issues.size()!=0 || issues != null){
+                for (int i = 0; i < issues.size(); i++) {
+                    IssueClassify issueClassify = issueClassifyMapper.selectIssueClassifyByTypeId(Long.parseLong(issues.get(i).getTypeid()));
+                    if(issueClassify != null) {
+                        issues.get(i).setTypetitle(issueClassify.getTypetitle());
+                    }
+                }
+            }
             page.setTotalCount(totalcount);
             page.setList(issues);
         } catch (Exception e) {
@@ -75,10 +87,10 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public BaseResp<Issue> selectIssueByIssueId(int productId) {
+    public BaseResp<Issue> selectIssueByIssueId(int issuetId) {
         BaseResp<Issue> baseResp = new BaseResp<Issue>();
         try {
-            Issue issue = issueMapper.selectIssueByIssueId(productId);
+            Issue issue = issueMapper.selectIssueByIssueId(issuetId);
             baseResp.setData(issue);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }
@@ -95,7 +107,8 @@ public class IssueServiceImpl implements IssueService{
         issue.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
         try {
             int n = issueMapper.insertIssue(issue);
-            if(n == 1){
+            Integer m = issueClassifyMapper.updateContentCount(Long.parseLong(issue.getTypeid()));
+            if(n == 1 && m > 0){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {
@@ -118,29 +131,4 @@ public class IssueServiceImpl implements IssueService{
         baseResp.setData(list);
         return baseResp;
     }
-
-
-    public BaseResp<List<IssueClassify>> selectIssueClassifyList(){
-        BaseResp<List<IssueClassify>> baseResp =new BaseResp<List<IssueClassify>>();
-        try {
-            List<IssueClassify> classifyList = new ArrayList<IssueClassify>(){
-                {
-                add(new IssueClassify(0,"0","微进步",8,"2017-04-27 12:25:30","2017-04-29 15:25:30"));
-                add(new IssueClassify(1,"1","龙榜",10,"2017-04-26 11:25:30","2017-04-28 10:25:30"));
-                add(new IssueClassify(2,"2","我的",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                add(new IssueClassify(3,"3","钱包",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                add(new IssueClassify(4,"4","账号设置",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                add(new IssueClassify(5,"5","龙信",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                add(new IssueClassify(6,"6","兑换商城",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                add(new IssueClassify(7,"7","奖品",10,"2017-06-01 18:43:30","2017-06-01 18:43:30"));
-                }
-            };
-            baseResp.setData(classifyList);
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return baseResp;
-    }
-
 }

@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Issue;
 import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
+import com.longbei.appservice.service.IssueClassifyService;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,6 +27,8 @@ public class IssueApiController {
 	
 	@Autowired
 	private IssueService issueService;
+	@Autowired
+	private IssueClassifyService issueClassifyService;
 	
 	private static Logger logger = LoggerFactory.getLogger(IssueApiController.class);
 
@@ -40,7 +44,6 @@ public class IssueApiController {
 	@RequestMapping(value = "selectIssuelist")
 	public BaseResp<Page<Issue>> selectIssuelist(@RequestBody Issue issue, String pageNo, String pageSize){
 		logger.info("select Issue list for adminservice issue:{},pageNo={},pageSize={}", JSON.toJSONString(issue),pageNo,pageSize);
-		Page.initPageNoAndPageSize(pageNo,pageSize);
 		BaseResp<Page<Issue>> baseResp = new BaseResp<>();
 		if (StringUtils.isBlank(pageNo)) {
 			pageNo = "1";
@@ -52,7 +55,7 @@ public class IssueApiController {
 			Page<Issue> page = issueService.selectIssueList(issue,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
 			baseResp = BaseResp.ok();
 			baseResp.setData(page);
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			logger.error("select Issue list for adminservice issue:{},pageNo={},pageSize={}", JSON.toJSONString(issue),pageNo,pageSize,e);
 		}
 		return baseResp;
@@ -167,9 +170,9 @@ public class IssueApiController {
 
 	@RequestMapping(value = "selectIssueTypesH5")
 	public String selectIssueTypesH5(HttpServletRequest request){
-		BaseResp<List<IssueClassify>> baseResp = new BaseResp<List<IssueClassify>>();
+		Page<IssueClassify> baseResp = new Page<IssueClassify>();
 		String callback = request.getParameter("callback");
-		baseResp = issueService.selectIssueClassifyList();
+		baseResp.setList(issueClassifyService.selectAllIssueClassify());
 		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
 		return callback + "("+jsonObjectStr+")";
 	}
@@ -194,8 +197,11 @@ public class IssueApiController {
 
 
 	private String getTitleByType(String typeId){
-		BaseResp<List<IssueClassify>> baseResp =issueService.selectIssueClassifyList();
-		List<IssueClassify> list = baseResp.getData();
+		IssueClassify issueClassify = new IssueClassify();
+		issueClassify.setTypeid(Long.parseLong(typeId));
+		Page<IssueClassify> baseResp = new Page<IssueClassify>();
+		baseResp.setList(issueClassifyService.selectAllIssueClassify());
+		List<IssueClassify> list = baseResp.getList();
 		for (int i = 0; i < list.size(); i++) {
 			IssueClassify iss = list.get(i);
 			if(iss.getTypeid().equals(typeId)){
@@ -209,18 +215,36 @@ public class IssueApiController {
 	 * 获取帮助中心类型列表
 	 * @title selectIssueClassifyList
 	 * @author IngaWu
-	 * @currentdate:2017年4月28日
+	 * @currentdate:2017年6月12日
 	 */
 	@RequestMapping(value = "selectIssueClassifyList")
-	public BaseResp<List<IssueClassify>> selectIssueClassifyList(){
-		BaseResp<List<IssueClassify>> baseResp =new BaseResp<List<IssueClassify>>();
+	public BaseResp<Page<IssueClassify>> selectIssueClassifyList(@RequestBody IssueClassify issueClassify,String pageNo,String pageSize){
+		BaseResp<Page<IssueClassify>> baseResp = new BaseResp<>();
+		if (StringUtils.isBlank(pageNo)){
+			pageNo = "1";
+		}
+		if (StringUtils.isBlank(pageSize)){
+			pageSize = Constant.DEFAULT_PAGE_SIZE;
+		}
 		try {
-			baseResp = issueService.selectIssueClassifyList();
-			return baseResp;
-		} catch (NumberFormatException e) {
+			Page<IssueClassify> page  = issueClassifyService.selectIssueClassifyList(issueClassify,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+			baseResp = BaseResp.ok();
+			baseResp.setData(page);
+		} catch (Exception e) {
 			logger.error("selectIssueClassifyList for adminservice error",e);
 		}
 		return baseResp;
+	}
+
+	@RequestMapping(value = "selectAllIssueClassify")
+	public List<IssueClassify>  selectAllIssueClassify(){
+		List<IssueClassify> issueClassifyList = new ArrayList<IssueClassify>();
+		try {
+			issueClassifyList  = issueClassifyService.selectAllIssueClassify();
+		} catch (Exception e) {
+			logger.error("selectAllIssueClassifyfor adminservice error",e);
+		}
+		return issueClassifyList;
 	}
 
 	@RequestMapping(value = "hotIssueList")
@@ -236,5 +260,96 @@ public class IssueApiController {
 		return callback + "("+jsonObjectStr+")";
 	}
 
+	/**
+	 * @Title: selectIssueClassifyByTypeId
+	 * @Description: 通过问题类型typeid查看类型详情
+	 * @param issueClassifyTypeId 问题类型typeid
+	 * @auther IngaWu
+	 * @currentdate:2017年6月12日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/selectIssueClassifyByTypeId")
+	public BaseResp<IssueClassify> selectIssueClassifyByTypeId(String issueClassifyTypeId) {
+		logger.info("selectIssueClassifyByTypeId and issueClassifyTypeId={}",issueClassifyTypeId);
+		BaseResp<IssueClassify> baseResp = new BaseResp<>();
+		if(StringUtils.isBlank(issueClassifyTypeId)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = issueClassifyService.selectIssueClassifyByTypeId(Long.parseLong(issueClassifyTypeId));
+			return baseResp;
+		} catch (Exception e) {
+			logger.error("selectIssueClassifyByTypeId and issueClassifyTypeId={}",issueClassifyTypeId,e);
+		}
+		return baseResp;
+	}
 
+	/**
+	 * @Title: deleteByIssueClassifyTypeId
+	 * @Description: 删除帮助中心问题
+	 * @param  @para issueClassifyTypeId 问题id
+	 * @auther IngaWu
+	 * @currentdate:2017年6月12日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/deleteByIssueClassifyTypeId")
+	public BaseResp<Object> deleteByIssueClassifyTypeId(String issueClassifyTypeId) {
+		logger.info("deleteByIssueClassifyTypeId and issueClassifyTypeId={}",issueClassifyTypeId);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.isBlank(issueClassifyTypeId+"")){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			return issueClassifyService.deleteByIssueClassifyTypeId(Long.parseLong(issueClassifyTypeId));
+		} catch (Exception e) {
+			logger.error("deleteByIssueClassifyTypeId and issueClassifyTypeId={}",issueClassifyTypeId,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 添加帮助中类型
+	 * @title insertIssueClassify
+	 * @author IngaWu
+	 * @currentdate:2017年6月12日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/insertIssueClassify")
+	public BaseResp<Object> insertIssueClassify(@RequestBody IssueClassify issueClassify) {
+		logger.info("insertIssueClassify for adminservice issueClassify:{}", JSON.toJSONString(issueClassify));
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(issueClassify.getTypetitle())){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = issueClassifyService.insertIssueClassify(issueClassify);
+			return baseResp;
+		} catch (Exception e) {
+			logger.error("insertIssueClassify for adminservice issueClassify:{}", JSON.toJSONString(issueClassify),e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 编辑帮助中心类型
+	 * @title updateByIssueClassifyTypeId
+	 * @author IngaWu
+	 * @currentdate:2017年6月12日
+	 */
+	@RequestMapping(value = "/updateByIssueClassifyTypeId")
+	public BaseResp<Object> updateByIssueClassifyTypeId(@RequestBody IssueClassify issueClassify) {
+		logger.info("updateByIssueClassifyTypeId for adminservice issueClassify:{}", JSON.toJSONString(issueClassify));
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.isBlank(String.valueOf(issueClassify.getTypeid()))){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = issueClassifyService.updateByIssueClassifyTypeId(issueClassify);
+		} catch (Exception e) {
+			logger.error("updateByIssueClassifyTypeId for adminservice issueClassify:{}", JSON.toJSONString(issueClassify),e);
+
+		}
+		return baseResp;
+	}
 }
+

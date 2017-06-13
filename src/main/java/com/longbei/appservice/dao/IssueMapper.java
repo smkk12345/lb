@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Issue;
+import com.longbei.appservice.entity.IssueClassify;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,8 +11,8 @@ public interface IssueMapper {
     /**
      * 按条件查询帮助中心问题列表
      * @title selectIssuelist
-     * @param @param pageno 页码
-     * @param @param pagesize 每页显示条数
+     * @param startNum 页码
+     * @param pageSize 每页显示条数
      * @author IngaWu
      * @currentdate:2017年4月25日
      */

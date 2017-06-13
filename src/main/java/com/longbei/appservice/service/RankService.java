@@ -185,11 +185,11 @@ public interface RankService extends BaseService{
     /**
      * 获取成员列表 pc
      * @param rankMembers
-     * @param pageNo
+     * @param startNum
      * @param pageSize
      * @return
      */
-    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+    BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers,Integer startNum,Integer pageSize);
 
     /**
      * 获取所有榜中的成员
@@ -213,11 +213,11 @@ public interface RankService extends BaseService{
     /**
      * 获取成员列表 待审核 pc
      * @param rankMembers
-     * @param pageNo
+     * @param startNum
      * @param pageSize
      * @return
      */
-    BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers,Integer pageNo,Integer pageSize);
+    BaseResp<Page<RankMembers>> selectRankMemberWaitCheckList(RankMembers rankMembers,Integer startNum,Integer pageSize);
 
 
 

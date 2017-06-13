@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 /**
  * 进步业务操作实现类
@@ -114,6 +113,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private CommentMongoDao commentMongoDao;
     @Autowired
+    private CommentLowerMongoDao commentLowerMongoDao;
+    @Autowired
     private ClassroomService classroomService;
     @Autowired
     private UserCardMapper userCardMapper;
@@ -183,6 +184,18 @@ public class ImproveServiceImpl implements ImproveService{
                     //0 不是批复。1 是批复
                     improve.setIsresponded("1");
                     isok = insertImproveForClassroomReply(improve);
+                    
+                    //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
+                    Comment comment = new Comment();
+         			comment.setContent("批复作业");
+         			comment.setCreatetime(new Date());
+         			comment.setBusinesstype("5");
+         			comment.setBusinessid(businessid);
+         			comment.setUserid(userid);
+         			comment.setFriendid("0");
+         			comment.setImpid(pimpid);
+         			commentMongoService.insertComment(comment);
+         			
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
@@ -2815,11 +2828,21 @@ public class ImproveServiceImpl implements ImproveService{
                     case Constant.IMPROVE_CLASSROOM_TYPE:
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
-                    	if(null != replyList && replyList.size()>0){
-                    		for (ImproveClassroom improveClassroom : replyList) {
-                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(),
+                    	String commentid = "";
+                        if(null != replyList && replyList.size()>0){
+                            List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+//                            for (ImproveClassroom improveClassroom : replyList) {
+                            ImproveClassroom improveClassroom = replyList.get(0);
+                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
                     					businessid, "5", null, 0);
-                    			improveClassroom.setList(list);
+                                if(null != list && list.size()>0){
+                                    Comment comment = list.get(0);
+                                    commentid = comment.getId();
+                                    lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
+                                    //初始化用户信息
+                                    initCommentLowerUserInfoList(lowerlist);
+//                                }
+                    			improveClassroom.setLowerlist(lowerlist);
 							}
                     		improve.setReplyImprove(replyList.get(0));
                     	}
@@ -2834,7 +2857,7 @@ public class ImproveServiceImpl implements ImproveService{
                     				classroom.getClasstitle(),
                     				classroom.getClassphotos(),
                     				classroom.getClassinvoloed(),
-                    				teacher);
+                    				teacher, commentid);
                     	}
                         break;
                     case Constant.IMPROVE_CIRCLE_TYPE:
@@ -2872,6 +2895,25 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }
         return baseResp;
+    }
+
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
+        if(null != lowers && lowers.size()>0){
+            for (CommentLower commentLower : lowers) {
+                if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+                    commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+                }
+                if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+                    commentLower.setFirstNickname(appUserMongo.getNickname());
+                }
+            }
+        }
+
     }
 
     @Override
@@ -3407,13 +3449,7 @@ public class ImproveServiceImpl implements ImproveService{
             friendids = getFriendIds(uid);
             funids = getFansIds(uid);
         }
-        if(!springJedisDao.hasKey(key)){
-            if ("1".equals(key)){
-                key = "12";
-            } else {
-                key = String.valueOf((Integer.parseInt(key) - 1));
-            }
-        }
+        logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
             for (String impid : impids){
@@ -3428,9 +3464,9 @@ public class ImproveServiceImpl implements ImproveService{
                     if(null == improve){
                         continue;
                     }
+                    AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                    improve.setAppUserMongoEntity(appuser);
                     if(!Constant.VISITOR_UID.equals(userid)){
-                        AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-                        improve.setAppUserMongoEntity(appuser);
                         initUserRelateInfo(uid,appuser,friendids,funids);
                         initImproveInfo(improve,uid);
                     }
@@ -3455,16 +3491,18 @@ public class ImproveServiceImpl implements ImproveService{
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
         try {
             Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
+
             Map<String,Double> map = new HashMap<>();
-            if (springJedisDao.hasKey(impkey-60*60+"")){
-                map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
+            if (springJedisDao.hasKey(impkey-60*60*1000+"")){
+                map = springJedisDao.zRangeWithScores(impkey-60*60*1000+"",0,-1);
             } else if (springJedisDao.hasKey(impkey.toString())){
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
             if(null != map&&map.isEmpty()){
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
-            long lastImpKey = impkey-60*60-60*60*24;
+
+            long lastImpKey = impkey-60*60-60*60*24*1000;
             Map<String,Double> lastMap = new HashMap<>();
             if (!springJedisDao.hasKey(String.valueOf(lastImpKey))){
                 lastMap = springJedisDao.zRangeWithScores(String.valueOf(lastImpKey),0,-1);
@@ -3480,6 +3518,8 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 springJedisDao.zIncrby(key,entry.getKey(),iValue, (long) (2*60*60));
             }
+            logger.info("recommendImproveOpt impkey={},map={},key={}",impkey,
+                    JSONObject.fromObject(map).toString(),key);
             baseResp.initCodeAndDesp();
         } catch (ParseException e) {
             logger.error("option recommend improve is error:",e);

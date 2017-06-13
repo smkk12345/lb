@@ -19,6 +19,7 @@ public class Issue  implements Serializable {
     private String createtime;//创建时间
     private String updatetime;//修改时间
     private String sortnum;//排序
+    private String typetitle;//类型名称（拓展字段）
 
     public Integer getId() {
         return id;
@@ -82,5 +83,13 @@ public class Issue  implements Serializable {
 
     public void setSortnum(String sortnum) {
         this.sortnum = sortnum;
+    }
+
+    public String getTypetitle() {
+        return typetitle;
+    }
+
+    public void setTypetitle(String typetitle) {
+        this.typetitle = typetitle;
     }
 }

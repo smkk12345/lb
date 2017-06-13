@@ -12,7 +12,7 @@ public class UserMoneyDetail {
     private Long userid;
 
     private String origin;//origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用龙币
-	 						//3：设榜单    4：赞助榜单    5：赞助教室  6:取消订单返还龙币 
+    						//3：发布龙榜    4：赞助榜单    5：赞助教室  6:取消订单返还龙币 7 龙榜审核未通过返回。8 龙榜撤回。   9 龙榜奖品剩余
 
     private Integer number;//数量
 
