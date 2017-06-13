@@ -261,11 +261,10 @@ public interface UserService {
 	/**
 	 * 修改用户龙币数
 	 * @param userid
-	 * @param totalmoney
 	 * @param totalPrice  消耗的龙币数量
 	 * @return
 	 */
-	BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney, Integer totalPrice);
+	BaseResp updateTotalmoneyByUserid(long userid, Integer totalPrice);
 
 
 }

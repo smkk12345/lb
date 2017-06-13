@@ -853,16 +853,16 @@ public class ImproveServiceImpl implements ImproveService{
   					isreply = "1";
   					improve.setReplyImprove(replyList.get(0));
   				}
-//  				if(!"1".equals(isreply)){
-//  					//判断当前用户是否是老师
-//  					if(null != list && list.size()>0){
-//  						if(!list.contains(userid)){
-//  							isreply = "2";
-//  						}
-//  					}else{
-//  						isreply = "2";
-//  					}
-//  				}
+  				if(!"1".equals(isreply)){
+  					//判断当前用户是否是老师
+  					if(null != list && list.size()>0){
+  						if(!list.contains(userid)){
+  							isreply = "2";
+  						}
+  					}else{
+  						isreply = "2";
+  					}
+  				}
   				improve.setIsreply(isreply);
   				
   			}

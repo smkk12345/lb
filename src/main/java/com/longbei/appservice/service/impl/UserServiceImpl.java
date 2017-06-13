@@ -1400,17 +1400,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalmoney, Integer totalPrice){
+	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalPrice){
 		BaseResp baseResp = new BaseResp();
 		try {
-			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
-			if(res>0){
+//			int res = userInfoMapper.updateTotalmoneyByUserid(userid,totalmoney);
+//			if(res>0){
 				if(null != totalPrice && totalPrice != 0){
 					//添加一条消耗龙币的记录
 					userMoneyDetailService.insertPublic(userid, "3", totalPrice, 0);
 				}
 				baseResp.initCodeAndDesp();
-			}
+//			}
 		} catch (Exception e) {
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
 			logger.error("update Totalmoney By Userid {} is error",userid,e);
