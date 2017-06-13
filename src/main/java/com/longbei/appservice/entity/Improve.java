@@ -148,13 +148,15 @@ public class Improve {
             						String title,
             						String photos,
             						Integer involved,
-            						String teacher) {
+            						String teacher,
+                                    String commentid) {
 		this.classRoomEntity = new ClassRoomEntity();
 		this.classRoomEntity.setPtype(ptype);
 		this.classRoomEntity.setTitle(title);
 		this.classRoomEntity.setPhotos(photos);
 		this.classRoomEntity.setInvolved(involved);
 		this.classRoomEntity.setTeacher(teacher);
+        this.classRoomEntity.setCommentid(commentid);
 	}
 
 	public void setBusinessEntity(String ptype,
@@ -787,6 +789,7 @@ public class Improve {
         private String photos; //教室图片
         private Integer involved; //参与人数 
         private String teacher;  //老师
+        private String commentid; //主评论id---教室批复作业相当于是主评论
         
         
 		public String getPtype() {
@@ -818,6 +821,12 @@ public class Improve {
 		}
 		public void setTeacher(String teacher) {
 			this.teacher = teacher;
+		}
+		public String getCommentid() {
+			return commentid;
+		}
+		public void setCommentid(String commentid) {
+			this.commentid = commentid;
 		}
         
     }
