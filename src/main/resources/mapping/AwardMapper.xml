@@ -34,9 +34,18 @@
   </select>
 
   <select id="selectAwardCount" parameterType="com.longbei.appservice.entity.Award" resultType="java.lang.Integer">
-    SELECT count(1) FROM award
-    where isdel=0
-    and createtype = 1
+    SELECT
+    count(*)
+    FROM award a JOIN awardclassify ac ON a.awardcateid = ac.id
+    WHERE a.isdel=0
+    and a.createtype = 1
+    <if test="award.awardtitle != null">
+      AND awardtitle LIKE concat(concat('%',#{award.awardtitle}),'%')
+    </if>
+    <if test="award.awardcateid != null">
+      AND awardcateid = #{award.awardcateid}
+    </if>
+    ORDER BY a.createtime DESC
   </select>
 
   <select id="awardCountsUnderClassify" parameterType="java.lang.Integer" resultType="java.lang.Integer">
