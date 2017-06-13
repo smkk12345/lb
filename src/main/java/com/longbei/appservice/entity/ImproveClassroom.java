@@ -6,16 +6,16 @@ import java.util.List;
 public class ImproveClassroom extends Improve{
 
 	//评论
-	private List<Comment> list = new ArrayList<Comment>();
+	private List<CommentLower> lowerlist = new ArrayList<CommentLower>();
 	
 	
 
-	public List<Comment> getList() {
-		return list;
+	public List<CommentLower> getLowerlist() {
+		return lowerlist;
 	}
 
-	public void setList(List<Comment> list) {
-		this.list = list;
+	public void setLowerlist(List<CommentLower> lowerlist) {
+		this.lowerlist = lowerlist;
 	}
 	
 }

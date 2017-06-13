@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 /**
  * 进步业务操作实现类
@@ -114,6 +113,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private CommentMongoDao commentMongoDao;
     @Autowired
+    private CommentLowerMongoDao commentLowerMongoDao;
+    @Autowired
     private ClassroomService classroomService;
     @Autowired
     private UserCardMapper userCardMapper;
@@ -183,6 +184,18 @@ public class ImproveServiceImpl implements ImproveService{
                     //0 不是批复。1 是批复
                     improve.setIsresponded("1");
                     isok = insertImproveForClassroomReply(improve);
+                    
+                    //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
+                    Comment comment = new Comment();
+         			comment.setContent("批复作业");
+         			comment.setCreatetime(new Date());
+         			comment.setBusinesstype("5");
+         			comment.setBusinessid(businessid);
+         			comment.setUserid(userid);
+         			comment.setFriendid("0");
+         			comment.setImpid(pimpid);
+         			commentMongoService.insertComment(comment);
+         			
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
@@ -840,16 +853,16 @@ public class ImproveServiceImpl implements ImproveService{
   					isreply = "1";
   					improve.setReplyImprove(replyList.get(0));
   				}
-  				if(!"1".equals(isreply)){
-  					//判断当前用户是否是老师
-  					if(null != list && list.size()>0){
-  						if(!list.contains(userid)){
-  							isreply = "2";
-  						}
-  					}else{
-  						isreply = "2";
-  					}
-  				}
+//  				if(!"1".equals(isreply)){
+//  					//判断当前用户是否是老师
+//  					if(null != list && list.size()>0){
+//  						if(!list.contains(userid)){
+//  							isreply = "2";
+//  						}
+//  					}else{
+//  						isreply = "2";
+//  					}
+//  				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -2815,11 +2828,21 @@ public class ImproveServiceImpl implements ImproveService{
                     case Constant.IMPROVE_CLASSROOM_TYPE:
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
-                    	if(null != replyList && replyList.size()>0){
-                    		for (ImproveClassroom improveClassroom : replyList) {
-                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(),
+                    	String commentid = "";
+                        if(null != replyList && replyList.size()>0){
+                            List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+//                            for (ImproveClassroom improveClassroom : replyList) {
+                            ImproveClassroom improveClassroom = replyList.get(0);
+                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
                     					businessid, "5", null, 0);
-                    			improveClassroom.setList(list);
+                                if(null != list && list.size()>0){
+                                    Comment comment = list.get(0);
+                                    commentid = comment.getId();
+                                    lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
+                                    //初始化用户信息
+                                    initCommentLowerUserInfoList(lowerlist);
+//                                }
+                    			improveClassroom.setLowerlist(lowerlist);
 							}
                     		improve.setReplyImprove(replyList.get(0));
                     	}
@@ -2834,7 +2857,7 @@ public class ImproveServiceImpl implements ImproveService{
                     				classroom.getClasstitle(),
                     				classroom.getClassphotos(),
                     				classroom.getClassinvoloed(),
-                    				teacher);
+                    				teacher, commentid);
                     	}
                         break;
                     case Constant.IMPROVE_CIRCLE_TYPE:
@@ -2872,6 +2895,25 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
         }
         return baseResp;
+    }
+
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
+        if(null != lowers && lowers.size()>0){
+            for (CommentLower commentLower : lowers) {
+                if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+                    commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+                }
+                if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+                    commentLower.setFirstNickname(appUserMongo.getNickname());
+                }
+            }
+        }
+
     }
 
     @Override
