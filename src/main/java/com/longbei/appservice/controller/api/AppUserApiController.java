@@ -303,7 +303,7 @@ public class AppUserApiController {
     public BaseResp updateTotalmoneyByUserid(Long userid, Integer totalMoney, Integer totalPrice){
         BaseResp baseResp = new BaseResp();
         try {
-            baseResp =userService.updateTotalmoneyByUserid(userid,totalMoney,totalPrice);
+            baseResp =userService.updateTotalmoneyByUserid(userid,totalPrice);
         } catch (Exception e) {
             logger.error("update Totalmoney By Userid {} is error", userid, e);
         }
