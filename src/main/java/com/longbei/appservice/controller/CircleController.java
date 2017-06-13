@@ -326,7 +326,7 @@ public class CircleController {
      */
     @RequestMapping(value="circleDetail")
     public BaseResp<Object> circleDetail(Long userid,Long circleId){
-        logger.info("circleId={}",circleId);
+        logger.info("circleDetail userid:{} circleId={}",userid,circleId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -401,7 +401,7 @@ public class CircleController {
     @RequestMapping(value="circleList")
     public BaseResp<Object> circleList(Long userid,Integer pType,String keyword,Integer startNum,Integer pageSize){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(pType == null){
+        if(pType == null && StringUtils.isEmpty(keyword)){
             pType = 10;
         }
         if(startNum == null){

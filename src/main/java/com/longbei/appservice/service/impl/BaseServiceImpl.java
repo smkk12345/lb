@@ -18,7 +18,6 @@ public class BaseServiceImpl implements BaseService {
     void printExceptionAndRollBackTransaction(Exception e) {
     	//TODO 这种方式打印日志是无法追踪到的
     	logger.error("iprintExceptionAndRollBackTransaction ", e);
-//        e.printStackTrace();
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
@@ -28,7 +27,6 @@ public class BaseServiceImpl implements BaseService {
      */
     void printException(Exception e){
     	//TODO 这种方式打印日志是无法追踪到的
-//        e.printStackTrace();
     	logger.error("printException ", e);
     }
 }

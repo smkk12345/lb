@@ -382,8 +382,10 @@ public class OrderApiController {
   					String ip = request.getRemoteAddr();
   					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), ip,orders.getUserid());
   					return resResp;
-  				}else if("0".equals(btype)){
-  					resResp = orderService.aliPaySaoMa(price,orders.getOrdernum(),orders.getUserid());
+  				}else if("0".equals(btype)){//支付宝
+					//支付宝提交时 金额的单位是元 所以不需要乘以100
+					minute = Integer.parseInt(number)*yuantomoney;
+  					resResp = orderService.aliPaySaoMa(minute+"",orders.getOrdernum(),orders.getUserid());
 					return resResp;
   				}
   			}

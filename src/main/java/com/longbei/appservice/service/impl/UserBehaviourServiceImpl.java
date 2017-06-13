@@ -255,6 +255,51 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return baseResp.ok();
     }
 
+    /**
+     * 获取用户操作的最大数量
+     * @param userid
+     * @param privilegeType 操作类型
+     * @return
+     */
+    @Override
+    public int selectUserOperationMaxNum(Long userid, Constant.PrivilegeType privilegeType) {
+        int num=0;
+        try{
+            UserInfo userInfo = this.userInfoMapper.selectByUserid(userid);
+            if(userInfo == null){
+                return num;
+            }
+            UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+            switch (privilegeType){
+                case joinranknum:
+                    num = userLevel.getJoinranknum();
+                    break;
+                case createCircle:
+                    num = userLevel.getCirclenum();
+                    break;
+                case pubranknum:
+                    num = userLevel.getPubranknum();
+                    break;
+                case prirankjoinnum:
+                    num = userLevel.getPrirankjoinnum();
+                    break;
+                case priranknum:
+                    num = userLevel.getPriranknum();
+                    break;
+                case classroomnum:
+                    num = userLevel.getClassroomnum();
+                    break;
+                case likes:
+                    num = userLevel.getLikes();
+                    break;
+            }
+            return num;
+        }catch(Exception e){
+            logger.error("selectUserOperationMaxNum error userid:{} privilegeType:{} errorMsg:{}",userid,privilegeType,e);
+        }
+        return num;
+    }
+
     @Override
     public BaseResp<Object> userSumInfo(final Constant.UserSumType userSumType,
                                         final long userid,

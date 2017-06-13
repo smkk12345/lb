@@ -2932,6 +2932,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                     resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                     resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
+                    resultMap.put("ispublic",rank.getIspublic());//是否公开
                     initAwardResultMap(resultMap,rank.getRankid(),userId,true);
                     resultList.add(resultMap);
                 }
@@ -2963,6 +2964,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
                 resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
                 resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
+                resultMap.put("ispublic",rank.getIspublic());
                 initAwardResultMap(resultMap,rank.getRankid(),null,false);
             }
             baseResp.setData(resultMap);

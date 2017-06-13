@@ -3,7 +3,6 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
@@ -101,21 +100,30 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 CircleMembers circleMembers = new CircleMembers();
                 circleMembers.setCreatetime(new Date());
                 circleMembers.setUpdatetime(new Date());
-                circleMembers.setItype(0);
+                circleMembers.setItype(CircleMembers.normal);
                 circleMembers.setCircleid(circle.getCircleid());
                 circleMembers.setUserid(new Long(userId));
                 int insertCircleMember = circleMembersMapper.insert(circleMembers);
+                if(insertCircleMember > 0){
+                    Map<String,Object> map = new HashMap<String,Object>();
+                    map.put("circleId",circle.getCircleid());
+                    map.put("updateTime",new Date());
+                    //修改circle的加圈子人数
+                    map.put("personNum", 1);
+                    circleMappler.updateCircleInvoloed(map);
+                }
 
                 if (creategoup) {//需要创建龙信群
 
                 }
+                baseResp.setData(circle);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
         }catch(Exception e){
         	//TODO 用error
             logger.error("insert Circle userId = {}", userId, e);
-//            printExceptionAndRollBackTransaction(e);
+            printExceptionAndRollBackTransaction(e);
             return baseResp.fail("系统异常");
         }
 
@@ -135,7 +143,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return false;
         }catch(Exception e){
-            logger.error("checkCircleTitle circleTitle = {}",circleTitle, e);
+            logger.error("checkCircleTitle circleTitle = {} errorMsg:{}",circleTitle, e);
 //            printException(e);
             return false;
         }
@@ -161,6 +169,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if (StringUtils.isNotEmpty(circleNotice)) {
                 map.put("notice", circleNotice);
             }
+            map.put("updateTime",new Date());
             int row = circleMappler.updateCircleInfo(map);
 
             if (row > 0) {
@@ -171,7 +180,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         	//TODO 日志打印的方式比较奇怪
             logger.error("updateCircleInfo circleId = {}, userId = {}, circlephotos = {}, circlebrief = {}, notice = {}", 
             		circleId, userId, circlephotos, circlebrief, circleNotice, e);
-//            printException(e);
+//          printException(e);
             return baseResp.fail("系统异常");
         }
     }
@@ -185,6 +194,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if (StringUtils.isNotEmpty(username)) {
                 map.put("username", username);
             }
+            map.put("itype",CircleMembers.normal);
             map.put("startNo",startNo);
             map.put("pageSize",pageSize);
 
@@ -224,7 +234,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             map.put("circleId", circleId + "");
             map.put("userId", userId);
             CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
-            if (circleMembers != null && circleMembers.getItype() == 1) {
+            if (circleMembers != null && circleMembers.getItype() == CircleMembers.delete) {
                 if (circle.getNeedconfirm()) {
                     map.put("iType", CircleMembers.pending);
                 } else {
@@ -246,9 +256,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 } else {
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
                 }
-            } else if (circleMembers != null && circleMembers.getItype() == 0) {
+            } else if (circleMembers != null && circleMembers.getItype() == CircleMembers.normal) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_82, Constant.RTNINFO_SYS_82);
-            } else if (circleMembers != null && circleMembers.getItype() == 2) {
+            } else if (circleMembers != null && circleMembers.getItype() == CircleMembers.pending) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_83, Constant.RTNINFO_SYS_83);
             }
 
@@ -272,15 +282,16 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 userBehaviourService.pointChange(userInfo,"DAILY_ADDCIRCLE",circle.getPtype(),null,0,0);
                 if (circle.getNeedconfirm()) {//通知群主审核
                     noticeCircleCreateUserId(circleId,circle.getCreateuserid());
-
-                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_84, Constant.RTNINFO_SYS_84);
+                    baseResp.getExpandData().put("status",CircleMembers.pending);
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_84);
                 }
+                baseResp.getExpandData().put("status",CircleMembers.normal);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
         }catch(Exception e){
-            logger.error("insert circlemember circleId:{} userId:{}", circleId, userId, e);
-//            printExceptionAndRollBackTransaction(e);
+            logger.error("insert circlemember circleId:{} userId:{}", circleId, userId);
+            printExceptionAndRollBackTransaction(e);
             return baseResp.fail("系统异常");
         }
     }
@@ -297,25 +308,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             updateUserMsg.setIsdel("0");
             updateUserMsg.setIsread("0");
             int updateRow = userMsgService.updateByPrimaryKeySelective(updateUserMsg);
-            //TODO 一句就好， return updateRow > 0;
-//            if(updateRow > 0){
-//                return true;
-//            }
-//            return false;
             return updateRow > 0;
         }
-//        UserMsg userMsg = new UserMsg();
-//        userMsg.setCreatetime(new Date());
-//        userMsg.setUserid(userId);
-//        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
-//        userMsg.setGtype("3");
-//        userMsg.setMsgtype("11");
-//        userMsg.setSnsid(circleId);
-//        userMsg.setRemark("有新的成员申请加入圈子,快去进行审核吧!");
-//        userMsg.setIsdel("0");
-//        userMsg.setIsread("0");
-//        userMsg.setMtype("2");
-        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
         BaseResp<Object> baseResp = userMsgService.insertMsg(Constant.SQUARE_USER_ID, userId.toString(), 
         		"", "11", circleId.toString(), 
@@ -324,15 +319,6 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         	return true;
         }
         return false;
-//        int row = userMsgMapper.insertSelective(userMsg);
-        
-        // TODO 一句代替及好  return row > 0;
-//        if(row > 0){
-//            return true;
-//        }else{
-//            return false;
-//        }
-//        return row > 0;
     }
 
     @Transactional
@@ -343,7 +329,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("circleId", circleId);
             map.put("userId", userId);
-            map.put("iType", 1);
+            map.put("iType", CircleMembers.delete);
             map.put("updateTime", new Date());
             int row = circleMembersMapper.updateCircleMembers(map);
             if (row > 0) {
@@ -354,8 +340,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch(Exception e){
         	//TODO 没有把exception 打印出来
-            logger.error("removeCircleMembers circleId = {} userId = {}", circleId, userId, e);
-//            printExceptionAndRollBackTransaction(e);
+            logger.error("removeCircleMembers circleId = {} userId = {}", circleId, userId);
+            printExceptionAndRollBackTransaction(e);
             return baseResp.fail();
         }
 
@@ -371,7 +357,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             map.put("userId", userId);
             //查询该用户是否在该圈子中
             CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
-            if (circleMembers == null || circleMembers.getItype() != 0) {
+            if (circleMembers == null || circleMembers.getItype() != CircleMembers.normal) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
             circleMembers.setAppUserMongoEntity(userMongoDao.getAppUser(userId+""));
@@ -412,10 +398,11 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put("userId",userid);
                 map.put("circleId",circleId);
-                map.put("itype",1);
                 CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map);
-                if(circleMembers != null){
-                    circle.setHasjoin(1);
+                if(circleMembers != null && circleMembers.getItype() == CircleMembers.normal){
+                    circle.setHasjoin(1);//已加入
+                }else if(circleMembers != null && circleMembers.getItype() == CircleMembers.pending){
+                    circle.setHasjoin(2);//审核中
                 }
             }
 
@@ -438,9 +425,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             CircleMembers circleMembers = circleMembersMapper.selectByPrimaryKey(circleMembersId);
             if (circleMembersId == null) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-            } else if (circleMembers.getItype() == 0) {
+            } else if (circleMembers.getItype() == CircleMembers.normal) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_87, Constant.RTNINFO_SYS_87);
-            } else if (circleMembers.getItype() == 1) {
+            } else if (circleMembers.getItype() == CircleMembers.delete) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
             //校验该用户是否是该兴趣圈的圈主
@@ -451,9 +438,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             CircleMembers tempCircleMembers = new CircleMembers();
             tempCircleMembers.setId(circleMembers.getId());
             if (confirmFlag) {
-                tempCircleMembers.setItype(0);
+                tempCircleMembers.setItype(CircleMembers.normal);
             } else {
-                tempCircleMembers.setItype(1);//退群
+                tempCircleMembers.setItype(CircleMembers.delete);//退群
             }
             tempCircleMembers.setUpdatetime(new Date());
             //更新circleMembers 信息
@@ -468,10 +455,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-        	//TODO 日志打印的应该不符合预期把
             logger.error("confirm insert circleMember userId:{} circleMembersId:{} confirmFlag:{}",
-                    userId, circleMembersId, confirmFlag, e);
-//            printExceptionAndRollBackTransaction(e);
+                    userId, circleMembersId, confirmFlag);
+            printExceptionAndRollBackTransaction(e);
             return baseResp.fail(Constant.RTNINFO_SYS_01);
         }
     }
@@ -483,7 +469,6 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         }catch(Exception e){
         	//TODO 一次性打印日志就好啊， 分两次打印，而且第二次是打印到控制台的，不好追踪查看
             logger.error("find CircleMember circleId:{}", circleId, e);
-//            printException(e);
             return new ArrayList<Long>();
         }
 
@@ -536,7 +521,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             baseResp.setData(circleList);
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
-            logger.error("circle list error pType:{} keyword:{} startNum:{} pageSize:{} errorMsg:{}",pType,keyword,startNum,pageSize);
+            logger.error("circle list error pType:{} keyword:{} startNum:{} pageSize:{} errorMsg:{}",pType,keyword,startNum,pageSize,e);
         }
         return baseResp;
     }

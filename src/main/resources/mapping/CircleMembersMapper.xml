@@ -125,7 +125,7 @@
       from
           circle_members
       where
-          itype = 0
+          itype = #{itype}
       and circleid = #{circleId}
       order by createtime desc
       limit #{startNo},#{pageSize}
