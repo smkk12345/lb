@@ -3480,9 +3480,9 @@ public class ImproveServiceImpl implements ImproveService{
                     if(null == improve){
                         continue;
                     }
+                    AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                    improve.setAppUserMongoEntity(appuser);
                     if(!Constant.VISITOR_UID.equals(userid)){
-                        AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-                        improve.setAppUserMongoEntity(appuser);
                         initUserRelateInfo(uid,appuser,friendids,funids);
                         initImproveInfo(improve,uid);
                     }
