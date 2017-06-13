@@ -388,27 +388,27 @@ public class RankApiController {
     /**
      * 获取榜单成员列表
      * @param rankMembers
-     * @param pageNo
+     * @param startNum
      * @param pageSize
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "members/{pageNo}/{pageSize}")
+    @RequestMapping(value = "members/{startNum}/{pageSize}")
     public BaseResp<Page<RankMembers>> getRankMembers(@RequestBody RankMembers rankMembers,
-                                                @PathVariable("pageNo") String pageNo,
-                                                @PathVariable("pageSize") String pageSize){
+                                                @PathVariable("startNum") Integer startNum,
+                                                @PathVariable("pageSize") Integer pageSize){
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
         }
-        if (StringUtils.isEmpty(pageNo)){
-            pageNo = "1";
+        if (StringUtils.isEmpty(startNum)){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
         if (StringUtils.isEmpty(pageSize)){
-            pageSize = Constant.DEFAULT_PAGE_SIZE;
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try {
-            baseResp = rankService.selectRankMemberList(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+            baseResp = rankService.selectRankMemberList(rankMembers,startNum,pageSize);
         } catch (NumberFormatException e) {
             logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
         }
@@ -499,28 +499,28 @@ public class RankApiController {
     /**
      * 获取榜单待审核成员列表
      * @param rankMembers
-     * @param pageNo
+     * @param startNum
      * @param pageSize
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "waitcheckmembers/{pageNo}/{pageSize}")
+    @RequestMapping(value = "waitcheckmembers/{startNum}/{pageSize}")
     public BaseResp<Page<RankMembers>> getRankWaitCheckMembers(@RequestBody RankMembers rankMembers,
-                                                               @PathVariable("pageNo") String pageNo,
-                                                               @PathVariable("pageSize") String pageSize){
+                                                               @PathVariable("startNum") Integer startNum,
+                                                               @PathVariable("pageSize") Integer pageSize){
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
         }
-        if (StringUtils.isEmpty(pageNo)){
-            pageNo = "1";
+        if (StringUtils.isEmpty(startNum)){
+            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
         if (StringUtils.isEmpty(pageSize)){
-            pageSize = Constant.DEFAULT_PAGE_SIZE;
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try {
             baseResp = rankService.selectRankMemberWaitCheckList
-                    (rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
+                    (rankMembers,startNum,pageSize);
         } catch (NumberFormatException e) {
             logger.error("select wait check rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
         }
@@ -531,34 +531,34 @@ public class RankApiController {
      * 获取用户在榜单中所发的进步列表
      * @param rankid  榜单id
      * @param userid 用户id
-     * @param pageno
-     * @param pagesize
+     * @param startNum
+     * @param pageSize
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "memberimproves/{pageNo}/{pageSize}")
+    @RequestMapping(value = "memberimproves/{startNum}/{pageSize}")
     public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,String iscomplain,
-                                                              @PathVariable("pageNo") String pageno,
-                                                              @PathVariable("pageSize") String pagesize){
+                                                              @PathVariable("startNum") Integer startNum,
+                                                              @PathVariable("pageSize") Integer pageSize){
         BaseResp<Page<Improve>> baseResp = new BaseResp<>();
 
         if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isEmpty(pageno)){
-            pageno = "1";
+        if (StringUtils.isEmpty(startNum)){
+            startNum = 0;
         }
-        Page<Improve> page = new Page<>(Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        if (StringUtils.isEmpty(pagesize)){
-            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        Page<Improve> page = new Page<>(startNum/pageSize+1,pageSize);
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try {
             RankMembers rankMembers = new RankMembers();
             rankMembers.setRankid(Long.parseLong(rankid));
             rankMembers.setUserid(Long.parseLong(userid));
             BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,iscomplain,
-                    Constant.IMPROVE_RANK_TYPE,Integer.parseInt(pagesize)*(Integer.parseInt(pageno)-1),
-                    Integer.parseInt(pagesize));
+                    Constant.IMPROVE_RANK_TYPE,startNum,
+                    pageSize);
             Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
             page.setTotalCount(totalcount);
             page.setList(listBaseResp.getData());
