@@ -17,6 +17,12 @@ public interface UserService {
 	
 	/**
 	 * @author yinxc
+	 * 提示用户进步币是否更改
+	 */
+	BaseResp<Integer> isUserMoneyHint(String userid);
+	
+	/**
+	 * @author yinxc
 	 * 个人中心
 	 * 2017年3月9日
 	 */
