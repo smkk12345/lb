@@ -382,7 +382,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfo.setCurpoint(leftpoint);
             userInfoMapper.updatePointByUserid(userInfo);
             //插入一条 等级升级消息  不升级就不插入这个表
-            saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+            saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade(),null);
             //推送一条消息
             String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
             //mtype 0 系统消息      msgtype  18:升龙级
@@ -424,7 +424,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     }
                 }
                 //插入一条 等级升级消息  不升级就不插入这个表
-                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade(),null);
                 //推送一条消息
                 String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
                 //mtype 0 系统消息      msgtype  18:升龙级
@@ -438,7 +438,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 userInfo.setCurpoint(userinfoCurPoint);
                 userInfoMapper.updatePointByUserid(userInfo);
                 //插入一条 等级升级消息  不升级就不插入这个表
-                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade());
+                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade(),null);
                 //推送一条消息
                 String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
                 //mtype 0 系统消息      msgtype  18:升龙级
@@ -472,6 +472,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         int result = Constant_point.getStaticProperty(operateType);
+        result = result * 100;
         String limitField = operateType+"_LIMIT";
         String key = getPerKey(userid);
         if(Constant_point.hasContain(limitField)){
@@ -576,9 +577,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                             break;
                         }
                     }
-                    saveLevelUpInfo(userInfo,pType,iPoint,level);
+                    saveLevelUpInfo(userInfo,pType,iPoint,level,curPoint-iPoint);
                 }else{
-                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1);
+                    saveLevelUpInfo(userInfo,pType,iPoint,userPlDetail.getLeve()+1,curPoint-iPoint);
                 }
             }else{//不升级
                 if(userPlDetail == null){
@@ -743,17 +744,19 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return Constant.RP_USER_PERDAY+userid;
     }
 
-    private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level){
+    private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level,Integer oldScore){
         try{
+            if(!"a".equals(ptype) && oldScore == null){
+                return;
+            }
             Date date =new Date();
             UserPlDetail userPlDetail = new UserPlDetail();
             userPlDetail.setCreatetime(date);
             userPlDetail.setLeve(level);
-            if(iPoint == 0){
-                userPlDetail.setScorce(userInfo.getPoint());
-            }
-            else{
+            if("a".equals(ptype)){
                 userPlDetail.setScorce(userInfo.getPoint()+iPoint);
+            }else{
+                userPlDetail.setScorce(oldScore + iPoint);
             }
             userPlDetail.setPtype(ptype);
 

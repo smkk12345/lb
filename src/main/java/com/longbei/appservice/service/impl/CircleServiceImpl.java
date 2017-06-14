@@ -223,7 +223,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
     @Transactional
     @Override
-    public BaseResp<Object> insertCircleMember(Long circleId, String userId) {
+    public BaseResp<Object> insertCircleMember(Long circleId, String userId,String remark) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             //校验circleId 是否存在
@@ -242,6 +242,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                     map.put("iType", CircleMembers.pending);
                 } else {
                     map.put("iType", CircleMembers.normal);
+                }
+                if(StringUtils.isNotEmpty(remark)){
+                    map.put("remark",remark);
                 }
                 map.put("updateTime", new Date());
                 int row = circleMembersMapper.updateCircleMembers(map);
@@ -273,9 +276,12 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             } else {
                 newCircleMembers.setItype(CircleMembers.normal);
             }
+            if(StringUtils.isNotEmpty(remark)){
+                newCircleMembers.setRemark(remark);
+            }
             newCircleMembers.setCreatetime(new Date());
             newCircleMembers.setUpdatetime(new Date());
-            int row = circleMembersMapper.insert(newCircleMembers);
+            int row = circleMembersMapper.insertSelective(newCircleMembers);
             if (row > 0) {
                 //修改circle的加圈子人数
                 map.put("personNum", 1);

@@ -237,17 +237,18 @@ public class CircleController {
      * @url http://ip:port/app_service/circle/insertCircleMembers
      * @param circleId 兴趣圈Id
      * @param userId 用户Id
+     * @param remark 备注
      * @return
      */
     @RequestMapping(value="insertCircleMembers")
-    public BaseResp<Object> insertCircleMembers(Long circleId,String userId){
+    public BaseResp<Object> insertCircleMembers(Long circleId,String userId,String remark){
         logger.info("insert circleMembers circleId:{}  userId:{}",circleId,userId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || StringUtils.isBlank(userId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = circleService.insertCircleMember(circleId,userId);
+        baseResp = circleService.insertCircleMember(circleId,userId,remark);
         return baseResp;
     }
 
