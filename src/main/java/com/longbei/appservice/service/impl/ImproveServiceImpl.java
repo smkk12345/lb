@@ -3449,25 +3449,9 @@ public class ImproveServiceImpl implements ImproveService{
             friendids = getFriendIds(uid);
             funids = getFansIds(uid);
         }
-        if(!springJedisDao.hasKey(key)){
-            if ("1".equals(key)){
-                key = "12";
-            } else {
-                key = String.valueOf((Integer.parseInt(key) - 1));
-            }
-        }
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
-            while (impids.isEmpty()&&startNum==0){
-                int ikey = Integer.parseInt(key);
-                if(ikey>1){
-                    ikey = ikey -1;
-                }else {
-                    break;
-                }
-                impids = springJedisDao.zRevrange(String.valueOf(ikey),startNum,startNum+pageSize);
-            }
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){
                     String []strattr = impid.split(",");
@@ -3509,8 +3493,8 @@ public class ImproveServiceImpl implements ImproveService{
             Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
 
             Map<String,Double> map = new HashMap<>();
-            if (springJedisDao.hasKey(impkey-60*60+"")){
-                map = springJedisDao.zRangeWithScores(impkey-60*60+"",0,-1);
+            if (springJedisDao.hasKey(impkey-60*60*1000+"")){
+                map = springJedisDao.zRangeWithScores(impkey-60*60*1000+"",0,-1);
             } else if (springJedisDao.hasKey(impkey.toString())){
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
@@ -3518,7 +3502,7 @@ public class ImproveServiceImpl implements ImproveService{
                 map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
             }
 
-            long lastImpKey = impkey-60*60-60*60*24;
+            long lastImpKey = impkey-60*60-60*60*24*1000;
             Map<String,Double> lastMap = new HashMap<>();
             if (!springJedisDao.hasKey(String.valueOf(lastImpKey))){
                 lastMap = springJedisDao.zRangeWithScores(String.valueOf(lastImpKey),0,-1);

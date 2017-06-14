@@ -24,7 +24,7 @@
     select 
     <include refid="Base_Column_List" />
     from circle
-    where id = #{circleid,jdbcType=INTEGER}
+    where circleid = #{circleid}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from circle
@@ -73,6 +73,21 @@
       <if test="ptype != null" >
         ptype,
       </if>
+      <if test="creategoup != null" >
+        creategoup,
+      </if>
+      <if test="isrecommend != null" >
+        isrecommend,
+      </if>
+      <if test="needconfirm != null" >
+        needconfirm,
+      </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
+      <if test="notice != null" >
+        notice,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -104,6 +119,21 @@
       </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="creategoup != null" >
+        #{creategoup},
+      </if>
+      <if test="isrecommend != null" >
+        #{isrecommend},
+      </if>
+      <if test="needconfirm != null" >
+        #{needconfirm},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic},
+      </if>
+      <if test="notice != null" >
+        #{notice},
       </if>
     </trim>
   </insert>
@@ -147,7 +177,7 @@
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       ptype = #{ptype,jdbcType=CHAR}
-    where circleid = #{circleid,jdbcType=INTEGER}
+    where circleid = #{circleid}
   </update>
 
   <select id="findRelevantCircle" parameterType="map" resultMap="BaseResultMap">
@@ -180,7 +210,10 @@
             circlephotos = #{circlephotos},
         </if>
         <if test="notice != null">
-            notice = #{notice}
+            notice = #{notice},
+        </if>
+        <if test="updateTime != null">
+            updatetime = #{updateTime}
         </if>
       </set>
       where createuserid = #{userId}
@@ -206,7 +239,7 @@
       from circle
       <where>
           <if test="keyword != null and keyword != ''">
-            circletitle like concat('%',concat(#{circleName},'%')
+            circletitle like concat('%',concat(#{keyword},'%'))
           </if>
           <if test="ispublic != null">
             and ispublic = #{ispublic}
@@ -214,9 +247,9 @@
           <if test="ptype != null">
               and ptype = #{ptype}
           </if>
-          <!--<if test="isrecommend != null">-->
-              <!--and isrecommend = #{isrecommend}-->
-          <!--</if>-->
+          <if test="isrecommend != null">
+              and isrecommend = #{isrecommend}
+          </if>
       </where>
   </select>
 </mapper>

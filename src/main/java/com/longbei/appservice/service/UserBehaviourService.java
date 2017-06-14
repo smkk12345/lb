@@ -77,5 +77,11 @@ public interface UserBehaviourService {
      */
     boolean updateUserPLDetailToplevel(long userid,String pType,String isTopLevel);
 
-
+    /**
+     * 获取用户操作的最大数量
+     * @param userid
+     * @param privilegeType 操作类型
+     * @return
+     */
+    int selectUserOperationMaxNum(Long userid,Constant.PrivilegeType privilegeType);
 }

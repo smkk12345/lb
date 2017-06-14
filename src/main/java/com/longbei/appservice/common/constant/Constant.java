@@ -776,7 +776,13 @@ public class Constant {
 		joinranknum,//加入榜单限制
 		createRank, //创建榜单时  私有榜单数量参与人数  公共榜单数量 参与人数
 		publishRank,//发布榜单时
-		createCircle
+		createCircle,//创建圈子
+		pubranknum,//公共榜单
+		prirankjoinnum,//私有榜单最大入榜人数
+		priranknum,//私有榜单数量
+		classroomnum,//教室数量
+		likes,//点赞数
+
 	}
 
 	/**
