@@ -44,7 +44,7 @@ public interface ImproveClassroomMapper {
 	 * @param classroomid 教室id
 	 * @param userid 用户id
 	 */
-    int selectCountByClassroomidAndUserid(@Param("businessid") long businessid, @Param("userid") long userid);
+    Integer selectCountByClassroomidAndUserid(@Param("businessid") long businessid, @Param("userid") long userid);
 
 
     /**
