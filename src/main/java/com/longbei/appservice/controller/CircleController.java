@@ -365,7 +365,7 @@ public class CircleController {
             pageSize = endNo - startNo;
         }
         List<Improve> improveList = new ArrayList<Improve>();
-        improveList = improveService.selectCircleImproveList(userId,circleId,null,orderby,startNo,pageSize);
+        improveList = improveService.selectCircleImproveList(userId,circleId,Constant.IMPROVE_LIST_ALL,orderby,startNo,pageSize);
         baseResp.setData(improveList);
 
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
