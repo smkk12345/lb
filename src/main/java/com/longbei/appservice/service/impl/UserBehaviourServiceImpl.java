@@ -292,6 +292,9 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 case likes:
                     num = userLevel.getLikes();
                     break;
+                case pubrankjoinnum:
+                    num = userLevel.getPubrankjoinnum();
+                    break;
             }
             return num;
         }catch(Exception e){

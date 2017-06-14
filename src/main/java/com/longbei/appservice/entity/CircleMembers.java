@@ -26,6 +26,8 @@ public class CircleMembers {
 
     private Integer diamonds;//钻石
 
+    private Integer icount;//圈子中的进步数量
+
     private AppUserMongoEntity appUserMongoEntity;
 
     /**
@@ -170,5 +172,13 @@ public class CircleMembers {
 
     public void setDiamonds(Integer diamonds) {
         this.diamonds = diamonds;
+    }
+
+    public Integer getIcount() {
+        return icount;
+    }
+
+    public void setIcount(Integer icount) {
+        this.icount = icount;
     }
 }

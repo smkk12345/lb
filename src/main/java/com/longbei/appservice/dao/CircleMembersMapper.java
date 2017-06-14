@@ -36,5 +36,5 @@ public interface CircleMembersMapper {
      * @param circleId
      * @return
      */
-    List<Long> findCircleMembersId(Integer circleId);
+    List<Long> findCircleMembersId(Long circleId);
 }
