@@ -22,7 +22,7 @@ public class ClassroomQuestions {
 	private String classroomid;    //教室id
 	private String createtime; //创建时间
 	@Transient
-	private List<ClassroomQuestionsLower> lowerList = new ArrayList<ClassroomQuestionsLower>();
+	private ClassroomQuestionsLower classroomQuestionsLower;
 	@Transient
 	private AppUserMongoEntity appUserMongoEntityUserid; //问题用户信息----Userid
 	@Transient
@@ -73,13 +73,12 @@ public class ClassroomQuestions {
 		this.classroomid = classroomid;
 	}
 	
-	@JsonInclude(Include.ALWAYS)
-	public List<ClassroomQuestionsLower> getLowerList() {
-		return lowerList;
+	public ClassroomQuestionsLower getClassroomQuestionsLower() {
+		return classroomQuestionsLower;
 	}
-	
-	public void setLowerList(List<ClassroomQuestionsLower> lowerList) {
-		this.lowerList = lowerList;
+
+	public void setClassroomQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower) {
+		this.classroomQuestionsLower = classroomQuestionsLower;
 	}
 	
 	public AppUserMongoEntity getAppUserMongoEntityUserid() {

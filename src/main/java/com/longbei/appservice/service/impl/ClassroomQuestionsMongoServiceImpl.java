@@ -62,14 +62,14 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			//判断用户是否已加入教室，未加入教室的无法提交问题
-			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
-			if(null != list && list.size()>0){
-				if(!list.contains(classroomQuestions.getUserid())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-				}
-			}else{
-				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-			}
+//			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
+//			if(null != list && list.size()>0){
+//				if(!list.contains(classroomQuestions.getUserid())){
+//					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+//				}
+//			}else{
+//				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+//			}
 			insert(classroomQuestions);
 			reseResp.setData(classroomQuestions);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -107,6 +107,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 						initQuestionsLowerUserInfoList(lowerlist);
 						//已回答
 	  					isreply = "1";
+	  					classroomQuestions.setClassroomQuestionsLower(lowerlist.get(0));
 					}
 					if(!"1".equals(isreply)){
 	  					//判断当前用户是否是老师
@@ -119,7 +120,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	  					}
 	  				}
 					classroomQuestions.setIsreply(isreply);
-					classroomQuestions.setLowerList(lowerlist);
 				}
 			}
 			reseResp.setData(list);
