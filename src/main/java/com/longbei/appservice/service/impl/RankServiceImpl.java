@@ -379,30 +379,29 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             UserInfo appUser = userInfoMapper.selectByUserid(Long.parseLong(userid));
             int totalMoney = appUser.getTotalmoney();
             //奖品总龙币数
-            int totalPrice = 0;
+            double totalPrice = 0;
+            double yuantomoney = AppserviceConfig.yuantomoney;
             List<RankAward> awardList = rankImage.getRankAwards();
             for(RankAward rankAward:awardList){
                 if (null != rankAward.getAward()){
-                    int coins = (int)((rankAward.getAward().getAwardprice())*100);//奖励进步币数
-                    int nums = rankAward.getAwardrate().intValue();//奖励人数
-                    totalPrice += coins * nums;
+                    double awardPrice = rankAward.getAward().getAwardprice();//奖励价格(单位:元)
+                    double num = rankAward.getAwardrate();//奖励人数
+                    totalPrice += awardPrice * num;
                 }
             }
-            totalPrice = (int)(Math.ceil(totalPrice/10.0));//除10向上取整
+            int totalAwardMoney = (int)(Math.ceil(totalPrice/yuantomoney));//人民币转换为龙币数
             //扣除后剩余龙币数
             int remainMoney = 0;
             if (flag){
-                remainMoney = totalMoney + totalPrice;
+                remainMoney = totalMoney + totalAwardMoney;
             } else {
-                remainMoney = totalMoney - totalPrice;
+                remainMoney = totalMoney - totalAwardMoney;
             }
             //更新用户龙币数
-            userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", totalPrice, 0);
-//            if(moneyRes > 0){
-                baseResp.setData(remainMoney);
-                baseResp.setRtnInfo(String.valueOf(totalPrice));
-                baseResp.initCodeAndDesp();
-//            }
+            userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", totalAwardMoney, 0);
+            baseResp.setData(remainMoney);
+            baseResp.setRtnInfo(String.valueOf(totalPrice));
+            baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("updateUserMoney rankid = {}, flag = {}", rankid, flag, e);
         }
