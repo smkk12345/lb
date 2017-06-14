@@ -793,16 +793,20 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }else if(operateType.equals("DAILY_CHECKIN")){
                 String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userInfo.getUserid(),
                         Constant.RP_USER_CHECK_VALUE + userInfo.getUserid());
+                Integer impcoin = 0;
                 if(StringUtils.isBlank(redisvalue)){
-
-                    return Constant_Imp_Icon.checkInImpIconMap.get(1);
+                	impcoin = Constant_Imp_Icon.checkInImpIconMap.get(1);
                 }else{
                     if(Constant_Imp_Icon.checkInImpIconMap.containsKey(Integer.parseInt(redisvalue))){
-                        return Constant_Imp_Icon.checkInImpIconMap.get(Integer.parseInt(redisvalue));
+                    	impcoin = Constant_Imp_Icon.checkInImpIconMap.get(Integer.parseInt(redisvalue));
                     }else{
-                        return Constant_Imp_Icon.checkInImpIconMap.get(7);
+                    	impcoin = Constant_Imp_Icon.checkInImpIconMap.get(7);
                     }
                 }
+                if(impcoin != 0){
+                	springJedisDao.set(Constant.RP_USER_NEWDATE_CHECK + userInfo.getUserid(), impcoin.toString(), 60*60*24*1);
+                }
+                return impcoin;
             }else {
                 return 0;
             }

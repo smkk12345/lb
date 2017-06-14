@@ -641,6 +641,7 @@ public class Constant {
 	public static final String RP_USER_CHECK = "user_check_util_";
 	public static final String RP_USER_CHECK_DATE = "user_check_date_util_";
 	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
+	public static final String RP_USER_NEWDATE_CHECK = "user_check_newdate_"; //签到当天获得的进步币
 	
 	/*
 	 * 用户龙币   进步币   缓存到redis
