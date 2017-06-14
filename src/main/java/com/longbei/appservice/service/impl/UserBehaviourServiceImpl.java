@@ -472,7 +472,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         int result = Constant_point.getStaticProperty(operateType);
-        result = result * 100;
         String limitField = operateType+"_LIMIT";
         String key = getPerKey(userid);
         if(Constant_point.hasContain(limitField)){
