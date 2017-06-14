@@ -159,6 +159,14 @@ public interface RankService extends BaseService{
      */
     BaseResp hasPrivilege(String rankid);
 
+    /**
+     * 查询pc榜单参榜最大人数
+     * @param userid
+     * @param ranktype
+     * @return
+     */
+    BaseResp maxRankJoinNum(String userid,String ranktype);
+
     BaseResp<Object> selectRankByRankid(long rankid);
 
     Rank selectByRankid(long rankid);

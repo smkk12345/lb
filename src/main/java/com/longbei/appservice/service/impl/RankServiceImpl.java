@@ -921,6 +921,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp maxRankJoinNum(String userid, String ranktype) {
+        BaseResp baseResp = new BaseResp();
+        if (StringUtils.hasBlankParams(userid,ranktype)){
+            logger.error("maxRankJoinNum has blank params");
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        Constant.PrivilegeType privilegeType;
+        if ("2".equals(ranktype)){
+            privilegeType = Constant.PrivilegeType.prirankjoinnum;
+        } else {
+            privilegeType = Constant.PrivilegeType.pubrankjoinnum;
+        }
+        try {
+            int maxJoinNum = userBehaviourService.selectUserOperationMaxNum(Long.parseLong(userid),privilegeType);
+            baseResp.setData(maxJoinNum);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("maxRankJoinNum userid={} privilegeType={} is error:[}",userid,privilegeType,e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
     public BaseResp setBackCheckRank(String rankid) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();

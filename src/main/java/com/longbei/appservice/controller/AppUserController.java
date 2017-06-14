@@ -64,6 +64,31 @@ public class AppUserController extends BaseController {
     private UserPointDetailService userPointDetailService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
+    
+    
+    /**
+     *  http://server_ip:port/app_service/user/isUserMoneyHint
+     *  提示用户进步币是否更改
+     * @param userid ：用户id
+     * @return ：成功返回{"status":"0", "rtnInfo":""} 失败返回对应代码
+     * @method ：POST
+     */
+    @SuppressWarnings("unchecked")
+  	@RequestMapping(value = "isUserMoneyHint")
+    @ResponseBody
+    public BaseResp<Integer> isUserMoneyHint(String userid) {
+    	logger.info("isUserMoneyHint userid = {}", userid);
+    	BaseResp<Integer> baseResp = new BaseResp<Integer>();
+   		if (StringUtils.hasBlankParams(userid)) {
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = userService.isUserMoneyHint(userid);
+        } catch (Exception e) {
+        	logger.error("isUserMoneyHint userid = {}", userid, e);
+        }
+   		return baseResp;
+    }
 
     /**
      * @Title: http://ip:port/app_service/user/infoMore

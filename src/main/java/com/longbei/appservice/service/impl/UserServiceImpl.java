@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
 	private UserPlDetailMapper userPlDetailMapper;
 	@Autowired
 	private SysPerfectInfoMapper sysPerfectInfoMapper;
-	@Autowired
-	private SnsFansMapper snsFansMapper;
+//	@Autowired
+//	private SnsFansMapper snsFansMapper;
 	@Autowired
 	private UserMsgService userMsgService;
 	@Autowired
@@ -77,8 +77,8 @@ public class UserServiceImpl implements UserService {
 	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	@Autowired
 	private UserSettingMenuMapper userSettingMenuMapper;
-	@Autowired
-	private UserFlowerDetailMapper userFlowerDetailMapper;
+//	@Autowired
+//	private UserFlowerDetailMapper userFlowerDetailMapper;
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
 	@Autowired
@@ -107,10 +107,40 @@ public class UserServiceImpl implements UserService {
 	private JPushService jPushService;
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
+	@Autowired
+	private UserMoneyHintMongoDao userMoneyHintMongoDao;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
+
+	@Override
+	public BaseResp<Integer> isUserMoneyHint(String userid) {
+		BaseResp<Integer> reseResp = new BaseResp<Integer>();
+		try {
+			UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+			int money = 0;
+			if(null != userInfo){
+				UserMoneyHint userMoneyHint = userMoneyHintMongoDao.selectUserMoneyHintByUid(userid);
+				if(null != userMoneyHint){
+					money = userInfo.getTotalcoin() - Integer.parseInt(userMoneyHint.getMoney());
+					userMoneyHintMongoDao.updateHintAddMoney(userid, money);
+				}else{
+					//添加
+					UserMoneyHint userMoney = new UserMoneyHint();
+					userMoney.setDrawtime(DateUtils.formatDateTime1(new Date()));
+					userMoney.setMoney(userInfo.getTotalcoin() + "");
+					userMoney.setUserid(userid);
+					userMoneyHintMongoDao.insertUserMoneyHint(userMoney);
+				}
+				reseResp.setData(money);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("selectByUserid userid = {}", userid, e);
+		}
+		return reseResp;
+	}
 
 
 	@Override
@@ -1417,5 +1447,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
+
 
 }
