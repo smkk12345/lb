@@ -59,7 +59,7 @@ public interface CircleService extends BaseService{
      * @param userId
      * @return
      */
-    BaseResp<Object> insertCircleMember(Long circleId, String userId);
+    BaseResp<Object> insertCircleMember(Long circleId, String userId,String remark);
 
     /**
      * 退出圈子

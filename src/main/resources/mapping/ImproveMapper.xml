@@ -384,15 +384,6 @@
     </if>
     from ${tablename}
     <where>
-      <if test="ismainimp != null" >
-        ismainimp = #{ismainimp}
-      </if>
-      <if test="tablename == 'improve_classroom'" >
-        AND isresponded = 0
-      </if>
-      <if test="userid != null" >
-        AND userid = #{userid}
-      </if>
       <if test="iscomplain != null and iscomplain != ''">
         <choose>
           <when test="iscomplain == '1'.toString()">
@@ -405,7 +396,16 @@
       </if>
       and businessid = #{businessid}
       and isdel = '0'
-      and isbusinessdel = '0' 
+      and isbusinessdel = '0'
+      <if test="ismainimp != null" >
+        and ismainimp = #{ismainimp}
+      </if>
+      <if test="tablename == 'improve_classroom'" >
+        AND isresponded = 0
+      </if>
+      <if test="userid != null" >
+        AND userid = #{userid}
+      </if>
     </where>
     <if test="orderby == null or orderby ==0">
         ORDER BY createtime DESC

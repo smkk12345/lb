@@ -28,6 +28,8 @@ public class CircleMembers {
 
     private Integer icount;//圈子中的进步数量
 
+    private String remark;//备注
+
     private AppUserMongoEntity appUserMongoEntity;
 
     /**
@@ -180,5 +182,13 @@ public class CircleMembers {
 
     public void setIcount(Integer icount) {
         this.icount = icount;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
