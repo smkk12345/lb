@@ -151,7 +151,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     }
 
     @Override
-    public BaseResp<Object> updateCircleInfo(Integer circleId, String userId, String circlephotos, String circlebrief, String circleNotice) {
+    public BaseResp<Object> updateCircleInfo(Long circleId, String userId, String circlephotos, String circlebrief, String circleNotice,Boolean needconfirm) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             if (StringUtils.isEmpty(circlephotos) && StringUtils.isEmpty(circlebrief) && StringUtils.isEmpty(circleNotice)) {
@@ -168,6 +168,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             if (StringUtils.isNotEmpty(circleNotice)) {
                 map.put("notice", circleNotice);
+            }
+            if(needconfirm != null){
+                map.put("needconfirm",needconfirm);
             }
             map.put("updateTime",new Date());
             int row = circleMappler.updateCircleInfo(map);
@@ -463,7 +466,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     }
 
     @Override
-    public List<Long> findCircleMemberId(Integer circleId) {
+    public List<Long> findCircleMemberId(Long circleId) {
         try{
             return circleMembersMapper.findCircleMembersId(circleId);
         }catch(Exception e){

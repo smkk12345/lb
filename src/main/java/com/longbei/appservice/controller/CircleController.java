@@ -124,35 +124,38 @@ public class CircleController {
      * @param userId 当前用户id
      * @param circlephotos 兴趣圈图片
      * @param circlebrief 兴趣圈简介
+     * @param needconfirm 是否需要验证 boolean
      * @return
      */
     @RequestMapping(value="updateCircleInfo")
-    public BaseResp<Object> updateCircleInfo(Integer circleId,String userId,String circlephotos,String circlebrief){
+    public BaseResp<Object> updateCircleInfo(Long circleId,String userId,String circlephotos,String circlebrief,Boolean needconfirm){
         logger.info("circleId={},userId={},circlephotos={},circlebrief={}",circleId,userId,circlephotos,circlebrief);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(circleId == null || StringUtils.hasBlankParams(userId,circlephotos,circlebrief)){
+        if(circleId == null || (StringUtils.hasBlankParams(userId,circlephotos,circlebrief) && needconfirm == null)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             return baseResp;
         }
-        baseResp = circleService.updateCircleInfo(circleId,userId,circlephotos,circlebrief,null);
+        baseResp = circleService.updateCircleInfo(circleId,userId,circlephotos,circlebrief,null,needconfirm);
         return baseResp;
     }
 
     /**
-     * 更改兴趣圈通知
+     * 更改兴趣圈公告
+     * @url http://ip:port/app_service/circle/updateCircleNotice
      * @param circleId 兴趣圈id
      * @param userId 当前登录用户Id
      * @param circleNotice 兴趣圈公告
+     * @param isNotice boolean 是否@圈子成员
      * @return
      */
     @RequestMapping(value="updateCircleNotice")
-    public BaseResp<Object> updateCircleNotice(Integer circleId,String userId,String circleNotice,Boolean isNotice){
+    public BaseResp<Object> updateCircleNotice(Long circleId,String userId,String circleNotice,Boolean isNotice){
         logger.info("circleId={},userId={},circleNotice={},isNotice={}",circleId,userId,circleNotice,isNotice);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null || StringUtils.hasBlankParams(userId,circleNotice)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = circleService.updateCircleInfo(circleId,userId,null,null,circleNotice);
+        baseResp = circleService.updateCircleInfo(circleId,userId,null,null,circleNotice,null);
         if(baseResp.getCode() == 0 && isNotice != null && isNotice){
             UserMsg userMsg = new UserMsg();
             userMsg.setCreatetime(new Date());

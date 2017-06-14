@@ -213,11 +213,14 @@
             notice = #{notice},
         </if>
         <if test="updateTime != null">
-            updatetime = #{updateTime}
+            updatetime = #{updateTime},
+        </if>
+        <if test="needconfirm != null">
+            needconfirm = #{needconfirm}
         </if>
       </set>
       where createuserid = #{userId}
-        and id = #{circleId}
+        and circleid = #{circleId}
   </update>
 
   <!-- 修改兴趣圈的加圈子人数 -->
@@ -229,7 +232,7 @@
         <if test="updateTime != null">
             ,updatetime = #{updateTime}
         </if>
-     where id = #{circleId}
+     where circleid = #{circleId}
   </update>
 
   <!-- 查询圈子列表 -->

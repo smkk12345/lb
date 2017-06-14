@@ -778,6 +778,7 @@ public class Constant {
 		publishRank,//发布榜单时
 		createCircle,//创建圈子
 		pubranknum,//公共榜单
+		pubrankjoinnum,//公共榜单的最大入榜人数
 		prirankjoinnum,//私有榜单最大入榜人数
 		priranknum,//私有榜单数量
 		classroomnum,//教室数量

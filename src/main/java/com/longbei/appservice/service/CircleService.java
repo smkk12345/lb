@@ -41,7 +41,7 @@ public interface CircleService extends BaseService{
      * @param circlebrief
      * @return
      */
-    BaseResp<Object> updateCircleInfo(Integer circleId, String userId, String circlephotos, String circlebrief,String circleNotice);
+    BaseResp<Object> updateCircleInfo(Long circleId, String userId, String circlephotos, String circlebrief,String circleNotice,Boolean needconfirm);
 
     /**
      * 查询兴趣圈 成员
@@ -99,7 +99,7 @@ public interface CircleService extends BaseService{
      * @param circleId
      * @return
      */
-    List<Long> findCircleMemberId(Integer circleId);
+    List<Long> findCircleMemberId(Long circleId);
 
     /**
      * 查询圈子列表
