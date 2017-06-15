@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * 榜单操作接口实现类
@@ -176,17 +175,32 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
             	        		"", "10", rank.getRankid().toString(), remark, "2", "49", "榜关闭", 0, "", "");
             		}
+            		if("5".equals(rank.getIsfinish())){
+//                    	rank = rankMapper.selectRankByRankid(rank.getRankid());
+                    	//发送获奖消息
+        	         	try {
+        	               	sendRankEndUserMsg(rank);
+        	           	} catch (Exception e) {
+        	             	logger.error("send rank rankid={}",rank.getRankid(),e);
+        	           	}
+                    }else{
+                    	//加入榜的人员榜关闭推送
+                		Map<String, Object> parameterMap = new HashMap<>();
+                		parameterMap.put("rankId", rank.getRankid());
+                		List<RankMembers> list = rankMembersMapper.selectRankMembers(parameterMap);
+                		if(null != list && list.size()>0){
+                			for (RankMembers rankMembers : list) {
+                				String remark = "您参加的龙榜'"+rank.getRanktitle()+"'因违反龙杯相关规定，已被关闭";
+                                userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
+                                        "", "10",
+                                        rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0, "", "");
+    						}
+                		}
+                    }
+            		
             	}
             }
-            if("5".equals(rank.getIsfinish())){
-//            	rank = rankMapper.selectRankByRankid(rank.getRankid());
-            	//发送获奖消息
-	         	try {
-	               	sendRankEndUserMsg(rank);
-	           	} catch (Exception e) {
-	             	logger.error("send rank rankid={}",rank.getRankid(),e);
-	           	}
-            }
+            
         } catch (Exception e) {
             logger.error("updateRankSymbol rank = {}", JSON.toJSON(rank).toString(), e);
         }

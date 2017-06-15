@@ -252,6 +252,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", courseList.get(0).getPickey());
 				}
 				map.put("classphotos", classroom.getClassphotos());
+				map.put("classtitle", classroom.getClasstitle()); 
 				map.put("cardid", classroom.getCardid());
 				//是否已经关注教室
 				Map<String,Object> usermap = new HashMap<String,Object>();
