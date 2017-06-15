@@ -885,13 +885,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (res > 0) {
                 RankImage rankImage1 = selectRankImage(rankid).getData();
                 int money = (int)rankAwardMoney(rankImage1).getData();
-                baseResp.setData(money);
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", money, 0);
                 } catch (NumberFormatException e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"榜单提交审核",money,e);
                 }
+                baseResp.setData(money);
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提交审核失败");
                 return baseResp;
@@ -954,13 +954,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (res > 0) {
                 RankImage rankImage1 = selectRankImage(rankid).getData();
                 int money = (int)rankAwardMoney(rankImage1).getData();
-                baseResp.setData(money);
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "8", money, 0);
                 } catch (NumberFormatException e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"撤回龙榜",money,e);
                 }
+                baseResp.setData(money);
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
                 return baseResp;
@@ -1630,30 +1630,33 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
-        List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
-        List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
-        int startMoneyNum = 0;
-        int finishMoneyNum = 0;
-        for (RankMembers rankMembers : rankMemberses){
-            Long rankawardid = rankMembers.getAwardid();
-            Award award = awardMapper.selectByPrimaryKey(rankawardid);
-            if (null != award){
-                finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin);
+        try {
+            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+            List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
+            int startMoneyNum = 0;
+            int finishMoneyNum = 0;
+            for (RankMembers rankMembers : rankMemberses){
+                Long rankawardid = rankMembers.getAwardid();
+                Award award = awardMapper.selectByPrimaryKey(rankawardid);
+                if (null != award){
+                    finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney);
+                }
             }
-        }
-
-        for (RankAwardRelease rankAwardRelease : rankAwardReleases){
-            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
-            if (null != award){
-                startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin)
-                        * rankAwardRelease.getAwardrate();
+            for (RankAwardRelease rankAwardRelease : rankAwardReleases){
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
+                if (null != award){
+                    startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney)
+                            * rankAwardRelease.getAwardrate();
+                }
             }
-        }
-        int leftNum = startMoneyNum - finishMoneyNum;
-        if (0 < leftNum){
-            userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
-            baseResp.initCodeAndDesp();
-            return baseResp;
+            int leftNum = startMoneyNum - finishMoneyNum;
+            if (0 < leftNum){
+                userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
+                baseResp.initCodeAndDesp();
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("handleRankFinishAward rankid={} userid={} is error:{}",rank.getRankid(),rank.getCreateuserid(),e);
         }
         return baseResp;
     }
