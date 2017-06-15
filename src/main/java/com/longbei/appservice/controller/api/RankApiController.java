@@ -662,6 +662,10 @@ public class RankApiController {
                 rank.setRankid(Long.parseLong(rankid));
                 rank.setIsdel("1");
                 rankService.updateRankSymbol(rank);
+                RankImage rankImage =  new RankImage();
+                rankImage.setRankid(Long.parseLong(rankid));
+                rankImage.setIsdel("1");
+                rankService.updateRankImageSymbol(rankImage);
             }
         }catch (Exception e){
             logger.error("close rank_ rankid={} is error:",rankid);
