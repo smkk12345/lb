@@ -335,7 +335,7 @@ public interface ImproveService {
 
     BaseResp<Object> addDiamond(String userid,String friendid,String impid,int diamondnum,String businesstype,String businessid);
 
-    BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow,String duration);
+    BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow,String duration,String picAttribute);
 
 
     BaseResp<List<ImpAllDetail>> selectImproveLFDListByUserid(String userid, String impid, String listtype,int pagesize, Date lastdate);

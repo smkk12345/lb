@@ -33,11 +33,12 @@ import java.util.*;
 @Repository
 public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
     private static Logger logger = LoggerFactory.getLogger(TimeLineDetailDao.class);
-    public void updateImproveFileKey(String sourcekey,String pickey,String fliekey){
+    public void updateImproveFileKey(String sourcekey,String pickey,
+                                     String fliekey,String duration,String picattribute){
         Criteria criteria = Criteria.where("sourcekey").is(sourcekey);
         Query query = new Query(criteria);
         Update update = new Update();
-        update.set("fileKey",fliekey).set("photos",pickey);
+        update.set("fileKey",fliekey).set("photos",pickey).set("duration",duration).set("picattribute",picattribute);
         mongoTemplate.updateMulti(query,update,TimeLineDetail.class);
     }
 
