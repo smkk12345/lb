@@ -101,7 +101,7 @@ public interface RankService extends BaseService{
      * @return
      * @author IngaWu
      */
-    Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved);
+    Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,String orderByInvolved);
     /**
      * 获取榜单列表 推荐的 针对app
      * @param startNo

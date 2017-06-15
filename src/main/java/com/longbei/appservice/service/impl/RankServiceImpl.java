@@ -508,13 +508,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @author IngaWu
      */
     @Override
-    public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
+    public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,String orderByInvolved) {
         Page<Rank> page = new Page<>(pageno,pagesize);
         try {
             rank.setIsdel("0");
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
-            List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
+            List<Rank> ranks = rankMapper.selectListWithPageOrderByInvolved(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
             for (Rank rank1 : ranks){
                 BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"10",null);
                 if (ResultUtil.isSuccess(baseResp)){

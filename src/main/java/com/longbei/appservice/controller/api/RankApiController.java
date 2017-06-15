@@ -68,12 +68,12 @@ public class RankApiController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "selectlist2")
-    public BaseResp<Page<Rank>> selectRankList2(@RequestBody Rank rank,String pageno,String pagesize,String orderByInvolved){
+    @RequestMapping(value = "selectListWithPageOrderByInvolved")
+    public BaseResp<Page<Rank>> selectListWithPageOrderByInvolved(@RequestBody Rank rank,String pageno,String pagesize,String orderByInvolved){
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<Rank>> baseResp = new BaseResp<>();
         try {
-            Page<Rank> page = rankService.selectRankList2(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),orderByInvolved);
+            Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),orderByInvolved);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
         } catch (NumberFormatException e) {

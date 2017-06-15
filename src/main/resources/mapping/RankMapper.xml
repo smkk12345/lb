@@ -191,7 +191,7 @@
     </if>
   </select>
 
-  <select id="selectListWithPage2" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
+  <select id="selectListWithPageOrderByInvolved" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
     FROM rank
