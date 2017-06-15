@@ -3449,6 +3449,14 @@ public class ImproveServiceImpl implements ImproveService{
             friendids = getFriendIds(uid);
             funids = getFansIds(uid);
         }
+        if(!springJedisDao.hasKey(key)){
+            if(key.equals("1")){
+                key = "24";
+            }else {
+                int newKey = Integer.parseInt(key) - 1;
+                key = String.valueOf(newKey);
+            }
+        }
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
