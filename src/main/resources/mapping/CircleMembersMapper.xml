@@ -6,14 +6,16 @@
     <result column="circleid" property="circleid" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="BIGINT" />
     <result column="itype" property="itype" jdbcType="INTEGER" />
+    <result column="icount" property="icount" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
-      <result column="likes" property="likes" jdbcType="INTEGER" />
-      <result column="flowers" property="flowers" jdbcType="INTEGER" />
-      <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, circleid, userid, itype, createtime, likes,flowers,diamonds
+    id, circleid, userid, itype, createtime, likes,flowers,diamonds,icount,remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -27,10 +29,11 @@
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.CircleMembers" >
     insert into circle_members (circleid, userid,
-      itype, createtime, updatetime
+      itype, createtime, updatetime,remark
       )
     values (#{circleid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT},
-      #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      #{itype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+      #{remark}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.CircleMembers" >
@@ -54,6 +57,12 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="icount != null" >
+         icount,
+      </if>
+      <if test="remark != null and remark != ''">
+          remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -73,6 +82,12 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="icount != null" >
+        #{icount},
+      </if>
+      <if test="remark != null and remark != ''">
+            #{remark},
       </if>
     </trim>
   </insert>
@@ -95,13 +110,19 @@
           updatetime = #{updatetime,jdbcType=TIMESTAMP},
         </if>
         <if test="likes != null">
-            likes = #{likes}
+            likes = #{likes},
         </if>
         <if test="flowers != null">
-            flowers = #{flowers}
+            flowers = #{flowers},
         </if>
         <if test="diamonds != null">
-            diamonds = #{diamonds}
+            diamonds = #{diamonds},
+        </if>
+        <if test="icount != null">
+            icount = #{icount},
+        </if>
+        <if test="remark != null">
+            remark = #{remark},
         </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -115,7 +136,8 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       likes = #{likes,jdbcType=INTEGER},
       flowers = #{flowers,jdbcType=INTEGER},
-      diamonds = #{diamonds,jdbcType=INTEGER}
+      diamonds = #{diamonds,jdbcType=INTEGER},
+      remark = #{remark}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -152,6 +174,9 @@
     set
         itype = #{iType} ,
         updatetime = #{updateTime}
+        <if test="remark != null and remark != ''">
+            ,remark = #{remark}
+        </if>
     where circleid = #{circleId}
         and userid = #{userId}
   </update>

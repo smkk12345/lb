@@ -172,8 +172,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             	if(null != rank){
             		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
             		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			String remark = "您创建的龙榜'"+rank.getRanktitle()+"'因违反龙杯相关规定，已被关闭";
             			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
-            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            	        		"", "10", rank.getRankid().toString(), remark, "2", "49", "榜关闭", 0, "", "");
             		}
             	}
             }
@@ -357,27 +358,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = publishRankImage(rankid);
         //发榜成功，扣除龙币
         if(ResultUtil.isSuccess(baseResp)){
-            baseResp = updateUserMoney(rankid,false);
+            RankImage rankImage = selectRankImage(rankid).getData();
+            int money = (int)rankAwardMoney(rankImage).getData();
+            baseResp.setData(money);
+            String userid = rankImage.getCreateuserid();
+            try {
+                baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", money, 0);
+            } catch (Exception e) {
+                logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"发布榜单",money,e);
+            }
         }
         return baseResp;
     }
 
 
     /**
-     * 更新用户龙币余额
-     * @param rankid
-     * @param flag  true加；false减
-     * @return
+     * 查询用户榜单奖品龙币数
      */
-    private BaseResp updateUserMoney(String rankid,boolean flag){
-        logger.info("updateUserMoney rankid = {}, flag = {}", rankid, flag);
+    private BaseResp rankAwardMoney(RankImage rankImage){
+        logger.info("rankAwardMoney rankid ={}", rankImage.getRankid());
         BaseResp baseResp = new BaseResp();
         try {
-            RankImage rankImage = selectRankImage(rankid).getData();
-            String userid = rankImage.getCreateuserid();
-            //发榜人龙币数
-            UserInfo appUser = userInfoMapper.selectByUserid(Long.parseLong(userid));
-            int totalMoney = appUser.getTotalmoney();
             //奖品总龙币数
             double totalPrice = 0;
             double yuantomoney = AppserviceConfig.yuantomoney;
@@ -390,20 +391,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             int totalAwardMoney = (int)(Math.ceil(totalPrice/yuantomoney));//人民币转换为龙币数
-            //扣除后剩余龙币数
-            int remainMoney = 0;
-            if (flag){
-                remainMoney = totalMoney + totalAwardMoney;
-            } else {
-                remainMoney = totalMoney - totalAwardMoney;
-            }
-            //更新用户龙币数
-            userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", totalAwardMoney, 0);
-            baseResp.setData(remainMoney);
-            baseResp.setRtnInfo(String.valueOf(totalPrice));
+            baseResp.setData(totalAwardMoney);
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
-            logger.error("updateUserMoney rankid = {}, flag = {}", rankid, flag, e);
+            logger.error("updateUserMoney rankid = {}", rankImage.getRankid(), e);
         }
         return baseResp;
     }
@@ -892,8 +883,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             int res = rankImageMapper.updateSymbolByRankId(rankImage);
             if (res > 0) {
-                //提交成功,扣除龙币
-                baseResp = updateUserMoney(rankid, false);
+                RankImage rankImage1 = selectRankImage(rankid).getData();
+                int money = (int)rankAwardMoney(rankImage1).getData();
+                baseResp.setData(money);
+                String userid = rankImage1.getCreateuserid();
+                try {
+                    baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", money, 0);
+                } catch (NumberFormatException e) {
+                    logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"榜单提交审核",money,e);
+                }
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提交审核失败");
                 return baseResp;
@@ -921,6 +919,31 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp maxRankJoinNum(String userid, String ranktype) {
+        BaseResp baseResp = new BaseResp();
+        if (StringUtils.hasBlankParams(userid,ranktype)){
+            logger.error("maxRankJoinNum has blank params");
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        Constant.PrivilegeType privilegeType;
+        if ("2".equals(ranktype)){
+            privilegeType = Constant.PrivilegeType.prirankjoinnum;
+        } else {
+            privilegeType = Constant.PrivilegeType.pubrankjoinnum;
+        }
+        try {
+            int maxJoinNum = userBehaviourService.selectUserOperationMaxNum(Long.parseLong(userid),privilegeType);
+            baseResp.setData(maxJoinNum);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("maxRankJoinNum userid={} privilegeType={} is error:[}",userid,privilegeType,e);
+        }
+        return baseResp;
+    }
+
+
+    @Override
     public BaseResp setBackCheckRank(String rankid) {
         BaseResp baseResp = new BaseResp();
         RankImage rankImage = new RankImage();
@@ -929,8 +952,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             int res = rankImageMapper.updateSymbolByRankId(rankImage);
             if (res > 0) {
-                //撤回成功,返回龙币
-                baseResp = updateUserMoney(rankid, true);
+                RankImage rankImage1 = selectRankImage(rankid).getData();
+                int money = (int)rankAwardMoney(rankImage1).getData();
+                baseResp.setData(money);
+                String userid = rankImage1.getCreateuserid();
+                try {
+                    baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "8", money, 0);
+                } catch (NumberFormatException e) {
+                    logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"撤回龙榜",money,e);
+                }
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
                 return baseResp;
@@ -946,24 +976,22 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     private void optionAfterCheck(RankCheckDetail rankCheckDetail){
         //审核通过
-        BaseResp<RankImage> baseResp = selectRankImage(String.valueOf(rankCheckDetail.getRankid()));
-        RankImage rankImage = baseResp.getData();
+        RankImage rankImage = selectRankImage(String.valueOf(rankCheckDetail.getRankid())).getData();
         if (Constant.RANKIMAGE_STATUS_4.equals(rankCheckDetail.getCheckstatus())){
-            if(ResultUtil.isSuccess(baseResp)){
-                if (Constant.RANK_ISAUTO_YES.equals(rankImage.getIsauto())){
-                    publishRankImage(String.valueOf(rankCheckDetail.getRankid()));
-                }
+            if (null != rankImage && Constant.RANK_ISAUTO_YES.equals(rankImage.getIsauto())){
+                publishRankImage(String.valueOf(rankCheckDetail.getRankid()));
             }
         }else{
             //pc榜单审核不通过,返还龙币
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                //用户剩余龙币
-                if(ResultUtil.isSuccess(baseResp)){
-                    baseResp = updateUserMoney(rankImage.getCreateuserid(),true);
+                //用户榜单奖品龙币数
+                int money = (int)rankAwardMoney(rankImage).getData();
+                String userid = rankImage.getCreateuserid();
+                try {
+                    userMoneyDetailService.insertPublic(Long.parseLong(userid), "7", money, 0);
+                } catch (Exception e) {
+                    logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"龙榜审核未通过",money,e);
                 }
-                //添加龙币返还记录
-                int totalPrice = Integer.parseInt(baseResp.getRtnInfo());
-                userMoneyDetailService.insertPublic(Long.parseLong(rankImage.getCreateuserid()), "7", totalPrice, 0);
             }
         }
 
