@@ -39,7 +39,7 @@ public interface RankMapper {
      * @return
      * @author IngaWu
      */
-    List<Rank> selectListWithPage2(@Param("rank") Rank rank,
+    List<Rank> selectListWithPageOrderByInvolved(@Param("rank") Rank rank,
                                   @Param("startno")Integer startno,
                                   @Param("pagesize")Integer pagesize,
                                   @Param("orderByInvolved") String orderByInvolved);
