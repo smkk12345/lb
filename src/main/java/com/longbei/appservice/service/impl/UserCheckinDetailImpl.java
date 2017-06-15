@@ -91,6 +91,9 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			String date = DateUtils.getDate("yyyy-MM-dd");
 			UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectDetail(userid, date);
 			if(null != userCheckinDetail){
+				//获得当天签到得到的进步币数量
+				String checkvalue = springJedisDao.get(Constant.RP_USER_NEWDATE_CHECK + userid);
+				reseResp.getExpandData().put("moneycount", checkvalue);
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
 //			String day = DateUtils.getDate("yyyyMMdd");

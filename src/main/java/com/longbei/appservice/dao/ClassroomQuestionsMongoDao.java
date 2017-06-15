@@ -106,9 +106,9 @@ public class ClassroomQuestionsMongoDao {
 	 * 2017年3月1日
 	 * param id 提问答疑id
 	 */
-	public void deleteQuestions(String id){
+	public void deleteQuestions(String id, String userid){
 		try {
-			Query query = Query.query(Criteria.where("_id").is(id));
+			Query query = Query.query(Criteria.where("_id").is(id).and("userid").is(userid));
 			mongoTemplate1.remove(query, ClassroomQuestions.class);
 		} catch (Exception e) {
 			logger.error("deleteQuestions id = {}", id, e);

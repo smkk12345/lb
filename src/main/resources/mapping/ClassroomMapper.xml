@@ -298,7 +298,8 @@
   <update id="updateClassnoticeByClassroomid" >
     update classroom
     set 
-      classnotice = #{classnotice} 
+      classnotice = #{classnotice},
+      updatetime = #{updatetime} 
     where classroomid = #{classroomid} 
   </update>
   

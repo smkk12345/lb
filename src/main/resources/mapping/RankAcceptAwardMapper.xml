@@ -53,7 +53,7 @@
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankAcceptAward" resultType="java.lang.Integer">
     SELECT
-      count(*)
+    count(*)
     from rank_accept_award
     <where>
       <if test="rankid != null">
@@ -63,13 +63,13 @@
         AND receivecode = #{receivecode}
       </if>
       <if test="username != null and username != ''.toString()">
-        AND username = #{username}
+        AND username LIKE concat(concat('%',#{username}),'%')
       </if>
       <if test="ranktitle != null and ranktitle != ''.toString()">
-        AND ranktitle = #{ranktitle}
+        AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
       </if>
       <if test="awardnickname != null and awardnickname != ''.toString()">
-        AND awardnickname = #{awardnickname}
+        AND awardnickname LIKE concat(concat('%',#{awardnickname}),'%')
       </if>
       <if test="awardcateid != null">
         AND awardcateid = #{awardcateid}

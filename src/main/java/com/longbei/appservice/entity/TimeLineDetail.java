@@ -38,7 +38,7 @@ public class TimeLineDetail {
 	private Date recommendtime; //推荐时间
 	private int sort; //推荐排序
 	private String picattribute; //图片属性
-
+	private String duration;
 	public String getPicattribute() {
 		return picattribute;
 	}
@@ -242,5 +242,12 @@ public class TimeLineDetail {
 		this.createdate = createdate;
 	}
 
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
 
 }

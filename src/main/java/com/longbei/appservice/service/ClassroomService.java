@@ -22,6 +22,15 @@ public interface ClassroomService {
 	
 	/**
 	 * @author yinxc
+	 * 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
+	 * 2017年6月14日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	BaseResp<Object> selectRoomHeadDetail(long classroomid, long userid);
+	
+	/**
+	 * @author yinxc
 	 * 获取教室详情信息---教室课程有关数据(拆分)
 	 * 2017年3月7日
 	 * @param classroomid 教室业务id
