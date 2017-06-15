@@ -172,8 +172,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             	if(null != rank){
             		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
             		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			String remark = "您创建的龙榜'"+rank.getRanktitle()+"'因违反龙杯相关规定，已被关闭";
             			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
-            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            	        		"", "10", rank.getRankid().toString(), remark, "2", "49", "榜关闭", 0, "", "");
             		}
             	}
             }

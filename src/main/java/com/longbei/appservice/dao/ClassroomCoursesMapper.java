@@ -81,7 +81,7 @@ public interface ClassroomCoursesMapper {
 	 * 2017年3月3日
 	 * param classroomid 教室id
 	 */
-    int selectCountCourses(@Param("classroomid") long classroomid);
+    Integer selectCountCourses(@Param("classroomid") long classroomid);
     
     
 }
