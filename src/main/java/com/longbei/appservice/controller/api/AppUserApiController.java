@@ -87,6 +87,7 @@ public class AppUserApiController {
         try {
             UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
             baseResp.setData(userInfo);
+            baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("userDetail userid = {}", userid, e);
         }

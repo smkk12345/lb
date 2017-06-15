@@ -95,6 +95,7 @@ public class ArticleServiceImpl implements ArticleService{
             for (ArticleBusiness articleBusiness : articleBusinesses){
                 Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());
                 if(rank == null){
+                    articleBusinesses.remove(articleBusiness);
                     continue;
                 }
                 BaseResp<List<RankAwardRelease>> baseResp1 = rankService.selectRankAward(rank.getRankid());
