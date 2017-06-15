@@ -247,11 +247,12 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			userSettingCommonMapper.updateByUseridKey(userid, "is_new_fans", value);
 			userSettingCommonMapper.updateByUseridKey(userid, "is_like", value);
 			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", value);
-			userSettingCommonMapper.updateByUseridKey(userid, "is_diamond", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_flower", value);
+			userSettingCommonMapper.updateByUseridKey(userid, "is_newfriendask", value);
 			userSettingCommonMapper.updateByUseridKey(userid, "is_comment", value);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
-			logger.error("updateByUseridMap userid = {}, msg = {}", userid, e);
+			logger.error("updateByUseridMap userid = {}, value = {}", userid, value, e);
 		}
 		return reseResp;
 	}

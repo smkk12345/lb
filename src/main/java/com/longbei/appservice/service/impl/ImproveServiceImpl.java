@@ -1252,6 +1252,12 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
             improve.setUserid(timeLineDetail.getUser().getUserid());
             improve.setBusinessid(timeLineDetail.getBusinessid());
+            if(!StringUtils.isBlank(timeLine.getIspublic()+"")){
+                improve.setIspublic(timeLine.getIspublic()+"");
+            }else{
+                improve.setIspublic("2");
+            }
+
             improve.setBusinesstype(timeLineDetail.getBusinesstype());
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
