@@ -1,8 +1,7 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +10,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ClassroomQuestionsLowerMongoDao;
 import com.longbei.appservice.dao.ClassroomQuestionsMongoDao;
 import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.ClassroomQuestions;
-import com.longbei.appservice.entity.ClassroomQuestionsLower;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 
@@ -38,8 +32,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private ClassroomService classroomService;
 	@Autowired
 	private UserCardMapper userCardMapper;
-	@Autowired
-	private ClassroomMembersMapper classroomMembersMapper;
+//	@Autowired
+//	private ClassroomMembersMapper classroomMembersMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
@@ -56,7 +50,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertQuestions(ClassroomQuestions classroomQuestions) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -92,10 +85,11 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
-	  		List<String> idlist = new ArrayList<>();
-	  		if(null != classroom){
-	  			idlist = userCardMapper.selectUseridByCardid(classroom.getCardid());
-	  		}
+//	  		List<String> idlist = new ArrayList<>();
+//	  		if(null != classroom){
+//	  			idlist = userCardMapper.selectUseridByCardid(classroom.getCardid());
+//	  		}
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsListByClassroomid(classroomid, startNo, pageSize);
 			if(null != list && list.size()>0){
 				for (ClassroomQuestions classroomQuestions : list) {
@@ -111,12 +105,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 					}
 					if(!"1".equals(isreply)){
 	  					//判断当前用户是否是老师
-	  					if(null != idlist && idlist.size()>0){
-	  						if(!idlist.contains(userid)){
+	  					if(userCard.getUserid() != Long.parseLong(userid)){
 	  							isreply = "2";
-	  						}
-	  					}else{
-	  						isreply = "2";
 	  					}
 	  				}
 					classroomQuestions.setIsreply(isreply);
@@ -150,7 +140,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> deleteQuestions(String id) {
+	public BaseResp<Object> deleteQuestions(String id, String userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			//先判断老师是否已回复，已回复的学员无法删除
@@ -160,7 +150,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			}
 			//先删除老师回复的信息
 //			deleteLowerByQid(id);
-			delete(id);
+			delete(id, userid);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("deleteQuestions id = {}", id, e);
@@ -182,9 +172,9 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 //		}
 //	}
 	
-	private void delete(String id){
+	private void delete(String id, String userid){
 		try {
-			classroomQuestionsMongoDao.deleteQuestions(id);
+			classroomQuestionsMongoDao.deleteQuestions(id, userid);
 		} catch (Exception e) {
 			logger.error("delete id = {}", id, e);
 		}
@@ -220,10 +210,16 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> deleteQuestionsLower(String id) {
+	public BaseResp<Object> deleteQuestionsLower(String classroomid, String id, String userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			if(Long.parseLong(userid) != userCard.getUserid()){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1103, Constant.RTNINFO_SYS_1103);
+			}
 			deleteLower(id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

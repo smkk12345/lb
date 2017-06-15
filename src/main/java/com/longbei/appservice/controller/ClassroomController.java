@@ -76,45 +76,48 @@ public class ClassroomController {
 	/**
     * @Title: http://ip:port/app_service/classroom/delQuestionsLower
     * @Description: 老师删除某个教室提问答疑---自己的回复
+    * @param @param classroomid  教室id
     * @param @param lowerid  回复id
+    * @param @param userid 当前用户id
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "delQuestionsLower")
-    public BaseResp<Object> delQuestionsLower(String lowerid) {
-		logger.info("delQuestionsLower lowerid={}",lowerid);
+    public BaseResp<Object> delQuestionsLower(String classroomid, String lowerid, String userid) {
+		logger.info("delQuestionsLower classroomid = {}, lowerid={}, userid = {}", classroomid, lowerid, userid);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(lowerid)) {
+  		if (StringUtils.hasBlankParams(classroomid, lowerid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.deleteQuestionsLower(lowerid);
+  			baseResp = classroomQuestionsMongoService.deleteQuestionsLower(classroomid, lowerid, userid);
   		} catch (Exception e) {
-  			logger.error("delQuestionsLower lowerid = {}", lowerid, e);
+  			logger.error("delQuestionsLower classroomid = {}, lowerid = {}, userid = {}", classroomid, lowerid, userid, e);
   		}
   		return baseResp;
     }
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/delQuestions
-    * @Description: 老师删除单个教室提问答疑
+    * @Description: 删除单个教室提问答疑
     * @param @param questionsid  教室提问答疑id
+    * @param @param userid 当前用户id
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "delQuestions")
-    public BaseResp<Object> delQuestions(String questionsid) {
+    public BaseResp<Object> delQuestions(String questionsid, String userid) {
 		logger.info("delQuestions questionsid={}",questionsid);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(questionsid)) {
+  		if (StringUtils.hasBlankParams(questionsid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.deleteQuestions(questionsid);
+  			baseResp = classroomQuestionsMongoService.deleteQuestions(questionsid, userid);
   		} catch (Exception e) {
   			logger.error("delQuestions questionsid = {}", questionsid, e);
   		}
@@ -317,6 +320,8 @@ public class ClassroomController {
   		}
   		return baseResp;
     }
+	
+	
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/insertMembers
@@ -637,6 +642,10 @@ public class ClassroomController {
      * @auther yinxc
      * @currentdate:2017年3月6日
  	*/
+//  						coursesNum：教室课程总数
+//    * 					commentNum:评论总数
+//    * 					questionsNum:提问答疑总数
+//    * 					coursesDefault:设为默认封面课程   isdefault---1 默认封面  0 非默认
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesDetail")
     public BaseResp<Object> coursesDetail(String classroomid) {
@@ -653,6 +662,38 @@ public class ClassroomController {
    		return baseResp;
     }
   	
-  	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/coursesDetail
+     * @Description: 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
+     * @param @param classroomid 教室业务id
+     * @param @param userid 当前访问id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data: 
+     *					fileurl：教室课程视频url---转码后
+     * 					pickey:教室课程视频截图
+     * 					classphotos:教室图片
+     * 					cardid:创建人id
+     * 					isfollow：是否已经关注教室   0：否  1：已关注
+     * 					isadd：是否加入教室    0：否  1：已加入
+     * 					content：名片信息---老师h5
+     * 					roomurlshare:分享url
+     * @auther yinxc
+     * @currentdate:2017年6月14日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomHeadDetail")
+    public BaseResp<Object> classroomHeadDetail(String classroomid, String userid) {
+		logger.info("classroomHeadDetail classroomid = {}", classroomid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(classroomid, userid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectRoomHeadDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   		} catch (Exception e) {
+   			logger.error("classroomHeadDetail classroomid = {}", classroomid, e);
+   		}
+   		return baseResp;
+    }
   	
 }
