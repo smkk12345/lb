@@ -29,11 +29,11 @@ public class ImproveApiController {
     @ResponseBody
     @RequestMapping(value = "updatemedia")
     public BaseResp<Object> updatemedia(String objid, String pickey, String filekey,
-                                        String workflow,String duration){
+                                        String workflow,String duration,String picAttribute){
         logger.info("objid={},pickey={},filekey={},workflow={},duration={}",
                 objid,pickey,filekey,workflow,duration);
         try {
-            return improveService.updateMedia(objid,pickey,filekey,workflow,duration);
+            return improveService.updateMedia(objid,pickey,filekey,workflow,duration,picAttribute);
         }catch (Exception e){
             logger.error("improveService.updateMedia error and msg={}",e);
         }

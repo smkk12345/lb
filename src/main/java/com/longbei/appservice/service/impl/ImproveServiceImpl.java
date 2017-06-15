@@ -2731,7 +2731,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      */
     @Override
-    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,String workflow,String duration){
+    public BaseResp<Object> updateMedia(String key,String pickey,String filekey,
+                                        String workflow,String duration,String picattribute){
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(key,filekey)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -2739,6 +2740,7 @@ public class ImproveServiceImpl implements ImproveService{
 //        String oldKey = key;
 //        key = key.replace("longbei_mp3/","");
 //        key = key.replace("longbei_vido/","");
+
         String sourceKey = key;
         if(StringUtils.isBlank(duration)){
             duration = null;
@@ -2762,9 +2764,9 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try{
             String tableName = getTableNameByBusinessType(type);
-            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,duration,businessid,tableName);
+            int n = improveMapper.updateMedia(sourceKey,pickey,filekey,duration,picattribute,businessid,tableName);
             if(n > 0){
-                timeLineDetailDao.updateImproveFileKey(sourceKey,pickey,filekey);
+                timeLineDetailDao.updateImproveFileKey(sourceKey,pickey,filekey,duration,picattribute);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
@@ -3448,6 +3450,14 @@ public class ImproveServiceImpl implements ImproveService{
             uid = Long.parseLong(userid);
             friendids = getFriendIds(uid);
             funids = getFansIds(uid);
+        }
+        if(!springJedisDao.hasKey(key)){
+            if(key.equals("1")){
+                key = "24";
+            }else {
+                int newKey = Integer.parseInt(key) - 1;
+                key = String.valueOf(newKey);
+            }
         }
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
