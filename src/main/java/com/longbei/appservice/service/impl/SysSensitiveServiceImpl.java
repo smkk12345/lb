@@ -3,10 +3,13 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.security.SensitiveWord;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.SysSensitiveMapper;
 import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.service.SysSensitiveService;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,8 @@ import java.util.Set;
  */
 @Service
 public class SysSensitiveServiceImpl implements SysSensitiveService {
+    private Logger logger = LoggerFactory.getLogger(SysSensitiveServiceImpl.class);
+
 
     @Autowired
     private SysSensitiveMapper sysSensitiveMapper;
@@ -55,6 +60,37 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
             baseResp.setData(set);
             return baseResp;
         }
+    }
+
+    @Override
+    public BaseResp<SysSensitive> selectSensitive() {
+        BaseResp<SysSensitive> baseResp = new BaseResp<SysSensitive>();
+        try {
+            SysSensitive sysSensitive = sysSensitiveMapper.selectSensitive();
+            baseResp.setData(sysSensitive);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        }
+        catch (Exception e) {
+            logger.error("selectSensitive error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public 	BaseResp<Object> updateSensitiveWords(String words) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        SysSensitive sensitive = new SysSensitive();
+        sensitive.setWords(words);
+        sensitive.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        try {
+            int n = sysSensitiveMapper.updateSensitiveWords(sensitive);
+            if(n >= 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("updateSensitiveWords error and msg={}",e);
+        }
+        return baseResp;
     }
 
 }

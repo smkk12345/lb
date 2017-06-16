@@ -2,24 +2,23 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.AwardMapper;
+import com.longbei.appservice.dao.RankAwardReleaseMapper;
 import com.longbei.appservice.dao.RankMapper;
 import com.longbei.appservice.dao.RankMembersMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.Rank;
+import com.longbei.appservice.entity.RankAwardRelease;
 import com.longbei.appservice.entity.RankMembers;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.RankService;
-import com.longbei.appservice.service.RankSortService;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wangyongzhi 17/3/14.
@@ -40,6 +39,12 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
     private RankService rankService;
     @Autowired
     private ImproveService improveService;
+    @Autowired
+    private RankAwardReleaseMapper rankAwardReleaseMapper;
+    @Autowired
+    private AwardMapper awardMapper;
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
 
     /**
      * 榜中点赞,送花时,更新用户在榜中的排名分值

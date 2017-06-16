@@ -22,7 +22,8 @@ public interface UserMsgService {
 	 *									40：订单已取消 41 榜中进步下榜)
 	 *				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 	 *				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
-	 *						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果    49:发布榜单审核未通过)
+	 *						14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果
+	 *						49:发布榜单审核未通过 50.个人定制榜邀请)
 	 * 2017年4月26日
 	 */
 	BaseResp<Object> insertMsg(String userid, String friendid, String impid, 
