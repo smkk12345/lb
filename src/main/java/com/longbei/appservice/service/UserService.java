@@ -256,15 +256,6 @@ public interface UserService {
 								 String businessid, String remark,String title);
 
 	/**
-	 * @Description: 查看用户等级列表
-	 * @param startNum 分页起始值
-	 * @param pageSize 每页显示条数
-	 * @auther IngaWu
-	 * @currentdate:2017年6月1日
-	 */
-	Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize);
-
-	/**
 	 * 修改用户龙币数
 	 * @param userid
 	 * @param totalPrice  消耗的龙币数量

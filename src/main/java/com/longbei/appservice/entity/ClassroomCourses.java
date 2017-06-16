@@ -2,6 +2,9 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -12,7 +15,7 @@ public class ClassroomCourses {
 
     private Integer coursesort;//课程序号
 
-    private String coursetype;//课程类型
+    private String coursetype;//课程类型.  0 不收费 1 收费
 
     private String coursebrief;//课程简介
 
@@ -232,6 +235,8 @@ public class ClassroomCourses {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -248,6 +253,8 @@ public class ClassroomCourses {
      * 更新时间
      * @return udpatetime 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUdpatetime() {
         return udpatetime;
     }

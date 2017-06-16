@@ -5,8 +5,10 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.UserService;
@@ -33,6 +35,8 @@ public class AppUserApiController {
     private UserLevelService userLevelService;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -264,34 +268,6 @@ public class AppUserApiController {
     }
 
     /**
-     * @Description: 查看用户等级列表
-     * @param startNum 分页起始值
-     * @param pageSize 每页显示条数
-     * @auther IngaWu
-     * @currentdate:2017年6月1日
-     */
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "selectUserLevelList")
-    public BaseResp<Page<UserLevel>> selectUserLevelList(Integer startNum, Integer pageSize){
-        logger.info("selectUserLevelList for adminservice startNum={},pageSize={}",startNum,pageSize);
-        BaseResp<Page<UserLevel>> baseResp = new BaseResp<>();
-        if (null == startNum) {
-            startNum = 0;
-        }
-        if (null == pageSize) {
-            pageSize = 50;
-        }
-        try {
-            Page<UserLevel> page = userService.selectUserLevelList(startNum,pageSize);
-            baseResp = BaseResp.ok();
-            baseResp.setData(page);
-        } catch (NumberFormatException e) {
-            logger.error("selectUserLevelList for adminservice startNum={},pageSize={}", startNum,pageSize,e);
-        }
-        return baseResp;
-    }
-
-    /**
      * 更改用户龙币余额
      * @param userid
      * @param totalMoney
@@ -311,6 +287,32 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectSensitive")
+    public BaseResp<SysSensitive> selectSensitive() {
+        BaseResp<SysSensitive> baseResp = new BaseResp<>();
+        try {
+            baseResp = sysSensitiveService.selectSensitive();
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectSensitive for adminservice ",e);
+        }
+        return baseResp;
+    }
 
+    @RequestMapping(value = "/updateSensitiveWords")
+    public BaseResp<Object> updateSensitiveWords(String words) {
+        logger.info("updateSensitiveWords for adminservice and words={}", words);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(words)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = sysSensitiveService.updateSensitiveWords(words);
+        } catch (Exception e) {
+            logger.error("updateSensitiveWords for adminservice and words={}", words,e);
 
+        }
+        return baseResp;
+    }
 }

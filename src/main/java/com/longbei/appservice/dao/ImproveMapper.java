@@ -170,6 +170,7 @@ public interface ImproveMapper {
                     @Param("pickey") String pickey,
                     @Param("filekey") String filekey,
                     @Param("duration") String duration,
+                    @Param("picattribute") String picattribute,
                     @Param("businessid") String businessid,
                     @Param("tablename") String table
                    );

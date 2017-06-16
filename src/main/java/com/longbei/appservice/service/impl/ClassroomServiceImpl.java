@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +14,21 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
+import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.dao.UserCardMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
@@ -50,6 +56,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	private ImproveMapper improveMapper;
 	@Autowired
 	private ImproveClassroomMapper improveClassroomMapper;
+	@Autowired
+	private UserBusinessConcernMapper userBusinessConcernMapper;
+	@Autowired
+	private UserMongoDao userMongoDao;
+//	@Autowired
+//	private UserInfoMapper userInfoMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
@@ -67,7 +79,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		Map<String, Object> expandData = new HashMap<String, Object>();
 		try {
 			//教室课程总数
-			int coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
+			Integer coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
 			expandData.put("coursesNum", coursesNum);
 			//获取评论总数
 			int commentNum = 0;
@@ -97,7 +109,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	/**
 	 * @author yinxc
 	 * 获取教室详情信息---教室有关数据(拆分)
-	 * 2017年3月6日
+	 * 2017年6月14日
 	 * @param classroomid 教室业务id
 	 * @param userid 当前访问者id
 	 */
@@ -106,36 +118,187 @@ public class ClassroomServiceImpl implements ClassroomService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
-			Map<String, Object> expandData = new HashMap<String, Object>();
-			String isadd = "0";
+			Map<String, Object> map = new HashMap<String, Object>();
+//			String isadd = "0";
 			if(null != classroom){
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-				//名片信息
-				classroom.setUserCard(userCard);
-				//获取成员列表
-//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
-//				expandData.put("memberList", memberList);
+				//老师称呼
+//				String cardNickname = initUserInfo(classroom.getCardid());
+				String displayname = userCard.getDisplayname();
+				map.put("cardid", classroom.getCardid());
+				map.put("displayname", displayname);
+				map.put("ptype", classroom.getPtype()); //十全十美类型
+				map.put("classtitle", classroom.getClasstitle()); //教室标题
+				map.put("charge", classroom.getCharge()); //课程价格
+				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
+				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
+				map.put("classnotice", classroom.getClassnotice()); //教室公告
+				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
+				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
 				//获取当前用户在教室发作业的总数
-				int impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
-				expandData.put("impNum", impNum);
+				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
+				map.put("impNum", impNum);
 				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-				if(null == classroomMembers){
-					classroomMembers = new ClassroomMembers();
-					classroomMembers.setLikes(0);
-					classroomMembers.setFlowers(0);
-					classroomMembers.setDiamonds(0);
+				if(null != classroomMembers){
+					map.put("classroomMembers", classroomMembers);
+				}else{
+					map.put("classroomMembers", new ClassroomMembers());
 				}
-				expandData.put("classroomMembers", classroomMembers);
+				//获取最新加入成员头像5个
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
+				initUserInfoString(memberList);
+				map.put("membersImageList", memberList); //成员头像列表
+				
+				
+				//名片信息
+//				classroom.setUserCard(userCard);
+				//获取成员列表
+//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
+//				reseResp.getExpandData().put("memberList", memberList);
+//				
+//				
+//				reseResp.getExpandData().put("impNum", impNum);
+//				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+//				if(null == classroomMembers){
+//					classroomMembers = new ClassroomMembers();
+//					classroomMembers.setLikes(0);
+//					classroomMembers.setFlowers(0);
+//					classroomMembers.setDiamonds(0);
+//				}
+//				reseResp.getExpandData().put("classroomMembers", classroomMembers);
+//				//itype 0—加入教室 1—退出教室     为null查全部
+//				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+//				if(null != members){
+//					isadd = "1";
+//				}
+//				classroom.setIsadd(isadd);
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectRoomDetail classroomid = {}, userid = {}", classroomid, userid, e);
+		}
+		return reseResp;
+	}
+	
+	/**
+    * 初始化消息中用户信息 ------userid
+    */
+//	private String initUserInfo(long userid){
+//		//获取好友昵称
+////		String remark = userRelationService.selectRemark(userid, userFeedback.getUserid(), "0");
+//		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userid));
+//		if(null != appUserMongoEntity){
+////			if(!StringUtils.isBlank(remark)){
+////				appUserMongoEntity.setNickname(remark);
+////			}
+//			return appUserMongoEntity.getNickname();
+//		}
+//		return "";
+//  	}
+	
+	
+	/**
+    * 初始化消息中用户信息 ------userid
+    */
+	private void initUserInfoString(List<ClassroomMembers> memberList){
+		if(null != memberList && memberList.size()>0){
+			for (ClassroomMembers classroomMembers : memberList) {
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
+				if(null != appUserMongoEntity){
+					classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);
+				}else{
+					classroomMembers.setAppUserMongoEntityUserid(new AppUserMongoEntity());
+				}
+			}
+		}
+		//获取好友昵称
+//			String remark = userRelationService.selectRemark(userid, userFeedback.getUserid(), "0");
+  	}
+	
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
+	 * 2017年3月6日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	@Override
+	public BaseResp<Object> selectRoomHeadDetail(long classroomid, long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			String isadd = "0";
+			if(null != classroom){
+				//获取最新课程视频截图key
+				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), 0, 1);
+				//获取视频url---转码后
+//				String fileurl = "";
+				//isfree 是否免费。0 免费 1 收费
+				if("0".equals(classroom.getIsfree())){
+					if(null != courseList && courseList.size()>0){
+						map.put("fileurl", courseList.get(0).getFileurl());
+					}
+				}else{
+					//若收费，获取第一条免费课程
+					List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 1);
+					if(null != courselist && courselist.size()>0){
+						map.put("fileurl", courselist.get(0).getFileurl());
+					}
+				}
+				if(null != courseList && courseList.size()>0){
+					map.put("pickey", courseList.get(0).getPickey());
+				}
+				map.put("classphotos", classroom.getClassphotos());
+				map.put("classtitle", classroom.getClasstitle()); 
+				map.put("cardid", classroom.getCardid());
+				//是否已经关注教室
+				Map<String,Object> usermap = new HashMap<String,Object>();
+				usermap.put("businessType", "4");
+				usermap.put("businessId", classroomid);
+				usermap.put("userId", userid);
+                List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
+                if(userBusinessConcern.size() > 0){
+                	map.put("isfollow", "1");
+                }else{
+                	map.put("isfollow", "0");
+                }
+				
 				//itype 0—加入教室 1—退出教室     为null查全部
 				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 				if(null != members){
 					isadd = "1";
 				}
-				classroom.setIsadd(isadd);
+				map.put("isadd", isadd);
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				//名片信息---老师h5
+				map.put("content", userCard.getContent());
+				
+				//分享url
+				map.put("roomurlshare", "");
+				
+				//获取成员列表
+//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
+//				expandData.put("memberList", memberList);
+				
+				//获取当前用户在教室发作业的总数
+//				int impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
+//				reseResp.getExpandData().put("impNum", impNum);
+//				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+//				if(null == classroomMembers){
+//					classroomMembers = new ClassroomMembers();
+//					classroomMembers.setLikes(0);
+//					classroomMembers.setFlowers(0);
+//					classroomMembers.setDiamonds(0);
+//				}
+//				reseResp.getExpandData().put("classroomMembers", classroomMembers);
+				
+				
+//				classroom.setIsadd(isadd);
 			}
-			reseResp.setData(classroom);
-			reseResp.setExpandData(expandData);
+			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectRoomDetail classroomid = {}, userid = {}", classroomid, userid, e);
@@ -353,7 +516,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
 			//获取教室课程默认封面，把教室没有课程视频的去掉
-			int res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
 			if(res == 0){
 				list.remove(classroom);
 			} else {
@@ -455,7 +618,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	}
 	
 	private boolean updateClassnotice(long classroomid, String classnotice){
-		int temp = classroomMapper.updateClassnoticeByClassroomid(classroomid, classnotice);
+		int temp = classroomMapper.updateClassnoticeByClassroomid(classroomid, 
+				classnotice, DateUtils.formatDateTime1(new Date()));
 		return temp > 0 ? true : false;
 	}
 

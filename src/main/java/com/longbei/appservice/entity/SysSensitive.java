@@ -6,6 +6,7 @@ package com.longbei.appservice.entity;
 public class SysSensitive {
     private String words;
     private Integer id;
+    private String updatetime;
 
     public void setId(Integer id) {
         this.id = id;
@@ -21,5 +22,13 @@ public class SysSensitive {
 
     public String getWords() {
         return words;
+    }
+
+    public void setUpdatetime(String updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public String getUpdatetime() {
+        return updatetime;
     }
 }

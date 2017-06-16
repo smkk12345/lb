@@ -353,6 +353,9 @@
     <if test="duration != null">
       duration =  #{duration},
     </if>
+    <if test="picattribute != null">
+      picattribute =  #{picattribute},
+    </if>
     <if test="filekey!= null" >
       filekey = #{filekey}
     </if>

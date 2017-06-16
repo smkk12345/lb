@@ -1414,22 +1414,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize) {
-		Integer pageNo = startNum/pageSize+1;
-		Page<UserLevel> page = new Page<>(pageNo,pageSize);
-		try {
-			int totalcount = userLevelMapper.selectUserLevelListCount();
-			pageNo = Page.setPageNo(pageNo,totalcount,pageSize);
-			List<UserLevel> userLevelList = userLevelMapper.selectAll(startNum,pageSize);
-			page.setTotalCount(totalcount);
-			page.setList(userLevelList);
-		} catch (Exception e) {
-			logger.error("selectUserLevelList for adminservice error and msg={}",e);
-		}
-		return page;
-	}
-
-	@Override
 	public BaseResp updateTotalmoneyByUserid(long userid, Integer totalPrice){
 		BaseResp baseResp = new BaseResp();
 		try {

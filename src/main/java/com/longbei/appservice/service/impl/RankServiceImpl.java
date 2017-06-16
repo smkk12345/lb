@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * 榜单操作接口实现类
@@ -172,20 +171,36 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             	if(null != rank){
             		//sourcetype   来源类型。0 运营端创建   1  app 2   商户
             		if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
+            			String remark = "您创建的龙榜'"+rank.getRanktitle()+"'因违反龙杯相关规定，已被关闭";
             			userMsgService.insertMsg(Constant.SQUARE_USER_ID, rank.getCreateuserid(),
-            	        		"", "10", rank.getRankid().toString(), "发布榜单审核未通过", "2", "49", "榜关闭", 0, "", "");
+            	        		"", "10", rank.getRankid().toString(), remark, "2", "49", "榜关闭", 0, "", "");
             		}
+            		if("5".equals(rank.getIsfinish())){
+//                    	rank = rankMapper.selectRankByRankid(rank.getRankid());
+                    	//发送获奖消息
+        	         	try {
+        	               	sendRankEndUserMsg(rank);
+        	           	} catch (Exception e) {
+        	             	logger.error("send rank rankid={}",rank.getRankid(),e);
+        	           	}
+                    }else{
+                    	//加入榜的人员榜关闭推送
+                		Map<String, Object> parameterMap = new HashMap<>();
+                		parameterMap.put("rankId", rank.getRankid());
+                		List<RankMembers> list = rankMembersMapper.selectRankMembers(parameterMap);
+                		if(null != list && list.size()>0){
+                			for (RankMembers rankMembers : list) {
+                				String remark = "您参加的龙榜'"+rank.getRanktitle()+"'因违反龙杯相关规定，已被关闭";
+                                userMsgService.insertMsg(Constant.SQUARE_USER_ID, rankMembers.getUserid().toString(),
+                                        "", "10",
+                                        rankMembers.getRankid().toString(), remark, "2", "46", "榜关闭", 0, "", "");
+    						}
+                		}
+                    }
+            		
             	}
             }
-            if("5".equals(rank.getIsfinish())){
-//            	rank = rankMapper.selectRankByRankid(rank.getRankid());
-            	//发送获奖消息
-	         	try {
-	               	sendRankEndUserMsg(rank);
-	           	} catch (Exception e) {
-	             	logger.error("send rank rankid={}",rank.getRankid(),e);
-	           	}
-            }
+            
         } catch (Exception e) {
             logger.error("updateRankSymbol rank = {}", JSON.toJSON(rank).toString(), e);
         }
@@ -507,13 +522,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @author IngaWu
      */
     @Override
-    public Page<Rank> selectRankList2(Rank rank, int pageno, int pagesize,String orderByInvolved) {
+    public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,String orderByInvolved) {
         Page<Rank> page = new Page<>(pageno,pagesize);
         try {
             rank.setIsdel("0");
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
-            List<Rank> ranks = rankMapper.selectListWithPage2(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
+            List<Rank> ranks = rankMapper.selectListWithPageOrderByInvolved(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
             for (Rank rank1 : ranks){
                 BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"10",null);
                 if (ResultUtil.isSuccess(baseResp)){
@@ -683,9 +698,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
                     }
                     //初始化榜主名片
-                    if(StringUtils.isNotEmpty(rankTitle) && rank1.getRankcardid() != null){
-                        RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
-                        rank1.setRankCard(rankCard);
+                    if(StringUtils.isNotEmpty(rankTitle)){
+                    	if(rank1.getRankcardid() != null){
+                    		RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
+                            rank1.setRankCard(rankCard);
+                    	}else{
+                    		if (Constant.RANK_SOURCE_TYPE_1.equals(rank1.getSourcetype())){
+                    			//web发榜
+                    			RankCard rankCard = new RankCard();
+                    			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rank1.getCreateuserid()+"");
+                    			rankCard.setAdminname(appUserMongoEntity.getNickname());
+                    			rankCard.setAdminpic(appUserMongoEntity.getAvatar());
+                    			rank1.setRankCard(rankCard);
+                    		}
+                    	}
+                        
                     }
 
                     if(rank1.getRankinvolved() >= rank1.getRanklimite()){
@@ -884,13 +911,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (res > 0) {
                 RankImage rankImage1 = selectRankImage(rankid).getData();
                 int money = (int)rankAwardMoney(rankImage1).getData();
-                baseResp.setData(money);
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", money, 0);
                 } catch (NumberFormatException e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"榜单提交审核",money,e);
                 }
+                baseResp.setData(money);
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提交审核失败");
                 return baseResp;
@@ -953,13 +980,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if (res > 0) {
                 RankImage rankImage1 = selectRankImage(rankid).getData();
                 int money = (int)rankAwardMoney(rankImage1).getData();
-                baseResp.setData(money);
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "8", money, 0);
                 } catch (NumberFormatException e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"撤回龙榜",money,e);
                 }
+                baseResp.setData(money);
             } else {
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"撤回失败");
                 return baseResp;
@@ -1629,30 +1656,33 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
-        List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
-        List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
-        int startMoneyNum = 0;
-        int finishMoneyNum = 0;
-        for (RankMembers rankMembers : rankMemberses){
-            Long rankawardid = rankMembers.getAwardid();
-            Award award = awardMapper.selectByPrimaryKey(rankawardid);
-            if (null != award){
-                finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin);
+        try {
+            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+            List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
+            int startMoneyNum = 0;
+            int finishMoneyNum = 0;
+            for (RankMembers rankMembers : rankMemberses){
+                Long rankawardid = rankMembers.getAwardid();
+                Award award = awardMapper.selectByPrimaryKey(rankawardid);
+                if (null != award){
+                    finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney);
+                }
             }
-        }
-
-        for (RankAwardRelease rankAwardRelease : rankAwardReleases){
-            Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
-            if (null != award){
-                startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.moneytocoin)
-                        * rankAwardRelease.getAwardrate();
+            for (RankAwardRelease rankAwardRelease : rankAwardReleases){
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
+                if (null != award){
+                    startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney)
+                            * rankAwardRelease.getAwardrate();
+                }
             }
-        }
-        int leftNum = startMoneyNum - finishMoneyNum;
-        if (0 < leftNum){
-            userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
-            baseResp.initCodeAndDesp();
-            return baseResp;
+            int leftNum = startMoneyNum - finishMoneyNum;
+            if (0 < leftNum){
+                userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
+                baseResp.initCodeAndDesp();
+                return baseResp;
+            }
+        } catch (Exception e) {
+            logger.error("handleRankFinishAward rankid={} userid={} is error:{}",rank.getRankid(),rank.getCreateuserid(),e);
         }
         return baseResp;
     }

@@ -52,7 +52,7 @@ public interface ClassroomQuestionsMongoService {
 	 * 2017年3月1日
 	 * param id 提问答疑id
 	 */
-	BaseResp<Object> deleteQuestions(String id);
+	BaseResp<Object> deleteQuestions(String id, String userid);
 	
 	/**
 	 * @author yinxc
@@ -60,7 +60,7 @@ public interface ClassroomQuestionsMongoService {
 	 * 2017年3月1日
 	 * param id 提问答疑回复id
 	 */
-	BaseResp<Object> deleteQuestionsLower(String id);
+	BaseResp<Object> deleteQuestionsLower(String classroomid, String id, String userid);
 	
 	/**
 	 * @author yinxc
