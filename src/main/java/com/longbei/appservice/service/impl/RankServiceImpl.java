@@ -1664,25 +1664,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
         try {
-            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+            //获奖总金额
+            double finishPrice = 0.0;
             List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
-            int startMoneyNum = 0;
-            int finishMoneyNum = 0;
             for (RankMembers rankMembers : rankMemberses){
-                Long rankawardid = rankMembers.getAwardid();
-                Award award = awardMapper.selectByPrimaryKey(rankawardid);
+                Award award = awardMapper.selectByPrimaryKey(rankMembers.getAwardid());
                 if (null != award){
-                    finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney);
+                    finishPrice += award.getAwardprice();
                 }
             }
+
+            //榜单设置奖品总金额
+            double startPrice = 0.0;
+            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
             for (RankAwardRelease rankAwardRelease : rankAwardReleases){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
                 if (null != award){
-                    startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney)
-                            * rankAwardRelease.getAwardrate();
+                    startPrice += award.getAwardprice() * rankAwardRelease.getAwardrate();
                 }
             }
-            int leftNum = startMoneyNum - finishMoneyNum;
+
+            int leftNum = (int)Math.ceil((startPrice - finishPrice)/AppserviceConfig.yuantomoney);
             if (0 < leftNum){
                 userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
                 baseResp.initCodeAndDesp();
