@@ -1376,7 +1376,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				remark = remark.replace("n", "");
 			}
 //            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
-            if("0".equals(rank.getSourcetype())){
+            if("0".equals(rank.getSourcetype()) || "1".equals(rank.getSourcetype())){
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 								//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 								//25:订单发货N天后自动确认收货    26：实名认证审核结果
@@ -2200,7 +2200,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
                 return baseResp.fail("系统异常");
             }
-
+            rankMember.setReceivecode(rankAcceptAward.getReceivecode());
             Map<String,Object> rankResultMap = new HashMap<String,Object>();
             rankResultMap.put("ranktitle",rank.getRanktitle());
             rankResultMap.put("ptype",rank.getPtype());
