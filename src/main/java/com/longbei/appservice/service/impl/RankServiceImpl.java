@@ -3760,6 +3760,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         	Rank rank = rankMapper.selectByPrimaryKey(Long.parseLong(rankid));
             //status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
             if ("1".equals(status)) {
+                if (Integer.parseInt(rank.getIsfinish()) >= 2) {
+                    improveService.removeFinishedRankImprove(userid, rankid,improveid);
+                    String remark = Constant.MSG_RANKIMP_REMOVE_MODEL;
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
+                            improveid, "2",
+                           rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "");
+                 }
                 //删除
                 improveService.removeImprove(userid, improveid, "2", rankid);
                 Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid), 
