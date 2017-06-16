@@ -9,4 +9,6 @@ public interface SysSensitiveMapper {
 
     SysSensitive selectSensitive();
 
+    int updateSensitiveWords(SysSensitive sensitive);
+
 }

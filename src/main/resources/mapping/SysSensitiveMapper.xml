@@ -3,6 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.SysSensitiveMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysSensitive" >
     <id column="id" property="id" jdbcType="INTEGER" />
+
     <result column="words" property="words"/>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -10,8 +11,19 @@
   </sql>
   <select id="selectSensitive" resultMap="BaseResultMap">
     select 
-    id,words
+    id,words,updatetime
     FROM
     sys_sensitive limit 1
   </select>
+
+  <update id="updateSensitiveWords" parameterType="com.longbei.appservice.entity.SysSensitive" >
+    update sys_sensitive
+    <set >
+       words = #{words,jdbcType=VARCHAR},
+      <if test="updatetime != null" >
+        updatetime = #{updatetime},
+      </if>
+    </set>
+    where id = 1
+  </update>
 </mapper>
