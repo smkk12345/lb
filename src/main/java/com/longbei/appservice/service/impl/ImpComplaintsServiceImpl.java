@@ -331,20 +331,20 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						if ("1".equals(impComplaints.getBusinesstype())) {
 							if (!StringUtils.isBlank(impComplaints.getBusinessid().toString())) {
 								userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(),
-										impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(),
-										impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+										impComplaints.getImpid().toString(), "9",
+										impComplaints.getBusinessid().toString(), remark, "0", "45", "删除进步", 0, "", "");
 							} else {
 								if (!StringUtils.isBlank(improve.getGoalid().toString())) {
 									userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(),
-											impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(),
-											improve.getGoalid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+											impComplaints.getImpid().toString(), "9",
+											improve.getGoalid().toString(), remark, "0", "45", "删除进步", 0, "", "");
 								}
 
 							}
 						} else {
 							userMsgService.insertMsg(Constant.SQUARE_USER_ID, impComplaints.getComuserid().toString(),
-									impComplaints.getImpid().toString(), impComplaints.getBusinesstype().toString(),
-									impComplaints.getBusinessid().toString(), remark, "0", "45", "榜中删除成员进步", 0, "", "");
+									impComplaints.getImpid().toString(), "9",
+									impComplaints.getBusinessid().toString(), remark, "0", "45", "删除进步", 0, "", "");
 						}
 					}
 				}
