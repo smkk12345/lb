@@ -79,6 +79,6 @@ alidayu:
 ##        path: ../log
 weixin_dev_page: 59.110.91.84:8080
 
-oss_media: http://longbei0413-media-out.oss-cn-shanghai.aliyuncs.com/
+oss_media: http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/
 #oss_media: https://my-first-oss-bucket-test.oss-cn-beijing.aliyuncs.com/
 pcurl: www.baidu.com
