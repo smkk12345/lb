@@ -289,6 +289,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp;
             }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                AppUserMongoEntity user = userMongoDao.getAppUser(rankImage.getCreateuserid());
+                rankImage.setCreateusernickname(user.getNickname());
+            }
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
@@ -488,6 +492,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
                     List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
                     rankImage1.setRankCheckDetails(list);
+
+                    AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(rankImage1.getCreateuserid()));
+                    rankImage1.setCreateusernickname(appUser.getNickname());
                 }
             }
             page.setTotalCount(totalcount);
