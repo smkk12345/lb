@@ -698,9 +698,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
                     }
                     //初始化榜主名片
-                    if(StringUtils.isNotEmpty(rankTitle) && rank1.getRankcardid() != null){
-                        RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
-                        rank1.setRankCard(rankCard);
+                    if(StringUtils.isNotEmpty(rankTitle)){
+                    	if(rank1.getRankcardid() != null){
+                    		RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
+                            rank1.setRankCard(rankCard);
+                    	}else{
+                    		if (Constant.RANK_SOURCE_TYPE_1.equals(rank1.getSourcetype())){
+                    			//web发榜
+                    			RankCard rankCard = new RankCard();
+                    			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rank1.getCreateuserid()+"");
+                    			rankCard.setAdminname(appUserMongoEntity.getNickname());
+                    			rankCard.setAdminpic(appUserMongoEntity.getAvatar());
+                    			rank1.setRankCard(rankCard);
+                    		}
+                    	}
+                        
                     }
 
                     if(rank1.getRankinvolved() >= rank1.getRanklimite()){
