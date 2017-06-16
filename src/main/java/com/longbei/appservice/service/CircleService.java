@@ -45,13 +45,14 @@ public interface CircleService extends BaseService{
 
     /**
      * 查询兴趣圈 成员
+     * @param userid
      * @param circleId
      * @param startNo
      * @param pageSize
      * @param flag 是否查询成员在兴趣圈中获得的赞和花的数量
      * @return
      */
-    BaseResp<Object> selectCircleMember(Long circleId,String username, Integer startNo, Integer pageSize,boolean flag);
+    BaseResp<Object> selectCircleMember(Long userid,Long circleId,String username, Integer startNo, Integer pageSize,boolean flag);
 
     /**
      * 加入兴趣圈

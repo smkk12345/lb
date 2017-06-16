@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.CircleMembers;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -37,4 +38,13 @@ public interface CircleMembersMapper {
      * @return
      */
     List<Long> findCircleMembersId(Long circleId);
+
+    /**
+     * 更新用户在圈子中的进步数量
+     * @param userid
+     * @param circleId
+     * @param num
+     * @return
+     */
+    int updateCircleMembersIcount(@Param("userid")Long userid,@Param("circleId") Long circleId,@Param("num")int num);
 }

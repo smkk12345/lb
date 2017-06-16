@@ -14,4 +14,13 @@ public interface CircleMemberService {
      * @param diamonds 增加的 钻石 数量
      */
     boolean updateCircleMemberInfo(Long userId, String circleId, Integer likes, Integer flowers,Integer diamonds);
+
+    /**
+     * 更改用户在圈子中的进步条数
+     * @param userid
+     * @param circleId
+     * @param num
+     * @return
+     */
+    boolean updateCircleMemberIcount(Long userid, Long businessid, int num);
 }

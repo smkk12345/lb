@@ -698,9 +698,21 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
                     }
                     //初始化榜主名片
-                    if(StringUtils.isNotEmpty(rankTitle) && rank1.getRankcardid() != null){
-                        RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
-                        rank1.setRankCard(rankCard);
+                    if(StringUtils.isNotEmpty(rankTitle)){
+                    	if(rank1.getRankcardid() != null){
+                    		RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
+                            rank1.setRankCard(rankCard);
+                    	}else{
+                    		if (Constant.RANK_SOURCE_TYPE_1.equals(rank1.getSourcetype())){
+                    			//web发榜
+                    			RankCard rankCard = new RankCard();
+                    			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rank1.getCreateuserid()+"");
+                    			rankCard.setAdminname(appUserMongoEntity.getNickname());
+                    			rankCard.setAdminpic(appUserMongoEntity.getAvatar());
+                    			rank1.setRankCard(rankCard);
+                    		}
+                    	}
+                        
                     }
 
                     if(rank1.getRankinvolved() >= rank1.getRanklimite()){
@@ -1056,7 +1068,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if (rank == null) {
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             if("0".equals(rank.getIsfinish())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_68,Constant.RTNINFO_SYS_68);
@@ -1297,7 +1309,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             Rank rank = rankMapper.selectRankByRankid(rankId);
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             if(userId.equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
@@ -1338,7 +1350,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             Rank rank = rankMapper.selectRankByRankid(rankMembers.getRankid());
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             if(rankMembers.getUserid().equals(rank.getCreateuserid())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
@@ -1754,7 +1766,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //查询Rank
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
             if(rankMembers == null || rankMembers.getStatus() != 1){
@@ -1980,7 +1992,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             List<RankMembers> userList = new ArrayList<RankMembers>();
 
@@ -2160,7 +2172,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try{
             Rank rank = this.rankMapper.selectRankByRankid(rankId);
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             RankMembers rankMember = this.rankMembersMapper.selectByRankIdAndUserId(rankId,userId);
             if(rankMember == null){
@@ -2852,13 +2864,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < list.size(); i++) {
-                    UserMsg us = list.get(i);
-                    //String status,String userId,String title,String content,String msgid,String tag
-                    jPushService.pushMessage("消息标识",us.getUserid()+"","获奖消息",us.getRemark(),rankid,
-                            Constant.JPUSH_TAG_COUNT_1502);
+            for (int i = 0; i < list.size(); i++) {
+                UserMsg us = list.get(i);
+                //String status,String userId,String title,String content,String msgid,String tag
+                jPushService.pushMessage("消息标识",us.getUserid()+"","获奖消息",us.getRemark(),rankid,
+                        Constant.JPUSH_TAG_COUNT_1502);
 
-                }
+            }
             }
         });
         return true;
@@ -3068,7 +3080,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             Map<String,Object> resultMap = new HashMap<String,Object>();
             Rank rank = this.rankMapper.selectRankByRankid(rankid);
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }else if("0".equals(rank.getIsfinish())){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_68,Constant.RTNINFO_SYS_68);
             }else if("1".equals(rank.getIsfinish())){
@@ -3241,7 +3253,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rank.setAutotime(DateUtils.formatDateTime1(autotimeformate));
             }
             if(rank == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
             rankSortService.checkRankEnd(rank);
             if(queryCreateUser != null && queryCreateUser){
