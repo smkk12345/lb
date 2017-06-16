@@ -163,9 +163,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankSymbol(Rank rank) {
         int res = 0;
         try {
-            rank = rankMapper.selectRankByRankid(rank.getRankid());
-            rank.setIsdel("1");
             res = rankMapper.updateSymbolByRankId(rank);
+            rank = rankMapper.selectRankByRankid(rank.getRankid());
             if("1".equals(rank.getIsdel())){
 
             	if(null != rank){
