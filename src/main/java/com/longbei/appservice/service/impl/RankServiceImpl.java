@@ -163,9 +163,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankSymbol(Rank rank) {
         int res = 0;
         try {
-            rank = rankMapper.selectRankByRankid(rank.getRankid());
-            rank.setIsdel("1");
             res = rankMapper.updateSymbolByRankId(rank);
+            rank = rankMapper.selectRankByRankid(rank.getRankid());
             if("1".equals(rank.getIsdel())){
 
             	if(null != rank){
@@ -289,6 +288,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp;
             }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                AppUserMongoEntity user = userMongoDao.getAppUser(rankImage.getCreateuserid());
+                rankImage.setCreateusernickname(user.getNickname());
+            }
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
@@ -488,6 +491,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
                     List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
                     rankImage1.setRankCheckDetails(list);
+
+                    AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(rankImage1.getCreateuserid()));
+                    rankImage1.setCreateusernickname(appUser.getNickname());
                 }
             }
             page.setTotalCount(totalcount);
@@ -1657,25 +1663,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
         try {
-            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+            //获奖总金额
+            double finishPrice = 0.0;
             List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
-            int startMoneyNum = 0;
-            int finishMoneyNum = 0;
             for (RankMembers rankMembers : rankMemberses){
-                Long rankawardid = rankMembers.getAwardid();
-                Award award = awardMapper.selectByPrimaryKey(rankawardid);
+                Award award = awardMapper.selectByPrimaryKey(rankMembers.getAwardid());
                 if (null != award){
-                    finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney);
+                    finishPrice += award.getAwardprice();
                 }
             }
+
+            //榜单设置奖品总金额
+            double startPrice = 0.0;
+            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
             for (RankAwardRelease rankAwardRelease : rankAwardReleases){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
                 if (null != award){
-                    startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney)
-                            * rankAwardRelease.getAwardrate();
+                    startPrice += award.getAwardprice() * rankAwardRelease.getAwardrate();
                 }
             }
-            int leftNum = startMoneyNum - finishMoneyNum;
+
+            int leftNum = (int)Math.ceil((startPrice - finishPrice)/AppserviceConfig.yuantomoney);
             if (0 < leftNum){
                 userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
                 baseResp.initCodeAndDesp();
@@ -3285,7 +3293,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(rank.getCreateuserid());
+                rank.setCreateuserid(appUser.getNickname());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
