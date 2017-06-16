@@ -921,7 +921,7 @@
     from rank
     where
     starttime &lt;= #{currentDate}
-    and isfinish = 0
+    and isfinish = 0 and isdel = 0
   </select>
 
   <!-- 将已开始的活动置为已开始 -->
@@ -930,6 +930,7 @@
       set isfinish = 1
       where starttime &gt; #{beforeDate}
           and starttime &lt;= #{currentDate}
+          and isdel = 0
           and isfinish = 0
   </update>
 
@@ -943,15 +944,18 @@
     select
       <include refid="Base_Column_List" />
     from rank
-    where endTime &lt;= #{currentTime}
-    and isfinish = #{isfinish}
+    where isdel = 0
+      and endTime &lt;= #{currentTime}
+      and isfinish = #{isfinish}
   </select>
 
   <select id="selectHasAwardRankList" resultMap="BaseResultMap">
     SELECT
       <include refid="Base_Column_List" />
-    FROM rank r
-    where EXISTS (select rm.rankid from rank_members rm where r.rankid=rm.rankid and rm.iswinning = 1)
+    FROM rank r inner join rank_members rm on r.rankid = rm,rankid
+    where rm.iswinning = 1
+      and r.isdel = 0
+      and r.ispublic = 0
       and r.isfinish = 5
     order by r.endtime DESC
     limit #{startNum},#{pageSize}

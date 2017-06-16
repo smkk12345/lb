@@ -122,20 +122,20 @@ public class CircleController {
      * @url http://ip:port/app_service/circle/updateCircleInfo
      * @param circleId 兴趣圈id
      * @param userId 当前用户id
-     * @param circlephotos 兴趣圈图片
-     * @param circlebrief 兴趣圈简介
-     * @param needconfirm 是否需要验证 boolean
+     * @param circlePhotos 兴趣圈图片
+     * @param circleBrief 兴趣圈简介
+     * @param needConfirm 是否需要验证 boolean
      * @return
      */
     @RequestMapping(value="updateCircleInfo")
-    public BaseResp<Object> updateCircleInfo(Long circleId,String userId,String circlephotos,String circlebrief,Boolean needconfirm){
-        logger.info("circleId={},userId={},circlephotos={},circlebrief={}",circleId,userId,circlephotos,circlebrief);
+    public BaseResp<Object> updateCircleInfo(Long circleId,String userId,String circlePhotos,String circleBrief,Boolean needConfirm){
+        logger.info("circleId={},userId={},circlephotos={},circlebrief={}",circleId,userId,circlePhotos,circleBrief);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(circleId == null || (StringUtils.hasBlankParams(userId,circlephotos,circlebrief) && needconfirm == null)){
+        if(circleId == null || (StringUtils.isEmpty(userId) && StringUtils.isEmpty(circlePhotos) && StringUtils.isEmpty(circleBrief) && needConfirm == null)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
             return baseResp;
         }
-        baseResp = circleService.updateCircleInfo(circleId,userId,circlephotos,circlebrief,null,needconfirm);
+        baseResp = circleService.updateCircleInfo(circleId,userId,circlePhotos,circleBrief,null,needConfirm);
         return baseResp;
     }
 
@@ -182,13 +182,14 @@ public class CircleController {
     /**
      * 查询圈子成员 包含成员在兴趣圈中赞,花 等信息
      * @url http://ip:port/app_service/circle/selectCircleMember
+     * @param userid 当前登录用户id
      * @param circleId 圈子id
      * @param startNo
      * @param endNo
      * @return
      */
     @RequestMapping(value="selectCircleMember")
-    public BaseResp<Object> selectCircleMember(Long circleId,Integer startNo,Integer endNo,String username){
+    public BaseResp<Object> selectCircleMember(Long userid,Long circleId,Integer startNo,Integer endNo,String username){
         logger.info("select circleMember circleId:{} startNo:{} endNo:{} username:{}",circleId,startNo,endNo,username);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
@@ -201,7 +202,10 @@ public class CircleController {
         if(endNo != null && endNo > startNo){
             pageSize = endNo - startNo;
         }
-        baseResp = circleService.selectCircleMember(circleId,username,startNo,pageSize,true);
+        if(userid == -1){
+            userid = null;
+        }
+        baseResp = circleService.selectCircleMember(userid,circleId,username,startNo,pageSize,true);
 
         return baseResp;
     }
@@ -214,7 +218,7 @@ public class CircleController {
      * @return
      */
     @RequestMapping(value="selectCircleMemberBaseInfo")
-    public BaseResp<Object> selectCircleMemberBaseInfo(Long circleId,Integer startNo,Integer endNo){
+    public BaseResp<Object> selectCircleMemberBaseInfo(Long userid,Long circleId,Integer startNo,Integer endNo){
         logger.info("circleId={},startNo={},endNo={}",circleId,startNo,endNo);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(circleId == null){
@@ -227,7 +231,7 @@ public class CircleController {
         if(endNo != null && endNo > startNo){
             pageSize = endNo - startNo;
         }
-        baseResp = circleService.selectCircleMember(circleId,null,startNo,pageSize,false);
+        baseResp = circleService.selectCircleMember(userid,circleId,null,startNo,pageSize,false);
 
         return baseResp;
     }

@@ -50,4 +50,17 @@ public class CircleMemberServiceImpl implements CircleMemberService {
         }
         return false;
     }
+
+    /**
+     * 更改用户在圈子中的进步条数
+     * @param userid
+     * @param circleId
+     * @param num
+     * @return
+     */
+    @Override
+    public boolean updateCircleMemberIcount(Long userid, Long circleId, int num) {
+        int updateNum = this.circleMembersMapper.updateCircleMembersIcount(userid,circleId,num);
+        return false;
+    }
 }

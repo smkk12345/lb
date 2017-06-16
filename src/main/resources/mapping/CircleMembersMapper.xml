@@ -206,4 +206,10 @@
     <select id="findCircleMembersId" parameterType="int" resultType="Long">
         select userid from circle_members where itype = 0 and circleid = #{circleid}
     </select>
+
+    <!-- 更新用户在圈子中的进步数量 -->
+    <update id="updateCircleMembersIcount">
+        update circle_members set icount = icount +#{num}
+        where userid = #{userid} and circleId = #{circleId}
+    </update>
 </mapper>

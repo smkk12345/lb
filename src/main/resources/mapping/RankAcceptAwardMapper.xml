@@ -571,6 +571,9 @@
       inner join rank on rank_accept_award.rankid = rank.rankid
     where
       rank.isfinish = 5
+      <if test=" ispublic != null">
+        and rank.ispublic = #{ispublic}
+      </if>
       and rank_accept_award.userid = #{userid}
     order by rank_accept_award.createdate desc
     limit #{startNum},#{pageSize}

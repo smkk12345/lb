@@ -47,7 +47,7 @@ public interface RankAcceptAwardMapper {
      * @param pageSize
      * @return
      */
-    List<RankAcceptAward> userRankAcceptAwardList(@Param("userid")Long userid,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+    List<RankAcceptAward> userRankAcceptAwardList(@Param("userid")Long userid,@Param("ispublic") Integer ispublic,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
 
     /**
      * 获取用户的榜单获奖数量

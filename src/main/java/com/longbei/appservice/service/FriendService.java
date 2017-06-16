@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.FriendAddAsk;
+import com.longbei.appservice.entity.SnsFriends;
 
 /**
  * Created by wangyongzhi 17/3/6.
@@ -74,4 +75,12 @@ public interface FriendService extends BaseService{
      * @return
      */
     BaseResp<Object> clearFriendAsk(Long userid);
+
+    /**
+     * 根据userid 和 friendid 获取好友信息
+     * @param userid
+     * @param friendid
+     * @return
+     */
+    SnsFriends getSnsFriend(Long userid, Long friendid);
 }

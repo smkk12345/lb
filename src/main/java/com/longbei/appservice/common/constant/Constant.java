@@ -167,6 +167,7 @@ public class Constant {
 	public static final int STATUS_SYS_911 = -911;
 	public static final int STATUS_SYS_912 = -912;
 	public static final int STATUS_SYS_913 = -913;
+	public static final int STATUS_SYS_914 = -914;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -319,7 +320,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_911 = "您的昵称备注超过了长度限制";
 	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
 	public static final String RTNINFO_SYS_913 = "取消关注成功";
-	
+	public static final String RTNINFO_SYS_914 = "此龙榜已被榜主或管理员关闭";
+
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
 	public static final String RTNINFO_SYS_1101 = "教室老师已回复的问题不能删除";

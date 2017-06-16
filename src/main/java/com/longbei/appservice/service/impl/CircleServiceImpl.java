@@ -27,28 +27,20 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
 
     @Autowired
     private CircleMapper circleMappler;
-
     @Autowired
     private CircleMembersMapper circleMembersMapper;
-
     @Autowired
     private IdGenerateService idGenerateService;
-
     @Autowired
     private UserMsgService userMsgService;
-
     @Autowired
     private FriendService friendService;
-
     @Autowired
     private FansService fansService;
-
     @Autowired
     private UserMongoDao userMongoDao;
-
     @Autowired
     private CommentMongoService commentMongoService;
-
     @Autowired
     private UserBehaviourService userBehaviourService;
     @Autowired
@@ -144,7 +136,6 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             return false;
         }catch(Exception e){
             logger.error("checkCircleTitle circleTitle = {} errorMsg:{}",circleTitle, e);
-//            printException(e);
             return false;
         }
 
@@ -154,9 +145,6 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     public BaseResp<Object> updateCircleInfo(Long circleId, String userId, String circlephotos, String circlebrief, String circleNotice,Boolean needconfirm) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            if (StringUtils.isEmpty(circlephotos) && StringUtils.isEmpty(circlebrief) && StringUtils.isEmpty(circleNotice)) {
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-            }
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("circleId", circleId);
             map.put("userId", userId);
@@ -180,16 +168,14 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_81, Constant.RTNINFO_SYS_81);
         }catch(Exception e){
-        	//TODO 日志打印的方式比较奇怪
-            logger.error("updateCircleInfo circleId = {}, userId = {}, circlephotos = {}, circlebrief = {}, notice = {}", 
+            logger.error("updateCircleInfo circleId = {}, userId = {}, circlephotos = {}, circlebrief = {}, notice = {} errorMsg:{}",
             		circleId, userId, circlephotos, circlebrief, circleNotice, e);
-//          printException(e);
             return baseResp.fail("系统异常");
         }
     }
 
     @Override
-    public BaseResp<Object> selectCircleMember(Long circleId, String username, Integer startNo, Integer pageSize, boolean flag) {
+    public BaseResp<Object> selectCircleMember(Long userid,Long circleId, String username, Integer startNo, Integer pageSize, boolean flag) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Map<String, Object> map = new HashMap<String, Object>();
@@ -207,7 +193,21 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
             for (CircleMembers circleMembers : circleMembersList) {
-                circleMembers.setAppUserMongoEntity(userMongoDao.getAppUser(String.valueOf(circleMembers.getUserid())));
+                AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(String.valueOf(circleMembers.getUserid()));
+                if(userid != null && !userid.equals(circleMembers.getUserid())){
+                    SnsFriends snsFriends = this.friendService.getSnsFriend(userid,circleMembers.getUserid());
+                    if(snsFriends != null){
+                        if(StringUtils.isNotEmpty(snsFriends.getRemark())){
+                            appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        }
+                        appUserMongoEntity.setIsfriend("1");
+                    }
+                    appUserMongoEntity.setIsfans(this.fansService.checkIsFans(userid,circleMembers.getUserid())?"1":"0");
+                }else{
+                    appUserMongoEntity.setIsfriend("1");
+                    appUserMongoEntity.setIsfans("1");
+                }
+                circleMembers.setAppUserMongoEntity(appUserMongoEntity);
             }
 
             baseResp.setData(circleMembersList);
@@ -496,9 +496,9 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             Map<String,Object> map = new HashMap<String,Object>();
-            if(pType == 10){
+            if(pType != null && pType == 10){
                 map.put("isrecommend",1);
-            }else{
+            }else if(pType != null){
                 map.put("pType",pType);
             }
             if(StringUtils.isNotEmpty(keyword)){
@@ -521,7 +521,7 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                     circleMemberMap.put("circleId",circle.getCircleid());
                     circleMemberMap.put("userId",userId);
                     circleMemberMap.put("itype",CircleMembers.normal);
-                    CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(map) ;
+                    CircleMembers circleMembers = this.circleMembersMapper.findCircleMember(circleMemberMap) ;
                     if(circleMembers != null){
                         circle.setHasjoin(1);
                     }

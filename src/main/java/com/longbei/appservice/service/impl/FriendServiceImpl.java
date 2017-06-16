@@ -529,6 +529,17 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
     }
 
     /**
+     * 根据userid 和 friendid 获取好友信息
+     * @param userid
+     * @param friendid
+     * @return
+     */
+    @Override
+    public SnsFriends getSnsFriend(Long userid, Long friendid) {
+        return this.snsFriendsMapper.selectByUidAndFid(userid,friendid,"0");
+    }
+
+    /**
      * 更新用户的添加好友请求的新消息提示状态
      * @param userId 用户id
      * @param flag 更改的状态 true代表有新消息 false代表没有新消息
