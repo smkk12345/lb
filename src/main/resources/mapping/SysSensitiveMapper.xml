@@ -3,11 +3,11 @@
 <mapper namespace="com.longbei.appservice.dao.SysSensitiveMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SysSensitive" >
     <id column="id" property="id" jdbcType="INTEGER" />
-
     <result column="words" property="words"/>
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, words
+    id, words,updatetime
   </sql>
   <select id="selectSensitive" resultMap="BaseResultMap">
     select 
@@ -24,6 +24,6 @@
         updatetime = #{updatetime},
       </if>
     </set>
-    where id = 1
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
