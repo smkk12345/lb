@@ -1118,8 +1118,6 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //更新赞 花 进步条数
         improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
-        //更新榜中进步条数
-        rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
     }
 
     /**
