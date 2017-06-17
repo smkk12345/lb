@@ -781,4 +781,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return resultList;
 	}
 
+	@Override
+	public Integer selectFriendsCount(long userid) {
+		Integer temp = snsFriendsMapper.selectFriendsCount(userid);
+		return temp;
+	}
+
 }
