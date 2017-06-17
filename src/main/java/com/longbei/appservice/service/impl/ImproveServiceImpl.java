@@ -949,6 +949,12 @@ public class ImproveServiceImpl implements ImproveService{
             if (ResultUtil.isSuccess(baseResp)){
                 //将收藏了该进步的用户进步状态修改为已删除
                 deleteUserCollectImprove("0",improveid);
+                //将该进步设为取消推荐
+                List<Long> list = new ArrayList<Long>();
+                list.add(Long.parseLong(improveid));
+//                timeLineDetailDao.updateRecommendImprove(list,businesstype,"0");
+                improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),list,"0");
+
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,

@@ -125,7 +125,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//老师称呼
 //				String cardNickname = initUserInfo(classroom.getCardid());
 				String displayname = userCard.getDisplayname();
-				map.put("cardid", classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
 				map.put("displayname", displayname);
 				map.put("ptype", classroom.getPtype()); //十全十美类型
 				map.put("classtitle", classroom.getClasstitle()); //教室标题
@@ -253,7 +253,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classtitle", classroom.getClasstitle()); 
-				map.put("cardid", classroom.getCardid());
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
 				//是否已经关注教室
 				Map<String,Object> usermap = new HashMap<String,Object>();
 				usermap.put("businessType", "4");
@@ -272,7 +273,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 					isadd = "1";
 				}
 				map.put("isadd", isadd);
-				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//名片信息---老师h5
 				map.put("content", userCard.getContent());
 				
