@@ -89,5 +89,19 @@ public interface ClassroomMapper {
     int updateIsfreeByClassroomid(@Param("classroomid") long classroomid, @Param("isfree") String isfree, 
     		@Param("charge") String charge, @Param("freecoursenum") String freecoursenum); 
     
+    /*
+     * 获取count
+     */
+    Integer selectCount(@Param("isup") String isup,  @Param("isdel") String isdel, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param ispublic 是否所有人可见。0 所有人可见。1，部分可见
+	 * param pageNo   pageSize
+	 */
+    List<Classroom> selectClassroomList(@Param("isup") String isup,  @Param("isdel") String isdel,
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
 }

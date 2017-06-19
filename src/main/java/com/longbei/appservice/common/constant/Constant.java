@@ -8,6 +8,7 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 public class Constant {
 
 	public static final String UPDATE_RULE = "updaterule";
+	public static final String UPDATE_SENSITIVE = "updatesensitive";
 
 	public static final double DISTANCE_CONVERT_2D = 111.12;
 

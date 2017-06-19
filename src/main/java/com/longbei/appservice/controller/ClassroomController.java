@@ -39,9 +39,35 @@ public class ClassroomController {
 	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
-	
-	
-	
+
+
+
+	/**
+	* @Title: http://ip:port/app_service/classroom/quitClassroom
+	* @Description: 退出教室
+	* @param @param classroomid
+	* @param @param userid
+	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	* @auther yinxc
+	* @currentdate:2017年2月28日
+	*/
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "quitClassroom")
+	public BaseResp<Object> quitClassroom(String classroomid, String userid) {
+		logger.info("quitClassroom classroomid={},userid={}",classroomid,userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid, userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid),
+					Long.parseLong(userid), "1");
+		} catch (Exception e) {
+			logger.error("quitClassroom classroomid = {}, userid = {}",
+					classroomid, userid, e);
+		}
+		return baseResp;
+	}
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/updateClassnotice
@@ -149,7 +175,7 @@ public class ClassroomController {
   			classroomQuestionsLower.setFriendid(friendid);
   			classroomQuestionsLower.setContent(content);
   			classroomQuestionsLower.setQuestionsid(questionsid);
-  			classroomQuestionsLower.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			classroomQuestionsLower.setCreatetime(new Date());
   			classroomQuestionsLower.setUserid(userid);
   			baseResp = classroomQuestionsMongoService.insertQuestionsLower(classroomQuestionsLower);
   		} catch (Exception e) {
@@ -181,7 +207,7 @@ public class ClassroomController {
   			ClassroomQuestions classroomQuestions = new ClassroomQuestions();
   			classroomQuestions.setClassroomid(classroomid);
   			classroomQuestions.setContent(content);
-  			classroomQuestions.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			classroomQuestions.setCreatetime(new Date());
   			classroomQuestions.setUserid(userid);
   			baseResp = classroomQuestionsMongoService.insertQuestions(classroomQuestions);
   		} catch (Exception e) {
@@ -195,25 +221,27 @@ public class ClassroomController {
     * @Description: 获取教室提问答疑列表
     * @param @param classroomid  教室id
     * @param @param userid  当前访问者id
-    * @param @param startNo   pageSize
+    * @param @param lastDate 分页数据最后一个的时间
+    * @param @param pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(String classroomid, String userid, int startNo, int pageSize) {
-		logger.info("questionsList classroomid = {}, userid = {}, startNo = {}, pageSize = {}", 
-				classroomid, userid, startNo, pageSize);
+    public BaseResp<Object> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
+		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}, pageSize = {}", 
+				classroomid, userid, lastDate, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, startNo, pageSize);
+  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, 
+  					lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
   		} catch (Exception e) {
-  			logger.error("questionsList classroomid = {}, startNo = {}, pageSize = {}",
-					classroomid, startNo, pageSize, e);
+  			logger.error("questionsList classroomid = {}, lastDate = {}, pageSize = {}",
+					classroomid, lastDate, pageSize, e);
   		}
   		return baseResp;
     }

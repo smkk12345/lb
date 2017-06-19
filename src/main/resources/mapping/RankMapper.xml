@@ -979,7 +979,8 @@
     from rankimage
     where isdel = 0
 	and ispublic = #{ispublic}
-    and (checkstatus = 4 or checkstatus = 1)
+    and (checkstatus = 1 or checkstatus = 4)
+    and isup = 0
 	and createuserid = #{createuserid}
   </select>
 

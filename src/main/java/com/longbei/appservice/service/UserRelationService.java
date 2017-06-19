@@ -80,6 +80,11 @@ public interface UserRelationService {
 	 */
 	SnsFriends selectByUidAndFid(long userid, long friendid);
 
+	/*
+	 * 获取好友数量
+	 */
+	Integer selectFriendsCount(long userid);
+
 	/**
 	 * 获取粉丝信息
 	 * @param userid

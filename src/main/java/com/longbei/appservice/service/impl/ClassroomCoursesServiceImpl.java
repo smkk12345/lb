@@ -27,7 +27,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		try {
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			//教室课程总数
-			int coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
+			Integer coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
 			reseResp.getExpandData().put("coursesNum", coursesNum);
 			reseResp.setData(list);
 			if(startNum == 0 && list.size() == 0){

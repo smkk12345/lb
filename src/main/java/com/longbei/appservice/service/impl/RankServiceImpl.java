@@ -163,9 +163,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankSymbol(Rank rank) {
         int res = 0;
         try {
-            rank = rankMapper.selectRankByRankid(rank.getRankid());
-            rank.setIsdel("1");
             res = rankMapper.updateSymbolByRankId(rank);
+            rank = rankMapper.selectRankByRankid(rank.getRankid());
             if("1".equals(rank.getIsdel())){
 
             	if(null != rank){
@@ -289,6 +288,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 return baseResp;
             }
             rankImage.setRankAwards(selectRankAwardByRankid(rankimageid));
+            if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                AppUserMongoEntity user = userMongoDao.getAppUser(rankImage.getCreateuserid());
+                rankImage.setCreateusernickname(user.getNickname());
+            }
             baseResp = BaseResp.ok();
             baseResp.setData(rankImage);
             return baseResp;
@@ -488,6 +491,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rankImage1.getSourcetype())){
                     List<RankCheckDetail> list = rankCheckDetailMapper.selectList(String.valueOf(rankImage1.getRankid()));
                     rankImage1.setRankCheckDetails(list);
+
+                    AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(rankImage1.getCreateuserid()));
+                    rankImage1.setCreateusernickname(appUser.getNickname());
                 }
             }
             page.setTotalCount(totalcount);
@@ -1370,7 +1376,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				remark = remark.replace("n", "");
 			}
 //            String remark = Constant.MSG_QUITRANK_MODEL.replace("n", rank.getRanktitle());
-            if("0".equals(rank.getSourcetype())){
+            if("0".equals(rank.getSourcetype()) || "1".equals(rank.getSourcetype())){
             	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
 								//22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
 								//25:订单发货N天后自动确认收货    26：实名认证审核结果
@@ -1657,25 +1663,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private BaseResp handleRankFinishAward(Rank rank){
         BaseResp baseResp = new BaseResp();
         try {
-            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
+            //获奖总金额
+            double finishPrice = 0.0;
             List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
-            int startMoneyNum = 0;
-            int finishMoneyNum = 0;
             for (RankMembers rankMembers : rankMemberses){
-                Long rankawardid = rankMembers.getAwardid();
-                Award award = awardMapper.selectByPrimaryKey(rankawardid);
+                Award award = awardMapper.selectByPrimaryKey(rankMembers.getAwardid());
                 if (null != award){
-                    finishMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney);
+                    finishPrice += award.getAwardprice();
                 }
             }
+
+            //榜单设置奖品总金额
+            double startPrice = 0.0;
+            List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(String.valueOf(rank.getRankid()));
             for (RankAwardRelease rankAwardRelease : rankAwardReleases){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAwardRelease.getAwardid()));
                 if (null != award){
-                    startMoneyNum += Math.ceil(award.getAwardprice()/AppserviceConfig.yuantomoney)
-                            * rankAwardRelease.getAwardrate();
+                    startPrice += award.getAwardprice() * rankAwardRelease.getAwardrate();
                 }
             }
-            int leftNum = startMoneyNum - finishMoneyNum;
+
+            int leftNum = (int)Math.ceil((startPrice - finishPrice)/AppserviceConfig.yuantomoney);
             if (0 < leftNum){
                 userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
                 baseResp.initCodeAndDesp();
@@ -1699,7 +1707,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         if (ResultUtil.isSuccess(baseResp)) {
             rankMembers.setCheckstatus("-1");
-            BaseResp<Page<RankMembers>> pageBaseResp = selectRankMemberList(rankMembers, pageNo, pageSize);
+            BaseResp<Page<RankMembers>> pageBaseResp = selectRankMemberList(rankMembers,(pageNo-1)*pageSize, pageSize);
             return pageBaseResp;
         }
         return baseResp;
@@ -2222,7 +2230,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 logger.error("query rankAcceptAward null userId:{} rankId:{}",userId,rankId);
                 return baseResp.fail("系统异常");
             }
-
+            rankMember.setReceivecode(rankAcceptAward.getReceivecode());
             Map<String,Object> rankResultMap = new HashMap<String,Object>();
             rankResultMap.put("ranktitle",rank.getRanktitle());
             rankResultMap.put("ptype",rank.getPtype());
@@ -3317,7 +3325,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(rank.getCreateuserid());
+                rank.setCreateuserid(appUser.getNickname());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
@@ -3784,38 +3792,46 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         	Rank rank = rankMapper.selectByPrimaryKey(Long.parseLong(rankid));
             //status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
             if ("1".equals(status)) {
-                //删除
-                improveService.removeImprove(userid, improveid, "2", rankid);
-                Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid), 
-                		userid, "2", rankid);
-				String remark = Constant.MSG_IMP_DEL_MODEL;
-				if(null != improve){
-					if(!StringUtils.isBlank(improve.getBrief())){
-						if(improve.getBrief().length()>=20){
-							//抓取内容20个字
-							String brief = improve.getBrief().substring(0, 20);
-							remark = remark.replace("n", "(" + brief + ")");
-						}else{
-							remark = remark.replace("n", "(" + improve.getBrief() + ")");
-						}
-					}else{
-						remark = remark.replace("n", "");
-					}
-				}
+                if (Integer.parseInt(rank.getIsfinish()) >= 2) {
+                    improveService.removeFinishedRankImprove(userid, rankid,improveid);
+                    String remark = Constant.MSG_RANKIMP_REMOVE_MODEL;
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
+                            improveid, "2",
+                           rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "");
+                 }else {
+                    //删除
+                    improveService.removeImprove(userid, improveid, "2", rankid);
+                    Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid),
+                            userid, "2", rankid);
+                    String remark = Constant.MSG_IMP_DEL_MODEL;
+                    if (null != improve) {
+                        if (!StringUtils.isBlank(improve.getBrief())) {
+                            if (improve.getBrief().length() >= 20) {
+                                //抓取内容20个字
+                                String brief = improve.getBrief().substring(0, 20);
+                                remark = remark.replace("n", "(" + brief + ")");
+                            } else {
+                                remark = remark.replace("n", "(" + improve.getBrief() + ")");
+                            }
+                        } else {
+                            remark = remark.replace("n", "");
+                        }
+                    }
 //                String remark = Constant.MSG_QUITRANK_IMP_MODEL.replace("n", rank.getRanktitle());
-            	//mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
-				//						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
-				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
-				//						27:工作认证审核结果      28：学历认证审核结果
-				//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-				//						32：创建的龙榜/教室/圈子被选中推荐  
-				//						40：订单已取消 41 榜中进步下榜   
-				// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
-            	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
-            	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
-            			improveid, "2", 
-            			rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "",AppserviceConfig.h5_helper);
+                    //mtype 0 系统消息(msgtype  18:升龙级   19：十全十美升级   20:榜关注开榜通知    21：榜关注结榜通知
+                    //						22:加入的榜结榜未获奖   23：加入的教室有新课通知    24：订单已发货
+                    //						25:订单发货N天后自动确认收货    26：实名认证审核结果
+                    //						27:工作认证审核结果      28：学历认证审核结果
+                    //						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
+                    //						32：创建的龙榜/教室/圈子被选中推荐
+                    //						40：订单已取消 41 榜中进步下榜
+                    // 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
+                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+                    //			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
+                            improveid, "2",
+                            rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "", AppserviceConfig.h5_helper);
+                }
             }
             if ("2".equals(status)) {
                 //businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室

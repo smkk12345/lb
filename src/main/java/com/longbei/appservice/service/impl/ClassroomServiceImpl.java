@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -125,7 +126,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//老师称呼
 //				String cardNickname = initUserInfo(classroom.getCardid());
 				String displayname = userCard.getDisplayname();
-				map.put("cardid", classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
 				map.put("displayname", displayname);
 				map.put("ptype", classroom.getPtype()); //十全十美类型
 				map.put("classtitle", classroom.getClasstitle()); //教室标题
@@ -137,7 +138,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
 				//获取当前用户在教室发作业的总数
-				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
+				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
 				map.put("impNum", impNum);
 				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 				if(null != classroomMembers){
@@ -253,7 +254,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classtitle", classroom.getClasstitle()); 
-				map.put("cardid", classroom.getCardid());
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
 				//是否已经关注教室
 				Map<String,Object> usermap = new HashMap<String,Object>();
 				usermap.put("businessType", "4");
@@ -272,7 +274,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 					isadd = "1";
 				}
 				map.put("isadd", isadd);
-				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//名片信息---老师h5
 				map.put("content", userCard.getContent());
 				
@@ -643,4 +644,79 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return temp > 0 ? true : false;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------admin调用方法------------------------------------
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param pageNo   pageSize
+	 * 2017年2月28日
+	 */
+	@Override
+	public BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum){
+		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
+		Page<Classroom> page = new Page<>(startNum,endNum);
+        try {
+            int totalcount = classroomMapper.selectCount(isup, isdel, startNum, endNum);
+            startNum = Page.setPageNo(startNum,totalcount,endNum);
+            List<Classroom> list = classroomMapper.selectClassroomList(isup, isdel, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (Classroom classroom : list) {
+					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+					classroom.setUserCard(userCard);
+					//教室总进步数量
+					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					classroom.setAllimp(allimp);
+					//教室课程数量
+					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+					classroom.setAllcourses(allcourses);
+            	}
+            }
+            page.setTotalCount(totalcount);
+            page.setList(list);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("selectPcClassroomList for adminservice isup = {}, isdel = {}, startNum = {}, pageSize = {}",
+  					isup, isdel, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+	
+	/**
+    * @Description: 获取教室名片列表
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年6月17日
+	*/
+	@Override
+	public BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum){
+		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
+        try {
+        	List<UserCard> list = userCardMapper.selectList(startNum, endNum);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("selectPcUserCardList for adminservice startNum = {}, pageSize = {}",
+  					startNum, endNum, e);
+        }
+        return baseResp;
+	}
+	
 }

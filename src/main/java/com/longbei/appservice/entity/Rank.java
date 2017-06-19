@@ -84,7 +84,7 @@ public class Rank {
 
     private String companybrief;  //公司简介
 
-    private String sourcetype;  //来源类型。0 运营端创建   1  b端创建 2 app用户创建。
+    private String sourcetype;  //来源类型。0 运营端创建   1app用户创建 2b端创建
 
     private Integer icount; //榜中进步数
 

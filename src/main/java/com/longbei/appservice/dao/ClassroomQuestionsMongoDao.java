@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,18 +50,23 @@ public class ClassroomQuestionsMongoDao {
 	 * param classroomid 教室id
 	 * param startNo  pageSize
 	 */
-	public List<ClassroomQuestions> selectQuestionsListByClassroomid(String classroomid, int startNo,
+	public List<ClassroomQuestions> selectQuestionsListByClassroomid(String classroomid, Date lastDate,
 			int pageSize){
 		Criteria criteria  = Criteria.where("classroomid").is(classroomid);
+		if (lastDate != null) {
+			criteria = criteria.and("createtime").lt(lastDate);
+		}
 		Query query = Query.query(criteria);
-		query.with(new Sort(Direction.DESC, "createdate"));
-		query.limit(pageSize);
+		query.with(new Sort(Direction.DESC, "createtime"));
+		if(pageSize != 0){
+			query.limit(pageSize);
+		}
 		List<ClassroomQuestions> list = null;
 		try {
 			list = mongoTemplate1.find(query, ClassroomQuestions.class);
 		} catch (Exception e) {
-			logger.error("selectQuestionsListByClassroomid classroomid = {}, startNo = {}, pageSize = {}", 
-					classroomid, startNo, pageSize, e);
+			logger.error("selectQuestionsListByClassroomid classroomid = {}, lastDate = {}, pageSize = {}", 
+					classroomid, lastDate, pageSize, e);
 		}
 		return list;
 	}

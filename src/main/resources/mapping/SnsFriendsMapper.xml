@@ -50,7 +50,7 @@
             and updateTime > #{updateTime}
         </if>
         <if test="isDel != null">
-            and isDel = #{isDel}
+            and isdel = #{isDel}
         </if>
     group by friendid 
     <if test="startNum != null and endNum != null and endNum &gt; 0" >
@@ -66,6 +66,13 @@
     <if test="isdel != null and isdel != ''" >
       and isdel = #{isdel}
     </if>
+  </select>
+  
+  <select id="selectFriendsCount" resultType="java.lang.Integer" >
+    select count(*) 
+    from sns_friends
+    where isdel = 0
+      and userid = #{userid}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

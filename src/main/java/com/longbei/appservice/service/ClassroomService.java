@@ -1,7 +1,11 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.UserCard;
 
 public interface ClassroomService {
 
@@ -106,5 +110,40 @@ public interface ClassroomService {
 	 * 2017年3月3日
 	 */
 	BaseResp<Object> updateClassinvoloedByClassroomid(long classroomid, long userid, Integer num);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------admin调用方法------------------------------------
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * @param isup   0 - 未发布 。1 --已发布
+	 * @param isdel  0 未删除。1 删除
+	 * @param pageNo   pageSize
+	 * 2017年6月17日
+	 */
+	BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum);
+	
+	/**
+    * @Description: 获取教室名片列表
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年6月17日
+	*/
+	BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum);
 	
 }

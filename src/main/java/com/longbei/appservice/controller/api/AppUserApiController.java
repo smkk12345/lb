@@ -301,16 +301,16 @@ public class AppUserApiController {
     }
 
     @RequestMapping(value = "/updateSensitiveWords")
-    public BaseResp<Object> updateSensitiveWords(String words) {
-        logger.info("updateSensitiveWords for adminservice and words={}", words);
+    public BaseResp<Object> updateSensitiveWords(String words,String sensitiveId) {
+        logger.info("updateSensitiveWords for adminservice and words={},sensitiveId={}", words,sensitiveId);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isBlank(words)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = sysSensitiveService.updateSensitiveWords(words);
+            baseResp = sysSensitiveService.updateSensitiveWords(words,sensitiveId);
         } catch (Exception e) {
-            logger.error("updateSensitiveWords for adminservice and words={}", words,e);
+            logger.error("updateSensitiveWords for adminservice and words={},sensitiveId={}", words,sensitiveId,e);
 
         }
         return baseResp;

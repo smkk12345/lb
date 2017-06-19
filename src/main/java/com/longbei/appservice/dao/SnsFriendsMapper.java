@@ -47,4 +47,9 @@ public interface SnsFriendsMapper {
      * @return
      */
 	int updateByUidAndFid(Map<String,Object> map);
+	
+	/*
+	 * 获取好友数量
+	 */
+	Integer selectFriendsCount(@Param("userid") long userid);
 }

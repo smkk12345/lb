@@ -47,6 +47,11 @@ public class Classroom {
 
     private String isdel; //0 未删除。1 删除
     
+    private String sourcetype; //0:运营  1:app  2:商户
+    
+    private String isrecommend; //是否推荐。0 - 没有推荐 1 - 推荐   默认0
+    
+    private String isup; // 0 - 未发布 。1 --已发布    默认0
     
     //----------------扩展字段--------------------------
     
@@ -57,6 +62,10 @@ public class Classroom {
     private String fileurl; //课程默认封面---视频文件url（转码后）
     
     private String isadd; //访问用户是否已加入教室  0：未加入  1：加入
+    
+    private Integer allimp = 0; //教室进步数量
+    
+    private Integer allcourses = 0; //教室课程数量
 
     /**
      * 
@@ -345,6 +354,50 @@ public class Classroom {
 
 	public void setPickey(String pickey) {
 		this.pickey = pickey;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getSourcetype() {
+		return sourcetype;
+	}
+
+	public void setSourcetype(String sourcetype) {
+		this.sourcetype = sourcetype;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsrecommend() {
+		return isrecommend;
+	}
+
+	public void setIsrecommend(String isrecommend) {
+		this.isrecommend = isrecommend;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsup() {
+		return isup;
+	}
+
+	public void setIsup(String isup) {
+		this.isup = isup;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getAllimp() {
+		return allimp;
+	}
+
+	public void setAllimp(Integer allimp) {
+		this.allimp = allimp;
+	}
+
+	public Integer getAllcourses() {
+		return allcourses;
+	}
+
+	public void setAllcourses(Integer allcourses) {
+		this.allcourses = allcourses;
 	}
 
 }

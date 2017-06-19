@@ -282,13 +282,16 @@ public class UserMsgServiceImpl implements UserMsgService {
 			for (UserMsg userMsg : list) {
 				if(mymaxtime != null){
 					if(userMsg.getCreatetime().getTime() > mymaxtime.getTime()){
-						return userMsg.getCreatetime();
+						if(slist.contains(userMsg.getFriendid().toString())){
+							//好友   粉丝    评论含有未读消息
+							return userMsg.getCreatetime();
+						}
 					}
 				}else{
 					if(slist.contains(userMsg.getFriendid().toString())){
 						//好友   粉丝    评论含有未读消息
 						return userMsg.getCreatetime();
-					}	
+					}
 				}
 			}
 		}

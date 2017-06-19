@@ -2,6 +2,12 @@ package com.longbei.appservice.entity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class UserCard {
     private Integer id;
 
@@ -22,6 +28,8 @@ public class UserCard {
     private Date updatetime;
 
     private Long cardid;//名片id
+    
+    private String isdel; //0 没删 1 - 删除   默认0
 
     /**
      * 
@@ -43,6 +51,7 @@ public class UserCard {
      * 用户id
      * @return userid 用户id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getUserid() {
         return userid;
     }
@@ -59,6 +68,7 @@ public class UserCard {
      * 类型。0 榜主名片。1 圈主名片
      * @return ctype 类型。0 榜主名片。1 圈主名片
      */
+    @JsonInclude(Include.ALWAYS)
     public String getCtype() {
         return ctype;
     }
@@ -139,6 +149,8 @@ public class UserCard {
      * 
      * @return createtime 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -155,6 +167,8 @@ public class UserCard {
      * 
      * @return updatetime 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -171,6 +185,7 @@ public class UserCard {
      * 名片id
      * @return cardid 名片id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getCardid() {
         return cardid;
     }
@@ -182,4 +197,13 @@ public class UserCard {
     public void setCardid(Long cardid) {
         this.cardid = cardid;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getIsdel() {
+		return isdel;
+	}
+
+	public void setIsdel(String isdel) {
+		this.isdel = isdel;
+	}
 }

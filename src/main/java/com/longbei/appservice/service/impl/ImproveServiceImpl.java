@@ -852,10 +852,11 @@ public class ImproveServiceImpl implements ImproveService{
     //批复信息
   	private void replyImp(List<Improve> improves, String userid, String classroomid){
   		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
-  		List<String> list = new ArrayList<>();
-  		if(null != classroom){
-  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
-  		}
+//  		List<String> list = new ArrayList<>();
+//  		if(null != classroom){
+//  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
+//  		}
+  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
   		if(null != improves && improves.size()>0){
   			for (Improve improve : improves) {
   				String isreply = "0";
@@ -868,13 +869,9 @@ public class ImproveServiceImpl implements ImproveService{
   				}
   				if(!"1".equals(isreply)){
   					//判断当前用户是否是老师
-  					if(null != list && list.size()>0){
-  						if(!list.contains(userid)){
-  							isreply = "2";
-  						}
-  					}else{
-  						isreply = "2";
-  					}
+					if(userCard.getUserid() != Long.parseLong(userid)){
+						isreply = "2";
+					}
   				}
   				improve.setIsreply(isreply);
   				
@@ -954,6 +951,12 @@ public class ImproveServiceImpl implements ImproveService{
             if (ResultUtil.isSuccess(baseResp)){
                 //将收藏了该进步的用户进步状态修改为已删除
                 deleteUserCollectImprove("0",improveid);
+                //将该进步设为取消推荐
+                List<Long> list = new ArrayList<Long>();
+                list.add(Long.parseLong(improveid));
+//                timeLineDetailDao.updateRecommendImprove(list,businesstype,"0");
+                improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),list,"0");
+
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
@@ -1117,8 +1120,6 @@ public class ImproveServiceImpl implements ImproveService{
         }
         //更新赞 花 进步条数
         improveMapper.afterDelSubImp(improve.getBusinessid(),improve.getUserid(),flower,like,sourceTableName,"rankid");
-        //更新榜中进步条数
-        rankMembersMapper.updateRankImproveCount(improve.getBusinessid(),improve.getUserid(),-1);
     }
 
     /**

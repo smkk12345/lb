@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
@@ -179,7 +180,10 @@ public class UserServiceImpl implements UserService {
 			//查询粉丝总数
 //			int fansCount = snsFansMapper.selectCountFans(userid);
 			expandData.put("fansCount", userInfo.getTotalfans());
-
+			
+			//查询好友数量
+			Integer friendCount = userRelationService.selectFriendsCount(lookid);
+			expandData.put("friendCount", friendCount);
 			//获取用户被赠与的进步花
 //			int flowernum = 0;
 //			List<UserFlowerDetail> list = userFlowerDetailMapper.selectListByOrigin(userid, "3", 0, 1);
@@ -1034,7 +1038,9 @@ public class UserServiceImpl implements UserService {
 		if(null != userLevel){
 			list.add("可以同时加入" + userLevel.getJoinranknum() + "个公开龙榜");
 			if(userLevel.getDiscount().intValue() != 1){
-				list.add("兑换商城中商品打" + userLevel.getDiscount()*10 + "折兑换(特殊商品除外)");
+				DecimalFormat df = new DecimalFormat("#.0");
+				String discount = df.format(userLevel.getDiscount()*10);
+				list.add("兑换商城中商品打" + discount + "折兑换(特殊商品除外)");
 			}
 			list.add("可以发布" + userLevel.getPubrankjoinnum() + "人的公开龙榜");
 			list.add("可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");

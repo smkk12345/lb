@@ -39,7 +39,7 @@ public class SysInitController extends BaseController{
             baseResp.getExpandData().put("perfectmenus",SysRulesCache.perfectTenList);
             //oss路径
             if(StringUtils.isBlank(AppserviceConfig.oss_media)){
-                baseResp.getExpandData().put("osspath", "http://longbei0413-media-out.oss-cn-shanghai.aliyuncs.com/");
+                baseResp.getExpandData().put("osspath", "http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/");
             }else{
                 baseResp.getExpandData().put("osspath", AppserviceConfig.oss_media);
             }
