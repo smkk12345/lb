@@ -15,6 +15,8 @@ public interface UserCardMapper {
 
     UserCard selectByCardid(@Param("cardid") long cardid);
     
+    List<UserCard> selectList(@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
     List<String> selectUseridByCardid(@Param("cardid") long cardid);
 
     int updateByPrimaryKeySelective(UserCard record);

@@ -12,21 +12,35 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="cardid" property="cardid" jdbcType="BIGINT" />
+    <result column="isdel" property="isdel" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid
+    id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid, isdel
   </sql>
   <select id="selectByCardid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from user_card
-    where cardid = #{cardid}
+    where cardid = #{cardid} 
+    and isdel = 0 
+  </select>
+  
+  <select id="selectList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" /> 
+    from user_card 
+    where isdel = 0 
+    order by createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
   </select>
   
   <select id="selectUseridByCardid" resultMap="BaseResultMap" >
     select userid 
     from user_card
-    where cardid = #{cardid}
+    where cardid = #{cardid} 
+    and isdel = 0 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

@@ -149,7 +149,7 @@ public class ClassroomController {
   			classroomQuestionsLower.setFriendid(friendid);
   			classroomQuestionsLower.setContent(content);
   			classroomQuestionsLower.setQuestionsid(questionsid);
-  			classroomQuestionsLower.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			classroomQuestionsLower.setCreatetime(new Date());
   			classroomQuestionsLower.setUserid(userid);
   			baseResp = classroomQuestionsMongoService.insertQuestionsLower(classroomQuestionsLower);
   		} catch (Exception e) {
