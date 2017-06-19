@@ -698,6 +698,25 @@ public class ClassroomServiceImpl implements ClassroomService {
         return baseResp;
 	}
 	
-	
+	/**
+    * @Description: 获取教室名片列表
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年6月17日
+	*/
+	@Override
+	public BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum){
+		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
+        try {
+        	List<UserCard> list = userCardMapper.selectList(startNum, endNum);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("selectPcUserCardList for adminservice startNum = {}, pageSize = {}",
+  					startNum, endNum, e);
+        }
+        return baseResp;
+	}
 	
 }

@@ -39,9 +39,35 @@ public class ClassroomController {
 	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
-	
-	
-	
+
+
+
+	/**
+	* @Title: http://ip:port/app_service/classroom/quitClassroom
+	* @Description: 退出教室
+	* @param @param classroomid
+	* @param @param userid
+	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	* @auther yinxc
+	* @currentdate:2017年2月28日
+	*/
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "quitClassroom")
+	public BaseResp<Object> quitClassroom(String classroomid, String userid) {
+		logger.info("quitClassroom classroomid={},userid={}",classroomid,userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid, userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid),
+					Long.parseLong(userid), "1");
+		} catch (Exception e) {
+			logger.error("quitClassroom classroomid = {}, userid = {}",
+					classroomid, userid, e);
+		}
+		return baseResp;
+	}
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/updateClassnotice
