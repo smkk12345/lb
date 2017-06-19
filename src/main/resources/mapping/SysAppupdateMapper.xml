@@ -131,4 +131,12 @@
       updateexplain = #{updateexplain,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询版本更新的列表 -->
+  <select id="findSysAppUpdateList" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    from sys_appupdate
+    order by id desc
+  </select>
 </mapper>

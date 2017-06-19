@@ -40,4 +40,14 @@ public interface ImproveCircleMapper {
                @Param("circleid") String circleid,
                @Param("improveid") String improveid);
 
+    /**
+     * 更改圈子中用户的进步状态
+     * @param userId
+     * @param circleId
+     * @param isDel 1 代表删除
+     * @param isBusinessDel 1 代表删除
+     * @return
+     */
+    int updateImproveCircleStatus(@Param("userId")String userId,@Param("circleId") String circleId,
+                                  @Param("isDel")String isDel,@Param("isBusinessDel") String isBusinessDel);
 }

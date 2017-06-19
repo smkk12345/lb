@@ -649,4 +649,14 @@ public class RankController {
         return baseResp;
     }
 
+    /**
+     * 初始化榜单的用户排名
+     * @return
+     */
+    @RequestMapping(value="initRankSort")
+    public BaseResp<Object> initRankSort(){
+        this.rankService.initRankSort();
+        return new BaseResp<>().ok();
+    }
+
 }

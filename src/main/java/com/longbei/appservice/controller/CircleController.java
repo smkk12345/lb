@@ -3,6 +3,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserMsg;
@@ -38,35 +39,6 @@ public class CircleController {
     private UserMsgService userMsgService;
 
     private static Logger logger = LoggerFactory.getLogger(CircleController.class);
-
-    /**
-     * 根据圈子的名称查询类似的圈子
-     * @url http://ip:port/app_service/circle/relevantCircle
-     * @param circleName 圈子名称
-     * @param startNo 开始下标
-     * @param endNo 结束下标
-     * @author wangyongzhi
-     * @return
-     */
-    @RequestMapping(value="relevantCircle")
-    public BaseResp<Object> relevantCircle(String circleName,Integer startNo,Integer endNo){
-        logger.info("circleName={},startNo={},endNo={}",circleName,startNo,endNo);
-        BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(StringUtils.hasBlankParams(circleName)){
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-            return baseResp;
-        }
-        if(startNo == null || startNo < 0){
-            startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
-        }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNo != null && endNo > startNo){
-            pageSize = endNo - startNo;
-        }
-        logger.info("query relevantCircle circleName:{}, startNo:{},pageSize:{} ",circleName,startNo,pageSize);
-        baseResp = circleService.relevantCircle(circleName,startNo,pageSize);
-        return baseResp;
-    }
 
     /**
      * 新建圈子
@@ -259,19 +231,20 @@ public class CircleController {
     /**
      * 退出圈子
      * @url http://ip:port/app_service/circle/removeCircleMembers
+     * @param curUserid 当前登录用户id
      * @param circleId 兴趣圈id
      * @param userId 用户id
      * @return
      */
     @RequestMapping(value="removeCircleMembers")
-    public BaseResp<Object> removeCircleMembers(Long circleId,String userId){
+    public BaseResp<Object> removeCircleMembers(Long curUserid,Long circleId,String userId){
         logger.info("remove circleMembers circleId:{}  userId:{}",circleId,userId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if(circleId == null || StringUtils.isBlank(userId)){
+        if(circleId == null || StringUtils.isBlank(userId) || curUserid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
 
-        baseResp = circleService.removeCircleMembers(circleId,userId);
+        baseResp = circleService.removeCircleMembers(curUserid,circleId,userId);
         return baseResp;
     }
 
@@ -303,25 +276,26 @@ public class CircleController {
      * @param userId 用户id
      * @param currentUserId 当前登录用户
      * @param startNo 开始下标
-     * @param endNo 结束下标
+     * @param pageSize 结束下标
      * @return
      */
     @RequestMapping(value="circleMemberImprove")
-    public BaseResp<Object> circleMemberImprove(Long circleId,Long userId,Long currentUserId,Integer startNo,Integer endNo){
-        logger.info("circleId={},userId={},currentUserId={},startNo={},endNo={}",circleId,userId,currentUserId,startNo,endNo);
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<List<Improve>> circleMemberImprove(Long circleId,Long userId,String currentUserId,Integer startNo,Integer pageSize){
+        logger.info("circleMemberImprove circleId={},userId={},currentUserId={},startNo={},pageSize={}",circleId,userId,currentUserId,startNo,pageSize);
+        BaseResp<List<Improve>> baseResp = new BaseResp<List<Improve>>();
         if(circleId == null || userId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if("-1".equals(currentUserId)){
+            currentUserId = null;
         }
         if(startNo == null){
             startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
         }
-        Integer pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        if(endNo != null && endNo > startNo){
-            pageSize = endNo -startNo;
+        if(pageSize == null){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        List<Improve> improveCircleList = improveService.findCircleMemberImprove(circleId,userId,currentUserId,startNo,pageSize);
-        baseResp.setData(improveCircleList);
+        baseResp = improveService.selectListInBusiness(currentUserId,userId+"",circleId+"","3",startNo,pageSize,false);
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
 
@@ -340,7 +314,7 @@ public class CircleController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = circleService.circleDetail(userid,circleId);
-
+        baseResp.getExpandData().put("share_url", AppserviceConfig.h5_share_rank_detail);
         return baseResp;
     }
 

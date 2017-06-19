@@ -223,7 +223,7 @@
       select
         <include refid="Base_Column_List" />
       FROM sns_group
-      where groupid like concat(#{keyword},'%')
+      where groupid = #{keyword}
       limit #{startNum},#{pageSize}
   </select>
 

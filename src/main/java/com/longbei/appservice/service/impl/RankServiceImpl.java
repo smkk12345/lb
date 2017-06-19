@@ -695,7 +695,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         initRankAward(rank1);
                     }
                     if (Constant.RANK_TYEP_APP.equals(rank1.getRanktype())){
-                        rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
+//                        rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
                     }
                     //初始化榜主名片
                     if(StringUtils.isNotEmpty(rankTitle)){
@@ -1978,6 +1978,36 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+    @Override
+    public void initRankSort() {
+        List<Rank> rankList = new ArrayList<Rank>();
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("isfinish",1);
+        map.put("isdel",0);
+        rankList = this.rankMapper.selectRankList(map);
+        for(Rank rank:rankList){
+            int likeScore = rank.getLikescore();
+            int flowerScore = rank.getFlowerscore();
+            double b = rank.getEndtime().getTime() - rank.getCreatetime().getTime();
+
+            //查询rankMember
+            Map<String,Object> tempMap = new HashMap<>();
+            tempMap.put("rankId",rank.getRankid());
+            tempMap.put("status",1);
+            List<RankMembers> rankMembersList = this.rankMembersMapper.selectRankMembers(tempMap);
+            for(RankMembers rankMembers:rankMembersList){
+                //计算分数
+                double totalScore = rankMembers.getLikes() * likeScore + rankMembers.getFlowers() * flowerScore;
+
+                double a = rankMembers.getCreatetime().getTime() - rank.getCreatetime().getTime();
+                double ratio = NumberUtil.round(a/b,5);
+                ratio = 1 - ratio;
+                totalScore = totalScore + ratio;
+                springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),rankMembers.getUserid()+"",totalScore);
+            }
+        }
+    }
+
     /**
      * 榜单的成员排名列表
      * @param rankId 榜单id
@@ -2282,6 +2312,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankMember.setAcceptaward("3");
 
                     newRankAcceptAward.setStatus(3);
+                }else{
+                    return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"系统异常");
                 }
             }else if(award.getAwardClassify().getClassifytype() == 1){//红包
                 //更改用户的领奖状态

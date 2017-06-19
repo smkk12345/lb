@@ -353,14 +353,16 @@ public interface ImproveService {
     public BaseResp select(String userid, String impid, String businesstype,String businessid);
 
     /**
-     * 查询某个用户在兴趣圈中的进步
-     * @param circleId 兴趣圈id
-     * @param userId 用户id
-     * @param startNo 开始下标
-     * @param pageSize 每页条数
+     * 查询某个用户在business中的进步
+     * @param curuserid 当前登录用户
+     * @param userid 查看的用户id
+     * @param businessid 业务id 圈子id
+     * @param businesstype 类型 0 未关联 1 目标  2 榜 3 圈子 4教室
+     * @param selectCount 是否查询总数 如果查询总数 则会在expandData中显示该用户在business中发表的进步总数
      * @return
      */
-    List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize);
+    BaseResp<List<Improve>> selectListInBusiness(String curuserid,String userid,String businessid,
+                                    String businesstype,Integer startno,Integer pagesize,boolean selectCount);
 
     /**
      * 进步信息初始化
@@ -405,10 +407,11 @@ public interface ImproveService {
      * @param businesstype 业务类型 榜，圈子，教室，目标
      * @param startno 分页起始条数
      * @param pagesize 分页每页条数
+     * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
      * @return
      */
     BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,String iscomplain,
-                                                String businesstype,Integer startno,Integer pagesize);
+                                                String businesstype,Integer startno,Integer pagesize,boolean selectCount);
 
 
     BaseResp<Object> selectGoalMainImproveList(long userid,int startNum,int pageSize);

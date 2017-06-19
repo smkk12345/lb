@@ -184,16 +184,6 @@ public interface ImproveMapper {
     int remove(@Param("userid") String userid,@Param("improveid") String improveid);
 
 
-
-
-
-    /**
-     * 查询兴趣圈中某人的进步
-     * @param map
-     * @return
-     */
-    List<Improve> findCircleMemberImprove(Map<String, Object> map);
-
     List<Improve> selectGoalMainImproveList(@Param("userid") long userid,@Param("startNum") int startNum,@Param("endNum") int endNum);
 
     int delGoalToImprove(@Param("businessid") long goalid,@Param("userid") long userid,@Param("businesstype")String businesstype);

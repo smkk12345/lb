@@ -568,8 +568,7 @@ public class RankApiController {
             rankMembers.setRankid(Long.parseLong(rankid));
             rankMembers.setUserid(Long.parseLong(userid));
             BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid,rankid,iscomplain,
-                    Constant.IMPROVE_RANK_TYPE,startNum,
-                    pageSize);
+                    Constant.IMPROVE_RANK_TYPE,startNum,pageSize,true);
             Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
             page.setTotalCount(totalcount);
             page.setList(listBaseResp.getData());

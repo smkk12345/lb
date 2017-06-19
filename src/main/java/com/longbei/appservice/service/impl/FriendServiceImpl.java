@@ -477,6 +477,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
      */
     @Override
     public boolean checkIsFriend(Long userId, Long friendId) {
+        if(userId == null || Constant.VISITOR_UID.equals(userId.toString())){
+            return false;
+        }
         SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
         if(snsFriends != null){
             return true;
