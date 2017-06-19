@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -137,7 +138,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
 				//获取当前用户在教室发作业的总数
-				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
+				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
 				map.put("impNum", impNum);
 				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 				if(null != classroomMembers){
@@ -643,4 +644,60 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return temp > 0 ? true : false;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------admin调用方法------------------------------------
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param pageNo   pageSize
+	 * 2017年2月28日
+	 */
+	@Override
+	public BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum){
+		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
+		Page<Classroom> page = new Page<>(startNum,endNum);
+        try {
+            int totalcount = classroomMapper.selectCount(isup, isdel, startNum, endNum);
+            startNum = Page.setPageNo(startNum,totalcount,endNum);
+            List<Classroom> list = classroomMapper.selectClassroomList(isup, isdel, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (Classroom classroom : list) {
+					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+					classroom.setUserCard(userCard);
+					//教室总进步数量
+					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					classroom.setAllimp(allimp);
+					//教室课程数量
+					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+					classroom.setAllcourses(allcourses);
+            	}
+            }
+            page.setTotalCount(totalcount);
+            page.setList(list);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("selectPcClassroomList for adminservice isup = {}, isdel = {}, startNum = {}, pageSize = {}",
+  					isup, isdel, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+	
+	
+	
 }

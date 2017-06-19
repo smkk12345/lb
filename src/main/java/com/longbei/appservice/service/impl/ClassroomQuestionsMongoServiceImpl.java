@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomQuestionsLowerMongoDao;
 import com.longbei.appservice.dao.ClassroomQuestionsMongoDao;
 import com.longbei.appservice.dao.UserCardMapper;
@@ -33,6 +34,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private ClassroomService classroomService;
 	@Autowired
 	private UserCardMapper userCardMapper;
+	@Autowired
+	private ClassroomMapper classroomMapper;
 //	@Autowired
 //	private ClassroomMembersMapper classroomMembersMapper;
 	
@@ -65,6 +68,19 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 //				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
 //			}
 			insert(classroomQuestions);
+			Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomQuestions.getClassroomid()));
+			if(null != classroom){
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				initQuestionsUserInfoByUserid(classroomQuestions);
+				String isreply = "0";
+				if(!"1".equals(isreply)){
+					//判断当前用户是否是老师
+					if(userCard.getUserid() != Long.parseLong(classroomQuestions.getUserid())){
+						isreply = "2";
+					}
+				}
+				classroomQuestions.setIsreply(isreply);
+			}
 			reseResp.setData(classroomQuestions);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -193,6 +209,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1100, Constant.RTNINFO_SYS_1100);
 			}
 			insertLower(classroomQuestionsLower);
+			initQuestionsLower(classroomQuestionsLower);
 			reseResp.setData(classroomQuestionsLower);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -249,6 +266,17 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
     	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(classroomQuestionsLower.getUserid()));
     	        classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongo);
 			}
+    	}
+        
+    }
+    
+    /**
+     * 初始化用户信息 ------
+     */
+    private void initQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower){
+    	if(null != classroomQuestionsLower){
+	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(classroomQuestionsLower.getUserid()));
+	        classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongo);
     	}
         
     }

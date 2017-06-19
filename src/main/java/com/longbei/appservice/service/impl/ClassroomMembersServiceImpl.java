@@ -120,7 +120,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				for (ClassroomMembers classroomMembers : list) {
 					initMsgUserInfoByUserid(classroomMembers);
 					//教室所发的微进步总数
-					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, classroomMembers.getUserid());
+					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", 
+							classroomMembers.getUserid().toString());
 					classroomMembers.setAllimp(allimp);
 				}
 			}
