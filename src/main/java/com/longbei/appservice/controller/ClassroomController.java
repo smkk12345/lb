@@ -181,7 +181,7 @@ public class ClassroomController {
   			ClassroomQuestions classroomQuestions = new ClassroomQuestions();
   			classroomQuestions.setClassroomid(classroomid);
   			classroomQuestions.setContent(content);
-  			classroomQuestions.setCreatetime(DateUtils.formatDateTime1(new Date()));
+  			classroomQuestions.setCreatetime(new Date());
   			classroomQuestions.setUserid(userid);
   			baseResp = classroomQuestionsMongoService.insertQuestions(classroomQuestions);
   		} catch (Exception e) {
@@ -195,25 +195,27 @@ public class ClassroomController {
     * @Description: 获取教室提问答疑列表
     * @param @param classroomid  教室id
     * @param @param userid  当前访问者id
-    * @param @param startNo   pageSize
+    * @param @param lastDate 分页数据最后一个的时间
+    * @param @param pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年3月1日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(String classroomid, String userid, int startNo, int pageSize) {
-		logger.info("questionsList classroomid = {}, userid = {}, startNo = {}, pageSize = {}", 
-				classroomid, userid, startNo, pageSize);
+    public BaseResp<Object> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
+		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}, pageSize = {}", 
+				classroomid, userid, lastDate, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, startNo, pageSize);
+  			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, 
+  					lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
   		} catch (Exception e) {
-  			logger.error("questionsList classroomid = {}, startNo = {}, pageSize = {}",
-					classroomid, startNo, pageSize, e);
+  			logger.error("questionsList classroomid = {}, lastDate = {}, pageSize = {}",
+					classroomid, lastDate, pageSize, e);
   		}
   		return baseResp;
     }

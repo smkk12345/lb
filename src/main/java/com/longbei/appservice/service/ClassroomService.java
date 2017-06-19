@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
 
 public interface ClassroomService {
@@ -106,5 +107,33 @@ public interface ClassroomService {
 	 * 2017年3月3日
 	 */
 	BaseResp<Object> updateClassinvoloedByClassroomid(long classroomid, long userid, Integer num);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------admin调用方法------------------------------------
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * @param isup   0 - 未发布 。1 --已发布
+	 * @param isdel  0 未删除。1 删除
+	 * @param pageNo   pageSize
+	 * 2017年6月17日
+	 */
+	BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum);
+	
+	
 	
 }
