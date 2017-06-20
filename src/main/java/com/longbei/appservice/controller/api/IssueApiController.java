@@ -5,11 +5,14 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.web.JsonDateValueProcessor;
+import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.Issue;
 import com.longbei.appservice.entity.IssueClassify;
 import com.longbei.appservice.service.IssueService;
 import com.longbei.appservice.service.IssueClassifyService;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -169,12 +175,25 @@ public class IssueApiController {
 	}
 
 	@RequestMapping(value = "selectIssueTypesH5")
-	public String selectIssueTypesH5(HttpServletRequest request){
+	public void selectIssueTypesH5(HttpServletRequest request, HttpServletResponse response){
 		BaseResp<List<IssueClassify>> baseResp = new BaseResp<List<IssueClassify>>();
 		baseResp.setData(issueClassifyService.selectAllIssueClassify());
 		String callback = request.getParameter("callback");
-		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
-		return callback + "("+jsonObjectStr+")";
+//		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+
+		try{
+			PrintWriter out = response.getWriter();
+			response.setContentType("text/javascript;charset=UTF-8");
+			JsonConfig jsonConfig = new JsonConfig();
+			jsonConfig.registerJsonValueProcessor(Long.class,new JsonLongValueProcessor());
+			jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor());
+			JSONObject jsonObject = JSONObject.fromObject(baseResp,jsonConfig);
+			out.print(callback+"("+jsonObject.toString()+")");
+			out.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+//		return callback + "("+jsonObjectStr+")";
 	}
 
 	@RequestMapping(value = "selectListByTypeH5")
