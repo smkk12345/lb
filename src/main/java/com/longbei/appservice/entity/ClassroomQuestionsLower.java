@@ -1,15 +1,18 @@
 package com.longbei.appservice.entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.longbei.appservice.common.utils.StringUtils;
 
 @Document(collection = "questionslower")
 public class ClassroomQuestionsLower {
@@ -19,7 +22,7 @@ public class ClassroomQuestionsLower {
 	private String userid;     //回复者id---老师
 	private String content;    //回复内容
 	private String friendid;   //问题创建者id
-	private String createtime; //回复时间
+	private Date createtime; //回复时间
 	private String questionsid;  //问题id
 	@Transient
 	private AppUserMongoEntity appUserMongoEntityUserid; //回复者用户信息--老师--Userid
@@ -63,17 +66,17 @@ public class ClassroomQuestionsLower {
 		this.friendid = friendid;
 	}
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	public String getCreatetime() {
-		return createtime;
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar beijingcal = Calendar.getInstance();
+        beijingcal.setTimeInMillis(createtime.getTime());
+        return sf.format(beijingcal.getTime());
 	}
 
-	public void setCreatetime(String createtime) {
-		if (!StringUtils.isBlank(createtime) && createtime.indexOf(".0") > -1) {
-			this.createtime = createtime.substring(0, createtime.length() - 2);
-		}else{
-			this.createtime = createtime;
-		}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
 	}
 
 	@JsonInclude(Include.ALWAYS)
