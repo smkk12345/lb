@@ -511,6 +511,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             int totalcount = rankMapper.selectListCount(rank);
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = selectRankListByRank(rank,pageno,pagesize,showAward);
+            for (Rank rank1 : ranks){
+                BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"2",null);
+                if (ResultUtil.isSuccess(baseResp)){
+                    rank1.setCommentCount(baseResp.getData());
+                }
+                String icount = rankMembersMapper.getRankImproveCount
+                        (String.valueOf(rank1.getRankid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(rank1.getRankid()));
+                rank1.setIcount(Integer.parseInt(icount));
+            }
             page.setTotalCount(totalcount);
             page.setList(ranks);
         } catch (Exception e) {
@@ -536,7 +545,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             List<Rank> ranks = rankMapper.selectListWithPageOrderByInvolved(rank,(pageno-1)*pagesize,pagesize,orderByInvolved);
             for (Rank rank1 : ranks){
-                BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"10",null);
+                BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"2",null);
                 if (ResultUtil.isSuccess(baseResp)){
                     rank1.setCommentCount(baseResp.getData());
                 }
@@ -552,7 +561,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             page.setTotalCount(totalcount);
             page.setList(ranks);
         } catch (Exception e) {
-            logger.error("select rank list2 for adminservice is error:",e);
+            logger.error("select rank list orderByInvolved  for adminservice is error:",e);
         }
         return page;
     }
