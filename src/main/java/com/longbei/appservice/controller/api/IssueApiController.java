@@ -170,9 +170,9 @@ public class IssueApiController {
 
 	@RequestMapping(value = "selectIssueTypesH5")
 	public String selectIssueTypesH5(HttpServletRequest request){
-		Page<IssueClassify> baseResp = new Page<IssueClassify>();
+		BaseResp<List<IssueClassify>> baseResp = new BaseResp<List<IssueClassify>>();
+		baseResp.setData(issueClassifyService.selectAllIssueClassify());
 		String callback = request.getParameter("callback");
-		baseResp.setList(issueClassifyService.selectAllIssueClassify());
 		String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
 		return callback + "("+jsonObjectStr+")";
 	}
