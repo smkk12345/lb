@@ -235,8 +235,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
                 try{
-                    award.setUpdatetime(date);
-                    award.setCreatetime(date);
                     awardService.insertAward(award);
                     rankAward.setAwardid(award.getId().toString());
                     rankAward.setRankid(rankid);
