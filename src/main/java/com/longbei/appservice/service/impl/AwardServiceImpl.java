@@ -7,12 +7,10 @@ import com.longbei.appservice.dao.AwardMapper;
 import com.longbei.appservice.entity.Award;
 import com.longbei.appservice.entity.AwardClassify;
 import com.longbei.appservice.service.AwardService;
-import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import scala.Int;
 
 import java.util.Date;
 import java.util.List;
@@ -40,6 +38,9 @@ public class AwardServiceImpl implements AwardService {
     public boolean insertAward(Award award) {
         try {
             award.setId(idGenerateService.getUniqueIdAsLong());
+            Date date = new Date();
+            award.setCreatetime(date);
+            award.setUpdatetime(date);
             int res = awardMapper.insertSelective(award);
             if (res > 0){
                 return true;
@@ -53,7 +54,8 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean updateAward(Award award) {
         try {
-            award.setUpdatetime(new Date());
+            Date date = new Date();
+            award.setUpdatetime(date);
             int res = awardMapper.updateByPrimaryKeySelective(award);
             if (res > 0){
                 return true;
@@ -144,8 +146,9 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean insertAwardClassify(AwardClassify awardClassify) {
         try {
-            awardClassify.setCreatetime(new Date());
-            awardClassify.setUpdatetime(new Date());
+            Date date = new Date();
+            awardClassify.setCreatetime(date);
+            awardClassify.setUpdatetime(date);
             int res = awardClassifyMapper.insertSelective(awardClassify);
             if (res > 0){
                 return true;
@@ -159,7 +162,8 @@ public class AwardServiceImpl implements AwardService {
     @Override
     public boolean updateAwardClassify(AwardClassify awardClassify) {
         try {
-            awardClassify.setUpdatetime(new Date());
+            Date date = new Date();
+            awardClassify.setUpdatetime(date);
             int res = awardClassifyMapper.updateByPrimaryKeySelective(awardClassify);
             if (res > 0){
                 return true;
