@@ -569,4 +569,5 @@ public interface RankService extends BaseService{
      */
     BaseResp<Object> rankCardDetail(String rankCardId);
 
+    void initRankSort();
 }

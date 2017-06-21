@@ -92,10 +92,11 @@ public class ArticleServiceImpl implements ArticleService{
                 return baseResp;
             }
             List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
-            for (ArticleBusiness articleBusiness : articleBusinesses){
+            for(int i = 0;i<articleBusinesses.size();i++){
+                ArticleBusiness articleBusiness = articleBusinesses.get(i);
                 Rank rank = rankService.selectByRankid(articleBusiness.getBusinessid());
                 if(rank == null){
-                    articleBusinesses.remove(articleBusiness);
+                    articleBusinesses.remove(i);
                     continue;
                 }
                 BaseResp<List<RankAwardRelease>> baseResp1 = rankService.selectRankAward(rank.getRankid());
@@ -108,8 +109,9 @@ public class ArticleServiceImpl implements ArticleService{
                     }
                     rank.setRankAwards(rkaward);
                 }
-                articleBusiness.setRank(rank);
+                articleBusinesses.get(i).setRank(rank);
             }
+
             article.setArticleBusinesses(articleBusinesses);
             baseResp = BaseResp.ok();
             baseResp.setData(article);

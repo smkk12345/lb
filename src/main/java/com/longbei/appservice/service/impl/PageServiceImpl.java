@@ -4,15 +4,14 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.HomePictureMapper;
-import com.longbei.appservice.dao.HomeRecommendMapper;
-import com.longbei.appservice.dao.RankMapper;
-import com.longbei.appservice.dao.SysCommonMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SysCommon;
+import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.PageService;
 import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
@@ -43,6 +42,10 @@ public class PageServiceImpl implements PageService{
     private RankMapper rankMapper;
     @Autowired
     private SysSettingService sysSettingService;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private CommentMongoService commentMongoService;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -191,6 +194,13 @@ public class PageServiceImpl implements PageService{
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"2",null);
+                if (ResultUtil.isSuccess(baseResp1)){
+                    rank.setCommentCount(baseResp1.getData());
+                }
+                String icount = rankMembersMapper.getRankImproveCount
+                        (String.valueOf(homeRecommend1.getBusinessid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(homeRecommend1.getBusinessid()));
+                rank.setIcount(Integer.parseInt(icount));
                 homeRecommend1.setRank(rank);
             }
             page.setTotalCount(totalcount);
@@ -213,6 +223,9 @@ public class PageServiceImpl implements PageService{
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
                 if (null != rank){
+                    String icount = rankMembersMapper.getRankImproveCount
+                            (String.valueOf(rank.getRankid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(rank.getRankid()));
+                    rank.setIcount(Integer.parseInt(icount));
                     homeRecommend1.setRank(rank);
                     resultlist.add(homeRecommend1);
                 }

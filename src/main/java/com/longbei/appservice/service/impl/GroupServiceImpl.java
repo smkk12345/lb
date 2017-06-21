@@ -213,7 +213,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             Date updateDate = null;
-            if(StringUtils.isNotEmpty(notice)){
+            if(notice != null){
                 updateDate = new Date();
             }
             int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,updateDate);
@@ -280,7 +280,14 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_92, Constant.RTNINFO_SYS_92);
             }
             List<String> updateGroupMemberList = new ArrayList<String>();
-            List<String> userIdList = new ArrayList<String>(Arrays.asList(userIds));
+            Set<String> tempUserIds = new HashSet<String>();
+            for(String temp:userIds){
+                if(StringUtils.isEmpty(temp)){
+                    continue;
+                }
+                tempUserIds.add(temp);
+            }
+            List<String> userIdList = new ArrayList<String>(tempUserIds);
             AppUserMongoEntity invitationAppUserMongoEntity = null;
             String operatorUserId = invitationUserId != null?invitationUserId+"":snsGroup.getMainuserid()+"";
             if (invitationUserId != null) {

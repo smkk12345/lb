@@ -209,7 +209,8 @@
 
     <!-- 更新用户在圈子中的进步数量 -->
     <update id="updateCircleMembersIcount">
-        update circle_members set icount = icount +#{num}
-        where userid = #{userid} and circleId = #{circleId}
+        update circle_members set icount = icount + #{num}
+        where userid = #{userid}
+          and circleId = #{circleId}
     </update>
 </mapper>
