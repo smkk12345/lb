@@ -184,7 +184,6 @@ public class Rank {
         this.rankrule = rankrule;
     }
 
-    @JsonIgnore
     public String getJoincode() {
         return joincode;
     }
