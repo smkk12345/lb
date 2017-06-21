@@ -3332,7 +3332,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(appUser.getNickname());
+                rank.setCreateusernickname(appUser.getNickname());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
