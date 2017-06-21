@@ -57,6 +57,86 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
     }
 
+    /**
+     * 获取版本更新的列表
+     * @return
+     */
+    @Override
+    public BaseResp<List<SysAppupdate>> findSysAppUpdateList() {
+        BaseResp<List<SysAppupdate>> baseResp = new BaseResp<>();
+        try{
+            List<SysAppupdate> list = this.sysAppupdateMapper.findSysAppUpdateList();
+            baseResp.setData(list);
+            return baseResp.initCodeAndDesp();
+        }catch(Exception e){
+            logger.error("find sysAppupdate list error errorMsg:{}",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取版本更新的详情
+     * @param id
+     * @return
+     */
+    @Override
+    public BaseResp<SysAppupdate> getSysAppUpdateDetail(Integer id) {
+        BaseResp<SysAppupdate> baseResp = new BaseResp<>();
+        try{
+            SysAppupdate sysAppupdate = this.sysAppupdateMapper.selectByPrimaryKey(id);
+            baseResp.setData(sysAppupdate);
+            return baseResp.initCodeAndDesp();
+        }catch(Exception e){
+            logger.error("get sysAppUpdate detail error errorMsg:{}",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 删除版本更新
+     * @param id
+     * @return
+     */
+    @Override
+    public BaseResp<Object> deleteSysAppUpdate(Integer id) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            int row = this.sysAppupdateMapper.deleteByPrimaryKey(id);
+            if(row > 0){
+                return baseResp.initCodeAndDesp();
+            }
+        }catch(Exception e){
+            logger.error("delete sysAppUpdate error id:{}",id);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 添加版本更新
+     * @param ttype
+     * @param version
+     * @param enforced
+     * @param url
+     * @param remark
+     * @param updateexplain
+     * @return
+     */
+    @Override
+    public BaseResp<Object> addSysAppUpdate(String ttype, String version, String enforced, String url, String remark, String updateexplain) {
+        SysAppupdate sysAppupdate = new SysAppupdate();
+        sysAppupdate.setTtype(ttype);
+        sysAppupdate.setVersion(version);
+        sysAppupdate.setEnforced(enforced);
+        sysAppupdate.setUrl(url);
+        sysAppupdate.setRemark(remark);
+        sysAppupdate.setUpdateexplain(updateexplain);
+        int row = this.sysAppupdateMapper.insertSelective(sysAppupdate);
+        if(row > 0){
+            return new BaseResp<>().ok();
+        }
+        return new BaseResp<>().fail();
+    }
+
     @Override
     public BaseResp<Object> upGrade(String ttype, String version) {
         BaseResp<Object> baseResp = new BaseResp<>();
@@ -66,7 +146,7 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
         String newVersion = app.getVersion().replaceAll("\\.", "");
         String cversion = version.replaceAll("\\.","");
-        String enforceversion = app.getEnforceversion();
+        String enforceversion = app.getEnforceversion();//是否强制更新
         int size = 0;
         if(!StringUtils.isBlank(enforceversion)){
             enforceversion = enforceversion.replaceAll("\\.","");
@@ -177,6 +257,5 @@ public class SysSettingServiceImpl implements SysSettingService {
     public List<SysCommon> getSysCommons() {
         return sysCommonMapper.getSysCommons();
     }
-
 
 }

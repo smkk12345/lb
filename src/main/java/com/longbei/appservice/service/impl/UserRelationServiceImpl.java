@@ -376,6 +376,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> updateRemarkByUidAndFid(long userid, long friendid, String remark) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			if(StringUtils.isEmpty(remark)){
+				AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendid+"");
+				remark = appUserMongoEntity.getNickname();
+			}
 			boolean temp = updateRemark(userid, friendid, remark);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -446,18 +450,18 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum,searchFashinMan);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
-					if(friendList.contains(userInfo.getId())){
+					if(friendList.contains(userInfo.getUserid().toString())){
 						//是好友
 						userInfo.setIsfriend("1");
 					}
-					if(fansList.contains(userInfo.getId())){
+					if(fansList.contains(userInfo.getUserid().toString())){
 						//已关注
 						userInfo.setIslike("1");
 					}
-					SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, userInfo.getUserid());
-					if(null != fans){
-						userInfo.setIsfans("1");
-					}
+//					SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, userInfo.getUserid());
+//					if(null != fans){
+//						userInfo.setIsfans("1");
+//					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{

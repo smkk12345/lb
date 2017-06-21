@@ -2,6 +2,8 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.SysAppupdate;
 
+import java.util.List;
+
 public interface SysAppupdateMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,10 @@ public interface SysAppupdateMapper {
     int updateByPrimaryKeySelective(SysAppupdate record);
 
     int updateByPrimaryKey(SysAppupdate record);
+
+    /**
+     * 查询版本更新的列表
+     * @return
+     */
+    List<SysAppupdate> findSysAppUpdateList();
 }

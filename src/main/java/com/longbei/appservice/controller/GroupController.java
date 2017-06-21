@@ -126,6 +126,9 @@ public class GroupController {
     public BaseResp<Object> updateGroupNotice(Long userId,String groupId,String notice){
         logger.info("userId={},groupId={},notice={}",userId,groupId,notice);
         BaseResp<Object> baseResp = new BaseResp<>();
+        if(notice == null){
+            notice = "";
+        }
         if(userId == null || StringUtils.hasBlankParams(groupId) || notice.length() > 100){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

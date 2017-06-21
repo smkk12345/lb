@@ -19,6 +19,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -120,6 +121,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserCardMapper userCardMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private CircleMembersMapper circleMembersMapper;
 
     /**
      *  @author luye
@@ -368,16 +371,6 @@ public class ImproveServiceImpl implements ImproveService{
 
         int res = 0;
         try {
-            //对ispublic进行转换 在榜中发表的进步传过来的ispublic是rank的标识 0代表公开 1代表私密
-            //所以需要再次将rank的ispublic标识转换成improce的ispublic标识 0.私密 1.朋友可见 2,所有人可见
-            if("0".equals(improve.getIspublic())){
-                improve.setIspublic("2");
-            }else{
-                improve.setIspublic("0");
-            }
-
-
-            //没有
 //            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
             logger.info("update rank main improve");
@@ -707,7 +700,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<Improve> selectCircleImproveList(String userid, String circleid,String sift,String orderby, int pageNo, int pageSize) {
-        List<Improve> improves = null;
+        List<Improve> improves = new ArrayList<Improve>();
         try {
             switch (sift){
                 //全部
@@ -1145,7 +1138,10 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("remove rank immprove: circleid:{} improveid:{} userid:{} is error:{}",
                     circleid,improveid,userid,e);
         }
-        if(res != 0){
+        if(res > 0){
+            //更改用户在圈子中的进步条数
+            this.circleMemberService.updateCircleMemberIcount(Long.parseLong(userid),Long.parseLong(circleid),-1);
+
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             baseResp = BaseResp.ok();
@@ -2948,18 +2944,6 @@ public class ImproveServiceImpl implements ImproveService{
 
     }
 
-    @Override
-    public List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize) {
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("circleId",circleId);
-        map.put("userId",userId);
-        map.put("startNo",startNo);
-        map.put("pageSize",pageSize);
-        List<Improve> improveCircleList = improveMapper.findCircleMemberImprove(map);
-        initImproveListOtherInfo(currentUserId.toString(),improveCircleList);
-        return improveCircleList;
-    }
-
     /**
      *  @author luye
      *  @desp   初始化 进步附加信息
@@ -3085,23 +3069,27 @@ public class ImproveServiceImpl implements ImproveService{
      * @param businesstype 业务类型 榜，圈子，教室，目标
      * @param startno 分页起始条数
      * @param pagesize 分页每页条数
+     * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
      * @return
      *
      * @author luye
      */
     @Override
     public BaseResp<List<Improve>> selectBusinessImproveList(String userid, String businessid,String iscomplain,
-                                                       String businesstype, Integer startno, Integer pagesize) {
+                                                       String businesstype, Integer startno, Integer pagesize,boolean selectCount) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
                     null, userid, null, iscomplain, startno, pagesize);
-            Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, iscomplain);
+
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
-            baseResp.getExpandData().put("totalcount",totalcount);
+            if(startno == 0 && selectCount){
+                Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
+                        null, userid, null, iscomplain);
+                baseResp.getExpandData().put("totalcount",totalcount);
+            }
         } catch (Exception e) {
             logger.error("select businessi improve list userid={} businessid={} businesstype={} is error:"
                     , userid, businessid, businesstype);
@@ -3322,10 +3310,80 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
+
+    /**
+     * 查询用户在business中发表的进步
+     * @param curuserid 当前登录用户
+     * @param userid 查看的用户id
+     * @param businessid 业务id 圈子id
+     * @param businesstype 类型 0 未关联 1 目标  2 榜 3 圈子 4教室
+     * @param startno
+     * @param pagesize
+     * @param selectCount 是否查询总数 只有当startno == 0 and selectCount是true时 才查询总数
+     *                    如果查询总数 则会在expandData中显示该用户在business中发表的进步总数
+     * @return
+     */
+    @Override
+    public BaseResp<List<Improve>> selectListInBusiness(String curuserid, String userid, String businessid, String businesstype, Integer startno, Integer pagesize, boolean selectCount) {
+        logger.info("select improve list in business curuserid:{} userid:{} businesstype:{} businessid:{} startNo:{} pageSize:{}",curuserid,userid,businesstype,businessid,startno,pagesize);
+        BaseResp<List<Improve>> baseResp = new BaseResp<List<Improve>>();
+        try{
+            baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
+            if(ResultUtil.isSuccess(baseResp)) {
+                List<Improve> list = baseResp.getData();
+                for (int i = 0; i < list.size(); i++) {
+                    Improve improve = list.get(i);
+                    initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                    initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                }
+                int count =0;
+                if(startno == 0 && selectCount){
+                    switch (businesstype) {
+                        case Constant.IMPROVE_SINGLE_TYPE:
+
+                            break;
+                        case Constant.IMPROVE_RANK_TYPE:
+                            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+                            if(null != rankMembers){
+                                count = rankMembers.getIcount();
+                            }
+                            break;
+                        case Constant.IMPROVE_CLASSROOM_TYPE:
+
+                            break;
+                        case Constant.IMPROVE_CIRCLE_TYPE:
+                            Map<String,Object> resultMap = new HashMap<String,Object>();
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("circleId", businessid);
+                            map.put("userId", userid);
+                            map.put("itype",CircleMembers.normal);
+                            //查询该用户是否在该圈子中
+                            CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
+                            if (circleMembers != null) {
+                                count = circleMembers.getIcount();
+                            }
+                            break;
+                        case Constant.IMPROVE_GOAL_TYPE:
+
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+                baseResp.getExpandData().put("totalCount",count);
+            }
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.info("select improve list in business curuserid:{} userid:{} businesstype:{} businessid:{} startNo:{} pageSize:{} errorMsg:{}",curuserid,userid,businesstype,businessid,startno,pagesize,e);
+        }
+        return baseResp;
+    }
+
     @Override
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
                                                     String businesstype, Integer startno, Integer pagesize) {
-        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize);
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
             List<Improve> list = baseResp.getData();
@@ -3340,9 +3398,11 @@ public class ImproveServiceImpl implements ImproveService{
             }
         }
         int currentUserImpCount = 0;
-        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
-        if(null != rankMembers){
-            currentUserImpCount = rankMembers.getIcount();
+        if(startno == 0){
+            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+            if(null != rankMembers){
+                currentUserImpCount = rankMembers.getIcount();
+            }
         }
         baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
         return baseResp;

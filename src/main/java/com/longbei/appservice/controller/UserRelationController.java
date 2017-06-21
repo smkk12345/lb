@@ -205,7 +205,7 @@ public class UserRelationController extends BaseController {
 	public BaseResp<Object> updateRemark(String userid, String friendid, String remark){
 		logger.info("updateRemark params userid = {}, friendid = {}, remark = {}", userid, friendid, remark);
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(userid, friendid, remark)) {
+		if (StringUtils.hasBlankParams(userid, friendid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
 		if(remark.length() > 13){

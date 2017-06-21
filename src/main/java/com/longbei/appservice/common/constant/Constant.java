@@ -153,6 +153,7 @@ public class Constant {
 	public static final int STATUS_SYS_86 = -86;
 	public static final int STATUS_SYS_87 = -87;
 	public static final int STATUS_SYS_88 = -88;
+	public static final int STATUS_SYS_89 = -89;
 
 	//90-99 好友相关 wangyongzhi
 	public static final int STATUS_SYS_90 = -90;
@@ -300,7 +301,7 @@ public class Constant {
 
 	//80-89 兴趣圈  wangyongzhi
 	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
-	public static final String RTNINFO_SYS_81 = "抱歉,您无权更新该兴趣圈的信息";
+	public static final String RTNINFO_SYS_81 = "抱歉,您没有权限更新该兴趣圈的信息";
 	public static final String RTNINFO_SYS_82 = "您已经在该兴趣圈中了";
 	public static final String RTNINFO_SYS_83 = "您已经申请了加入该兴趣圈,圈主正在验证中,请稍后~~";
 	public static final String RTNINFO_SYS_84 = "申请加圈子成功,正在等待圈主验证";
@@ -308,6 +309,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
+	public static final String RTNINFO_SYS_89 = "圈主不可将自己移出圈子";
 
 	/** 90-99  好友  群组 相关 by wangyongzhi **/
 	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";

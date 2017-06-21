@@ -64,11 +64,12 @@ public interface CircleService extends BaseService{
 
     /**
      * 退出圈子
+     * @param curUserid 当前登录用户id
      * @param circleId
      * @param userId
      * @return
      */
-    BaseResp<Object> removeCircleMembers(Long circleId, String userId);
+    BaseResp<Object> removeCircleMembers(Long curUserid,Long circleId, String userId);
 
     /**
      * 查询兴趣圈某个成员的信息
