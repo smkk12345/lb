@@ -196,7 +196,7 @@
         <if test="needConfirm != null">
           needconfirm = #{needConfirm},
         </if>
-        <if test="notice != null and notice != ''">
+        <if test="notice != null">
           notice = #{notice}
         </if>
       </set>

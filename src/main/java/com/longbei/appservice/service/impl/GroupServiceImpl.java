@@ -213,7 +213,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             Date updateDate = null;
-            if(StringUtils.isNotEmpty(notice)){
+            if(notice != null){
                 updateDate = new Date();
             }
             int row = this.snsGroupMapper.updateGroupInfo(groupId,groupName,needConfirm,notice,updateDate);

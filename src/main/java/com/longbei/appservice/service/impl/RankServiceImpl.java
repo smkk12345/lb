@@ -1317,9 +1317,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rank == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
-            if(userId.equals(rank.getCreateuserid())){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
-            }
+//            if(userId.equals(rank.getCreateuserid())){
+//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_612,Constant.RTNINFO_SYS_612);
+//            }
             if(rank.getIsfinish().equals("0")||rank.getIsfinish().equals("1")){
                 //1.更改rankMember的状态
                 Map<String,Object> updateMap = new HashMap<String,Object>();
@@ -2222,7 +2222,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //查询该用户获得的奖
             Award award = this.awardMapper.selectAwardAndAwardClassify(Long.parseLong(rankMember.getRankAward().getAwardid()));
             if(award == null){
-                logger.error("query award null awardId:{}",rankMember.getAwardid());
+                logger.error("query award null awardId:{}",rankMember.getRankAward().getAwardid());
                 return baseResp.fail("系统异常");
             }
             RankAcceptAward rankAcceptAward = this.rankAcceptAwardMapper.selectByRankIdAndUserid(rankId+"",userId+"");
@@ -2833,7 +2833,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for(RankMembers rankMembers:rankMembersList){
             	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
             	//获取好友昵称
-                if (userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid)){
+                if (userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid+"")){
                     appUserMongoEntity.setNickname(this.friendService.getNickName(userid,rankMembers.getUserid()));
                     if(userid != null && userid.equals(rankMembers.getUserid())){
                         if(!"1".equals(rankMembers.getIswinning())){
@@ -3398,9 +3398,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
             userRankMemberStatus = 5;//榜单获奖结果审核中
         }
-        if(userRankMemberStatus > 0){
-            return userRankMemberStatus;
-        }
         if(userId == null || Constant.VISITOR_UID.equals(userId+"")){
             return userRankMemberStatus;
         }
@@ -3408,6 +3405,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
         if(rankMembers != null && rankMembers.getStatus() == 1){
             userRankMemberStatus = 1;//已入榜
+            rank.setHasjoin("1");
         }else if(rankMembers != null && rankMembers.getStatus() == 0){
             userRankMemberStatus = 2;//已入榜 待审核
         }

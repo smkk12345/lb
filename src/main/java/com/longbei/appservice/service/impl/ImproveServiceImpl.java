@@ -371,15 +371,6 @@ public class ImproveServiceImpl implements ImproveService{
 
         int res = 0;
         try {
-            //对ispublic进行转换 在榜中发表的进步传过来的ispublic是rank的标识 0代表公开 1代表私密
-            //所以需要再次将rank的ispublic标识转换成improce的ispublic标识 0.私密 1.朋友可见 2,所有人可见
-            if("1".equals(improve.getIspublic())){
-                improve.setIspublic("0");
-            }else{
-                improve.setIspublic("2");
-            }
-
-            //没有
 //            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
             logger.info("update rank main improve");

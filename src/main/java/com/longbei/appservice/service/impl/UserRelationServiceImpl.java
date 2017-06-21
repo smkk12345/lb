@@ -376,6 +376,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> updateRemarkByUidAndFid(long userid, long friendid, String remark) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			if(StringUtils.isEmpty(remark)){
+				AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendid+"");
+				remark = appUserMongoEntity.getNickname();
+			}
 			boolean temp = updateRemark(userid, friendid, remark);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
