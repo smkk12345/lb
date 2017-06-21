@@ -413,10 +413,19 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private boolean canInsertImprove(Long userid,Long rankid,Rank rank){
+    private boolean canInsertRankImprovePerday(Long userid,Long rankid,Rank rank){
         String tempnum = springJedisDao.get("rankid"+rankid+"userid"+userid+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
         int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
         if (num < Integer.parseInt(rank.getMaximprovenum())){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
+        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
             return true;
         }
         return false;
@@ -1409,8 +1418,11 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!"1".equals(rank.getIsfinish())) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
-                        if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
+                        if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
+                        }
+                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
                         }
                         return baseResp.initCodeAndDesp();
                     } else {
