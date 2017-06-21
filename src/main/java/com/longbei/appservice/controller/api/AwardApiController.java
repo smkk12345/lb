@@ -1,7 +1,6 @@
 package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.Award;
@@ -32,8 +31,6 @@ public class AwardApiController {
 
     @Autowired
     private AwardService awardService;
-    @Autowired
-    private IdGenerateService idGenerateService;
 
 
     /**

@@ -129,6 +129,7 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
                 Award award = awardMapper.selectByPrimaryKey(acceptAward.getAwardid());
                 if (null != award){
                     acceptAward.setAwardtitle(award.getAwardtitle());
+                    acceptAward.setAwardcateid(award.getAwardClassify().getClassifytype()+"");
                 }
                 String uid = String.valueOf(acceptAward.getUserid());
                 acceptAward.setAppUserMongoEntity(userMongoDao.getAppUser(uid));

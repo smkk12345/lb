@@ -466,7 +466,7 @@
       </if>
       <if test="orderby=='0'.toString()" >
         AND ismainimp = '1'
-        group by ir.userid
+--         group by ir.userid
       </if>
     </where>
     <if test="orderby=='2'.toString() or orderby=='0'.toString()">
