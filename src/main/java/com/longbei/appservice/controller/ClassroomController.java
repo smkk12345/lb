@@ -691,7 +691,7 @@ public class ClassroomController {
     }
   	
   	/**
-     * @Title: http://ip:port/app_service/classroom/coursesDetail
+     * @Title: http://ip:port/app_service/classroom/classroomHeadDetail
      * @Description: 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
      * @param @param classroomid 教室业务id
      * @param @param userid 当前访问id
