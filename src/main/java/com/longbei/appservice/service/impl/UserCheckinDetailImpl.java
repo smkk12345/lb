@@ -92,8 +92,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectDetail(userid, date);
 			if(null != userCheckinDetail){
 				//获得当天签到得到的进步币数量
-				String checkvalue = springJedisDao.get(Constant.RP_USER_NEWDATE_CHECK + userid);
-				reseResp.getExpandData().put("moneycount", checkvalue);
+//				String checkvalue = springJedisDao.get(Constant.RP_USER_NEWDATE_CHECK + userid);
+//				reseResp.getExpandData().put("moneycount", checkvalue);
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
 //			String day = DateUtils.getDate("yyyyMMdd");
@@ -108,7 +108,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				//连续签到天数
 				String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_VALUE + userid);
-				int cha = DateUtils.daysBetween(redisDate, date);
+				int cha = DateUtils.daysBetween(redisDate + " 00:00:00", date + " 00:00:00");
 //				int cha = Integer.parseInt(day) - Integer.parseInt(redisDate);
 				if(cha > Integer.parseInt(redisvalue)){
 					//不是连续签到     先清除    再添加
@@ -159,6 +159,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			//获得当天签到得到的进步币数量
  			String checkvalue = springJedisDao.get(Constant.RP_USER_NEWDATE_CHECK + userid);
 			reseResp.getExpandData().put("moneycount", checkvalue);
+			reseResp.getExpandData().put("moneydate", date);
 // 			reseResp.setData(checkvalue);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.service.FansService;
@@ -23,6 +24,9 @@ public class FansServiceImpl extends BaseServiceImpl implements FansService {
      */
     @Override
     public boolean checkIsFans(Long fansId, Long userId) {
+        if(fansId == null || Constant.VISITOR_UID.equals(userId.toString())){
+            return false;
+        }
         SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(fansId,userId);
         if(snsFans == null){
             return false;

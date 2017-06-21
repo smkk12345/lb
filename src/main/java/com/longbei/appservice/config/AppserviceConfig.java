@@ -77,6 +77,7 @@ public class AppserviceConfig {
     public static String h5_share_rank_award;
     public static String h5_share_rank_improve;
     public static String h5_share_goal_detail;
+    public static String h5_share_circle_detail;//圈子详情
     public static String h5_share_invite;
     public static String h5_agreementurl;
     public static String h5_levelprivilege;

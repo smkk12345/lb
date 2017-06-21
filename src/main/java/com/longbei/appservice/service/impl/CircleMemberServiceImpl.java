@@ -61,6 +61,6 @@ public class CircleMemberServiceImpl implements CircleMemberService {
     @Override
     public boolean updateCircleMemberIcount(Long userid, Long circleId, int num) {
         int updateNum = this.circleMembersMapper.updateCircleMembersIcount(userid,circleId,num);
-        return false;
+        return updateNum > 0;
     }
 }

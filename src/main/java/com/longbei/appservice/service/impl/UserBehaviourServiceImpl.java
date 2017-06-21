@@ -565,7 +565,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 maxPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getMaxscore();
             }
             curPoint = curPoint + iPoint;
-            if(curPoint >= maxPoint && level < 9){//升级
+            if(curPoint >= maxPoint && level < 10){//升级
                 int nextMaxPoint =SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()+1)).getMaxscore();
                 if(curPoint >= nextMaxPoint && level < 9){//不止升一级
                     Map<String,SysRulePerfectTen> ruleMap = SysRulesCache.pLevelPointMap;

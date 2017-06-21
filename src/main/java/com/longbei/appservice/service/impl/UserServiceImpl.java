@@ -150,6 +150,10 @@ public class UserServiceImpl implements UserService {
 		try {
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			UserInfo userInfo = userInfoMapper.selectInfoMore(userid);
+			if(userInfo == null){
+				logger.error("query userInfo null userid:{}",userid);
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			}
 //			if(lookid != userid){
 //				//获取好友昵称
 //				String remark = userRelationService.selectRemark(lookid, userid);

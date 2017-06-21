@@ -60,6 +60,15 @@
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
     sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime,maxtotalimprovenum
   </sql>
+
+  <sql id="RANK_Base_Column_List" >
+    r.id,r.rankid, r.ranktitle, r.rankbrief, r.rankdetail, r.ranklimite, r.rankinvolved, r.rankscope, r.rankphotos,
+    r.rankrate, r.starttime, r.endtime, r.areaname, r.coordinate, r.isfinish, r.createuserid, r.ranktype,
+    r.ispublic, r.rankcateid, r.createtime, r.updatetime, r.likescore, r.flowerscore, r.diamondscore,
+    r.codeword, r.ptype,r.companyname,r.companyphotos,r.companybrief,r.sourcetype,r.joincode,
+    r.joinlastday,r.maximprovenum,r.minimprovenum,r.ischeck,r.isgroup,r.rankcardid,r.isup,r.isdel,r.sponsornum,
+    r.sponsormoney,r.rankrule,r.isrecommend,r.weight,r.ishomerecommend,r.notice,r.needConfirm,r.autotime,r.maxtotalimprovenum
+  </sql>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -842,7 +851,9 @@
         <if test="orderByType == null or orderByType == ''.toString()">
           order by starttime DESC,createtime desc
         </if>
+        <if test="startNum != null">
           limit #{startNum},#{pageSize}
+        </if>
   </select>
 
   <!-- 查询榜单列表数量 -->
@@ -954,8 +965,8 @@
 
   <select id="selectHasAwardRankList" resultMap="BaseResultMap">
     SELECT
-      <include refid="Base_Column_List" />
-    FROM rank r inner join rank_members rm on r.rankid = rm,rankid
+      <include refid="RANK_Base_Column_List" />
+    FROM rank r inner join rank_members rm on r.rankid = rm.rankid
     where rm.iswinning = 1
       and r.isdel = 0
       and r.ispublic = 0
