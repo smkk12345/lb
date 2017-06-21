@@ -55,7 +55,7 @@ public class Rank {
 
     private String createuserid;//榜单创建人id
 
-    private String ranktype;//榜单类型。0—公共榜 1--定制榜   2：定制私密
+    private String ranktype;//榜单类型。0—公共榜 1--定制榜   2-定制私密榜
 
     private String ispublic;//是否公开  0—公开 1—不公开
 
@@ -85,7 +85,7 @@ public class Rank {
 
     private String companybrief;  //公司简介
 
-    private String sourcetype;  //来源类型。0 运营端创建   1app用户创建 2b端创建
+    private String sourcetype;  //来源类型。0－运营端创建  1－app用户创建 2－b端创建
 
     private Integer icount; //榜中进步数
 
