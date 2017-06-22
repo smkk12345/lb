@@ -75,7 +75,7 @@ public class Improve {
     private Integer sortnum;
 
     //批复列表
-    protected ImproveClassroom replyImprove;
+    protected ReplyImprove replyImprove;
     
     protected String isreply; //是否已批复  0：未批复  1：已批复  2:不显示未批复(只有教室老师有批复权限)
 
@@ -111,7 +111,7 @@ public class Improve {
 
     private BusinessEntity businessEntity = null;
     
-    private ClassRoomEntity classRoomEntity = null;
+//    private ClassRoomEntity classRoomEntity = null;
 
     private String isrecommend; //是否推荐 0 - 否 1 - 是
 
@@ -140,23 +140,19 @@ public class Improve {
         this.complaincount = complaincount;
     }
     
-    public ClassRoomEntity getClassRoomEntity(){
-    	return classRoomEntity;
-    }
-
-	public void setClassRoomEntity(String ptype,
+	public void setBusinessEntity(String ptype,
             						String title,
             						String photos,
             						Integer involved,
             						String teacher,
                                     String commentid) {
-		this.classRoomEntity = new ClassRoomEntity();
-		this.classRoomEntity.setPtype(ptype);
-		this.classRoomEntity.setTitle(title);
-		this.classRoomEntity.setPhotos(photos);
-		this.classRoomEntity.setInvolved(involved);
-		this.classRoomEntity.setTeacher(teacher);
-        this.classRoomEntity.setCommentid(commentid);
+		this.businessEntity = new BusinessEntity();
+		this.businessEntity.setPtype(ptype);
+		this.businessEntity.setTitle(title);
+		this.businessEntity.setPhotos(photos);
+		this.businessEntity.setInvolved(involved);
+		this.businessEntity.setTeacher(teacher);
+        this.businessEntity.setCommentid(commentid);
 	}
 
 	public void setBusinessEntity(String ptype,
@@ -644,11 +640,11 @@ public class Improve {
 		this.isresponded = isresponded;
 	}
 
-	public ImproveClassroom getReplyImprove() {
+	public ReplyImprove getReplyImprove() {
 		return replyImprove;
 	}
 
-	public void setReplyImprove(ImproveClassroom replyImprove) {
+	public void setReplyImprove(ReplyImprove replyImprove) {
 		this.replyImprove = replyImprove;
 	}
 
@@ -706,6 +702,8 @@ public class Improve {
         private Integer days;//持续天数
         private String photos;//图片
         private Integer icount;//进步总条数
+        private String teacher;  //老师
+        private String commentid; //主评论id---教室批复作业相当于是主评论
 
         public Integer getIcount() {
             return icount;
@@ -778,58 +776,22 @@ public class Improve {
         public void setPhotos(String photos) {
             this.photos = photos;
         }
-    }
 
-    /*
-     * 进步---教室相关
-     */
-    public class ClassRoomEntity{
-        private String ptype; //十全十美类型
-        private String title; //教室标题
-        private String photos; //教室图片
-        private Integer involved; //参与人数 
-        private String teacher;  //老师
-        private String commentid; //主评论id---教室批复作业相当于是主评论
-        
-        
-		public String getPtype() {
-			return ptype;
-		}
-		public void setPtype(String ptype) {
-			this.ptype = ptype;
-		}
-		public String getTitle() {
-			return title;
-		}
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		public String getPhotos() {
-			return photos;
-		}
-		public void setPhotos(String photos) {
-			this.photos = photos;
-		}
-		public Integer getInvolved() {
-			return involved;
-		}
-		public void setInvolved(Integer involved) {
-			this.involved = involved;
-		}
 		public String getTeacher() {
 			return teacher;
 		}
+
 		public void setTeacher(String teacher) {
 			this.teacher = teacher;
 		}
+
 		public String getCommentid() {
 			return commentid;
 		}
+
 		public void setCommentid(String commentid) {
 			this.commentid = commentid;
 		}
-        
     }
-        
 
 }

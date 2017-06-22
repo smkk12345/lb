@@ -253,7 +253,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", courseList.get(0).getPickey());
 				}
 				map.put("classphotos", classroom.getClassphotos());
-				map.put("classtitle", classroom.getClasstitle()); 
+				map.put("classtitle", classroom.getClasstitle());
+				map.put("ptype", classroom.getPtype());
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
 				//是否已经关注教室
