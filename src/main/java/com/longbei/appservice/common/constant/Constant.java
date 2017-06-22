@@ -73,7 +73,8 @@ public class Constant {
 	public static final int STATUS_SYS_19 = -19;
 	public static final int STATUS_SYS_110 = -110;
 	public static final int STATUS_SYS_111 = -111;
-	
+	public static final int STATUS_SYS_113 = -113;
+
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
 	public static final int STATUS_SYS_22 = -22;
@@ -142,6 +143,7 @@ public class Constant {
 	public static final int STATUS_SYS_618 = -618;
 	public static final int STATUS_SYS_619 = -619;
 	public static final int STATUS_SYS_620 = -620;
+	public static final int STATUS_SYS_621 = -621;
 	//80-89 兴趣圈  wangyongzhi
 	public static final int STATUS_SYS_80 = -80;
 	public static final int STATUS_SYS_81 = -81;
@@ -152,6 +154,7 @@ public class Constant {
 	public static final int STATUS_SYS_86 = -86;
 	public static final int STATUS_SYS_87 = -87;
 	public static final int STATUS_SYS_88 = -88;
+	public static final int STATUS_SYS_89 = -89;
 
 	//90-99 好友相关 wangyongzhi
 	public static final int STATUS_SYS_90 = -90;
@@ -169,6 +172,8 @@ public class Constant {
 	public static final int STATUS_SYS_912 = -912;
 	public static final int STATUS_SYS_913 = -913;
 	public static final int STATUS_SYS_914 = -914;
+	public static final int STATUS_SYS_915 = -915;
+	public static final int STATUS_SYS_916 = -916;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -213,6 +218,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_110 = "根据您当前的用户等级,您创建的公开榜单人数上限为";
 	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
+	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -281,6 +287,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_618 = "通过人数以达到上限";
 	public static final String RTNINFO_SYS_619 = "榜已经结束，无法删除进步";
 	public static final String RTNINFO_SYS_620 = "该内容不存在";
+	public static final String RTNINFO_SYS_621 = "抱歉,你在榜单中总共所发进步已达到最大数量";
 	//100-120 商品有关
 	public static final String RTNINFO_SYS_100 = "商品已下架";
 	public static final String RTNINFO_SYS_101 = "结算总价不一致";
@@ -298,7 +305,7 @@ public class Constant {
 
 	//80-89 兴趣圈  wangyongzhi
 	public static final String RTNINFO_SYS_80 = "兴趣圈名称重复";
-	public static final String RTNINFO_SYS_81 = "抱歉,您无权更新该兴趣圈的信息";
+	public static final String RTNINFO_SYS_81 = "抱歉,您没有权限更新该兴趣圈的信息";
 	public static final String RTNINFO_SYS_82 = "您已经在该兴趣圈中了";
 	public static final String RTNINFO_SYS_83 = "您已经申请了加入该兴趣圈,圈主正在验证中,请稍后~~";
 	public static final String RTNINFO_SYS_84 = "申请加圈子成功,正在等待圈主验证";
@@ -306,6 +313,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_86 = "抱歉,未查询到该兴趣圈相关信息";
 	public static final String RTNINFO_SYS_87 = "该用户已经在圈子中了";
 	public static final String RTNINFO_SYS_88 = "抱歉,您目前无权限创建圈子或您创建的圈子已达上限";
+	public static final String RTNINFO_SYS_89 = "圈主不可将自己移出圈子";
 
 	/** 90-99  好友  群组 相关 by wangyongzhi **/
 	public static final String RTNINFO_SYS_90 = "你们已经是好友关系了,快去聊天吧!";
@@ -323,6 +331,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
 	public static final String RTNINFO_SYS_913 = "取消关注成功";
 	public static final String RTNINFO_SYS_914 = "此龙榜已被榜主或管理员关闭";
+	public static final String RTNINFO_SYS_915 = "抱歉,您当前没有权限邀请好友入群!";
+	public static final String RTNINFO_SYS_916 = "抱歉,您当前无法更改群昵称!";
 
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
@@ -371,7 +381,7 @@ public class Constant {
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
-			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,"+
+			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,/rank/selectRankAward,"+
 			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
 
 	/**
@@ -432,35 +442,7 @@ public class Constant {
 	}
 
 
-	/**
-	 * 进步时间线类型
-	 */
-	public static final String SQUARE_USER_ID = "10000";  //系统用户id
-	/**
-	 * 广场
-	 */
-	public static final String TIMELINE_IMPROVE_SQUARE = "0";
-	/**
-	 * 我的
-	 */
-	public static final String TIMELINE_IMPROVE_SELF = "1";
-	/**
-	 * 好友，关注，熟人
-	 */
-	public static final String TIMELINE_IMPROVE_ALL = "2";
-	/**
-	 * 好友
-	 */
-	public static final String TIMELINE_IMPROVE_FRIEND = "3";
-	/**
-	 * 关注
-	 */
-	public static final String TIMELINE_IMPROVE_ATTR = "4";
-	/**
-	 * 熟人
-	 */
-	public static final String TIMELINE_IMPROVE_ACQ = "5";
-	
+
 	
 	/**
 	 * 进步币添加来源   
@@ -834,5 +816,54 @@ public class Constant {
 		phone_search,//允许通过此手机号搜到我
 		newfriendask//请求加为好友时 是否接受消息
 	}
+
+	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L;
+	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L;
+	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
+	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
+	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
+
+
+//0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+
+	public static final String TIMELINE_IMPROVE_SQUARE_COLLECTION = "timelinesquare";  // 广场
+	public static final String TIMELINE_IMPROVE_SELF_COLLECTION = "timelineself";  // 我的
+	public static final String TIMELINE_IMPROVE_ALL_COLLECTION = "timelineall";  //好友，关注，熟人
+	public static final String TIMELINE_IMPROVE_FRIEND_COLLECTION = "timelinefriend";  //好友
+	public static final String TIMELINE_IMPROVE_ATTR_COLLECTION = "timelineattr";  //关注
+	public static final String TIMELINE_IMPROVE_ACQ_COLLECTION = "timelineacq";  //熟人
+
+
+	/**
+	 * 进步时间线类型
+	 */
+	public static final String SQUARE_USER_ID = "10000";  //系统用户id
+	/**
+	 * 广场
+	 */
+	public static final String TIMELINE_IMPROVE_SQUARE = "0";
+	/**
+	 * 我的
+	 */
+	public static final String TIMELINE_IMPROVE_SELF = "1";
+	/**
+	 * 好友，关注，熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ALL = "2";
+	/**
+	 * 好友
+	 */
+	public static final String TIMELINE_IMPROVE_FRIEND = "3";
+	/**
+	 * 关注
+	 */
+	public static final String TIMELINE_IMPROVE_ATTR = "4";
+	/**
+	 * 熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ACQ = "5";
+
+
+
 
 }

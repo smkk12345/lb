@@ -414,7 +414,7 @@
         ORDER BY createtime DESC
       </if>
       <if test="orderby != null and orderby == 1">
-        ORDER BY sum(flowers*10+likes) desc
+        ORDER BY flowers*10+likes desc
       </if>
     limit #{startno},#{pagesize}
   </select>
@@ -442,8 +442,8 @@
           </otherwise>
         </choose>
       </if>
-      and businessid = #{businessid}
       and isdel = '0' and isbusinessdel = '0'
+      and businessid = #{businessid}
     </where>
   </select>
 
@@ -683,16 +683,6 @@
     <result column="duration"/>
   </resultMap>
 
-  <select id="findCircleMemberImprove" parameterType="map" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from improve_circle
-    where
-        userid = #{userId}
-      and circleid = #{circleId}
-    ORDER BY createtime DESC
-  </select>
-
   <select id="selectGoalMainImproveList" resultMap="goalMap" >
     SELECT
     <include refid="Base_Column_List"/>
@@ -747,7 +737,8 @@
 
   <update id="updateSourceData">
     update ${tablename}
-    SET <if test="operatetype == '0'.toString()">
+    SET
+        <if test="operatetype == '0'.toString()">
         likes = likes + #{icount}
         </if>
         <if test="operatetype == '1'.toString()">

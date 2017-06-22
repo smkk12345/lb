@@ -206,16 +206,16 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 case publishRank:
                     //发榜  判断发布榜单个数
                     Rank publishRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
-                    //查询该用户创建的进行中的榜数量
+                    //查询该用户创建的进行中或未开始的榜数量
                     Map<String,Object> paraMap = new HashMap<String,Object>();
                     paraMap.put("ispublic",publishRank.getIspublic());
-                    paraMap.put("isfinish",1);
+                    paraMap.put("isfinish",-1);
+                    paraMap.put("isdel",0);
                     paraMap.put("createuserid",userInfo.getUserid());
                     int publishCount = this.rankMapper.selectRankListCount(paraMap);
                     if(("0".equals(publishRank.getIspublic()) && publishCount <= userLevel.getPubranknum())){
-//                            || ("1".equals(publishRank.getIspublic()) && publishCount <= userLevel.getPriranknum())){
                         int nopublishNum = this.rankMapper.selectNoPublishRank(paraMap);
-                        publishCount = publishCount+ nopublishNum;
+                        publishCount = publishCount + nopublishNum;
                     }
 
                     if("0".equals(publishRank.getIspublic())){
@@ -565,7 +565,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 maxPoint = SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve())).getMaxscore();
             }
             curPoint = curPoint + iPoint;
-            if(curPoint >= maxPoint && level < 9){//升级
+            if(curPoint >= maxPoint && level < 10){//升级
                 int nextMaxPoint =SysRulesCache.pLevelPointMap.get(pType+"&"+(userPlDetail.getLeve()+1)).getMaxscore();
                 if(curPoint >= nextMaxPoint && level < 9){//不止升一级
                     Map<String,SysRulePerfectTen> ruleMap = SysRulesCache.pLevelPointMap;

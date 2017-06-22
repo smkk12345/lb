@@ -18,7 +18,7 @@ public interface CircleMemberService {
     /**
      * 更改用户在圈子中的进步条数
      * @param userid
-     * @param circleId
+     * @param businessid
      * @param num
      * @return
      */

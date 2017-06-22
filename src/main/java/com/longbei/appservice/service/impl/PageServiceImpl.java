@@ -4,15 +4,14 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.HomePictureMapper;
-import com.longbei.appservice.dao.HomeRecommendMapper;
-import com.longbei.appservice.dao.RankMapper;
-import com.longbei.appservice.dao.SysCommonMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SysCommon;
+import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.PageService;
 import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
@@ -43,6 +42,10 @@ public class PageServiceImpl implements PageService{
     private RankMapper rankMapper;
     @Autowired
     private SysSettingService sysSettingService;
+    @Autowired
+    private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private CommentMongoService commentMongoService;
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -131,7 +134,7 @@ public class PageServiceImpl implements PageService{
             }else if("2".equals(type)){
                 HomePicture homePicture = new HomePicture();
                 homePicture.setPicname("叶圣陶听说读写能力展示活动简介");
-                homePicture.setPhotos("d0dded28-d919-4d9c-b836-672344bede9e");
+                homePicture.setPhotos("rank/b06d9543-207d-4e2f-b2e0-e2193e9e6abe");
                 homePicture.setContenttype("0");
                 homePicture.setIsup("1");
                 homePicture.setIsdel(0);
@@ -140,7 +143,7 @@ public class PageServiceImpl implements PageService{
 
                 HomePicture homePicture2 = new HomePicture();
                 homePicture2.setPicname("北京公益基金会");
-                homePicture2.setPhotos("b8d75484-33d4-4a42-8b24-4f00ad4e902e");
+                homePicture2.setPhotos("rank/0b81ae78-7cb9-4e2a-b89b-e547a46dd169");
                 homePicture2.setContenttype("0");
                 homePicture2.setIsup("1");
                 homePicture2.setIsdel(0);
@@ -191,6 +194,13 @@ public class PageServiceImpl implements PageService{
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"2",null);
+                if (ResultUtil.isSuccess(baseResp1)){
+                    rank.setCommentCount(baseResp1.getData());
+                }
+                String icount = rankMembersMapper.getRankImproveCount
+                        (String.valueOf(homeRecommend1.getBusinessid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(homeRecommend1.getBusinessid()));
+                rank.setIcount(Integer.parseInt(icount));
                 homeRecommend1.setRank(rank);
             }
             page.setTotalCount(totalcount);
@@ -213,6 +223,9 @@ public class PageServiceImpl implements PageService{
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
                 if (null != rank){
+                    String icount = rankMembersMapper.getRankImproveCount
+                            (String.valueOf(rank.getRankid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(rank.getRankid()));
+                    rank.setIcount(Integer.parseInt(icount));
                     homeRecommend1.setRank(rank);
                     resultlist.add(homeRecommend1);
                 }

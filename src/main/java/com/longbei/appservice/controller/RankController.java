@@ -225,6 +225,7 @@ public class RankController {
 
         baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
         if(ResultUtil.isSuccess(baseResp)){
+            baseResp.getData().setJoincode(null);
             baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_detail);
         }
         return baseResp;
@@ -311,7 +312,7 @@ public class RankController {
 
     /**
      * 实物领奖 用户手动确认收货
-     * @url http://ip:port/app_service/rankAwardConfirmReceipt
+     * @url http://ip:port/app_service/rank/rankAwardConfirmReceipt
      * @param userid 用户id
      * @param rankId 榜单id
      * @return
@@ -623,8 +624,7 @@ public class RankController {
         if(null == pageSize){
              pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(Long.parseLong(userid), 
-        		Long.parseLong(friendid), startNum, pageSize);
+        baseResp = this.rankAcceptAwardService.userRankAcceptAwardList(Long.parseLong(userid), Long.parseLong(friendid), startNum, pageSize);
         return baseResp;
     }
 
@@ -647,6 +647,16 @@ public class RankController {
         }
         baseResp = this.rankService.updateRankInfo(rankId,userid,needConfirm,notice,noticeUser);
         return baseResp;
+    }
+
+    /**
+     * 初始化榜单的用户排名
+     * @return
+     */
+    @RequestMapping(value="initRankSort")
+    public BaseResp<Object> initRankSort(){
+        this.rankService.initRankSort();
+        return new BaseResp<>().ok();
     }
 
 }

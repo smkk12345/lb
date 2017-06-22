@@ -2,7 +2,6 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.entity.*;
 
 import java.util.Date;
@@ -569,4 +568,5 @@ public interface RankService extends BaseService{
      */
     BaseResp<Object> rankCardDetail(String rankCardId);
 
+    void initRankSort();
 }

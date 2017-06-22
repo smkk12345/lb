@@ -253,7 +253,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", courseList.get(0).getPickey());
 				}
 				map.put("classphotos", classroom.getClassphotos());
-				map.put("classtitle", classroom.getClasstitle()); 
+				map.put("classtitle", classroom.getClasstitle());
+				map.put("ptype", classroom.getPtype());
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
 				//是否已经关注教室
@@ -673,7 +674,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		Page<Classroom> page = new Page<>(startNum,endNum);
         try {
             int totalcount = classroomMapper.selectCount(isup, isdel, startNum, endNum);
-            startNum = Page.setPageNo(startNum,totalcount,endNum);
+//            startNum = Page.setPageNo(startNum,totalcount,endNum);
             List<Classroom> list = classroomMapper.selectClassroomList(isup, isdel, startNum, endNum);
             if(null != list && list.size()>0){
             	for (Classroom classroom : list) {
@@ -685,6 +686,25 @@ public class ClassroomServiceImpl implements ClassroomService {
 					//教室课程数量
 					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
 					classroom.setAllcourses(allcourses);
+					//获取创建人信息
+					String nickname = "";
+					//sourcetype  0:运营  1:app  2:商户
+					if("1".equals(classroom.getSourcetype())){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+						nickname = appUserMongoEntity.getNickname();
+					}
+					classroom.setNickname(nickname);
+					//获取评论总数
+					int commentNum = 0;
+					BaseResp<Integer> resResp = commentMongoService.selectCommentCountSum
+							(String.valueOf(classroom.getClassroomid()), "12", "");
+					if (ResultUtil.isSuccess(resResp)){
+						commentNum = resResp.getData();
+			        }
+					classroom.setCommentNum(commentNum);
+					//获取提问答疑总数
+					Long questionsNum = classroomQuestionsMongoService.selectCountQuestions(String.valueOf(classroom.getClassroomid()));
+					classroom.setQuestionsNum(questionsNum);
             	}
             }
             page.setTotalCount(totalcount);

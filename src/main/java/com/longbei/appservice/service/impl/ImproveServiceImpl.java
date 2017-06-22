@@ -19,6 +19,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -120,6 +121,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserCardMapper userCardMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private CircleMembersMapper circleMembersMapper;
 
     /**
      *  @author luye
@@ -368,16 +371,6 @@ public class ImproveServiceImpl implements ImproveService{
 
         int res = 0;
         try {
-            //对ispublic进行转换 在榜中发表的进步传过来的ispublic是rank的标识 0代表公开 1代表私密
-            //所以需要再次将rank的ispublic标识转换成improce的ispublic标识 0.私密 1.朋友可见 2,所有人可见
-            if("0".equals(improve.getIspublic())){
-                improve.setIspublic("2");
-            }else{
-                improve.setIspublic("0");
-            }
-
-
-            //没有
 //            improve.setRankid(idGenerateService.getUniqueIdAsLong());
             res = improveMapper.updateRankMainImprove(improve.getBusinessid(),improve.getUserid());
             logger.info("update rank main improve");
@@ -413,10 +406,22 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private boolean canInsertImprove(Long userid,Long rankid,Rank rank){
+    private boolean canInsertRankImprovePerday(Long userid,Long rankid,Rank rank){
         String tempnum = springJedisDao.get("rankid"+rankid+"userid"+userid+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
         int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
         if (num < Integer.parseInt(rank.getMaximprovenum())){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
+            return true;
+        }
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
+        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
             return true;
         }
         return false;
@@ -555,7 +560,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
                     break;
                 default:
-                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,null,Constant_table.IMPROVE,isdel,ispublic);
                     break;
             }
 
@@ -637,7 +642,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private void initSortInfo(Rank rank,List<Improve> improves){
-        if(rank.getIsfinish().equals("1")){//进行中
+        if("1".equals(rank.getIsfinish())){//进行中
             for (Improve improve : improves){
                 if(improve == null){
                     continue;
@@ -698,7 +703,7 @@ public class ImproveServiceImpl implements ImproveService{
      */
     @Override
     public List<Improve> selectCircleImproveList(String userid, String circleid,String sift,String orderby, int pageNo, int pageSize) {
-        List<Improve> improves = null;
+        List<Improve> improves = new ArrayList<Improve>();
         try {
             switch (sift){
                 //全部
@@ -863,7 +868,13 @@ public class ImproveServiceImpl implements ImproveService{
   				if(null != replyList && replyList.size()>0){
   					//已批复
   					isreply = "1";
-  					improve.setReplyImprove(replyList.get(0));
+  					ImproveClassroom improveClassroom = replyList.get(0);
+                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
+                    ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                    		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                    		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                    replyImprove.setAppUserMongoEntity(appUserMongo);
+  					improve.setReplyImprove(replyImprove);
   				}
   				if(!"1".equals(isreply)){
   					//判断当前用户是否是老师
@@ -1136,7 +1147,10 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("remove rank immprove: circleid:{} improveid:{} userid:{} is error:{}",
                     circleid,improveid,userid,e);
         }
-        if(res != 0){
+        if(res > 0){
+            //更改用户在圈子中的进步条数
+            this.circleMemberService.updateCircleMemberIcount(Long.parseLong(userid),Long.parseLong(circleid),-1);
+
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             baseResp = BaseResp.ok();
@@ -1274,8 +1288,7 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             improve.setFlowers(timeLineDetail.getFlowers());
-            improve.setLikes(timeLineDetail.getLikes());
-//            initImproveLikeAndFlower(improve);
+           //            initImproveLikeAndFlower(improve);
             //初始化进步用户信息
             initImproveUserInfo(improve,Long.parseLong(userid));
             improves.add(improve);
@@ -1321,7 +1334,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFilekey(timeLineDetail.getFileKey());
                 improve.setSourcekey(timeLineDetail.getSourcekey());
                 improve.setItype(timeLineDetail.getItype());
-                improve.setLikes(timeLineDetail.getLikes());
+                improve.setLikes(getLikeFromRedis(String.valueOf(timeLineDetail.getImproveId()),
+                        timeLineDetail.getBusinessid()+"",timeLineDetail.getBusinesstype()));
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setPicattribute(timeLineDetail.getPicattribute());
@@ -1409,8 +1423,11 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!"1".equals(rank.getIsfinish())) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
-                        if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
+                        if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
+                        }
+                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
                         }
                         return baseResp.initCodeAndDesp();
                     } else {
@@ -1438,6 +1455,8 @@ public class ImproveServiceImpl implements ImproveService{
             if(improve == null){
                 continue;
             }
+            improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                    improve.getBusinessid()+"",improve.getBusinesstype()));
             //初始化评论数量
             initImproveCommentInfo(improve);
             //初始化点赞，送花，送钻简略信息
@@ -1689,7 +1708,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     @Override
-    public BaseResp<Object> addlike(String userid,String impid,String businesstype,String businessid){
+    public BaseResp<Object> addlike(final String userid, final String impid, final String businesstype, String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
         //防止重复提交
         if(isExitsForRedis(impid,userid)){
@@ -1706,8 +1725,8 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
-        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        final UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         if(null == improve || null == userInfo){
             return baseResp;
         }
@@ -1720,41 +1739,47 @@ public class ImproveServiceImpl implements ImproveService{
 //            return baseResp;
 //        }
         try{
-            //mysql相关操作
-            boolean flag = addLikeToImprove(improve,userid,impid,businessid,businesstype);
-            if (flag){
-                //redis
-                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
+
+            //redis
+            addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
-                //mongo
-                addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
-                        userInfo.getAvatar())  ;
+            //mongo
+            addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
+                    userInfo.getAvatar());
+            //mysql
+            addLikeToImprove(improve,userid,impid,businessid,businesstype);
 
-                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
+            final String finalBusinessid = businessid;
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
 
-                if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
-                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
+                    //更新进步赞数（mysql）
+
+
+                    if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
+                        //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                        circleMemberService.updateCircleMemberInfo(improve.getUserid(), finalBusinessid,1,null,null);
+                    }
+
+                    try{
+                        userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
+                        userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
+                    }catch (Exception e){
+                        logger.error("pointChange or userSumInfo error ",e);
+                    }
+                    //添加评论消息---点赞
+                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+                    //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+                    if(!userid.equals(improve.getUserid().toString())){
+                        userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, finalBusinessid,
+                                Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
+                    }
                 }
-
-                try{
-                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
-                    userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
-                }catch (Exception e){
-                    logger.error("pointChange or userSumInfo error ",e);
-                }
-
-            }
-            //添加评论消息---点赞
-            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-            if(!userid.equals(improve.getUserid().toString())){
-            	userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
-                		Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
-            }
-//            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
+            });
             baseResp.getExpandData().put("haslike","1");
-            baseResp.getExpandData().put("likes",improve.getLikes()+1);
+            baseResp.getExpandData().put("likes",getLikeFromRedis(improve.getImpid()+"",
+                    improve.getBusinessid()+"",improve.getBusinesstype()));
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
@@ -1802,10 +1827,10 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午3:59
      */
     @Override
-    public BaseResp<Object> cancelLike(String userid, String impid, String businesstype, String businessid) {
+    public BaseResp<Object> cancelLike(final String userid, final String impid, final String businesstype, final String businessid) {
         BaseResp baseResp = new BaseResp();
         //校验impid是否合法
-        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         if(improve == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -1814,29 +1839,32 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp;
         }
         try {
-            boolean flag = removeLikeToImprove(improve,userid,impid,businessid,businesstype);
-            if (flag){
-                //redis
-                removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
-                //mongo
-                removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
-                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),-1);
-                //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
-                if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
-                }
-                try{
+            //redis
+            removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
+            //mongo
+            removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
+            //mysql
+            removeLikeToImprove(improve,userid,impid,businessid,businesstype);
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                    if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
+                        circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
+                    }
+                    try{
+                        //取消赞后，删除消息中的记录    2017-06-05
 //                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
 //                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE","2",null,0,0);
-                    userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
-                }catch (Exception e){
-                    logger.error("pointChange,userSumInfo error",e);
+                        userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                    }catch (Exception e){
+                        logger.error("pointChange,userSumInfo error",e);
+                    }
+                    userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
                 }
-                //取消赞后，删除消息中的记录    2017-06-05
-                userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
-            }
+            });
             baseResp.getExpandData().put("haslike","0");
-            int likes = improve.getLikes()-1;
+            int likes = getLikeFromRedis(impid,businessid,businesstype);
             baseResp.getExpandData().put("likes",likes<0?0:likes);
         } catch (Exception e) {
             logger.error("cancel like error:{}",e);
@@ -1919,6 +1947,8 @@ public class ImproveServiceImpl implements ImproveService{
                         userCollect.getUserid()+"",
                         userCollect.getCtype(),
                         userCollect.getBusinessid());
+                improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                        String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
                 initImproveCommentInfo(improve);
                 initImproveUserInfo(improve,Long.parseLong(userid));
                 resultList.add(improve);
@@ -2272,21 +2302,7 @@ public class ImproveServiceImpl implements ImproveService{
                                                            final String businessid,
                                                            final String businesstype){
         Map<String,String> map = new HashMap<>();
-//        switch (opttype) {
-//            case Constant.IMPROVE_ALL_DETAIL_LIKE:
-//                map.put("like"+userid,userid);
-//                break;
-//            case Constant.IMPROVE_ALL_DETAIL_FLOWER:
-//                map.put("flower"+userid,userid);
-//                break;
-//            case Constant.IMPROVE_ALL_DETAIL_DIAMOND:
-//                map.put("diamond"+userid,userid);
-//                break;
-//            default:
-//                break;
-//        }
         map.put("lfd"+userid,userid);
-
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -2299,11 +2315,35 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         });
-
+        //将赞保存到redis
+        setLikeToRedis(impid,businessid,businesstype,1);
         //添加临时记录
         springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + impid + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
     }
+
+
+    private void setLikeToRedis(String impid,String businessid,String businesstype,int num){
+        if (!springJedisDao.hasKey(Constant.REDIS_IMPROVE_LIKE + impid)){
+            //mysql 同步
+            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
+        }
+        springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,num);
+    }
+
+
+    private int getLikeFromRedis(String impid,String businessid,String businesstype){
+        String count = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid);
+        if (StringUtils.isBlank(count)){
+            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
+            return improve.getLikes();
+        } else {
+            return Integer.parseInt(count);
+        }
+    }
+
 
     /**
      * 取消赞
@@ -2332,8 +2372,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
         });
 
-
-
+        setLikeToRedis(impid,businessid,businesstype,-1);
         springJedisDao.del("improve_like_temp_"+impid+userid);
         //删除临时记录
         springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + impid + userid);
@@ -2395,7 +2434,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+//        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
         afterImproveInfoChange(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
@@ -2505,7 +2544,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_CANCEL,0);
+//        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_CANCEL,0);
         afterImproveInfoChange(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
@@ -2849,23 +2888,31 @@ public class ImproveServiceImpl implements ImproveService{
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
+                    	String isreply = "0";
                         if(null != replyList && replyList.size()>0){
                             List<CommentLower> lowerlist = new ArrayList<CommentLower>();
 //                            for (ImproveClassroom improveClassroom : replyList) {
                             ImproveClassroom improveClassroom = replyList.get(0);
-                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
-                    					businessid, "5", null, 0);
-                                if(null != list && list.size()>0){
+                            AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
+                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                            		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            replyImprove.setAppUserMongoEntity(appUserMongo);
+                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
+                					businessid, "5", null, 0);
+                            if(null != list && list.size()>0){
                                     Comment comment = list.get(0);
                                     commentid = comment.getId();
                                     lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
                                     //初始化用户信息
                                     initCommentLowerUserInfoList(lowerlist);
 //                                }
-                    			improveClassroom.setLowerlist(lowerlist);
+                                    replyImprove.setLowerlist(lowerlist);
 							}
-                    		improve.setReplyImprove(replyList.get(0));
+                            isreply = "1";
+                    		improve.setReplyImprove(replyImprove);
                     	}
+                        improve.setIsreply(isreply);
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
@@ -2873,7 +2920,7 @@ public class ImproveServiceImpl implements ImproveService{
                     		if(null != userCard){
                     			teacher += userCard.getDisplayname();
                     		}
-                    		improve.setClassRoomEntity(classroom.getPtype(),
+                    		improve.setBusinessEntity(classroom.getPtype(),
                     				classroom.getClasstitle(),
                     				classroom.getClassphotos(),
                     				classroom.getClassinvoloed(),
@@ -2936,18 +2983,6 @@ public class ImproveServiceImpl implements ImproveService{
 
     }
 
-    @Override
-    public List<Improve> findCircleMemberImprove(Long circleId, Long userId,Long currentUserId, Integer startNo, Integer pageSize) {
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("circleId",circleId);
-        map.put("userId",userId);
-        map.put("startNo",startNo);
-        map.put("pageSize",pageSize);
-        List<Improve> improveCircleList = improveMapper.findCircleMemberImprove(map);
-        initImproveListOtherInfo(currentUserId.toString(),improveCircleList);
-        return improveCircleList;
-    }
-
     /**
      *  @author luye
      *  @desp   初始化 进步附加信息
@@ -2955,6 +2990,10 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午4:06
      */
     public void initImproveInfo(Improve improve,Long userid) {
+
+        //初始化赞数
+        improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
 //        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);
@@ -3073,23 +3112,27 @@ public class ImproveServiceImpl implements ImproveService{
      * @param businesstype 业务类型 榜，圈子，教室，目标
      * @param startno 分页起始条数
      * @param pagesize 分页每页条数
+     * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
      * @return
      *
      * @author luye
      */
     @Override
     public BaseResp<List<Improve>> selectBusinessImproveList(String userid, String businessid,String iscomplain,
-                                                       String businesstype, Integer startno, Integer pagesize) {
+                                                       String businesstype, Integer startno, Integer pagesize,boolean selectCount) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         try {
             List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
                     null, userid, null, iscomplain, startno, pagesize);
-            Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, iscomplain);
+
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
-            baseResp.getExpandData().put("totalcount",totalcount);
+            if(startno == 0 && selectCount){
+                Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
+                        null, userid, null, iscomplain);
+                baseResp.getExpandData().put("totalcount",totalcount);
+            }
         } catch (Exception e) {
             logger.error("select businessi improve list userid={} businessid={} businesstype={} is error:"
                     , userid, businessid, businesstype);
@@ -3310,10 +3353,80 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp;
     }
+
+    /**
+     * 查询用户在business中发表的进步
+     * @param curuserid 当前登录用户
+     * @param userid 查看的用户id
+     * @param businessid 业务id 圈子id
+     * @param businesstype 类型 0 未关联 1 目标  2 榜 3 圈子 4教室
+     * @param startno
+     * @param pagesize
+     * @param selectCount 是否查询总数 只有当startno == 0 and selectCount是true时 才查询总数
+     *                    如果查询总数 则会在expandData中显示该用户在business中发表的进步总数
+     * @return
+     */
+    @Override
+    public BaseResp<List<Improve>> selectListInBusiness(String curuserid, String userid, String businessid, String businesstype, Integer startno, Integer pagesize, boolean selectCount) {
+        logger.info("select improve list in business curuserid:{} userid:{} businesstype:{} businessid:{} startNo:{} pageSize:{}",curuserid,userid,businesstype,businessid,startno,pagesize);
+        BaseResp<List<Improve>> baseResp = new BaseResp<List<Improve>>();
+        try{
+            baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
+            if(ResultUtil.isSuccess(baseResp)) {
+                List<Improve> list = baseResp.getData();
+                for (int i = 0; i < list.size(); i++) {
+                    Improve improve = list.get(i);
+                    initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                    initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+                }
+                int count =0;
+                if(startno == 0 && selectCount){
+                    switch (businesstype) {
+                        case Constant.IMPROVE_SINGLE_TYPE:
+
+                            break;
+                        case Constant.IMPROVE_RANK_TYPE:
+                            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+                            if(null != rankMembers){
+                                count = rankMembers.getIcount();
+                            }
+                            break;
+                        case Constant.IMPROVE_CLASSROOM_TYPE:
+
+                            break;
+                        case Constant.IMPROVE_CIRCLE_TYPE:
+                            Map<String,Object> resultMap = new HashMap<String,Object>();
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("circleId", businessid);
+                            map.put("userId", userid);
+                            map.put("itype",CircleMembers.normal);
+                            //查询该用户是否在该圈子中
+                            CircleMembers circleMembers = circleMembersMapper.findCircleMember(map);
+                            if (circleMembers != null) {
+                                count = circleMembers.getIcount();
+                            }
+                            break;
+                        case Constant.IMPROVE_GOAL_TYPE:
+
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+                baseResp.getExpandData().put("totalCount",count);
+            }
+            return baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.info("select improve list in business curuserid:{} userid:{} businesstype:{} businessid:{} startNo:{} pageSize:{} errorMsg:{}",curuserid,userid,businesstype,businessid,startno,pagesize,e);
+        }
+        return baseResp;
+    }
+
     @Override
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
                                                     String businesstype, Integer startno, Integer pagesize) {
-        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize);
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
             List<Improve> list = baseResp.getData();
@@ -3328,9 +3441,11 @@ public class ImproveServiceImpl implements ImproveService{
             }
         }
         int currentUserImpCount = 0;
-        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
-        if(null != rankMembers){
-            currentUserImpCount = rankMembers.getIcount();
+        if(startno == 0){
+            RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+            if(null != rankMembers){
+                currentUserImpCount = rankMembers.getIcount();
+            }
         }
         baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
         return baseResp;

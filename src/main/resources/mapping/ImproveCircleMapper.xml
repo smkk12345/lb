@@ -274,4 +274,22 @@
     ORDER BY createtime DESC
   </select>
 
+  <!-- 更改用户的进步状态 -->
+  <!-- 更改用户的进步状态 -->
+  <update id="updateImproveCircleStatus" parameterType="String">
+    UPDATE improve_rank
+    <set>
+      <if test="isDel != null">
+        isdel = #{isDel},
+      </if>
+      ismainimp = 0,
+      <if test="isBusinessDel != null">
+        isbusinessdel = #{isBusinessDel},
+      </if>
+    </set>
+    WHERE
+    businessid=#{circleId}
+    AND userid=#{userId}
+  </update>
+
 </mapper>
