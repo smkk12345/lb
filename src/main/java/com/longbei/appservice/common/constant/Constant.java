@@ -73,7 +73,8 @@ public class Constant {
 	public static final int STATUS_SYS_19 = -19;
 	public static final int STATUS_SYS_110 = -110;
 	public static final int STATUS_SYS_111 = -111;
-	
+	public static final int STATUS_SYS_113 = -113;
+
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
 	public static final int STATUS_SYS_22 = -22;
@@ -217,6 +218,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_110 = "根据您当前的用户等级,您创建的公开榜单人数上限为";
 	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
+	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -843,4 +845,9 @@ public class Constant {
 		newfriendask//请求加为好友时 是否接受消息
 	}
 
+	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L;
+	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L;
+	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
+	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
+	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
 }

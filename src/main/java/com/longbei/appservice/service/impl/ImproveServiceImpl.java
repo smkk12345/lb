@@ -642,7 +642,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private void initSortInfo(Rank rank,List<Improve> improves){
-        if(rank.getIsfinish().equals("1")){//进行中
+        if("1".equals(rank.getIsfinish())){//进行中
             for (Improve improve : improves){
                 if(improve == null){
                     continue;
