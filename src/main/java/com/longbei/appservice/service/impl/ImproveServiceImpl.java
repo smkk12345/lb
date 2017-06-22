@@ -416,6 +416,9 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
+            return true;
+        }
         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
         int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
         if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
