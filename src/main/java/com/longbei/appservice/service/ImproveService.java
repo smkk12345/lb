@@ -350,7 +350,7 @@ public interface ImproveService {
      * @param businessid
      * @return
      */
-    public BaseResp select(String userid, String impid, String businesstype,String businessid);
+    BaseResp select(String userid, String impid, String businesstype,String businessid);
 
     /**
      * 查询某个用户在business中的进步

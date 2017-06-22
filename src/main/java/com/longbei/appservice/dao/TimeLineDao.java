@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,14 +25,18 @@ import java.util.List;
 @Repository
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
+    public void save(TimeLine timeLine,String collectName){
+        mongoTemplate.save(timeLine,collectName);
+    }
+
     public List<TimeLine> selectTimeListByUserAndType(String userid,String ptype,
                                                       String timelinetype, Date lastdate,
                                                       int pagesize,int ispublic){
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
-        Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
-        if ("1".equals(timelinetype)){
+        Criteria criteria = Criteria.where("userid").is(userid);
+        if (Constant.TIMELINE_IMPROVE_SELF.equals(timelinetype)){
             criteria.and("ispublic").gte(ispublic);
         }
         if (!StringUtils.isEmpty(ptype) && !"-1".equals(ptype)){
@@ -41,10 +46,32 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
             criteria.and("createdate").lt(lastdate);
         }
         Query query = new Query(criteria);
-//        Query query = new Query();
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
         query.limit(pagesize);
-        List<TimeLine> timeLines = super.find(query);
+        List<TimeLine> timeLines = new ArrayList<>();
+        switch (timelinetype){
+            case Constant.TIMELINE_IMPROVE_SQUARE:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_SELF:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_ALL:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_FRIEND:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_ATTR:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_ACQ:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_ACQ_COLLECTION);
+                break;
+            default:
+                timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+                break;
+        }
         return timeLines;
     }
     
