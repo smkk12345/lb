@@ -58,7 +58,8 @@ public class FindServiceImpl implements FindService{
                 }catch (Exception e){
                     logger.error("getByUserName error nad username={}",appuser.getUsername(),e);
                 }
-
+                //屏蔽手机号
+                appuser.setUsername("");
             }
             baseResp.setData(list);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
