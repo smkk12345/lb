@@ -32,6 +32,11 @@ spring:
               enabled: true
               serviceId: config-server
 #            url: http://192.168.1.70:8888
+    http:
+        encoding:
+            force: true
+            charset: UTF-8
+
 
 eureka:
   instance:
