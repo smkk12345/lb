@@ -906,7 +906,10 @@
     <if test="isdel != null" >
       AND isdel = #{isdel}
     </if>
-    <if test="isfinish != null and isfinish != 2">
+    <if test="isfinish != null and isfinish == -1">
+      and (isfinish = 0 or isfinish = 1)
+    </if>
+    <if test="isfinish != null and isfinish != 2 and isfinish != -1">
       and isfinish = #{isfinish}
     </if>
     <if test="isfinish != null and isfinish == 2">
@@ -979,7 +982,7 @@
     from rankimage
     where isdel = 0
 	and ispublic = #{ispublic}
-    and (checkstatus = 1 or checkstatus = 4)
+    and checkstatus = 1
     and isup = 0
 	and createuserid = #{createuserid}
   </select>

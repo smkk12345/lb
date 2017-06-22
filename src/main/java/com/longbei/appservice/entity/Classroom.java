@@ -55,6 +55,8 @@ public class Classroom {
     
     //----------------扩展字段--------------------------
     
+    private String nickname; //创建人信息
+    
     private UserCard userCard; //名片类
     
     private String pickey; //最新课程视频截图key
@@ -66,6 +68,10 @@ public class Classroom {
     private Integer allimp = 0; //教室进步数量
     
     private Integer allcourses = 0; //教室课程数量
+    
+    private Integer commentNum = 0; //评论总数
+    
+    private Long questionsNum = 0l; //提问答疑总数
 
     /**
      * 
@@ -398,6 +404,32 @@ public class Classroom {
 
 	public void setAllcourses(Integer allcourses) {
 		this.allcourses = allcourses;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCommentNum() {
+		return commentNum;
+	}
+
+	public void setCommentNum(Integer commentNum) {
+		this.commentNum = commentNum;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Long getQuestionsNum() {
+		return questionsNum;
+	}
+
+	public void setQuestionsNum(Long questionsNum) {
+		this.questionsNum = questionsNum;
 	}
 
 }

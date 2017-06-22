@@ -406,10 +406,19 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private boolean canInsertImprove(Long userid,Long rankid,Rank rank){
+    private boolean canInsertRankImprovePerday(Long userid,Long rankid,Rank rank){
         String tempnum = springJedisDao.get("rankid"+rankid+"userid"+userid+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
         int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
         if (num < Integer.parseInt(rank.getMaximprovenum())){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
+        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
             return true;
         }
         return false;
@@ -856,7 +865,13 @@ public class ImproveServiceImpl implements ImproveService{
   				if(null != replyList && replyList.size()>0){
   					//已批复
   					isreply = "1";
-  					improve.setReplyImprove(replyList.get(0));
+  					ImproveClassroom improveClassroom = replyList.get(0);
+                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
+                    ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                    		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                    		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                    replyImprove.setAppUserMongoEntity(appUserMongo);
+  					improve.setReplyImprove(replyImprove);
   				}
   				if(!"1".equals(isreply)){
   					//判断当前用户是否是老师
@@ -1405,8 +1420,11 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!"1".equals(rank.getIsfinish())) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
-                        if (!canInsertImprove(improve.getUserid(), improve.getBusinessid(), rank)) {
+                        if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
+                        }
+                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
                         }
                         return baseResp.initCodeAndDesp();
                     } else {
@@ -2849,18 +2867,24 @@ public class ImproveServiceImpl implements ImproveService{
                             List<CommentLower> lowerlist = new ArrayList<CommentLower>();
 //                            for (ImproveClassroom improveClassroom : replyList) {
                             ImproveClassroom improveClassroom = replyList.get(0);
-                    			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
-                    					businessid, "5", null, 0);
-                                if(null != list && list.size()>0){
+                            AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
+                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                            		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            replyImprove.setAppUserMongoEntity(appUserMongo);
+                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
+                					businessid, "5", null, 0);
+                            if(null != list && list.size()>0){
                                     Comment comment = list.get(0);
                                     commentid = comment.getId();
                                     lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
                                     //初始化用户信息
                                     initCommentLowerUserInfoList(lowerlist);
 //                                }
-                    			improveClassroom.setLowerlist(lowerlist);
+                                    replyImprove.setLowerlist(lowerlist);
 							}
-                    		improve.setReplyImprove(replyList.get(0));
+                            
+                    		improve.setReplyImprove(replyImprove);
                     	}
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
@@ -2869,7 +2893,7 @@ public class ImproveServiceImpl implements ImproveService{
                     		if(null != userCard){
                     			teacher += userCard.getDisplayname();
                     		}
-                    		improve.setClassRoomEntity(classroom.getPtype(),
+                    		improve.setBusinessEntity(classroom.getPtype(),
                     				classroom.getClasstitle(),
                     				classroom.getClassphotos(),
                     				classroom.getClassinvoloed(),

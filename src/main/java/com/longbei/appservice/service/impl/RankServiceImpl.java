@@ -3349,6 +3349,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
+                rank.setCreateusernickname(appUser.getNickname());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
@@ -3419,8 +3420,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int userRankMemberStatus = 0;
         if("5".equals(rank.getIsfinish())){
             userRankMemberStatus = 4;//榜已结束 查看
+            return userRankMemberStatus;
         }else if(!"0".equals(rank.getIsfinish()) && !"1".equals(rank.getIsfinish())){
             userRankMemberStatus = 5;//榜单获奖结果审核中
+            return userRankMemberStatus;
         }
         if(userId == null || Constant.VISITOR_UID.equals(userId+"")){
             return userRankMemberStatus;
@@ -3437,6 +3440,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             userRankMemberStatus = 1;//已入榜
         }else if(rankMembers != null && rankMembers.getStatus() == 0){
             userRankMemberStatus = 2;//已入榜 待审核
+            return userRankMemberStatus;
         }
         if(userRankMemberStatus == 0 && rank.getRankinvolved() >= rank.getRanklimite()){
             userRankMemberStatus = 3;//已满,无法参榜

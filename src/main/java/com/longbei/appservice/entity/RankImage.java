@@ -48,13 +48,13 @@ public class RankImage {
 
     private String coordinate;//坐标
 
-    private String isfinish;//是否结束。0—为结束 1—一结束
+    private String isfinish;//是否结束。0—为开始 1 - 进行中 2 - 结束审核中 3 - 审核完成待确认 4 - 确认审核结果待发布 5 - 发布排名 已结束
 
     private String createuserid;//榜单创建人id
 
     private String createusernickname;//榜单创建人昵称
 
-    private String ranktype;//榜单类型。0—公共榜 1--定制榜
+    private String ranktype;//榜单类型。0—公共榜 1--定制公开榜 2-定制私密榜
 
     private String ispublic;//是否公开  0—公开 1—不公开
 
@@ -81,9 +81,9 @@ public class RankImage {
 
     private String companybrief;  //公司简介
 
-    private String sourcetype;  //来源类型。0 运营端创建   1  b端创建 2 app用户创建。
+    private String sourcetype;  //来源类型。0-运营端创建   1-app用户创建 2-b端创建
 
-    private String checkstatus; //审核状态 0 - 为审核  1 - 审核不通过  2 - 审核通过
+    private String checkstatus; //审核状态 0 - 草稿  1 - 审核中  2 - 审核不通过 可以修改 3 - 神格不通过 不可以修改 4- 审核通过
 
     private String isauto;  //是否自动发布 0 - 不自动发布 1 - 自动发布 2 - 定时发布
 
