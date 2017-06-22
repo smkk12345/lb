@@ -737,7 +737,8 @@
 
   <update id="updateSourceData">
     update ${tablename}
-    SET <if test="operatetype == '0'.toString()">
+    SET
+        <if test="operatetype == '0'.toString()">
         likes = likes + #{icount}
         </if>
         <if test="operatetype == '1'.toString()">

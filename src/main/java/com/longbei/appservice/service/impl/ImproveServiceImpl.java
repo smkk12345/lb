@@ -560,7 +560,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_GOAL,isdel,ispublic);
                     break;
                 default:
-                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE,isdel,ispublic);
+                    improve = improveMapper.selectByPrimaryKey(impid,null,Constant_table.IMPROVE,isdel,ispublic);
                     break;
             }
 
@@ -1288,8 +1288,7 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveInfo(improve,Long.parseLong(userid));
             //初始化 赞 花 数量
             improve.setFlowers(timeLineDetail.getFlowers());
-            improve.setLikes(timeLineDetail.getLikes());
-//            initImproveLikeAndFlower(improve);
+           //            initImproveLikeAndFlower(improve);
             //初始化进步用户信息
             initImproveUserInfo(improve,Long.parseLong(userid));
             improves.add(improve);
@@ -1335,7 +1334,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFilekey(timeLineDetail.getFileKey());
                 improve.setSourcekey(timeLineDetail.getSourcekey());
                 improve.setItype(timeLineDetail.getItype());
-                improve.setLikes(timeLineDetail.getLikes());
+                improve.setLikes(getLikeFromRedis(String.valueOf(timeLineDetail.getImproveId()),
+                        timeLineDetail.getBusinessid()+"",timeLineDetail.getBusinesstype()));
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setPicattribute(timeLineDetail.getPicattribute());
@@ -1455,6 +1455,8 @@ public class ImproveServiceImpl implements ImproveService{
             if(improve == null){
                 continue;
             }
+            improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                    improve.getBusinessid()+"",improve.getBusinesstype()));
             //初始化评论数量
             initImproveCommentInfo(improve);
             //初始化点赞，送花，送钻简略信息
@@ -1706,7 +1708,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     @Override
-    public BaseResp<Object> addlike(String userid,String impid,String businesstype,String businessid){
+    public BaseResp<Object> addlike(final String userid, final String impid, final String businesstype, String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
         //防止重复提交
         if(isExitsForRedis(impid,userid)){
@@ -1723,8 +1725,8 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
-        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        final UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         if(null == improve || null == userInfo){
             return baseResp;
         }
@@ -1737,41 +1739,47 @@ public class ImproveServiceImpl implements ImproveService{
 //            return baseResp;
 //        }
         try{
-            //mysql相关操作
-            boolean flag = addLikeToImprove(improve,userid,impid,businessid,businesstype);
-            if (flag){
-                //redis
-                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
+
+            //redis
+            addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
-                //mongo
-                addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
-                        userInfo.getAvatar())  ;
+            //mongo
+            addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
+                    userInfo.getAvatar());
+            //mysql
+            addLikeToImprove(improve,userid,impid,businessid,businesstype);
 
-                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),1);
+            final String finalBusinessid = businessid;
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
 
-                if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
-                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,1,null,null);
+                    //更新进步赞数（mysql）
+
+
+                    if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
+                        //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                        circleMemberService.updateCircleMemberInfo(improve.getUserid(), finalBusinessid,1,null,null);
+                    }
+
+                    try{
+                        userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
+                        userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
+                    }catch (Exception e){
+                        logger.error("pointChange or userSumInfo error ",e);
+                    }
+                    //添加评论消息---点赞
+                    //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+                    //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+                    if(!userid.equals(improve.getUserid().toString())){
+                        userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, finalBusinessid,
+                                Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
+                    }
                 }
-
-                try{
-                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
-                    userBehaviourService.userSumInfo(Constant.UserSumType.addedLike,Long.parseLong(userid),null,0);
-                }catch (Exception e){
-                    logger.error("pointChange or userSumInfo error ",e);
-                }
-
-            }
-            //添加评论消息---点赞
-            //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-            if(!userid.equals(improve.getUserid().toString())){
-            	userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid, 
-                		Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
-            }
-//            insertLikeMsg(userid, improve.getUserid().toString(), impid, businesstype, businessid);
+            });
             baseResp.getExpandData().put("haslike","1");
-            baseResp.getExpandData().put("likes",improve.getLikes()+1);
+            baseResp.getExpandData().put("likes",getLikeFromRedis(improve.getImpid()+"",
+                    improve.getBusinessid()+"",improve.getBusinesstype()));
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
@@ -1819,10 +1827,10 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午3:59
      */
     @Override
-    public BaseResp<Object> cancelLike(String userid, String impid, String businesstype, String businessid) {
+    public BaseResp<Object> cancelLike(final String userid, final String impid, final String businesstype, final String businessid) {
         BaseResp baseResp = new BaseResp();
         //校验impid是否合法
-        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         if(improve == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -1831,29 +1839,32 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp;
         }
         try {
-            boolean flag = removeLikeToImprove(improve,userid,impid,businessid,businesstype);
-            if (flag){
-                //redis
-                removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
-                //mongo
-                removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
-                timeLineDetailDao.updateImproveLike(businesstype,Long.valueOf(impid),-1);
-                //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
-                if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                    circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
-                }
-                try{
+            //redis
+            removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
+            //mongo
+            removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
+            //mysql
+            removeLikeToImprove(improve,userid,impid,businessid,businesstype);
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                    if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
+                        circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
+                    }
+                    try{
+                        //取消赞后，删除消息中的记录    2017-06-05
 //                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
 //                    userBehaviourService.pointChange(userInfo,"DAILY_LIKE","2",null,0,0);
-                    userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
-                }catch (Exception e){
-                    logger.error("pointChange,userSumInfo error",e);
+                        userBehaviourService.userSumInfo(Constant.UserSumType.removedLike,Long.parseLong(userid),null,0);
+                    }catch (Exception e){
+                        logger.error("pointChange,userSumInfo error",e);
+                    }
+                    userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
                 }
-                //取消赞后，删除消息中的记录    2017-06-05
-                userMsgService.deleteLikeCommentMsg(impid, businesstype, businessid, userid);
-            }
+            });
             baseResp.getExpandData().put("haslike","0");
-            int likes = improve.getLikes()-1;
+            int likes = getLikeFromRedis(impid,businessid,businesstype);
             baseResp.getExpandData().put("likes",likes<0?0:likes);
         } catch (Exception e) {
             logger.error("cancel like error:{}",e);
@@ -1936,6 +1947,8 @@ public class ImproveServiceImpl implements ImproveService{
                         userCollect.getUserid()+"",
                         userCollect.getCtype(),
                         userCollect.getBusinessid());
+                improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                        String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
                 initImproveCommentInfo(improve);
                 initImproveUserInfo(improve,Long.parseLong(userid));
                 resultList.add(improve);
@@ -2289,21 +2302,7 @@ public class ImproveServiceImpl implements ImproveService{
                                                            final String businessid,
                                                            final String businesstype){
         Map<String,String> map = new HashMap<>();
-//        switch (opttype) {
-//            case Constant.IMPROVE_ALL_DETAIL_LIKE:
-//                map.put("like"+userid,userid);
-//                break;
-//            case Constant.IMPROVE_ALL_DETAIL_FLOWER:
-//                map.put("flower"+userid,userid);
-//                break;
-//            case Constant.IMPROVE_ALL_DETAIL_DIAMOND:
-//                map.put("diamond"+userid,userid);
-//                break;
-//            default:
-//                break;
-//        }
         map.put("lfd"+userid,userid);
-
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -2316,11 +2315,35 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             }
         });
-
+        //将赞保存到redis
+        setLikeToRedis(impid,businessid,businesstype,1);
         //添加临时记录
         springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + impid + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
     }
+
+
+    private void setLikeToRedis(String impid,String businessid,String businesstype,int num){
+        if (!springJedisDao.hasKey(Constant.REDIS_IMPROVE_LIKE + impid)){
+            //mysql 同步
+            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
+        }
+        springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,num);
+    }
+
+
+    private int getLikeFromRedis(String impid,String businessid,String businesstype){
+        String count = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid);
+        if (StringUtils.isBlank(count)){
+            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
+            return improve.getLikes();
+        } else {
+            return Integer.parseInt(count);
+        }
+    }
+
 
     /**
      * 取消赞
@@ -2349,8 +2372,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
         });
 
-
-
+        setLikeToRedis(impid,businessid,businesstype,-1);
         springJedisDao.del("improve_like_temp_"+impid+userid);
         //删除临时记录
         springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + impid + userid);
@@ -2412,7 +2434,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+//        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
         afterImproveInfoChange(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
@@ -2522,7 +2544,7 @@ public class ImproveServiceImpl implements ImproveService{
         if (res <= 0){
             return false;
         }
-        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_CANCEL,0);
+//        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_CANCEL,0);
         afterImproveInfoChange(improve,-1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
@@ -2968,6 +2990,10 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午4:06
      */
     public void initImproveInfo(Improve improve,Long userid) {
+
+        //初始化赞数
+        improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
 //        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);

@@ -150,14 +150,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 					record.setUserid(Long.valueOf(userids[i]));//消息接收者
 				}
 				record.setFriendid(Long.valueOf(friendid));//消息发送者
-				record.setGtype(businesstype);
+				record.setGtype("10");//榜中
 				if(!StringUtils.isBlank(businessid)){
 					record.setGtypeid(Long.parseLong(businessid));
 				}
 				record.setRemark(remark);
 				record.setTitle(title);
 				record.setMtype("2");//mtype:@我消息-2
-				record.setMsgtype("10");//msgtype:邀请－10
+				record.setMsgtype(businesstype);//msgtype
 				record.setIsdel("0");//未删除-0
 				record.setIsread("0");//未读-0
 				record.setCreatetime(new Date());

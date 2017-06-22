@@ -381,7 +381,7 @@ public class Constant {
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
-			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,"+
+			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,/rank/selectRankAward,"+
 			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
 
 	/**
@@ -442,35 +442,7 @@ public class Constant {
 	}
 
 
-	/**
-	 * 进步时间线类型
-	 */
-	public static final String SQUARE_USER_ID = "10000";  //系统用户id
-	/**
-	 * 广场
-	 */
-	public static final String TIMELINE_IMPROVE_SQUARE = "0";
-	/**
-	 * 我的
-	 */
-	public static final String TIMELINE_IMPROVE_SELF = "1";
-	/**
-	 * 好友，关注，熟人
-	 */
-	public static final String TIMELINE_IMPROVE_ALL = "2";
-	/**
-	 * 好友
-	 */
-	public static final String TIMELINE_IMPROVE_FRIEND = "3";
-	/**
-	 * 关注
-	 */
-	public static final String TIMELINE_IMPROVE_ATTR = "4";
-	/**
-	 * 熟人
-	 */
-	public static final String TIMELINE_IMPROVE_ACQ = "5";
-	
+
 	
 	/**
 	 * 进步币添加来源   
@@ -850,4 +822,48 @@ public class Constant {
 	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
 	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
 	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
+
+
+//0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
+
+	public static final String TIMELINE_IMPROVE_SQUARE_COLLECTION = "timelinesquare";  // 广场
+	public static final String TIMELINE_IMPROVE_SELF_COLLECTION = "timelineself";  // 我的
+	public static final String TIMELINE_IMPROVE_ALL_COLLECTION = "timelineall";  //好友，关注，熟人
+	public static final String TIMELINE_IMPROVE_FRIEND_COLLECTION = "timelinefriend";  //好友
+	public static final String TIMELINE_IMPROVE_ATTR_COLLECTION = "timelineattr";  //关注
+	public static final String TIMELINE_IMPROVE_ACQ_COLLECTION = "timelineacq";  //熟人
+
+
+	/**
+	 * 进步时间线类型
+	 */
+	public static final String SQUARE_USER_ID = "10000";  //系统用户id
+	/**
+	 * 广场
+	 */
+	public static final String TIMELINE_IMPROVE_SQUARE = "0";
+	/**
+	 * 我的
+	 */
+	public static final String TIMELINE_IMPROVE_SELF = "1";
+	/**
+	 * 好友，关注，熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ALL = "2";
+	/**
+	 * 好友
+	 */
+	public static final String TIMELINE_IMPROVE_FRIEND = "3";
+	/**
+	 * 关注
+	 */
+	public static final String TIMELINE_IMPROVE_ATTR = "4";
+	/**
+	 * 熟人
+	 */
+	public static final String TIMELINE_IMPROVE_ACQ = "5";
+
+
+
+
 }
