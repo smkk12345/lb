@@ -338,6 +338,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     // 定制榜，添加参榜口令joinCode
                     if (!"0".equals(rankImage.getRanktype())){
                         rank.setJoincode(codeDao.getCode(null));
+                        //pc定制榜发布时给榜主发送消息
+                        if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
+                            String userid = rankImage.getCreateuserid();
+                            String remark = "您创建的定制榜已发布 参榜口令:" + rank.getJoincode();
+                            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,null, "10",
+                                    rankImageId, remark, "2", "50", "定制榜发布通知", 0, "", "");
+                        }
                     }
                     Date starttime = rank.getStarttime();
                     if (new Date().getTime() >= starttime.getTime()){
