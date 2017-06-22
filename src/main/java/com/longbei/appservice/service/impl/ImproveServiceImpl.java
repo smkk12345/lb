@@ -2863,6 +2863,7 @@ public class ImproveServiceImpl implements ImproveService{
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
+                    	String isreply = "0";
                         if(null != replyList && replyList.size()>0){
                             List<CommentLower> lowerlist = new ArrayList<CommentLower>();
 //                            for (ImproveClassroom improveClassroom : replyList) {
@@ -2883,9 +2884,10 @@ public class ImproveServiceImpl implements ImproveService{
 //                                }
                                     replyImprove.setLowerlist(lowerlist);
 							}
-                            
+                            isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
+                        improve.setIsreply(isreply);
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
