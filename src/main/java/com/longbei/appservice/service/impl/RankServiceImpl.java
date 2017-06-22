@@ -735,6 +735,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             rank1.setRankinvolved(rank1.getRankinvolved()-removeCount);
                         }
                     }
+
+                    rank1.setJoincode(null);
                 }
             }
             baseResp.setData(ranks);
@@ -2109,6 +2111,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             }else{
                                 rankMember.setIswinning("2");//审核未通过
                             }
+                        }else if(!"5".equals(rank.getIsfinish()) && "1".equals(rankMember.getIswinning())){
+                            rankMember.setIswinning("4");
                         }else{
                             rankMember.setRankAward(new RankAward());
                         }
@@ -2836,13 +2840,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
             //查看该用户的领奖状态
             int showBtn = 0;//未登录/不在榜中
+            boolean flag = true;
 
             for(RankMembers rankMembers:rankMembersList){
             	AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rankMembers.getUserid()+"");
             	//获取好友昵称
                 if (userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid+"")){
                     appUserMongoEntity.setNickname(this.friendService.getNickName(userid,rankMembers.getUserid()));
-                    if(userid != null && userid.equals(rankMembers.getUserid())){
+                    if(startNum == 0 && userid != null && userid.equals(rankMembers.getUserid())){
+                        flag = false;
                         if(!"1".equals(rankMembers.getIswinning())){
                             showBtn = 2;//在榜中 未中奖
                         }else if("0".equals(rankMembers.getAcceptaward())){
@@ -2856,6 +2862,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 rankMembers.setAwardlevel(rankMembers.getRankAward().getAwardlevel());
             }
             baseResp.setData(rankMembersList);
+
+            if(startNum == 0 && flag && userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid+"")){
+                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankid,userid);
+                if(!"1".equals(rankMembers.getIswinning())){
+                    showBtn = 2;//在榜中 未中奖
+                }else if("0".equals(rankMembers.getAcceptaward())){
+                    showBtn = 3;//中奖 但未领取
+                }else{
+                    showBtn = 4;//中奖 且已领奖
+                }
+            }
 
             Map<String,Object> expandMap = new HashMap<String,Object>();
             expandMap.put("showBtn",showBtn);
@@ -3332,7 +3349,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             //pc端发榜
             if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateuserid(appUser.getNickname());
 
                 //封装pc榜主名片
                 if(rank.getRankCard() == null){
@@ -3383,6 +3399,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             rank.setEndjointime(endJoinTime);
 
+            rank.setJoincode(null);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             baseResp.setData(rank);
             baseResp.setExpandData(resultMap);
@@ -3411,8 +3428,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         //查看是否已经加入榜单
         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
         if(rankMembers != null && rankMembers.getStatus() == 1){
-            userRankMemberStatus = 1;//已入榜
             rank.setHasjoin("1");
+        }
+        if(userRankMemberStatus > 0){
+            return userRankMemberStatus;
+        }
+        if(rankMembers != null && rankMembers.getStatus() == 1){
+            userRankMemberStatus = 1;//已入榜
         }else if(rankMembers != null && rankMembers.getStatus() == 0){
             userRankMemberStatus = 2;//已入榜 待审核
         }
