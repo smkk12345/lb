@@ -1,6 +1,9 @@
 package com.longbei.appservice.service.impl;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+//import java.text.*;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
@@ -110,6 +113,10 @@ public class UserServiceImpl implements UserService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserMoneyHintMongoDao userMoneyHintMongoDao;
+	@Autowired
+	private UserAccountService userAccountService;
+	@Autowired
+	private UserAccountMapper userAccountMapper;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -702,6 +709,25 @@ public class UserServiceImpl implements UserService {
 			}
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			String value = springJedisDao.get("userid&token&"+userInfo.getUserid());
+			BaseResp<UserAccount> baseResp1 = userAccountService.selectUserAccountByUserId(userInfo.getUserid());
+			UserAccount userAccount = baseResp1.getData();
+			if(null != userAccount)
+			{
+				Date nowdate = new Date();
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date freezeUpdatetime = null;
+				try {
+					freezeUpdatetime = format.parse(userAccount.getUpdatetime());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				Long freezetime = userAccount.getFreezetime();
+				Long second = (nowdate.getTime()-freezeUpdatetime.getTime())/1000;
+				if(freezetime > second){
+					logger.info("CompareUserAccount freezetime={},second={}",freezetime,second);
+					return returnResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
+				}
+			}
 //			if(deviceindex.equals(userInfo.getDeviceindex())){
 //			}else{
 //				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
@@ -1305,6 +1331,30 @@ public class UserServiceImpl implements UserService {
 				startno = pagesize*(pageno-1);
 			}
 			List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,order,ordersc,startno,pagesize);
+			for(int i=0;i<userInfos.size();i++){
+				BaseResp<UserAccount> baseResp1 = userAccountService.selectUserAccountByUserId(userInfos.get(i).getUserid());
+				UserAccount userAccount = baseResp1.getData();
+				if(null != userAccount)
+				{
+					Date nowdate = new Date();
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date freezeUpdatetime = null;
+					try {
+						freezeUpdatetime = format.parse(userAccount.getUpdatetime());
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					Long freezetime = userAccount.getFreezetime();
+					Long second = (nowdate.getTime()-freezeUpdatetime.getTime())/1000;
+					if(freezetime <= second){
+					    userAccount.setStatus("0");
+						userAccountMapper.updateUserAccountByUserId(userAccount);
+						userInfos.get(i).setFreezestatus("0");
+					}else {
+						userInfos.get(i).setFreezestatus(userAccount.getStatus());
+					}
+				}
+			}
 			page.setTotalCount(totalcount);
 			page.setList(userInfos);
 			baseResp = BaseResp.ok();

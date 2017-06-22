@@ -73,7 +73,8 @@ public class Constant {
 	public static final int STATUS_SYS_19 = -19;
 	public static final int STATUS_SYS_110 = -110;
 	public static final int STATUS_SYS_111 = -111;
-	
+	public static final int STATUS_SYS_113 = -113;
+
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
 	public static final int STATUS_SYS_22 = -22;
@@ -171,6 +172,8 @@ public class Constant {
 	public static final int STATUS_SYS_912 = -912;
 	public static final int STATUS_SYS_913 = -913;
 	public static final int STATUS_SYS_914 = -914;
+	public static final int STATUS_SYS_915 = -915;
+	public static final int STATUS_SYS_916 = -916;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -215,6 +218,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_110 = "根据您当前的用户等级,您创建的公开榜单人数上限为";
 	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
+	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -327,6 +331,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_912 = "您已关注了该用户,无需再次关注!";
 	public static final String RTNINFO_SYS_913 = "取消关注成功";
 	public static final String RTNINFO_SYS_914 = "此龙榜已被榜主或管理员关闭";
+	public static final String RTNINFO_SYS_915 = "抱歉,您当前没有权限邀请好友入群!";
+	public static final String RTNINFO_SYS_916 = "抱歉,您当前无法更改群昵称!";
 
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
@@ -839,4 +845,9 @@ public class Constant {
 		newfriendask//请求加为好友时 是否接受消息
 	}
 
+	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L;
+	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L;
+	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
+	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
+	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
 }

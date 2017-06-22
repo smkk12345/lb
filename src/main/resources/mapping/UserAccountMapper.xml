@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserAccount" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="freezetime" property="freezetime" jdbcType="BIGINT" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="operateuid" property="operateuid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, status, freezetime, createtime, updatetime, remark, operateuid
+  </sql>
+  <select id="selectUserAccountByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_account
+    where userid = #{userId,jdbcType=BIGINT}
+    and status=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserAccount" >
+    insert into user_account (id, userid, status, 
+      freezetime, createtime, updatetime, 
+      remark, operateuid)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{status,jdbcType=CHAR}, 
+      #{freezetime,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{operateuid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertUserAccount" parameterType="com.longbei.appservice.entity.UserAccount" >
+    insert into user_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="freezetime != null" >
+        freezetime,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="operateuid != null" >
+        operateuid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="freezetime != null" >
+        #{freezetime,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operateuid != null" >
+        #{operateuid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateUserAccountByUserId" parameterType="com.longbei.appservice.entity.UserAccount" >
+    update user_account
+    <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="freezetime != null" >
+        freezetime = #{freezetime,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operateuid != null" >
+        operateuid = #{operateuid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=BIGINT}
+      <if test="id != null" >
+       and  id = #{id,jdbcType=INTEGER}
+      </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserAccount" >
+    update user_account
+    set userid = #{userid,jdbcType=BIGINT},
+      status = #{status,jdbcType=CHAR},
+      freezetime = #{freezetime,jdbcType=BIGINT},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      operateuid = #{operateuid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

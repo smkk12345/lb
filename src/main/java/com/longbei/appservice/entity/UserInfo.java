@@ -114,6 +114,8 @@ public class UserInfo {
 
     private String remark; //备注
 
+    private String freezestatus; //冻结状态 1冻结 0解冻
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -780,4 +782,12 @@ public class UserInfo {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
+    public String getFreezestatus() {
+        return freezestatus;
+    }
+
+    public void setFreezestatus(String freezestatus) {
+        this.freezestatus = freezestatus;
+    }
 }

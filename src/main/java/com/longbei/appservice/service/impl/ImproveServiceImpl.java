@@ -416,6 +416,9 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
+            return true;
+        }
         RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
         int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
         if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
@@ -2863,6 +2866,7 @@ public class ImproveServiceImpl implements ImproveService{
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
+                    	String isreply = "0";
                         if(null != replyList && replyList.size()>0){
                             List<CommentLower> lowerlist = new ArrayList<CommentLower>();
 //                            for (ImproveClassroom improveClassroom : replyList) {
@@ -2883,9 +2887,10 @@ public class ImproveServiceImpl implements ImproveService{
 //                                }
                                     replyImprove.setLowerlist(lowerlist);
 							}
-                            
+                            isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
+                        improve.setIsreply(isreply);
                     	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
