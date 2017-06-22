@@ -31,6 +31,8 @@ public class Constant_Imp_Icon {
         INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
         DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendimpcoins();
         DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendimpcoinsmax();
+        DAILY_SHARE_OUT_RANDOM = 0;
+        DAILY_SHARE_OUT_LIMIT = SysRulesCache.behaviorRule.getOutshareawardtimes();
         fieldsMap = null;
     }
 
@@ -40,8 +42,11 @@ public class Constant_Imp_Icon {
      */
     public static Map<Integer,Integer> checkInImpIconMap = new HashMap<Integer,Integer>(){};
 
-    public static int DAILY_SHARE_RANDOM=0;//5-10 5-10 算法0
-    public static int DAILY_SHARE_LIMIT = 3; //限制3次
+    /**
+     * 站外分享赠送的进步币
+     */
+    public static int DAILY_SHARE_OUT_RANDOM = 0;//5-10 5-10 算法0
+    public static int DAILY_SHARE_OUT_LIMIT = 5; //限制5次
 
     public static int DAILY_ADDIMP_RANDOM = 1;//3-10 算法1
     public static int DAILY_ADDIMP_LIMIT = 3;//限制3次

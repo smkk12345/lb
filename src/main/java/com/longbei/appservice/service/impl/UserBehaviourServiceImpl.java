@@ -483,6 +483,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                 int curValue = Integer.parseInt(value);
                 if(curValue+result > limitValue){//给限制最高分与当前分数的差值或0
                     int returnPoint = ((limitValue-curValue)>0)?(limitValue-curValue):0;
+                    springJedisDao.increment(key, "point"+dateStr+limitField,returnPoint);
                     return returnPoint;
                 }else{
                     int res = result+curValue;
