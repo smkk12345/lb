@@ -1676,7 +1676,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             double finishPrice = 0.0;
             List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
             for (RankMembers rankMembers : rankMemberses){
-                Award award = awardMapper.selectByPrimaryKey(rankMembers.getAwardid());
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
                 if (null != award){
                     finishPrice += award.getAwardprice();
                 }
@@ -3703,6 +3703,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     rankAward1.setAwardlevel(i+1);
                     rankAward1.setAwardid(rankAward.getAwardid());
                     rankMembers.setRankAward(rankAward1);
+                    rankMembers.setAwardid(Long.parseLong(rankAward.getAwardid()));
                     rankMembersMapper.updateRankMemberState(rankMembers);
                 }
                 if ("1".equals(rkmember.getCheckstatus())
