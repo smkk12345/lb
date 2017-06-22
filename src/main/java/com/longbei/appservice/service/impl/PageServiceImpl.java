@@ -134,7 +134,7 @@ public class PageServiceImpl implements PageService{
             }else if("2".equals(type)){
                 HomePicture homePicture = new HomePicture();
                 homePicture.setPicname("叶圣陶听说读写能力展示活动简介");
-                homePicture.setPhotos("d0dded28-d919-4d9c-b836-672344bede9e");
+                homePicture.setPhotos("rank/b06d9543-207d-4e2f-b2e0-e2193e9e6abe");
                 homePicture.setContenttype("0");
                 homePicture.setIsup("1");
                 homePicture.setIsdel(0);
@@ -143,7 +143,7 @@ public class PageServiceImpl implements PageService{
 
                 HomePicture homePicture2 = new HomePicture();
                 homePicture2.setPicname("北京公益基金会");
-                homePicture2.setPhotos("b8d75484-33d4-4a42-8b24-4f00ad4e902e");
+                homePicture2.setPhotos("rank/0b81ae78-7cb9-4e2a-b89b-e547a46dd169");
                 homePicture2.setContenttype("0");
                 homePicture2.setIsup("1");
                 homePicture2.setIsdel(0);

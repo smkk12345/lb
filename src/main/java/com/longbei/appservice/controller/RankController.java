@@ -225,6 +225,7 @@ public class RankController {
 
         baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
         if(ResultUtil.isSuccess(baseResp)){
+            baseResp.getData().setJoincode(null);
             baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_detail);
         }
         return baseResp;
