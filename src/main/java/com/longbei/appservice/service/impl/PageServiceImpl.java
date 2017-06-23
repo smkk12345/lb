@@ -121,7 +121,6 @@ public class PageServiceImpl implements PageService{
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         List<HomePicture> homePictures = new ArrayList<HomePicture>();
         try {
-            if(!"2".equals(type)){
                 HomePicture homePicture = new HomePicture();
                 homePicture.setIsup("1");
                 homePicture.setType(type);
@@ -131,28 +130,28 @@ public class PageServiceImpl implements PageService{
                         homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());
                     }
                 }
-            }else if("2".equals(type)){
-                HomePicture homePicture = new HomePicture();
-                homePicture.setPicname("叶圣陶听说读写能力展示活动简介");
-                homePicture.setPhotos("rank/b06d9543-207d-4e2f-b2e0-e2193e9e6abe");
-                homePicture.setContenttype("0");
-                homePicture.setIsup("1");
-                homePicture.setIsdel(0);
-                homePicture.setSort("0");
-                homePicture.setHref(AppserviceConfig.articleurl + "?articleid=101");
-
-                HomePicture homePicture2 = new HomePicture();
-                homePicture2.setPicname("北京公益基金会");
-                homePicture2.setPhotos("rank/0b81ae78-7cb9-4e2a-b89b-e547a46dd169");
-                homePicture2.setContenttype("0");
-                homePicture2.setIsup("1");
-                homePicture2.setIsdel(0);
-                homePicture2.setSort("0");
-                homePicture2.setHref(AppserviceConfig.articleurl + "?articleid=102");
-
-                homePictures.add(0,homePicture);
-                homePictures.add(1,homePicture2);
-            }
+//            }else if("2".equals(type)){
+//                HomePicture homePicture = new HomePicture();
+//                homePicture.setPicname("龙杯英语900句");
+//                homePicture.setPhotos("rank/b9cba2f8-462b-44a2-85e0-97e033aafe4d");
+//                homePicture.setContenttype("0");
+//                homePicture.setIsup("1");
+//                homePicture.setIsdel(0);
+//                homePicture.setSort("0");
+//                homePicture.setHref(AppserviceConfig.articleurl + "?articleid=107");
+//
+//                HomePicture homePicture2 = new HomePicture();
+//                homePicture2.setPicname("北京公益基金会");
+//                homePicture2.setPhotos("rank/0b81ae78-7cb9-4e2a-b89b-e547a46dd169");
+//                homePicture2.setContenttype("0");
+//                homePicture2.setIsup("1");
+//                homePicture2.setIsdel(0);
+//                homePicture2.setSort("0");
+//                homePicture2.setHref(AppserviceConfig.articleurl + "?articleid=105");
+//
+//                homePictures.add(0,homePicture);
+//                homePictures.add(1,homePicture2);
+//            }
             baseResp.setData(homePictures);
             return baseResp.initCodeAndDesp();
         } catch (Exception e) {
