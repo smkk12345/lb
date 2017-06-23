@@ -2,6 +2,7 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Improve;
@@ -314,7 +315,7 @@ public class CircleController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         baseResp = circleService.circleDetail(userid,circleId);
-        baseResp.getExpandData().put("share_url", AppserviceConfig.h5_share_rank_detail);
+        baseResp.getExpandData().put("share_url", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail));
         return baseResp;
     }
 

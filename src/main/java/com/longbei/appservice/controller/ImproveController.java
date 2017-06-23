@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
@@ -804,7 +805,7 @@ public class ImproveController {
         try {
             baseResp = improveService.select(userid, impid, businesstype, businessid);
             if(ResultUtil.isSuccess(baseResp)){
-                baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_improve_detail);
+                baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail));
             }
             return baseResp;
         } catch (Exception e) {
