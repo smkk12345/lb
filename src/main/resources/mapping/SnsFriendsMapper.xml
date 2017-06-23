@@ -69,7 +69,7 @@
   </select>
   
   <select id="selectFriendsCount" resultType="java.lang.Integer" >
-    select count(*) 
+    select count(1)
     from sns_friends
     where isdel = 0
       and userid = #{userid}
