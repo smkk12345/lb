@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -123,6 +124,6 @@ public class RankCard {
     }
 
     public void setRankCardUrl(String rankCardId) {
-        this.rankCardUrl = AppserviceConfig.h5_rankcard+"?rankCardId="+rankCardId;
+        this.rankCardUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rankCardId);
     }
 }
