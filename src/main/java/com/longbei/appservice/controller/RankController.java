@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Rank;
@@ -226,7 +227,8 @@ public class RankController {
         baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
         if(ResultUtil.isSuccess(baseResp)){
             baseResp.getData().setJoincode(null);
-            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_detail);
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
         }
         return baseResp;
     }
@@ -406,7 +408,7 @@ public class RankController {
         }
         baseResp = this.rankService.rankAwardDetail(rankid,userid);
         if(ResultUtil.isSuccess(baseResp)){
-            baseResp.getExpandData().put("shareurl",AppserviceConfig.h5_share_rank_award);
+            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
         }
         return baseResp;
     }
@@ -498,7 +500,9 @@ public class RankController {
         }
         baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,currentUserId);
         if(ResultUtil.isSuccess(baseResp)){
-            baseResp.getExpandData().put("shareurl",AppserviceConfig.h5_share_rank_improve);
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve
+                            + "?rankid=" + rankId + "&userid=" + userid));
         }
         return baseResp;
     }

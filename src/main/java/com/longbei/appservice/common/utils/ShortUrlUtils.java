@@ -1,5 +1,6 @@
 package com.longbei.appservice.common.utils;
 
+import java.net.URLEncoder;
 import java.util.Date;
 
 import com.longbei.appservice.common.constant.Constant;
@@ -13,6 +14,7 @@ public class ShortUrlUtils {
 	 */
 	//http://api.t.sina.com.cn/short_url/shorten.xml?source=3271760578&url_long=http://www.douban.com/note/249723561/
 	public static String getShortUrl(String longUrl){
+		longUrl = URLEncoder.encode(longUrl);
 		String url = Constant.WB_SHORTURL+longUrl;
 		try {
 			String result = HttpUtils.getRequest(url, null);
