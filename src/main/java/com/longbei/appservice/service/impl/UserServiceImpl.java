@@ -1492,5 +1492,22 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+	@Override
+	public BaseResp<Object> afterShareSuccess(Long userid,String sharePlatform){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
 
+			UserInfo userInfo = selectJustInfo(userid);
+			if("0".equals(sharePlatform) || "1".equals(sharePlatform)) {
+				   //站内分享成功获得龙分
+				userBehaviourService.pointChange(userInfo,"DAILY_SHARE", Constant_Perfect.PERFECT_GAM,null, 0, 0);
+			}else {//站外分享成功获得龙分龙币
+				userBehaviourService.pointChange(userInfo,"DAILY_SHARE_OUT",Constant_Perfect.PERFECT_GAM,"2",0,0);
+			}
+			baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("afterShareSuccess and userid={},sharePlatform={}", userid,sharePlatform,e);
+		}
+		return baseResp;
+	}
 }
