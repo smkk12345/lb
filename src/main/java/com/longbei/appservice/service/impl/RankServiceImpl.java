@@ -818,7 +818,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         Rank rank = this.rankMapper.selectRankByRankid(userBusinessConcern.getBusinessid());
                         if(rank != null){
                             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
-                            if(null != rankMembers){
+                            if(null != rankMembers && rankMembers.getStatus() == 1){
                                 rank.setHasjoin("1");
                             }
                             initRankAward(rank);
@@ -837,7 +837,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 List<Rank> createList = this.rankMapper.selectRankList(parameterMap);
                 for(Rank rank1:createList){
                     RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userId);
-                    if(null != rankMembers){
+                    if(null != rankMembers && rankMembers.getStatus() == 1){
                         rank1.setHasjoin("1");
                     }
                 }
@@ -3012,7 +3012,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         UserMsg userMsg = new UserMsg();
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
-        userMsg.setMtype("2");
+        userMsg.setMtype("0");
         userMsg.setMsgtype("22");
         //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业

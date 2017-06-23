@@ -112,9 +112,28 @@ public class CommonApiController {
     @RequestMapping(value="addSysAppUpdate")
     @ResponseBody
     public BaseResp<Object> addSysAppUpdate(String ttype,String version,String enforced,String url,String remark,String updateexplain){
-        if(StringUtils.hasBlankParams(ttype,version,enforced,url,remark,updateexplain)){
+        if(StringUtils.hasBlankParams(ttype,version,enforced)){
             return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         return this.sysSettingService.addSysAppUpdate(ttype,version,enforced,url,remark,updateexplain);
+    }
+
+    /**
+     * 编辑版本更新
+     * @param ttype
+     * @param version
+     * @param enforced
+     * @param url
+     * @param remark
+     * @param updateexplain
+     * @return
+     */
+    @RequestMapping(value="updateSysAppUpdate")
+    @ResponseBody
+    public BaseResp<Object> updateSysAppUpdate(Integer id,String ttype,String version,String enforced,String url,String remark,String updateexplain){
+        if(id == null || StringUtils.hasBlankParams(ttype,version,enforced)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.sysSettingService.updateSysAppUpdate(id,ttype,version,enforced,url,remark,updateexplain);
     }
 }

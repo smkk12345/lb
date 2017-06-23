@@ -62,4 +62,17 @@ public interface SysSettingService {
      * @return
      */
     BaseResp<Object> addSysAppUpdate(String ttype, String version, String enforced, String url, String remark, String updateexplain);
+
+    /**
+     * 编辑版本更新
+     * @param id
+     * @param ttype
+     * @param version
+     * @param enforced
+     * @param url
+     * @param remark
+     * @param updateexplain
+     * @return
+     */
+    BaseResp<Object> updateSysAppUpdate(Integer id,String ttype, String version, String enforced, String url, String remark, String updateexplain);
 }
