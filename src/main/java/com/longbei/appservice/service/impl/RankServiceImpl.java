@@ -8,6 +8,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
@@ -3060,7 +3061,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 baseResp.setData(resultList);
             }
-            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
+            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank award list error startNum:{} pageSize:{}",startNum,pageSize);
@@ -3090,7 +3091,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 initAwardResultMap(resultMap,rank.getRankid(),null,false);
             }
             baseResp.setData(resultMap);
-            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
+            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select onlyRankAward error rankid:{}",rankid);
