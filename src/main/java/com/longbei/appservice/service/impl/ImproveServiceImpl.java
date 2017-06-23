@@ -2886,6 +2886,11 @@ public class ImproveServiceImpl implements ImproveService{
                         }
                         break;
                     case Constant.IMPROVE_CLASSROOM_TYPE:
+                        Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
+                        UserCard userCard = null;
+                        if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+                            userCard = userCardMapper.selectByCardid(classroom.getCardid());
+                        }
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
@@ -2913,11 +2918,17 @@ public class ImproveServiceImpl implements ImproveService{
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
+                        if(!"1".equals(isreply)){
+                            if(null != userCard){
+                                //判断当前用户是否是老师
+                                if(userCard.getUserid() != Long.parseLong(userid)){
+                                    isreply = "2";
+                                }
+                            }
+                        }
                         improve.setIsreply(isreply);
-                    	Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
                     	if (null != classroom){
                     		String teacher = "";
-                    		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
                     		if(null != userCard){
                     			teacher += userCard.getDisplayname();
                     		}
