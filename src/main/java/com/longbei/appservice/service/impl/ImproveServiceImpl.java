@@ -3267,7 +3267,8 @@ public class ImproveServiceImpl implements ImproveService{
                     //初始化 赞 花 数量
 //                    initImproveLikeAndFlower(improve);
                     improve.setFlowers(timeLineDetail.getFlowers());
-                    improve.setLikes(timeLineDetail.getLikes());
+                    improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
+                            String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
                     improve.setIspublic("2");
                     improves.add(improve);
                 }
