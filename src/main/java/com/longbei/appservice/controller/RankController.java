@@ -227,7 +227,8 @@ public class RankController {
         baseResp = this.rankService.selectRankDetailByRankid(userid,rankId,true,true);
         if(ResultUtil.isSuccess(baseResp)){
             baseResp.getData().setJoincode(null);
-            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail));
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
         }
         return baseResp;
     }
@@ -499,7 +500,9 @@ public class RankController {
         }
         baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,currentUserId);
         if(ResultUtil.isSuccess(baseResp)){
-            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve));
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve
+                            + "?rankid=" + rankId + "&userid=" + userid));
         }
         return baseResp;
     }

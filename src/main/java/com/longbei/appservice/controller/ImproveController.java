@@ -805,7 +805,12 @@ public class ImproveController {
         try {
             baseResp = improveService.select(userid, impid, businesstype, businessid);
             if(ResultUtil.isSuccess(baseResp)){
-                baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail));
+                if(StringUtils.isBlank(businessid)){
+                    businessid = "";
+                }
+                baseResp.getExpandData().put("shareurl",
+                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail
+                                + "?impid=" + impid + "&businesstype=" + businesstype + "&businessid=" + businessid));
             }
             return baseResp;
         } catch (Exception e) {

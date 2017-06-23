@@ -174,7 +174,8 @@ public class GoalController extends BaseController {
         try{
             baseResp = goalService.selectUserGoal(StringUtils.isEmpty(userid)?null:Long.parseLong(userid), Long.parseLong(goalid));
             if(ResultUtil.isSuccess(baseResp)){
-                baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_goal_detail));
+                baseResp.getExpandData().put("shareurl",
+                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_goal_detail + "?goalid=" + goalid));
             }
         }catch(Exception e){
             logger.error("getGoalDetail userid = {}, goalid = {}", userid, goalid, e);
