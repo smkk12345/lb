@@ -86,7 +86,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         if (Constant.TIMELINE_IMPROVE_SQUARE.equals(timelinetype)){
             userid = Constant.SQUARE_USER_ID;
         }
-        Criteria criteria = Criteria.where("userid").is(userid).and("ctype").is(timelinetype);
+        Criteria criteria = Criteria.where("userid").is(userid);
         if (!StringUtils.isEmpty(searchDate)) {
             Date start = DateUtils.getDateStart(searchDate);
             if (null != lastdate) {
@@ -99,7 +99,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC, "createdate"));
         query.limit(pagesize);
-        List<TimeLine> timeLines = super.find(query);
+        List<TimeLine> timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
         return timeLines;
     }
 
