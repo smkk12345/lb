@@ -3,6 +3,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -173,7 +174,7 @@ public class GoalController extends BaseController {
         try{
             baseResp = goalService.selectUserGoal(StringUtils.isEmpty(userid)?null:Long.parseLong(userid), Long.parseLong(goalid));
             if(ResultUtil.isSuccess(baseResp)){
-                baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_goal_detail);
+                baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_goal_detail));
             }
         }catch(Exception e){
             logger.error("getGoalDetail userid = {}, goalid = {}", userid, goalid, e);
