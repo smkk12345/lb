@@ -2435,6 +2435,7 @@ public class ImproveServiceImpl implements ImproveService{
             return false;
         }
 //        res = updateMemberSumInfo(impid,businesstype,businessid,Constant.IMPROVE_LIKE_ADD,0);
+        //异步存储 进步赞数
         afterImproveInfoChange(improve,1,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
         if (res > 0 ){
             return true;
