@@ -263,5 +263,12 @@ public interface UserService {
 	 */
 	BaseResp updateTotalmoneyByUserid(long userid, Integer totalPrice);
 
-
+	/**
+	 * @Description: 分享成功后送分送币等操作
+	 * @param userid  用户id
+	 * @param sharePlatform  分享平台 0龙群 1龙杯好友 2QQ空间 3QQ好友 4微信朋友圈 5微信好友 6新浪微博
+	 * @auther IngaWu
+	 * @currentdate:2017年6月22日
+	 */
+	BaseResp<Object> afterShareSuccess(Long userid, String sharePlatform);
 }

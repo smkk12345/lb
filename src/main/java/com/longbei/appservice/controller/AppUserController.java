@@ -1443,4 +1443,28 @@ public class AppUserController extends BaseController {
         return userService.updateBg(Long.parseLong(userid),bg);
     }
 
+    /**
+     * @Title: http://ip:port/app_service/user/afterShareSuccess
+     * @Description: 分享成功后送分送币等操作
+     * @param userid  用户id
+     * @param sharePlatform  分享平台 0龙群 1龙杯好友 2QQ空间 3QQ好友 4微信朋友圈 5微信好友 6新浪微博
+     * @auther IngaWu
+     * @currentdate:2017年6月22日
+     */
+    @RequestMapping(value = "/afterShareSuccess")
+    @ResponseBody
+    public BaseResp<Object> afterShareSuccess(String userid,String sharePlatform){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        logger.info("afterShareSuccess and userid={},sharePlatform={}", userid,sharePlatform);
+        if(StringUtils.hasBlankParams(userid,sharePlatform)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userService.afterShareSuccess(Long.parseLong(userid),sharePlatform);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("afterShareSuccess and userid={},sharePlatform={}", userid,sharePlatform,e);
+        }
+        return baseResp;
+    }
 }

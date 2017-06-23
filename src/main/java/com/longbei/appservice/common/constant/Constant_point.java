@@ -26,10 +26,10 @@ public class Constant_point {
         NEW_CERTIFY_JOB = 30;//用作认证
         NEW_USERINFO = SysRulesCache.behaviorRule.getInfocompletegoals();//更新用户信息
         DAILY_CHECKIN = SysRulesCache.behaviorRule.getSigngoals();//签到
-        DAILY_SHARE= SysRulesCache.behaviorRule.getInfocompletegoals();//每日分享
+        DAILY_SHARE= SysRulesCache.behaviorRule.getInnersharegoals();//每日分享
         DAILY_SHARE_OUT= SysRulesCache.behaviorRule.getOutsharegoals();//每日分享(站外)
         DAILY_SHARE_LIMIT = SysRulesCache.behaviorRule.getInnersharegoalsmax();//每日分享上限限制
-        DAILY_SHARE_OUT_LIMIT = SysRulesCache.behaviorRule.getOutshareawardtimes();//每日分享(站外)
+        DAILY_SHARE_OUT_LIMIT = SysRulesCache.behaviorRule.getOutsharegoalsmax();//每日分享(站外)
         DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendgoals();//每日添加好友
         DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendgoalsmax();//每日添加好友限制
         DAILY_LIKE = SysRulesCache.behaviorRule.getLikegoals();//点赞

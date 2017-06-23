@@ -170,8 +170,8 @@ public class AddMessageReceiveService implements MessageListener{
     private void insertTimeLinePublic(TimeLine timeLine){
         timeLine.setId(MongoUtils.UUID());
         timeLine.setUserid(Constant.SQUARE_USER_ID);
-        timeLine.setCtype("0");
-        timeLineDao.save(timeLine);
+//        timeLine.setCtype("0");
+        timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
     }
     /**
      * 我的
@@ -181,8 +181,8 @@ public class AddMessageReceiveService implements MessageListener{
     private void insertTimeLineSelf(TimeLine timeLine,String userid){
         timeLine.setId(MongoUtils.UUID());
         timeLine.setUserid(userid);
-        timeLine.setCtype("1");
-        timeLineDao.save(timeLine);
+//        timeLine.setCtype("1");
+        timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
     }
 
     /**
@@ -213,8 +213,8 @@ public class AddMessageReceiveService implements MessageListener{
        for (String uid : sets){
            timeLine.setId(MongoUtils.UUID());
            timeLine.setUserid(uid);
-           timeLine.setCtype("2");
-           timeLineDao.save(timeLine);
+//           timeLine.setCtype("2");
+           timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
        }
 
 
@@ -235,8 +235,8 @@ public class AddMessageReceiveService implements MessageListener{
         for (Map snsFriends : snsFriendses) {
             timeLine.setId(MongoUtils.UUID());
             timeLine.setUserid(String.valueOf(snsFriends.get("userid")));
-            timeLine.setCtype("3");
-            timeLineDao.save(timeLine);
+//            timeLine.setCtype("3");
+            timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
         }
 
     }
@@ -254,8 +254,8 @@ public class AddMessageReceiveService implements MessageListener{
         for (SnsFans friends : snsFanses) {
             timeLine.setId(MongoUtils.UUID());
             timeLine.setUserid(String.valueOf(friends.getUserid()));
-            timeLine.setCtype("4");
-            timeLineDao.save(timeLine);
+//            timeLine.setCtype("4");
+            timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
         }
     }
     /**
