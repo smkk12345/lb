@@ -3,8 +3,6 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.RankAcceptAward;
-import org.w3c.dom.stylesheets.LinkStyle;
-
 import java.util.Date;
 import java.util.List;
 
@@ -78,5 +76,5 @@ public interface RankAcceptAwardService {
      * @param userid
      * @return
      */
-    int userRankAcceptAwardCount(Long userid);
+    Integer userRankAcceptAwardCount(Long userid, String ispublic);
 }

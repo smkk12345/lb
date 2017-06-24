@@ -270,9 +270,9 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
      * @return
      */
     @Override
-    public int userRankAcceptAwardCount(Long userid) {
+    public Integer userRankAcceptAwardCount(Long userid, String ispublic) {
         try{
-            return this.rankAcceptAwardMapper.userRankAcceptAwardCount(userid);
+            return this.rankAcceptAwardMapper.userRankAcceptAwardCount(userid, ispublic);
         }catch (Exception e){
             logger.error("user rank accept award count errror userid:{}",userid);
             printException(e);
