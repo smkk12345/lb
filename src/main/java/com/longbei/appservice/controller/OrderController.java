@@ -391,6 +391,9 @@ public class OrderController {
   			if(ResultUtil.fail(resResp)){
   				return resResp;
   			}
+  			if(Integer.parseInt(number) == 0){
+  				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1104, Constant.RTNINFO_SYS_1104);
+  			}
   			//payType 1:龙币兑换  2：进步币兑换
   			if("1".equals(payType)){
   				baseResp = userFlowerDetailService.moneyExchangeFlower(Long.parseLong(userid), Integer.parseInt(number), 

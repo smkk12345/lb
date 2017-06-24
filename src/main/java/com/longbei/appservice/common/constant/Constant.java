@@ -188,6 +188,7 @@ public class Constant {
 	public static final int STATUS_SYS_1101 = -1101;
 	public static final int STATUS_SYS_1102 = -1102;
 	public static final int STATUS_SYS_1103 = -1103;
+	public static final int STATUS_SYS_1104 = -1104;
 	
 	
 	
@@ -339,6 +340,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1101 = "教室老师已回复的问题不能删除";
 	public static final String RTNINFO_SYS_1102 = "您未加入教室,请加入";
 	public static final String RTNINFO_SYS_1103 = "您没有权限删除老师已回复的信息";
+	public static final String RTNINFO_SYS_1104 = "赠送鲜花的数量不对";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";

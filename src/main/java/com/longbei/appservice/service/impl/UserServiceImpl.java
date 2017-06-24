@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
 			expandData.put("fansCount", userInfo.getTotalfans());
 			
 			//查询好友数量
-			Integer friendCount = userRelationService.selectFriendsCount(lookid);
+			Integer friendCount = userRelationService.selectFriendsCount(userid);
 			expandData.put("friendCount", friendCount);
 			//获取用户被赠与的进步花
 //			int flowernum = 0;
@@ -219,7 +219,13 @@ public class UserServiceImpl implements UserService {
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
 			//查询奖品数量----
-			int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid);
+			Integer awardnum = 0;
+			if(lookid != userid){
+				//非本人查看
+				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "0");
+			}else{
+				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "");
+			}
 			expandData.put("awardnum", awardnum);
 			reseResp.setData(userInfo);
 //			expandData.put("detailList", detailList);
@@ -1131,7 +1137,11 @@ public class UserServiceImpl implements UserService {
 						point += Integer.parseInt(value);
 						break;
 					case "DAILY_SHARE":
-						disStr = "分享+"+value+"分";
+						disStr = "站内分享+"+value+"分";
+						point += Integer.parseInt(value);
+						break;
+					case "DAILY_SHARE_OUT":
+						disStr = "站外分享+"+value+"分";
 						point += Integer.parseInt(value);
 						break;
 					case "INVITE_LEVEL1":

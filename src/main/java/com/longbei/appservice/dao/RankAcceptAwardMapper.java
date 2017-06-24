@@ -54,5 +54,5 @@ public interface RankAcceptAwardMapper {
      * @param userid
      * @return
      */
-    int userRankAcceptAwardCount(Long userid);
+    Integer userRankAcceptAwardCount(@Param("userid") Long userid, @Param("ispublic") String ispublic);
 }
