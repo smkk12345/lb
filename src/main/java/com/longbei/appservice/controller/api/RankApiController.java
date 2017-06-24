@@ -8,6 +8,7 @@
 */
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -77,9 +78,28 @@ public class RankApiController {
             baseResp = BaseResp.ok();
             baseResp.setData(page);
         } catch (NumberFormatException e) {
-            logger.error("select rank list2 for adminservice is error:",e);
+            logger.error("selectListWithPageOrderByInvolved for adminservice is error:",e);
         }
         return baseResp;
+    }
+
+    /**
+     * 获取榜单列表数量
+     * @title selectRankListNum
+     * @author IngaWu
+     * @currentdate:2017年6月24日
+     */
+    @ResponseBody
+    @RequestMapping(value = {"selectRankListNum"})
+    public BaseResp<Object> selectRankListNum(@RequestBody Rank rank){
+        logger.info("selectRankListNum for adminservice and rank ={}", JSON.toJSONString(rank));
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            baseResp = rankService.selectRankListNum(rank);
+        } catch (Exception e) {
+            logger.error("selectRankListNum for adminservice and rank ={}", JSON.toJSONString(rank), e);
+        }
+        return  baseResp;
     }
 
     /**
@@ -104,9 +124,22 @@ public class RankApiController {
         return baseResp;
     }
 
-
-
-
+    /**
+     * 获取草稿榜单数量
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = {"selectRankImageListNum"})
+    public BaseResp<Object> selectRankImageListNum(@RequestBody RankImage rankImage){
+        logger.info("selectRankImageListNum for adminservice and rankImage ={}", JSON.toJSONString(rankImage));
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            baseResp = rankService.selectRankImageListNum(rankImage);
+        } catch (Exception e) {
+            logger.error("selectRankImageListNum for adminservice and rankImage ={}", JSON.toJSONString(rankImage), e);
+        }
+        return  baseResp;
+    }
 
     /**
      * 获取榜单详情

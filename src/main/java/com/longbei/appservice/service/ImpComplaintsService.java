@@ -31,7 +31,13 @@ public interface ImpComplaintsService {
 	* @param @return    设定文件 
 	* @return Page<ImpComplaints>    返回类型 
 	*/
-	Page<ImpComplaints> selectListByStatus(String status, int startNo, int pageSize); 
+	Page<ImpComplaints> selectListByStatus(String status, int startNo, int pageSize);
+
+	/**
+	 * 根据status查询用户举报数量
+	 * @title selectComplaintsListNum
+	 */
+	BaseResp<Object> selectComplaintsListNum(String status);
 	
 	/**
     * @Title: searchList 

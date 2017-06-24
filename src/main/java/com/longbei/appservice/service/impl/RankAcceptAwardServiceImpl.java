@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -118,6 +119,18 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Object> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int totalcount = rankAcceptAwardMapper.selectCount(rankAcceptAward);
+            baseResp.setData(totalcount);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("selectRankAcceptAwardListNum for adminservice and rankAcceptAward ={}", JSON.toJSONString(rankAcceptAward), e);
+        }
+        return  baseResp;
+    }
 
     @Override
     public BaseResp<RankAcceptAward> selectRankAcceptAwardDetail(String rankid,String userid) {

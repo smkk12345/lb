@@ -21,6 +21,13 @@ public interface UserFeedbackService {
 	Page<UserFeedback> selectFeedbackListWithPage(UserFeedback userFeedback,int pageno,int pagesize);
 
 	/**
+	 * 查询反馈意见列表数量
+	 * @param userFeedback
+	 * @return
+	 */
+	BaseResp<Object> selectFeedbackListNum(UserFeedback userFeedback);
+
+	/**
 	 * 处理意见反馈
 	 * @param userFeedback
 	 * @return

@@ -51,5 +51,12 @@ public interface UserIdcardService {
 	 * @author luye
 	 */
 	BaseResp<Page<UserIdcard>> selectUserIdCardListPage(UserIdcard userIdcard,Integer pageno,Integer pagesize);
+
+	/**
+	 * 获取用户实名认证信息列表数量
+	 * @param userIdcard
+	 * @return
+	 */
+	BaseResp<Object> selectUserIdCardListNum(UserIdcard userIdcard);
 	
 }

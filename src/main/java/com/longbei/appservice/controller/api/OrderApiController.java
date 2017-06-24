@@ -55,6 +55,22 @@ public class OrderApiController {
   		return baseResp;
 	}
 
+	/**
+	 * 根据orderstatus查询订单列表数量
+	 * @title selectConsumeOrderListNum
+	 */
+	@RequestMapping(value = {"selectConsumeOrderListNum"})
+	public BaseResp<Object> selectConsumeOrderListNum(String orderstatus){
+		logger.info("selectConsumeOrderListNum for adminservice and orderstatus ={}", orderstatus);
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = orderService.selectConsumeOrderListNum(orderstatus);
+		} catch (Exception e) {
+			logger.error("selectConsumeOrderListNum for adminservice and orderstatus ={}", orderstatus, e);
+		}
+		return  baseResp;
+	}
+
   	/**
      * @Title: http://ip:port/app_service/api/order/searchList
      * @Description: 订单搜索

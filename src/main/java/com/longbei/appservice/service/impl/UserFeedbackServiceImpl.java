@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,19 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 			logger.error("select feedback list with page is error:{}",e);
 		}
 		return page;
+	}
+
+	@Override
+	public BaseResp<Object> selectFeedbackListNum(UserFeedback userFeedback){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			int totalcount = userFeedbackMapper.selectFeedbackCount(userFeedback);
+			baseResp.setData(totalcount);
+			baseResp.initCodeAndDesp();
+		} catch (Exception e) {
+			logger.error("selectFeedbackListNum for adminservice and userFeedback ={}", JSON.toJSONString(userFeedback), e);
+		}
+		return  baseResp;
 	}
 
 	@Override

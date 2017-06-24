@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -50,6 +51,24 @@ public class RankAcceptAwardApiController {
             logger.error("select rankacceptaward list is error:",e);
         }
         return baseResp;
+    }
+
+    /**
+     * 获取榜单列表数量
+     * @title selectRankAcceptAwardListNum
+     * @author IngaWu
+     * @currentdate:2017年6月24日
+     */
+    @RequestMapping(value = {"selectRankAcceptAwardListNum"})
+    public BaseResp<Object> selectRankAcceptAwardListNum(@RequestBody RankAcceptAward rankAcceptAward){
+        logger.info("selectRankAcceptAwardListNum for adminservice and rankAcceptAward ={}", JSON.toJSONString(rankAcceptAward));
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            baseResp = rankAcceptAwardService.selectRankAcceptAwardListNum(rankAcceptAward);
+        } catch (Exception e) {
+            logger.error("selectRankAcceptAwardListNum for adminservice and rankAcceptAward ={}", JSON.toJSONString(rankAcceptAward), e);
+        }
+        return  baseResp;
     }
 
     @RequestMapping(value = "detail/{rankid}/{userid}")

@@ -83,6 +83,13 @@ public interface RankService extends BaseService{
     Page<RankImage> selectRankImageList(RankImage rankImage,int pageno, int pagesize);
 
     /**
+     * 获取非线上榜单列表
+     * @param rankImage
+     * @return
+     */
+    BaseResp<Object> selectRankImageListNum(RankImage rankImage);
+
+    /**
      * 获取榜单列表 正式的
      * @param rank
      * @param pageno
@@ -101,6 +108,14 @@ public interface RankService extends BaseService{
      * @author IngaWu
      */
     Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,String orderByInvolved);
+
+    /**
+     * 获取榜单列表数量
+     * @param rank
+     * @return
+     */
+    BaseResp<Object> selectRankListNum(Rank rank);
+
     /**
      * 获取榜单列表 推荐的 针对app
      * @param startNo

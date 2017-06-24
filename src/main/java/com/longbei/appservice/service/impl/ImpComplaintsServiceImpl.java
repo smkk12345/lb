@@ -166,7 +166,20 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
         }
         return page;
 	}
-	
+
+	@Override
+	public BaseResp<Object> selectComplaintsListNum(String status){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			int totalcount = impComplaintsMapper.selectCountByStatus(status);
+			baseResp.setData(totalcount);
+			baseResp.initCodeAndDesp();
+		} catch (Exception e) {
+			logger.error("selectComplaintsListNum for adminservice and status ={}", status, e);
+		}
+		return  baseResp;
+	}
+
 	private void selectUserNickname(ImpComplaints impComplaints){
 		String nickname = initNicknameByFriendid(impComplaints.getUserid());
 		impComplaints.setNickname(nickname);

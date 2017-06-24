@@ -34,6 +34,12 @@ public interface RankAcceptAwardService {
      */
     BaseResp<Page<RankAcceptAward>> selectRankAccepteAwardList(RankAcceptAward rankAcceptAward,Integer pageno,Integer pagesize);
 
+    /**
+     * 获取榜单领奖列表数量
+     * @param rankAcceptAward
+     * @return
+     */
+    BaseResp<Object> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward);
 
     /**
      * 获取领奖详细信息

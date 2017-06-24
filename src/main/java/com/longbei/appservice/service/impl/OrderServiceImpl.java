@@ -341,6 +341,17 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public BaseResp<Object> selectConsumeOrderListNum(String orderstatus){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = iProductBasicService.selectConsumeOrderListNum(orderstatus);
+		} catch (Exception e) {
+			logger.error("selectConsumeOrderListNum for adminservice and orderstatus ={}", orderstatus, e);
+		}
+		return  baseResp;
+	}
+
+	@Override
 	public BaseResp<ProductOrders> adminget(Long userid, String orderid) {
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
 		try{

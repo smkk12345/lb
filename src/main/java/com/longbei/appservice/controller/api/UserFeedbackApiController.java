@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -53,6 +54,21 @@ public class UserFeedbackApiController {
             baseResp.setData(page);
         } catch (NumberFormatException e) {
             logger.error("get userFeedback list with page is error:{}",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询意见反馈列表数量
+     */
+    @RequestMapping(value = "selectFeedbackListNum")
+    public BaseResp<Object> selectFeedbackListNum(@RequestBody UserFeedback userFeedback){
+        logger.info("selectFeedbackListNum for adminservice and userFeedback={}", JSON.toJSON(userFeedback));
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = userFeedbackService.selectFeedbackListNum(userFeedback);
+        } catch (NumberFormatException e) {
+            logger.error("selectFeedbackListNum for adminservice and userFeedback={}", JSON.toJSON(userFeedback),e);
         }
         return baseResp;
     }

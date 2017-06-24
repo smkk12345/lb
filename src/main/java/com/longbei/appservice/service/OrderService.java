@@ -113,7 +113,13 @@ public interface OrderService {
 	 * 2017年3月22日
 	 */
 	 BaseResp<List<ProductOrders>> adminConsumeList(String orderstatus, int startNo, int pageSize);
-	 
+
+	/**
+	 * 根据orderstatus查询订单列表数量
+	 * @title selectConsumeOrderListNum
+	 */
+	BaseResp<Object> selectConsumeOrderListNum(String orderstatus);
+
 	 /**
 	 * 订单详情
 	 * @author yinxc
