@@ -503,6 +503,23 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return page;
     }
 
+    /**
+     * 获取草稿榜单数量
+     * @return
+     */
+    @Override
+    public BaseResp<Object> selectRankImageListNum(RankImage rankImage){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int totalcount = rankImageMapper.selectListCount(rankImage);
+            baseResp.setData(totalcount);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("select rankchecklistnum for adminservice and rankImage ={}", JSON.toJSONString(rankImage), e);
+        }
+        return  baseResp;
+    }
+
     @Override
     public Page<Rank> selectRankList(Rank rank, int pageno, int pagesize,Boolean showAward) {
         Page<Rank> page = new Page<>(pageno,pagesize);
@@ -563,6 +580,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("select rank list orderByInvolved  for adminservice is error:",e);
         }
         return page;
+    }
+
+    @Override
+    public BaseResp<Object> selectRankListNum(Rank rank){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int totalcount = rankMapper.selectListCount(rank);
+            baseResp.setData(totalcount);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("select selectRankListNum for adminservice and rank ={}", JSON.toJSONString(rank), e);
+        }
+        return  baseResp;
     }
 
     private List<Rank> selectRankListByRank(Rank rank, int pageno, int pagesize, Boolean showAward){

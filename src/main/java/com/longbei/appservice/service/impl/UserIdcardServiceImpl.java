@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -177,5 +178,18 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 		}
 
 		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> selectUserIdCardListNum(UserIdcard userIdcard){
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			int totalcount = userIdcardMapper.selectCount(userIdcard);
+			baseResp.setData(totalcount);
+			baseResp.initCodeAndDesp();
+		} catch (Exception e) {
+			logger.error("selectUserIdCardListNum for adminservice and userIdcard ={}", JSON.toJSONString(userIdcard), e);
+		}
+		return  baseResp;
 	}
 }

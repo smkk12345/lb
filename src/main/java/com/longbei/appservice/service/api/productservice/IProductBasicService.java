@@ -391,6 +391,9 @@ public interface IProductBasicService {
 											@RequestParam("startNo") int startNo,
 											@RequestParam("pageSize") int pageSize);
 
+	@RequestMapping(method = RequestMethod.GET, value = "/api/order/selectConsumeOrderListNum")
+	BaseResp<Object> selectConsumeOrderListNum(@RequestParam("orderstatus") String orderstatus);
+
 	/**
 	 * 订单详情
 	 * @author yinxc

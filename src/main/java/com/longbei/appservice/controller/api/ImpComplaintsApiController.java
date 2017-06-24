@@ -48,7 +48,23 @@ public class ImpComplaintsApiController {
 		}
   		return baseResp;
 	}
-  	
+
+	/**
+	 * 根据status查询用户举报数量
+	 * @title selectComplaintsListNum
+	 */
+	@RequestMapping(value = {"selectComplaintsListNum"})
+	public BaseResp<Object> selectComplaintsListNum(String status){
+		logger.info("selectComplaintsListNum for adminservice and status ={}", status);
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = impComplaintsService.selectComplaintsListNum(status);
+		} catch (Exception e) {
+			logger.error("selectComplaintsListNum for adminservice and status ={}", status, e);
+		}
+		return  baseResp;
+	}
+
   	/**
      * @Title: http://ip:port/app_service/api/complaints/searchList
      * @Description: 搜索 
