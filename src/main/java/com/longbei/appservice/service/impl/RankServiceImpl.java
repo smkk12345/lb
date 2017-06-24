@@ -8,6 +8,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
@@ -848,7 +849,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         Rank rank = this.rankMapper.selectRankByRankid(userBusinessConcern.getBusinessid());
                         if(rank != null){
                             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userId);
-                            if(null != rankMembers){
+                            if(null != rankMembers && rankMembers.getStatus() == 1){
                                 rank.setHasjoin("1");
                             }
                             initRankAward(rank);
@@ -867,7 +868,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 List<Rank> createList = this.rankMapper.selectRankList(parameterMap);
                 for(Rank rank1:createList){
                     RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank1.getRankid(),userId);
-                    if(null != rankMembers){
+                    if(null != rankMembers && rankMembers.getStatus() == 1){
                         rank1.setHasjoin("1");
                     }
                 }
@@ -3042,7 +3043,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         UserMsg userMsg = new UserMsg();
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
-        userMsg.setMtype("2");
+        userMsg.setMtype("0");
         userMsg.setMsgtype("22");
         //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
@@ -3090,7 +3091,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 baseResp.setData(resultList);
             }
-            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank award list error startNum:{} pageSize:{}",startNum,pageSize);
@@ -3120,7 +3122,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 initAwardResultMap(resultMap,rank.getRankid(),null,false);
             }
             baseResp.setData(resultMap);
-            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
+            baseResp.getExpandData().put("shareurl",
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award + "?rankid=" + rankid));
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select onlyRankAward error rankid:{}",rankid);

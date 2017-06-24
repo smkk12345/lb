@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,37 @@ public class SysSettingServiceImpl implements SysSettingService {
         sysAppupdate.setUrl(url);
         sysAppupdate.setRemark(remark);
         sysAppupdate.setUpdateexplain(updateexplain);
+        sysAppupdate.setUpdatetime(new Date());
         int row = this.sysAppupdateMapper.insertSelective(sysAppupdate);
+        if(row > 0){
+            return new BaseResp<>().ok();
+        }
+        return new BaseResp<>().fail();
+    }
+
+    /**
+     * 编辑版本更新
+     * @param id
+     * @param ttype
+     * @param version
+     * @param enforced
+     * @param url
+     * @param remark
+     * @param updateexplain
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateSysAppUpdate(Integer id, String ttype, String version, String enforced, String url, String remark, String updateexplain) {
+        SysAppupdate sysAppupdate = new SysAppupdate();
+        sysAppupdate.setId(id);
+        sysAppupdate.setTtype(ttype);
+        sysAppupdate.setVersion(version);
+        sysAppupdate.setEnforced(enforced);
+        sysAppupdate.setUrl(url);
+        sysAppupdate.setRemark(remark);
+        sysAppupdate.setUpdateexplain(updateexplain);
+        sysAppupdate.setUpdatetime(new Date());
+        int row = this.sysAppupdateMapper.updateByPrimaryKeySelective(sysAppupdate);
         if(row > 0){
             return new BaseResp<>().ok();
         }

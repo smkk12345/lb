@@ -625,9 +625,10 @@ public class Constant {
 	 */
 //	public static final String RP_USER_CHECK = "user_check_";
 //	public static final String RP_USER_CHECK_DATE = "user_check_date_";
-	public static final String RP_USER_CHECK = "user_check_util_";
-	public static final String RP_USER_CHECK_DATE = "user_check_date_util_";
-	public static final String RP_USER_CHECK_VALUE = "user_check_value_";
+	public static final String RP_USER_CHECK = "user_checkin_util_";
+	public static final String RP_USER_CHECK_DATE = "user_checkin_date_util_";  //第一次签到日期
+	public static final String RP_USER_CHECK_DAY_DATE = "user_checkin_day_date_"; //上一次签到日期
+	public static final String RP_USER_CHECK_VALUE = "user_checkin_value_";//连续签到次数
 	public static final String RP_USER_NEWDATE_CHECK = "user_check_newdate_"; //签到当天获得的进步币
 	
 	/*

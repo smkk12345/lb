@@ -20,4 +20,4 @@ eureka:
 
   client:
     serviceUrl:
-        defaultZone: http://172.16.129.6:8888/eureka/,http://172.16.129.7:8888/eureka
+        defaultZone: http://172.16.129.6:8888/eureka/,http://172.16.129.7:8888/eureka’

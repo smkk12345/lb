@@ -584,6 +584,7 @@
       count(1)
     from rank_accept_award inner join rank on rank_accept_award.rankid = rank.rankid
     where rank.isfinish = 5
+      and rank.ispublic = 0
       and rank_accept_award.userid = #{userid}
   </select>
 </mapper>

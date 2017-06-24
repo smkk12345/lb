@@ -407,9 +407,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             int newPoint=userInfo.getPoint()+iPoint;
             //下一个等级
             UserLevel nextUserLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade()+1);
-            if(newPoint >= (nextUserLevel.getPoint()+nextUserLevel.getDiff())) {//不止升一级
+            UserLevel topUserLevel = SysRulesCache.levelPointMap.get(100);
+            if(userInfo.getGrade() < 100 && newPoint >= (topUserLevel.getPoint())){//当前等级小于100 而现在需要升到100
+                userInfo.setGrade(100);
+                userInfo.setPoint(newPoint);
+                userInfo.setCurpoint(0);
+                userInfoMapper.updatePointByUserid(userInfo);
+                //插入一条 等级升级消息  不升级就不插入这个表
+                saveLevelUpInfo(userInfo,"a",0,userInfo.getGrade(),null);
+                //推送一条消息
+                String remark = Constant.MSG_USER_LEVEL_MODEL.replace("n", userInfo.getGrade() + "");
+                //mtype 0 系统消息      msgtype  18:升龙级
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userInfo.getUserid().toString(),"", "6", "", remark, "0", "18", "升级", 0, "", "");
+            }else if(userInfo.getGrade() == 100){//已经满级
+                updateToUserInfo(userInfo,iPoint);
+            }else if(newPoint >= (nextUserLevel.getPoint()+nextUserLevel.getDiff()) && nextUserLevel.getGrade() < 100) {//不止升一级
                 Map<Integer,UserLevel> userLevelMap = SysRulesCache.levelPointMap;
                 int nextGrade = nextUserLevel.getGrade();
+
                 for(int i=nextGrade;i< userLevelMap.size();i++){
                     //下下个等级
                     UserLevel nextNextUserLevel = userLevelMap.get(i+1);
@@ -541,7 +556,12 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
      */
     private void updateToUserInfo(UserInfo userInfo,int iPoint) throws Exception {
         userInfo.setPoint(userInfo.getPoint()+iPoint);
-        userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
+        if(userInfo.getGrade() == 100){
+            userInfo.setCurpoint(0);
+        }else{
+            userInfo.setCurpoint(userInfo.getCurpoint()+iPoint);
+        }
+
         if (0 == userInfo.getGrade()){
             throw new Exception("user grade is must can not be 0");
         }
