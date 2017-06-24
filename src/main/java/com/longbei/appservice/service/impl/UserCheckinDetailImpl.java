@@ -18,6 +18,7 @@ import java.util.Map;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
 
@@ -91,12 +92,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			String date = DateUtils.getDate("yyyy-MM-dd");
 			UserCheckinDetail userCheckinDetail = userCheckinDetailMapper.selectDetail(userid, date);
 			if(null != userCheckinDetail){
-				//获得当天签到得到的进步币数量
-//				String checkvalue = springJedisDao.get(Constant.RP_USER_NEWDATE_CHECK + userid);
-//				reseResp.getExpandData().put("moneycount", checkvalue);
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
-//			String day = DateUtils.getDate("yyyyMMdd");
 			// 判断redis中是否存在 存在+1
 			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
 					Constant.RP_USER_CHECK_VALUE + userid);
@@ -108,9 +105,13 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				//连续签到天数
 				String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_VALUE + userid);
-				int cha = DateUtils.daysBetween(redisDate + " 00:00:00", date + " 00:00:00");
-//				int cha = Integer.parseInt(day) - Integer.parseInt(redisDate);
-				if(cha > Integer.parseInt(redisvalue)){
+				//获取上一次签到的日期
+				String checkinday = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
+						Constant.RP_USER_CHECK_DAY_DATE + userid);
+				//判断上一次签到的日期
+				int cha = DateUtils.daysBetween(checkinday, DateUtils.formatDateTime1(new Date()));
+
+				if(cha > 1 || cha == 0){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
 					addRedisCheck(userid, date, "1");
@@ -121,17 +122,12 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 							Constant.RP_USER_CHECK_VALUE + userid, 1);
 					operate(userid);
 					//查看是否已经连续签到5天以上    ---5天以上存库user_checkin_info
-//						String addDate = springJedisDao.getHashValue(Constant.RP_USER_CHECK + record.getUserid(), 
-//								Constant.RP_USER_CHECK_DATE + record.getUserid());
-//						int res = Integer.parseInt(day) - Integer.parseInt(addDate);
 					int res = Integer.parseInt(redisvalue) + 1;
 					//重新设置过期时间
-					springJedisDao.expire(Constant.RP_USER_CHECK + userid, 60*60*24*2);
-//					addRedisCheck(userid, redisDate, res+"");
+//					springJedisDao.expire(Constant.RP_USER_CHECK + userid, 60*60*24*2);
+					addRedisCheck(userid, redisDate, res+"");
 					//+进步币
 					if(res >= 5){
-//						String start = redisDate.substring(0, 4) + "-" + redisDate.substring(4, 6)
-//							+ "-" + redisDate.substring(6, redisDate.length());
 						//需要先判断数据库里面是否已有这条记录    有：修改     无：添加
 						UserCheckinInfo checkinInfo = userCheckinInfoMapper.selectByStarttimeAndUserid(userid, redisDate);
 						if(null != checkinInfo){
@@ -215,6 +211,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 		// {"user_check_value_userid":"2","user_check_date_userid":"20170222"}
 		map.put(Constant.RP_USER_CHECK_VALUE + userid, count);
 		map.put(Constant.RP_USER_CHECK_DATE + userid, day);
+		map.put(Constant.RP_USER_CHECK_DAY_DATE + userid, DateUtils.formatDateTime1(new Date()));
 		springJedisDao.putAll(Constant.RP_USER_CHECK + userid, map, 60*60*24*2);
 		
 	}
