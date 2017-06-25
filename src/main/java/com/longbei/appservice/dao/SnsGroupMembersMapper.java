@@ -112,4 +112,11 @@ public interface SnsGroupMembersMapper {
      * @return
      */
     List<Long> selectGroupMemberIdList(@Param("groupId")Long groupId);
+
+    /**
+     * 批量更新用户的群昵称
+     * @param map
+     * @return
+     */
+    int batchUpdateGroupMemberNickName(Map<String, Object> map);
 }

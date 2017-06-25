@@ -1015,6 +1015,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     /**
+     * 批量更新用户的群昵称
+     * @param map
+     * @return
+     */
+    @Override
+    public int batchUpdateGroupMemberNickName(Map<String, Object> map) {
+        return this.snsGroupMembersMapper.batchUpdateGroupMemberNickName(map);
+    }
+
+    /**
      * 将用户加入到群组中,同步到融云
      * @param operatorUserId 操作人用户id
      * @param operatorNickname 操作人用户昵称
