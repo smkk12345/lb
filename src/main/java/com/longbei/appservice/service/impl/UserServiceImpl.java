@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService {
 				//非本人查看
 				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "0");
 			}else{
-				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "");
+				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, null);
 			}
 			expandData.put("awardnum", awardnum);
 			reseResp.setData(userInfo);

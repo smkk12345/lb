@@ -969,8 +969,10 @@
     FROM rank r inner join rank_members rm on r.rankid = rm.rankid
     where rm.iswinning = 1
       and r.isdel = 0
+      and rm.checkstatus = 3
       and r.ispublic = 0
       and r.isfinish = 5
+    group by r.rankid
     order by r.endtime DESC
     limit #{startNum},#{pageSize}
   </select>
