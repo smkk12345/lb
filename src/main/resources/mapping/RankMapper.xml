@@ -985,7 +985,6 @@
     where isdel = 0
 	and ispublic = #{ispublic}
     and checkstatus = 1
-    and isup = 0
 	and createuserid = #{createuserid}
   </select>
 
