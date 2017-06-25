@@ -2089,7 +2089,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
         					String remark = userRelationService.selectRemark(userId, rankMembers.getUserid(), "0");
-        					if(!StringUtils.isBlank(remark)){
+        					if(StringUtils.isNotBlank(remark)){
         						appUserMongoEntity.setNickname(remark);
         					}
                         }
