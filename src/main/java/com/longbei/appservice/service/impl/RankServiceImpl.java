@@ -807,16 +807,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 parameterMap.put("orderType","updateTimeDesc");
                 parameterMap.put("startNum",startNum);
                 parameterMap.put("pageSize",pageSize);
-                List<RankMembers> rankMembers = this.rankMembersMapper.selectRankMembers(parameterMap);
+                parameterMap.put("isdel","0");
+                List<Rank> rankList = this.rankMapper.getOwnRankList(parameterMap);
                 List<Rank> marching = new ArrayList<Rank>();
                 List<Rank> finish = new ArrayList<Rank>();
                 List<Rank> nostart = new ArrayList<Rank>();
-                if(rankMembers != null && rankMembers.size() > 0){
-                    for(RankMembers rankMembers1:rankMembers){
-                        Rank rank = this.rankMapper.selectRankByRankid(rankMembers1.getRankid());
-                        if(rank == null){
-                            continue;
-                        }
+                if(rankList != null && rankList.size() > 0){
+                    for(Rank rank:rankList){
                         rank.setHasjoin("1");
                         initRankAward(rank);
                         if("0".equals(rank.getIsfinish())){//未开始
@@ -830,6 +827,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }
                     }
                 }
+
+//                List<RankMembers> rankMembers = this.rankMembersMapper.selectRankMembers(parameterMap);
+//                if(rankMembers != null && rankMembers.size() > 0){
+//                    for(RankMembers rankMembers1:rankMembers){
+//                        Rank rank = this.rankMapper.selectRankByRankid(rankMembers1.getRankid());
+//                        if(rank == null){
+//                            continue;
+//                        }
+//                        rank.setHasjoin("1");
+//                        initRankAward(rank);
+//                        if("0".equals(rank.getIsfinish())){//未开始
+//                            nostart.add(rank);
+//                        }else if("1".equals(rank.getIsfinish())){//进行中
+//                            marching.add(rank);
+//                        }else{
+//                            if (StringUtils.isBlank(opttype)){
+//                                finish.add(rank);
+//                            }
+//                        }
+//                    }
+//                }
                 List<Rank> resultList = new LinkedList<Rank>();
                 resultList.addAll(marching);
                 resultList.addAll(nostart);
