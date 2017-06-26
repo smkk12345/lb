@@ -988,4 +988,17 @@
 	and createuserid = #{createuserid}
   </select>
 
+  <!-- 获取用户参与的榜单列表 -->
+  <select id="getOwnRankList" parameterType="map" resultMap="BaseResultMap">
+      select
+          <include refid="RANK_Base_Column_List" />
+      from rank r inner join rank_members
+          on r.rankid = rank_members.rankid
+      where r.isdel = #{isdel}
+          and rank_members.status =#{status}
+          and rank_members.userid = #{userId}
+      order by rank_members.updatetime desc
+      limit #{startNum},#{pageSize}
+  </select>
+
 </mapper>

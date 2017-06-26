@@ -109,4 +109,10 @@ public interface RankMapper {
      */
     int selectNoPublishRank(Map<String, Object> paraMap);
 
+    /**
+     * 获取用户参与的榜单列表
+     * @param parameterMap
+     * @return
+     */
+    List<Rank> getOwnRankList(Map<String, Object> parameterMap);
 }
