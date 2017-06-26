@@ -327,20 +327,21 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					userCheckinDetail.setIsimprove(isimprove);
 				}
 				
-				//获取redis中的连续签到天数
-				// 判断redis中是否存在 
-				boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
-						Constant.RP_USER_CHECK_VALUE + userid);
-				if(result){
-					//连续签到天数
-					String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
-							Constant.RP_USER_CHECK_VALUE + userid);
-					continuousday = Integer.parseInt(redisvalue);
-				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			} else {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_29);
 			}
+			//获取redis中的连续签到天数
+			// 判断redis中是否存在 
+			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
+					Constant.RP_USER_CHECK_VALUE + userid);
+			if(result){
+				//连续签到天数
+				String redisvalue = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
+						Constant.RP_USER_CHECK_VALUE + userid);
+				continuousday = Integer.parseInt(redisvalue);
+			}
+			
 			reseResp.getExpandData().put("continuousday", continuousday);
 			//共签到多少天
 			int count = userCheckinDetailMapper.selectCountByUserid(userid);

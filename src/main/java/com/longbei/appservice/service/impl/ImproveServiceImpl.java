@@ -3614,7 +3614,7 @@ public class ImproveServiceImpl implements ImproveService{
                     if(!springJedisDao.hasKey("reimp"+strattr[0])){
                         Improve improve = selectImprove(Long.parseLong(strattr[0]),null,
                                 strattr[2],strattr[1],"0",null);
-                        springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),60*61);
+                        springJedisDao.set("reimp"+strattr[0],JSON.toJSONString(improve),3);
                     }
                     Improve improve = JSON.parseObject(springJedisDao.get("reimp"+strattr[0]),Improve.class);
                     if(null == improve){

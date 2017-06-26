@@ -582,8 +582,10 @@
   <select id="userRankAcceptAwardCount" resultType="Integer">
     select
       count(1)
-    from rank_accept_award inner join rank on rank_accept_award.rankid = rank.rankid
+    from rank_accept_award
+          inner join rank on rank_accept_award.rankid = rank.rankid
     where rank.isfinish = 5
+      and rank.isdel = 0
     <if test="ispublic != null and ispublic != ''">
     	and rank.ispublic = 0
     </if>

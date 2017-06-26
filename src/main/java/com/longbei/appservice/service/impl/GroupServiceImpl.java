@@ -622,7 +622,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(userIds.length == 1 && (currentUserId+"").equals(userIds[0])){
                 //校验该用户是否在群中
                 SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(Long.parseLong(userIds[0]),groupId);
-                if(snsGroupMembers == null || snsGroupMembers.getStatus() != -1){
+                if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 }
             }
@@ -1012,6 +1012,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             printException(e);
         }
         return baseResp;
+    }
+
+    /**
+     * 批量更新用户的群昵称
+     * @param map
+     * @return
+     */
+    @Override
+    public int batchUpdateGroupMemberNickName(Map<String, Object> map) {
+        return this.snsGroupMembersMapper.batchUpdateGroupMemberNickName(map);
     }
 
     /**

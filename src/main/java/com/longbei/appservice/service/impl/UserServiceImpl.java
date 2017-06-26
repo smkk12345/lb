@@ -117,6 +117,8 @@ public class UserServiceImpl implements UserService {
 	private UserAccountService userAccountService;
 	@Autowired
 	private UserAccountMapper userAccountMapper;
+	@Autowired
+	private GroupService groupService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -224,7 +226,7 @@ public class UserServiceImpl implements UserService {
 				//非本人查看
 				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "0");
 			}else{
-				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, "");
+				awardnum = rankAcceptAwardService.userRankAcceptAwardCount(userid, null);
 			}
 			expandData.put("awardnum", awardnum);
 			reseResp.setData(userInfo);
@@ -924,11 +926,14 @@ public class UserServiceImpl implements UserService {
 			UserInfo updateUserInfo = compareUserInfo(oldUserInfo,newUserInfo);
 
 			int n = userInfoMapper.updateByUseridSelective(updateUserInfo);
-			if(n == 1){
+			if(n > 0){
 				//BeanUtils.copyProperties(userInfo,userInfo1);
 				userMongoDao.updateAppUserMongoEntity(updateUserInfo);
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(updateUserInfo.getUserid()));
+				if(StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())){//修改了昵称
+					updateUserRelevantInfo(updateUserInfo.getUserid(),oldUserInfo.getNickname(),updateUserInfo.getNickname(),updateUserInfo.getAvatar());
+				}
 			}
 
 		} catch (Exception e) {
@@ -936,6 +941,41 @@ public class UserServiceImpl implements UserService {
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
 		return baseResp;
+	}
+
+	/**
+	 * 更改用户的其他相关信息
+	 * @param userId
+	 * @param oldNickname
+	 * @param nickname
+	 * @param avatar
+     * @return
+     */
+	private boolean updateUserRelevantInfo(final Long userId, final String oldNickname, final String nickname, final String avatar){
+		if(userId == null || (StringUtils.isEmpty(nickname) && StringUtils.isEmpty(avatar))){
+			return false;
+		}
+		threadPoolTaskExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				if(StringUtils.isNotEmpty(nickname)){
+					//更改群昵称
+					Map<String,Object> map=new HashMap<String,Object>();
+					map.put("oldNickname",oldNickname);
+					map.put("newNickname",nickname);
+					map.put("userId",userId);
+					int row = groupService.batchUpdateGroupMemberNickName(map);
+				}
+				if(StringUtils.isNotEmpty(avatar)){
+					//更改群昵称
+					Map<String,Object> map=new HashMap<String,Object>();
+					map.put("userId",userId);
+					map.put("avatar",avatar);
+					int row = groupService.batchUpdateGroupMemberNickName(map);
+				}
+			}
+		});
+		return true;
 	}
 
 	private UserInfo compareUserInfo(UserInfo oldUserInfo,UserInfo newUserInfo){

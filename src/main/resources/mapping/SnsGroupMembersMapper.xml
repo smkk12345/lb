@@ -384,4 +384,22 @@
         where groupid = #{groupId}
         and status = '1'
     </select>
+
+    <!-- 批量更新用户的群昵称 -->
+    <update id="batchUpdateGroupMemberNickName" parameterType="map">
+        update sns_group_members
+        set
+          <if test="newNickname != null and newNickname != ''">
+              nickname = #{newNickname}
+          </if>
+          <if test="avatar != null and avatar != ''">
+              avatar = #{avatar}
+          </if>
+        <where>
+            <if test="oldNickname != null and oldNickname != ''">
+              nickname = #{oldNickname} AND
+            </if>
+          userid = #{userId}
+        </where>
+    </update>
 </mapper>

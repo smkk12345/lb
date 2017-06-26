@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by wangyongzhi 17/3/8.
@@ -137,4 +138,11 @@ public interface GroupService {
      * @return
      */
     BaseResp<Object> selectGroupMemberIdList(Long groupId);
+
+    /**
+     * 批量更新用户的群昵称
+     * @param map
+     * @return
+     */
+    int batchUpdateGroupMemberNickName(Map<String, Object> map);
 }
