@@ -35,6 +35,7 @@ public class RankAcceptAwardApiController {
     public BaseResp<Page<RankAcceptAward>> selectRankAcceptAwardList(@RequestBody RankAcceptAward rankAcceptAward,
                                                                      @PathVariable("pageno") String pageno,
                                                                      @PathVariable("pagesize") String pagesize){
+        logger.info("select rank accept award list and rankAcceptAward={},pageno={},pagesize={}", JSON.toJSON(rankAcceptAward),pageno,pagesize);
         BaseResp<Page<RankAcceptAward>> baseResp = new BaseResp<>();
         if (null == rankAcceptAward){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -47,7 +48,7 @@ public class RankAcceptAwardApiController {
         }
         try {
             baseResp = rankAcceptAwardService.selectRankAccepteAwardList(rankAcceptAward,Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rankacceptaward list is error:",e);
         }
         return baseResp;
@@ -74,6 +75,7 @@ public class RankAcceptAwardApiController {
     @RequestMapping(value = "detail/{rankid}/{userid}")
     public BaseResp<RankAcceptAward> selectRankAcceptAwardDetail(@PathVariable("rankid") String rankid,
                                                                  @PathVariable("userid") String userid){
+        logger.info("rankid={},userid={}", rankid,userid);
         BaseResp<RankAcceptAward> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(rankid,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -92,6 +94,7 @@ public class RankAcceptAwardApiController {
 
     @RequestMapping(value = "update")
     public BaseResp<Object> updateRankAccepteAward(@RequestBody RankAcceptAward rankAcceptAward){
+        logger.info("rankAcceptAward={}",JSON.toJSONString(rankAcceptAward));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == rankAcceptAward ){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -105,9 +108,4 @@ public class RankAcceptAwardApiController {
         }
         return baseResp;
     }
-
-
-
-
-
 }

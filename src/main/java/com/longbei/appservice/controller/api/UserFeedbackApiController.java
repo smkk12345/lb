@@ -41,6 +41,7 @@ public class UserFeedbackApiController {
     public BaseResp<Page<UserFeedback>> getFeedbackListWithPage(@RequestBody UserFeedback userFeedback,
                                                                   @PathVariable("pageno") String pageno,
                                                                   @PathVariable("pagesize") String pagesize){
+        logger.info("selectFeedbackList for adminservice and userFeedback={},pageno={},pagesize={}", JSON.toJSON(userFeedback),pageno,pagesize);
         BaseResp<Page<UserFeedback>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageno)){
             pageno = "1";
@@ -52,7 +53,7 @@ public class UserFeedbackApiController {
             Page<UserFeedback> page = userFeedbackService.selectFeedbackListWithPage(userFeedback,Integer.parseInt(pageno),Integer.parseInt(pagesize));
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get userFeedback list with page is error:{}",e);
         }
         return baseResp;
@@ -67,7 +68,7 @@ public class UserFeedbackApiController {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = userFeedbackService.selectFeedbackListNum(userFeedback);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectFeedbackListNum for adminservice and userFeedback={}", JSON.toJSON(userFeedback),e);
         }
         return baseResp;
@@ -75,6 +76,7 @@ public class UserFeedbackApiController {
 
     @RequestMapping(value = "select/{id}")
     public  BaseResp<UserFeedback> selectFeedback(@PathVariable("id") String id){
+        logger.info("id={}", id);
         BaseResp<UserFeedback> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(id)){
             return baseResp;
@@ -89,13 +91,14 @@ public class UserFeedbackApiController {
 
     @RequestMapping(value = "edit")
     public BaseResp editFeedback(@RequestBody UserFeedback userFeedback){
+        logger.info("userFeedback={}", JSON.toJSON(userFeedback));
         BaseResp baseResp = new BaseResp();
         try {
             boolean flag = userFeedbackService.updateFeedback(userFeedback);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update userFeedback  is error:{}",e);
         }
         return baseResp;

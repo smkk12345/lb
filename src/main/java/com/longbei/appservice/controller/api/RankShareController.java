@@ -57,6 +57,7 @@ public class RankShareController {
      */
     @RequestMapping(value="rankDetail")
     public void rankDetail(String rankId, HttpServletResponse response,String callback){
+        logger.info("rankId = {}", rankId);
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(StringUtils.isEmpty(rankId)){
             try{
@@ -97,6 +98,7 @@ public class RankShareController {
     @RequestMapping(value="selectFashionMan")
     @ResponseBody
     public BaseResp<Object> selectFashionMan(Long rankId){
+        logger.info("rankId={}",rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -118,6 +120,7 @@ public class RankShareController {
     @RequestMapping(value="rankMemberSort")
     @ResponseBody
     public BaseResp<Object> rankMemberSort(Long userid,Long rankId,Integer sortType){
+        logger.info("userid={},rankId={},sortType={}",userid,rankId,sortType);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -140,6 +143,7 @@ public class RankShareController {
     @RequestMapping(value="rankAwardDetail")
     @ResponseBody
     public BaseResp<Object> rankAwardDetail(Long rankid){
+        logger.info("rankid={}",rankid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(rankid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -158,6 +162,7 @@ public class RankShareController {
     @ResponseBody
     @RequestMapping(value="selectRankMemberDetail")
     public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId){
+        logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -177,6 +182,7 @@ public class RankShareController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping(value = "improveDetail")
     public BaseResp select(String impid,String businesstype,String businessid) {
+        logger.info("impid={},businesstype={},businessid={}",impid,businesstype,businessid);
         BaseResp<Improve> baseResp = new BaseResp<Improve>();
         if (StringUtils.hasBlankParams(impid,businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -212,6 +218,7 @@ public class RankShareController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commentList")
     public BaseResp<Object> commentList(String impid,String businesstype,String businessid) {
+        logger.info("impid={},businesstype={},businessid={}",impid,businesstype,businessid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(impid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -235,6 +242,7 @@ public class RankShareController {
     @RequestMapping(value = "lfdlist")
     @ResponseBody
     public BaseResp<List<ImpAllDetail>> getImproveLFDList(String impid, String opttype) {
+        logger.info("impid={},opttype={}",impid,opttype);
         BaseResp<List<ImpAllDetail>> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(impid, opttype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -257,6 +265,7 @@ public class RankShareController {
     @ResponseBody
     @RequestMapping(value = "selectListInRank")
     public BaseResp selectListInRank(String userid, String rankid) {
+        logger.info("userid={},rankid={}",userid,rankid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if (StringUtils.hasBlankParams(userid, rankid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -282,6 +291,7 @@ public class RankShareController {
     @RequestMapping(value = "rank/list")
     @ResponseBody
     public BaseResp selectRankImproveList(String rankid, String sorttype, String sift) {
+        logger.info("rankid={},sorttype={},sift={}",rankid,sorttype,sift);
         if (StringUtils.hasBlankParams(rankid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -309,8 +319,8 @@ public class RankShareController {
     @RequestMapping(value = "goalDetail")
     @ResponseBody
     public BaseResp<UserGoal> goalDetail(String goalid){
-        BaseResp<UserGoal> baseResp = new BaseResp<>();
         logger.info("getGoalDetail goalid = {}", goalid);
+        BaseResp<UserGoal> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(goalid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
@@ -333,6 +343,7 @@ public class RankShareController {
     @ResponseBody
     @RequestMapping(value = "goal/list")
     public BaseResp selectGoalImproveList(String goalid) {
+        logger.info("goalid = {}",goalid);
         if (StringUtils.hasBlankParams(goalid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -363,8 +374,8 @@ public class RankShareController {
     @RequestMapping(value = "rankCard")
     @ResponseBody
     public String rankCard(String rankCardId,HttpServletRequest request){
-        BaseResp<Object> baseResp = new BaseResp<>();
         logger.info("rankCard rankCardId = {}", rankCardId);
+        BaseResp<Object> baseResp = new BaseResp<>();
         String callback = request.getParameter("callback");
         if(StringUtils.hasBlankParams(rankCardId)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

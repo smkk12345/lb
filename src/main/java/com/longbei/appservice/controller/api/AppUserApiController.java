@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -42,6 +43,7 @@ public class AppUserApiController {
 
     @RequestMapping(value = "login",method = RequestMethod.POST)
     public BaseResp<UserInfo> login(String username,String password){
+        logger.info("username={},password={}",username,password);
         BaseResp<UserInfo> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(username, password)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -64,6 +66,7 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "userDetail")
     public BaseResp<UserInfo> userDetail(String userid){
+        logger.info("userid={}",userid);
         BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -84,6 +87,7 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "selectJustInfo")
     public BaseResp<UserInfo> selectJustInfo(String userid){
+        logger.info("userid={}",userid);
         BaseResp<UserInfo> baseResp = new BaseResp<UserInfo>();
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -106,6 +110,7 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectUserLevel")
     public BaseResp<UserLevel> selectUserLevel(String userid){
+        logger.info("userid={}",userid);
         BaseResp<UserLevel> baseResp = new BaseResp<UserLevel>();
         if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -158,6 +163,7 @@ public class AppUserApiController {
     @ResponseBody
     public BaseResp<Page<UserInfo>> selectUserList(@RequestBody UserInfo userInfo, String order,
                                                    String ordersc, String pageno, String pagesize){
+        logger.info("userInfo={},order={},ordersc={},pageno={},pagesize={}", JSON.toJSONString(userInfo),order,ordersc,pageno,pagesize);
         BaseResp<Page<UserInfo>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(ordersc)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -186,6 +192,7 @@ public class AppUserApiController {
     @RequestMapping(value = "/updateuser")
     @ResponseBody
     public BaseResp<Object> updateUserStatus(@RequestBody UserInfo userInfo){
+        logger.info("userInfo={}", JSON.toJSONString(userInfo));
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = userService.updateUserStatus(userInfo);
@@ -254,6 +261,7 @@ public class AppUserApiController {
     @ResponseBody
     public BaseResp<Object> sendMessagesBatch(String friendid, String[] userids, String businesstype,
                                         String businessid, String remark,String title){
+        logger.info("friendid={},userids={},businesstype={},businessid={},remark={},title={}",friendid,JSON.toJSONString(userids),businesstype,businessid,remark,title);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(userids)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -278,6 +286,7 @@ public class AppUserApiController {
     @ResponseBody
     @RequestMapping(value = "updateMoney")
     public BaseResp updateTotalmoneyByUserid(Long userid, Integer totalMoney, Integer totalPrice){
+        logger.info("userid={},totalMoney={},totalPrice={}",userid,totalMoney,totalPrice);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp =userService.updateTotalmoneyByUserid(userid,totalPrice);

@@ -3219,7 +3219,7 @@ public class ImproveServiceImpl implements ImproveService{
             page.setList(timeLineDetails);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select recommend improve list from mongo is error:",e);
         }
 
