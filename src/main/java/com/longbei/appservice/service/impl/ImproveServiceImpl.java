@@ -1057,7 +1057,7 @@ public class ImproveServiceImpl implements ImproveService{
     //进步删除之后清理脏数据
     private void clearDirtyData(Improve improve){
         int flower = improve.getFlowers();
-        int like = improve.getLikes();
+        int like = getLikeFromRedis(improve.getImpid().toString(),improve.getBusinessid().toString(),improve.getBusinesstype());
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         switch (improve.getBusinesstype()){
