@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 //import java.text.*;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
@@ -710,6 +711,9 @@ public class UserServiceImpl implements UserService {
 							userInfo.getUserid(),userInfo.getUsername(),e);
 				}
 			}
+
+
+
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null == userInfo){
@@ -745,6 +749,97 @@ public class UserServiceImpl implements UserService {
 			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 		}
 		return returnResp;
+	}
+
+
+	private BaseResp<Object> canAbleLogin(String deviceindex,String username){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		//每日次数限制
+		if(!canLoginTimesPerDay(deviceindex,username)){
+			return baseResp.initCodeAndDesp();
+		}
+		//设备号切换
+
+		//帐号冻结
+
+		return baseResp;
+	}
+
+	/**
+	 * 次数限制
+	 * @param deviceindex
+	 * @param username
+	 * @return
+	 */
+	private boolean canLoginTimesPerDay(String deviceindex,String username){
+
+		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+		Set<String> tels = springJedisDao.members(deviceindex+date+"login");
+		if (tels == null || tels.size() < 5){
+			return true;
+		}
+		if(tels.size() == 5 && tels.contains(username)){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 切换帐号登录
+	 * @param deviceindex
+	 * @param username
+	 * @return
+	 */
+	private BaseResp<Object> canLoginDeviceIndex(String deviceindex,String username){
+		BaseResp<Object> baseResp = new BaseResp<>();
+//		List<AppUser> list = appUserService.getOtherDevice(deviceindex);
+//		if(null == list){
+//			if(!StringUtils.isBlank(appUser.getDeviceindex())){
+//				map.put("status", Constant.STATUS_SYS_00);
+//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
+//				map.put("isJumpValidate","1");
+//				return map;
+//			}
+//			appUserService.updateIndexDevice(appUser.getId(),deviceindex);
+//		}else if(list.size() > 1) {
+//			appUserService.clearOtherDevice(appUser.getId(), deviceindex);
+//			appUserService.updateIndexDevice(appUser.getId(), deviceindex);
+//		}else if(list.isEmpty()){
+//			if(!StringUtils.isBlank(appUser.getDeviceindex())){
+//				map.put("status", Constant.STATUS_SYS_00);
+//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
+//				map.put("isJumpValidate","1");
+//				return map;
+//			}
+//			appUserService.updateIndexDevice(appUser.getId(), deviceindex);
+//		}else {
+//			AppUser appUser1 = list.get(0);
+//			if(appUser1.getId().equals(userid)){
+//			}else{
+//				map.put("status", Constant.STATUS_SYS_00);
+//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
+//				map.put("isJumpValidate","1");
+//				return map;
+//			}
+//		}
+		return baseResp;
+	}
+
+
+	/**
+	 * 登录成功之后次数修改
+	 * @param deviceindex
+	 * @param username
+	 * @return
+	 */
+	private boolean addLoginRecord(String deviceindex,String username){
+		if(StringUtils.isBlank(deviceindex)){
+			return false;
+		}
+		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+		String loginStr = deviceindex+date+"login";
+		long n = springJedisDao.sAdd(loginStr,username);
+		return true;
 	}
 
 
