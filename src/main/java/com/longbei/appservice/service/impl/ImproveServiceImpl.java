@@ -1426,9 +1426,9 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
-                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
-                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
-                        }
+//                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+//                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
+//                        }
                         return baseResp.initCodeAndDesp();
                     } else {
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
