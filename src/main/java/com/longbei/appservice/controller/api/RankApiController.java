@@ -50,13 +50,14 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectlist")
     public BaseResp<Page<Rank>> selectRankList(@RequestBody Rank rank,String pageno,String pagesize){
+        logger.info("rank={},pageno={},pagesize={}", JSON.toJSONString(rank),pageno,pagesize);
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<Rank>> baseResp = new BaseResp<>();
         try {
             Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }
         return baseResp;
@@ -71,13 +72,14 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectListWithPageOrderByInvolved")
     public BaseResp<Page<Rank>> selectListWithPageOrderByInvolved(@RequestBody Rank rank,String pageno,String pagesize,String orderByInvolved){
+        logger.info("rank={},pageno={},pagesize={},orderByInvolved={}", JSON.toJSONString(rank),pageno,pagesize,orderByInvolved);
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<Rank>> baseResp = new BaseResp<>();
         try {
             Page<Rank> page = rankService.selectRankList(rank,Integer.parseInt(pageno),Integer.parseInt(pagesize),orderByInvolved);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectListWithPageOrderByInvolved for adminservice is error:",e);
         }
         return baseResp;
@@ -111,6 +113,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "selectimagelist")
     public BaseResp selectRankImageList(@RequestBody RankImage rankImage, String pageno, String pagesize, HttpServletRequest request){
+        logger.info("rankImage={},pageno={},pagesize={}", JSON.toJSONString(rankImage),pageno,pagesize);
         Page.initPageNoAndPageSize(pageno,pagesize);
         BaseResp<Page<RankImage>> baseResp = new BaseResp<>();
         try {
@@ -118,7 +121,7 @@ public class RankApiController {
                     (rankImage,Integer.parseInt(pageno),Integer.parseInt(pagesize));
             baseResp = BaseResp.ok();
             baseResp.setData(rankImages);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rank iamge list for adminservice is error:",e);
         }
         return baseResp;
@@ -156,7 +159,7 @@ public class RankApiController {
         }
         try {
             baseResp = rankService.selectRankDetailByRankid(null,rankid,true,true);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rank info rankid={} is error:",rankid,e);
         }
         return baseResp;
@@ -185,7 +188,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "insert")
     public BaseResp insertRank(@RequestBody RankImage rankImage){
-        logger.info("insert rankImage={}",rankImage);
+        logger.info("insert rankImage={}",JSON.toJSONString(rankImage));
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.insertRank(rankImage);
@@ -202,6 +205,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "updateimage")
     public BaseResp<Object> updateRankImage(@RequestBody RankImage rankImage){
+        logger.info("update rankImage={}",JSON.toJSONString(rankImage));
         boolean issuccess = false;
         try {
             issuccess = rankService.updateRankImage(rankImage);
@@ -209,7 +213,7 @@ public class RankApiController {
                 return BaseResp.ok(Constant.RTNINFO_SYS_52);
             }
         } catch (Exception e) {
-            logger.error("update rank is error:{}",e);
+            logger.error("update rankImage is error:{}",e);
         }
         return BaseResp.fail(Constant.RTNINFO_SYS_53);
     }
@@ -223,6 +227,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "updateimagesymbol")
     public BaseResp<Object> updateRankImageSymbol(@RequestBody RankImage rankImage){
+        logger.info("update rankImage={}",JSON.toJSONString(rankImage));
         boolean issuccess = false;
         try {
             issuccess = rankService.updateRankImageSymbol(rankImage);
@@ -247,6 +252,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "updatesymbol")
     public BaseResp<Object> updateRankSymbol(@RequestBody Rank rank){
+        logger.info("rank={}",JSON.toJSONString(rank));
         boolean issuccess = false;
         try {
             issuccess = rankService.updateRankSymbol(rank);
@@ -267,6 +273,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "insertnotice")
     public BaseResp<Object> insertNotice(@RequestBody Rank rank,String noticetype){
+        logger.info("rank={},noticetype={}",JSON.toJSONString(rank),noticetype);
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = rankService.insertNotice(rank,noticetype);
@@ -284,6 +291,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "publish/{rankid}")
     public BaseResp<Object> publishRank(@PathVariable("rankid") String rankid){
+        logger.info("rankid={}",rankid);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.publishRankImage(rankid);
@@ -297,6 +305,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "publishpcprivate")
     public BaseResp<Object> publishPCPrivateRank(String rankid){
+        logger.info("rankid={}",rankid);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.publishPCPrivateRank(rankid);
@@ -314,6 +323,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "check")
     public BaseResp<Object> checkRank(@RequestBody RankCheckDetail rankCheckDetail){
+        logger.info("rankCheckDetail={}",JSON.toJSONString(rankCheckDetail));
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.checkRankImage(rankCheckDetail);
@@ -326,6 +336,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "submit")
     public BaseResp submitCheckRank(String rankid){
+        logger.info("rankid={}",rankid);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.submitCheckRank(rankid);
@@ -343,6 +354,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "privilege")
     public BaseResp hasPrivilege(String rankid){
+        logger.info("rankid={}",rankid);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.hasPrivilege(rankid);
@@ -361,6 +373,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "maxjoinnum")
     public BaseResp maxRankJoinNum(String userid,String ranktype){
+        logger.info("userid={},ranktype={}",userid,ranktype);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.maxRankJoinNum(userid,ranktype);
@@ -376,6 +389,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "back")
     public BaseResp setBackCheckRank(String rankid){
+        logger.info("rankid={}",rankid);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankService.setBackCheckRank(rankid);
@@ -395,6 +409,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "remove")
     public BaseResp<Object> removeRank(String rankid,String createuserid){
+        logger.info("rankid={},createuserid={}",rankid,createuserid);
         return null;
     }
 
@@ -406,6 +421,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "removeimage/{rankimageid}")
     public BaseResp<Object> removeRankImage(@PathVariable("rankimageid") String rankimageid){
+        logger.info("rankimageid={}",rankimageid);
         boolean flag = rankService.deleteRankImage(rankimageid);
         if(flag){
             BaseResp baseResp = BaseResp.ok();
@@ -425,7 +441,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "ispublic")
     public BaseResp<Object> isPublicRank(String rankid,String createuserid,String ispublic){
-
+        logger.info("rankid={},createuserid={},ispublic={}",rankid,createuserid,ispublic);
         return null;
     }
 
@@ -441,6 +457,7 @@ public class RankApiController {
     public BaseResp<Page<RankMembers>> getRankMembers(@RequestBody RankMembers rankMembers,
                                                 @PathVariable("startNum") Integer startNum,
                                                 @PathVariable("pageSize") Integer pageSize){
+        logger.info("rankMembers={},startNum={},pageSize={}",JSON.toJSONString(rankMembers),startNum,pageSize);
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
@@ -453,7 +470,7 @@ public class RankApiController {
         }
         try {
             baseResp = rankService.selectRankMemberList(rankMembers,startNum,pageSize);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
         }
         return baseResp;
@@ -464,6 +481,7 @@ public class RankApiController {
     public BaseResp<Page<RankMembers>> getAllRankMembers(@RequestBody UserInfo userInfo,
                                                          @PathVariable("pageNo") String pageNo,
                                                          @PathVariable("pageSize") String pageSize){
+        logger.info("userInfo={},pageNo={},pageSize={}",JSON.toJSONString(userInfo),pageNo,pageSize);
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageNo)){
             pageNo = "1";
@@ -473,7 +491,7 @@ public class RankApiController {
         }
         try {
             baseResp = rankService.selectRankAllMemberList(userInfo,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select all rank member list for pc is error:",e);
         }
         return baseResp;
@@ -492,6 +510,7 @@ public class RankApiController {
     public BaseResp<Page<RankMembers>> selectRankFashionManList(@PathVariable("rankId") String rankId,
                                                          @PathVariable("pageNo") String pageNo,
                                                          @PathVariable("pageSize") String pageSize){
+        logger.info("rankId={},pageNo={},pageSize={}",rankId,pageNo,pageSize);
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageNo)){
             pageNo = "1";
@@ -501,7 +520,7 @@ public class RankApiController {
         }
         try {
             baseResp = rankService.selectRankFashionManList(rankId,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectRankFashionManList for pc is error:",e);
         }
         return baseResp;
@@ -521,6 +540,7 @@ public class RankApiController {
     public BaseResp<Page<RankMembers>> rankMemberCheckResultPreview(@RequestBody RankMembers rankMembers,
                                                                     @PathVariable("pageNo") String pageNo,
                                                                     @PathVariable("pageSize") String pageSize){
+        logger.info("rankMembers={},pageNo={},pageSize={}",JSON.toJSONString(rankMembers),pageNo,pageSize);
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
@@ -533,7 +553,7 @@ public class RankApiController {
         }
         try {
             baseResp = rankService.rankMemberCheckResultPreview(rankMembers,Integer.parseInt(pageNo),Integer.parseInt(pageSize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
         }
         return baseResp;
@@ -552,6 +572,7 @@ public class RankApiController {
     public BaseResp<Page<RankMembers>> getRankWaitCheckMembers(@RequestBody RankMembers rankMembers,
                                                                @PathVariable("startNum") Integer startNum,
                                                                @PathVariable("pageSize") Integer pageSize){
+        logger.info("rankMembers={},startNum={},pageSize={}",JSON.toJSONString(rankMembers),startNum,pageSize);
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){
             return baseResp;
@@ -565,7 +586,7 @@ public class RankApiController {
         try {
             baseResp = rankService.selectRankMemberWaitCheckList
                     (rankMembers,startNum,pageSize);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select wait check rankmembers rankid = {} is error:",rankMembers.getRankid(),e);
         }
         return baseResp;
@@ -584,6 +605,7 @@ public class RankApiController {
     public BaseResp<Page<Improve>> getRankImprovePageByUserid(String rankid,String userid,String iscomplain,
                                                               @PathVariable("startNum") Integer startNum,
                                                               @PathVariable("pageSize") Integer pageSize){
+        logger.info("rankid={},userid={},iscomplain={},startNum={},pageSize={}",rankid,userid,iscomplain,startNum,pageSize);
         BaseResp<Page<Improve>> baseResp = new BaseResp<>();
 
         if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
@@ -607,7 +629,7 @@ public class RankApiController {
             page.setList(listBaseResp.getData());
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rank improve list by user userid={} is error:",userid,e);
         }
         return baseResp;
@@ -623,6 +645,7 @@ public class RankApiController {
     @RequestMapping(value = "memberinfo/{rankid}/{userid}")
     public BaseResp<RankMembers> getRankMemberInfo(@PathVariable("rankid") String rankid,
                                                    @PathVariable("userid") String userid){
+        logger.info("rankid={},userid={}", rankid,userid);
         BaseResp<RankMembers> baseResp = new BaseResp<>();
 
         if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(rankid,userid)){
@@ -641,6 +664,7 @@ public class RankApiController {
                                          @PathVariable("userid")String userid,
                                          @PathVariable("rankid")String rankid,
                                          @PathVariable("improveid")String improveid){
+        logger.info(" status={},userid={},rankid={},improveid={} :",status,userid,rankid,improveid);
         BaseResp<Object> baseResp = new BaseResp<>();
 
         if (com.longbei.appservice.common.utils.StringUtils.hasBlankParams(status,userid,rankid,improveid)){
@@ -663,6 +687,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "removemember")
     public BaseResp<Object> removeRankMember(@RequestBody RankMembers rankMembers){
+        logger.info("rankMembers={}",JSON.toJSONString(rankMembers));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == rankMembers
                 || rankMembers.getRankid()==null
@@ -682,6 +707,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "close/{rankid}")
     BaseResp<Object> closeRank(@PathVariable("rankid")String rankid){
+        logger.info("rankid={}", rankid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(null==rankid){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -712,6 +738,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "fashionman")
     public BaseResp<Object> setFashionman(@RequestBody RankMembers rankMembers){
+        logger.info("rankMembers={}",JSON.toJSONString(rankMembers));
         BaseResp<Object> baseResp = new BaseResp<>();
         logger.info(String.valueOf(rankMembers.getRankid()));
         logger.info(String.valueOf(rankMembers.getUserid()));
@@ -736,6 +763,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "checkmember")
     public BaseResp<Object> updateRankMemberCheckStatus(@RequestBody RankMembers rankMembers){
+        logger.info("rankMembers={}",JSON.toJSONString(rankMembers));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == rankMembers
                 || rankMembers.getRankid()==null
@@ -762,6 +790,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "subcheckresultpre")
     public BaseResp<Object> subRankMemberCheckResultPre(String rankid){
+        logger.info("rankid={}", rankid);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(rankid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -781,6 +810,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value = "subcheckresult")
     public BaseResp<Object> subRankMemberCheckResult(@RequestBody Rank rank){
+        logger.info("rank={}",JSON.toJSONString(rank));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == rank || StringUtils.isEmpty(rank.getRankid())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -800,6 +830,7 @@ public class RankApiController {
      */
     @RequestMapping(value="rankDetail")
     public BaseResp<Rank> rankDetail(String rankId){
+        logger.info("rankId={}", rankId);
         BaseResp<Rank> baseResp = new BaseResp<Rank>();
         if(com.longbei.appservice.common.utils.StringUtils.isEmpty(rankId)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -817,6 +848,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value="noticeFollowRankUser")
     public BaseResp<Object> noticeFollowRankUser(Long currentTime){
+        logger.info("currentTime={}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -834,6 +866,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value="handleStartRank")
     public BaseResp<Object> handleStartRank(Long currentTime){
+        logger.info("currentTime={}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         logger.info("handleStartRank currentTime={}",currentTime);
         if(currentTime == null){
@@ -852,6 +885,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value="rankAwardConfirmReceipt")
     public BaseResp<Object> rankAwardConfirmReceipt(Long currentTime){
+        logger.info("currentTime={}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -869,6 +903,7 @@ public class RankApiController {
     @ResponseBody
     @RequestMapping(value="endRank")
     public BaseResp<Object> endRank(Long currentTime){
+        logger.info("currentTime={}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -886,6 +921,7 @@ public class RankApiController {
     @RequestMapping(value="autoPublishRank")
     @ResponseBody
     public BaseResp<Object> autoPublishRank(Long currentTime){
+        logger.info("currentTime={}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -906,6 +942,7 @@ public class RankApiController {
      */
     @RequestMapping(value="rankMemberSort")
     public BaseResp<Object> rankMemberSort(Long rankId,Integer sortType,Integer startNum,Integer endNum){
+        logger.info("rankId={},sortType={},startNum={},endNum={}", rankId,sortType,startNum,endNum);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(rankId == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -931,6 +968,7 @@ public class RankApiController {
      */
     @RequestMapping("checkdetaillist")
     public BaseResp<List<RankCheckDetail>> selectRankCheckDetailList(String rankid){
+        logger.info("rankid={}", rankid);
         BaseResp<List<RankCheckDetail>> baseResp = new BaseResp<>();
         try {
             baseResp = rankService.selectRankCheckDetailList(rankid);

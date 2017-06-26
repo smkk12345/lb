@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -30,8 +31,8 @@ public class ImproveApiController {
     @RequestMapping(value = "updatemedia")
     public BaseResp<Object> updatemedia(String objid, String pickey, String filekey,
                                         String workflow,String duration,String picAttribute){
-        logger.info("objid={},pickey={},filekey={},workflow={},duration={}",
-                objid,pickey,filekey,workflow,duration);
+        logger.info("objid={},pickey={},filekey={},workflow={},duration={},picAttribute={}",
+                objid,pickey,filekey,workflow,duration,picAttribute);
         try {
             return improveService.updateMedia(objid,pickey,filekey,workflow,duration,picAttribute);
         }catch (Exception e){
@@ -61,6 +62,7 @@ public class ImproveApiController {
     @ResponseBody
     @RequestMapping(value = "goal/list", method = RequestMethod.POST)
     public BaseResp selectGoalImproveList(String userid, String goalid, String startNo, String pageSize) {
+        logger.info("userid={},goalid={},startNo={},pageSize={}",userid,goalid,startNo,pageSize);
         if (StringUtils.hasBlankParams(userid, goalid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -97,7 +99,7 @@ public class ImproveApiController {
     @ResponseBody
     @RequestMapping(value = "select")
     public BaseResp select(String userid, String impid, String businesstype,String businessid) {
-
+        logger.info("userid={},impid={},businesstype={},businessid={}",userid,impid,businesstype,businessid);
         if (StringUtils.hasBlankParams(userid, impid)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -120,6 +122,7 @@ public class ImproveApiController {
     @RequestMapping(value = "recommendlist")
     public BaseResp<Page<TimeLineDetail>> selectRecommendImproveList(@RequestBody Improve improve,
                                                                      String pageno, String pagesize){
+        logger.info("improve={},pageno={},pagesize={}", JSON.toJSONString(improve),pageno,pagesize);
         BaseResp<Page<TimeLineDetail>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(pageno)){
             pageno = "1";
@@ -131,7 +134,7 @@ public class ImproveApiController {
             baseResp = improveService.selectRecommendImproveList(improve==null?null:improve.getBrief(),
                     improve==null?null:improve.getAppUserMongoEntity()==null?null:improve.getAppUserMongoEntity().getNickname(),
                     improve==null?null:improve.getCreatetime(),Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select improve recommend list for pc is error:",e);
         }
 
@@ -148,6 +151,7 @@ public class ImproveApiController {
     @RequestMapping(value = "list")
     public BaseResp<Page<Improve>> selectImproveList(@RequestBody Improve improve, String pageno,
                                                      String pagesize, String order){
+        logger.info("improve={},pageno={},pagesize={},order={}", JSON.toJSONString(improve),pageno,pagesize,order);
         BaseResp<Page<Improve>> baseResp = new BaseResp<>();
         if (null == improve || StringUtils.isBlank(improve.getBusinesstype())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -158,7 +162,7 @@ public class ImproveApiController {
                     improve.getAppUserMongoEntity()==null?null:improve.getAppUserMongoEntity().getNickname(),
                     improve.getCreatetime(),
                     Integer.parseInt(pageno),Integer.parseInt(pagesize),order);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select improve list for pc is error:",e);
         }
         return baseResp;
@@ -174,14 +178,14 @@ public class ImproveApiController {
      */
     @RequestMapping(value = "updaterecommend")
     public BaseResp<Object> updateImproveRecommentStatus(String businesstype,@RequestBody List<Long> impids,String isrecommend){
-
+        logger.info("businesstype={},impids={},isrecommend={}",businesstype, JSON.toJSONString(impids),isrecommend);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(businesstype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
             baseResp = improveService.updateImproveRecommentStatus(businesstype,impids,isrecommend);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update improve recommend status for pc is error:",e);
         }
         return baseResp;
@@ -196,6 +200,7 @@ public class ImproveApiController {
      */
     @RequestMapping(value = "updaterecommendsort")
     public BaseResp updateImproveRecommendSort(Long impid, String businesstype, Integer sort) {
+        logger.info("impid={},businesstype={},sort={}",impid, businesstype,sort);
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = improveService.updateImproveRecommendSort(impid,businesstype,sort);

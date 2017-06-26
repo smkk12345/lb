@@ -73,7 +73,7 @@ public class ArticleServiceImpl implements ArticleService{
 //            article.setArticleBusinesses(articleBusinesses);
             baseResp = BaseResp.ok();
             baseResp.setData(article);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select article articleid={} is error:{}",articleid,e);
         }
         return baseResp;
@@ -115,7 +115,7 @@ public class ArticleServiceImpl implements ArticleService{
             article.setArticleBusinesses(articleBusinesses);
             baseResp = BaseResp.ok();
             baseResp.setData(article);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select article articleid={} is error:{}",articleid,e);
         }
         return baseResp;

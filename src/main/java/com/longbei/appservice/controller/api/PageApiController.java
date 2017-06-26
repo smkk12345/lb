@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -38,6 +39,7 @@ public class PageApiController {
      */
     @RequestMapping(value = "inserthomepic")
     public BaseResp<Object> insertHomePage(@RequestBody HomePicture homePicture){
+        logger.info("homePicture:{}", JSON.toJSONString(homePicture));
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = pageService.insertHomePage(homePicture);
@@ -55,6 +57,7 @@ public class PageApiController {
      */
     @RequestMapping(value = "udpatehomepic")
     public BaseResp<Object> udpateHomePage(@RequestBody HomePicture homePicture){
+        logger.info("homePicture:{}", JSON.toJSONString(homePicture));
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = pageService.udpateHomePage(homePicture);
@@ -64,7 +67,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
     /**
      * 查询轮播图详情
      * @param id
@@ -73,6 +75,7 @@ public class PageApiController {
      */
     @RequestMapping(value = "homepicdetail/{id}")
     public BaseResp<HomePicture> selectHomePageDetail(@PathVariable("id") String id){
+        logger.info("id={}", id);
         BaseResp<HomePicture> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(id)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -85,7 +88,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
     /**
      * 查询轮播图列表
      * @param homePicture
@@ -97,6 +99,7 @@ public class PageApiController {
     @RequestMapping(value = "homepiclist")
     public BaseResp<Page<HomePicture>> selectHomePageList(@RequestBody HomePicture homePicture,
                                                           String pageno, String pagesize){
+        logger.info("homePicture:{},pageno={},pagesize={}", JSON.toJSONString(homePicture),pageno,pagesize);
         BaseResp<Page<HomePicture>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(pageno)){
             pageno = "1";
@@ -112,8 +115,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
-
     /**
      * 添加首页推荐
      * @param homeRecommend
@@ -121,6 +122,7 @@ public class PageApiController {
      */
     @RequestMapping(value = "insertrecommend")
     public BaseResp<Object> insertHomeRecommend(@RequestBody HomeRecommend homeRecommend){
+        logger.info("homeRecommend:{}", JSON.toJSONString(homeRecommend));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == homeRecommend){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -133,7 +135,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
     /**
      * 获取首页推荐列表（分页）pc
      * @param homeRecommend
@@ -144,6 +145,7 @@ public class PageApiController {
     @RequestMapping(value = "recommendlist")
     public BaseResp<Page<HomeRecommend>> selectHomeRecommendList(@RequestBody HomeRecommend homeRecommend,
                                                           String pageno,String pagesize){
+        logger.info("homeRecommend:{},pageno={},pagesize={}", JSON.toJSONString(homeRecommend),pageno,pagesize);
         BaseResp<Page<HomeRecommend>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(pageno)){
             pageno = "1";
@@ -159,9 +161,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
-
-
     /**
      * 更新首页推荐
      * @param homeRecommend
@@ -169,6 +168,7 @@ public class PageApiController {
      */
     @RequestMapping(value = "updaterecommend")
     public BaseResp<Object> updateHomeRecommend(@RequestBody HomeRecommend homeRecommend){
+        logger.info("homeRecommend:{}", JSON.toJSONString(homeRecommend));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == homeRecommend){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -181,7 +181,6 @@ public class PageApiController {
         return baseResp;
     }
 
-
     /**
      * 保存或更新一键发布背景图
      * @param pic
@@ -189,6 +188,7 @@ public class PageApiController {
      */
     @RequestMapping("updatepublishbg")
     public BaseResp<Object> saveOrUpdatePublishBg(String pic){
+        logger.info("pic={}",pic);
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = pageService.saveOrUpdatePublishBg(pic);
@@ -197,7 +197,6 @@ public class PageApiController {
         }
         return baseResp;
     }
-
 
     /**
      * 获取一键发布背景图
@@ -221,6 +220,7 @@ public class PageApiController {
      */
     @RequestMapping("updateregpro")
     public BaseResp<Object> saveOrUpdateRegisterProtocol(String regpro){
+        logger.info("regpro={}",regpro);
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             baseResp = pageService.saveOrUpdateRegisterProtocol(regpro);
@@ -229,7 +229,6 @@ public class PageApiController {
         }
         return baseResp;
     }
-
 
     /**
      * 获取注册协议
@@ -245,8 +244,4 @@ public class PageApiController {
         }
         return baseResp;
     }
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -37,6 +38,7 @@ public class ArticleApiController {
     public BaseResp<Page<Article>> getArticleListWithPage(@RequestBody Article article,
                                                                   @PathVariable("pageno") String pageno,
                                                                   @PathVariable("pagesize") String pagesize){
+        logger.info("article={},pageno={},pagesize={}", JSON.toJSONString(article),pageno,pagesize);
         BaseResp<Page<Article>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageno)){
             pageno = "1";
@@ -46,7 +48,7 @@ public class ArticleApiController {
         }
         try {
             baseResp = articleService.selectArticleListWithPage(article,Integer.parseInt(pageno),Integer.parseInt(pagesize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get article list with page is error:{}",e);
         }
         return baseResp;
@@ -55,13 +57,14 @@ public class ArticleApiController {
 
     @RequestMapping(value = "get/{articleid}")
     public BaseResp<Article> getArticle(@PathVariable("articleid") String articleid){
+        logger.info("articleid={}",articleid);
         BaseResp<Article> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(articleid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
             baseResp = articleService.getArticle(articleid);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get article  is error:{}",e);
         }
         return baseResp;
@@ -71,13 +74,14 @@ public class ArticleApiController {
 
     @RequestMapping(value = "getinfo/{articleid}")
     public BaseResp<Article> getArticleH5(@PathVariable("articleid") String articleid){
+        logger.info("articleid={}",articleid);
         BaseResp<Article> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(articleid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
             baseResp = articleService.getArticleH5(articleid);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get article  is error:{}",e);
         }
         return baseResp;
@@ -97,7 +101,7 @@ public class ArticleApiController {
 //        }
 //        try {
 //            baseResp = articleService.getArticle(articleid);
-//        } catch (NumberFormatException e) {
+//        } catch (Exception e) {
 //            logger.error("get article  is error:{}",e);
 //        }
 //        return baseResp;
@@ -105,6 +109,7 @@ public class ArticleApiController {
 
     @RequestMapping(value = "add")
     public BaseResp addArticle(@RequestBody Article article){
+        logger.info("article={}",JSON.toJSONString(article));
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = articleService.insertArticle(article);
@@ -112,7 +117,7 @@ public class ArticleApiController {
                 baseResp = BaseResp.ok();
                 baseResp.setData(article.getId());
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("add article  is error:{}",e);
         }
         return baseResp;
@@ -120,13 +125,14 @@ public class ArticleApiController {
 
     @RequestMapping(value = "update")
     public BaseResp updateArticle(@RequestBody Article article){
+        logger.info("article={}",JSON.toJSONString(article));
         BaseResp baseResp = new BaseResp();
         try {
             boolean flag = articleService.updateArticle(article);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update article  is error:{}",e);
         }
         return baseResp;
@@ -134,13 +140,14 @@ public class ArticleApiController {
 
     @RequestMapping(value = "addBusiness")
     public BaseResp addBusiness(@RequestBody ArticleBusiness articleBusiness){
+        logger.info("articleBusiness={}",JSON.toJSONString(articleBusiness));
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = articleService.insertArticleBusiness(articleBusiness);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("add articleBusiness  is error:{}",e);
         }
         return baseResp;
@@ -148,6 +155,7 @@ public class ArticleApiController {
 
     @RequestMapping(value = "getBusiness/{articleid}")
     BaseResp<List<ArticleBusiness>> getArticleBussiness(@PathVariable("articleid") String articleid){
+        logger.info("articleid={}",articleid);
         BaseResp<List<ArticleBusiness>> baseResp = new BaseResp<>();
 
         if (StringUtils.isEmpty(articleid)){
@@ -156,7 +164,7 @@ public class ArticleApiController {
         try {
             baseResp = articleService.selectArticleBusinessList(articleid);
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get articleBusiness list is error:{}",e);
         }
         return baseResp;
@@ -164,13 +172,14 @@ public class ArticleApiController {
 
     @RequestMapping(value = "deleteBusiness/{articleid}")
     BaseResp deleteArticleBusinessByArticleId(@PathVariable("articleid") String articleid){
+        logger.info("articleid={}",articleid);
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = articleService.deleteArticleBusinessByArticleId(articleid);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete articleBusiness  is error:{}",e);
         }
         return baseResp;

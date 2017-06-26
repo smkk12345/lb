@@ -969,8 +969,10 @@
     FROM rank r inner join rank_members rm on r.rankid = rm.rankid
     where rm.iswinning = 1
       and r.isdel = 0
+      and rm.checkstatus = 3
       and r.ispublic = 0
       and r.isfinish = 5
+    group by r.rankid
     order by r.endtime DESC
     limit #{startNum},#{pageSize}
   </select>
@@ -983,8 +985,20 @@
     where isdel = 0
 	and ispublic = #{ispublic}
     and checkstatus = 1
-    and isup = 0
 	and createuserid = #{createuserid}
+  </select>
+
+  <!-- 获取用户参与的榜单列表 -->
+  <select id="getOwnRankList" parameterType="map" resultMap="BaseResultMap">
+      select
+          <include refid="RANK_Base_Column_List" />
+      from rank r inner join rank_members
+          on r.rankid = rank_members.rankid
+      where r.isdel = #{isdel}
+          and rank_members.status =#{status}
+          and rank_members.userid = #{userId}
+      order by rank_members.updatetime desc
+      limit #{startNum},#{pageSize}
   </select>
 
 </mapper>

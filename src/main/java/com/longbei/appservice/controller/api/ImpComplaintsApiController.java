@@ -36,7 +36,8 @@ public class ImpComplaintsApiController {
 	*/
   	@RequestMapping(value = "/selectListByStatus")
     public BaseResp<Page<ImpComplaints>> selectListByStatus(String status, int startNo, int pageSize) {
-  		Page.initPageNoAndPageSize(startNo + "", pageSize + "");
+		logger.info("selectComplaintsListNum for adminservice and status ={},startNo={},pageSize={}", status,startNo,pageSize);
+		Page.initPageNoAndPageSize(startNo + "", pageSize + "");
 		BaseResp<Page<ImpComplaints>> baseResp = new BaseResp<>();
   		try {
   			Page<ImpComplaints> page = impComplaintsService.selectListByStatus(status, startNo, pageSize);
@@ -83,7 +84,8 @@ public class ImpComplaintsApiController {
    	@RequestMapping(value = "/searchList")
      public BaseResp<Page<ImpComplaints>> searchList(String status, String username, String businesstype, 
      		String sdealtime, String edealtime, String startNo, String pageSize) {
-   		Page.initPageNoAndPageSize(startNo, pageSize);
+		logger.info("status ={},username={},businesstype={},sdealtime={},edealtime={},startNo={},pageSize={}", status,username,businesstype,sdealtime,edealtime,startNo,pageSize);
+		Page.initPageNoAndPageSize(startNo, pageSize);
  		BaseResp<Page<ImpComplaints>> baseResp = new BaseResp<>();
    		try {
    			Page<ImpComplaints> page = impComplaintsService.searchList(status, username, businesstype, 
@@ -114,7 +116,8 @@ public class ImpComplaintsApiController {
 	@RequestMapping(value = "/updateStatus")
     public BaseResp<Object> updateStatus(String id, String status, 
     		String dealuser, String checkoption) {
-   		BaseResp<Object> baseResp = new BaseResp<>();
+		logger.info("id ={},status={},dealuser={},checkoption={}", id,status,dealuser,checkoption);
+		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id, status)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
@@ -140,7 +143,8 @@ public class ImpComplaintsApiController {
    	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectDetail")
     public BaseResp<ImpComplaints> selectDetail(String id) {
-   		BaseResp<ImpComplaints> baseResp = new BaseResp<>();
+		logger.info("id ={}", id);
+		BaseResp<ImpComplaints> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(id)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}

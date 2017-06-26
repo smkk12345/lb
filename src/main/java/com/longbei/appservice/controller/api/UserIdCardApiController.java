@@ -41,6 +41,7 @@ public class UserIdCardApiController {
     @RequestMapping(value = "list")
     public BaseResp<Page<UserIdcard>> selectUserIdCardListPage(@RequestBody UserIdcard userIdcard,
                                                                String pageno,String pagesize){
+        logger.info("selectUserIdCardList for adminservice and userIdcard={},pageno={},pagesize={}", JSON.toJSON(userIdcard),pageno,pagesize);
         if (StringUtils.isBlank(pageno)){
             pageno = "1";
         }
@@ -85,13 +86,14 @@ public class UserIdCardApiController {
      */
     @RequestMapping(value = "info")
     public BaseResp<UserIdcard> getUserIdCardInfo(String userid){
+        logger.info("userid={}", userid);
         BaseResp<UserIdcard> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(userid)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
             baseResp = userIdcardService.userSafety(Long.parseLong(userid));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get user id card info is error:",e);
         }
         return baseResp;
@@ -103,6 +105,7 @@ public class UserIdCardApiController {
      */
     @RequestMapping(value = "checksubmit")
     public BaseResp<Object> submitCheck(@RequestBody UserIdcard userIdcard){
+        logger.info("userIdcard={}", JSON.toJSON(userIdcard));
         BaseResp<Object> baseResp = new BaseResp<>();
         if (null == userIdcard ){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

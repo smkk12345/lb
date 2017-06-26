@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -38,6 +39,7 @@ public class RankAdminApiController {
      */
     @RequestMapping(value = "add")
     public BaseResp insertRankAdmin(@RequestBody RankCard rankCard){
+        logger.info("rankCard={}", JSON.toJSONString(rankCard));
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankCardService.insertRankAdmin(rankCard);
@@ -54,6 +56,7 @@ public class RankAdminApiController {
      */
     @RequestMapping(value = "update")
     public BaseResp updateRankAdmin(@RequestBody  RankCard rankCard){
+        logger.info("rankCard={}", JSON.toJSONString(rankCard));
         BaseResp baseResp = new BaseResp();
         try {
             baseResp = rankCardService.updateRankAdmin(rankCard);
@@ -70,6 +73,7 @@ public class RankAdminApiController {
      */
     @RequestMapping(value = "del/{rankadminid}")
     public BaseResp deleteRankAdmin(@PathVariable("rankadminid") String rankadminid){
+        logger.info("rankadminid={}",rankadminid);
         BaseResp baseResp = new BaseResp();
         if (StringUtils.isBlank(rankadminid)){
             return baseResp;
@@ -89,6 +93,7 @@ public class RankAdminApiController {
      */
     @RequestMapping(value = "get/{rankadminid}")
     public BaseResp<RankCard> selectRankAdmin(@PathVariable("rankadminid") String rankadminid){
+        logger.info("rankadminid={}",rankadminid);
         BaseResp<RankCard> baseResp = new BaseResp();
         if (StringUtils.isBlank(rankadminid)){
             return baseResp;
@@ -111,6 +116,7 @@ public class RankAdminApiController {
     @RequestMapping(value = "list/{pageno}/{pagesize}")
     public BaseResp<Page<RankCard>> selectRankAminListWithPage(@RequestBody RankCard rankCard, @PathVariable("pageno") String pageno,
                                                      @PathVariable("pagesize") String pagesize){
+        logger.info("rankCard={},pageno={},pagesize={}", JSON.toJSONString(rankCard),pageno,pagesize);
         BaseResp<Page<RankCard>> baseResp = new BaseResp();
         if (StringUtils.hasBlankParams(pageno,pagesize)){
             return baseResp;
@@ -131,6 +137,7 @@ public class RankAdminApiController {
      */
     @RequestMapping(value = "list")
     public BaseResp<List<RankCard>> selectRankAdminList(RankCard rankCard){
+        logger.info("rankCard={}", JSON.toJSONString(rankCard));
         BaseResp<List<RankCard>> baseResp = new BaseResp();
         try {
             baseResp = rankCardService.selectRankAdminList(rankCard);
