@@ -383,6 +383,8 @@
             <artifactId>rongyun</artifactId>
             <version>RELEASE</version>
         </dependency>
+
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
