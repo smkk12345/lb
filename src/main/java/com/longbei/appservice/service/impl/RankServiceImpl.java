@@ -2363,6 +2363,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                     newRankAcceptAward.setStatus(3);
                 }else{
+                    logger.error("user accept award error 用户增加进步币失败 userid:{} rankid:{}", userId,rankId);
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"系统异常");
                 }
             }else if(award.getAwardClassify().getClassifytype() == 1){//红包
@@ -2384,7 +2385,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
-            logger.error("user accept award error userId:{} rankId:{}",userId,rankId);
+            logger.error("user accept award error userId:{} rankId:{} errorMsg:{}",userId,rankId,e);
             printExceptionAndRollBackTransaction(e);
         }
 
