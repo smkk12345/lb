@@ -1061,7 +1061,7 @@ public class ImproveServiceImpl implements ImproveService{
     //进步删除之后清理脏数据
     private void clearDirtyData(Improve improve){
         int flower = improve.getFlowers();
-        int like = improve.getLikes();
+        int like = getLikeFromRedis(improve.getImpid().toString(),improve.getBusinessid().toString(),improve.getBusinesstype());
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         switch (improve.getBusinesstype()){
@@ -1430,9 +1430,9 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
-                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
-                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
-                        }
+//                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+//                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
+//                        }
                         return baseResp.initCodeAndDesp();
                     } else {
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
@@ -3223,7 +3223,7 @@ public class ImproveServiceImpl implements ImproveService{
             page.setList(timeLineDetails);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select recommend improve list from mongo is error:",e);
         }
 

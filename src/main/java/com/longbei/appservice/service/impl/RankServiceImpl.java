@@ -978,7 +978,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "3", money, 0);
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"榜单提交审核",money,e);
                 }
                 baseResp.setData(money);
@@ -1047,7 +1047,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 String userid = rankImage1.getCreateuserid();
                 try {
                     baseResp = userMoneyDetailService.insertPublic(Long.parseLong(userid), "8", money, 0);
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"撤回龙榜",money,e);
                 }
                 baseResp.setData(money);
@@ -1082,6 +1082,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 } catch (Exception e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"龙榜审核未通过",money,e);
                 }
+                //通知用户榜单审核不通过
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,"", "10",
+                        rankImage.getRankid().toString(), rankImage.getRanktitle() + " 龙榜审核失败，详情请登录电脑端查看", "0", "49", "发布龙榜审核未通过", 0, "", "",AppserviceConfig.h5_helper);
             }
         }
 
@@ -3862,7 +3865,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 baseResp = BaseResp.ok();
                 baseResp.setData(rankMemberses.get(0));
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rankmember info is error:",e);
         }
         return baseResp;
@@ -3962,7 +3965,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             baseResp = BaseResp.ok();
             baseResp.setData(rankMemberses);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select rankmember list rankid={} is error:",rankid,e);
         }
         return baseResp;

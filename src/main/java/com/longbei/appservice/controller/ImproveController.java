@@ -934,7 +934,7 @@ public class ImproveController {
         }
         try {
             baseResp = improveService.selectRecommendImprove(userid,Integer.parseInt(startNum),Integer.parseInt(pageSize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select hot recommend improve list userid={} is error:",userid,e);
         }
         return baseResp;

@@ -163,6 +163,7 @@ public class IssueApiController {
 
 	@RequestMapping(value = "selectByIssueIdH5")
 	public String selectByIssueIdH5(String issueId,HttpServletRequest request){
+		logger.info("selectByIssueIdH5 and issueId:{}",issueId);
 		BaseResp<Issue> baseResp = new BaseResp<Issue>();
 		String callback = request.getParameter("callback");
 		if(StringUtils.hasBlankParams(issueId)){
@@ -198,6 +199,7 @@ public class IssueApiController {
 
 	@RequestMapping(value = "selectListByTypeH5")
 	public String selectListByTypeH5(String typeId,HttpServletRequest request){
+		logger.info("selectListByTypeH5 and typeId:{}",typeId);
 		BaseResp<Page<Issue>> baseResp = new BaseResp<Page<Issue>>();
 		String callback = request.getParameter("callback");
 		if(StringUtils.hasBlankParams(typeId)){
@@ -216,6 +218,7 @@ public class IssueApiController {
 
 
 	private String getTitleByType(String typeId){
+		logger.info("getTitleByType and typeId:{}",typeId);
 		IssueClassify issueClassify = new IssueClassify();
 		issueClassify.setTypeid(Long.parseLong(typeId));
 		Page<IssueClassify> baseResp = new Page<IssueClassify>();
@@ -238,6 +241,7 @@ public class IssueApiController {
 	 */
 	@RequestMapping(value = "selectIssueClassifyList")
 	public BaseResp<Page<IssueClassify>> selectIssueClassifyList(@RequestBody IssueClassify issueClassify,String pageNo,String pageSize){
+		logger.info("selectIssueClassifyList for adminservice issueClassify:{},pageNo={},pageSize={}", JSON.toJSONString(issueClassify),pageNo,pageSize);
 		BaseResp<Page<IssueClassify>> baseResp = new BaseResp<>();
 		if (StringUtils.isBlank(pageNo)){
 			pageNo = "1";

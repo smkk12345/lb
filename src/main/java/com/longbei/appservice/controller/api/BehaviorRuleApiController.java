@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -7,6 +8,7 @@ import com.longbei.appservice.entity.BehaviorRule;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.BehaviorRuleService;
 import com.longbei.appservice.service.UserLevelService;
+import kafka.utils.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ public class BehaviorRuleApiController {
             BehaviorRule behaviorRule = behaviorRuleService.selectBehaviorRule();
             baseResp.setData(behaviorRule);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get behaviorRule  is error:{}",e);
         }
         return baseResp;
@@ -57,13 +59,14 @@ public class BehaviorRuleApiController {
      */
     @RequestMapping(value = "update")
     public BaseResp updateBehaviorRule(@RequestBody BehaviorRule behaviorRule){
+        logger.info("behaviorRule={}", JSON.toJSONString(behaviorRule));
         BaseResp<BehaviorRule> baseResp = new BaseResp<>();
         try {
             boolean flag = behaviorRuleService.updateBehaviorRule(behaviorRule);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update behaviorRule  is error:{}",e);
         }
         return baseResp;
@@ -76,13 +79,14 @@ public class BehaviorRuleApiController {
      */
     @RequestMapping(value = "add")
     public BaseResp addBehaviorRule(@RequestBody BehaviorRule behaviorRule){
+        logger.info("behaviorRule={}", JSON.toJSONString(behaviorRule));
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = behaviorRuleService.insertBehaviorRule(behaviorRule);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("add behaviorRule  is error:{}",e);
         }
         return baseResp;
@@ -95,6 +99,7 @@ public class BehaviorRuleApiController {
      */
     @RequestMapping(value = "del/{id}")
     public BaseResp deleteBehaviorRule(@PathVariable("id") String id){
+        logger.info("id={}",id);
         BaseResp baseResp = new BaseResp();
         if (StringUtils.isEmpty(id)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -104,7 +109,7 @@ public class BehaviorRuleApiController {
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete behaviorRule  is error:{}",e);
         }
         return baseResp;
@@ -133,7 +138,7 @@ public class BehaviorRuleApiController {
             Page<UserLevel> page = userLevelService.selectUserLevelList(startNum,pageSize);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectUserLevelList for adminservice startNum={},pageSize={}", startNum,pageSize,e);
         }
         return baseResp;
