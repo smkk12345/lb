@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service("userAccountService")
@@ -129,5 +131,36 @@ public class UserAccountServiceImpl implements UserAccountService {
             logger.error("updateUserAccountByUserId error and msg={}",e);
         }
         return baseResp;
+    }
+
+    /**
+     * 用户账号是否为冻结状态
+     * @title isFreezing
+     * @author IngaWu
+     * @return true已冻结 false未冻结
+     * @currentdate:2017年6月21日
+     */
+    @Override
+    public Boolean isFreezing(Long userId){
+        BaseResp<UserAccount> baseResp1 = userAccountService.selectUserAccountByUserId(userId);
+        UserAccount userAccount = baseResp1.getData();
+        if(null != userAccount)
+        {
+            Date nowdate = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date freezeUpdatetime = null;
+            try {
+                freezeUpdatetime = format.parse(userAccount.getUpdatetime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long freezetime = userAccount.getFreezetime();
+            Long second = (nowdate.getTime()-freezeUpdatetime.getTime())/1000;
+            if(freezetime > second){
+                logger.info("CompareUserAccount freezetime={},second={}",freezetime,second);
+            return true;
+            }
+        }
+        return  false;
     }
 }
