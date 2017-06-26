@@ -1064,6 +1064,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 } catch (Exception e) {
                     logger.error("insertPublic of userid={} origin={} money={} is error:{}",userid,"龙榜审核未通过",money,e);
                 }
+                //通知用户榜单审核不通过
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,"", "10",
+                        rankImage.getRankid().toString(), rankImage.getRanktitle() + " 龙榜审核失败，详情请登录电脑端查看", "0", "49", "发布龙榜审核未通过", 0, "", "",AppserviceConfig.h5_helper);
             }
         }
 
