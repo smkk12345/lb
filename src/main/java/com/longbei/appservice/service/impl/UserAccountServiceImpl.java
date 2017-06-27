@@ -35,7 +35,13 @@ public class UserAccountServiceImpl implements UserAccountService {
             UserAccount userAccount = userAccountMapper.selectUserAccountByUserId(userId);
             if(null != userAccount)
             {
+                Date updatetime = DateUtils.formatDate(userAccount.getUpdatetime(), "yyyy-MM-dd HH:mm:ss");
+                userAccount.setUpdatetime(DateUtils.formatDateTime1(updatetime));
+                Long endtime = updatetime.getTime()+userAccount.getFreezetime()*1000;
+                SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                userAccount.setEndtime(df.format(endtime));
                 baseResp.setData(userAccount);
+
                 switch (userAccount.getFreezetime()+"") {
                     case (60*60*8L)+"":
                         baseResp.getExpandData().put("strFreezeTime","0");
@@ -51,6 +57,9 @@ public class UserAccountServiceImpl implements UserAccountService {
                         break;
                     case (60*60*24*365*150L)+"":
                         baseResp.getExpandData().put("strFreezeTime","4");
+                        break;
+                    default:
+                        baseResp.getExpandData().put("strFreezeTime","");
                         break;
                 }
             }else {
@@ -87,6 +96,9 @@ public class UserAccountServiceImpl implements UserAccountService {
             case "4":
                 userAccount.setFreezetime(Constant.FREEZETIME_FOREVER);
                 break;
+            default:
+                userAccount.setFreezetime(null);
+                break;
         }
         try {
             int n = userAccountMapper.insertUserAccount(userAccount);
@@ -120,6 +132,9 @@ public class UserAccountServiceImpl implements UserAccountService {
                 break;
             case "4":
                 userAccount.setFreezetime(Constant.FREEZETIME_FOREVER);
+                break;
+            default:
+                userAccount.setFreezetime(null);
                 break;
         }
         try {

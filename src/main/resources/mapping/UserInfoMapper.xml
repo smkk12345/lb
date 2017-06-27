@@ -702,4 +702,27 @@
       userid = #{userid}
   </update>
 
+  <select id="getOtherDevice" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List" />
+  FROM user_info
+  WHERE deviceindex = #{deviceindex}
+  </select>
+
+  <update id="updateIndexDevice">
+    update user_info
+    set
+    deviceindex=#{deviceindex}
+    WHERE
+    userid = #{userid}
+  </update>
+
+  <update id="clearOtherDevice">
+    update user_info
+    set
+    deviceindex= NULL
+    WHERE
+    userid != #{userid} and deviceindex=#{deviceindex}
+  </update>
+
 </mapper>
