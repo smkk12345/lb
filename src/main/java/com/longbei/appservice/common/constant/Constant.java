@@ -74,6 +74,9 @@ public class Constant {
 	public static final int STATUS_SYS_110 = -110;
 	public static final int STATUS_SYS_111 = -111;
 	public static final int STATUS_SYS_113 = -113;
+	public static final int STATUS_SYS_114 = -114;
+	public static final int STATUS_SYS_115 = -115;
+	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
@@ -220,6 +223,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
 	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
+	public static final String RTNINFO_SYS_114 = "每日切换帐号超过限制";
+	public static final String RTNINFO_SYS_115 = "单个设备注册用户量超过限制";
+	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";

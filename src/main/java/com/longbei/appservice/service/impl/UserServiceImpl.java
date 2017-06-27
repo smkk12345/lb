@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.deser.Deserializers;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
@@ -120,6 +121,8 @@ public class UserServiceImpl implements UserService {
 	private UserAccountMapper userAccountMapper;
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private DeviceIndexMapper deviceIndexMapper;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -339,6 +342,30 @@ public class UserServiceImpl implements UserService {
 		return reseResp;
 	}
 
+	private BaseResp<Object> registerIndex(String deviceindex,String username){
+		BaseResp<Object> baseResp = new BaseResp<>();
+		List<DeviceRegister> list = deviceIndexMapper.selectRegisterCountByDevice(deviceindex);
+		if(null != list&&list.size()==1){
+			DeviceRegister deviceRegister = list.get(0);
+			if(deviceRegister.getRegistercount()>SysRulesCache.behaviorRule.getRegisterdevicelimit()){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_115,Constant.RTNINFO_SYS_115);
+			}
+		}
+
+		Date date = new Date();
+		int n = deviceIndexMapper.updateRegisterCount(deviceindex,
+				DateUtils.formatDate(date,"yyyy-MM-dd HH:mm:ss"),username);
+		if(n == 0){
+			DeviceRegister deviceRegister = new DeviceRegister();
+			deviceRegister.setDeviceindex(deviceindex);
+			deviceRegister.setLastregistertime(date);
+			deviceRegister.setLastusername(username);
+			deviceRegister.setRegistercount(1);
+			deviceIndexMapper.insert(deviceRegister);
+		}
+		return baseResp.initCodeAndDesp();
+	}
+
 	/**
 	 * @Title: initUserPerfectTen
 	 * @Description: 初始化用户十全十美信息
@@ -514,6 +541,13 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> registerbasic(String username, String password,String inviteuserid,
 			String deviceindex,String devicetype,String avatar) {
 		long userid = idGenerateService.getUniqueIdAsLong();
+
+		//验证设备号注册
+		BaseResp reseResp = registerIndex(deviceindex,username);
+		if(ResultUtil.fail(reseResp)){
+			return reseResp;
+		}
+
 		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
@@ -712,23 +746,19 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 
-
-
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null == userInfo){
 				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_04);
 			}
-			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
-			String value = springJedisDao.get("userid&token&"+userInfo.getUserid());
-			if(userAccountService.isFreezing(userInfo.getUserid()))
-			{
-				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
+			baseResp =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+			if(ResultUtil.fail(baseResp)){
+				return returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 			}
-//			if(deviceindex.equals(userInfo.getDeviceindex())){
-//			}else{
-//				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
-//			}
+			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+			springJedisDao.sAdd(deviceindex+date+"login",username);
+			addLoginRecord(userInfo.getUsername(),deviceindex);
+			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} else  {
 			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
@@ -737,18 +767,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-	private BaseResp<Object> canAbleLogin(String deviceindex,String username){
+	private BaseResp<Object> canAbleLogin(String deviceindex,String username,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
 		//每日次数限制
 		if(!canLoginTimesPerDay(deviceindex,username)){
-			return baseResp.initCodeAndDesp();
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_114,Constant.RTNINFO_SYS_114);
 		}
 		//设备号切换
-
+		baseResp = deviceIndexChange(deviceindex,userid);
+		if(ResultUtil.fail(baseResp)){
+			return baseResp;
+		}
 		//帐号冻结
-
-		return baseResp;
+		if(userAccountService.isFreezing(userid))
+		{
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
+		}
+		return baseResp.initCodeAndDesp();
 	}
+
+
 
 	/**
 	 * 次数限制
@@ -760,10 +798,10 @@ public class UserServiceImpl implements UserService {
 
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 		Set<String> tels = springJedisDao.members(deviceindex+date+"login");
-		if (tels == null || tels.size() < 5){
+		if (tels == null || tels.size() <= SysRulesCache.behaviorRule.getChangedeveicelimitperday()){
 			return true;
 		}
-		if(tels.size() == 5 && tels.contains(username)){
+		if(tels.size() == SysRulesCache.behaviorRule.getChangedeveicelimitperday() && tels.contains(username)){
 			return true;
 		}
 		return false;
@@ -772,42 +810,33 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * 切换帐号登录
 	 * @param deviceindex
-	 * @param username
+	 * @param userid
 	 * @return
 	 */
-	private BaseResp<Object> canLoginDeviceIndex(String deviceindex,String username){
+	private BaseResp<Object> deviceIndexChange(String deviceindex,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
-//		List<AppUser> list = appUserService.getOtherDevice(deviceindex);
-//		if(null == list){
-//			if(!StringUtils.isBlank(appUser.getDeviceindex())){
-//				map.put("status", Constant.STATUS_SYS_00);
-//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
-//				map.put("isJumpValidate","1");
-//				return map;
-//			}
-//			appUserService.updateIndexDevice(appUser.getId(),deviceindex);
-//		}else if(list.size() > 1) {
-//			appUserService.clearOtherDevice(appUser.getId(), deviceindex);
-//			appUserService.updateIndexDevice(appUser.getId(), deviceindex);
-//		}else if(list.isEmpty()){
-//			if(!StringUtils.isBlank(appUser.getDeviceindex())){
-//				map.put("status", Constant.STATUS_SYS_00);
-//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
-//				map.put("isJumpValidate","1");
-//				return map;
-//			}
-//			appUserService.updateIndexDevice(appUser.getId(), deviceindex);
-//		}else {
-//			AppUser appUser1 = list.get(0);
-//			if(appUser1.getId().equals(userid)){
-//			}else{
-//				map.put("status", Constant.STATUS_SYS_00);
-//				map.put("rtnInfo", Constant.RTNINFO_SYS_87);
-//				map.put("isJumpValidate","1");
-//				return map;
-//			}
-//		}
-		return baseResp;
+		List<UserInfo> list = userInfoMapper.getOtherDevice(deviceindex);
+		if(null == list){
+			if(!StringUtils.isBlank(deviceindex)){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
+			}
+			userInfoMapper.updateIndexDevice(userid,deviceindex);
+		}else if(list.size() > 1) {
+			userInfoMapper.clearOtherDevice(userid, deviceindex);
+			userInfoMapper.updateIndexDevice(userid, deviceindex);
+		}else if(list.isEmpty()){
+			if(!StringUtils.isBlank(deviceindex)){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
+			}
+			userInfoMapper.updateIndexDevice(userid, deviceindex);
+		}else {
+			UserInfo userInfo = list.get(0);
+			if(userInfo.getUserid() == userid){
+			}else{
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
+			}
+		}
+		return baseResp.initCodeAndDesp();
 	}
 
 
@@ -874,7 +903,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
-
+		UserInfo userInfo = userInfoMapper.getByUserName(username);
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -896,8 +925,8 @@ public class UserServiceImpl implements UserService {
 			String token = (String)jsonObject.get("token");
 			springJedisDao.set("userid&token&"+suserid, token);
 			//第三方注册获得龙分
-			UserInfo userInfo = selectJustInfo(suserid);
-			thirdregisterGainPoint(userInfo,utype);
+			UserInfo userInfo1 = selectJustInfo(suserid);
+			thirdregisterGainPoint(userInfo1,utype);
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -917,7 +946,7 @@ public class UserServiceImpl implements UserService {
 				//密码是否正确
 //				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(ResultUtil.isSuccess(baseResp)){
-					UserInfo userInfo = userInfoMapper.getByUserName(username);
+
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
@@ -929,12 +958,18 @@ public class UserServiceImpl implements UserService {
 					springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					//第三方注册获得龙分
 					thirdregisterGainPoint(userInfo,utype);
-					return baseResp;
+//					return baseResp;
 				}else{//验证码或者密码错误
-					return baseResp;
+//					return baseResp;
 				}
 			}
 		}
+
+		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+		if(ResultUtil.fail(baseResp1)){
+			return baseResp1;
+		}
+		addLoginRecord(userInfo.getUsername(),deviceindex);
 		return baseResp;
 	}
 
@@ -977,13 +1012,16 @@ public class UserServiceImpl implements UserService {
 
 			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-//			if(userInfo.getDeviceindex().equals(deviceindex)){
-				//token 放到redis中去
-				springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
-				baseResp.setData(userInfo);
-//			}else{
-//				baseResp.initCodeAndDesp(Constant.STATUS_SYS_10, Constant.RTNINFO_SYS_10);
-//			}
+
+			baseResp =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+			if(ResultUtil.fail(baseResp)){
+				return baseResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
+			}
+			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
+			//token 放到redis中去
+			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+			baseResp.setData(userInfo);
 		}
 		return baseResp;
 	}
