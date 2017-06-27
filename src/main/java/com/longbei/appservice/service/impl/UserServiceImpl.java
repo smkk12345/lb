@@ -343,7 +343,7 @@ public class UserServiceImpl implements UserService {
 		List<DeviceRegister> list = deviceIndexMapper.selectRegisterCountByDevice(deviceindex);
 		if(null != list&&list.size()==1){
 			DeviceRegister deviceRegister = list.get(0);
-			if(deviceRegister.getRegistercount()>SysRulesCache.behaviorRule.getRegisterdevicelimit()){
+			if(deviceRegister.getRegistercount()>=SysRulesCache.behaviorRule.getRegisterdevicelimit()){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_115,Constant.RTNINFO_SYS_115);
 			}
 		}
@@ -803,7 +803,7 @@ public class UserServiceImpl implements UserService {
 
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 		Set<String> tels = springJedisDao.members(deviceindex+date+"login");
-		if (tels == null || tels.size() <= SysRulesCache.behaviorRule.getChangedeveicelimitperday()){
+		if (tels == null || tels.size() < SysRulesCache.behaviorRule.getChangedeveicelimitperday()){
 			return true;
 		}
 		if(tels.size() == SysRulesCache.behaviorRule.getChangedeveicelimitperday() && tels.contains(username)){
