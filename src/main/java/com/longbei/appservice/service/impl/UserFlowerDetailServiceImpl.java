@@ -276,7 +276,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> moneyExchangeFlower(long userid, int number, String friendid, 
+	public BaseResp<Object> moneyExchangeFlower(long userid, final int number, String friendid,
     		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户龙币是否够用兑换
@@ -335,7 +335,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> coinExchangeFlower(long userid, int number, String friendid, 
+	public BaseResp<Object> coinExchangeFlower(long userid, final int number, String friendid,
     		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户进步币是否够用兑换
