@@ -5,6 +5,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,7 +163,11 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 
 		BaseResp<Page<UserIdcard>> baseResp = new BaseResp<>();
 		Page<UserIdcard> page = new Page<>(pageno,pagesize);
-
+		if(null == userIdcard.getUser())
+		{
+			userIdcard.setUser(new AppUserMongoEntity());
+			userIdcard.getUser().setUsername(null);
+		}
 		try {
 			int totalcount = userIdcardMapper.selectCount(userIdcard);
 			List<UserIdcard> userIdcards = userIdcardMapper.selectList(userIdcard,pagesize*(pageno-1),pagesize);
@@ -183,6 +188,11 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	@Override
 	public BaseResp<Object> selectUserIdCardListNum(UserIdcard userIdcard){
 		BaseResp<Object> baseResp = new BaseResp<Object>();
+		if(null == userIdcard.getUser())
+		{
+			userIdcard.setUser(new AppUserMongoEntity());
+			userIdcard.getUser().setUsername(null);
+		}
 		try {
 			int totalcount = userIdcardMapper.selectCount(userIdcard);
 			baseResp.setData(totalcount);
