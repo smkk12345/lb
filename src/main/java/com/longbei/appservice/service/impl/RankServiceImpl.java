@@ -165,7 +165,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         int res = 0;
         try {
             res = rankMapper.updateSymbolByRankId(rank);
-            rank = rankMapper.selectRankByRankid(rank.getRankid());
+            rank = rankMapper.selectByPrimaryKey(rank.getRankid());
             if("1".equals(rank.getIsdel())){
                 //sourcetype   来源类型。0 运营端创建   1  app 2   商户
                 if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
