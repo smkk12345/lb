@@ -34,4 +34,13 @@ public interface UserAccountService {
 	 */
 	BaseResp<Object> updateUserAccountByUserId(UserAccount userAccount,String strFreezeTime);
 
+	/**
+	 * 用户账号是否为冻结状态
+	 * @title isFreezing
+	 * @return true已冻结 false未冻结
+	 * @author IngaWu
+	 * @currentdate:2017年6月21日
+	 */
+    Boolean isFreezing(Long userId);
+
 }

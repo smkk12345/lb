@@ -45,6 +45,7 @@ public class OrderApiController {
 	*/
   	@RequestMapping(value = "/adminConsumeList")
     public BaseResp<List<ProductOrders>> adminConsumeList(String orderstatus, int startNo, int pageSize) {
+		logger.info("adminConsumeList orderstatus = {}, startNo = {}, pageSize = {}", orderstatus, startNo, pageSize);
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
   		try {
   			baseResp = orderService.adminConsumeList(orderstatus, startNo, pageSize);
@@ -89,7 +90,8 @@ public class OrderApiController {
     public BaseResp<List<ProductOrders>> searchList(String orderstatus, String ordernum, 
     		String username, String screatetime, String ecreatetime, 
     		int startNo, int pageSize) {
-  		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
+		logger.info("orderstatus = {}, ordernum = {}, username = {}, screatetime = {},ecreatetime = {}, startNo = {}, pageSize = {}", orderstatus, ordernum, username, screatetime, ecreatetime,startNo, pageSize);
+		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
   		try {
   			baseResp = orderService.searchList(orderstatus, ordernum, username, 
   					screatetime, ecreatetime, startNo, pageSize);
@@ -113,6 +115,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/adminget")
     public BaseResp<ProductOrders> adminget(String userid, String orderid) {
+		logger.info("userid = {}, orderid = {}",userid, orderid);
 		BaseResp<ProductOrders> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -137,6 +140,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrdersIsexception")
     public BaseResp<Object> updateOrdersIsexception(String userid, String orderid) {
+		logger.info("userid = {}, orderid = {}",userid, orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -162,6 +166,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrdersIsdel")
     public BaseResp<Object> updateOrdersIsdel(String orderid) {
+		logger.info("orderid = {}",orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -188,6 +193,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrdersRemark")
     public BaseResp<Object> updateOrdersRemark(String orderid, String remark) {
+		logger.info("orderid = {}, orderid = {}",orderid, orderid);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(orderid, remark)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -214,6 +220,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateOrderStatus")
     public BaseResp<Object> updateOrderStatus(String userid, String orderid, String orderstatus) {
+		logger.info("userid = {}, orderid = {},orderstatus={}",userid, orderid,orderstatus);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, orderid, orderstatus)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -240,6 +247,7 @@ public class OrderApiController {
 	*/
   	@RequestMapping(value = "/selectCountOrders")
     public BaseResp<Integer> selectCountOrders(String orderstatus) {
+		logger.info("orderstatus={}",orderstatus);
 		BaseResp<Integer> baseResp = new BaseResp<>();
   		try {
   			baseResp = orderService.selectCountOrders(orderstatus);
@@ -262,6 +270,7 @@ public class OrderApiController {
   	@RequestMapping(value = "/selectCountSearchOrders")
     public BaseResp<Integer> selectCountSearchOrders(String orderstatus, String ordernum, 
     		String username, String screatetime, String ecreatetime) {
+		logger.info("orderstatus = {}, ordernum = {}, username = {}, screatetime = {},ecreatetime = {}", orderstatus, ordernum, username, screatetime, ecreatetime);
 		BaseResp<Integer> baseResp = new BaseResp<>();
   		try {
   			baseResp = orderService.selectCountSearchOrders(orderstatus, ordernum, username, screatetime, ecreatetime);
@@ -285,6 +294,7 @@ public class OrderApiController {
 	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "/updateDeliver", method = RequestMethod.POST)
     public BaseResp<Object> updateDeliver(String userid, String orderid, String logisticscode, String logisticscompany) {
+		logger.info("userid = {}, orderid = {}, logisticscode = {}, logisticscompany = {}", userid, orderid, logisticscode, logisticscompany);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -309,6 +319,7 @@ public class OrderApiController {
 	*/
   	@RequestMapping(value = "/exceptionlist")
     public BaseResp<List<ProductOrders>> exceptionlist(int startNo, int pageSize) {
+		logger.info("startNo = {}, pageSize = {}", startNo, pageSize);
 		BaseResp<List<ProductOrders>> baseResp = new BaseResp<List<ProductOrders>>();
   		try {
   			baseResp = orderService.exceptionlist(startNo, pageSize);
@@ -345,6 +356,7 @@ public class OrderApiController {
      */
 	@RequestMapping(value="autoConfirmReceipt")
 	public BaseResp<Object> autoConfirmReceipt(Long currentTime){
+		logger.info("currentTime = {}", currentTime);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
 		if(currentTime == null){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

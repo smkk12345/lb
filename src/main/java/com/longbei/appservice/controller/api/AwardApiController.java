@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller.api;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -40,6 +41,7 @@ public class AwardApiController {
      */
     @RequestMapping(value = "add")
     public BaseResp addAward(@RequestBody Award award){
+        logger.info("award={}", JSON.toJSONString(award));
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.insertAward(award);
@@ -48,7 +50,7 @@ public class AwardApiController {
                 baseResp.setData(award.getId());
                 baseResp.initCodeAndDesp();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("add award  is error:{}",e);
         }
         return baseResp;
@@ -61,13 +63,14 @@ public class AwardApiController {
      */
     @RequestMapping(value = "update")
     public BaseResp updateAward(@RequestBody Award award){
+        logger.info("award={}", JSON.toJSONString(award));
         BaseResp<Page<Award>> baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.updateAward(award);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update award  is error:{}",e);
         }
         return baseResp;
@@ -81,6 +84,7 @@ public class AwardApiController {
      */
     @RequestMapping(value = "del/{awardid}")
     public BaseResp deleteAward(@PathVariable("awardid") String awardid){
+        logger.info("awardid={}",awardid);
         BaseResp baseResp = new BaseResp();
         if (StringUtils.isEmpty(awardid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -90,7 +94,7 @@ public class AwardApiController {
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete award  is error:{}",e);
         }
         return baseResp;
@@ -104,6 +108,7 @@ public class AwardApiController {
      */
     @RequestMapping(value = "get/{awardid}")
     public BaseResp<Award> getAward(@PathVariable("awardid") String awardid){
+        logger.info("awardid={}",awardid);
         BaseResp baseResp = new BaseResp();
         if (StringUtils.isEmpty(awardid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -111,7 +116,7 @@ public class AwardApiController {
         try {
             Award award = awardService.selectAward(awardid);
             baseResp.setData(award);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get award  is error:{}",e);
         }
         return baseResp;
@@ -129,6 +134,7 @@ public class AwardApiController {
     public BaseResp<Page<Award>> getAwardListWithPage(@RequestBody Award award,
                                                 @PathVariable("pageno") String pageno,
                                                 @PathVariable("pagesize") String pagesize){
+        logger.info("award={},pageno={},pagesize={}", JSON.toJSONString(award),pageno,pagesize);
         BaseResp<Page<Award>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageno)){
             pageno = "1";
@@ -140,7 +146,7 @@ public class AwardApiController {
             Page<Award> page = awardService.selectAwardListWithPage(award,Integer.parseInt(pageno),Integer.parseInt(pagesize));
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get award list with page is error:{}",e);
         }
         return baseResp;
@@ -153,6 +159,7 @@ public class AwardApiController {
      */
     @RequestMapping(value = "list")
     public BaseResp<List<Award>> getAwardList(@RequestBody Award award){
+        logger.info("award={}", JSON.toJSONString(award));
         BaseResp<List<Award>> baseResp = new BaseResp<>();
 
         try {
@@ -168,13 +175,14 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/add")
     public BaseResp addAwardClassify(@RequestBody AwardClassify awardClassify){
+        logger.info("awardClassify={}", JSON.toJSONString(awardClassify));
         BaseResp baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.insertAwardClassify(awardClassify);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("add awardclassify  is error:{}",e);
         }
         return baseResp;
@@ -182,10 +190,11 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/hasawards/{classifyid}")
     boolean hasAwards(@PathVariable("classifyid") String classifyid){
+        logger.info("classifyid={}",classifyid);
         boolean flag =false;
         try {
             flag = awardService.hasAwards(classifyid);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("has awards under classifyid is error:{}",e);
         }
         return flag;
@@ -194,13 +203,14 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/update")
     public BaseResp updateAwardClassify(@RequestBody AwardClassify awardClassify){
+        logger.info("awardClassify={}", JSON.toJSONString(awardClassify));
         BaseResp<Page<Award>> baseResp = new BaseResp<>();
         try {
             boolean flag = awardService.updateAwardClassify(awardClassify);
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("update awardclassify  is error:{}",e);
         }
         return baseResp;
@@ -209,6 +219,7 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/del/{classifyid}")
     public BaseResp deleteAwardClassify(@PathVariable("classifyid") String classifyid){
+        logger.info("classifyid={}",classifyid);
         BaseResp<Page<Award>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(classifyid)){
             return baseResp;
@@ -218,7 +229,7 @@ public class AwardApiController {
             if (flag){
                 baseResp = BaseResp.ok();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete awardclassify  is error:{}",e);
         }
         return baseResp;
@@ -240,6 +251,7 @@ public class AwardApiController {
 
     @RequestMapping(value = "classify/get/{classid}")
     public BaseResp<AwardClassify> getAwardClassify(@PathVariable("classid") String classid){
+        logger.info("classid={}",classid);
         BaseResp<AwardClassify> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(classid)){
             return baseResp;
@@ -257,6 +269,7 @@ public class AwardApiController {
     @RequestMapping(value = "classify/list/{pageno}/{pagesize}")
     public BaseResp<Page<AwardClassify>> getAwardClassifyListWithPage(@PathVariable("pageno") String pageno,
                                                       @PathVariable("pagesize") String pagesize){
+        logger.info("pageno={},pagesize={}",pageno,pagesize);
         BaseResp<Page<AwardClassify>> baseResp = new BaseResp<>();
         if (StringUtils.isEmpty(pageno)){
             pageno = "1";
@@ -268,7 +281,7 @@ public class AwardApiController {
             Page<AwardClassify> page = awardService.selectAwardClassifyListWithPage(Integer.parseInt(pageno),Integer.parseInt(pagesize));
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("get AwardClassify list with page is error:{}",e);
         }
         return baseResp;

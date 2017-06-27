@@ -408,7 +408,10 @@ public class ImproveServiceImpl implements ImproveService{
 
     private boolean canInsertRankImprovePerday(Long userid,Long rankid,Rank rank){
         String tempnum = springJedisDao.get("rankid"+rankid+"userid"+userid+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
-        int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
+        if(StringUtils.isEmpty(tempnum)){
+            return true;
+        }
+        int num = Integer.parseInt(tempnum);
         if (num < Integer.parseInt(rank.getMaximprovenum())){
             return true;
         }
@@ -416,15 +419,16 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
-        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
-            return true;
-        }
-        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
-        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
-        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
-            return true;
-        }
-        return false;
+        return true;
+//        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
+//            return true;
+//        }
+//        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+//        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
+//        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
+//            return true;
+//        }
+//        return false;
     }
 
 
@@ -1045,7 +1049,7 @@ public class ImproveServiceImpl implements ImproveService{
             //清除数据
             clearDirtyData(improve);
             springJedisDao.increment("rankid"+improve.getBusinessid()+
-                    "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"),-1);
+                    "userid"+improve.getUserid()+DateUtils.formatDate(improve.getCreatetime(),"yyyy-MM-dd"),-1);
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             baseResp = BaseResp.ok();
@@ -1057,7 +1061,7 @@ public class ImproveServiceImpl implements ImproveService{
     //进步删除之后清理脏数据
     private void clearDirtyData(Improve improve){
         int flower = improve.getFlowers();
-        int like = improve.getLikes();
+        int like = getLikeFromRedis(improve.getImpid().toString(),improve.getBusinessid().toString(),improve.getBusinesstype());
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         switch (improve.getBusinesstype()){
@@ -1426,9 +1430,9 @@ public class ImproveServiceImpl implements ImproveService{
                         if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
-                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
-                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
-                        }
+//                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
+//                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
+//                        }
                         return baseResp.initCodeAndDesp();
                     } else {
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
@@ -3219,7 +3223,7 @@ public class ImproveServiceImpl implements ImproveService{
             page.setList(timeLineDetails);
             baseResp = BaseResp.ok();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select recommend improve list from mongo is error:",e);
         }
 

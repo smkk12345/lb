@@ -137,7 +137,7 @@ public class AwardServiceImpl implements AwardService {
         Award award = null;
         try {
             award = awardMapper.selectByPrimaryKey(Long.valueOf(awardid));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select award awardid={} is error:{}",awardid,e);
         }
         return award;
@@ -205,7 +205,7 @@ public class AwardServiceImpl implements AwardService {
         AwardClassify awardClassify = null;
         try {
             awardClassify = awardClassifyMapper.selectByPrimaryKey(id);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select awardclassify awardclassifyid={} is error:{}",id,e);
         }
         return awardClassify;

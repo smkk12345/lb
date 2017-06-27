@@ -33,7 +33,7 @@ public class TokenControllerApi {
 
     @RequestMapping(value = "/getServiceToken")
     public BaseResp<Object> getServiceToken(String appKey) {
-
+        logger.info("appKey",appKey);
         boolean isok = false;
         for (int i = 0 ; i < Constant.OK_SERVICE.length ; i++){
             if (Constant.OK_SERVICE[i].equals(appKey)) {
