@@ -535,7 +535,7 @@ public class AppUserController extends BaseController {
 		} catch (Exception e) {
 			logger.error("thirdregister error and msg = {}",e);
 		}
-    		return baseResp;
+        return baseResp;
     }
 
     /**

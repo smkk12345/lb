@@ -281,6 +281,10 @@ public class BehaviorRule {
      */
     private Integer aoinclassgoalstimes;
 
+    private Integer changedeveicelimitperday = 3;//同一设备每天切换帐号数量
+
+    private Integer registerdevicelimit = 5;//同一设备注册帐号数
+
     public Long getId() {
         return id;
     }
@@ -727,5 +731,21 @@ public class BehaviorRule {
 
     public void setAoinclassgoalstimes(Integer aoinclassgoalstimes) {
         this.aoinclassgoalstimes = aoinclassgoalstimes;
+    }
+
+    public void setChangedeveicelimitperday(Integer changedeveicelimitperday) {
+        this.changedeveicelimitperday = changedeveicelimitperday;
+    }
+
+    public void setRegisterdevicelimit(Integer registerdevicelimit) {
+        this.registerdevicelimit = registerdevicelimit;
+    }
+
+    public Integer getChangedeveicelimitperday() {
+        return changedeveicelimitperday;
+    }
+
+    public Integer getRegisterdevicelimit() {
+        return registerdevicelimit;
     }
 }

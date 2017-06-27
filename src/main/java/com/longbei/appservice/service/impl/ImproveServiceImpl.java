@@ -1125,7 +1125,7 @@ public class ImproveServiceImpl implements ImproveService{
     //删除已结束的榜进步之后清理脏数据  不更新榜中排名
     private void clearFinishedRankDirtyData(Improve improve){
         int flower = improve.getFlowers();
-        int like = improve.getLikes();
+        int like = getLikeFromRedis(improve.getImpid().toString(),improve.getBusinessid().toString(),improve.getBusinesstype());
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
         String sourceTableName = getSourecTableNameByBusinessType(improve.getBusinesstype());
         if(improve.getIsmainimp().equals("1")){
@@ -1270,8 +1270,13 @@ public class ImproveServiceImpl implements ImproveService{
         for (int i = 0; i < timeLines.size() ; i++){
             TimeLine timeLine = timeLines.get(i);
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+            if(null == timeLineDetail){
+            	continue;
+            }
             Improve improve = new Improve();
-            improve.setImpid(timeLineDetail.getImproveId());
+            if(!StringUtils.isBlank(timeLineDetail.getImproveId().toString())){
+            	improve.setImpid(timeLineDetail.getImproveId());
+            }
             improve.setBrief(timeLineDetail.getBrief());
             improve.setPickey(timeLineDetail.getPhotos());
             improve.setFilekey(timeLineDetail.getFileKey());

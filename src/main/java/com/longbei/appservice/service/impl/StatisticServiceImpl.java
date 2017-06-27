@@ -5,12 +5,15 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.RedisDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.ImpAllDetailMapper;
+import com.longbei.appservice.dao.StatisticsMapper;
 import com.longbei.appservice.dao.TimeLineDetailDao;
 import com.longbei.appservice.dao.UserImproveStatisticMapper;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.ImpAllDetail;
+import com.longbei.appservice.entity.Statistics;
 import com.longbei.appservice.entity.UserImproveStatistic;
 import com.longbei.appservice.service.StatisticService;
-import com.netflix.discovery.converters.Auto;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,10 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
     private RedisDao redisDao;
     @Autowired
     private ImpAllDetailMapper impAllDetailMapper;
+    @Autowired
+    private SpringJedisDao springJedisDao;
+    @Autowired
+    private StatisticsMapper statisticsMapper;
 
     /**
      * 统计用户每天的进步 花 赞
@@ -108,6 +115,54 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             e.printStackTrace();
         }
 
+        return baseResp;
+    }
+
+    /**
+     * 定时任务－每日统计数据: 当日注册数、签到数、点赞数、赠花数、新增微进步数、充值金额／元、未消耗龙币数、未消耗进步币数
+     */
+    @Override
+    public BaseResp<Object> sysDailyStatistic() {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        Statistics statistics = new Statistics();
+
+        try {
+            //今日注册用户数
+            String registerNum = springJedisDao.get(Constant.REGISTER_NUM);
+            if (StringUtils.isBlank(registerNum)){
+                statistics.setRegisternum(Integer.parseInt(registerNum));
+            }
+            int res = statisticsMapper.insertSelective(statistics);
+            if (res > 0) {
+                springJedisDao.set(Constant.REGISTER_NUM,"0");
+                baseResp.initCodeAndDesp();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baseResp;
+    }
+
+    /**
+     * 查询今日统计数据
+     * @return
+     */
+    @Override
+    public BaseResp<Statistics> selectStatistics() {
+        BaseResp<Statistics> baseResp = new BaseResp<>();
+        Statistics statistics = new Statistics();
+        try {
+            //今日注册用户数
+            String registerNum = springJedisDao.get(Constant.REGISTER_NUM);
+            if (!StringUtils.isBlank(registerNum)) {
+                statistics.setRegisternum(Integer.parseInt(registerNum));
+            }
+
+            baseResp.setData(statistics);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return baseResp;
     }
 }

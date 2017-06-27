@@ -74,6 +74,9 @@ public class Constant {
 	public static final int STATUS_SYS_110 = -110;
 	public static final int STATUS_SYS_111 = -111;
 	public static final int STATUS_SYS_113 = -113;
+	public static final int STATUS_SYS_114 = -114;
+	public static final int STATUS_SYS_115 = -115;
+	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
 	public static final int STATUS_SYS_21 = -21;
@@ -220,6 +223,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_111 = "根据您当前的用户等级,您创建的私密榜单人数上限为";
 	public static final String RTNINFO_SYS_112 = "抱歉,您没有权限删除该进步";
 	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
+	public static final String RTNINFO_SYS_114 = "每日切换帐号超过限制";
+	public static final String RTNINFO_SYS_115 = "单个设备注册用户量超过限制";
+	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
 	//20-39  yxc
 	public static final String RTNINFO_SYS_20 = "暂无收货地址，请添加";
@@ -614,6 +620,7 @@ public class Constant {
 	/**
 	 * 缓存一日数据
 	 */
+	public static final String REGISTER_NUM = "registernum";
 	public static final String PERDAY_POINT = "point";
 	public static final String DAILY_SHARE_LIMIT = "DAILY_SHARE_LIMIT";
 	//-------------各种缓存前缀  improve  rank user 等------------------//
@@ -820,11 +827,14 @@ public class Constant {
 		newfriendask//请求加为好友时 是否接受消息
 	}
 
-	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L;
-	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L;
-	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
-	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
-	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
+	/**
+	 * 冻结时长
+	 */
+	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L; //8小时
+	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L; //3天
+	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L; //一周
+	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L; //3个月
+	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L; //永久
 
 
 //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人
