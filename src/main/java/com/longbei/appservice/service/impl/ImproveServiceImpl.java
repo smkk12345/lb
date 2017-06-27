@@ -1270,8 +1270,13 @@ public class ImproveServiceImpl implements ImproveService{
         for (int i = 0; i < timeLines.size() ; i++){
             TimeLine timeLine = timeLines.get(i);
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+            if(null == timeLineDetail){
+            	continue;
+            }
             Improve improve = new Improve();
-            improve.setImpid(timeLineDetail.getImproveId());
+            if(!StringUtils.isBlank(timeLineDetail.getImproveId().toString())){
+            	improve.setImpid(timeLineDetail.getImproveId());
+            }
             improve.setBrief(timeLineDetail.getBrief());
             improve.setPickey(timeLineDetail.getPhotos());
             improve.setFilekey(timeLineDetail.getFileKey());
