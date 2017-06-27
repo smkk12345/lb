@@ -188,6 +188,11 @@ public class UserIdcardServiceImpl implements UserIdcardService {
 	@Override
 	public BaseResp<Object> selectUserIdCardListNum(UserIdcard userIdcard){
 		BaseResp<Object> baseResp = new BaseResp<Object>();
+		if(null == userIdcard.getUser())
+		{
+			userIdcard.setUser(new AppUserMongoEntity());
+			userIdcard.getUser().setUsername(null);
+		}
 		try {
 			int totalcount = userIdcardMapper.selectCount(userIdcard);
 			baseResp.setData(totalcount);
