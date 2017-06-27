@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.DeviceIndexMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.DeviceRegister" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="deviceindex" property="deviceindex" jdbcType="VARCHAR" />
+    <result column="registercount" property="registercount" jdbcType="INTEGER" />
+    <result column="lastregistertime" property="lastregistertime" jdbcType="TIMESTAMP" />
+    <result column="lastusername" property="lastusername" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    deviceindex, registercount, lastregistertime,lastusername
+  </sql>
+    <select id="selectRegisterCountByDevice" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from deviceregister
+        where 1=1
+        <if test="deviceindex != null">
+            AND deviceindex = #{deviceindex,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <update id="updateRegisterCount">
+        update deviceregister
+        set
+        registercount= registercount+1,
+        lastregistertime = #{lastregistertime},
+        lastusername = #{lastusername}
+        WHERE
+        deviceindex=#{deviceindex}
+    </update>
+
+    <insert id="insert" parameterType="com.longbei.appservice.entity.DeviceRegister" >
+        insert into deviceregister (deviceindex, registercount,
+        lastregistertime, lastusername)
+        values ( #{deviceindex,jdbcType=VARCHAR},
+                 #{registercount,jdbcType=INTEGER},
+                 #{lastregistertime,jdbcType=TIMESTAMP},
+                 #{lastusername,jdbcType=BIGINT})
+    </insert>
+
+</mapper>

@@ -281,11 +281,29 @@ public class SpringJedisDao {
         try{
             SetOperations<String,String> setOperations = redisTemplate.opsForSet();
             long n = setOperations.size(key);
+//            setOperations.members();
             return n;
         }catch(Exception e){
             logger.error("redis set sSize error ",e);
         }
         return 0;
+    }
+
+    /**
+     * 返回当前key下的集合
+     * @param key
+     * @return
+     */
+    public Set<String> members(String key){
+        Set<String> set = null;
+        try{
+            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+            set = setOperations.members(key);
+            return set;
+        }catch(Exception e){
+            logger.error("redis members sSize error ",e);
+        }
+        return set;
     }
 
     /****************************** ZSET start ************************/
