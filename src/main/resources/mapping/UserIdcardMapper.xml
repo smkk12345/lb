@@ -28,27 +28,36 @@
   </select>
 
   <select id="selectCount" resultType="java.lang.Integer">
-    SELECT count(*) FROM user_idcard
-    where validateidcard='0'
+    SELECT count(*)
+    FROM user_idcard a left join user_info b on a.userid =b.userid
+    where a.validateidcard='0'
     <if test="useridcard.userids != null and userids.size() > 0">
-      AND userid IN
+      AND a.userid IN
       <foreach item="item" index="index" collection="useridcard.userids" open="(" separator="," close=")">
         #{item}
       </foreach>
+    </if>
+    <if test="useridcard.user.username != null and useridcard.user.username != ''" >
+      AND b.username  LIKE concat(concat('%',#{useridcard.user.username}),'%')
     </if>
   </select>
   <select id="selectList" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List" />
-    FROM user_idcard
-    where validateidcard='0'
+    a.id, a.idcard,a.validateemail, a.validateidcard, a.idcardimage, a.checkuserid, a.checkoption,
+    a.checkdate, a.userid,a.applydate,a.createtime,a.updatetime,a.realname
+
+    FROM user_idcard a left join user_info b on a.userid =b.userid
+    where a.validateidcard='0'
     <if test="useridcard.userids != null and userids.size() > 0">
-      AND userid IN
+      AND a.userid IN
       <foreach item="item" index="index" collection="useridcard.userids" open="(" separator="," close=")">
         #{item}
       </foreach>
     </if>
-    order BY applydate
+    <if test="useridcard.user.username != null and useridcard.user.username != ''" >
+      AND b.username  LIKE concat(concat('%',#{useridcard.user.username}),'%')
+    </if>
+    order BY a.applydate desc
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>

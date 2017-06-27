@@ -49,7 +49,9 @@ public class Constant_Imp_Icon {
     public static int DAILY_SHARE_OUT_LIMIT = 5; //限制5次
 
     public static int DAILY_ADDIMP_RANDOM = 1;//3-10 算法1
-    public static int DAILY_ADDIMP_LIMIT = 3;//限制3次
+    public static int DAILY_ADDIMP_LIMIT = SysRulesCache.behaviorRule.getImproveimpcoinstimes();//限制次数
+    public static int DAILY_ADDIMP_MIN = SysRulesCache.behaviorRule.getImproveimpcoinsmin(); //单个用户每发1条微进步，可得X个进步币，随机最小值
+    public static int DAILY_ADDIMP_MAX = SysRulesCache.behaviorRule.getImproveimpcoinsmax(); //单个用户每发1条微进步，可得X个进步币，随机最大值
 
     /**
      * 邀请好友注册赠送的进步币
@@ -79,8 +81,8 @@ public class Constant_Imp_Icon {
             put("max",10);
         }});
         put(1,new HashMap<String, Integer>(){{
-            put("min",3);
-            put("max",10);
+            put("min",DAILY_ADDIMP_MIN);
+            put("max",DAILY_ADDIMP_MAX);
         }});
     }};
 

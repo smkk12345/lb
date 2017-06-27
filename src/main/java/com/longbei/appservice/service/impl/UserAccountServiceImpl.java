@@ -52,6 +52,9 @@ public class UserAccountServiceImpl implements UserAccountService {
                     case (60*60*24*365*150L)+"":
                         baseResp.getExpandData().put("strFreezeTime","4");
                         break;
+                    default:
+                        baseResp.getExpandData().put("strFreezeTime","");
+                        break;
                 }
             }else {
                 baseResp.getExpandData().put("strFreezeTime",null);
@@ -86,6 +89,9 @@ public class UserAccountServiceImpl implements UserAccountService {
                 break;
             case "4":
                 userAccount.setFreezetime(Constant.FREEZETIME_FOREVER);
+                break;
+            default:
+                userAccount.setFreezetime(null);
                 break;
         }
         try {
