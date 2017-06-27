@@ -1,9 +1,6 @@
 package com.longbei.appservice.service.impl;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-//import java.text.*;
 import java.util.*;
 
 import com.longbei.appservice.common.Page;
@@ -52,7 +49,6 @@ public class UserServiceImpl implements UserService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private IdGenerateService idGenerateService;
-
 	@Autowired
 	private SpringJedisDao springJedisDao;
 	@Autowired
@@ -527,6 +523,15 @@ public class UserServiceImpl implements UserService {
 		baseResp.getExpandData().put("nickname", nickname);
 		//token 放到redis中去
 		springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
+		//注册成功,当日注册数加1
+		if (ResultUtil.isSuccess(baseResp)) {
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					springJedisDao.increment(Constant.REGISTER_NUM,1);
+				}
+			});
+		}
 		return baseResp;
 	}
 
