@@ -820,11 +820,14 @@ public class Constant {
 		newfriendask//请求加为好友时 是否接受消息
 	}
 
-	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L;
-	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L;
-	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L;
-	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L;
-	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L;
+	/**
+	 * 冻结时长
+	 */
+	public static Long FREEZETIME_EIGHT_HOURS = 60*60*8L; //8小时
+	public static Long FREEZETIME_THREE_DAYS = 60*60*24*3L; //3天
+	public static Long FREEZETIME_ONE_WEEK = 60*60*24*7L; //一周
+	public static Long FREEZETIME_THREE_MONTHS = 60*60*24*30*3L; //3个月
+	public static Long FREEZETIME_FOREVER = 60*60*24*365*150L; //永久
 
 
 //0--广场 1--我的 2--好友，关注，熟人 3-好友 4-关注 5-熟人

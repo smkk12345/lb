@@ -33,6 +33,8 @@ public class UserAccount {
      */
     private String updatetime;
 
+    private String endtime;
+
     /**
      * 备注
      */
@@ -105,5 +107,13 @@ public class UserAccount {
 
     public void setOperateuid(Long operateuid) {
         this.operateuid = operateuid;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
     }
 }
