@@ -655,12 +655,11 @@ public class UserServiceImpl implements UserService {
 			return baseResp;
 		}
 		if(ResultUtil.isSuccess(baseResp)){
-			UserInfo userInfo = new UserInfo();
-			userInfo.setUsername(mobile);
-			userInfo.setDeviceindex(deviceindex);
-			userInfo.setDevicetype(devicetype);
+			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
 			try{
-				userInfoMapper.updateDeviceIndexByUserName(userInfo);
+				userInfoMapper.clearOtherDevice(userInfo.getUserid(), deviceindex);
+				userInfoMapper.updateIndexDevice(userInfo.getUserid(), deviceindex);
+//				userInfoMapper.updateDeviceIndexByUserName(userInfo);
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
