@@ -25,4 +25,9 @@ public interface StatisticService extends BaseService {
      * @return
      */
     BaseResp<Statistics> selectStatistics();
+
+    /**
+     * 更新每日统计数据
+     */
+    void updateStatistics(String key, int num);
 }

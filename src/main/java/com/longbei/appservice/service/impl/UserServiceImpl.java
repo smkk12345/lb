@@ -3,7 +3,6 @@ package com.longbei.appservice.service.impl;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
@@ -33,11 +32,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 
-import io.rong.models.TokenReslut;
 import net.sf.json.JSONObject;
-import scala.collection.immutable.Stream;
-
-import static com.longbei.appservice.entity.NewMessageTip.MessageType.friendAddAsk;
 
 /**
  * 创建时间：2015-1-27 下午5:22:59
@@ -65,8 +60,6 @@ public class UserServiceImpl implements UserService {
 	private UserPlDetailMapper userPlDetailMapper;
 	@Autowired
 	private SysPerfectInfoMapper sysPerfectInfoMapper;
-//	@Autowired
-//	private SnsFansMapper snsFansMapper;
 	@Autowired
 	private UserMsgService userMsgService;
 	@Autowired
@@ -79,8 +72,6 @@ public class UserServiceImpl implements UserService {
 	private SysPerfectDefineMapper sysPerfectDefineMapper;
 	@Autowired
 	private UserSettingMenuMapper userSettingMenuMapper;
-//	@Autowired
-//	private UserFlowerDetailMapper userFlowerDetailMapper;
 	@Autowired
 	private UserSettingCommonMapper userSettingCommonMapper;
 	@Autowired
@@ -119,6 +110,8 @@ public class UserServiceImpl implements UserService {
 	private GroupService groupService;
 	@Autowired
 	private DeviceIndexMapper deviceIndexMapper;
+	@Autowired
+	private StatisticService statisticService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -563,7 +556,7 @@ public class UserServiceImpl implements UserService {
 			threadPoolTaskExecutor.execute(new Runnable() {
 				@Override
 				public void run() {
-					springJedisDao.increment(Constant.REGISTER_NUM,1);
+					statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
 				}
 			});
 		}

@@ -620,7 +620,21 @@ public class Constant {
 	/**
 	 * 缓存一日数据
 	 */
-	public static final String REGISTER_NUM = "registernum";
+	public static final String SYS_REGISTER_NUM = "registernum";//注册数
+	public static final String SYS_CHECK_NUM = "checknum";//签到数
+	public static final String SYS_LIKE_NUM = "likenum";//点赞数
+	public static final String SYS_FLOWER_NUM = "flowernum";//献花数
+	public static final String SYS_IMPROVE_NUM = "improvenum";//新增进步数
+	public static final String SYS_RANK_NUM = "ranknum";//龙榜数
+	public static final String SYS_GOAL_NUM = "goalnum";//目标数
+	public static final String SYS_ORDER_NUM = "ordernum";//订单数
+	public static final String SYS_MONEY_NUM = "moneynum";//龙币充值数
+	public static final String SYS_ICON_NUM = "iconnum";//进步币发放数
+	public static final String SYS_MONEY_USE_NUM = "moneyusenum";//龙币使用数
+	public static final String SYS_ICON_USE_NUM = "iconusenum";//进步币使用数
+	public static final String SYS_AWARD_PEOPLE_NUM = "awardpeoplenum";//奖品发放人次
+	public static final String SYS_AWARD_PRICE_NUM = "awardpricenum";//奖品发放价值
+
 	public static final String PERDAY_POINT = "point";
 	public static final String DAILY_SHARE_LIMIT = "DAILY_SHARE_LIMIT";
 	//-------------各种缓存前缀  improve  rank user 等------------------//

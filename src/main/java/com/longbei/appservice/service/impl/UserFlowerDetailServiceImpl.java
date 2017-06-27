@@ -52,6 +52,8 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private PayService payService;
+	@Autowired
+	private StatisticService statisticService;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserFlowerDetailServiceImpl.class);
 
@@ -297,6 +299,14 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
 			insertPublic(Long.parseLong(friendid), "3", number, Long.parseLong(improveid), userid);
 			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
+
+			//系统今日赠花总数＋number
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
+				}
+			});
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
@@ -348,6 +358,14 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			//						4:赠与---进步币兑换    5:被赠与---进步币兑换
 			insertPublic(Long.parseLong(friendid), "5", number, Long.parseLong(improveid), userid);
 			insertPublic(userid, "4", number, Long.parseLong(improveid), Long.parseLong(friendid));
+
+			//系统今日赠花总数＋number
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
+				}
+			});
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
