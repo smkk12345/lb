@@ -34,13 +34,15 @@
         user_pl_detail
       WHERE
         id IN (SELECT
-          MAX(id)
-          FROM
-            user_pl_detail
-        WHERE
-          ptype != 'a'
-          and userid = #{userid}
-        GROUP BY ptype)
+                  MAX(id)
+                FROM
+                    user_pl_detail
+                WHERE
+                  ptype != 'a'
+                  and userid = #{userid}
+                GROUP BY ptype
+              )
+        and userid = #{userid}
       order by toplevel desc,createtime desc
 
   </select>

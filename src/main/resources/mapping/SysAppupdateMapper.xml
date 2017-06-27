@@ -10,9 +10,10 @@
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="updateexplain" property="updateexplain" jdbcType="VARCHAR" />
+    <result column="enforceversion" property="enforceversion" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ttype, version, updatetime, enforced, url, remark, updateexplain
+    id, ttype, version, updatetime, enforced, url, remark, updateexplain,enforceversion
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -33,10 +34,10 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.SysAppupdate" >
     insert into sys_appupdate (id, ttype, version, 
       updatetime, enforced, url, 
-      remark, updateexplain)
+      remark, updateexplain,enforceversion)
     values (#{id,jdbcType=INTEGER}, #{ttype,jdbcType=CHAR}, #{version,jdbcType=CHAR}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{enforced,jdbcType=CHAR}, #{url,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{updateexplain,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{updateexplain,jdbcType=VARCHAR},#{enforceversion})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SysAppupdate" >
     insert into sys_appupdate
@@ -65,6 +66,9 @@
       <if test="updateexplain != null" >
         updateexplain,
       </if>
+      <if test="enforceversion != null">
+        enforceversion,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -90,6 +94,9 @@
       </if>
       <if test="updateexplain != null" >
         #{updateexplain,jdbcType=VARCHAR},
+      </if>
+      <if test="enforceversion != null">
+        #{enforceversion},
       </if>
     </trim>
   </insert>
@@ -117,6 +124,9 @@
       <if test="updateexplain != null" >
         updateexplain = #{updateexplain,jdbcType=VARCHAR},
       </if>
+      <if test="enforceversion != null">
+        enforceversion = #{enforceversion}
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -128,7 +138,8 @@
       enforced = #{enforced,jdbcType=CHAR},
       url = #{url,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
-      updateexplain = #{updateexplain,jdbcType=VARCHAR}
+      updateexplain = #{updateexplain,jdbcType=VARCHAR},
+      enforceversion = #{enforceversion}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -138,5 +149,20 @@
       <include refid="Base_Column_List" />
     from sys_appupdate
     order by id desc
+  </select>
+
+  <!-- 获取需要版本更新的最大版本信息 -->
+  <select id="getEnforcedVersion" parameterType="map" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />
+      from sys_appupdate
+      where
+        <if test="id != null">
+            id != #{id} AND
+        </if>
+        enforced = 1
+        and ttype = #{ttype}
+      order by id DESC
+      limit 1
   </select>
 </mapper>

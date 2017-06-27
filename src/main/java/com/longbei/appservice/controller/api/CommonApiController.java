@@ -116,6 +116,9 @@ public class CommonApiController {
         if(StringUtils.hasBlankParams(ttype,version,enforced)){
             return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if("0".equals(ttype) && StringUtils.isEmpty(url)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,"请上传更新包!");
+        }
         return this.sysSettingService.addSysAppUpdate(ttype,version,enforced,url,remark,updateexplain);
     }
 
@@ -135,6 +138,9 @@ public class CommonApiController {
         logger.info("id={},ttype={},version={},enforced={},url={},remark={},updateexplain={}",id,ttype,version,enforced,url,remark,updateexplain);
         if(id == null || StringUtils.hasBlankParams(ttype,version,enforced)){
             return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if("0".equals(ttype) && StringUtils.isEmpty(url)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,"请上传更新包!");
         }
         return this.sysSettingService.updateSysAppUpdate(id,ttype,version,enforced,url,remark,updateexplain);
     }
