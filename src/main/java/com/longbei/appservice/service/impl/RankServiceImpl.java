@@ -1726,7 +1726,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = new BaseResp();
         try {
             //获奖总金额
-            double finishPrice = 0.0;
+            double finishPrice = 0;
             List<RankMembers> rankMemberses = rankMembersMapper.selectWinningRankAwardByRank(rank.getRankid());
             for (RankMembers rankMembers : rankMemberses){
                 Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
@@ -1745,7 +1745,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
 
-            int leftNum = (int)Math.ceil((startPrice - finishPrice)/AppserviceConfig.yuantomoney);
+            //没有人获奖时（含没人参榜），向上取整返回全部龙币；有人领奖时，向下取整
+            int leftNum = 0;
+            if (finishPrice == 0){
+                leftNum = (int)Math.ceil(startPrice/AppserviceConfig.yuantomoney);
+            } else {
+                leftNum = (int)Math.floor((startPrice - finishPrice)/AppserviceConfig.yuantomoney);
+            }
+            //奖品没发完有剩余时，返还龙币
             if (0 < leftNum){
                 userMoneyDetailService.insertPublic(Long.parseLong(rank.getCreateuserid()),"9",leftNum,0);
                 baseResp.initCodeAndDesp();
