@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.SysAppupdate;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysAppupdateMapper {
     int deleteByPrimaryKey(Integer id);
@@ -24,4 +25,10 @@ public interface SysAppupdateMapper {
      * @return
      */
     List<SysAppupdate> findSysAppUpdateList();
+
+    /**
+     * 获取需要版本更新的最大版本信息
+     * @return
+     */
+    SysAppupdate getEnforcedVersion(Map<String,Object> map);
 }

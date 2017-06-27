@@ -132,6 +132,19 @@ public class SysSettingServiceImpl implements SysSettingService {
         sysAppupdate.setRemark(remark);
         sysAppupdate.setUpdateexplain(updateexplain);
         sysAppupdate.setUpdatetime(new Date());
+
+        if("0".equals(enforced)){
+            //获取最近的一次强制更新的版本
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("ttype",ttype);
+            SysAppupdate sysAppupdate1 = this.sysAppupdateMapper.getEnforcedVersion(map);
+            if(sysAppupdate1 != null){
+                sysAppupdate.setEnforceversion(sysAppupdate1.getVersion());
+            }
+        }else{
+            sysAppupdate.setEnforceversion(version);
+        }
+
         int row = this.sysAppupdateMapper.insertSelective(sysAppupdate);
         if(row > 0){
             return new BaseResp<>().ok();
@@ -161,6 +174,20 @@ public class SysSettingServiceImpl implements SysSettingService {
         sysAppupdate.setRemark(remark);
         sysAppupdate.setUpdateexplain(updateexplain);
         sysAppupdate.setUpdatetime(new Date());
+
+        if("0".equals(enforced)){
+            //获取最近的一次强制更新的版本
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("ttype",ttype);
+            map.put("id",id);
+            SysAppupdate sysAppupdate1 = this.sysAppupdateMapper.getEnforcedVersion(map);
+            if(sysAppupdate1 != null){
+                sysAppupdate.setEnforceversion(sysAppupdate1.getVersion());
+            }
+        }else{
+            sysAppupdate.setEnforceversion(version);
+        }
+
         int row = this.sysAppupdateMapper.updateByPrimaryKeySelective(sysAppupdate);
         if(row > 0){
             return new BaseResp<>().ok();
