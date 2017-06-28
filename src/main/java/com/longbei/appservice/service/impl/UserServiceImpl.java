@@ -657,14 +657,16 @@ public class UserServiceImpl implements UserService {
 		if(ResultUtil.isSuccess(baseResp)){
 			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
 			try{
-				userInfoMapper.clearOtherDevice(userInfo.getUserid(), deviceindex);
-				userInfoMapper.updateIndexDevice(userInfo.getUserid(), deviceindex);
+				if(null != userInfo){
+					userInfoMapper.clearOtherDevice(userInfo.getUserid(), deviceindex);
+					userInfoMapper.updateIndexDevice(userInfo.getUserid(), deviceindex);
+				}
 //				userInfoMapper.updateDeviceIndexByUserName(userInfo);
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
+			springJedisDao.sAdd(deviceindex+date+"login",mobile);
 		}
 		return baseResp;
 	}
