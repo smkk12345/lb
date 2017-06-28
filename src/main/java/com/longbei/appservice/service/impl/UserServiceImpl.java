@@ -663,6 +663,8 @@ public class UserServiceImpl implements UserService {
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
+			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
 		}
 		return baseResp;
 	}
