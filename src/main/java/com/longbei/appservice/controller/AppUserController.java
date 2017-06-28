@@ -429,7 +429,7 @@ public class AppUserController extends BaseController {
             if(nickname.length() > 13){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
             }
-            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+            baseResp = sysSensitiveService.getSensitiveWordSet(nickname+"，"+brief+"，"+realname);
             if(!ResultUtil.isSuccess(baseResp)){
                 return baseResp;
             }
