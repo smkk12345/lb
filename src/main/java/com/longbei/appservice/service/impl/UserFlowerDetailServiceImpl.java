@@ -301,10 +301,11 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
 
 			//系统今日赠花总数＋number
+			final int finalNum = number;
 			threadPoolTaskExecutor.execute(new Runnable() {
 				@Override
 				public void run() {
-					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
+					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,finalNum);
 				}
 			});
 		}
@@ -360,10 +361,11 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			insertPublic(userid, "4", number, Long.parseLong(improveid), Long.parseLong(friendid));
 
 			//系统今日赠花总数＋number
+			final int finalNum = number;
 			threadPoolTaskExecutor.execute(new Runnable() {
 				@Override
 				public void run() {
-					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
+					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,finalNum);
 				}
 			});
 		}
