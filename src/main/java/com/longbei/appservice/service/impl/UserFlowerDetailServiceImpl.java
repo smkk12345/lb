@@ -276,7 +276,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> moneyExchangeFlower(long userid, final int number, String friendid,
+	public BaseResp<Object> moneyExchangeFlower(long userid, int number, String friendid,
     		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户龙币是否够用兑换
@@ -301,12 +301,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			insertPublic(userid, "1", number, Long.parseLong(improveid), Long.parseLong(friendid));
 
 			//系统今日赠花总数＋number
-			threadPoolTaskExecutor.execute(new Runnable() {
-				@Override
-				public void run() {
-					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
-				}
-			});
+			statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){
@@ -335,7 +330,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> coinExchangeFlower(long userid, final int number, String friendid,
+	public BaseResp<Object> coinExchangeFlower(long userid, int number, String friendid,
     		String improveid, String businesstype, String businessid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		//先判断用户进步币是否够用兑换
@@ -360,12 +355,7 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
 			insertPublic(userid, "4", number, Long.parseLong(improveid), Long.parseLong(friendid));
 
 			//系统今日赠花总数＋number
-			threadPoolTaskExecutor.execute(new Runnable() {
-				@Override
-				public void run() {
-					statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
-				}
-			});
+			statisticService.updateStatistics(Constant.SYS_FLOWER_NUM,number);
 		}
 		Improve improve = improveService.selectImproveByImpid(Long.parseLong(improveid), userid + "", businesstype, businessid);
 		if(null != improve){

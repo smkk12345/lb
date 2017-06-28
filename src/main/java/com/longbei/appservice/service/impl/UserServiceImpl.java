@@ -552,14 +552,8 @@ public class UserServiceImpl implements UserService {
 		//token 放到redis中去
 		springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
 		//注册成功,当日注册数加1
-		if (ResultUtil.isSuccess(baseResp)) {
-			threadPoolTaskExecutor.execute(new Runnable() {
-				@Override
-				public void run() {
-					statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
-				}
-			});
-		}
+		statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
+
 		return baseResp;
 	}
 

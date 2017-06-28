@@ -626,9 +626,9 @@ public class Constant {
 	public static final String SYS_FLOWER_NUM = "flowernum";//献花数
 	public static final String SYS_IMPROVE_NUM = "improvenum";//新增进步数
 	public static final String SYS_RANK_NUM = "ranknum";//龙榜数
+	public static final String SYS_MONEY_NUM = "moneynum";//龙币充值数
 	public static final String SYS_GOAL_NUM = "goalnum";//目标数
 	public static final String SYS_ORDER_NUM = "ordernum";//订单数
-	public static final String SYS_MONEY_NUM = "moneynum";//龙币充值数
 	public static final String SYS_ICON_NUM = "iconnum";//进步币发放数
 	public static final String SYS_MONEY_USE_NUM = "moneyusenum";//龙币使用数
 	public static final String SYS_ICON_USE_NUM = "iconusenum";//进步币使用数

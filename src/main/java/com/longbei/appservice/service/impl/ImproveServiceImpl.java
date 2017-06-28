@@ -163,12 +163,7 @@ public class ImproveServiceImpl implements ImproveService{
 
         BaseResp baseResp = new BaseResp();
         //系统今日新赠进步数＋1
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
-            }
-        });
+        statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
 
         boolean isok = false;
         switch (businesstype){
@@ -625,8 +620,12 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-            improves = improveMapper.selectListByRank(rankid,orderby,
-                    flowerscore,likescore,pageNo,pageSize,StringUtils.isBlank(lastdate)?null:lastdate);
+//            if ("0".equals(orderby)){
+//                improves = selectImproveListBySort(rankid,pageNo,pageSize);
+//            } else {
+                improves = improveMapper.selectListByRank(rankid,orderby,
+                        flowerscore,likescore,pageNo,pageSize,StringUtils.isBlank(lastdate)?null:lastdate);
+//            }
             if ("0".equals(orderby)){
                 if (null != rank){
                     flowerscore = rank.getFlowerscore();
@@ -652,6 +651,34 @@ public class ImproveServiceImpl implements ImproveService{
         improvesList.getExpandData().put("taltalCommentNum",taltalCommentNum);
         return improvesList;
     }
+
+    /**
+     * 按排名获取进步
+     * @param rankid
+     * @return
+     */
+    private List<Improve> selectImproveListBySort(String rankid,Integer startNo,Integer pageSize){
+        Rank rank = rankMapper.selectRankByRankid(Long.parseLong(rankid));
+        List<Improve> list = new ArrayList<>();
+        if(null == rank){
+            return list;
+        }
+
+        if ("1".equals(rank.getIsfinish())){
+            Set<String> userids = springJedisDao.
+                    zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize);
+            for (String userid : userids){
+                Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
+                if (null != improve){
+                    list.add(improve);
+                }
+            }
+        } else if (!"0".equals(rank.getIsfinish())){
+            list = improveMapper.selectRankImprovesBySort(rankid,startNo*pageSize,pageSize);
+        }
+        return list;
+    }
+
 
     private void initSortInfo(Rank rank,List<Improve> improves){
         if("1".equals(rank.getIsfinish())){//进行中

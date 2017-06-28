@@ -2,10 +2,12 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Map;
 
+import com.longbei.appservice.service.StatisticService;
 import com.longbei.appservice.service.api.productservice.IProductBasicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
@@ -27,6 +29,10 @@ public class PayServiceImpl implements PayService {
 //	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private IProductBasicService iProductBasicService;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
+	private StatisticService statisticService;
 
 	private static Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 
@@ -88,6 +94,10 @@ public class PayServiceImpl implements PayService {
 					}else{
 						BaseResp<Object> baseResp = iProductBasicService.verifyali(orderType, resMap);
 						if(ResultUtil.isSuccess(baseResp)){
+							//购买成功后，更新系统当日购买龙币总数
+							final int number = productOrders.getMoneyprice().intValue();
+							statisticService.updateStatistics(Constant.SYS_MONEY_NUM,number);
+							//购买成功后，添加龙币----
 //							Double total_fee = Double.parseDouble(resMap.get("total_fee"))/AppserviceConfig.yuantomoney;
 //							logger.info("verifyali total_fee = {}", total_fee);
 //							logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
@@ -130,6 +140,9 @@ public class PayServiceImpl implements PayService {
 					}else{
 						BaseResp<Object> baseResp = iProductBasicService.verifywx(out_trade_no);
 						if(ResultUtil.isSuccess(baseResp)){
+							//购买成功后，更新系统当日购买龙币总数
+							final int number = productOrders.getMoneyprice().intValue();
+							statisticService.updateStatistics(Constant.SYS_MONEY_NUM,number);
 							//购买成功后，添加龙币----
 //							Double price = Double.parseDouble(productOrders.getPrice())/100;
 //							logger.info("verifywx price = {}", price);
