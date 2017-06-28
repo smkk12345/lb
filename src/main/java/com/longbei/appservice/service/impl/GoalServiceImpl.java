@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ImproveGoalMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
@@ -11,6 +12,7 @@ import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.FriendService;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.SysSensitiveService;
 import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +40,18 @@ public class GoalServiceImpl implements GoalService {
     private ImproveGoalMapper improveGoalMapper;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
     private static Logger logger = LoggerFactory.getLogger(GoalServiceImpl.class);
 
     @Override
     public BaseResp<Object> insert(long userid, String goaltag, String ptype, String ispublic, String needwarn, String warntime, String week) {
         BaseResp<Object> baseResp = new BaseResp<>();
+        baseResp = sysSensitiveService.getSensitiveWordSet(goaltag);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
         UserGoal userGoal = new UserGoal();
         userGoal.setUserid(userid);
         userGoal.setGoaltag(goaltag);

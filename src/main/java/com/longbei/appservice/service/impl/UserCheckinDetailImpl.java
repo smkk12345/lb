@@ -114,9 +114,11 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				String checkinday = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_DAY_DATE + userid);
 				//判断上一次签到的日期
-				int cha = DateUtils.daysBetween(checkinday, DateUtils.formatDateTime1(new Date()));
-
-				if(cha > 1 || cha == 0){
+				int cha = DateUtils.dayBetween(checkinday, DateUtils.formatDateTime1(new Date()));
+				logger.info("selectIsCheckIn userid = {}, daycha = {}, checkinday = {}", userid, cha, checkinday);
+				if(cha == 0){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
+				}else if(cha > 1){
 					//不是连续签到     先清除    再添加
 					springJedisDao.del(Constant.RP_USER_CHECK + userid);
 					addRedisCheck(userid, date, "1");
@@ -131,6 +133,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 					//重新设置过期时间
 //					springJedisDao.expire(Constant.RP_USER_CHECK + userid, 60*60*24*2);
 					addRedisCheck(userid, redisDate, res+"");
+					logger.info("selectIsCheckIn continuousCheck userid = {}, continuousCheckday = {}", 
+							userid, res);
 					//+进步币
 					if(res >= 5){
 						//需要先判断数据库里面是否已有这条记录    有：修改     无：添加

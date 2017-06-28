@@ -1,6 +1,9 @@
 package com.longbei.appservice.controller;
 
 import java.util.Date;
+
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.service.SysSensitiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class CommentController extends BaseController {
 //	private CommentCountMongoService commentCountMongoService;
 	@Autowired
 	private CommentLikesMongoService commentLikesMongoService;
+	@Autowired
+	private SysSensitiveService sysSensitiveService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentController.class);
@@ -195,6 +200,10 @@ public class CommentController extends BaseController {
  		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
  			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
  		}
+		 baseResp = sysSensitiveService.getSensitiveWordSet(content);
+		 if(!ResultUtil.isSuccess(baseResp)){
+			 return baseResp;
+		 }
  		try {
  			Comment comment = new Comment();
  			comment.setContent(content);
@@ -237,6 +246,10 @@ public class CommentController extends BaseController {
   		if(StringUtils.hasBlankParams(status)){
   			status = "0";
   		}
+		baseResp = sysSensitiveService.getSensitiveWordSet(content);
+		if(!ResultUtil.isSuccess(baseResp)){
+			return baseResp;
+		}
   		try {
   			CommentLower commentLower = new CommentLower();
   			commentLower.setContent(content);
