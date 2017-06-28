@@ -124,17 +124,21 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
     @Override
     public BaseResp<Object> sysDailyStatistic() {
         BaseResp<Object> baseResp = new BaseResp<>();
-        Statistics statistics = new Statistics();
 
         try {
-            //今日注册用户数
-            String registerNum = springJedisDao.get(Constant.REGISTER_NUM);
-            if (StringUtils.isBlank(registerNum)){
-                statistics.setRegisternum(Integer.parseInt(registerNum));
-            }
+            Statistics statistics = this.getStatisticsFromRedis();
+
+            Date date = new Date();
+            statistics.setCreatetime(date);
+            statistics.setUpdatetime(date);
             int res = statisticsMapper.insertSelective(statistics);
             if (res > 0) {
-                springJedisDao.set(Constant.REGISTER_NUM,"0");
+                springJedisDao.set(Constant.SYS_REGISTER_NUM,"0");
+                springJedisDao.set(Constant.SYS_CHECK_NUM,"0");
+                springJedisDao.set(Constant.SYS_LIKE_NUM,"0");
+                springJedisDao.set(Constant.SYS_FLOWER_NUM,"0");
+                springJedisDao.set(Constant.SYS_IMPROVE_NUM,"0");
+
                 baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
@@ -150,13 +154,8 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
     @Override
     public BaseResp<Statistics> selectStatistics() {
         BaseResp<Statistics> baseResp = new BaseResp<>();
-        Statistics statistics = new Statistics();
         try {
-            //今日注册用户数
-            String registerNum = springJedisDao.get(Constant.REGISTER_NUM);
-            if (!StringUtils.isBlank(registerNum)) {
-                statistics.setRegisternum(Integer.parseInt(registerNum));
-            }
+            Statistics statistics = this.getStatisticsFromRedis();
 
             baseResp.setData(statistics);
             baseResp.initCodeAndDesp();
@@ -164,5 +163,41 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             e.printStackTrace();
         }
         return baseResp;
+    }
+
+    private Statistics getStatisticsFromRedis(){
+        Statistics statistics = new Statistics();
+        //今日注册用户数
+        String registerNum = springJedisDao.get(Constant.SYS_REGISTER_NUM);
+        if (!StringUtils.isBlank(registerNum)) {
+            statistics.setRegisternum(Integer.parseInt(registerNum));
+        }
+        //今日签到人数
+        String checkNum = springJedisDao.get(Constant.SYS_CHECK_NUM);
+        if (!StringUtils.isBlank(checkNum)) {
+            statistics.setChecknum(Integer.parseInt(checkNum));
+        }
+        //今日点赞总数
+        String likeNum = springJedisDao.get(Constant.SYS_LIKE_NUM);
+        if (!StringUtils.isBlank(likeNum)) {
+            statistics.setLikenum(Integer.parseInt(likeNum));
+        }
+        //今日鲜花总数
+        String flowerNum =springJedisDao.get(Constant.SYS_FLOWER_NUM);
+        if (!StringUtils.isBlank(flowerNum)) {
+            statistics.setFlowernum(Integer.parseInt(flowerNum));
+        }
+        //今日新增微进步数
+        String improveNum = springJedisDao.get(Constant.SYS_IMPROVE_NUM);
+        if (!StringUtils.isBlank(improveNum)) {
+            statistics.setImprovenum(Integer.parseInt(improveNum));
+        }
+
+        return statistics;
+    }
+
+    @Override
+    public void updateStatistics(String key, int num) {
+        springJedisDao.increment(key, num);
     }
 }

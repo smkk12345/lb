@@ -18,14 +18,15 @@ import java.util.Map;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.*;
 
+import com.longbei.appservice.service.StatisticService;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -52,16 +53,17 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 	private UserCheckinInfoMapper userCheckinInfoMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
-//	@Autowired
-//	private UserImpCoinDetailMapper userImpCoinDetailMapper;
 	@Autowired
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private SpringJedisDao springJedisDao;
 	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
 	private UserImproveStatisticMapper userImproveStatisticMapper;
-//	@Autowired
-//	private UserImpCoinDetailService userImpCoinDetailService;
+	@Autowired
+	private StatisticService statisticService;
+
 
 	private static Logger logger = LoggerFactory.getLogger(UserCheckinDetailImpl.class);
 
@@ -94,6 +96,13 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 			if(null != userCheckinDetail){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
+			// 系统今日签到总人数
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					statisticService.updateStatistics(Constant.SYS_CHECK_NUM,1);
+				}
+			});
 			// 判断redis中是否存在 存在+1
 			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
 					Constant.RP_USER_CHECK_VALUE + userid);

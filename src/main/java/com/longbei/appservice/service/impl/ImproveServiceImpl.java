@@ -123,6 +123,8 @@ public class ImproveServiceImpl implements ImproveService{
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
     private CircleMembersMapper circleMembersMapper;
+    @Autowired
+    private StatisticService statisticService;
 
     /**
      *  @author luye
@@ -162,6 +164,14 @@ public class ImproveServiceImpl implements ImproveService{
        if(ResultUtil.fail(baseResp)){
             return baseResp;
         }
+        //系统今日新赠进步数＋1
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
+            }
+        });
+
         boolean isok = false;
         switch (businesstype){
             case Constant.IMPROVE_SINGLE_TYPE:
@@ -1763,6 +1773,9 @@ public class ImproveServiceImpl implements ImproveService{
                 @Override
                 public void run() {
 
+                    //系统今日点赞总数 +1
+                    statisticService.updateStatistics(Constant.SYS_LIKE_NUM,1);
+
                     //更新进步赞数（mysql）
 
 
@@ -1857,6 +1870,9 @@ public class ImproveServiceImpl implements ImproveService{
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+
+                    //系统今日点赞总数 取消赞 -1
+                    statisticService.updateStatistics(Constant.SYS_LIKE_NUM,-1);
                     //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
                     if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                         circleMemberService.updateCircleMemberInfo(improve.getUserid(),businessid,-1,null,null);
