@@ -322,6 +322,37 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		// 得到两个日期相差的天数
 		return ((int) (caled.getTime().getTime() / 1000) - (int) (calst.getTime().getTime() / 1000)) / 3600 / 24;
 	}
+	
+	/** 
+	*字符串的日期格式的计算 
+	*/  
+    public static int dayBetween(String smdate,String bdate) throws ParseException{  
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+        Calendar cal = Calendar.getInstance();    
+        cal.setTime(sdf.parse(smdate));    
+        long time1 = cal.getTimeInMillis();                 
+        cal.setTime(sdf.parse(bdate));    
+        long time2 = cal.getTimeInMillis();         
+        long between_days=(time2-time1)/(1000*3600*24);  
+            
+       return Integer.parseInt(String.valueOf(between_days));     
+    }  
+    
+//    public static void main(String[] args) 
+//    {
+//		String dateStr = "2017-01-01 1:21:28";
+//		String dateStr2 = "2017-01-02 1:21:28";
+//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		try {
+//			Date date2 = format.parse(dateStr2);
+//			Date date = format.parse(dateStr);
+//
+//			System.out.println("两个日期的差距：" + dayBetween(dateStr, dateStr2));
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//    }
 
 	/**
 	 * 获取当天剩余的时间 从当前时间到24点的时间差

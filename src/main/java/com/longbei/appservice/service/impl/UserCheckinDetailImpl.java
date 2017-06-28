@@ -118,7 +118,7 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				String checkinday = springJedisDao.getHashValue(Constant.RP_USER_CHECK + userid, 
 						Constant.RP_USER_CHECK_DAY_DATE + userid);
 				//判断上一次签到的日期
-				int cha = DateUtils.daysBetween(checkinday, DateUtils.formatDateTime1(new Date()));
+				int cha = DateUtils.dayBetween(checkinday, DateUtils.formatDateTime1(new Date()));
 				logger.info("selectIsCheckIn userid = {}, daycha = {}, checkinday = {}", userid, cha, checkinday);
 				if(cha == 0){
 					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
