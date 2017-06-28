@@ -259,4 +259,14 @@ public interface ImproveMapper {
     int updateSortSource(@Param("tablename") String tablename,
                          @Param("rankid") Long rankid);
 
+
+
+    Improve selectRankImprovesByUserIdAndRankId(@Param("userid") String userid,
+                                                @Param("businessid") String rankid);
+
+
+    List<Improve> selectRankImprovesBySort(@Param("rankid") String rankid,
+                                           @Param("startno") Integer startno,
+                                           @Param("pagesize") Integer pagesize);
+
 }

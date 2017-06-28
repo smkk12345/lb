@@ -597,6 +597,34 @@
   </select>
 
 
+  <select id="selectRankImprovesByUserIdAndRankId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    improve_rank
+    WHERE
+     userid = #{userid} AND businessid = #{businessid}
+      AND
+     ismainimp='1'
+  </select>
+
+  <select id="selectRankImprovesBySort" resultMap="BaseResultMap">
+    SELECT
+      ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid, ir.businessid,
+      ir.businesstype, ir.likes,ir.isrecommend,
+    ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ir.ismainimp,ir.ptype,
+    ir.ispublic,ir.sourcekey,ir.complaincount,ir.duration,ir.isbusinessdel,ir.picattribute,
+    rm.likes as totallikes,rm.flowers as totalflowers,rm.sortnum
+    FROM
+    rank_members rm LEFT JOIN improve_rank ir
+    ON rm.rankid = ir.businessid AND rm.userid=ir.userid AND ir.ismainimp='1'
+    WHERE
+    rm.rankid = #{rankid}
+    ORDER BY
+    rm.sortnum ASC
+    limit #{startno},#{pagesize}
+  </select>
+
   <select id="selectImproveCount" resultType="java.lang.Integer">
     SELECT
     count(*)
