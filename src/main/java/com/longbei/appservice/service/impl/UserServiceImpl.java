@@ -790,8 +790,6 @@ public class UserServiceImpl implements UserService {
 		return baseResp.initCodeAndDesp();
 	}
 
-
-
 	/**
 	 * 次数限制
 	 * @param deviceindex
@@ -806,6 +804,9 @@ public class UserServiceImpl implements UserService {
 			return true;
 		}
 		if(tels.size() == SysRulesCache.behaviorRule.getChangedeveicelimitperday() && tels.contains(username)){
+			return true;
+		}
+		if(tels.contains(username)){
 			return true;
 		}
 		return false;
