@@ -80,27 +80,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccount.setStatus("1");
         userAccount.setCreatetime(strDate);
         userAccount.setUpdatetime(strDate);
-        switch (strFreezeTime) {
-            case "0":
-                userAccount.setFreezetime(Constant.FREEZETIME_EIGHT_HOURS);
-                break;
-            case "1":
-                userAccount.setFreezetime(Constant.FREEZETIME_THREE_DAYS);
-                break;
-            case "2":
-                userAccount.setFreezetime(Constant.FREEZETIME_ONE_WEEK);
-                break;
-            case "3":
-                userAccount.setFreezetime(Constant.FREEZETIME_THREE_MONTHS);
-                break;
-            case "4":
-                userAccount.setFreezetime(Constant.FREEZETIME_FOREVER);
-                break;
-            default:
-                userAccount.setFreezetime(null);
-                break;
-        }
         try {
+            initFreezeTime(userAccount,strFreezeTime);
             int n = userAccountMapper.insertUserAccount(userAccount);
             if(n == 1){
                 boolean flag = springJedisDao.del("userid&token&"+userAccount.getUserid());
@@ -117,6 +98,25 @@ public class UserAccountServiceImpl implements UserAccountService {
     public 	BaseResp<Object> updateUserAccountByUserId(UserAccount userAccount,String strFreezeTime) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         userAccount.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        try {
+            initFreezeTime(userAccount,strFreezeTime);
+            int n = userAccountMapper.updateUserAccountByUserId(userAccount);
+            if(n >= 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("updateUserAccountByUserId error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 根据value值设置实际冻结时间
+     * @title initFreezeTime
+     * @author IngaWu
+     * @currentdate:2017年6月21日
+     */
+    private void initFreezeTime(UserAccount userAccount,String strFreezeTime){
         switch (strFreezeTime) {
             case "0":
                 userAccount.setFreezetime(Constant.FREEZETIME_EIGHT_HOURS);
@@ -137,15 +137,6 @@ public class UserAccountServiceImpl implements UserAccountService {
                 userAccount.setFreezetime(null);
                 break;
         }
-        try {
-            int n = userAccountMapper.updateUserAccountByUserId(userAccount);
-            if(n >= 1){
-                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-            }
-        } catch (Exception e) {
-            logger.error("updateUserAccountByUserId error and msg={}",e);
-        }
-        return baseResp;
     }
 
     /**
