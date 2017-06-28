@@ -565,4 +565,6 @@ public interface ImproveService {
 
     BaseResp recommendImproveOpt();
 
+    BaseResp<Object> improvevalidate(String userid,String brief,String businessid,String businesstype);
+
 }

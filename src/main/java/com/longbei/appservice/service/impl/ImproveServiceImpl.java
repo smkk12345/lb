@@ -125,6 +125,8 @@ public class ImproveServiceImpl implements ImproveService{
     private CircleMembersMapper circleMembersMapper;
     @Autowired
     private StatisticService statisticService;
+    @Autowired
+    private SysSensitiveService sysSensitiveService;
 
     /**
      *  @author luye
@@ -159,11 +161,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setBusinessid(Long.parseLong(businessid));
         }
 
-        //添加进步之前的过滤
-        BaseResp<Object> baseResp = insertImproveFilter(improve,businesstype);
-       if(ResultUtil.fail(baseResp)){
-            return baseResp;
-        }
+        BaseResp baseResp = new BaseResp();
         //系统今日新赠进步数＋1
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
@@ -1399,13 +1397,12 @@ public class ImproveServiceImpl implements ImproveService{
     /**
      * 能否发布进步过滤
      * @author:luye
-     * @param improve
      * @param improvetype
      * @return
      * @author:luye
      * @date update 02月10日
      */
-    private BaseResp insertImproveFilter(Improve improve,String improvetype){
+    private BaseResp insertImproveFilter(String businessid,String userid,String improvetype){
         BaseResp baseResp = new BaseResp();
         switch (improvetype){
             case Constant.IMPROVE_SINGLE_TYPE:
@@ -1421,32 +1418,33 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
-                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
-                if (null == userGoal){
-                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
-                }
-                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
-                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
-                }else {
-                    baseResp.initCodeAndDesp();
-                }
+//                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
+//                if (null == userGoal){
+//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
+//                }
+//                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
+//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
+//                }else {
+//                    baseResp.initCodeAndDesp();
+//                }
 
                 break;
             case Constant.IMPROVE_RANK_TYPE: {
                     Rank rank = null;
                     try {
-                        logger.info("select rank by rankid={}", improve.getBusinessid());
-                        rank = rankMapper.selectRankByRankid(improve.getBusinessid());
+                        logger.info("select rank by rankid={}",businessid);
+                        rank = rankMapper.selectRankByRankid(Long.parseLong(businessid));
                         logger.info("select rank result : {} ", rank);
                     } catch (Exception e) {
-                        logger.error("select rank by rankid={} is error:", improve.getBusinessid(), e);
+                        logger.error("select rank by rankid={} is error:", businessid, e);
                     }
                     if (null != rank) {
                         logger.info("select rank is not null rank={}", JSON.toJSONString(rank));
                         if (!"1".equals(rank.getIsfinish())) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_69,Constant.RTNINFO_SYS_69);
                         }
-                        if (!canInsertRankImprovePerday(improve.getUserid(), improve.getBusinessid(), rank)) {
+                        if (!canInsertRankImprovePerday(Long.parseLong(userid),
+                                Long.parseLong(businessid), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
 //                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
@@ -3712,5 +3710,16 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("option recommend improve is error:",e);
         }
         return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> improvevalidate(String userid, String brief, String businessid,String businesstype) {
+        BaseResp baseResp = new BaseResp();
+        baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+        if(ResultUtil.fail(baseResp)){
+            return baseResp;
+        }
+        //添加进步之前的过滤
+        return insertImproveFilter(businessid,userid,businesstype);
     }
 }

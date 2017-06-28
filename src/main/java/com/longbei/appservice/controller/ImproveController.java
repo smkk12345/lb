@@ -940,4 +940,30 @@ public class ImproveController {
         return baseResp;
     }
 
+    /**
+     * @url improve/improvevalidate
+     * 发进步之前验证
+     * @param userid  必传
+     * @param brief
+     * @param businessid
+     * @param businesstype  必传
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping("improvevalidate")
+    @ResponseBody
+    public BaseResp<Object> improvevalidate(String userid,String brief,String businessid,String businesstype){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid,businesstype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = improveService.improvevalidate(userid,brief,businessid,businesstype);
+        } catch (Exception e) {
+            logger.error("improvevalidate userid={} brief={}, businessid={} is error:",userid,brief,businessid,e);
+        }
+        return baseResp;
+    }
+
+
 }
