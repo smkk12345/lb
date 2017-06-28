@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.RedisDao;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ImpAllDetailMapper;
 import com.longbei.appservice.dao.StatisticsMapper;
 import com.longbei.appservice.dao.TimeLineDetailDao;
@@ -15,6 +16,7 @@ import com.longbei.appservice.entity.UserImproveStatistic;
 import com.longbei.appservice.service.StatisticService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +38,8 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
     private SpringJedisDao springJedisDao;
     @Autowired
     private StatisticsMapper statisticsMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 统计用户每天的进步 花 赞
@@ -131,6 +135,7 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             Date date = new Date();
             statistics.setCreatetime(date);
             statistics.setUpdatetime(date);
+            //每日零点保存当日统计数据至数据库，并清空置0
             int res = statisticsMapper.insertSelective(statistics);
             if (res > 0) {
                 springJedisDao.set(Constant.SYS_REGISTER_NUM,"0");
@@ -138,6 +143,8 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
                 springJedisDao.set(Constant.SYS_LIKE_NUM,"0");
                 springJedisDao.set(Constant.SYS_FLOWER_NUM,"0");
                 springJedisDao.set(Constant.SYS_IMPROVE_NUM,"0");
+                springJedisDao.set(Constant.SYS_MONEY_NUM,"0");
+                springJedisDao.set(Constant.SYS_RANK_NUM,"0");
 
                 baseResp.initCodeAndDesp();
             }
@@ -156,6 +163,12 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         BaseResp<Statistics> baseResp = new BaseResp<>();
         try {
             Statistics statistics = this.getStatisticsFromRedis();
+            if (null != statistics.getMoneynum()) {
+                //把龙币换算成人民币，用于在运营端页面显示 //单位：分；在显示时，转换成元-- 便于直接用整数存储
+                double yuantomoney = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
+                int money = (int)Math.round(statistics.getMoneynum()*yuantomoney*100);//人民币，单位分
+                statistics.setMoneynum(money);
+            }
 
             baseResp.setData(statistics);
             baseResp.initCodeAndDesp();
@@ -192,12 +205,27 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         if (!StringUtils.isBlank(improveNum)) {
             statistics.setImprovenum(Integer.parseInt(improveNum));
         }
+        // 今日购买龙币总数
+        String moneyNum = springJedisDao.get(Constant.SYS_MONEY_NUM);
+        if (!StringUtils.isBlank(moneyNum)) {
+            statistics.setMoneynum(Integer.parseInt(moneyNum));
+        }
+        //今日发布龙榜数
+        String rankNum = springJedisDao.get(Constant.SYS_RANK_NUM);
+        if (!StringUtils.isBlank(rankNum)) {
+            statistics.setRanknum(Integer.parseInt(rankNum));
+        }
 
         return statistics;
     }
 
     @Override
-    public void updateStatistics(String key, int num) {
-        springJedisDao.increment(key, num);
+    public void updateStatistics(final String key, final int num) {
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                springJedisDao.increment(key, num);
+            }
+        });
     }
 }

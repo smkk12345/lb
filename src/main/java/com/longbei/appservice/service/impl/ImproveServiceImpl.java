@@ -165,12 +165,7 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp;
         }
         //系统今日新赠进步数＋1
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
-            }
-        });
+        statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
 
         boolean isok = false;
         switch (businesstype){

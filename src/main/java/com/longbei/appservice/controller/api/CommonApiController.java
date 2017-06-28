@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.DictArea;
 import com.longbei.appservice.entity.PerfectTen;
 import com.longbei.appservice.entity.SysAppupdate;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +61,28 @@ public class CommonApiController {
             return baseResp;
         } catch (Exception e) {
             logger.error("selectCityList and pid={} is error:",pid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取龙币、进步币、人民币、花之间的兑换比例
+     * @return
+     */
+    @RequestMapping(value = "getMoneyAndCoinExchange")
+    @ResponseBody
+    public BaseResp<Object> getMoneyAndCoinExchange(){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            Map<String, Object> expandData = new HashMap<>();
+            expandData.put("yuantomoney", AppserviceConfig.yuantomoney);
+            expandData.put("moneytocoin", AppserviceConfig.moneytocoin);
+            expandData.put("flowertocoin", AppserviceConfig.flowertocoin);
+            expandData.put("flowertomoney", AppserviceConfig.flowertomoney);
+            baseResp.setExpandData(expandData);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("getYuanToMoney is error:{}", e);
         }
         return baseResp;
     }

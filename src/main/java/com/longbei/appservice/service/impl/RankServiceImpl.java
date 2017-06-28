@@ -113,6 +113,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private UserMoneyDetailService userMoneyDetailService;
     @Autowired
     private HomeRecommendMapper homeRecommendMapper;
+    @Autowired
+    private StatisticService statisticService;
 
     /**
      *  @author luye
@@ -322,33 +324,36 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             rank.setAutotime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
             rank.setIsup("1");
             rank.setIsfinish(null);
-            Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
+            // 定制榜，添加参榜口令joinCode
+            if (!"0".equals(rankImage.getRanktype())){
+                rank.setJoincode(codeDao.getCode(null));
+            }
             int res = 0;
             boolean flag = updateRankAwardRelease(rankImageId);
             if (flag){
+                Rank rank1 = rankMapper.selectRankByRankid(rankImage.getRankid());
                 if (null != rank1){
                     res = rankMapper.updateByPrimaryKeySelective(rank);
                 } else {
-                    // 定制榜，添加参榜口令joinCode
-                    if (!"0".equals(rankImage.getRanktype())){
-                        rank.setJoincode(codeDao.getCode(null));
-                        //pc定制榜发布时给榜主发送消息
-                        if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
-                            String userid = rankImage.getCreateuserid();
-                            String remark = "您创建的定制榜已发布 参榜口令:" + rank.getJoincode();
-                            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,null, "10",
-                                    rankImageId, remark, "2", "50", "定制榜发布通知", 0, "", "");
-                        }
-                    }
                     Date starttime = rank.getStarttime();
                     if (new Date().getTime() >= starttime.getTime()){
                         rank.setIsfinish("1");
                     }
-                    logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
-                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
+//                    logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
+//                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
                 }
                 if (res > 0){
+                    //榜单发布成功，更新系统今日发榜数
+                    statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
+                    //pc端定制榜，发布成功后给榜主发送消息
+                    if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype()) && !"0".equals(rankImage.getRanktype())){
+                        String userid = rankImage.getCreateuserid();
+                        String remark = "您创建的定制榜已发布 参榜口令:" + rank.getJoincode();
+                        userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,null, "10",
+                                rankImageId, remark, "2", "50", "定制榜发布通知", 0, "", "");
+                    }
+                    //修改草稿榜单状态
                     RankImage rm = new RankImage();
                     rm.setRankid(Long.valueOf(rankImageId));
                     rm.setIsup(Constant.RANK_ISUP_YES);
