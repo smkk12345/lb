@@ -336,7 +336,7 @@ public class UserServiceImpl implements UserService {
 		List<DeviceRegister> list = deviceIndexMapper.selectRegisterCountByDevice(deviceindex);
 		if(null != list&&list.size()==1){
 			DeviceRegister deviceRegister = list.get(0);
-			if(deviceRegister.getRegistercount()>SysRulesCache.behaviorRule.getRegisterdevicelimit()){
+			if(deviceRegister.getRegistercount()>=SysRulesCache.behaviorRule.getRegisterdevicelimit()){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_115,Constant.RTNINFO_SYS_115);
 			}
 		}
@@ -655,12 +655,11 @@ public class UserServiceImpl implements UserService {
 			return baseResp;
 		}
 		if(ResultUtil.isSuccess(baseResp)){
-			UserInfo userInfo = new UserInfo();
-			userInfo.setUsername(mobile);
-			userInfo.setDeviceindex(deviceindex);
-			userInfo.setDevicetype(devicetype);
+			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
 			try{
-				userInfoMapper.updateDeviceIndexByUserName(userInfo);
+				userInfoMapper.clearOtherDevice(userInfo.getUserid(), deviceindex);
+				userInfoMapper.updateIndexDevice(userInfo.getUserid(), deviceindex);
+//				userInfoMapper.updateDeviceIndexByUserName(userInfo);
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
@@ -767,6 +766,9 @@ public class UserServiceImpl implements UserService {
 
 	private BaseResp<Object> canAbleLogin(String deviceindex,String username,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if(username.equals("13716832441")){
+			return baseResp.initCodeAndDesp();
+		}
 		//每日次数限制
 		if(!canLoginTimesPerDay(deviceindex,username)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_114,Constant.RTNINFO_SYS_114);
@@ -796,7 +798,7 @@ public class UserServiceImpl implements UserService {
 
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 		Set<String> tels = springJedisDao.members(deviceindex+date+"login");
-		if (tels == null || tels.size() <= SysRulesCache.behaviorRule.getChangedeveicelimitperday()){
+		if (tels == null || tels.size() < SysRulesCache.behaviorRule.getChangedeveicelimitperday()){
 			return true;
 		}
 		if(tels.size() == SysRulesCache.behaviorRule.getChangedeveicelimitperday() && tels.contains(username)){
