@@ -165,12 +165,7 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp;
         }
         //系统今日新赠进步数＋1
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
-            }
-        });
+        statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
 
         boolean isok = false;
         switch (businesstype){
@@ -1327,7 +1322,9 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setPicattribute(timeLineDetail.getPicattribute());
             improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
-            improve.setUserid(timeLineDetail.getUser().getUserid());
+            if(null != timeLineDetail.getUser()){
+            	improve.setUserid(timeLineDetail.getUser().getUserid());
+            }
             improve.setBusinessid(timeLineDetail.getBusinessid());
             if(!StringUtils.isBlank(timeLine.getIspublic()+"")){
                 improve.setIspublic(timeLine.getIspublic()+"");
@@ -1403,7 +1400,9 @@ public class ImproveServiceImpl implements ImproveService{
                 //获取好友昵称
                 String remark = "";
                 if(!map.isEmpty()){
-                	remark = map.get(userid + "_" + user.getId() + "_value");
+                	if(map.containsKey(userid + "_" + user.getId() + "_value")){
+                		remark = map.get(userid + "_" + user.getId() + "_value");
+                	}
                 }
 //                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
                 if(StringUtils.isNotBlank(remark)){
@@ -1540,28 +1539,30 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,String friendids,String funids){
-        if(userid == null || userid == -1){
-            apuser.setIsfans("0");
-            apuser.setIsfriend("0");
-            return ;
-        }
-        if(userid.equals(apuser.getUserid())){
-            apuser.setIsfans("1");
-            apuser.setIsfriend("1");
-            return;
-        }
-        if(StringUtils.isNotEmpty(friendids)){
-            if (friendids.contains(String.valueOf(apuser.getUserid()))){
-                apuser.setIsfans("1");
-            }else{
-                apuser.setIsfans("0");
-            }
-        }
-        if(StringUtils.isNotEmpty(funids)){
-            if (funids.contains(String.valueOf(apuser.getUserid()))){
-                apuser.setIsfans("1");
-            }
-        }
+		if(null != apuser){
+			if(userid == null || userid == -1){
+	            apuser.setIsfans("0");
+	            apuser.setIsfriend("0");
+	            return ;
+	        }
+	        if(userid.equals(apuser.getUserid())){
+	            apuser.setIsfans("1");
+	            apuser.setIsfriend("1");
+	            return;
+	        }
+	        if(StringUtils.isNotEmpty(friendids)){
+	            if (friendids.contains(String.valueOf(apuser.getUserid()))){
+	                apuser.setIsfans("1");
+	            }else{
+	                apuser.setIsfans("0");
+	            }
+	        }
+	        if(StringUtils.isNotEmpty(funids)){
+	            if (funids.contains(String.valueOf(apuser.getUserid()))){
+	                apuser.setIsfans("1");
+	            }
+	        }
+		}
     }
 
 //    private void initFanInfo(long userid,AppUserMongoEntity apuser){

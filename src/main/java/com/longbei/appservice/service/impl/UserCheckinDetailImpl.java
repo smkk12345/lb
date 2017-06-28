@@ -97,12 +97,8 @@ public class UserCheckinDetailImpl implements UserCheckinDetailService {
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_30);
 			}
 			// 系统今日签到总人数
-			threadPoolTaskExecutor.execute(new Runnable() {
-				@Override
-				public void run() {
-					statisticService.updateStatistics(Constant.SYS_CHECK_NUM,1);
-				}
-			});
+			statisticService.updateStatistics(Constant.SYS_CHECK_NUM,1);
+
 			// 判断redis中是否存在 存在+1
 			boolean result = springJedisDao.hasKey(Constant.RP_USER_CHECK + userid,
 					Constant.RP_USER_CHECK_VALUE + userid);
