@@ -126,14 +126,19 @@ public class SecurityFilter extends OncePerRequestFilter {
 				} else {
 					token = springJedisDao.get("userid&token&"+uid);
 				}
-//				String vers[] = version.split("_");
-//				if (vers.length > 0) {
+				String vers[] = version.split("_");
+				if (vers.length > 0) {
+//					if ("1".equals(vers[1])){
+//						returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
+//								"龙杯服务器升级，预计7月1号恢复正常，给您带来的不便，敬请谅解");
+//						return;
+//					}
 //					if(!canLogin(version)){
 //						returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
 //								"请前往应用中心更新版本");
 //						return;
 //					}
-//				}
+				}
 				if (StringUtils.isBlank(token)) {
 					//token过期
 					returnAfterErrorToken(request, response, Constant.STATUS_SYS_08, Constant.RTNINFO_SYS_08);
