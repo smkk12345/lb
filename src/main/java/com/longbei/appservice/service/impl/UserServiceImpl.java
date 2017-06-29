@@ -1007,7 +1007,6 @@ public class UserServiceImpl implements UserService {
 			Object data = baseResp.getData();
 			JSONObject jsonObject = JSONObject.fromObject(data);
 			String token = (String)jsonObject.get("token");
-			baseResp.getExpandData().put("token", token);
 
 			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
@@ -1021,6 +1020,7 @@ public class UserServiceImpl implements UserService {
 			//token 放到redis中去
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			baseResp.setData(userInfo);
+			baseResp.getExpandData().put("token", token);
 		}
 		return baseResp;
 	}
