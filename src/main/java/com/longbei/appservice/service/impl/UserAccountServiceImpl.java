@@ -97,7 +97,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public 	BaseResp<Object> updateUserAccountByUserId(UserAccount userAccount,String strFreezeTime) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(null == userAccount.getUpdatetime()){
         userAccount.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        }
         try {
             initFreezeTime(userAccount,strFreezeTime);
             int n = userAccountMapper.updateUserAccountByUserId(userAccount);
