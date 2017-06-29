@@ -77,6 +77,9 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private SysSettingService sysSettingService;
 
+    @Autowired
+    private TimeLineDao timeLineDao;
+
 
 
     @Override
@@ -98,6 +101,9 @@ public class InitConfig implements CommandLineRunner {
         initListener();
         //初始化sys——common
         initSysCommon();
+
+        //去除时间线中的重复数据
+        timeLineDao.distinctAllData();
     }
 
     private void initUserBehaviorRule(int num){

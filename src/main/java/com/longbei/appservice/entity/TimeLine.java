@@ -15,6 +15,7 @@ import java.util.UUID;
 
 public class TimeLine {
 
+	@Id
 	private String id;
 	private String userid;
 	private String remark;

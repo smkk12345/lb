@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,5 +104,50 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         List<TimeLine> timeLines = mongoTemplate.find(query,TimeLine.class,Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
         return timeLines;
     }
+
+    public void disticntData(String collectionName){
+
+        int start = 0;
+        int pagesize = 1;
+        boolean isend = true;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        while (isend){
+            try {
+                Query query = new Query();
+                query.with(new Sort(Sort.Direction.DESC, "createdate"));
+                query.skip(start);
+                query.limit(pagesize);
+                TimeLine timeLine = mongoTemplate.findOne(query,TimeLine.class,collectionName);
+                start++;
+                if (null == timeLine){
+                    return;
+                }
+                Criteria criteria = Criteria.where("_id").ne(timeLine.getId());
+                criteria.and("userid").is(timeLine.getUserid());
+                criteria.and("timeLineDetail.$id").is(timeLine.getTimeLineDetail().getId());
+                Query query1 = new Query(criteria);
+                mongoTemplate.remove(query1,collectionName);
+                if ((simpleDateFormat.parse(timeLine.getCreatedate())).getTime()
+                        < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+    public void distinctAllData(){
+        disticntData(Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+        disticntData(Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
+//        disticntData(Constant.TIMELINE_IMPROVE_ACQ_COLLECTION);
+        disticntData(Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
+        disticntData(Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
+        disticntData(Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+    }
+
+
 
 }
