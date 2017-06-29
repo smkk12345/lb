@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.VideoMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Video" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="videourl" property="videourl" jdbcType="VARCHAR" />
+    <result column="screenpthoto" property="screenpthoto" jdbcType="VARCHAR" />
+    <result column="isshow" property="isshow" jdbcType="CHAR" />
+    <result column="videoclassifyid" property="videoclassifyid" jdbcType="INTEGER" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,createtime,title,brief,videourl,screenpthoto,isshow,videoclassifyid,sortnum
+  </sql>
+
+  <select id="getVideoList" parameterType="map" resultMap="BaseResultMap">
+      select
+        <include refid="Base_Column_List" />
+      from video
+      where videoClassifyId= #{videoClassifyId}
+      order by id desc
+      limit #{startNum},#{pageSize}
+  </select>
+
+  <select id="getVideo" parameterType="Integer" resultMap="BaseResultMap">
+      SELECT
+          <include refid="Base_Column_List" />
+      FROM video
+      where id= #{videoId}
+  </select>
+
+    <insert id="addVideo" parameterType="com.longbei.appservice.entity.Video">
+        insert INTO
+          video(createtime,
+            title,
+            brief,
+            videourl,
+            screenpthoto,
+            isshow,
+            videoclassifyid,
+            sortnum
+          )values(
+            #{createtime},
+            #{title},
+            #{brief},
+            #{videourl},
+            #{screenpthoto},
+            #{isshow},
+            #{videoclassifyid},
+            #{sortnum}
+          )
+    </insert>
+
+    <update id="updateVideo" parameterType="com.longbei.appservice.entity.Video">
+        update video
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="brief != null and brief != ''">
+                brief = #{brief},
+            </if>
+            <if test="videourl != null and videourl != ''">
+                videourl = #{videourl},
+            </if>
+            <if test="videourl != null and videourl != ''">
+                videourl = #{videourl},
+            </if>
+            <if test="screenpthoto != null and screenpthoto != ''">
+                screenpthoto = #{screenpthoto},
+            </if>
+            <if test="isshow != null">
+                isshow = #{isshow},
+            </if>
+            <if test="videoclassifyid != null">
+                videoclassifyid = #{videoclassifyid},
+            </if>
+            <if test="sortnum != null">
+                sortnum = #{sortnum},
+            </if>
+         </set>
+        where id = #{id}
+    </update>
+
+    <update id="deleteVideo" parameterType="int">
+        delete from
+          video
+        where id=#{id}
+    </update>
+</mapper>

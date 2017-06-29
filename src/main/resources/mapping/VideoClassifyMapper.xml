@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.VideoClassifyMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.VideoClassify" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="bannerurl" property="bannerurl" jdbcType="VARCHAR" />
+    <result column="styleflag" property="styleflag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,createtime,title,brief,bannerurl,styleflag
+  </sql>
+
+    <!-- 获取视频分类的列表 -->
+  <select id="getVideoClassifyList" parameterType="map" resultMap="BaseResultMap">
+      SELECT 
+          <include refid="Base_Column_List" />
+      from video_classify
+      order by id DESC
+      limit #{startNum},#{pageSize}
+  </select>
+
+    <insert id="insertVideoClassify" parameterType="com.longbei.appservice.entity.VideoClassify">
+        INSERT INTO
+          video_classify(
+          createtime,
+          title,
+          brief,
+          <if test="bannerurl != null">
+              bannerurl,
+          </if>
+          styleflag
+        )values(
+            #{createtime},
+            #{title},
+            #{brief},
+            <if test="bannerurl != null">
+                #{bannerurl},
+            </if>
+            #{styleflag}
+        )
+    </insert>
+
+    <select id="getVideoClassify" parameterType="INTEGER" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List" />
+        from video_classify
+        WHERE id = #{id}
+    </select>
+
+    <update id="deleteVideoClassify" parameterType="INTEGER">
+        delete from video_classify
+        where id = #{id}
+    </update>
+
+    <update id="updateVideoClassify" parameterType="com.longbei.appservice.entity.VideoClassify">
+        update video_classify
+        set title=#{title},
+          brief =#{brief},
+          bannerurl=#{bannerurl},
+          styleflag = #{styleflag}
+        where id = #{id}
+    </update>
+</mapper>
