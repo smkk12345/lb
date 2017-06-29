@@ -163,10 +163,10 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         BaseResp<Statistics> baseResp = new BaseResp<>();
         try {
             Statistics statistics = this.getStatisticsFromRedis();
+            //把龙币换算成人民币(单位：分;便于直接用整数存储);用于在运营端页面显示
             if (null != statistics.getMoneynum()) {
-                //把龙币换算成人民币，用于在运营端页面显示 //单位：分；在显示时，转换成元-- 便于直接用整数存储
-                double yuantomoney = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
-                int money = (int)Math.round(statistics.getMoneynum()*yuantomoney*100);//人民币，单位分
+                double radio = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
+                int money = (int)Math.round(statistics.getMoneynum()*radio*100);//人民币，单位分
                 statistics.setMoneynum(money);
             }
 
