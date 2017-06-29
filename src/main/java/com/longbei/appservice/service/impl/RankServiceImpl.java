@@ -322,12 +322,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         try {
             rank.setAutotime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
-            rank.setIsup("1");
+            rank.setIsup(Constant.RANK_ISUP_YES);
             rank.setIsfinish(null);
-            // 定制榜，添加参榜口令joinCode
-            if (!"0".equals(rankImage.getRanktype())){
-                rank.setJoincode(codeDao.getCode(null));
-            }
             int res = 0;
             boolean flag = updateRankAwardRelease(rankImageId);
             if (flag){
@@ -339,20 +335,26 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if (new Date().getTime() >= starttime.getTime()){
                         rank.setIsfinish("1");
                     }
+                    // 定制榜，添加参榜口令joinCode
+                    if (!"0".equals(rankImage.getRanktype())){
+                        rank.setJoincode(codeDao.getCode(null));
+                    }
 //                    logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
 //                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
+                    if (res > 0) {
+                        //榜单发布成功，更新系统今日发榜数
+                        statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
+                        //pc端定制榜，发布成功后给榜主发送消息
+                        if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype()) && !"0".equals(rankImage.getRanktype())){
+                            String userid = rankImage.getCreateuserid();
+                            String remark = "您创建的定制榜已发布 参榜口令:" + rank.getJoincode();
+                            userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,null, "10",
+                                    rankImageId, remark, "2", "50", "定制榜发布通知", 0, "", "");
+                        }
+                    }
                 }
                 if (res > 0){
-                    //榜单发布成功，更新系统今日发榜数
-                    statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
-                    //pc端定制榜，发布成功后给榜主发送消息
-                    if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype()) && !"0".equals(rankImage.getRanktype())){
-                        String userid = rankImage.getCreateuserid();
-                        String remark = "您创建的定制榜已发布 参榜口令:" + rank.getJoincode();
-                        userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,null, "10",
-                                rankImageId, remark, "2", "50", "定制榜发布通知", 0, "", "");
-                    }
                     //修改草稿榜单状态
                     RankImage rm = new RankImage();
                     rm.setRankid(Long.valueOf(rankImageId));

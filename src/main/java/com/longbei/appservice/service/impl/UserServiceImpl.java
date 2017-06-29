@@ -1011,16 +1011,15 @@ public class UserServiceImpl implements UserService {
 
 			long userid = Long.parseLong((String)jsonObject.get("userid")) ;
 			UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userid);
-
-			baseResp =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
-			if(ResultUtil.fail(baseResp)){
+			baseResp.setData(userInfo);
+			//token 放到redis中去
+			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+			if(ResultUtil.fail(baseResp1)){
 				return baseResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
-			//token 放到redis中去
-			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
-			baseResp.setData(userInfo);
 		}
 		return baseResp;
 	}
