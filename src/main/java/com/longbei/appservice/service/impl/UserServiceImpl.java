@@ -966,6 +966,7 @@ public class UserServiceImpl implements UserService {
 
 		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 		if(ResultUtil.fail(baseResp1)){
+			baseResp1.setData(userInfo);
 			return baseResp1;
 		}
 		addLoginRecord(userInfo.getUsername(),deviceindex);

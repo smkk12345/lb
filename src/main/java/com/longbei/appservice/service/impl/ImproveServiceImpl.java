@@ -1452,7 +1452,7 @@ public class ImproveServiceImpl implements ImproveService{
 //                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
 //                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
 //                }else {
-//                    baseResp.initCodeAndDesp();
+                    baseResp.initCodeAndDesp();
 //                }
 
                 break;
