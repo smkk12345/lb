@@ -139,7 +139,7 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> insertImprove(String userid, String brief,
                                  String pickey, String filekey,
                                  String businesstype,String businessid, String ptype,
-                                 String ispublic, String itype, String pimpid,String picattribute) {
+                                 String ispublic, String itype, String pimpid,String picattribute, String duration) {
 
         Improve improve = new Improve();
         improve.setImpid(idGenerateService.getUniqueIdAsLong());
@@ -156,6 +156,7 @@ public class ImproveServiceImpl implements ImproveService{
         Date date = new Date();
         improve.setCreatetime(date);
         improve.setUpdatetime(date);
+        improve.setDuration(duration);
         if(Constant.IMPROVE_SINGLE_TYPE.equals(businesstype)){
         }else{
             improve.setBusinessid(Long.parseLong(businessid));
