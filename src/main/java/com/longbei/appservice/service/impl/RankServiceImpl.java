@@ -2140,7 +2140,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(userList != null && userList.size() > 0){
                     int i = 0;
                     for (RankMembers rankMember:userList){
-                        rankMember.setSortnum(startNum + i +1);
+//                        rankMember.setSortnum(startNum + i +1);
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMember.getUserid()+"");
                         if(userId != null){
                             appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(rankMember.getUserid()+"")));
