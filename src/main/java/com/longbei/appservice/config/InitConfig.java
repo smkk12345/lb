@@ -103,7 +103,7 @@ public class InitConfig implements CommandLineRunner {
         initSysCommon();
 
         //去除时间线中的重复数据
-//        timeLineDao.distinctAllData();
+        timeLineDao.distinctAllData();
     }
 
     private void initUserBehaviorRule(int num){
