@@ -105,6 +105,7 @@
     <include refid="Base_Column_List" />
     FROM user_info
     <where>
+      userid != 10000 
       <if test="user.nickname != null and user.nickname!=''">
         AND nickname LIKE concat(concat("%",#{user.nickname}),"%")
       </if>

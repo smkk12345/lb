@@ -6,6 +6,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.TimeLine;
+import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -112,6 +113,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
     public void disticntData(String collectionName){
 
         int start = 0;
+        int delete = 0;
         int pagesize = 1;
         boolean isend = true;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -123,6 +125,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         }
         while (isend){
             try {
+
                 Criteria qc = Criteria.where("createdate").lt(startDate);
                 Query query = new Query(qc);
                 query.with(new Sort(Sort.Direction.DESC, "createdate"));
@@ -133,19 +136,28 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
                 if (null == timeLine){
                     return;
                 }
-                Criteria criteria = Criteria.where("_id").ne(timeLine.getId());
-                criteria.and("userid").is(timeLine.getUserid());
-                if (null == timeLine.getTimeLineDetail()){
-                    continue;
-                }
-                criteria.and("timeLineDetail.$id").is(timeLine.getTimeLineDetail().getId());
-                Query query1 = new Query(criteria);
-                mongoTemplate.remove(query1,collectionName);
                 if ((simpleDateFormat.parse(timeLine.getCreatedate())).getTime()
                         < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
                     return;
                 }
-                logger.info(collectionName+"--num:"+start);
+                Criteria criteria = Criteria.where("_id").ne(timeLine.getId());
+                if (null == timeLine.getTimeLineDetail()){
+                    Criteria cd = Criteria.where("_id").is(timeLine.getId());
+                    Query q = new Query(cd);
+                    q.limit(1);
+                    mongoTemplate.remove(q,collectionName);
+                    delete++;
+                    continue;
+                }
+                criteria.and("userid").is(timeLine.getUserid());
+                criteria.and("timeLineDetail.$id").is(timeLine.getTimeLineDetail().getId());
+                Query query1 = new Query(criteria);
+                WriteResult w = mongoTemplate.remove(query1,collectionName);
+                if (w.isUpdateOfExisting()){
+                    delete++;
+                }
+                logger.info(collectionName+"-"+timeLine.getCreatedate()+"-num:"+start);
+                logger.info(collectionName+"-del-num:"+delete);
             } catch (Exception e) {
                 e.printStackTrace();
             }
