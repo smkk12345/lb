@@ -67,7 +67,7 @@ public class SysSettingController {
         try {
             baseResp = sysSettingService.upGrade(ttype,version);
         }catch (Exception e){
-            logger.error("upgrade ttype={},version={}",ttype,version,e);
+            logger.error("upgrade ttype={},version={} errorMsg:{}",ttype,version,e);
         }
         return baseResp;
     }

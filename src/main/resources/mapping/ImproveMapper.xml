@@ -146,6 +146,9 @@
       <if test="improve.rankid != null" >
         rankid,
       </if>
+      <if test="improve.duration != null" >
+        duration,
+      </if>
       <if test="improve.picattribute != null" >
         picattribute,
       </if>
@@ -213,6 +216,9 @@
       </if>
       <if test="improve.rankid != null" >
         #{improve.rankid,jdbcType=BIGINT},
+      </if>
+      <if test="improve.duration != null" >
+        #{improve.duration},
       </if>
       <if test="improve.picattribute != null" >
         #{improve.picattribute,jdbcType=VARCHAR},
@@ -708,7 +714,7 @@
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="goalid" property="goalid" />
-    <result column="duration"/>
+    <result column="duration" property="duration" />
   </resultMap>
 
   <select id="selectGoalMainImproveList" resultMap="goalMap" >

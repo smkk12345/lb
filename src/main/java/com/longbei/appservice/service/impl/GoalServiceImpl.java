@@ -4,16 +4,11 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ImproveGoalMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserGoal;
-import com.longbei.appservice.service.FriendService;
-import com.longbei.appservice.service.GoalService;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.SysSensitiveService;
-import net.sf.json.JSONArray;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +37,8 @@ public class GoalServiceImpl implements GoalService {
     private FriendService friendService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private StatisticService statisticService;
 
     private static Logger logger = LoggerFactory.getLogger(GoalServiceImpl.class);
 
@@ -69,6 +66,8 @@ public class GoalServiceImpl implements GoalService {
         try{
             int n = userGoalMapper.insertSelective(userGoal);
             if(n == 1){
+                //目标创建成功,系统当日目标数加1
+                statisticService.updateStatistics(Constant.SYS_GOAL_NUM,1);
             	baseResp.setData(userGoal);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
