@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -86,14 +87,17 @@ public class PayServiceImpl implements PayService {
 	public String verifyali(Long userid, String orderType, Map<String, String> resMap) {
 		try{
 			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(resMap.get("out_trade_no"));
+			
 			if(ResultUtil.isSuccess(resp)){
 				ProductOrders productOrders = resp.getData();
+				logger.info("verifyali productOrders = {}", JSON.toJSON(productOrders).toString());
 				if(null != productOrders){
 					if (!"0".equals(productOrders.getOrderstatus())) {
 						return "SUCCESS";
 					}else{
 						BaseResp<Object> baseResp = iProductBasicService.verifyali(orderType, resMap);
 						if(ResultUtil.isSuccess(baseResp)){
+							logger.info("verifyali baseResp.code = {}", baseResp.getCode());
 							//购买成功后，更新系统当日购买龙币总数
 							final int number = productOrders.getMoneyprice().intValue();
 							statisticService.updateStatistics(Constant.SYS_MONEY_NUM,number);
@@ -102,6 +106,7 @@ public class PayServiceImpl implements PayService {
 //							logger.info("verifyali total_fee = {}", total_fee);
 //							logger.info("verifyali total_fee.intValue() = {}", total_fee.intValue());
 							//添加龙币
+							logger.info("verifyali number = {}", number);
 							userMoneyDetailService.insertPublic(userid, Constant.USER_MONEY_BUY, 
 									productOrders.getMoneyprice().intValue(), Long.parseLong(Constant.SQUARE_USER_ID));
 //							insertMoney(productOrders.getMoneyprice().intValue(), userid, Constant.USER_MONEY_BUY);
@@ -117,6 +122,7 @@ public class PayServiceImpl implements PayService {
 			logger.error("verifyali userid = {}, orderType = {}, resMap = {}", 
 					userid, orderType, JSONArray.fromObject(resMap).toString(), e);
 		}
+		logger.info("verifyali not go method");
 		return "fail";
 	}
 	
@@ -132,6 +138,7 @@ public class PayServiceImpl implements PayService {
 			String out_trade_no = resHandler.getSmap().get("out_trade_no").toString();
 			logger.info("verifywx out_trade_no = {}", out_trade_no);
 			BaseResp<ProductOrders> resp = iProductBasicService.getOrder(out_trade_no);
+			logger.info("verifywx ProductOrders resp.code = {}", resp.getCode());
 			if(ResultUtil.isSuccess(resp)){
 				ProductOrders productOrders = resp.getData();
 				if(null != productOrders){
@@ -139,9 +146,11 @@ public class PayServiceImpl implements PayService {
 						return "SUCCESS";
 					}else{
 						BaseResp<Object> baseResp = iProductBasicService.verifywx(out_trade_no);
+						logger.info("verifywx update baseResp.code = {}", baseResp.getCode());
 						if(ResultUtil.isSuccess(baseResp)){
 							//购买成功后，更新系统当日购买龙币总数
 							final int number = productOrders.getMoneyprice().intValue();
+							logger.info("verifywx number = {}", number);
 							statisticService.updateStatistics(Constant.SYS_MONEY_NUM,number);
 							//购买成功后，添加龙币----
 //							Double price = Double.parseDouble(productOrders.getPrice())/100;
@@ -164,6 +173,7 @@ public class PayServiceImpl implements PayService {
 			logger.error("verifywx userid = {}, orderType = {}, resHandler.smap = {}", 
 					userid, orderType, JSONArray.fromObject(resHandler.getSmap()).toString(), e);
 		}
+		logger.info("verifywx not go method");
 		return "fail";
 	}
 

@@ -53,6 +53,8 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	 */
 	@Override
 	public BaseResp<Object> insertPublic(long userid, String origin, int number, long friendid) {
+		logger.info("insertPublic userid = {}, origin = {}, number = {}, friendid = {}",
+				userid, origin, number, friendid);
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			UserMoneyDetail userMoneyDetail = new UserMoneyDetail();
