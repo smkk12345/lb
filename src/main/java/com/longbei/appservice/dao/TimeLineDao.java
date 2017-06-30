@@ -6,6 +6,8 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.TimeLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -26,6 +28,8 @@ import java.util.List;
  **/
 @Repository
 public class TimeLineDao extends BaseMongoDao<TimeLine>{
+
+    private static Logger logger = LoggerFactory.getLogger(TimeLineDao.class);
 
     public void save(TimeLine timeLine,String collectName){
         mongoTemplate.save(timeLine,collectName);
@@ -111,9 +115,16 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         int pagesize = 1;
         boolean isend = true;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startDate = null;
+        try {
+            startDate = simpleDateFormat.parse("2017-06-30 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         while (isend){
             try {
-                Query query = new Query();
+                Criteria qc = Criteria.where("createdate").lt(startDate);
+                Query query = new Query(qc);
                 query.with(new Sort(Sort.Direction.DESC, "createdate"));
                 query.skip(start);
                 query.limit(pagesize);
@@ -124,6 +135,9 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
                 }
                 Criteria criteria = Criteria.where("_id").ne(timeLine.getId());
                 criteria.and("userid").is(timeLine.getUserid());
+                if (null == timeLine.getTimeLineDetail()){
+                    continue;
+                }
                 criteria.and("timeLineDetail.$id").is(timeLine.getTimeLineDetail().getId());
                 Query query1 = new Query(criteria);
                 mongoTemplate.remove(query1,collectionName);
@@ -131,6 +145,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
                         < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
                     return;
                 }
+                logger.info(collectionName+"--num:"+start);
             } catch (Exception e) {
                 e.printStackTrace();
             }
