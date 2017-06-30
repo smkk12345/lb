@@ -360,7 +360,7 @@ public class UserRelationController extends BaseController {
 		try{
 			baseResp = userRelationService.selectRelationList(userid,updateTime);
 		}catch (Exception e){
-			logger.error("selectRelationList userid={},dataStr={}",userid,updateTime,e);
+			logger.error("selectRelationList userid={},dataStr={} errorMsg:{}",userid,updateTime,e);
 		}
 		return baseResp;
 	}
