@@ -6,6 +6,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.TimeLine;
+import com.longbei.appservice.entity.TimeLineDetail;
 import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,7 +167,56 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
     }
 
 
+
+    public void distinctDetail(){
+        int start = 0;
+        int delete = 0;
+        int pagesize = 1;
+        boolean isend = true;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startDate = null;
+        try {
+            startDate = simpleDateFormat.parse("2017-06-30 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        while (isend){
+            try {
+
+                Criteria qc = Criteria.where("createdate").lt(startDate);
+                Query query = new Query(qc);
+                query.with(new Sort(Sort.Direction.DESC, "createdate"));
+                query.skip(start);
+                query.limit(pagesize);
+                TimeLineDetail timeLine = mongoTemplate.findOne(query,TimeLineDetail.class);
+                start++;
+                if (null == timeLine){
+                    return;
+                }
+                if ((simpleDateFormat.parse(timeLine.getCreatedate())).getTime()
+                        < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
+                    return;
+                }
+                Criteria criteria = Criteria.where("_id").ne(timeLine.getId());
+                criteria.and("improveId").is(timeLine.getImproveId());
+                Query query1 = new Query(criteria);
+                WriteResult w = mongoTemplate.remove(query1,TimeLineDetail.class);
+                if (w.isUpdateOfExisting()){
+                    delete++;
+                }
+                logger.info("timelinedetail-"+timeLine.getCreatedate()+"-num:"+start);
+                logger.info("timelinedetail-del-num:"+delete);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     public void distinctAllData(){
+
+        distinctDetail();
+
         disticntData(Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
         disticntData(Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
 //        disticntData(Constant.TIMELINE_IMPROVE_ACQ_COLLECTION);

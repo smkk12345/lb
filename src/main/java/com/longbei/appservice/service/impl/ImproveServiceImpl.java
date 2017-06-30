@@ -1792,7 +1792,7 @@ public class ImproveServiceImpl implements ImproveService{
         try{
 
             //redis
-            addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
+            addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
             //mongo
             addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
@@ -1894,7 +1894,7 @@ public class ImproveServiceImpl implements ImproveService{
         }
         try {
             //redis
-            removeLikeToImproveForRedis(impid,userid,businessid,businesstype);
+            removeLikeToImproveForRedis(improve,userid,businessid,businesstype);
             //mongo
             removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
             //mysql
@@ -2353,30 +2353,33 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeOrFlowerOrDiamondToImproveForRedis(final String impid,
+    private void addLikeOrFlowerOrDiamondToImproveForRedis(final Improve improve,
                                                            String userid,
                                                            String opttype,
                                                            final String businessid,
                                                            final String businesstype){
         Map<String,String> map = new HashMap<>();
         map.put("lfd"+userid,userid);
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
-                try {
-                    String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                    springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,1, (long) (25*60*60));
-                } catch (ParseException e) {
-                    logger.error("date format is error:",e);
+        if (Constant.IMPROVE_ISPUBLIC_2.equals(improve.getIspublic())){
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+                    try {
+                        String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                        springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,1, (long) (25*60*60));
+                    } catch (ParseException e) {
+                        logger.error("date format is error:",e);
+                    }
                 }
-            }
-        });
+            });
+        }
+
         //将赞保存到redis
-        setLikeToRedis(impid,businessid,businesstype,1);
+        setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
         //添加临时记录
-        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + impid + userid,"1",10*60*60);
-        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + impid,map,30*24*60*60*1000);
+        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + userid,"1",10*60*60);
+        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60*1000);
     }
 
 
@@ -2408,32 +2411,33 @@ public class ImproveServiceImpl implements ImproveService{
      * @param userid
      * @author luye
      */
-    private void removeLikeToImproveForRedis(final String impid,
+    private void removeLikeToImproveForRedis(final Improve improve,
                                              String userid,
                                              final String businessid,
                                              final String businesstype){
 
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
-                try {
-                    String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                    double score = springJedisDao.zScore(key,impid);
-                    if (score > 0){
-                        springJedisDao.zIncrby(key,impid+","+businessid+","+businesstype,-1, (long) (24*60*60));
+        if (Constant.IMPROVE_ISPUBLIC_2.equals(improve.getIspublic())){
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+                    try {
+                        String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                        double score = springJedisDao.zScore(key,improve.getImpid()+"");
+                        if (score > 0){
+                            springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,-1, (long) (24*60*60));
+                        }
+                    } catch (ParseException e) {
+                        logger.error("date format is error:",e);
                     }
-                } catch (ParseException e) {
-                    logger.error("date format is error:",e);
                 }
-            }
-        });
-
-        setLikeToRedis(impid,businessid,businesstype,-1);
-        springJedisDao.del("improve_like_temp_"+impid+userid);
+            });
+        }
+        setLikeToRedis(improve.getImpid()+"",businessid,businesstype,-1);
+        springJedisDao.del("improve_like_temp_"+improve.getImpid()+userid);
         //删除临时记录
-        springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + impid + userid);
-        springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + impid,"like"+impid);
+        springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + userid);
+        springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),"like"+improve.getImpid());
     }
 
     /**

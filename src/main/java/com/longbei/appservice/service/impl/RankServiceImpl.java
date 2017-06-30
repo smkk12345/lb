@@ -231,6 +231,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
                 try{
+                    if (null != award){
+                        award.setAwardcateid(10008);
+                        award.setAwardphotos("award/37973c0b-1088-4882-a6dd-c5e30ac2601c");
+                    }
                     awardService.insertAward(award);
                     rankAward.setAwardid(award.getId().toString());
                     rankAward.setRankid(rankid);
