@@ -208,7 +208,7 @@ public class IssueApiController {
 		}
 		Issue issue = new Issue();
 		issue.setTypeid(typeId);
-		Page<Issue> page = issueService.selectIssueList(issue,1,15);
+		Page<Issue> page = issueService.selectIssueList(issue,1,50);
 		baseResp.setData(page);
 		baseResp.initCodeAndDesp();
 		baseResp.getExpandData().put("title",getTitleByType(typeId));
