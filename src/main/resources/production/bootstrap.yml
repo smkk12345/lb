@@ -5,7 +5,7 @@
       servlet-path: / # the servlet path, defaults to '/'
 spring:
     application:
-        name: appService
+        name: appServiceDis
     cloud:
         config:
             enabled: true
