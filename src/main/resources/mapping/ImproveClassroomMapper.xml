@@ -24,11 +24,12 @@
     <result column="sourcekey" property="sourcekey" />
     <result column="pimpid" property="pimpid" />
     <result column="isresponded" property="isresponded" />
+    <result column="duration" property="duration" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic, 
-    sourcekey, pimpid, isresponded
+    sourcekey, pimpid, isresponded, duration
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -47,7 +48,7 @@
       likes, flowers, diamonds, 
       createtime, updatetime, indexnum, 
       isdel, ismainimp, ptype, ispublic, 
-      sourcekey, pimpid, isresponded
+      sourcekey, pimpid, isresponded,duration
       )
     values (#{id,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, #{itype,jdbcType=CHAR}, 
       #{brief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, #{filekey,jdbcType=VARCHAR}, 
@@ -55,7 +56,7 @@
       #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER}, #{diamonds,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{indexnum,jdbcType=INTEGER}, 
       #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
-      #{sourcekey}, #{pimpid}, #{isresponded}
+      #{sourcekey}, #{pimpid}, #{isresponded}, #{duration}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Improve" >
@@ -124,6 +125,9 @@
       <if test="pimpid != null" >
         pimpid,
       </if>
+      <if test="duration != null" >
+        duration,
+      </if>
       <if test="isresponded != null" >
         isresponded,
       </if>
@@ -191,6 +195,9 @@
       </if>
       <if test="pimpid != null" >
         #{pimpid},
+      </if>
+      <if test="duration != null" >
+        #{duration},
       </if>
       <if test="isresponded != null" >
         #{isresponded},

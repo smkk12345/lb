@@ -145,6 +145,7 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
                 springJedisDao.set(Constant.SYS_IMPROVE_NUM,"0");
                 springJedisDao.set(Constant.SYS_MONEY_NUM,"0");
                 springJedisDao.set(Constant.SYS_RANK_NUM,"0");
+                springJedisDao.set(Constant.SYS_GOAL_NUM,"0");
 
                 baseResp.initCodeAndDesp();
             }
@@ -214,6 +215,11 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         String rankNum = springJedisDao.get(Constant.SYS_RANK_NUM);
         if (!StringUtils.isBlank(rankNum)) {
             statistics.setRanknum(Integer.parseInt(rankNum));
+        }
+        //今日创建目标数
+        String goalNum = springJedisDao.get(Constant.SYS_GOAL_NUM);
+        if (!StringUtils.isBlank(goalNum)) {
+            statistics.setGoalnum(Integer.parseInt(goalNum));
         }
 
         return statistics;
