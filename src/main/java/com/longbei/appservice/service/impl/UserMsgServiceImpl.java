@@ -951,7 +951,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 						if("44".equals(userMsg.getMsgtype())){
 							//44: 榜中成员下榜     
-							if(!"0".equals(userMsg.getFriendid())){
+							if(!"0".equals(userMsg.getFriendid()+"")){
 								//如果是定制榜---显示榜主的信息
 								initMsgUserInfoByFriendid(userMsg, userid);
 							}else{
