@@ -746,6 +746,7 @@ public class UserServiceImpl implements UserService {
 			if(null == userInfo){
 				return returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_04);
 			}
+			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			baseResp =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 			if(ResultUtil.fail(baseResp)){
 				return returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
@@ -753,7 +754,6 @@ public class UserServiceImpl implements UserService {
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			springJedisDao.sAdd(deviceindex+date+"login",username);
 			addLoginRecord(userInfo.getUsername(),deviceindex);
-			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} else  {
 			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
@@ -800,9 +800,9 @@ public class UserServiceImpl implements UserService {
 		if(tels.size() == SysRulesCache.behaviorRule.getChangedeveicelimitperday() && tels.contains(username)){
 			return true;
 		}
-		if(tels.contains(username)){
-			return true;
-		}
+//		if(tels.contains(username)){
+//			return true;
+//		}
 		return false;
 	}
 
