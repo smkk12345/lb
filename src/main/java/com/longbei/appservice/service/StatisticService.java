@@ -3,6 +3,9 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.Statistics;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by wangyongzhi 17/4/17.
  */
@@ -30,4 +33,11 @@ public interface StatisticService extends BaseService {
      * 更新每日统计数据
      */
     void updateStatistics(String key, int num);
+
+    /**
+     * 查询进几天的历史记录
+     * @param days 天数
+     * @return
+     */
+    BaseResp<List<Statistics>> listStatisticsForDays(int days);
 }
