@@ -650,6 +650,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         rank.setHasjoin("1");
                     }
                 }
+                if(rank.getRankinvolved() >= rank.getRanklimite()){
+                    //获取可以挤掉的用户数量
+                    int removeCount = getSureRemoveRankMemberCount(rank.getRankid());
+                    if(removeCount > 0){
+                        rank.setRankinvolved(rank.getRankinvolved()-removeCount);
+                    }
+                }
                 initRankAward(rank);
                 resultList.add(rank);
             }
@@ -2072,7 +2079,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         for(Rank rank:rankList){
             int likeScore = rank.getLikescore();
             int flowerScore = rank.getFlowerscore();
-            double b = rank.getEndtime().getTime() - rank.getCreatetime().getTime();
+            double b = rank.getEndtime().getTime() - rank.getStarttime().getTime();
 
             //查询rankMember
             Map<String,Object> tempMap = new HashMap<>();
@@ -2083,7 +2090,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //计算分数
                 double totalScore = rankMembers.getLikes() * likeScore + rankMembers.getFlowers() * flowerScore;
 
-                double a = rankMembers.getCreatetime().getTime() - rank.getCreatetime().getTime();
+                double a = rankMembers.getCreatetime().getTime() - rank.getStarttime().getTime();
                 double ratio = NumberUtil.round(a/b,5);
                 ratio = 1 - ratio;
                 totalScore = totalScore + ratio;
@@ -2117,7 +2124,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     int i = 0;
                     for(String tempUserId:userIdList){
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
-                        if(rankMembers == null){
+                        if(rankMembers == null && rankMembers.getStatus() != 1){
                             continue;
                         }
                         rankMembers.setSortnum(startNum+i+1);
