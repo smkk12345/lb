@@ -2128,7 +2128,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     int i = 0;
                     for(String tempUserId:userIdList){
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
-                        if(rankMembers == null && rankMembers.getStatus() != 1){
+                        if(rankMembers == null || rankMembers.getStatus() != 1){
                             continue;
                         }
                         rankMembers.setSortnum(startNum+i+1);
