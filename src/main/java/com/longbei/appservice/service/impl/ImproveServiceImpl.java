@@ -1692,7 +1692,7 @@ public class ImproveServiceImpl implements ImproveService{
             } else {
                 count = "0";
             }
-            springJedisDao.set("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString(),count,10);
+            springJedisDao.set("comment"+businessid+improve.getBusinesstype()+improve.getImpid().toString(),count,5);
         }
         improve.setCommentnum(Integer.parseInt(count));
     }
@@ -2407,7 +2407,7 @@ public class ImproveServiceImpl implements ImproveService{
 
     /**
      * 取消赞
-     * @param impid
+     * @param
      * @param userid
      * @author luye
      */
@@ -2692,7 +2692,7 @@ public class ImproveServiceImpl implements ImproveService{
         String count = springJedisDao.get("ImpLFD"+improveid);
         if (StringUtils.isBlank(count)){
             count = improveMongoDao.selectTotalCountImproveLFD(improveid)+"";
-            springJedisDao.set("ImpLFD"+improveid,count,10);
+            springJedisDao.set("ImpLFD"+improveid,count,5);
         }
         return Long.parseLong(count);
     }
@@ -2707,7 +2707,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
             }
             improveLFDstr = JSON.toJSONString(improveLFDs);
-            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,10);
+            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,5);
             return improveLFDs;
         }
         List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
@@ -2795,7 +2795,7 @@ public class ImproveServiceImpl implements ImproveService{
             List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
                     (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_LIKE);
             likeListStr = JSON.toJSONString(list);
-            springJedisDao.set("impLikeList"+improve.getImpid(),likeListStr,10);
+            springJedisDao.set("impLikeList"+improve.getImpid(),likeListStr,5);
         }
         if (likeListStr.contains(userid)){
             improve.setHaslike("1");
@@ -2811,7 +2811,7 @@ public class ImproveServiceImpl implements ImproveService{
             List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
                     (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_FLOWER);
             likeListStr = JSON.toJSONString(list);
-            springJedisDao.set("impFlowerList"+improve.getImpid(),likeListStr,10);
+            springJedisDao.set("impFlowerList"+improve.getImpid(),likeListStr,5);
         }
         if (likeListStr.contains(userid)){
             improve.setHasflower("1");

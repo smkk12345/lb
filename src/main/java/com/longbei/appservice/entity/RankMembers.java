@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.*;
 
 public class RankMembers {
-    public static final Integer maxHour = 1;//最大多长时间不发进步,则会被其他成员挤走
+    public static final Integer maxHour = 24;//最大多长时间不发进步,则会被其他成员挤走
 
     private Integer id;
 
