@@ -231,6 +231,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             for (RankAward rankAward:rankAwards){
                 Award award = rankAward.getAward();
                 try{
+                    if (null != award){
+                        award.setAwardcateid(10008);
+                        award.setAwardphotos("award/37973c0b-1088-4882-a6dd-c5e30ac2601c");
+                    }
                     awardService.insertAward(award);
                     rankAward.setAwardid(award.getId().toString());
                     rankAward.setRankid(rankid);
@@ -2140,7 +2144,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(userList != null && userList.size() > 0){
                     int i = 0;
                     for (RankMembers rankMember:userList){
-                        rankMember.setSortnum(startNum + i +1);
+//                        rankMember.setSortnum(startNum + i +1);
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMember.getUserid()+"");
                         if(userId != null){
                             appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(rankMember.getUserid()+"")));

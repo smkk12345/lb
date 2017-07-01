@@ -35,7 +35,7 @@ public interface ImproveService {
      */
     BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                            String businesstype, String businessid, String ptype,
-                           String ispublic, String itype, String pimpid,String picattribute);
+                           String ispublic, String itype, String pimpid,String picattribute, String duration);
     /**
      * 添加独立进步
      * @param improve

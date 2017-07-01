@@ -105,6 +105,7 @@ public class AddMessageReceiveService implements MessageListener{
         timeLineDetail.setBusinessid(improve.getBusinessid());
         timeLineDetail.setIspublic(improve.getIspublic());
         timeLineDetail.setCreatedate(date);
+        timeLineDetail.setDuration(improve.getDuration());
         timeLineDetail.setPicattribute(improve.getPicattribute());
         //保存详情
         timeLineDetailDao.save(timeLineDetail);

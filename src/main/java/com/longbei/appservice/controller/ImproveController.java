@@ -160,9 +160,10 @@ public class ImproveController {
     @RequestMapping(value = "insert")
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype, String businessid, String ptype,
-                                          String ispublic, String itype, String pimpid,String picattribute) {
-        logger.info("userid={},brief={},pickey={},filekey={},businesstype={},businessid={},ptype={},ispublic={},itype={},pimpid={}",
-                userid,brief,pickey, filekey, businesstype,businessid, ptype,ispublic,itype,pimpid);
+                                          String ispublic, String itype, String pimpid,String picattribute, String duration) {
+        logger.info("userid={},brief={},pickey={},filekey={},businesstype={},businessid={},ptype={},ispublic={},"
+        		+ "itype={},pimpid={},duration={}",
+                userid,brief,pickey, filekey, businesstype,businessid, ptype,ispublic,itype,pimpid,duration);
 
         if (StringUtils.hasBlankParams(userid, businesstype, ptype, ispublic, itype)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -184,7 +185,7 @@ public class ImproveController {
         try {
             baseResp = improveService.insertImprove(userid, brief, pickey, filekey,
                     businesstype, businessid, ptype,
-                    ispublic, itype, pimpid,picattribute);
+                    ispublic, itype, pimpid,picattribute, duration);
             if (ResultUtil.isSuccess(baseResp)) {
                 logger.debug("insert improve success");
             }

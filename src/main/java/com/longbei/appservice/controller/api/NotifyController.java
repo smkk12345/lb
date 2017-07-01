@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +56,11 @@ public class NotifyController {
   			resMap.put("seller_email", request.getParameter("seller_email"));
   			resMap.put("buyer_id", request.getParameter("buyer_id"));
   			resMap.put("buyer_email", request.getParameter("buyer_email"));
-  			resMap.put("total_fee", request.getParameter("total_fee"));
+  			String total_fee = request.getParameter("total_fee");
+  			if(StringUtils.isEmpty(total_fee)){
+  				total_fee = request.getParameter("total_amount");
+  			}
+  			resMap.put("total_fee", total_fee);
   			resMap.put("body", request.getParameter("body"));
 			logger.info("/verify/ali userid = {}, resMap = {}, ",
 					userid, resMap);
