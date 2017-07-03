@@ -102,4 +102,11 @@ public interface VideoService {
      * @return
      */
     BaseResp<Object> deleteVideo(Integer id);
+
+    /**
+     * 根据视频分类的id 获取视频分类的信息和视频列表
+     * @param videoClassifyId
+     * @return
+     */
+    BaseResp<Object> getVideoListDetail(Integer videoClassifyId);
 }

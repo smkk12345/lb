@@ -289,4 +289,38 @@ public class VideoServiceImpl implements VideoService {
 
         return baseResp;
     }
+
+    /**
+     * 根据视频分类的id 获取视频分类的信息和视频列表
+     * @param videoClassifyId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> getVideoListDetail(Integer videoClassifyId) {
+        logger.info("get video list detail videoClassifyId:{}",videoClassifyId);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            VideoClassify videoClassify = this.videoClassifyMapper.getVideoClassify(videoClassifyId);
+            if(videoClassify == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("videoClassifyId",videoClassifyId);
+            map.put("orderType","sortnum");
+            map.put("startNum",0);
+            map.put("pageSize",6);
+            List<Video> videoList = this.videoMapper.getVideoList(map);
+            if(videoList == null){
+                videoList = new ArrayList<Video>();
+            }
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            resultMap.put("videoList",videoList);
+            resultMap.put("videoClassify",videoClassify);
+            baseResp.setData(resultMap);
+            return baseResp.initCodeAndDesp();
+        }catch(Exception e){
+            logger.info("get Video list detail videoClassifyId:{} errorMsg:{}",videoClassifyId,e);
+        }
+        return baseResp;
+    }
 }

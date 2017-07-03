@@ -198,4 +198,17 @@ public class VideoApiController {
         }
         return this.videoService.deleteVideo(id);
     }
+
+    /**
+     * 获取视频详情信息和视频列表
+     * @param videoClassifyId
+     * @return
+     */
+    @RequestMapping("getVideoListDetail")
+    public BaseResp<Object> getVideoListDetail(Integer videoClassifyId){
+        if(videoClassifyId == null){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.videoService.getVideoListDetail(videoClassifyId);
+    }
 }
