@@ -567,7 +567,7 @@ public class Constant {
 	 * 
      * 模版
 	 */
-	public static final String  MSG_LONGBEI_NICKNAME = "龙杯公司";
+	public static final String  MSG_LONGBEI_NICKNAME = "龙杯";
 	public static final String  MSG_LONGBEI_DIFAULT_AVATAR = "";   //龙杯公司默认URL
 	
 	
