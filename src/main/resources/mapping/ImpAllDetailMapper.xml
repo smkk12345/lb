@@ -41,8 +41,8 @@
   <select id="selectOneDetail" parameterType="com.longbei.appservice.entity.ImpAllDetail" resultType="com.longbei.appservice.entity.ImpAllDetail">
     SELECT userid FROM imp_all_detail
     WHERE
-    userid = #{userid}
-    AND  impid=#{impid}
+    impid=#{impid}
+    AND  userid = #{userid}
     AND  businesstype=#{businesstype}
     AND  detailtype=#{detailtype}
     limit 0,1
@@ -207,12 +207,11 @@
 
   <select id="selectSumByImp" resultType="java.lang.Integer">
     SELECT SUM(giftnum) from imp_all_detail
-    where userid = #{userid}
+    where
+    impid = #{impid}
+    and userid = #{userid}
     AND detailtype = 1
     AND businesstype = 2
-    <if test="impid != null and impid != ''" >
-      and impid = #{impid}
-    </if>
   </select>
 
 </mapper>

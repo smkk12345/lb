@@ -33,6 +33,8 @@ public class Classroom {
 
     private String ptype;//十全十美类型
     
+    private String classtype;//教室类型。0—公共教室 1--定制教室
+    
     private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
     
     private long userid;
@@ -430,6 +432,15 @@ public class Classroom {
 
 	public void setQuestionsNum(Long questionsNum) {
 		this.questionsNum = questionsNum;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getClasstype() {
+		return classtype;
+	}
+
+	public void setClasstype(String classtype) {
+		this.classtype = classtype;
 	}
 
 }
