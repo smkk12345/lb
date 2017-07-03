@@ -1,14 +1,19 @@
 package com.longbei.appservice.controller.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
@@ -21,6 +26,8 @@ public class ClassroomApiController {
 
 	@Autowired
 	private ClassroomService classroomService;
+	@Autowired
+	private IdGenerateService idGenerateService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomApiController.class);
 	
@@ -71,6 +78,32 @@ public class ClassroomApiController {
   					startNo, pageSize, e);
   		}
   		return baseResp;
+    }
+	
+	
+	/**
+     * 添加教室
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "insert")
+    public BaseResp<Object> insertClassroom(@RequestBody Classroom classroom){
+        logger.info("insertClassroom classroom={}",JSON.toJSONString(classroom));
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+        	long classroomid = idGenerateService.getUniqueIdAsLong();
+        	classroom.setClassroomid(classroomid);
+        	classroom.setCreatetime(new Date());
+        	classroom.setUpdatetime(new Date());
+        	classroom.setClassinvoloed(0);
+        	classroom.setIsdel("0");
+        	classroom.setIsrecommend("0");
+        	classroom.setIsup("0");
+            baseResp = classroomService.insertClassroom(classroom);
+        } catch (Exception e) {
+            logger.error("insertClassroom is error:{}",e);
+        }
+        return baseResp;
     }
 	
 }
