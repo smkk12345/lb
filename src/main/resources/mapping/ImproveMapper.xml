@@ -549,9 +549,9 @@
 
   <select id="selectRankImproveCount" resultType="java.lang.Integer">
     SELECT
-    count(DISTINCT (ir.id))
+    count(*)
     FROM improve_rank ir
-    LEFT JOIN rank_members rm ON  ir.businessid=rm.rankid
+    LEFT JOIN rank_members rm ON  ir.businessid=rm.rankid AND ir.userid=rm.userid
     WHERE rm.status = '1' AND ir.isbusinessdel = '0' AND ir.isrecommend='0'
     <if test="startdate != null">
       AND ir.createtime &gt;= #{startdate}

@@ -422,7 +422,7 @@ public class ImproveServiceImpl implements ImproveService{
         return false;
     }
 
-    private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
+    private boolean canInsertRankImproveTotal(Long userid,Rank rank){
         if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
             return true;
         }
@@ -1474,7 +1474,7 @@ public class ImproveServiceImpl implements ImproveService{
                                 Long.parseLong(businessid), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
-                        if (!canInsertRankImproveTotal(Long.parseLong(userid), Long.parseLong(businessid), rank)) {
+                        if (!canInsertRankImproveTotal(Long.parseLong(userid), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
                         }
                         return baseResp.initCodeAndDesp();
