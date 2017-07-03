@@ -423,16 +423,15 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private boolean canInsertRankImproveTotal(Long userid,Long rankid,Rank rank){
-        return true;
-//        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
-//            return true;
-//        }
-//        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
-//        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
-//        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
-//            return true;
-//        }
-//        return false;
+        if(rank.getMaxtotalimprovenum() == null){//如果为空,代表不限制在榜中发表的最大进步数量
+            return true;
+        }
+        RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rank.getRankid(),userid);
+        int num = StringUtils.isEmpty(rankMembers.getIcount()+"")?0:rankMembers.getIcount();
+        if (num < Integer.parseInt(rank.getMaxtotalimprovenum())){
+            return true;
+        }
+        return false;
     }
 
 
@@ -1475,9 +1474,9 @@ public class ImproveServiceImpl implements ImproveService{
                                 Long.parseLong(businessid), rank)) {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_617, Constant.RTNINFO_SYS_617);
                         }
-//                        if (!canInsertRankImproveTotal(improve.getUserid(), improve.getBusinessid(), rank)) {
-//                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
-//                        }
+                        if (!canInsertRankImproveTotal(Long.parseLong(userid), Long.parseLong(businessid), rank)) {
+                            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_621, Constant.RTNINFO_SYS_621);
+                        }
                         return baseResp.initCodeAndDesp();
                     } else {
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_616, Constant.RTNINFO_SYS_616);
