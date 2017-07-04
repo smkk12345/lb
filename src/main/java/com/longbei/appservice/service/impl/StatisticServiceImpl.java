@@ -15,6 +15,8 @@ import com.longbei.appservice.entity.Statistics;
 import com.longbei.appservice.entity.UserImproveStatistic;
 import com.longbei.appservice.service.StatisticService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import java.util.*;
  */
 @Service("statisticService")
 public class StatisticServiceImpl extends BaseServiceImpl implements StatisticService {
+    Logger logger = LoggerFactory.getLogger(StatisticServiceImpl.class);
+
     @Autowired
     private TimeLineDetailDao timeLineDetailDao;
     @Autowired
@@ -150,7 +154,7 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
                 baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("userStatisticImprove is error:{}",e);
         }
         return baseResp;
     }
@@ -174,7 +178,7 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             baseResp.setData(statistics);
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("selectStatistics is error:{}",e);
         }
         return baseResp;
     }
@@ -185,41 +189,57 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         String registerNum = springJedisDao.get(Constant.SYS_REGISTER_NUM);
         if (!StringUtils.isBlank(registerNum)) {
             statistics.setRegisternum(Integer.parseInt(registerNum));
+        } else {
+            statistics.setRegisternum(0);
         }
         //今日签到人数
         String checkNum = springJedisDao.get(Constant.SYS_CHECK_NUM);
         if (!StringUtils.isBlank(checkNum)) {
             statistics.setChecknum(Integer.parseInt(checkNum));
+        } else {
+            statistics.setChecknum(0);
         }
         //今日点赞总数
         String likeNum = springJedisDao.get(Constant.SYS_LIKE_NUM);
         if (!StringUtils.isBlank(likeNum)) {
             statistics.setLikenum(Integer.parseInt(likeNum));
+        } else {
+            statistics.setLikenum(0);
         }
         //今日鲜花总数
         String flowerNum =springJedisDao.get(Constant.SYS_FLOWER_NUM);
         if (!StringUtils.isBlank(flowerNum)) {
             statistics.setFlowernum(Integer.parseInt(flowerNum));
+        } else {
+            statistics.setFlowernum(0);
         }
         //今日新增微进步数
         String improveNum = springJedisDao.get(Constant.SYS_IMPROVE_NUM);
         if (!StringUtils.isBlank(improveNum)) {
             statistics.setImprovenum(Integer.parseInt(improveNum));
+        } else {
+            statistics.setImprovenum(0);
         }
         // 今日购买龙币总数
         String moneyNum = springJedisDao.get(Constant.SYS_MONEY_NUM);
         if (!StringUtils.isBlank(moneyNum)) {
             statistics.setMoneynum(Integer.parseInt(moneyNum));
+        } else {
+            statistics.setMoneynum(0);
         }
         //今日发布龙榜数
         String rankNum = springJedisDao.get(Constant.SYS_RANK_NUM);
         if (!StringUtils.isBlank(rankNum)) {
             statistics.setRanknum(Integer.parseInt(rankNum));
+        } else {
+            statistics.setRanknum(0);
         }
         //今日创建目标数
         String goalNum = springJedisDao.get(Constant.SYS_GOAL_NUM);
         if (!StringUtils.isBlank(goalNum)) {
             statistics.setGoalnum(Integer.parseInt(goalNum));
+        } else {
+            statistics.setGoalnum(0);
         }
 
         return statistics;
@@ -233,5 +253,23 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
                 springJedisDao.increment(key, num);
             }
         });
+    }
+
+    @Override
+    public BaseResp<List<Statistics>> listStatisticsForDays(int days){
+        BaseResp<List<Statistics>> baseResp = new BaseResp<>();
+        Statistics statistics = new Statistics();
+        Date now = new Date();
+        long time = now.getTime() - days*24*3600*1000;
+        Date date = new Date(time);
+        statistics.setCreatetime(date);
+        try {
+            List<Statistics> list = statisticsMapper.listByStartDate(statistics);
+            baseResp.setData(list);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("listByStartDate select Statistics List is error:{}",e);
+        }
+        return baseResp;
     }
 }

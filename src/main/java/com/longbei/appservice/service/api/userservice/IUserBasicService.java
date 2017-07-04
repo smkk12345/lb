@@ -70,10 +70,10 @@ public interface IUserBasicService {
 							   @RequestParam("oldpwd") String oldpwd,
 							   @RequestParam("newpwd") String newpwd);
 
-	@RequestMapping(method = RequestMethod.GET, value = "/user/updatepwdById")
-	BaseResp<Object> updatepwdById(@RequestParam("userid") long userid,
-								   @RequestParam("oldpwd") String oldpwd,
-								   @RequestParam("newpwd") String newpwd);
+//	@RequestMapping(method = RequestMethod.GET, value = "/user/updatepwdById")
+//	BaseResp<Object> updatepwdById(@RequestParam("userid") long userid,
+//								   @RequestParam("oldpwd") String oldpwd,
+//								   @RequestParam("newpwd") String newpwd);
 
 	/**
 	 * @Title: thirdlogin
@@ -99,7 +99,7 @@ public interface IUserBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/user/bindingThird")
 	BaseResp<Object> bindingThird(@RequestParam("openid") String openid,
 								  @RequestParam("utype") String utype,
-								  @RequestParam("userid") Long userid);
+								  @RequestParam("username") String username);
 	/**
 	 * @Title: hasbindingThird
 	 * @Description: 判断是否绑定第三方信息
@@ -115,13 +115,13 @@ public interface IUserBasicService {
 									 @RequestParam("username") String username);
 	
 	/**
-	* @Title: selectUserByUserid 
+	* @Title: selectUserByUserName
 	* @Description: 获取用户信息
-	* @param @param userid
+	* @param @param username
 	* @param @return    设定文件 
 	* @return BaseResp<UserBasic>    返回类型
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/user/selectUserByUserid")
-	BaseResp<UserBasic> selectUserByUserid(@RequestParam("userid") long userid);
+	@RequestMapping(method = RequestMethod.GET, value = "/user/selectUserByUserName")
+	BaseResp<UserBasic> selectUserByUserName(@RequestParam("username") String username);
 
 }
