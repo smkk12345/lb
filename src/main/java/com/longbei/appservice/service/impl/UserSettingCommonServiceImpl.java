@@ -2,6 +2,9 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.longbei.appservice.entity.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 	private UserSettingCommonMapper userSettingCommonMapper;
 	@Autowired
 	private IUserBasicService iUserBasicService;
+	@Autowired
+	private UserMongoDao userMongoDao;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserSettingCommonServiceImpl.class);
 
@@ -100,7 +105,8 @@ public class UserSettingCommonServiceImpl implements UserSettingCommonService {
 			String isqq = "0";
 			String iswx = "0";
 			String iswb = "0";
-			BaseResp<UserBasic> resp = iUserBasicService.selectUserByUserid(Long.parseLong(userid));
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(userid);
+			BaseResp<UserBasic> resp = iUserBasicService.selectUserByUserName(appUserMongoEntity.getUsername());
 			if(ResultUtil.isSuccess(resp)){
 				UserBasic userBasic = resp.getData();
 				if(null != userBasic){
