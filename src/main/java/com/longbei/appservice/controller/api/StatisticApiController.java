@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by wangyongzhi 17/4/17.
  */
@@ -59,8 +61,19 @@ public class StatisticApiController {
     @RequestMapping(value = "select")
     public BaseResp<Statistics> selectStatistics(){
         logger.info("select Statistics");
-        BaseResp<Statistics> baseResp = new BaseResp<>();
-        baseResp = statisticService.selectStatistics();
+        BaseResp<Statistics> baseResp = statisticService.selectStatistics();
         return baseResp;
+    }
+
+    /**
+     * 查询进几天的历史记录
+     * @param days 天数
+     * @return
+     */
+    @RequestMapping(value = "listByDate")
+    public BaseResp<List<Statistics>> listStatisticsForDays(int days){
+        logger.info("listStatisticsForDays: select Statistics list for {} days",days);
+        BaseResp<List<Statistics>> listResp = statisticService.listStatisticsForDays(days);
+        return listResp;
     }
 }

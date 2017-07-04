@@ -950,7 +950,7 @@
 
   <!-- 查询榜单的所有地区 -->
   <select id="selectRankArea" resultType="Long">
-      select distinct rankscope from rank where isdel = 0
+      select distinct rankscope from rank where rankscope != 0 and isdel = 0
   </select>
 
   <!-- 查看将要结束的榜单 -->

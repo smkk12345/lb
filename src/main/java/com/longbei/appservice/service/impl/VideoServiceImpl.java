@@ -187,11 +187,16 @@ public class VideoServiceImpl implements VideoService {
      * @return
      */
     @Override
-    public BaseResp<Video> getVideo(Integer videoId) {
+    public BaseResp<Video> getVideo(Integer videoId,Boolean isShow) {
         logger.info("get video videoId:{}",videoId);
         BaseResp<Video> baseResp = new BaseResp<Video>();
         try{
-            Video video = this.videoMapper.getVideo(videoId);
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("videoId",videoId);
+            if(isShow != null){
+                map.put("isShow",isShow);
+            }
+            Video video = this.videoMapper.getVideo(map);
             baseResp.setData(video);
             return baseResp.initCodeAndDesp();
         }catch(Exception e){
@@ -289,4 +294,72 @@ public class VideoServiceImpl implements VideoService {
 
         return baseResp;
     }
+
+    /**
+     * 根据视频分类的id 获取视频分类的信息和视频列表
+     * @param videoClassifyId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> getVideoListDetail(Integer videoClassifyId) {
+        logger.info("get video list detail videoClassifyId:{}",videoClassifyId);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            VideoClassify videoClassify = this.videoClassifyMapper.getVideoClassify(videoClassifyId);
+            if(videoClassify == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("videoClassifyId",videoClassifyId);
+            map.put("orderType","sortnum");
+            map.put("isShow",true);
+            map.put("startNum",0);
+            map.put("pageSize",6);
+            List<Video> videoList = this.videoMapper.getVideoList(map);
+            if(videoList == null){
+                videoList = new ArrayList<Video>();
+            }
+            Map<String,Object> resultMap = new HashMap<String,Object>();
+            resultMap.put("videoList",videoList);
+            resultMap.put("videoClassify",videoClassify);
+            baseResp.setData(resultMap);
+            return baseResp.initCodeAndDesp();
+        }catch(Exception e){
+            logger.info("get Video list detail videoClassifyId:{} errorMsg:{}",videoClassifyId,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 加载相关视频
+     * @param videoId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> loadRelevantVideo(Integer videoId) {
+        logger.info("load relevant video videoId:{}",videoId);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("videoId",videoId);
+            Video video = this.videoMapper.getVideo(map);
+            if(video == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            Map<String,Object> paraMap = new HashMap<>();
+            paraMap.put("videoClassifyId",video.getVideoclassifyid());
+            paraMap.put("sortnum",video.getSortnum());
+            List<Video> videoList = this.videoMapper.getRelevantVideo(paraMap);
+            if(videoList == null || videoList.size() == 0){
+                paraMap.put("sortnum",-1);
+                videoList = this.videoMapper.getRelevantVideo(paraMap);
+            }
+            baseResp.setData(videoList);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.info("load relevant video videoId:{} errorMsg;{}",videoId,e);
+        }
+        return baseResp;
+    }
+
 }

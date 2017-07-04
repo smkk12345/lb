@@ -13,7 +13,8 @@
     <result column="classnotice" property="classnotice" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
-    <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ptype" property="ptype" />
+    <result column="classtype" property="classtype" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="userid" property="userid" />
     <result column="cardid" property="cardid" />
@@ -28,8 +29,8 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
-    classnotice, createtime, updatetime, ptype, ispublic, userid, cardid, charge, isfree, freecoursenum, isdel, 
-    sourcetype, isrecommend, isup 
+    classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
+    charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -133,13 +134,15 @@
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
       classcateid, classinvoloed, classlimited, 
       classbrief, classnotice, 
-      createtime, updatetime, ptype, ispublic, charge, isfree, freecoursenum
+      createtime, updatetime, ptype, classtype, ispublic, charge, isfree, freecoursenum
       )
-    values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{classroomid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+    	#{classtitle,jdbcType=VARCHAR}, 
       #{classphotos,jdbcType=VARCHAR}, 
       #{classcateid,jdbcType=INTEGER}, #{classinvoloed,jdbcType=INTEGER}, #{classlimited,jdbcType=INTEGER}, 
       #{classbrief,jdbcType=VARCHAR}, #{classnotice,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{ptype,jdbcType=CHAR}, #{classtype}, 
+      #{ispublic,jdbcType=CHAR}, 
       #{charge,jdbcType=INTEGER}, #{isfree,jdbcType=CHAR}, #{freecoursenum,jdbcType=INTEGER}
       )
   </insert>
@@ -187,6 +190,9 @@
       </if>
       <if test="ptype != null" >
         ptype,
+      </if>
+      <if test="classtype != null" >
+        classtype,
       </if>
       <if test="ispublic != null" >
         ispublic,
@@ -243,6 +249,9 @@
       </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
+      </if>
+      <if test="classtype != null and classtype != ''" >
+        #{classtype},
       </if>
       <if test="ispublic != null" >
         #{ispublic,jdbcType=CHAR},
