@@ -59,6 +59,8 @@ public class Classroom {
     
     private Date closedate; //关闭时间
     
+    private String closeremark; //关闭原因
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -463,6 +465,14 @@ public class Classroom {
 
 	public void setClosedate(Date closedate) {
 		this.closedate = closedate;
+	}
+
+	public String getCloseremark() {
+		return closeremark;
+	}
+
+	public void setCloseremark(String closeremark) {
+		this.closeremark = closeremark;
 	}
 
 }

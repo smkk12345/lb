@@ -110,9 +110,6 @@ public interface ClassroomService {
 	BaseResp<Object> updateClassinvoloedByClassroomid(long classroomid, long userid, Integer num);
 	
 	
-	BaseResp<Object> insertClassroom(Classroom record);
-	
-	
 	
 	
 	
@@ -143,5 +140,22 @@ public interface ClassroomService {
     * @currentdate:2017年6月17日
 	*/
 	BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum);
+	
+	/**
+    * @Description: 添加教室
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年7月4日
+	*/
+	BaseResp<Object> insertClassroom(Classroom record);
+	
+	/**
+    * @Description: 添加教室
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年7月4日
+	*/
+	BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classroom, int startNum, int endNum);
+	
 	
 }

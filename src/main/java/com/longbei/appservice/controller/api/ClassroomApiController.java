@@ -105,5 +105,23 @@ public class ClassroomApiController {
         }
         return baseResp;
     }
+    
+    /**
+     * 搜索教室
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "search")
+    public BaseResp<Page<Classroom>> search(@RequestBody Classroom classroom, String startNo, String pageSize){
+        logger.info("search classroom={},startNo={},pageSize={}", JSON.toJSON(classroom).toString(),startNo,pageSize);
+        BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = classroomService.selectPcSearchClassroomList(classroom, Integer.parseInt(startNo), Integer.parseInt(pageSize));
+        } catch (Exception e) {
+        	logger.error("search classroom={},startNo={},pageSize={}", 
+        			JSON.toJSON(classroom).toString(), startNo, pageSize, e);
+        }
+        return baseResp;
+    }
 	
 }
