@@ -119,7 +119,7 @@ public class BehaviorRule {
     /**
      * 给他人送1朵花，可得N个龙分；不超过100/天
      */
-    private Integer flowergoals;
+    private Double flowergoals;
 
     /**
      * 单个用户每发1条微进步，可得N个龙分，不超过50/天
@@ -469,11 +469,11 @@ public class BehaviorRule {
         this.impcommentgoals = impcommentgoals;
     }
 
-    public Integer getFlowergoals() {
+    public Double getFlowergoals() {
         return flowergoals;
     }
 
-    public void setFlowergoals(Integer flowergoals) {
+    public void setFlowergoals(Double flowergoals) {
         this.flowergoals = flowergoals;
     }
 

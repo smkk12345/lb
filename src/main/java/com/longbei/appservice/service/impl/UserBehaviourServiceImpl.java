@@ -523,10 +523,17 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         BaseResp<Object> baseResp = new BaseResp<>();
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-        int result = Constant_point.getStaticProperty(operateType);
-        if(fnum>0){
-            result = result*fnum;
+        int result = 0;
+        if ("DAILY_FLOWER".equals(operateType)){
+            double flowergoals = Constant_point.DAILY_FLOWER;
+            result = (int) Math.floor(flowergoals*fnum);
+        } else {
+            result = Constant_point.getStaticProperty(operateType);
+            if(fnum>0){
+                result = result*fnum;
+            }
         }
+
 //        String limitField = operateType+"_LIMIT";
 //        String key = getPerKey(userid);
 //        if(Constant_point.hasContain(limitField)){

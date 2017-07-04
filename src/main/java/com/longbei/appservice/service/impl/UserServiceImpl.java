@@ -1369,6 +1369,7 @@ public class UserServiceImpl implements UserService {
 		list.add("发微进步+"+Constant_point.DAILY_ADDIMP+"分"+",上限+"+Constant_point.DAILY_ADDIMP_LIMIT+"分／天");
 		list.add("加入龙榜+"+ Constant_point.DAILY_ADDRANK+"分");
 		list.add("加入教室+"+ Constant_point.DAILY_ADDCLASSROOM+"分");
+		list.add("送花+"+ Constant_point.DAILY_FLOWER+"分");
 		list.add("公益抽奖+XX分");
 		return list;
 	}
