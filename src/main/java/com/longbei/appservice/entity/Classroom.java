@@ -55,6 +55,10 @@ public class Classroom {
     
     private String isup; // 0 - 未发布 。1 --已发布    默认0
     
+    private String cusername; //创建人手机号
+    
+    private Date closedate; //关闭时间
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -441,6 +445,24 @@ public class Classroom {
 
 	public void setClasstype(String classtype) {
 		this.classtype = classtype;
+	}
+
+	public String getCusername() {
+		return cusername;
+	}
+
+	public void setCusername(String cusername) {
+		this.cusername = cusername;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public Date getClosedate() {
+		return closedate;
+	}
+
+	public void setClosedate(Date closedate) {
+		this.closedate = closedate;
 	}
 
 }

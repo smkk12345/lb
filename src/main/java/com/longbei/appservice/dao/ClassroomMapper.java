@@ -104,4 +104,17 @@ public interface ClassroomMapper {
     List<Classroom> selectClassroomList(@Param("isup") String isup,  @Param("isdel") String isdel,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
+    /*
+     * 获取count
+     */
+    Integer selectSearchCount(Classroom classroom);
+    
+    /**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param startNum   endNum
+	 */
+    List<Classroom> selectSearchList(@Param("classroom") Classroom classroom,
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
 }
