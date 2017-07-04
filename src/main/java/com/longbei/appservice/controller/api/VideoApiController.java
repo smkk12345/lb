@@ -133,7 +133,7 @@ public class VideoApiController {
         if(videoId == null){
             return new BaseResp<Video>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        return this.videoService.getVideo(videoId);
+        return this.videoService.getVideo(videoId,null);
     }
 
     /**
@@ -191,7 +191,7 @@ public class VideoApiController {
      * 删除视频
      * @return
      */
-    @RequestMapping("deleteVideo")
+    @RequestMapping(value="deleteVideo")
     public BaseResp<Object> deleteVideo(Integer id){
         if (id == null){
             return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -204,11 +204,37 @@ public class VideoApiController {
      * @param videoClassifyId
      * @return
      */
-    @RequestMapping("getVideoListDetail")
+    @RequestMapping(value="getVideoListDetail")
     public BaseResp<Object> getVideoListDetail(Integer videoClassifyId){
         if(videoClassifyId == null){
             return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         return this.videoService.getVideoListDetail(videoClassifyId);
+    }
+
+    /**
+     * 获取视频详情
+     * @param videoId
+     * @return
+     */
+    @RequestMapping(value="getVideoDetail")
+    public BaseResp<Video> getVideoDetail(Integer videoId){
+        if(videoId == null){
+            return new BaseResp<Video>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.videoService.getVideo(videoId,true);
+    }
+
+    /**
+     * 加载相关视频
+     * @param videoId
+     * @return
+     */
+    @RequestMapping(value="loadRelevantVideo",produces = "application/json")
+    public BaseResp<Object> loadRelevantVideo(Integer videoId){
+        if(videoId == null){
+            return new BaseResp<List<Video>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.videoService.loadRelevantVideo(videoId);
     }
 }

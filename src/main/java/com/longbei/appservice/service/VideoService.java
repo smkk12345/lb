@@ -68,7 +68,7 @@ public interface VideoService {
      * @param videoId
      * @return
      */
-    BaseResp<Video> getVideo(Integer videoId);
+    BaseResp<Video> getVideo(Integer videoId,Boolean isShow);
 
     /**
      * 添加视频
@@ -109,4 +109,12 @@ public interface VideoService {
      * @return
      */
     BaseResp<Object> getVideoListDetail(Integer videoClassifyId);
+
+    /**
+     * 加载相关视频
+     * @param videoId
+     * @return
+     */
+    BaseResp<Object> loadRelevantVideo(Integer videoId);
+
 }

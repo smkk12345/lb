@@ -9,8 +9,6 @@ import com.longbei.appservice.entity.UserCard;
 
 public interface ClassroomService {
 
-	BaseResp<Object> insertClassroom(Classroom record);
-	
 	Classroom selectByClassroomid(long classroomid);
 	
 	BaseResp<Object> updateByClassroomid(Classroom record);
@@ -112,7 +110,7 @@ public interface ClassroomService {
 	BaseResp<Object> updateClassinvoloedByClassroomid(long classroomid, long userid, Integer num);
 	
 	
-	
+	BaseResp<Object> insertClassroom(Classroom record);
 	
 	
 	
