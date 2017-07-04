@@ -19,10 +19,10 @@ public interface VideoMapper {
 
     /**
      * 获取视频详情
-     * @param videoId
+     * @param map
      * @return
      */
-    Video getVideo(Integer videoId);
+    Video getVideo(Map<String,Object> map);
 
     /**
      * 添加视频
@@ -44,4 +44,11 @@ public interface VideoMapper {
      * @return
      */
     int deleteVideo(Integer id);
+
+    /**
+     * 加载相关视频
+     * @param paraMap
+     * @return
+     */
+    List<Video> getRelevantVideo(Map<String, Object> paraMap);
 }

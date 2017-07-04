@@ -21,15 +21,26 @@
         <include refid="Base_Column_List" />
       from video
       where videoClassifyId= #{videoClassifyId}
-      order by id desc
+          <if test="isShow  != null">
+              and isshow = #{isShow}
+          </if>
+      <if test="orderType == null or orderType == ''">
+          order by id desc
+      </if>
+      <if test="orderType != null and orderType == 'sortnum'">
+          order by sortnum
+      </if>
       limit #{startNum},#{pageSize}
   </select>
 
-  <select id="getVideo" parameterType="Integer" resultMap="BaseResultMap">
+  <select id="getVideo" parameterType="map" resultMap="BaseResultMap">
       SELECT
           <include refid="Base_Column_List" />
       FROM video
       where id= #{videoId}
+        <if test="isShow != null">
+            and isshow = #{isShow}
+        </if>
   </select>
 
     <insert id="addVideo" parameterType="com.longbei.appservice.entity.Video">
@@ -90,4 +101,14 @@
           video
         where id=#{id}
     </update>
+
+    <select id="getRelevantVideo" parameterType="map" resultMap="BaseResultMap">
+        select 
+          <include refid="Base_Column_List" />
+        from video
+        where sortnum > #{sortnum}
+            and videoclassifyid = #{videoClassifyId}
+        order by sortnum
+        limit 2
+    </select>
 </mapper>
