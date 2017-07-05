@@ -255,6 +255,7 @@
       		and userid not in (${ids})
       	</if> 
     </if> -->
+    order by userid
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

@@ -1394,6 +1394,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setBusinesstype(businessType);
                 }
                 improve.setBusinessid(timeLine.getBusinessid());
+                improve.setDuration(timeLineDetail.getDuration());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
                 //获取好友昵称
