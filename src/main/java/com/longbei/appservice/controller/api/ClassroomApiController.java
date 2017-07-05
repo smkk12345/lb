@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -161,8 +160,8 @@ public class ClassroomApiController {
  	*/
     @RequestMapping(value = "/notice")
  	@ResponseBody
-    public BaseResp<Object> notice(String classroomid, String classnotice, String noticetype, Model model){
- 		logger.info("insertNotice classroomid = {}, classnotice = {}, noticetype = {}", 
+    public BaseResp<Object> notice(String classroomid, String classnotice, String noticetype){
+ 		logger.info("notice classroomid = {}, classnotice = {}, noticetype = {}", 
     			classroomid, classnotice, noticetype);
  		BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isBlank(classroomid)){
@@ -172,7 +171,58 @@ public class ClassroomApiController {
   			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
   					Long.parseLong(Constant.SQUARE_USER_ID), classnotice, noticetype);
         } catch (Exception e) {
-        	logger.error("selectClassroomBycid classroomid = {}", classroomid, e);
+        	logger.error("notice classroomid = {}, classnotice = {}, noticetype = {}", 
+    			classroomid, classnotice, noticetype, e);
+        }
+        return baseResp;
+ 	}
+    
+    /**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/closeRoom")
+ 	@ResponseBody
+    public BaseResp<Object> closeRoom(String classroomid, String closeremark){
+ 		logger.info("closeRoom classroomid = {}, closeremark = {}", 
+    			classroomid, closeremark);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.closeRoom(Long.parseLong(classroomid), closeremark);
+        } catch (Exception e) {
+        	logger.error("closeRoom classroomid = {}, closeremark = {}", 
+    			classroomid, closeremark, e);
+        }
+        return baseResp;
+ 	}
+    
+    
+    /**
+     * @Description: 发布教室
+     * @param @param classroomid 教室id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/uproom")
+ 	@ResponseBody
+    public BaseResp<Object> uproom(String classroomid){
+ 		logger.info("uproom classroomid = {}", classroomid);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.uproom(Long.parseLong(classroomid));
+        } catch (Exception e) {
+        	logger.error("uproom classroomid = {}", classroomid, e);
         }
         return baseResp;
  	}

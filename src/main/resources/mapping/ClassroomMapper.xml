@@ -460,4 +460,21 @@
     where classroomid = #{classroomid} 
   </update>
   
+  <update id="updateIsdel" >
+    update classroom
+    set 
+      <if test="closeremark != null and closeremark != ''" >
+        closeremark = #{closeremark},
+      </if>
+      isdel = 1 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsup" >
+    update classroom
+    set 
+      isup = 1 
+    where classroomid = #{classroomid} 
+  </update>
+  
 </mapper>
