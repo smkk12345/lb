@@ -574,7 +574,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "2", "14", "教室发布最新公告", 0, "", "");
+									"", "12", classroomid + "", remark, "0", "14", "教室发布最新公告", 0, "", "");
 //							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
 						}
 					}
@@ -589,7 +589,48 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	@Override
+	public BaseResp<Object> closeRoom(long classroomid, String closeremark){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.updateIsdel(classroomid, closeremark);
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(temp > 0){
+				//关闭教室，教室成员下教室
+				List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
+				if(null != list && list.size()>0){
+					for (ClassroomMembers classroomMembers : list) {
+						//退出教室
+						classroomMembersMapper.updateItypeByClassroomidAndUserid(classroomid, classroomMembers.getUserid(), "1");
+						//发通知消息
+						String remark = "您参加的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
+                        userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomMembers.getUserid().toString(),
+                                "", "12",
+                                classroomid + "", remark, "0", "54", "教室关闭", 0, "", "");
+					}
+				}
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("closeRoom classroomid = {}, closeremark = {}", 
+					classroomid, closeremark, e);
+		}
+		return reseResp;
+	}
 	
+	@Override
+	public BaseResp<Object> uproom(long classroomid){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.updateIsup(classroomid);
+			if(temp > 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("uproom classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
 	
 	/**
 	 * @author yinxc

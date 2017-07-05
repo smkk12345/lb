@@ -89,6 +89,23 @@ public interface ClassroomMapper {
     int updateIsfreeByClassroomid(@Param("classroomid") long classroomid, @Param("isfree") String isfree, 
     		@Param("charge") String charge, @Param("freecoursenum") String freecoursenum); 
     
+    /**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    Integer updateIsdel(@Param("classroomid") long classroomid, @Param("closeremark") String closeremark);
+    
+    /**
+     * @Description: 发布教室
+     * @param @param classroomid 教室id
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    Integer updateIsup(@Param("classroomid") long classroomid);
+    
     /*
      * 获取count
      */

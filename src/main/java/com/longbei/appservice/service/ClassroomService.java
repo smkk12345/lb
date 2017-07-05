@@ -100,6 +100,25 @@ public interface ClassroomService {
 	BaseResp<Object> updateClassnoticeByClassroomid(long classroomid, long userid, String classnotice, String ismsg);
 	
 	/**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+	BaseResp<Object> closeRoom(long classroomid, String closeremark);
+	
+	/**
+     * @Description: 发布教室
+     * @param @param classroomid 教室id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+	BaseResp<Object> uproom(long classroomid);
+	
+	/**
 	 * @author yinxc
 	 * 修改教室参与人数---classinvoloed
 	 * param userid

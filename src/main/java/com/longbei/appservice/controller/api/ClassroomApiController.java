@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.UserCard;
@@ -123,5 +124,107 @@ public class ClassroomApiController {
         }
         return baseResp;
     }
+    
+    /**
+     * @Description: 获取教室信息
+     * @param @param classroomid 教室id
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "selectClassroomBycid")
+    public BaseResp<Classroom> selectClassroomBycid(String classroomid){
+        logger.info("selectClassroomBycid classroomid = {}", classroomid);
+        BaseResp<Classroom> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+  			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+  			baseResp.setData(classroom);
+        } catch (Exception e) {
+        	logger.error("selectClassroomBycid classroomid = {}", classroomid, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 教室发公告
+     * @param @param classroomid 教室id
+     * @param @param classnotice 公告
+     * @param @param noticetype 是否@所有人   0：否  1：是
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/notice")
+ 	@ResponseBody
+    public BaseResp<Object> notice(String classroomid, String classnotice, String noticetype){
+ 		logger.info("notice classroomid = {}, classnotice = {}, noticetype = {}", 
+    			classroomid, classnotice, noticetype);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
+  					Long.parseLong(Constant.SQUARE_USER_ID), classnotice, noticetype);
+        } catch (Exception e) {
+        	logger.error("notice classroomid = {}, classnotice = {}, noticetype = {}", 
+    			classroomid, classnotice, noticetype, e);
+        }
+        return baseResp;
+ 	}
+    
+    /**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/closeRoom")
+ 	@ResponseBody
+    public BaseResp<Object> closeRoom(String classroomid, String closeremark){
+ 		logger.info("closeRoom classroomid = {}, closeremark = {}", 
+    			classroomid, closeremark);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.closeRoom(Long.parseLong(classroomid), closeremark);
+        } catch (Exception e) {
+        	logger.error("closeRoom classroomid = {}, closeremark = {}", 
+    			classroomid, closeremark, e);
+        }
+        return baseResp;
+ 	}
+    
+    
+    /**
+     * @Description: 发布教室
+     * @param @param classroomid 教室id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/uproom")
+ 	@ResponseBody
+    public BaseResp<Object> uproom(String classroomid){
+ 		logger.info("uproom classroomid = {}", classroomid);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.uproom(Long.parseLong(classroomid));
+        } catch (Exception e) {
+        	logger.error("uproom classroomid = {}", classroomid, e);
+        }
+        return baseResp;
+ 	}
 	
 }
