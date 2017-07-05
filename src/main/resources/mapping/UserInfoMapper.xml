@@ -46,7 +46,7 @@
     <result column="downfashionmantime" property="downfashionmantime" jdbcType="TIMESTAMP" />
     <result column="sortno" property="sortno" jdbcType="INTEGER" />
     <result column="defaultbg" property="defaultbg"/>
-
+    <result column="vcertification" property="vcertification"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -54,13 +54,13 @@
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
     hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
-    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sortno,defaultbg
+    totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sortno,defaultbg,vcertification
   </sql>
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, totalimp,totallikes,totalfans,givedflowers,
-    avatar, username, curpoint, point, grade,defaultbg
+    avatar, username, curpoint, point, grade,defaultbg,vcertification
   </sql>
   
   <select id="selectInfoMore" resultMap="BaseResultMap"  >
@@ -97,6 +97,9 @@
       <if test="ecreatetime != null">
         AND createtime &lt; #{ecreatetime}
       </if>
+      <if test="vcertification != null and vcertification != ''">
+        AND vcertification = #{vcertification}
+      </if>
     </where>
   </select>
 
@@ -114,6 +117,9 @@
       </if>
       <if test="user.isfashionman != null">
         AND isfashionman = #{user.isfashionman}
+      </if>
+      <if test="user.vcertification != null and user.vcertification != ''">
+        AND vcertification = #{user.vcertification}
       </if>
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
@@ -219,7 +225,7 @@
   <sql id="Info_List" >
     id, userid, nickname, realname, sex, city, area, brief, birthday, constellation, 
     blood, feeling, updatetime, createtime, avatar, username,totalimp,totalflower,totalmoney,
-    totalcoin,totalimp,totallikes,totalfans,defaultbg
+    totalcoin,totalimp,totallikes,totalfans,defaultbg,vcertification
   </sql>
   
   <select id="selectByUserid" resultMap="BaseResultMap"  parameterType="java.lang.Long" >
@@ -325,7 +331,7 @@
       <if test="realname != null and realname != ''" >
         realname,
       </if>
-      <if test="sex != null and sex != ''" >
+      <if test="sex != null and sex != '-1'.toString()" >
         sex,
       </if>
       <if test="city != null and city != ''" >
@@ -405,7 +411,7 @@
       <if test="realname != null and realname != ''" >
         #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null and sex != ''" >
+      <if test="sex != null and sex != '-1'.toString()" >
         #{sex,jdbcType=CHAR},
       </if>
       <if test="city != null and city != ''" >
@@ -478,7 +484,7 @@
       <if test="realname != null" >
         realname = #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null" >
+      <if test="sex != null and sex != '-1'.toString()" >
         sex = #{sex,jdbcType=CHAR},
       </if>
       <if test="city != null" >
@@ -549,6 +555,9 @@
       </if>
       <if test="sortno != null" >
         sortno = #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="vcertification != null and vcertification != ''">
+        vcertification = #{vcertification,jdbcType=CHAR}
       </if>
     </set>
     where userid = #{userid,jdbcType=BIGINT}

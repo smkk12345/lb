@@ -1542,12 +1542,24 @@ public class UserServiceImpl implements UserService {
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
 							remark,"0","30", "选为达人",0, "", "");
 					this.jPushService.pushMessage("消息标识",userInfo.getUserid()+"","设置为达人",
-							"恭喜，您被选为龙杯达人！","",Constant.JPUSH_TAG_COUNT_1302);
+							"恭喜，您被选为龙杯达人！","",Constant.JPUSH_TAG_COUNT_1304);
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
 							remark,"0","30", "取消达人",0, "", "");
+				}
+				if ("1".equals(userInfo.getVcertification())){
+					String remark = "你被授予龙V认证";
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
+							remark,"0","53", "授予龙V认证",0, "", "");
+					this.jPushService.pushMessage("消息标识",userInfo.getUserid()+"","授予龙V认证",
+							"恭喜，您被授予龙V认证！","",Constant.JPUSH_TAG_COUNT_1304);
+				}
+				if ("0".equals(userInfo.getVcertification())){
+					String remark = "你被取消达人";
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
+							remark,"0","53", "取消龙V认证",0, "", "");
 				}
                 baseResp = BaseResp.ok();
             }
@@ -1606,7 +1618,7 @@ public class UserServiceImpl implements UserService {
 	 *									25:订单发货N天后自动确认收货    26：实名认证审核结果
 	 *									27:工作认证审核结果      28：学历认证审核结果
 	 *									29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-	 *									32：创建的龙榜/教室/圈子被选中推荐
+	 *									32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 	 *									40：订单已取消 41 榜中进步下榜)
 	 *				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 	 *				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
