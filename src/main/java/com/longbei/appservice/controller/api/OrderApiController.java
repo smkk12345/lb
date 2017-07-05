@@ -418,7 +418,7 @@ public class OrderApiController {
   				}
   				//返回订单id
 				Map<String, Object> expandData = new HashMap<>();
-				expandData.put("orderid",orders.getOrdernum());
+				expandData.put("ordernum",orders.getOrdernum());
 				resResp.setExpandData(expandData);
 				return resResp;
   			}
@@ -443,18 +443,18 @@ public class OrderApiController {
 	/**
 	 * webService 调用
 	 * 判断pc端购买龙币是否支付成功
-	 * @param orderid
+	 * @param ordernum
 	 * @return
 	 */
 	@RequestMapping(value = "isSuccessPay", method = RequestMethod.POST)
-	BaseResp isSuccessPay(String orderid){
-		logger.info("isSuccessPay orderid={}", orderid);
+	BaseResp isSuccessPay(String ordernum){
+		logger.info("isSuccessPay ordernum={}", ordernum);
 		BaseResp baseResp = new BaseResp();
 		boolean flag = false;
 		try {
-			flag = orderService.isSuccessPay(orderid);
+			flag = orderService.isSuccessPay(ordernum);
 		} catch (Exception e) {
-			logger.error("isSuccessPay of orderid={} is error:{}", orderid, e);
+			logger.error("isSuccessPay of ordernum={} is error:{}", ordernum, e);
 		}
 		baseResp.setData(flag);
 		return baseResp;

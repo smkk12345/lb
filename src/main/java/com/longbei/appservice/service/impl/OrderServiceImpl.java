@@ -87,13 +87,13 @@ public class OrderServiceImpl implements OrderService {
 
 	/**
 	 * 购买龙币是否支付成功
-	 * @param orderid
+	 * @param ordernum
 	 * @return
 	 */
 	@Override
-	public boolean isSuccessPay(String orderid) {
+	public boolean isSuccessPay(String ordernum) {
 		try {
-			BaseResp<ProductOrders> baseResp = iProductBasicService.getOrder(orderid);
+			BaseResp<ProductOrders> baseResp = iProductBasicService.getOrder(ordernum);
 			if (ResultUtil.isSuccess(baseResp)){
                 ProductOrders order = baseResp.getData();
                 if (!"0".equals(order.getOrderstatus())) {
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 		} catch (Exception e) {
-			logger.error("isSuccessPay orderid = {} is error:{}", orderid, e);
+			logger.error("isSuccessPay ordernum = {} is error:{}", ordernum, e);
 		}
 		return false;
 	}

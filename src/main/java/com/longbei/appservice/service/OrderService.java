@@ -27,10 +27,10 @@ public interface OrderService {
 
 	/**
 	 * 判断pc端购买龙币是否支付成功
-	 * @param orderid
+	 * @param ordernum
 	 * @return
 	 */
-	boolean isSuccessPay(String orderid);
+	boolean isSuccessPay(String ordernum);
 	
 	/**
 	 * @author yinxc
