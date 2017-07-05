@@ -85,8 +85,28 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 
+	/**
+	 * 购买龙币是否支付成功
+	 * @param orderid
+	 * @return
+	 */
+	@Override
+	public boolean isSuccessPay(String orderid) {
+		try {
+			BaseResp<ProductOrders> baseResp = iProductBasicService.getOrder(orderid);
+			if (ResultUtil.isSuccess(baseResp)){
+                ProductOrders order = baseResp.getData();
+                if (!"0".equals(order.getOrderstatus())) {
+                    return true;
+                }
+            }
+		} catch (Exception e) {
+			logger.error("isSuccessPay orderid = {} is error:{}", orderid, e);
+		}
+		return false;
+	}
 
-    /**
+	/**
 	 * @author yinxc
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日

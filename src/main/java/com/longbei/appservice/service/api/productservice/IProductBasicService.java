@@ -193,6 +193,14 @@ public interface IProductBasicService {
 	BaseResp<ProductOrders> getOrder(@RequestParam("ordernum") String ordernum);
 
 	/**
+	 * 获取订单详情
+	 * @param orderid
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/order/selectOrderByid")
+	BaseResp<ProductOrders> selectOrderByid(@RequestParam("orderid") String orderid);
+
+	/**
 	 * @author yinxc
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日
