@@ -32,7 +32,7 @@ public class StatisticApiController {
      */
     @RequestMapping(value="userStatisticImprove")
     public BaseResp<Object> userStatisticImprove(Long currentTime){
-        logger.info("currentTime = {}", currentTime);
+        logger.info("userStatisticImprove currentTime = {}", currentTime);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(currentTime == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

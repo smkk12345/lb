@@ -58,7 +58,7 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
         }else{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_17,Constant.RTNINFO_SYS_17);
 //            baseResp.setData(set);
-//            baseResp.getExpandData().put("words",set);
+            baseResp.getExpandData().put("words",set);
             return baseResp;
         }
     }
