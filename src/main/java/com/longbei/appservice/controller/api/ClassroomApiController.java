@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.UserCard;
@@ -123,5 +125,56 @@ public class ClassroomApiController {
         }
         return baseResp;
     }
+    
+    /**
+     * @Description: 获取教室信息
+     * @param @param classroomid 教室id
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "selectClassroomBycid")
+    public BaseResp<Classroom> selectClassroomBycid(String classroomid){
+        logger.info("selectClassroomBycid classroomid = {}", classroomid);
+        BaseResp<Classroom> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+  			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+  			baseResp.setData(classroom);
+        } catch (Exception e) {
+        	logger.error("selectClassroomBycid classroomid = {}", classroomid, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 教室发公告
+     * @param @param classroomid 教室id
+     * @param @param classnotice 公告
+     * @param @param noticetype 是否@所有人   0：否  1：是
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/notice")
+ 	@ResponseBody
+    public BaseResp<Object> notice(String classroomid, String classnotice, String noticetype, Model model){
+ 		logger.info("insertNotice classroomid = {}, classnotice = {}, noticetype = {}", 
+    			classroomid, classnotice, noticetype);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
+  					Long.parseLong(Constant.SQUARE_USER_ID), classnotice, noticetype);
+        } catch (Exception e) {
+        	logger.error("selectClassroomBycid classroomid = {}", classroomid, e);
+        }
+        return baseResp;
+ 	}
 	
 }
