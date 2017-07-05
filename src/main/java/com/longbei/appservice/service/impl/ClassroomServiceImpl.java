@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
@@ -714,6 +715,62 @@ public class ClassroomServiceImpl implements ClassroomService {
         } catch (Exception e) {
             logger.error("selectPcClassroomList for adminservice isup = {}, isdel = {}, startNum = {}, pageSize = {}",
   					isup, isdel, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param pageNo   pageSize
+	 * 2017年2月28日
+	 */
+	@Override
+	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
+		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
+		Page<Classroom> page = new Page<>(startNum,endNum);
+        try {
+            int totalcount = classroomMapper.selectSearchCount(classrooms);
+//            startNum = Page.setPageNo(startNum,totalcount,endNum);
+            List<Classroom> list = classroomMapper.selectSearchList(classrooms, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (Classroom classroom : list) {
+					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+					classroom.setUserCard(userCard);
+					//教室总进步数量
+					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					classroom.setAllimp(allimp);
+					//教室课程数量
+					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+					classroom.setAllcourses(allcourses);
+					//获取创建人信息
+					String nickname = "";
+					//sourcetype  0:运营  1:app  2:商户
+					if("1".equals(classroom.getSourcetype())){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+						nickname = appUserMongoEntity.getNickname();
+					}
+					classroom.setNickname(nickname);
+					//获取评论总数
+					int commentNum = 0;
+					BaseResp<Integer> resResp = commentMongoService.selectCommentCountSum
+							(String.valueOf(classroom.getClassroomid()), "12", "");
+					if (ResultUtil.isSuccess(resResp)){
+						commentNum = resResp.getData();
+			        }
+					classroom.setCommentNum(commentNum);
+					//获取提问答疑总数
+					Long questionsNum = classroomQuestionsMongoService.selectCountQuestions(String.valueOf(classroom.getClassroomid()));
+					classroom.setQuestionsNum(questionsNum);
+            	}
+            }
+            page.setTotalCount(totalcount);
+            page.setList(list);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("selectPcSearchClassroomList for adminservice classroom, startNum = {}, pageSize = {}",
+  					JSON.toJSON(classrooms).toString(), startNum, endNum, e);
         }
         return baseResp;
 	}

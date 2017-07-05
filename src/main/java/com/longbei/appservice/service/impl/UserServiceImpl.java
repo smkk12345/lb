@@ -919,7 +919,7 @@ public class UserServiceImpl implements UserService {
 			}
 			//注册成功之后 绑定第三方帐号
 			Long suserid = (Long) baseResp.getExpandData().get("userid");
-			iUserBasicService.bindingThird(openid, utype, suserid);
+			iUserBasicService.bindingThird(openid, utype, username);
 			JSONObject jsonObject = JSONObject.fromObject(baseResp.getData());
 			String token = (String)jsonObject.get("token");
 			springJedisDao.set("userid&token&"+suserid, token);
@@ -953,7 +953,7 @@ public class UserServiceImpl implements UserService {
 					String token = (String) baseResp.getData();
 					baseResp.getExpandData().put("token", token);
 					baseResp.setData(userInfo);
-					iUserBasicService.bindingThird(openid, utype, userInfo.getUserid());
+					iUserBasicService.bindingThird(openid, utype, username);
 					springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 					//第三方注册获得龙分
 					thirdregisterGainPoint(userInfo,utype);
@@ -1144,7 +1144,8 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> changePassword(long userid, String pwd, String newpwd) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = iUserBasicService.updatepwdById(userid,pwd,newpwd);
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userid));
+			baseResp = iUserBasicService.updatepwd(appUserMongoEntity.getUsername(),pwd,newpwd);
 		}catch (Exception e){
 			logger.error("changePassword error userid={},pwd={},newpwd={}",userid
 			,pwd,newpwd);
@@ -1369,6 +1370,7 @@ public class UserServiceImpl implements UserService {
 		list.add("发微进步+"+Constant_point.DAILY_ADDIMP+"分"+",上限+"+Constant_point.DAILY_ADDIMP_LIMIT+"分／天");
 		list.add("加入龙榜+"+ Constant_point.DAILY_ADDRANK+"分");
 		list.add("加入教室+"+ Constant_point.DAILY_ADDCLASSROOM+"分");
+		list.add("送花+"+ Constant_point.DAILY_FLOWER+"分");
 		list.add("公益抽奖+XX分");
 		return list;
 	}
@@ -1594,10 +1596,10 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> thirdbinding(String userid, String utype, String opendid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
-			baseResp = iUserBasicService.bindingThird(opendid,utype,Long.parseLong(userid));
+			UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
+			baseResp = iUserBasicService.bindingThird(opendid,utype,userInfo.getUsername());
 			if (ResultUtil.isSuccess(baseResp)){
 				//第三方绑定获得龙分
-				UserInfo userInfo = selectJustInfo(Long.parseLong(userid));
 				thirdregisterGainPoint(userInfo,utype);
 			}else{
 				baseResp.setData(null);
