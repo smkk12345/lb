@@ -429,10 +429,10 @@ public class AppUserController extends BaseController {
             if(nickname.length() > 13){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
             }
-            baseResp = sysSensitiveService.getSensitiveWordSet(nickname+"，"+brief+"，"+realname);
-            if(!ResultUtil.isSuccess(baseResp)){
-                return baseResp;
-            }
+        }
+        baseResp = sysSensitiveService.getSensitiveWordSet(nickname+","+brief+","+realname);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
         }
         try {
             UserInfo userInfo = new UserInfo(Long.parseLong(userid), nickname, avatar, sex);
@@ -476,7 +476,7 @@ public class AppUserController extends BaseController {
 		if(StringUtils.hasBlankParams(userid, nickname)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-        if(StringUtils.hasBlankParams(nickname)){
+        if(!StringUtils.hasBlankParams(nickname)){
             baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
             if(!ResultUtil.isSuccess(baseResp)){
                 return baseResp;
@@ -612,6 +612,10 @@ public class AppUserController extends BaseController {
                 return baseResp;
             }
         }
+        baseResp = sysSensitiveService.getSensitiveWordSet(content);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
     	try {
     		UserFeedback record = new UserFeedback(Long.parseLong(userid), content, photos, new Date(), "0");
     		baseResp = userFeedbackService.insertSelective(record);
@@ -732,7 +736,11 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.hasBlankParams(userid,schoolname,Department)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        baseResp = sysSensitiveService.getSensitiveWordSet(schoolname+"'"+Department);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
     	try {
     		baseResp = userSchoolService.insertSchool(Long.parseLong(userid),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
@@ -840,7 +848,11 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(id)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        baseResp = sysSensitiveService.getSensitiveWordSet(schoolname+"'"+Department);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
     	try {
     		baseResp = userSchoolService.updateSchool(Integer.parseInt(id),schoolname,Department,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
@@ -869,7 +881,11 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.hasBlankParams(userid,companyname,department,location)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        baseResp = sysSensitiveService.getSensitiveWordSet(companyname+"'"+department+"，"+location);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
     	try {
     		baseResp = userJobService.insertJob(Long.parseLong(userid),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
@@ -977,7 +993,11 @@ public class AppUserController extends BaseController {
     	BaseResp<Object> baseResp = new BaseResp<>();
     	if(StringUtils.isBlank(id)){
     		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-    	}  
+    	}
+        baseResp = sysSensitiveService.getSensitiveWordSet(companyname+"'"+department+"，"+location);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
     	try {
     		baseResp = userJobService.updateJob(Integer.parseInt(id),companyname,department,location,starttime,DateUtils.parseDate(endtime));
     		return baseResp;	
