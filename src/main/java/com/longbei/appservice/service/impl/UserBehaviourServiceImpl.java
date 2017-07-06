@@ -185,17 +185,19 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     public BaseResp<Object> hasPrivilege(UserInfo userInfo, Constant.PrivilegeType privilegeType,Object o) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+            UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
             if(null == userLevel){
                 return baseResp.initCodeAndDesp();
             }
             switch (privilegeType){
-                case joinranknum:
+                case joinranknum: //公开榜单
                     //查询用户当前参与的榜数量 只查询当前榜正在进行中的
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("userid",userInfo.getUserid());
                     map.put("isfinish",1);
                     map.put("status",1);
+                    String[] typeArr = {"0","1"};
+                    map.put("ranktype",typeArr);
                     int count = this.rankMembersMapper.getJoinRankCount(map);
 
                     if(count < userLevel.getJoinranknum()){
