@@ -593,7 +593,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> closeRoom(long classroomid, String closeremark){
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			int temp = classroomMapper.updateIsdel(classroomid, closeremark);
+			int temp = classroomMapper.updateIsdel(classroomid, closeremark, DateUtils.formatDateTime1(new Date()));
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			if(temp > 0){
 				//关闭教室，教室成员下教室
@@ -614,6 +614,20 @@ public class ClassroomServiceImpl implements ClassroomService {
 		} catch (Exception e) {
 			logger.error("closeRoom classroomid = {}, closeremark = {}", 
 					classroomid, closeremark, e);
+		}
+		return reseResp;
+	}
+	
+	@Override
+	public BaseResp<Object> delRoom(long classroomid){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.deleteByPrimaryKey(classroomid);
+			if(temp > 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("delRoom classroomid = {}", classroomid, e);
 		}
 		return reseResp;
 	}

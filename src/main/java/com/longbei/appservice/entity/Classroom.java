@@ -61,6 +61,10 @@ public class Classroom {
     
     private String closeremark; //关闭原因
     
+    private String syllabus; //课程大纲
+    
+    private String crowd; //适合人群
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -473,6 +477,22 @@ public class Classroom {
 
 	public void setCloseremark(String closeremark) {
 		this.closeremark = closeremark;
+	}
+
+	public String getSyllabus() {
+		return syllabus;
+	}
+
+	public void setSyllabus(String syllabus) {
+		this.syllabus = syllabus;
+	}
+
+	public String getCrowd() {
+		return crowd;
+	}
+
+	public void setCrowd(String crowd) {
+		this.crowd = crowd;
 	}
 
 }

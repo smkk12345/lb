@@ -96,7 +96,8 @@ public interface ClassroomMapper {
      * @auther yinxc
      * @currentdate:2017年7月5日
  	*/
-    Integer updateIsdel(@Param("classroomid") long classroomid, @Param("closeremark") String closeremark);
+    Integer updateIsdel(@Param("classroomid") long classroomid, 
+    		@Param("closeremark") String closeremark, @Param("closedate") String closedate);
     
     /**
      * @Description: 发布教室
