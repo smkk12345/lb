@@ -14,7 +14,6 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="ptype" property="ptype" />
-    <result column="classtype" property="classtype" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="userid" property="userid" />
     <result column="cardid" property="cardid" />
@@ -26,11 +25,18 @@
     <result column="sourcetype" property="sourcetype" />
     <result column="isrecommend" property="isrecommend" />
     <result column="isup" property="isup" />
+    <result column="classtype" property="classtype" />
+    <result column="cusername" property="cusername" />
+    <result column="closedate" property="closedate" />
+    <result column="closeremark" property="closeremark" />
+    <result column="syllabus" property="syllabus" />
+    <result column="crowd" property="crowd" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
-    charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup 
+    charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
+    closedate, closeremark, syllabus, crowd 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -66,6 +72,68 @@
     <if test="isdel != null and isdel != ''" >
     	and isdel = #{isdel}
     </if>
+  </select>
+  
+  <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.Classroom" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom
+    where 1 = 1 
+    <if test="isup != null and isup != ''" >
+      and isup = #{isup}
+    </if>
+    <if test="isdel != null and isdel != ''" >
+    	and isdel = #{isdel}
+    </if>
+    <if test="classtitle != null and classtitle != ''" >
+    	and classtitle LIKE concat(concat('%',#{classtitle}),'%')
+    </if>
+    <if test="sourcetype != null and sourcetype != ''" >
+    	and sourcetype = #{sourcetype}
+    </if>
+    <if test="ptype != null and ptype != ''" >
+    	and ptype = #{ptype}
+    </if>
+    <if test="classtype != null and classtype != ''" >
+    	and classtype = #{classtype}
+    </if>
+    <if test="isfree != null and isfree != ''" >
+    	and isfree = #{isfree}
+    </if>
+    <if test="cusername != null and cusername != ''" >
+    	and cusername LIKE concat(concat('%',#{cusername}),'%')
+    </if>
+  </select>
+  
+  <select id="selectSearchList" parameterType="com.longbei.appservice.entity.Classroom" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where 1 = 1 
+    <if test="classroom.isup != null and classroom.isup != ''" >
+      	and isup = #{classroom.isup}
+    </if>
+    <if test="classroom.isdel != null and classroom.isdel != ''" >
+    	and isdel = #{classroom.isdel}
+    </if>
+    <if test="classroom.classtitle != null and classroom.classtitle != ''" >
+    	and classtitle LIKE concat(concat('%',#{classroom.classtitle}),'%')
+    </if>
+    <if test="classroom.sourcetype != null and classroom.sourcetype != ''" >
+    	and sourcetype = #{classroom.sourcetype}
+    </if>
+    <if test="classroom.ptype != null and classroom.ptype != ''" >
+    	and ptype = #{classroom.ptype}
+    </if>
+    <if test="classroom.classtype != null and classroom.classtype != ''" >
+    	and classtype = #{classroom.classtype}
+    </if>
+    <if test="classroom.isfree != null and classroom.isfree != ''" >
+    	and isfree = #{classroom.isfree}
+    </if>
+    <if test="classroom.cusername != null and classroom.cusername != ''" >
+    	and cusername LIKE concat(concat('%',#{classroom.cusername}),'%')
+    </if>
+    order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -82,6 +150,7 @@
     <if test="isdel != null and isdel != ''" >
     	and isdel = #{isdel}
     </if>
+    order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -206,6 +275,24 @@
       <if test="freecoursenum != null" >
         freecoursenum,
       </if>
+      <if test="isup != null" >
+        isup,
+      </if>
+      <if test="sourcetype != null" >
+        sourcetype,
+      </if>
+      <if test="cusername != null" >
+        cusername,
+      </if>
+      <if test="closedate != null" >
+        closedate,
+      </if>
+      <if test="syllabus != null" >
+        syllabus,
+      </if>
+      <if test="crowd != null" >
+        crowd,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -265,6 +352,24 @@
       <if test="freecoursenum != null" >
         #{freecoursenum},
       </if>
+      <if test="isup != null and isup != ''" >
+        #{isup},
+      </if>
+      <if test="sourcetype != null and sourcetype != ''" >
+        #{sourcetype},
+      </if>
+      <if test="cusername != null and cusername != ''" >
+        #{cusername},
+      </if>
+      <if test="closedate != null" >
+        #{closedate},
+      </if>
+      <if test="syllabus != null and syllabus != ''" >
+        #{syllabus},
+      </if>
+      <if test="crowd != null and crowd != ''" >
+        #{crowd},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Classroom" >
@@ -313,11 +418,16 @@
         cardid = #{cardid},
       </if>
       <if test="ispublic != null" >
-        ispublic = #{ispublic,jdbcType=CHAR}
+        ispublic = #{ispublic}, 
+      </if>
+      <if test="syllabus != null and syllabus != ''" >
+        syllabus = #{syllabus}, 
+      </if>
+      <if test="crowd != null and crowd != ''" >
+        crowd = #{crowd} 
       </if>
     </set>
-    where classroomid = #{classroomid,jdbcType=INTEGER} 
-    	and userid = #{userid,jdbcType=INTEGER}
+    where classroomid = #{classroomid} 
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Classroom" >
     update classroom
@@ -365,6 +475,24 @@
         freecoursenum = #{freecoursenum},
       </if>
       isfree = #{isfree} 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsdel" >
+    update classroom
+    set 
+      <if test="closeremark != null and closeremark != ''" >
+        closeremark = #{closeremark},
+      </if>
+      closedate = #{closedate}, 
+      isdel = 1 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsup" >
+    update classroom
+    set 
+      isup = 1 
     where classroomid = #{classroomid} 
   </update>
   

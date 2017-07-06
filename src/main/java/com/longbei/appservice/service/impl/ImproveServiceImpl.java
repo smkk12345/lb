@@ -165,7 +165,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp baseResp = new BaseResp();
         //系统今日新赠进步数＋1
         statisticService.updateStatistics(Constant.SYS_IMPROVE_NUM,1);
-
+        String commentid = "";
         boolean isok = false;
         switch (businesstype){
             case Constant.IMPROVE_SINGLE_TYPE:
@@ -202,7 +202,7 @@ public class ImproveServiceImpl implements ImproveService{
          			comment.setFriendid("0");
          			comment.setImpid(pimpid);
          			commentMongoService.insertComment(comment);
-         			
+                    commentid = comment.getId();
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
@@ -247,6 +247,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
         }
+        baseResp.getExpandData().put("commentid", commentid);
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
@@ -1393,6 +1394,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setBusinesstype(businessType);
                 }
                 improve.setBusinessid(timeLine.getBusinessid());
+                improve.setDuration(timeLineDetail.getDuration());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
                 //获取好友昵称

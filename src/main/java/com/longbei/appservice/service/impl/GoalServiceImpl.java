@@ -205,6 +205,10 @@ public class GoalServiceImpl implements GoalService {
     @SuppressWarnings("unchecked")
 	@Override
     public BaseResp<UserGoal> updateTitle(long goalId, String title) {
+        BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(title);
+        if(!ResultUtil.isSuccess(baseResp1)){
+            return baseResp1;
+        }
         BaseResp<UserGoal> baseResp = new BaseResp<>();
         try{
             int res = userGoalMapper.updateTitle(goalId,title);

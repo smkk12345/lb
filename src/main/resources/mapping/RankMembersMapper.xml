@@ -258,6 +258,12 @@
             <if test="status != null">
                 and rank_members.status = #{status}
             </if>
+            <if test="ranktype != null">
+                and ranktype in
+                <foreach item="item" index="index" collection="ranktype" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
             <if test="rankid != null">
                 and rank_members.rankid=#{rankid}
             </if>
