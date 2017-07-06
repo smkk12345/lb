@@ -158,9 +158,9 @@ public class ClassroomApiController {
      * @auther yinxc
      * @currentdate:2017年7月5日
  	*/
-    @RequestMapping(value = "/notice")
+    @RequestMapping(value = "/insertNotice")
  	@ResponseBody
-    public BaseResp<Object> notice(String classroomid, String classnotice, String noticetype){
+    public BaseResp<Object> insertNotice(String classroomid, String classnotice, String noticetype){
  		logger.info("notice classroomid = {}, classnotice = {}, noticetype = {}", 
     			classroomid, classnotice, noticetype);
  		BaseResp<Object> baseResp = new BaseResp<>();
@@ -171,7 +171,7 @@ public class ClassroomApiController {
   			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
   					Long.parseLong(Constant.SQUARE_USER_ID), classnotice, noticetype);
         } catch (Exception e) {
-        	logger.error("notice classroomid = {}, classnotice = {}, noticetype = {}", 
+        	logger.error("insertNotice classroomid = {}, classnotice = {}, noticetype = {}", 
     			classroomid, classnotice, noticetype, e);
         }
         return baseResp;
@@ -203,6 +203,29 @@ public class ClassroomApiController {
         return baseResp;
  	}
     
+    /**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    @RequestMapping(value = "/delRoom")
+ 	@ResponseBody
+    public BaseResp<Object> delRoom(String classroomid){
+ 		logger.info("closeRoom classroomid = {}", classroomid);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(classroomid)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.delRoom(Long.parseLong(classroomid));
+        } catch (Exception e) {
+        	logger.error("delRoom classroomid = {}", classroomid, e);
+        }
+        return baseResp;
+ 	}
     
     /**
      * @Description: 发布教室
