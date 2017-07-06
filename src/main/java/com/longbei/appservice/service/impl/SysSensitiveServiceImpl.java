@@ -52,7 +52,8 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
     @Override
     public BaseResp<Object> getSensitiveWordSet(String str) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        Set<String> set = SensitiveWord.getSensitiveWord(str,2);
+//        Set<String> set = SensitiveWord.getSensitiveWord(str,2);
+        Set<String> set = new HashSet<>();
         if(set.isEmpty()){
             return baseResp.initCodeAndDesp();
         }else{
