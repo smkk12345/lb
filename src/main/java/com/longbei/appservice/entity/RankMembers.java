@@ -84,6 +84,16 @@ public class RankMembers {
 
     private String iscomplain; //是否已被投诉举报 0没投诉 1有投诉(查询使用)
 
+    private String isdel;
+
+    public String getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(String isdel) {
+        this.isdel = isdel;
+    }
+
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpfashionmantime() {

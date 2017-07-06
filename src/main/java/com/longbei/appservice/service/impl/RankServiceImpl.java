@@ -1527,6 +1527,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("关闭榜单失败");
                 }
             }
+            rankMembersMapper.deleteByRankId(Long.parseLong(rankid));
         }catch (Exception e){
             logger.error("close RankMember error rankId:{}",rankid);
         }

@@ -258,6 +258,9 @@
             <if test="status != null">
                 and rank_members.status = #{status}
             </if>
+            <if test="isdel != null">
+                and rank_members.isdel = #{isdel}
+            </if>
             <if test="ranktype != null">
                 and ranktype in
                 <foreach item="item" index="index" collection="ranktype" open="(" separator="," close=")">
@@ -893,4 +896,11 @@
             limit #{startNum},#{pageSize}
         </if>
     </select>
+
+    <update id="deleteByRankId">
+        UPDATE rank_members
+        set isdel = 1
+        where rankid=#{rankid}
+    </update>
+
 </mapper>
