@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SeminarModuleMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.SeminarModule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="semmodid" property="semmodid" jdbcType="BIGINT" />
+    <result column="seminarid" property="seminarid" jdbcType="BIGINT" />
+    <result column="moduleid" property="moduleid" jdbcType="VARCHAR" />
+    <result column="modulename" property="modulename" jdbcType="VARCHAR" />
+    <result column="isshow" property="isshow" jdbcType="CHAR" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, semmodid, seminarid, moduleid, modulename, isshow, sortnum, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from seminarmodule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from seminarmodule
+    where seminarid = #{seminarid,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from seminarmodule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteBySeminarid" parameterType="java.lang.Long" >
+    delete from seminarmodule
+    where seminarid = #{seminarid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.SeminarModule" >
+    insert into seminarmodule (id, seminarid, moduleid, 
+      modulename, isshow, sortnum, 
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{seminarid,jdbcType=BIGINT}, #{moduleid,jdbcType=VARCHAR}, 
+      #{modulename,jdbcType=VARCHAR}, #{isshow,jdbcType=CHAR}, #{sortnum,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SeminarModule" >
+    insert into seminarmodule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="semmodid != null" >
+        semmodid,
+      </if>
+      <if test="seminarid != null" >
+        seminarid,
+      </if>
+      <if test="moduleid != null" >
+        moduleid,
+      </if>
+      <if test="modulename != null" >
+        modulename,
+      </if>
+      <if test="isshow != null" >
+        isshow,
+      </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="seminarid != null" >
+        #{seminarid,jdbcType=BIGINT},
+      </if>
+      <if test="moduleid != null" >
+        #{moduleid,jdbcType=VARCHAR},
+      </if>
+      <if test="modulename != null" >
+        #{modulename,jdbcType=VARCHAR},
+      </if>
+      <if test="isshow != null" >
+        #{isshow,jdbcType=CHAR},
+      </if>
+      <if test="sortnum != null" >
+        #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SeminarModule" >
+    update seminarmodule
+    <set >
+      <if test="moduleid != null" >
+        moduleid = #{moduleid,jdbcType=VARCHAR},
+      </if>
+      <if test="modulename != null" >
+        modulename = #{modulename,jdbcType=VARCHAR},
+      </if>
+      <if test="isshow != null" >
+        isshow = #{isshow,jdbcType=CHAR},
+      </if>
+      <if test="sortnum != null" >
+        sortnum = #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where seminarid = #{seminarid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SeminarModule" >
+    update seminarmodule
+    set seminarid = #{seminarid,jdbcType=BIGINT},
+      moduleid = #{moduleid,jdbcType=VARCHAR},
+      modulename = #{modulename,jdbcType=VARCHAR},
+      isshow = #{isshow,jdbcType=CHAR},
+      sortnum = #{sortnum,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
