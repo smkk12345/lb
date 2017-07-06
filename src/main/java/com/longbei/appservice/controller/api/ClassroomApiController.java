@@ -80,7 +80,25 @@ public class ClassroomApiController {
   		}
   		return baseResp;
     }
-	
+
+	/**
+     * @Description: 修改教室
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年6月17日
+ 	*/
+	@ResponseBody
+    @RequestMapping(value = "updroom")
+    public BaseResp<Object> updroom(@RequestBody Classroom classroom){
+        logger.info("updroom classroom = {}", JSON.toJSONString(classroom));
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            baseResp = classroomService.updateByClassroomid(classroom);
+        } catch (Exception e) {
+            logger.error("updroom classroom = {}", JSON.toJSONString(classroom), e);
+        }
+        return baseResp;
+    }
 	
 	/**
      * 添加教室
