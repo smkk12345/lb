@@ -72,9 +72,6 @@
     <if test="isdel != null and isdel != ''" >
     	and isdel = #{isdel}
     </if>
-    <if test="endNum != 0" >
-      limit #{startNum},#{endNum}
-    </if>
   </select>
   
   <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.Classroom" resultType="java.lang.Integer" >
@@ -113,7 +110,7 @@
     from classroom
     where 1 = 1 
     <if test="classroom.isup != null and classroom.isup != ''" >
-      and isup = #{classroom.isup}
+      	and isup = #{classroom.isup}
     </if>
     <if test="classroom.isdel != null and classroom.isdel != ''" >
     	and isdel = #{classroom.isdel}
@@ -421,11 +418,16 @@
         cardid = #{cardid},
       </if>
       <if test="ispublic != null" >
-        ispublic = #{ispublic,jdbcType=CHAR}
+        ispublic = #{ispublic}, 
+      </if>
+      <if test="syllabus != null and syllabus != ''" >
+        syllabus = #{syllabus}, 
+      </if>
+      <if test="crowd != null and crowd != ''" >
+        crowd = #{crowd} 
       </if>
     </set>
-    where classroomid = #{classroomid,jdbcType=INTEGER} 
-    	and userid = #{userid,jdbcType=INTEGER}
+    where classroomid = #{classroomid} 
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Classroom" >
     update classroom

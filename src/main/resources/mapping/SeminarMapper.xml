@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.SeminarMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Seminar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="seminarid" property="seminarid" jdbcType="BIGINT" />
+    <result column="seminarpic" property="seminarpic" jdbcType="VARCHAR" />
+    <result column="seminartitle" property="seminartitle" jdbcType="VARCHAR" />
+    <result column="sharebrief" property="sharebrief" jdbcType="VARCHAR" />
+    <result column="seminartarget" property="seminartarget" jdbcType="VARCHAR" />
+    <result column="createuserid" property="createuserid" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, seminarid, seminarpic, seminartitle, sharebrief, seminartarget, createuserid, 
+    createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from seminar
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySeminarId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from seminar
+    where seminarid = #{seminarid,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectCount" resultType="java.lang.Integer" >
+    select
+      COUNT(*)
+    from seminar
+    where 1=1
+    <if test="seminar.seminartitle !=null">
+      AND seminartitle = ${seminar.seminartitle}
+    </if>
+    <if test="startNo != null">
+      limit #{startNo},#{pageSize}
+    </if>
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from seminar
+    where 1=1
+    <if test="seminar.seminartitle !=null">
+      AND seminartitle = ${seminar.seminartitle}
+    </if>
+    <if test="startNo != null">
+      limit #{startNo},#{pageSize}
+    </if>
+  </select>
+
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from seminar
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteBySeminarid" parameterType="java.lang.Integer" >
+    delete from seminar
+    where seminarid = #{seminarid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.Seminar" >
+    insert into seminar (id, seminarid, seminarpic, 
+      seminartitle, sharebrief, seminartarget, 
+      createuserid, createtime, updatetime
+      )
+    values (#{id,jdbcType=INTEGER}, #{seminarid,jdbcType=BIGINT}, #{seminarpic,jdbcType=VARCHAR}, 
+      #{seminartitle,jdbcType=VARCHAR}, #{sharebrief,jdbcType=VARCHAR}, #{seminartarget,jdbcType=VARCHAR}, 
+      #{createuserid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Seminar" >
+    insert into seminar
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="seminarid != null" >
+        seminarid,
+      </if>
+      <if test="seminarpic != null" >
+        seminarpic,
+      </if>
+      <if test="seminartitle != null" >
+        seminartitle,
+      </if>
+      <if test="sharebrief != null" >
+        sharebrief,
+      </if>
+      <if test="seminartarget != null" >
+        seminartarget,
+      </if>
+      <if test="createuserid != null" >
+        createuserid,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="seminarid != null" >
+        #{seminarid,jdbcType=BIGINT},
+      </if>
+      <if test="seminarpic != null" >
+        #{seminarpic,jdbcType=VARCHAR},
+      </if>
+      <if test="seminartitle != null" >
+        #{seminartitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sharebrief != null" >
+        #{sharebrief,jdbcType=VARCHAR},
+      </if>
+      <if test="seminartarget != null" >
+        #{seminartarget,jdbcType=VARCHAR},
+      </if>
+      <if test="createuserid != null" >
+        #{createuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Seminar" >
+    update seminar
+    <set >
+      <if test="seminarid != null" >
+        seminarid = #{seminarid,jdbcType=BIGINT},
+      </if>
+      <if test="seminarpic != null" >
+        seminarpic = #{seminarpic,jdbcType=VARCHAR},
+      </if>
+      <if test="seminartitle != null" >
+        seminartitle = #{seminartitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sharebrief != null" >
+        sharebrief = #{sharebrief,jdbcType=VARCHAR},
+      </if>
+      <if test="seminartarget != null" >
+        seminartarget = #{seminartarget,jdbcType=VARCHAR},
+      </if>
+      <if test="createuserid != null" >
+        createuserid = #{createuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Seminar" >
+    update seminar
+    set seminarid = #{seminarid,jdbcType=BIGINT},
+      seminarpic = #{seminarpic,jdbcType=VARCHAR},
+      seminartitle = #{seminartitle,jdbcType=VARCHAR},
+      sharebrief = #{sharebrief,jdbcType=VARCHAR},
+      seminartarget = #{seminartarget,jdbcType=VARCHAR},
+      createuserid = #{createuserid,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
