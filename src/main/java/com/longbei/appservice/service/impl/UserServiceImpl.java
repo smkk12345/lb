@@ -202,10 +202,7 @@ public class UserServiceImpl implements UserService {
 				if(null != snsFriends){
 					userInfo.setIsfriend("1");
 				}
-				SnsFans snsFans = userRelationService.selectByUidAndFanid(lookid,userid);
-				if(null != snsFans){
-					userInfo.setIsfans("1");
-				}
+				userInfo.setIsfans(this.userRelationService.checkIsFans(userid,lookid)?"1":"0");
 				//获取好友昵称
 				String remark = userRelationService.selectRemark(lookid, userid, "0");
 				userInfo.setRemark(remark);
@@ -659,8 +656,16 @@ public class UserServiceImpl implements UserService {
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> checkSmsAndLogin(String mobile, String random, String deviceindex, String devicetype) {
+		BaseResp<Object> baseResp = checkSms(mobile, random,deviceindex,devicetype);
+		if(ResultUtil.isSuccess(baseResp)){
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",mobile);
+			springJedisDao.sAdd(deviceindex+date+"login",null,mobile);
 		}
 		return baseResp;
 	}
@@ -752,7 +757,7 @@ public class UserServiceImpl implements UserService {
 				return returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",username);
+			springJedisDao.sAdd(deviceindex+date+"login",null,username);
 			addLoginRecord(userInfo.getUsername(),deviceindex);
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} else  {
@@ -821,8 +826,9 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfoMapper.updateIndexDevice(userid,deviceindex);
 		}else if(list.size() > 1) {
-			userInfoMapper.clearOtherDevice(userid, deviceindex);
-			userInfoMapper.updateIndexDevice(userid, deviceindex);
+//			userInfoMapper.clearOtherDevice(userid, deviceindex);
+//			userInfoMapper.updateIndexDevice(userid, deviceindex);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
 		}else if(list.isEmpty()){
 			if(!StringUtils.isBlank(deviceindex)){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
@@ -851,7 +857,7 @@ public class UserServiceImpl implements UserService {
 		}
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 		String loginStr = deviceindex+date+"login";
-		long n = springJedisDao.sAdd(loginStr,username);
+		long n = springJedisDao.sAdd(loginStr,null,username);
 		return true;
 	}
 
@@ -902,7 +908,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
-		UserInfo userInfo = userInfoMapper.getByUserName(username);
+		UserInfo userInfo = null;
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -926,8 +932,14 @@ public class UserServiceImpl implements UserService {
 			//第三方注册获得龙分
 			UserInfo userInfo1 = selectJustInfo(suserid);
 			thirdregisterGainPoint(userInfo1,utype);
+			userInfo = (UserInfo) baseResp.getData();
 		}else{//手机号已经注册
-
+			userInfo = userInfoMapper.getByUserName(username);
+			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+			if(ResultUtil.fail(baseResp1)){
+				baseResp1.setData(userInfo);
+				return baseResp1;
+			}
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
@@ -945,7 +957,6 @@ public class UserServiceImpl implements UserService {
 				//密码是否正确
 //				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(ResultUtil.isSuccess(baseResp)){
-
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
@@ -963,12 +974,11 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-
-		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
-		if(ResultUtil.fail(baseResp1)){
-			baseResp1.setData(userInfo);
-			return baseResp1;
-		}
+//		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+//		if(ResultUtil.fail(baseResp1)){
+//			baseResp1.setData(userInfo);
+//			return baseResp1;
+//		}
 		addLoginRecord(userInfo.getUsername(),deviceindex);
 		return baseResp;
 	}
@@ -1017,10 +1027,10 @@ public class UserServiceImpl implements UserService {
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 			if(ResultUtil.fail(baseResp1)){
-				return baseResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
+				return baseResp.initCodeAndDesp(baseResp1.getCode(),baseResp1.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
+			springJedisDao.sAdd(deviceindex+date+"login",null,userInfo.getUsername());
 		}
 		return baseResp;
 	}

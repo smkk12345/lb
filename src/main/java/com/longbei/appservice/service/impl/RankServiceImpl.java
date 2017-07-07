@@ -1527,6 +1527,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("关闭榜单失败");
                 }
             }
+            rankMembersMapper.deleteByRankId(Long.parseLong(rankid));
         }catch (Exception e){
             logger.error("close RankMember error rankId:{}",rankid);
         }
@@ -2231,6 +2232,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<RankMembers> rankMembersList = this.rankMembersMapper.selectRankMembers(parameterMap);
 
             List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            Set<String> fansIds= this.userRelationService.getFansIds(userId);
+            Set<String> friendIds = this.userRelationService.getFriendIds(userId);
+
             if(rankMembersList != null && rankMembersList.size() > 0){
                 for (RankMembers rankMembers : rankMembersList) {
                     AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMembers.getUserid()+"");
@@ -2240,39 +2244,28 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("userid",appUserMongoEntity.getUserid());
                     map.put("avatar",appUserMongoEntity.getAvatar());
+                    map.put("usernickname",appUserMongoEntity.getNickname());
 
-
+                    if(userId == null){
+                        map.put("isfans","0");
+                        resultList.add(map);
+                        continue;
+                    }
                     //判断是否是好友
                     if(userId != null && !Constant.VISITOR_UID.equals(userId+"")){
-                        SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,rankMembers.getUserid());
-                        if(snsFans != null){
-                            map.put("isfans","1");
-                        }else{
-                            map.put("isfans","0");
-                        }
-                        SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userId,rankMembers.getUserid(), "0");
-                        if(snsFriends != null){
-                            map.put("isfriend","1");
-                        }else{
-                            map.put("isfriend","0");
-                        }
-                        if(userId == null){
-                            map.put("usernickname",appUserMongoEntity.getNickname());
-                        }else{
-                            map.put("usernickname",this.friendService.getNickName(userId,rankMembers.getUserid()));
-                        }
-                        if(userId == null){
-                            map.put("isfans","0");
-                            resultList.add(map);
-                            continue;
-                        }
                         if(userId.longValue() == rankMembers.getUserid().longValue()){
                             map.put("isfans","1");
                             resultList.add(map);
                             continue;
                         }
-                    }else{
-                        map.put("usernickname",appUserMongoEntity.getNickname());
+
+                        map.put("isfans",fansIds.contains(rankMembers.getUserid().toString())?"1":"0");
+                        if(friendIds.contains(rankMembers.getUserid().toString())){
+                            map.put("isfriend","1");
+                            map.put("usernickname",this.friendService.getNickName(userId,rankMembers.getUserid()));
+                        }else{
+                            map.put("isfriend","0");
+                        }
                     }
 
                     resultList.add(map);

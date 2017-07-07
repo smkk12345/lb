@@ -14,6 +14,7 @@ import com.longbei.appservice.entity.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author smkk
@@ -173,5 +174,35 @@ public interface UserRelationService {
 	boolean syncUserRelationInfo(String uid,String otheruid);
 
 	BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String dataStr);
+
+	/**
+	 * 获取用户的好友用户id列表
+	 * @param userid
+	 * @return
+	 */
+	Set<String> getFriendIds(Long userid);
+
+	/**
+	 * 判断是否是好友
+	 * @param userid 代表当前登录用户id
+	 * @param friendid
+	 * @return
+	 */
+	boolean checkIsFriend(Long userid,Long friendid);
+
+	/**
+	 * 获取用户的关注用户id列表
+	 * @param userid
+	 * @return
+	 */
+	Set<String> getFansIds(Long userid);
+
+	/**
+	 * 判断是否已经关注该用户
+	 * @param userid 当前登录用户id
+	 * @param fansid
+     * @return
+     */
+	boolean checkIsFans(Long userid,Long fansid);
 
 }

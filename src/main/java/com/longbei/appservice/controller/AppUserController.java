@@ -299,7 +299,7 @@ public class AppUserController extends BaseController {
     			return new BaseResp<>(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            return userService.checkSms(mobile, random,deviceindex,devicetype);
+            return userService.checkSmsAndLogin(mobile, random,deviceindex,devicetype);
         } catch (Exception e) {
             logger.error("checkSms error and msg={}", e);
         }
