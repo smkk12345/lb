@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.DictArea;
@@ -92,6 +93,13 @@ public class CommonApiController {
     public BaseResp<List<SysAppupdate>> findSysAppUpdateList(){
         logger.info("find SysAppUpdate List");
         return this.sysSettingService.findSysAppUpdateList();
+    }
+
+    @RequestMapping(value="shortUrl")
+    @ResponseBody
+    public String shortUrl(String url){
+        logger.info("shortUrl url={}",url);
+        return ShortUrlUtils.getShortUrl(url);
     }
 
     /**
