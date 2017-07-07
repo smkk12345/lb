@@ -118,6 +118,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Autowired
     private ClassroomService classroomService;
     @Autowired
+    private ClassroomMembersMapper classroomMembersMapper;
+    @Autowired
     private UserCardMapper userCardMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -355,12 +357,15 @@ public class ImproveServiceImpl implements ImproveService{
         int res = 0;
         try {
             res = improveClassroomMapper.insertSelective(improve);
+            if(res != 0){
+            	//递增教室成员发进步总数
+            	classroomMembersMapper.updateIcountByCidAndUid(improve.getBusinessid(), improve.getUserid(), 1);
+            	return true;
+            }
         } catch (Exception e) {
             logger.error("insert classroom immprove:{} is error:{}", JSONObject.fromObject(improve).toString(),e);
         }
-        if(res != 0){
-            return true;
-        }
+        
         return false;
     }
     /**

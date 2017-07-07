@@ -559,6 +559,7 @@ public class Constant {
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
+	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,已被请下教室"; //教室
 	
 	
 	
