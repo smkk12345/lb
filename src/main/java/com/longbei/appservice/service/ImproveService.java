@@ -539,21 +539,6 @@ public interface ImproveService {
     BaseResp<Object> canGiveFlower(long userid, String improveid, String businesstype, String businessid, String number);
 
     /**
-     * 获取用户的关注用户id列表
-     * @param userid
-     * @return
-     */
-    String getFansIds(Long userid);
-
-    /**
-     * 获取用户的好友用户id列表
-     * @param userid
-     * @return
-     */
-    String getFriendIds(Long userid);
-
-
-    /**
      * 获取热门推荐进步
      * @param startNum
      * @param pageSize

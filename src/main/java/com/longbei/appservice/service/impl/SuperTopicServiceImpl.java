@@ -197,12 +197,13 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     }
 
     private void initFanInfo(long userid,AppUserMongoEntity apuser){
-        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
-        if(null != snsFans){
-            apuser.setIsfans("1");
-        }else{
-            apuser.setIsfans("0");
-        }
+        apuser.setIsfans(this.userRelationService.checkIsFans(userid,apuser.getUserid())?"1":"0");
+//        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+//        if(null != snsFans){
+//            apuser.setIsfans("1");
+//        }else{
+//            apuser.setIsfans("0");
+//        }
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){

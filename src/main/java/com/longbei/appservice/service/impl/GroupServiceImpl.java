@@ -71,7 +71,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             do{
                 String tempId = IdGenerateService.getRandomString(true,SnsGroup.groupIdLength);
                 if(!springJedisDao.sIsMember(SnsGroup.groupIdSet,tempId)){
-                    springJedisDao.sAdd(SnsGroup.groupIdSet,tempId);
+                    springJedisDao.sAdd(SnsGroup.groupIdSet,null,tempId);
                     groupId = Long.parseLong(tempId);
                 }
             }while(groupId == null);

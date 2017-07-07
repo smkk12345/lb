@@ -10,6 +10,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.*;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -166,6 +167,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 			List<SnsFriends> list = snsFriendsMapper.selectListByUsrid(userid,startNum,endNum,updateTime,isDel);
 			if(list != null && list.size()>0){
+				Set<String> fansIds = this.userRelationService.getFansIds(userid);
 				for (SnsFriends snsFriends : list) {
 					AppUserMongoEntity appUser =this.userMongoDao.getAppUser(snsFriends.getFriendid()+"");
 
@@ -186,12 +188,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 					if(!"1".equals(snsFriends.getIsdel())){
 						//判断该好友是否已关注
-						SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(userid, snsFriends.getFriendid());
-						if(null != snsFans){
-							map.put("isfans","1");
-						}else{
-							map.put("isfans","0");
-						}
+						map.put("isfans",fansIds.contains(snsFriends.getFriendid())?"1":"0");
 					}else{
 						map.put("isfans","0");
 					}
@@ -317,11 +314,11 @@ public class UserRelationServiceImpl implements UserRelationService {
 		try {
 			List<SnsFans> list = snsFansMapper.selectFansList(userid, Integer.parseInt(ftype), startNum, endNum);
 			if(null != list && list.size()>0){
-				String fansIds = null;
-				String friendIds = null;
+				Set<String> fansIds = null;
+				Set<String> friendIds = null;
 				if(userid == friendid){
-					fansIds = this.improveService.getFansIds(friendid);
-					friendIds = this.improveService.getFriendIds(friendid);
+					fansIds = this.getFansIds(friendid);
+					friendIds = this.getFriendIds(friendid);
 				}
 				for (SnsFans snsFans : list) {
 					//初始化用户信息
@@ -335,12 +332,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 						tempUserid = snsFans.getLikeuserid();
 					}
 
-					if(StringUtils.isNotEmpty(fansIds) && fansIds.contains(tempUserid.toString())){
+					if(fansIds != null && fansIds.contains(tempUserid.toString())){
 						snsFans.getAppUserMongoEntityLikeuserid().setIsfans("1");
 						snsFans.setIsfocus("1");
 					}
 
-					if(StringUtils.isNotEmpty(friendIds) && friendIds.contains(tempUserid.toString())){
+					if(friendIds != null && friendIds.contains(tempUserid.toString())){
 						snsFans.getAppUserMongoEntityLikeuserid().setIsfriend("1");
 						snsFans.setIsfriend("1");
 
@@ -442,12 +439,11 @@ public class UserRelationServiceImpl implements UserRelationService {
 	public BaseResp<Object> selectLongRangeListByUnameAndNname(long userid, String nickname, int startNum, int endNum,Integer searchFashinMan) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-			List<String> fansList = snsFansMapper.selectListidByUid(userid);
-			//读取拼接ids
-			String ids = selectids(friendList, fansList);
+			Set<String> friendList = this.getFriendIds(userid);
+			Set<String> fansList = this.getFansIds(userid);
+
 			//type 0：本地 1：远程
-			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, ids, "1", startNum, endNum,searchFashinMan);
+			List<UserInfo> list = userInfoMapper.selectLikeListByUnameAndNname(userid, nickname, null, "1", startNum, endNum,searchFashinMan);
 			if(null != list && list.size()>0){
 				for (UserInfo userInfo : list) {
 					if(friendList.contains(userInfo.getUserid().toString())){
@@ -458,10 +454,6 @@ public class UserRelationServiceImpl implements UserRelationService {
 						//已关注
 						userInfo.setIslike("1");
 					}
-//					SnsFans fans = snsFansMapper.selectByUidAndLikeid(userid, userInfo.getUserid());
-//					if(null != fans){
-//						userInfo.setIsfans("1");
-//					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}else{
@@ -489,6 +481,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 			List<Map<String,Object>> resultMap = new ArrayList<Map<String,Object>>();
 			List<UserInfo> fashionManUserList = this.userInfoMapper.selectFashionManUser(startNum,pageSize);
 			if(fashionManUserList != null && fashionManUserList.size() > 0){
+				Set<String> fansIds = this.userRelationService.getFansIds(userId);
+				Set<String> friendIds = this.userRelationService.getFriendIds(userId);
 				for(UserInfo userInfo:fashionManUserList){
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("avatar",userInfo.getAvatar());
@@ -509,18 +503,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 							resultMap.add(map);
 							continue;
 						}
-						SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(userId,userInfo.getUserid());
-						if(snsFans != null){
-							map.put("isfans","1");
-						}else{
-							map.put("isfans","0");
-						}
-						SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,userInfo.getUserid(), "0");
-						if(null == snsFriends){
-							map.put("isfriend","0");
-						}else{
-							map.put("isfriend","1");
-						}
+						map.put("isfans",fansIds.contains(userInfo.getUserid().toString())?"1":"0");
+						map.put("isfriend",friendIds.contains(userInfo.getUserid().toString())?"1":"0");
 					}
 					map.put("ptype",0);
 					map.put("plevel",3);
@@ -790,5 +774,102 @@ public class UserRelationServiceImpl implements UserRelationService {
 		Integer temp = snsFriendsMapper.selectFriendsCount(userid);
 		return temp;
 	}
+
+	/**
+	 * 获取好友id字符串
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public Set<String> getFriendIds(Long userid){
+		Set<String> friendids = new HashSet<String>();
+		if(userid == null || "-1".equals(userid.toString())){
+			return friendids;
+		}
+		friendids = springJedisDao.members("userFriend"+userid);
+		if (friendids == null || friendids.size() == 0){
+			friendids = initUserRedisFriendIds(userid);
+		}
+		return friendids;
+	}
+
+	private Set<String> initUserRedisFriendIds(Long userid){
+		Set<String> friendids = snsFriendsMapper.selectListidByUid(userid);
+		if(friendids.size() > 0){
+			springJedisDao.sAdd("userFriend"+userid,(long)(60*20),friendids.toArray(new String[]{}));
+		}
+		return friendids;
+	}
+
+	/**
+	 * 判断是否是好友
+	 * @param userid 代表当前登录用户id
+	 * @param friendid
+	 * @return
+	 */
+	@Override
+	public boolean checkIsFriend(Long userid, Long friendid) {
+		if(userid == null || "-1".equals(userid.toString()) || friendid == null){
+			return false;
+		}
+		//判断redis中是否有该用户的好友信息
+		if(springJedisDao.hasKey("userFriend"+userid)){
+			return springJedisDao.sIsMember("userFriend"+userid,friendid.toString());
+		}
+		Set<String> friendIds = this.initUserRedisFriendIds(userid);
+		if(friendIds.contains(friendid.toString())){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 获取用户关注列表id字符串
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public Set<String> getFansIds(Long userid){
+		Set<String> fansIds = new HashSet<>();
+		if(userid == null || "-1".equals(userid.toString())){
+			return fansIds;
+		}
+		fansIds = springJedisDao.members("userFans"+userid);
+		if (fansIds == null || fansIds.size() == 0){
+			fansIds = this.initUserRedisFansIds(userid);
+		}
+		return fansIds;
+	}
+
+	private Set<String> initUserRedisFansIds(Long userid){
+		Set<String> fansIds = snsFansMapper.selectListidByUid(userid);
+		if(fansIds.size() > 0){
+			springJedisDao.sAdd("userFans"+userid,(long)(60*20),fansIds.toArray(new String[]{}));
+		}
+		return fansIds;
+	}
+
+	/**
+	 * 判断是否已经关注该用户
+	 * @param userid 当前登录用户id
+	 * @param fansid
+	 * @return
+	 */
+	@Override
+	public boolean checkIsFans(Long userid, Long fansid) {
+		if(userid == null || "-1".equals(userid.toString()) || fansid == null){
+			return false;
+		}
+		if(springJedisDao.hasKey("userFans"+userid)){
+			return springJedisDao.sIsMember("userFans"+userid,fansid.toString());
+		}
+
+		Set<String> fansIds = this.initUserRedisFansIds(userid);
+		if(fansIds.contains(fansid.toString())){
+			return true;
+		}
+		return false;
+	}
+
 
 }

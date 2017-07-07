@@ -107,6 +107,7 @@
           <include refid="Base_Column_List" />
         from video
         where sortnum > #{sortnum}
+            and isshow = 1
             and videoclassifyid = #{videoClassifyId}
         order by sortnum
         limit 2

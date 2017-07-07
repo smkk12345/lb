@@ -15,12 +15,26 @@
 
     <!-- 获取视频分类的列表 -->
   <select id="getVideoClassifyList" parameterType="map" resultMap="BaseResultMap">
-      SELECT 
+      SELECT
           <include refid="Base_Column_List" />
       from video_classify
+      <if test="keyword != null and keyword !=''">
+          where title like concat(concat("%",#{keyword}),"%")
+      </if>
       order by id DESC
-      limit #{startNum},#{pageSize}
+      <if test="startNum != null">
+          limit #{startNum},#{pageSize}
+      </if>
   </select>
+
+    <select id="getVideoClassifyCount" parameterType="map" resultType="INTEGER">
+        SELECT
+            COUNT(1)
+        from video_classify
+        <if test="keyword != null and keyword !=''">
+            where title like concat(concat("%",#{keyword}),"%")
+        </if>
+    </select>
 
     <insert id="insertVideoClassify" parameterType="com.longbei.appservice.entity.VideoClassify">
         INSERT INTO

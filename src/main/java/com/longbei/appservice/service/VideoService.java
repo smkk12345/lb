@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Video;
 import com.longbei.appservice.entity.VideoClassify;
 
@@ -13,11 +14,11 @@ public interface VideoService {
 
     /**
      * 获取视频分类的列表
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
-    BaseResp<List<VideoClassify>> getVideoClassifyList(Integer startNum, Integer pageSize);
+    BaseResp<Page<VideoClassify>> getVideoClassifyList(String keyword,Integer pageNo, Integer pageSize);
 
     /**
      * 添加视频分类
@@ -117,4 +118,10 @@ public interface VideoService {
      */
     BaseResp<Object> loadRelevantVideo(Integer videoId);
 
+    /**
+     * 点赞
+     * @param videoId
+     * @return
+     */
+    BaseResp<Object> addLike(Integer videoId);
 }

@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import com.longbei.appservice.entity.SnsFans;
 import org.apache.ibatis.annotations.Param;
@@ -58,7 +59,7 @@ public interface SnsFansMapper {
 	 * return_type
 	 * SnsFansMapper
 	 */
-    List<String> selectListidByUid(@Param("userid") long userid);
+    Set<String> selectListidByUid(@Param("userid") long userid);
     
     /**
 	 * @author yinxc
