@@ -625,12 +625,12 @@ public class ImproveServiceImpl implements ImproveService{
                     likescore = rank.getLikescore();
                 }
             }
-//            if ("0".equals(orderby)){
-//                improves = selectImproveListBySort(rankid,pageNo,pageSize);
-//            } else {
+            if ("0".equals(orderby)){
+                improves = selectImproveListBySort(rankid,pageNo,pageSize);
+            } else {
                 improves = improveMapper.selectListByRank(rankid,orderby,
                         flowerscore,likescore,pageNo,pageSize,StringUtils.isBlank(lastdate)?null:lastdate);
-//            }
+            }
             if ("0".equals(orderby)){
                 if (null != rank){
                     flowerscore = rank.getFlowerscore();
