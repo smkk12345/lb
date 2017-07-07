@@ -16,6 +16,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
+import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.dao.RankMapper;
@@ -49,6 +50,9 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ImproveMapper improveMapper;
 	@Autowired
 	private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private ClassroomMembersMapper classroomMembersMapper;
+    
 //	@Autowired
 //	private RankService rankService;
 	
@@ -68,6 +72,11 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 			{
 				rankMembersMapper.updateRankMenberComplaincount(record.getBusinessid(),record.getComuserid());
 			}
+			if("4".equals(record.getBusinesstype())){
+				//递增教室成员投诉总数
+				classroomMembersMapper.updateCompcountByCidAndUid(record.getBusinessid(), record.getComuserid(), 1);
+			}
+			
 			updateImpComplaincount(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
