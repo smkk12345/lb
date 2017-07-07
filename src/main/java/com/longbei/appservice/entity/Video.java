@@ -18,6 +18,7 @@ public class Video {
     private String videourl;//视频地址
     private Boolean isshow;//是否前台 显示
     private Integer sortnum;//排序
+    private Integer likes;//点赞数量
     private Integer videoclassifyid;//所属视频分类id
 
     public Integer getId() {
@@ -94,5 +95,11 @@ public class Video {
         this.brief = brief;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
 
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
 }
