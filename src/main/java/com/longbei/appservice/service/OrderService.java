@@ -24,6 +24,13 @@ public interface OrderService {
      * @currentdate:2017年4月7日
 	 */
 	BaseResp<ProductOrders> buyMoney(long userid, Integer number, String paytype, String price);
+
+	/**
+	 * 判断pc端购买龙币是否支付成功
+	 * @param ordernum
+	 * @return
+	 */
+	boolean isSuccessPay(String ordernum);
 	
 	/**
 	 * @author yinxc

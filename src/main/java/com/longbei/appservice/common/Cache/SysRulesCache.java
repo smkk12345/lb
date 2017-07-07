@@ -35,7 +35,7 @@ public class SysRulesCache {
      */
     public static Map<String,SysRulePerfectTen> pLevelPointMap = new HashMap<String,SysRulePerfectTen>();
     /**
-     * 龙级没级所需龙分
+     * 龙级每级所需龙分
      */
     public static Map<Integer,UserLevel> levelPointMap = new HashMap<>();
     /**

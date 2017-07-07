@@ -1202,10 +1202,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-//            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
-//            if(!ResultUtil.isSuccess(baseResp1)){
-//                return baseResp1;
-//            }
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            if(!ResultUtil.isSuccess(baseResp1)){
+                return baseResp1;
+            }
             //校验用户是否已经在榜单中
             RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(rankId, userId);
             if(rankMembers != null && rankMembers.getStatus() == 0 ){
@@ -1462,7 +1462,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 								//25:订单发货N天后自动确认收货    26：实名认证审核结果
 								//27:工作认证审核结果      28：学历认证审核结果
 								//29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-								//32：创建的龙榜/教室/圈子被选中推荐
+								//32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 								//40：订单已取消 41 榜中进步下榜
 								// 42.榜单公告更新   43:后台反馈回复消息 )
 				//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
@@ -1527,6 +1527,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     return baseResp.fail("关闭榜单失败");
                 }
             }
+            rankMembersMapper.deleteByRankId(Long.parseLong(rankid));
         }catch (Exception e){
             logger.error("close RankMember error rankId:{}",rankid);
         }
@@ -2151,7 +2152,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if(userList != null && userList.size() > 0){
                     int i = 0;
                     for (RankMembers rankMember:userList){
-//                        rankMember.setSortnum(startNum + i +1);
+                        if(sortType != 0){ //综合排名
+                            rankMember.setSortnum(startNum + i +1);
+                        }
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMember.getUserid()+"");
                         if(userId != null){
                             appUserMongoEntity.setNickname(this.friendService.getNickName(userId,Long.parseLong(rankMember.getUserid()+"")));
@@ -3927,7 +3930,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     //						25:订单发货N天后自动确认收货    26：实名认证审核结果
                     //						27:工作认证审核结果      28：学历认证审核结果
                     //						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-                    //						32：创建的龙榜/教室/圈子被选中推荐
+                    //						32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
                     //						40：订单已取消 41 榜中进步下榜
                     // 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
                     //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
@@ -3954,7 +3957,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//						25:订单发货N天后自动确认收货    26：实名认证审核结果
 				//						27:工作认证审核结果      28：学历认证审核结果
 				//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-				//						32：创建的龙榜/教室/圈子被选中推荐  
+				//						32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 				//						40：订单已取消 41 榜中进步下榜   
 				// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
             	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 

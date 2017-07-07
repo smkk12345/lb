@@ -25,7 +25,7 @@
     <result column="eachimproveflowersmax" property="eachimproveflowersmax" jdbcType="INTEGER" />
     <result column="likegoals" property="likegoals" jdbcType="INTEGER" />
     <result column="impcommentgoals" property="impcommentgoals" jdbcType="INTEGER" />
-    <result column="flowergoals" property="flowergoals" jdbcType="INTEGER" />
+    <result column="flowergoals" property="flowergoals"  />
     <result column="improvegoals" property="improvegoals" jdbcType="INTEGER" />
     <result column="improveimpcoins" property="improveimpcoins" jdbcType="INTEGER" />
     <result column="rankimprovesdaymax" property="rankimprovesdaymax" jdbcType="INTEGER" />

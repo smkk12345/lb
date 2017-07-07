@@ -1,7 +1,9 @@
 package com.longbei.appservice.controller.api;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -409,13 +411,16 @@ public class OrderApiController {
   				if("1".equals(btype)){
   					String ip = request.getRemoteAddr();
   					resResp = orderService.weixinSaoMa(price, "longbi", orders.getOrdernum(), ip,orders.getUserid());
-  					return resResp;
   				}else if("0".equals(btype)){//支付宝
 					//支付宝提交时 金额的单位是元 所以不需要乘以100
 					minute = Integer.parseInt(number)*yuantomoney;
   					resResp = orderService.aliPaySaoMa(minute+"",orders.getOrdernum(),orders.getUserid());
-					return resResp;
   				}
+  				//返回订单id
+				Map<String, Object> expandData = new HashMap<>();
+				expandData.put("ordernum",orders.getOrdernum());
+				resResp.setExpandData(expandData);
+				return resResp;
   			}
 			logger.info("buyMoney success and baseResp={}", JSONObject.fromObject(baseResp).toString());
 		} catch (Exception e) {
@@ -434,5 +439,24 @@ public class OrderApiController {
        long giveNum = Math.round(giveFlower);
        return giveNum>0?num+Integer.parseInt(giveNum+""):num;
 	}
-  	
+
+	/**
+	 * webService 调用
+	 * 判断pc端购买龙币是否支付成功
+	 * @param ordernum
+	 * @return
+	 */
+	@RequestMapping(value = "isSuccessPay", method = RequestMethod.POST)
+	BaseResp isSuccessPay(String ordernum){
+		logger.info("isSuccessPay ordernum={}", ordernum);
+		BaseResp baseResp = new BaseResp();
+		boolean flag = false;
+		try {
+			flag = orderService.isSuccessPay(ordernum);
+		} catch (Exception e) {
+			logger.error("isSuccessPay of ordernum={} is error:{}", ordernum, e);
+		}
+		baseResp.setData(flag);
+		return baseResp;
+	}
 }

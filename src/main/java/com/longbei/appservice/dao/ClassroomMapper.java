@@ -89,6 +89,24 @@ public interface ClassroomMapper {
     int updateIsfreeByClassroomid(@Param("classroomid") long classroomid, @Param("isfree") String isfree, 
     		@Param("charge") String charge, @Param("freecoursenum") String freecoursenum); 
     
+    /**
+     * @Description: 关闭教室
+     * @param @param classroomid 教室id
+     * @param @param closeremark 关闭原因
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    Integer updateIsdel(@Param("classroomid") long classroomid, 
+    		@Param("closeremark") String closeremark, @Param("closedate") String closedate);
+    
+    /**
+     * @Description: 发布教室
+     * @param @param classroomid 教室id
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    Integer updateIsup(@Param("classroomid") long classroomid);
+    
     /*
      * 获取count
      */
@@ -102,6 +120,19 @@ public interface ClassroomMapper {
 	 * param pageNo   pageSize
 	 */
     List<Classroom> selectClassroomList(@Param("isup") String isup,  @Param("isdel") String isdel,
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取count
+     */
+    Integer selectSearchCount(Classroom classroom);
+    
+    /**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param startNum   endNum
+	 */
+    List<Classroom> selectSearchList(@Param("classroom") Classroom classroom,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
 }
