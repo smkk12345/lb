@@ -16,21 +16,5 @@ public class FansServiceImpl extends BaseServiceImpl implements FansService {
     @Autowired
     private SnsFansMapper snsFansMapper;
 
-    /**
-     * 校验fanseId是否关注了userId
-     * @param fansId 粉丝Id
-     * @param userId 被关注的人
-     * @return
-     */
-    @Override
-    public boolean checkIsFans(Long fansId, Long userId) {
-        if(fansId == null || Constant.VISITOR_UID.equals(userId.toString())){
-            return false;
-        }
-        SnsFans snsFans = snsFansMapper.selectByUidAndLikeid(fansId,userId);
-        if(snsFans == null){
-            return false;
-        }
-        return true;
-    }
+
 }

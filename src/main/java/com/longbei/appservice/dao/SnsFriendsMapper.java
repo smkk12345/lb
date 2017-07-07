@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.longbei.appservice.entity.SnsFriends;
 import org.apache.ibatis.annotations.Param;
@@ -26,7 +27,7 @@ public interface SnsFriendsMapper {
 	SnsFriends selectByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid,
 								 @Param("isdel") String isdel);
 	
-	List<String> selectListidByUid(@Param("userid") long userid);
+	Set<String> selectListidByUid(@Param("userid") long userid);
 
 	int updateByPrimaryKeySelective(SnsFriends record);
 

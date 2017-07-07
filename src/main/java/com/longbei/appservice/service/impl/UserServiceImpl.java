@@ -202,10 +202,7 @@ public class UserServiceImpl implements UserService {
 				if(null != snsFriends){
 					userInfo.setIsfriend("1");
 				}
-				SnsFans snsFans = userRelationService.selectByUidAndFanid(lookid,userid);
-				if(null != snsFans){
-					userInfo.setIsfans("1");
-				}
+				userInfo.setIsfans(this.userRelationService.checkIsFans(userid,lookid)?"1":"0");
 				//获取好友昵称
 				String remark = userRelationService.selectRemark(lookid, userid, "0");
 				userInfo.setRemark(remark);
@@ -660,7 +657,7 @@ public class UserServiceImpl implements UserService {
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",mobile);
+			springJedisDao.sAdd(deviceindex+date+"login",null,mobile);
 		}
 		return baseResp;
 	}
@@ -752,7 +749,7 @@ public class UserServiceImpl implements UserService {
 				return returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",username);
+			springJedisDao.sAdd(deviceindex+date+"login",null,username);
 			addLoginRecord(userInfo.getUsername(),deviceindex);
 			returnResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} else  {
@@ -851,7 +848,7 @@ public class UserServiceImpl implements UserService {
 		}
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 		String loginStr = deviceindex+date+"login";
-		long n = springJedisDao.sAdd(loginStr,username);
+		long n = springJedisDao.sAdd(loginStr,null,username);
 		return true;
 	}
 
@@ -1020,7 +1017,7 @@ public class UserServiceImpl implements UserService {
 				return baseResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-			springJedisDao.sAdd(deviceindex+date+"login",userInfo.getUsername());
+			springJedisDao.sAdd(deviceindex+date+"login",null,userInfo.getUsername());
 		}
 		return baseResp;
 	}

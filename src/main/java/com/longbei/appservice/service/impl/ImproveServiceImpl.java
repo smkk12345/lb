@@ -466,9 +466,8 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     private void updateGoalPerDay(Improve improve){
-        long n = springJedisDao.sAdd(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid()
+        long n = springJedisDao.sAdd(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid(),Constant.CACHE_24X60X60X2
                 ,improve.getImpid()+"");
-        springJedisDao.expire(Constant.RP_IMPROVE_NDAY+DateUtils.getDate("yyyy-MM-dd")+improve.getBusinessid(),Constant.CACHE_24X60X60X2);
         if(n > 0){
 //            boolean exist = impGoalPerdayMapper.selectByUidAndDate();
 //            if(exist){ //如果存在 更新
@@ -1363,8 +1362,8 @@ public class ImproveServiceImpl implements ImproveService{
         logger.info("select time line time={}",w-l);
         List<Improve> improves = new ArrayList<>();
         Long uid = Long.parseLong(userid);
-        String friendids = getFriendIds(uid);
-        String funids = getFansIds(uid);
+        Set<String> friendids = this.userRelationService.getFriendIds(uid);
+        Set<String> fansIds = this.userRelationService.getFansIds(uid);
         Map<String, String> map = userRelationService.selectRemarkImpLine(Long.parseLong(userid));
         for (int i = 0; i < timeLines.size() ; i++){
             try {
@@ -1408,7 +1407,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 improve.setAppUserMongoEntity(user);
                 if(!Constant.VISITOR_UID.equals(userid)){
-                    initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,funids);
+                    initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,fansIds);
                     initImproveInfo(improve,uid);
                 }
                 //初始化 赞 花 数量
@@ -1520,7 +1519,10 @@ public class ImproveServiceImpl implements ImproveService{
      * 初始化用户关系信息
      */
     private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser){
-        if(apuser == null || userid == null || userid == -1){
+        if(apuser == null){
+            return ;
+        }
+        if(userid == null || userid == -1){
             apuser.setIsfans("0");
             apuser.setIsfriend("0");
             return ;
@@ -1536,11 +1538,11 @@ public class ImproveServiceImpl implements ImproveService{
         initFanInfo(userid,apuser);
     }
 
-    private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,String friendids,String funids){
+    private void initUserRelateInfo(Long userid,AppUserMongoEntity apuser,Set<String> friendids,Set<String> fansids){
 		if(null != apuser){
+            apuser.setIsfans("1");
+            apuser.setIsfriend("1");
 			if(userid == null || userid == -1){
-	            apuser.setIsfans("0");
-	            apuser.setIsfriend("0");
 	            return ;
 	        }
 	        if(userid.equals(apuser.getUserid())){
@@ -1548,17 +1550,12 @@ public class ImproveServiceImpl implements ImproveService{
 	            apuser.setIsfriend("1");
 	            return;
 	        }
-	        if(StringUtils.isNotEmpty(friendids)){
-	            if (friendids.contains(String.valueOf(apuser.getUserid()))){
-	                apuser.setIsfans("1");
-	            }else{
-	                apuser.setIsfans("0");
-	            }
-	        }
-	        if(StringUtils.isNotEmpty(funids)){
-	            if (funids.contains(String.valueOf(apuser.getUserid()))){
-	                apuser.setIsfans("1");
-	            }
+
+            if (fansids != null && fansids.contains(apuser.getUserid().toString())){
+                apuser.setIsfans("1");
+            }
+	        if(friendids != null && friendids.contains(apuser.getUsername().toString())){
+	            apuser.setIsfriend("1");
 	        }
 		}
     }
@@ -1586,18 +1583,8 @@ public class ImproveServiceImpl implements ImproveService{
 
     private void initFanInfo(long userid,AppUserMongoEntity apuser){
         apuser.setIsfans("0");
-        String fansIds = springJedisDao.get("userFans"+userid);
-        if (StringUtils.isBlank(fansIds)){
-            List<String> lists = snsFansMapper.selectListidByUid(userid);
-            springJedisDao.set("userFans"+userid,JSON.toJSONString(lists),5);
-            if (lists.contains(apuser.getUserid())){
-                apuser.setIsfans("1");
-            }
-        } else {
-            if (fansIds.contains(String.valueOf(apuser.getUserid()))){
-                apuser.setIsfans("1");
-            }
-        }
+
+        apuser.setIsfans(this.userRelationService.checkIsFans(userid,apuser.getUserid())?"1":"0");
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
@@ -1605,58 +1592,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(userid == null || userid == -1 || "-1".equals(userid.toString())){
             return ;
         }
-        String friendids = springJedisDao.get("userFriend"+userid);
-        if (StringUtils.isBlank(friendids)){
-            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
-            springJedisDao.set("userFriend"+userid,JSON.toJSONString(lists),5);
-            if(lists.contains(apuser.getUserid())){
-                apuser.setIsfriend("1");
-            }
-        } else {
-            if (friendids.contains(String.valueOf(apuser.getUserid()))){
-                apuser.setIsfriend("1");
-            }
-        }
-    }
-
-    /**
-     * 获取好友id字符串
-     * @param userid
-     * @return
-     */
-    @Override
-    public String getFriendIds(Long userid){
-        if(userid == null || "-1".equals(userid.toString())){
-            return null;
-        }
-        String friendids = springJedisDao.get("userFriend"+userid);
-        if (StringUtils.isBlank(friendids)){
-            List<String> lists = snsFriendsMapper.selectListidByUid(userid);
-            friendids = JSON.toJSONString(lists);
-            springJedisDao.set("userFriend"+userid,friendids,60);
-
-        }
-        return friendids;
-    }
-
-    /**
-     * 获取用户关注列表id字符串
-     * @param userid
-     * @return
-     */
-    @Override
-    public String getFansIds(Long userid){
-        if(userid == null || "-1".equals(userid.toString())){
-            return null;
-        }
-        String fansIds = springJedisDao.get("userFans"+userid);
-        if (StringUtils.isBlank(fansIds)){
-            List<String> lists = snsFansMapper.selectListidByUid(userid);
-            fansIds = JSON.toJSONString(lists);
-            springJedisDao.set("userFans"+userid,fansIds,60);
-
-        }
-        return fansIds;
+        apuser.setIsfriend(this.userRelationService.checkIsFriend(userid,apuser.getUserid())?"1":"0");
     }
 
     /**
@@ -1664,11 +1600,6 @@ public class ImproveServiceImpl implements ImproveService{
      * @param improve
      * @author:luye
      */
-
-
-
-
-
     private void initImproveCommentInfo(Improve improve){
 
         if (null == improve){
@@ -3649,13 +3580,13 @@ public class ImproveServiceImpl implements ImproveService{
         String key = simpleDateFormat.format(new Date());
         List<Improve> improves = new ArrayList<>();
         Set<String> impids = new HashSet<>();
-        String friendids = null;
-        String funids = null;
+        Set<String> friendids = null;
+        Set<String> funids = null;
         Long uid = null;
         if(!Constant.VISITOR_UID.equals(userid)){
             uid = Long.parseLong(userid);
-            friendids = getFriendIds(uid);
-            funids = getFansIds(uid);
+            friendids = this.userRelationService.getFriendIds(uid);
+            funids = this.userRelationService.getFansIds(uid);
         }
         if(!springJedisDao.hasKey(key)){
             if(key.equals("1")){

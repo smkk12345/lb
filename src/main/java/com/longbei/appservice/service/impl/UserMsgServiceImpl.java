@@ -272,9 +272,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private Date getShowCommentDate(long userid, Date mymaxtime){
 		//获取好友   粉丝ids
-		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-		List<String> fansList = snsFansMapper.selectListidByUid(userid);
-		List<String> slist = selectListid(userid, friendList, fansList);
+		Set<String> friendList = this.userRelationService.getFriendIds(userid);
+		Set<String> fansList = this.userRelationService.getFansIds(userid);
+		Set<String> slist = selectListid(userid, friendList, fansList);
 		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
 		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
 				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
@@ -525,9 +525,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private Date getShowComment(long userid){
 		//获取好友   粉丝ids
-		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-		List<String> fansList = snsFansMapper.selectListidByUid(userid);
-		List<String> slist = selectListid(userid, friendList, fansList);
+		Set<String> friendList = this.userRelationService.getFriendIds(userid);
+		Set<String> fansList = this.userRelationService.getFansIds(userid);
+		Set<String> slist = selectListid(userid, friendList, fansList);
 		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
 		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
 				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
@@ -548,13 +548,15 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * 2017年2月6日
 	 * return_type list
 	 */
-	private List<String> selectListid(long userid, List<String> friendList, List<String> fansList){
+	private Set<String> selectListid(long userid, Set<String> friendList, Set<String> fansList){
 		friendList.addAll(fansList);
-		//通过HashSet剔除     删除ArrayList中重复元素
-		HashSet<String> h = new HashSet<String>(friendList);
-		friendList.clear();
-		friendList.addAll(h);
 		return friendList;
+//		friendList.addAll(fansList);
+//		//通过HashSet剔除     删除ArrayList中重复元素
+//		HashSet<String> h = new HashSet<String>(friendList);
+//		friendList.clear();
+//		friendList.addAll(h);
+//		return friendList;
 	}
 	
 	@Override
@@ -1292,15 +1294,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 //
 //				}
 				//判断当前用户是否已关注
-				SnsFans fans = snsFansMapper.selectByUidAndLikeid(snsFans.getLikeuserid(), userid);
-				if(null != fans){
-					snsFans.setIsfriend("1");
-				}
-				//判断已关注者是否是好友关系
-				SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid(), "0");
-				if(null != snsFriends){
-					snsFans.setIsfriend("1");
-				}
+				snsFans.setIsfocus(this.userRelationService.checkIsFans(snsFans.getLikeuserid(),userid)?"1":"0");
+				//是否是好友
+				snsFans.setIsfriend(this.userRelationService.checkIsFriend(userid,snsFans.getLikeuserid())?"1":"0");
+
 			}
 		}
 		return fanslist;
