@@ -902,7 +902,7 @@ public class UserServiceImpl implements UserService {
 			String devicetype,String randomcode,String avatar) {
 
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
-		UserInfo userInfo = userInfoMapper.getByUserName(username);
+		UserInfo userInfo = null;
 		//手机号未注册
 		if(baseResp.getCode() == Constant.STATUS_SYS_04){
 			if(StringUtils.hasBlankParams(password)){
@@ -926,6 +926,7 @@ public class UserServiceImpl implements UserService {
 			//第三方注册获得龙分
 			UserInfo userInfo1 = selectJustInfo(suserid);
 			thirdregisterGainPoint(userInfo1,utype);
+			userInfo = (UserInfo) baseResp.getData();
 		}else{//手机号已经注册
 
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
@@ -945,7 +946,7 @@ public class UserServiceImpl implements UserService {
 				//密码是否正确
 //				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(ResultUtil.isSuccess(baseResp)){
-
+					userInfo = userInfoMapper.getByUserName(username);
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
@@ -963,7 +964,6 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-
 		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 		if(ResultUtil.fail(baseResp1)){
 			baseResp1.setData(userInfo);
