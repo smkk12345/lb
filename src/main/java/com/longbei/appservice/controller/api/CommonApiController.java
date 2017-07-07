@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.DictArea;
@@ -11,6 +12,7 @@ import com.longbei.appservice.entity.PerfectTen;
 import com.longbei.appservice.entity.SysAppupdate;
 import com.longbei.appservice.service.DictAreaService;
 import com.longbei.appservice.service.SysSettingService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +95,19 @@ public class CommonApiController {
     public BaseResp<List<SysAppupdate>> findSysAppUpdateList(){
         logger.info("find SysAppUpdate List");
         return this.sysSettingService.findSysAppUpdateList();
+    }
+
+    @RequestMapping(value="shortUrl")
+    @ResponseBody
+    public String shortUrl(String url,HttpServletRequest request){
+        logger.info("shortUrl url={}",url);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        String callback = request.getParameter("callback");
+        String shortUrl = ShortUrlUtils.getShortUrl(url);
+        baseResp.setData(shortUrl);
+        baseResp.initCodeAndDesp();
+        String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+        return callback + "("+jsonObjectStr+")";
     }
 
     /**
