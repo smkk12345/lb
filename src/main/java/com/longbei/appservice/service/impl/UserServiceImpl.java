@@ -934,7 +934,12 @@ public class UserServiceImpl implements UserService {
 			thirdregisterGainPoint(userInfo1,utype);
 			userInfo = (UserInfo) baseResp.getData();
 		}else{//手机号已经注册
-
+			userInfo = userInfoMapper.getByUserName(username);
+			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+			if(ResultUtil.fail(baseResp1)){
+				baseResp1.setData(userInfo);
+				return baseResp1;
+			}
 			baseResp = iUserBasicService.hasbindingThird(openid, utype, username);
 //			long uid = (Long)baseResp.getData();
 			if(baseResp.getCode() == Constant.STATUS_SYS_11){
@@ -952,7 +957,6 @@ public class UserServiceImpl implements UserService {
 				//密码是否正确
 //				BaseResp<Object> baseResp2 = iUserBasicService.gettoken(username, password);
 				if(ResultUtil.isSuccess(baseResp)){
-					userInfo = userInfoMapper.getByUserName(username);
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
 					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
@@ -970,11 +974,11 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
-		if(ResultUtil.fail(baseResp1)){
-			baseResp1.setData(userInfo);
-			return baseResp1;
-		}
+//		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
+//		if(ResultUtil.fail(baseResp1)){
+//			baseResp1.setData(userInfo);
+//			return baseResp1;
+//		}
 		addLoginRecord(userInfo.getUsername(),deviceindex);
 		return baseResp;
 	}
@@ -1023,7 +1027,7 @@ public class UserServiceImpl implements UserService {
 			springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
 			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 			if(ResultUtil.fail(baseResp1)){
-				return baseResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
+				return baseResp.initCodeAndDesp(baseResp1.getCode(),baseResp1.getRtnInfo());
 			}
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			springJedisDao.sAdd(deviceindex+date+"login",null,userInfo.getUsername());
