@@ -12,6 +12,7 @@ import com.longbei.appservice.entity.PerfectTen;
 import com.longbei.appservice.entity.SysAppupdate;
 import com.longbei.appservice.service.DictAreaService;
 import com.longbei.appservice.service.SysSettingService;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 
 /**
  * 通用接口
@@ -97,9 +100,15 @@ public class CommonApiController {
 
     @RequestMapping(value="shortUrl")
     @ResponseBody
-    public String shortUrl(String url){
+    public String shortUrl(String url,HttpServletRequest request){
         logger.info("shortUrl url={}",url);
-        return ShortUrlUtils.getShortUrl(url);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        String callback = request.getParameter("callback");
+        String shortUrl = ShortUrlUtils.getShortUrl(url);
+        baseResp.setData(shortUrl);
+        baseResp.initCodeAndDesp();
+        String jsonObjectStr = JSONObject.fromObject(baseResp).toString();
+        return callback + "("+jsonObjectStr+")";
     }
 
     /**
