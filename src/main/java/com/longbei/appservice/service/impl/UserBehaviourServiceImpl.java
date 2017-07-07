@@ -191,6 +191,10 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             }
             switch (privilegeType){
                 case joinranknum: //公开榜单
+                    Rank rank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+                    if(rank.getRanktype().equals("2")){
+                        return baseResp.initCodeAndDesp();
+                    }
                     //查询用户当前参与的榜数量 只查询当前榜正在进行中的
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("userid",userInfo.getUserid());
@@ -204,7 +208,6 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     if(count < userLevel.getJoinranknum()) {
                         return baseResp.initCodeAndDesp();
                     }else if(count == userLevel.getJoinranknum()){
-                        Rank rank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
                         if(rank.getRanktype().equals("2")){
                             return baseResp.initCodeAndDesp();
                         }

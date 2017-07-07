@@ -659,6 +659,14 @@ public class UserServiceImpl implements UserService {
 			}catch(Exception e){
 				logger.error("updateDeviceIndexByUserName error and msg={}",e);
 			}
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> checkSmsAndLogin(String mobile, String random, String deviceindex, String devicetype) {
+		BaseResp<Object> baseResp = checkSms(mobile, random,deviceindex,devicetype);
+		if(ResultUtil.isSuccess(baseResp)){
 			String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
 			springJedisDao.sAdd(deviceindex+date+"login",mobile);
 		}

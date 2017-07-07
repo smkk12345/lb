@@ -80,6 +80,8 @@ public interface UserService {
 	*/
 	BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype);
 
+	BaseResp<Object> checkSmsAndLogin(String mobile, String random,String deviceindex,String devicetype);
+
 	/**
 	 * 校验验证码
 	 * @param mobile
