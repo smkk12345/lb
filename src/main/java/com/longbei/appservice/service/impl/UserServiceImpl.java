@@ -826,8 +826,9 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfoMapper.updateIndexDevice(userid,deviceindex);
 		}else if(list.size() > 1) {
-			userInfoMapper.clearOtherDevice(userid, deviceindex);
-			userInfoMapper.updateIndexDevice(userid, deviceindex);
+//			userInfoMapper.clearOtherDevice(userid, deviceindex);
+//			userInfoMapper.updateIndexDevice(userid, deviceindex);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
 		}else if(list.isEmpty()){
 			if(!StringUtils.isBlank(deviceindex)){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
