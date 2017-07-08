@@ -374,13 +374,9 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
      */
     private void initFlowerUserInfoByUserid(UserFlowerDetail userFlowerDetail, long userid){
     	if(userFlowerDetail.getFriendid() != null){
-    		//获取好友昵称
-    		String remark = userRelationService.selectRemark(userid, userFlowerDetail.getFriendid(), "0");
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userFlowerDetail.getFriendid()));
             if(null != appUserMongoEntity){
-            	if(!StringUtils.isBlank(remark)){
-            		appUserMongoEntity.setNickname(remark);
-            	}
+            	this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             	userFlowerDetail.setAppUserMongoEntity(appUserMongoEntity);
             }else{
             	userFlowerDetail.setAppUserMongoEntity(new AppUserMongoEntity());

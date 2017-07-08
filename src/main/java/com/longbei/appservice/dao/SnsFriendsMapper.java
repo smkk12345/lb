@@ -27,7 +27,7 @@ public interface SnsFriendsMapper {
 	SnsFriends selectByUidAndFid(@Param("userid") long userid, @Param("friendid") long friendid,
 								 @Param("isdel") String isdel);
 	
-	Set<String> selectListidByUid(@Param("userid") long userid);
+	Set<String> selectListidByUid(@Param("userid") String userid);
 
 	int updateByPrimaryKeySelective(SnsFriends record);
 
@@ -53,4 +53,11 @@ public interface SnsFriendsMapper {
 	 * 获取好友数量
 	 */
 	Integer selectFriendsCount(@Param("userid") long userid);
+
+	/**
+	 * 根据userid获取好友列表
+	 * @param map
+	 * @return
+	 */
+	List<SnsFriends> selectFriendRemarkList(Map<String, Object> map);
 }

@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.longbei.appservice.entity.SnsFans;
@@ -78,4 +79,5 @@ public interface SnsFansMapper {
      * @return
      */
 	List<SnsFans> selectFansByLikeUserid(@Param("likeuserId")Long likeuserId,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
 }

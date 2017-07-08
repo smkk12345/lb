@@ -166,12 +166,8 @@ public class SuperTopicServiceImpl implements SuperTopicService {
      */
     private void initImproveUserInfo(Improve improve,Long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-        //获取好友昵称
-        String remark = userRelationService.selectRemark(userid, improve.getUserid(), "0");
         if(null != appUserMongoEntity){
-            if(!StringUtils.isBlank(remark)){
-                appUserMongoEntity.setNickname(remark);
-            }
+            this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
             improve.setAppUserMongoEntity(new AppUserMongoEntity());
@@ -207,14 +203,9 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid(), "0");
-        if(null != snsFriends){
-            if(!StringUtils.isBlank(snsFriends.getRemark())){
-                apuser.setNickname(snsFriends.getRemark());
-            }
+        if(this.userRelationService.checkIsFriend(userid,apuser.getUserid())){
             apuser.setIsfriend("1");
-        }else{
-            apuser.setIsfriend("0");
+            this.userRelationService.updateFriendRemark(userid,apuser);
         }
     }
     

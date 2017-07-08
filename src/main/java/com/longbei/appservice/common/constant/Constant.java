@@ -19,6 +19,15 @@ public class Constant {
 	public static final int RMB_COIN = 10;//人民币 兑换 龙币 1元兑换10 龙币
 	public static final int RMB_POINT = 100;//人民币 兑换 龙分 1元兑换100 龙分
 
+	//redis 缓存用户关系的时间 单位是分钟 用户关系缓存包括 是否是好友 是否关注 好友备注
+	public static final int USER_RELATION_REDIS_CACHE_TIME = 15;
+	//redis中 缓存用户昵称的key 前缀
+	public static final String USER_REMARK_REDIS_KEY = "friendRemark_";
+	//redis中 缓存用户所有粉丝id的key 前缀
+	public static final String USER_FANS_REDIS_KEY = "userFans";
+	//reids中 缓存用户所有好友id的key 前缀
+	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
+
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 

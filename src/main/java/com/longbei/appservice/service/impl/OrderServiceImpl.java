@@ -626,18 +626,12 @@ public class OrderServiceImpl implements OrderService {
      */
     private void initMsgUserInfoByUserid(ProductOrders productOrders, long userid){
     	if(!StringUtils.hasBlankParams(productOrders.getUserid())){
-    		//获取好友昵称
-    		String remark = userRelationService.selectRemark(userid, Long.parseLong(productOrders.getUserid()), "0");
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
-            if(null != appUserMongoEntity){
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-				productOrders.setAppUserMongoEntity(appUserMongoEntity);
+			if(appUserMongoEntity != null){
+				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 			}else{
 				productOrders.setAppUserMongoEntity(new AppUserMongoEntity());
 			}
-            
     	}
     	
     }

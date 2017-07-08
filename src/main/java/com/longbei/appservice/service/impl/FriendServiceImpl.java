@@ -345,6 +345,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     threadPoolTaskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
+                            //redis缓存中插入好友id列表
+                            userRelationService.addFriendId(friendAddAsk.getSenderUserId(),friendAddAsk.getReceiveUserId());
+
                             //JPUSH通知用户
                             JSONObject pushMessage = new JSONObject();
                             pushMessage.put("status","消息标识");
@@ -360,7 +363,6 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 }
             }
-
 
             //往数据库添加数据
             SnsFriends snsFriends = new SnsFriends();
@@ -383,6 +385,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+                    //redis缓存中插入好友id列表
+                    userRelationService.addFriendId(friendAddAsk.getSenderUserId(),friendAddAsk.getReceiveUserId());
+
                     //JPUSH通知用户
                     JSONObject pushMessage = new JSONObject();
                     pushMessage.put("status","消息标识");
@@ -495,22 +500,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
      */
     @Override
     public String getNickName(Long userId, Long friendId) {
-        logger.info("getNickName, userid={},friendId={}",userId,friendId);
-        if (null != userId && userId != -1 && !userId.equals(friendId)){
-            SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(userId,friendId,"0");
-            if(snsFriends != null && (StringUtils.isNotEmpty(snsFriends.getNickname()) || StringUtils.isNotEmpty(snsFriends.getRemark()))){
-                return StringUtils.isNotEmpty(snsFriends.getRemark())?snsFriends.getRemark():snsFriends.getNickname();
-            }
-        }
-        AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId+"");
-        if(appUserMongoEntity != null && StringUtils.isNotEmpty(appUserMongoEntity.getNickname())){
-            return appUserMongoEntity.getNickname();
-        }
-        UserInfo userInfo = this.userInfoMapper.selectByUserid(friendId);
-        if(userInfo != null){
-            return StringUtils.isNotEmpty(userInfo.getNickname())?userInfo.getNickname():userInfo.getUsername();
-        }
-        return null;
+        return this.userRelationService.getUserRemark(userId,friendId);
     }
 
     /**
