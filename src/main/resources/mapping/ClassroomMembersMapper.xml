@@ -45,7 +45,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom_members
-    where classroomid = #{classroomid} 
+    where classroomid = #{classroomMembers.classroomid} 
     and itype = 0 
     <if test="classroomMembers.cusername != null and classroomMembers.cusername != ''" >
       	and cusername LIKE concat(concat('%',#{classroomMembers.cusername}),'%')
@@ -65,7 +65,7 @@
   <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.ClassroomMembers" resultType="java.lang.Integer" >
     select count(*) 
     from classroom_members
-    where classroomid = #{classroomid} 
+    where classroomid = #{classroomMembers.classroomid} 
     and itype = 0 
     <if test="classroomMembers.cusername != null and classroomMembers.cusername != ''" >
       	and cusername LIKE concat(concat('%',#{classroomMembers.cusername}),'%')
@@ -278,6 +278,28 @@
     update classroom_members
     set complaintotalcount = complaintotalcount + #{complaintotalcount} 
     where classroomid = #{classroomid} 
+    and userid = #{userid} 
+  </update>
+  
+  <update id="updateLFByCidAndUid" >
+    update classroom_members
+    <set>
+      <if test="flowers != 0">
+        flowers = flowers + #{flowers},
+      </if>
+      <if test="likes != 0">
+        likes = likes + #{likes},
+      </if>
+      userid = #{userid} 
+    </set> 
+    where 
+    <if test="likes &lt; 0">
+      likes > ROUND(#{likes}) and
+    </if>
+    <if test="flowers &lt; 0">
+      flowers > ROUND(#{flowers}) and
+    </if>
+    classroomid = #{classroomid} 
     and userid = #{userid} 
   </update>
   

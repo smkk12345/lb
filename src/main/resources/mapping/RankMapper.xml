@@ -872,12 +872,9 @@
       AND rankbrief LIKE concat(concat('%',#{rankbrief}),'%')
     </if>
     <if test="sstatus != null and sstatus != 0 and lastDate != null">
-      <if test="sstatus == 1">
-        and starttime &lt; #{lastDate}
-      </if>
       <if test="sstatus == 2">
-        and starttime &gt; #{lastDate}
-      </if>
+      and starttime &gt; #{lastDate}
+    </if>
       <if test="sstatus == 3">
         and endtime &lt; #{lastDate}
       </if>

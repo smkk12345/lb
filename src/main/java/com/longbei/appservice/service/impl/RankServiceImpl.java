@@ -717,6 +717,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if(status == 1){//进行中的
                 map.put("isfinish","1");
                 map.put("minEndDate",new Date());
+                lastDate = null;
                 map.put("orderByType","starttimeDesc");
             }else if(status == 2){//未开始
                 map.put("isfinish","0");
@@ -725,16 +726,17 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
-            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
-                Date tempLastDate = DateUtils.parseDate(lastDate);
-                map.put("lastDate",tempLastDate);
-            }
+//            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
+//                Date tempLastDate = DateUtils.parseDate(lastDate);
+//                map.put("lastDate",tempLastDate);
+//            }
             map.put("startNum",startNo);
             map.put("sstatus",status);
             map.put("ispublic","0");
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             int totalCount = 0;
+            logger.info("selectRankListCount before map={}",JSONObject.fromObject(map).toString());
             if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
                  totalCount = rankMapper.selectRankListCount(map);
             }
@@ -744,6 +746,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else{
                 ranks =rankMapper.selectRankList(map);
             }
+            logger.info("selectRankListCountis={},selectRankList.size={}",totalCount,ranks.size());
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     rank1.setHasjoin("0");
@@ -1202,7 +1205,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,rank);
             if(!ResultUtil.isSuccess(baseResp1)){
                 return baseResp1;
             }
@@ -2258,7 +2261,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         map.put("isfans",fansIds.contains(rankMembers.getUserid().toString())?"1":"0");
                         if(friendIds.contains(rankMembers.getUserid().toString())){
                             map.put("isfriend","1");
-                            map.put("usernickname",this.userRelationService.getUserRemark(userId,rankMembers.getUserid()));
+                            String remark = this.userRelationService.getUserRemark(userId,rankMembers.getUserid());
+                            if(StringUtils.isNotEmpty(remark)){
+                                map.put("usernickname",remark);
+                            }
                         }else{
                             map.put("isfriend","0");
                         }
@@ -2517,14 +2523,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 sortNum = new Long(rankMembers.getSortnum());
             }
             if(currentUserId != null){
-                SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
-                if(snsFans != null){
+                if(this.userRelationService.checkIsFans(currentUserId,userid)){
                     resultMap.put("isfans",1);
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
-                if(snsFriends != null && snsFriends.getIsdel() == 0){
+                if(this.userRelationService.checkIsFriend(currentUserId,userid)){
                     resultMap.put("isFriends",1);
                 }else{
                     resultMap.put("isFriends",0);
@@ -2578,7 +2582,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
                     if("0".equals(rank.getRanktype())){
                     	 map.put("awardnickname",award.getAwardtitle());
-                         map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid()));
+                         map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid(),true));
                          resultList.add(map);
                     }
                    
@@ -3193,7 +3197,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 RankAwardRelease tempRankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankAwardRelease.getAwardid());
                 awardMap.put("nickname",tempRankAwardRelease.getAwardnickname());
                 if(searchUserNickName){
-                    awardMap.put("usernickname",this.userRelationService.getUserRemark(userId,rankAwardRelease.getUserid()));
+                    awardMap.put("usernickname",this.userRelationService.getUserRemark(userId,rankAwardRelease.getUserid(),true));
                 }
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);

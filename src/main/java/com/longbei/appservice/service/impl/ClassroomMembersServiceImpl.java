@@ -14,13 +14,16 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.service.ClassroomMembersService;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMsgService;
 
@@ -41,6 +44,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private UserService userService;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private ImproveService improveService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -162,6 +167,16 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	public ClassroomMembers selectListByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		try {
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, itype);
+			if(null != classroomMembers){
+				String cnickname = "";
+				if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
+		    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
+		    		if(null != appUserMongoEntity){
+		    			cnickname = appUserMongoEntity.getNickname();
+		    		}
+		    	}
+				classroomMembers.setCnickname(cnickname);
+			}
 			return classroomMembers;
 		} catch (Exception e) {
 			logger.error("selectListByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
@@ -275,6 +290,42 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 					members.getClassroomid(), startNum, endNum, e);
 		}
 		return reseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateStatus(String status, String userid, String classroomid, String improveid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		
+        try {
+//        	Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
+        	//status 0：未处理 1： 删除微进步    2： 下榜微进步  3： 通过其他方式已处理  4: 已忽略
+            if ("1".equals(status)) {
+            	improveService.removeImprove(userid, improveid, Constant.IMPROVE_CLASSROOM_TYPE, classroomid);
+            	Improve improve = improveService.selectImproveByImpidMuc(Long.parseLong(improveid),
+                        userid, Constant.IMPROVE_CLASSROOM_TYPE, classroomid);
+                String remark = Constant.MSG_IMP_DEL_MODEL;
+                if (null != improve) {
+                    if (!StringUtils.isBlank(improve.getBrief())) {
+                        if (improve.getBrief().length() >= 20) {
+                            //抓取内容20个字
+                            String brief = improve.getBrief().substring(0, 20);
+                            remark = remark.replace("n", "(" + brief + ")");
+                        } else {
+                            remark = remark.replace("n", "(" + improve.getBrief() + ")");
+                        }
+                    } else {
+                        remark = remark.replace("n", "");
+                    }
+                }
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
+                        improveid, "12",
+                        classroomid, remark, "0", "45", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
+            }
+        } catch (Exception e) {
+            logger.error("remove classroom Improve status = {}, userid = {} , classroomid = {}, improveid = {} ", 
+            		status, userid, classroomid, improveid, e);
+        }
+        return reseResp;
 	}
 
 }

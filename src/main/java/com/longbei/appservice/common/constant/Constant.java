@@ -23,8 +23,10 @@ public class Constant {
 	public static final int USER_RELATION_REDIS_CACHE_TIME = 15;
 	//redis中 缓存用户昵称的key 前缀
 	public static final String USER_REMARK_REDIS_KEY = "friendRemark_";
-	//redis中 缓存用户所有粉丝id的key 前缀
+	//redis中 缓存用户所有关注id的key 前缀
 	public static final String USER_FANS_REDIS_KEY = "userFans";
+	//redis中 缓存用户所有粉丝id的key 前缀
+	public static final String USER_BEFANSED_REDIS_KEY = "userBeFansed";
 	//reids中 缓存用户所有好友id的key 前缀
 	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
 	//redis中 缓存用户收藏的所有进步id 前缀

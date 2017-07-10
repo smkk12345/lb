@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Repository;
 
@@ -267,10 +268,12 @@ public class SpringJedisDao {
         try{
             SetOperations<String,String> setOperations = redisTemplate.opsForSet();
             return setOperations.isMember(key,value);
+        }catch (InvalidDataAccessApiUsageException e1){
+            this.del(key);
         }catch(Exception e){
             logger.error("redis set sisMember error",e);
         }
-        return true;
+        return false;
     }
 
     //redis set 移除
@@ -307,10 +310,12 @@ public class SpringJedisDao {
      */
     public Set<String> members(String key){
         Set<String> set = null;
-        try{
-            SetOperations<String,String> setOperations = redisTemplate.opsForSet();
+        try {
+            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
             set = setOperations.members(key);
             return set;
+        }catch (InvalidDataAccessApiUsageException e1){
+            this.del(key);
         }catch(Exception e){
             logger.error("redis members sSize error ",e);
         }

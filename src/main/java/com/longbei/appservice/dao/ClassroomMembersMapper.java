@@ -90,6 +90,12 @@ public interface ClassroomMembersMapper {
     int updateCompcountByCidAndUid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("complaintotalcount") int complaintotalcount);
     
+    /*
+     * 递增教室成员总赞，总花
+     */
+    int updateLFByCidAndUid(@Param("classroomid") long classroomid, 
+    		@Param("userid") long userid, @Param("likes") int likes, @Param("flowers") int flowers);
+    
     /**
 	 * @author yinxc
 	 * 获取当前教室成员总数

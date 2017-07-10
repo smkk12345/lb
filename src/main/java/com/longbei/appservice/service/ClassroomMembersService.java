@@ -82,5 +82,14 @@ public interface ClassroomMembersService {
 	 */
 	BaseResp<Page<ClassroomMembers>> selectPcMembersList(ClassroomMembers classroomMembers, int startNum, int endNum);
 	
+	/**
+     * 教室中单条进步下教室或删除
+     * @param status 0：未处理 1： 删除微进步    2： 下教室微进步  3： 通过其他方式已处理  4: 已忽略
+     * @param userid
+     * @param classroomid
+     * @param improveid
+     */
+    BaseResp<Object> updateStatus(String status,String userid,String classroomid,String improveid);
+	
 
 }

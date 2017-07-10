@@ -87,15 +87,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 		if(userid == null || friendid == null){
 			return "";
 		}
-		//判断已关注者是否是好友关系
-		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid, isdel);
-		if(null != snsFriends){
-			if(!StringUtils.isBlank(snsFriends.getRemark())){
-				//好友备注
-				return snsFriends.getRemark();
-			}
-		}
-		return "";
+		return this.getUserRemark(userid,friendid);
+//		//判断已关注者是否是好友关系
+//		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid, isdel);
+//		if(null != snsFriends){
+//			if(!StringUtils.isBlank(snsFriends.getRemark())){
+//				//好友备注
+//				return snsFriends.getRemark();
+//			}
+//		}
+//		return "";
 	}
 	
 	/* smkk
@@ -356,8 +357,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	@Override
 	public SnsFriends selectByUidAndFid(long userid, long friendid) {
-		SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, friendid, "0");
-		return snsFriends;
+		return snsFriendsMapper.selectByUidAndFid(userid, friendid, "0");
 	}
 
 	@Override
@@ -495,7 +495,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());
 					}else{
-						map.put("usernickname", this.userRelationService.getUserRemark(userId,userInfo.getUserid()));
+						String remark = this.userRelationService.getUserRemark(userId,userInfo.getUserid());
+						if(StringUtils.isNotEmpty(remark)){
+							map.put("usernickname",remark);
+						}else{
+							map.put("usernickname", userInfo.getNickname());
+						}
+
 
 						if(userId == userInfo.getUserid().longValue()){
 							map.put("isfans","1");
@@ -837,15 +843,29 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 */
 	@Override
 	public boolean checkIsFriend(Long userid, Long friendid) {
-		if(userid == null || "-1".equals(userid.toString()) || friendid == null){
+		if(userid == null || friendid == null){
+			return false;
+		}
+		return checkIsFriend(userid.toString(),friendid.toString());
+	}
+
+	/**
+	 * 判断是否是好友
+	 * @param userid 代表当前登录用户id
+	 * @param friendid
+	 * @return
+	 */
+	@Override
+	public boolean checkIsFriend(String userid, String friendid) {
+		if(userid == null || "-1".equals(userid) || friendid == null){
 			return false;
 		}
 		//判断redis中是否有该用户的好友信息
 		if(springJedisDao.hasKey(Constant.USER_FRIEND_REDIS_KEY+userid)){
-			return springJedisDao.sIsMember(Constant.USER_FRIEND_REDIS_KEY+userid,friendid.toString());
+			return springJedisDao.sIsMember(Constant.USER_FRIEND_REDIS_KEY+userid,friendid);
 		}
-		Set<String> friendIds = this.initUserRedisFriendIds(userid.toString());
-		return friendIds.contains(friendid.toString());
+		Set<String> friendIds = this.initUserRedisFriendIds(userid);
+		return friendIds.contains(friendid);
 	}
 
 	//redis中初始化用户的好友id列表
@@ -884,6 +904,24 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return fansIds;
 	}
 
+	/**
+	 * 获取粉丝列表
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public Set<String> getBeFansedIds(String userid){
+		Set<String> fansIds = new HashSet<>();
+		if(userid == null || "-1".equals(userid)){
+			return fansIds;
+		}
+		fansIds = springJedisDao.members(Constant.USER_BEFANSED_REDIS_KEY+userid);
+		if (fansIds == null || fansIds.size() == 0){
+			fansIds = this.initUserRedisBeFansIds(Long.parseLong(userid));
+		}
+		return fansIds;
+	}
+
 	private Set<String> initUserRedisFansIds(Long userid){
 		Set<String> fansIds = snsFansMapper.selectListidByUid(userid);
 
@@ -892,6 +930,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),fansIds.toArray(new String[]{}));
 		return fansIds;
+	}
+
+	private Set<String> initUserRedisBeFansIds(Long userid){
+		Set<String> beFansIds = snsFansMapper.selectListidByLikeUid(userid);
+
+		if(beFansIds.size() == 0){
+			beFansIds.add("0");//占位 防止下次重复加载
+		}
+		springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),beFansIds.toArray(new String[]{}));
+		return beFansIds;
 	}
 
 	/**
@@ -1002,7 +1050,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		if(StringUtils.isEmpty(currentUserId) || "-1".equals(currentUserId)){
 			return ;
 		}
-		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId,appUserMongoEntity.getId())){
+		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId)){
 			//获取昵称
 			String remark = springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,appUserMongoEntity.getId());
 			if(StringUtils.isNotEmpty(remark)){
@@ -1011,7 +1059,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return ;
 		}
 		Map<String,String> map = this.initFriendRemarkRedis(currentUserId);
-		String remark = map.get(currentUserId);
+		String remark = map.get(appUserMongoEntity.getId());
 		if(StringUtils.isNotEmpty(remark)){
 			appUserMongoEntity.setNickname(remark);
 		}
@@ -1025,7 +1073,7 @@ public class UserRelationServiceImpl implements UserRelationService {
      */
 	@Override
 	public void updateFriendRemark(Long currentUserId, AppUserMongoEntity appUserMongoEntity){
-		if(currentUserId == null){
+		if(currentUserId == null || appUserMongoEntity == null){
 			return ;
 		}
 		updateFriendRemark(currentUserId.toString(), appUserMongoEntity);
@@ -1039,13 +1087,16 @@ public class UserRelationServiceImpl implements UserRelationService {
      */
 	@Override
 	public String getUserRemark(String currentUserId,String friendId){
-		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId,friendId)){
+		if(StringUtils.isEmpty(currentUserId) || "-1".equals(currentUserId)){
+			return null;
+		}
+		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId)){
 			//获取昵称
-			return springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,currentUserId);
+			return springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,friendId);
 		}
 		Map<String,String> map = this.initFriendRemarkRedis(currentUserId);
-		if(StringUtils.isNotEmpty(map.get(currentUserId))){
-			return map.get(currentUserId);
+		if(map.containsKey(friendId)){
+			return map.get(friendId);
 		}
 
 		AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId);
@@ -1055,6 +1106,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	/**
 	 * 获取用户的好友备注昵称
+	 * @desc 如果当前登录用户和friendId不是好友或者没有对该好友进行备注的话,返回的是空
 	 * @param currentUserId
 	 * @param friendId
      * @return
@@ -1065,6 +1117,38 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return null;
 		}
 		return getUserRemark(currentUserId.toString(),friendId.toString());
+	}
+
+	/**
+	 * 获取用户的好友备注昵称
+	 * @desc 如果flag是true的话,则即使currentUserId与friendId不是好友,也会返回friendId自己的昵称
+	 * @param currentUserId
+	 * @param friendId
+	 * @return
+	 */
+	@Override
+	public String getUserRemark(String currentUserId,String friendId,boolean flag){
+		String remark =getUserRemark(currentUserId,friendId);
+		if(!flag || StringUtils.isNotEmpty(remark)){
+			return remark;
+		}
+		AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId);
+		return appUserMongoEntity != null?appUserMongoEntity.getNickname():null;
+	}
+
+	/**
+	 * 获取用户的好友备注昵称
+	 * @desc 如果flag是true的话,则即使currentUserId与friendId不是好友,也会返回friendId自己的昵称
+	 * @param currentUserId
+	 * @param friendId
+	 * @return
+	 */
+	@Override
+	public String getUserRemark(Long currentUserId,Long friendId,boolean flag){
+		if(friendId == null){
+			return null;
+		}
+		return getUserRemark(currentUserId == null?"":currentUserId.toString(),friendId.toString(),flag);
 	}
 
 	/**
