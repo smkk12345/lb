@@ -677,6 +677,9 @@ public class ImproveServiceImpl implements ImproveService{
                     zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize);
             for (String userid : userids){
                 Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
+                RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                improve.setTotalflowers(rankMembers.getFlowers());
+                improve.setTotallikes(rankMembers.getLikes());
                 if (null != improve){
                     list.add(improve);
                 }
