@@ -1378,7 +1378,7 @@ public class ImproveServiceImpl implements ImproveService{
         Long uid = Long.parseLong(userid);
         Set<String> friendids = this.userRelationService.getFriendIds(uid);
         Set<String> fansIds = this.userRelationService.getFansIds(uid);
-        Map<String, String> map = userRelationService.selectFriendRemarkList(Long.parseLong(userid));
+        Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
         Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
