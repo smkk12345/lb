@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.ClassroomMembers;
 
 public interface ClassroomMembersService {
@@ -24,7 +25,7 @@ public interface ClassroomMembersService {
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 */
-	BaseResp<Object> selectListByClassroomid(long classroomid, int startNum, int endNum);
+	BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc
@@ -46,7 +47,7 @@ public interface ClassroomMembersService {
 	
 	/**
 	 * @author yinxc
-	 * 教室剔除成员
+	 * 成员退出教室
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 * param userid 成员id
@@ -55,5 +56,31 @@ public interface ClassroomMembersService {
 	 * 教室剔除成员，如果该成员已经交费，老师强制剔除成员时，需要把成员所交费用返回
 	 */
 	BaseResp<Object> updateItypeByClassroomidAndUserid(long classroomid, long userid, String itype);
+	
+	/**
+	 * @author yinxc
+	 * 教室老师剔除成员---推送消息
+	 * 2017年7月7日
+	 * param classroomid 教室id
+	 * param userid 成员id
+	 * param itype 0—加入教室 1—退出教室
+	 */
+	BaseResp<Object> quitClassroom(long classroomid, long userid, String itype);
+	
+	
+	
+	
+	
+	
+	//--------------------------admin调用方法------------------------------------
+	
+	/**
+	 * @author yinxc
+	 * 获取教室成员列表---(剔除   退出教室的)
+	 * 2017年7月7日
+	 * param classroomMembers 教室
+	 */
+	BaseResp<Page<ClassroomMembers>> selectPcMembersList(ClassroomMembers classroomMembers, int startNum, int endNum);
+	
 
 }
