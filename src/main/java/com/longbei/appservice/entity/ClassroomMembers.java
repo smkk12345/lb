@@ -33,7 +33,13 @@ public class ClassroomMembers {
     
     private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
     
-    private Integer allimp; //用户在教室所发的微进步总数
+    private Integer icount = 0; //用户在教室所发的微进步总数
+    
+    private String cusername; //手机号
+    
+    private String cnickname; //昵称
+    
+    private Integer complaintotalcount; //投诉次数
 
     /**
      * 
@@ -200,11 +206,36 @@ public class ClassroomMembers {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public Integer getAllimp() {
-		return allimp;
+	public Integer getIcount() {
+		return icount;
 	}
 
-	public void setAllimp(Integer allimp) {
-		this.allimp = allimp;
+	public void setIcount(Integer icount) {
+		this.icount = icount;
+	}
+
+	public String getCusername() {
+		return cusername;
+	}
+
+	public void setCusername(String cusername) {
+		this.cusername = cusername;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getComplaintotalcount() {
+		return complaintotalcount;
+	}
+
+	public void setComplaintotalcount(Integer complaintotalcount) {
+		this.complaintotalcount = complaintotalcount;
+	}
+
+	public String getCnickname() {
+		return cnickname;
+	}
+
+	public void setCnickname(String cnickname) {
+		this.cnickname = cnickname;
 	}
 }

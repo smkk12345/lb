@@ -18,7 +18,9 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.UserCard;
+import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomService;
 
 @RestController
@@ -29,8 +31,63 @@ public class ClassroomApiController {
 	private ClassroomService classroomService;
 	@Autowired
 	private IdGenerateService idGenerateService;
+	@Autowired
+	private ClassroomMembersService classroomMembersService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomApiController.class);
+	
+	
+	//----------------------教室成员相关---------------------
+	
+	/**
+    * @Description: 获取教室成员列表
+    * @param @param classroomid
+    * @param @param startNo   pageSize
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年2月28日
+	*/
+ 	@RequestMapping(value = "membersList")
+    public BaseResp<Page<ClassroomMembers>> selectRoomMembers(@RequestBody ClassroomMembers classroomMembers, int startNo, int pageSize) {
+		logger.info("selectRoomMembers classroomid={},startNo={},pageSize={}",
+				classroomMembers.getClassroomid(),startNo,pageSize);
+		BaseResp<Page<ClassroomMembers>> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = classroomMembersService.selectPcMembersList(classroomMembers, startNo, pageSize);
+  		} catch (Exception e) {
+  			logger.error("selectRoomMembers classroomid = {}, startNo = {}, pageSize = {}",
+  					classroomMembers.getClassroomid(), startNo, pageSize, e);
+  		}
+  		return baseResp;
+    }
+ 	
+ 	/**
+	* @Description: 教室老师剔除成员---推送消息
+	* @param @param classroomid
+	* @param @param userid
+	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	* @auther yinxc
+	* @currentdate:2017年7月7日
+	*/
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "quitClassroom")
+	public BaseResp<Object> quitClassroom(String classroomid, String userid) {
+		logger.info("quitClassroom classroomid={},userid={}",classroomid,userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid, userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomMembersService.quitClassroom(Integer.parseInt(classroomid),
+					Long.parseLong(userid), "1");
+		} catch (Exception e) {
+			logger.error("quitClassroom classroomid = {}, userid = {}",
+					classroomid, userid, e);
+		}
+		return baseResp;
+	}
+	
+	//----------------------教室相关---------------------
 	
 	/**
     * @Title: http://ip:port/app_service/api/classroom/selectClassroomList

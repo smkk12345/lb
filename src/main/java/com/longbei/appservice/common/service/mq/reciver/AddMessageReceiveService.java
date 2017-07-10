@@ -192,33 +192,16 @@ public class AddMessageReceiveService implements MessageListener{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineDyn(TimeLine timeLine,String userid){
-
-        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),null,null,null);
-        Set<String> sets = new HashSet<>();
-        sets.add(userid);
-        if(baseResp.getCode() == 0){
-            Map<String,Object> map = (Map<String, Object>) baseResp.getData();
-            List<Map<String,Object>> snsFriendses = (List<Map<String, Object>>) map.get("friendList");
-            for (Map snsFriends : snsFriendses) {
-                sets.add(String.valueOf(snsFriends.get("userid")));
-            }
-        }
-
-        baseResp = relationService.selectFansListByLikeUserid(Long.parseLong(userid),false,null,null);
-        if(baseResp.getCode() == 0){
-            List<SnsFans> snsFanses = (List<SnsFans>) baseResp.getData();
-            for (SnsFans friends : snsFanses) {
-                sets.add(String.valueOf(friends.getUserid()));
-            }
-        }
-       for (String uid : sets){
+        Set<String> friendids = null;
+        Set<String> funids = null;
+        friendids = this.relationService.getFriendIds(userid);
+        funids = this.relationService.getFansIds(userid);
+        friendids.addAll(funids);
+       for (String fid : friendids){
            timeLine.setId(MongoUtils.UUID());
-           timeLine.setUserid(uid);
-//           timeLine.setCtype("2");
+           timeLine.setUserid(fid);
            timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
        }
-
-
     }
 
     /**
@@ -227,19 +210,13 @@ public class AddMessageReceiveService implements MessageListener{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineFriend(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectListByUserId(Long.parseLong(userid),null,null,null);
-        if(baseResp.getCode() != 0){
-            return;
-        }
-        Map<String,Object> map = (Map<String, Object>) baseResp.getData();
-        List<Map<String,Object>> snsFriendses = (List<Map<String, Object>>) map.get("friendList");
-        for (Map snsFriends : snsFriendses) {
+        Set<String> friendids = null;
+        friendids = this.relationService.getFriendIds(userid);
+        for (String friendid : friendids) {
             timeLine.setId(MongoUtils.UUID());
-            timeLine.setUserid(String.valueOf(snsFriends.get("userid")));
-//            timeLine.setCtype("3");
+            timeLine.setUserid(friendid);
             timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
         }
-
     }
     /**
      * 关注
@@ -247,15 +224,11 @@ public class AddMessageReceiveService implements MessageListener{
      * @param timeLine 时间线信息
      */
     private void insertTimeLineAttr(TimeLine timeLine,String userid){
-        BaseResp<Object> baseResp = relationService.selectFansListByLikeUserid(Long.parseLong(userid),false,null,null);
-        if(baseResp.getCode() != 0){
-            return;
-        }
-        List<SnsFans> snsFanses = (List<SnsFans>) baseResp.getData();
-        for (SnsFans friends : snsFanses) {
+        Set<String> beFunIds = null;
+        beFunIds = this.relationService.getBeFansedIds(userid);
+        for (String funid : beFunIds) {
             timeLine.setId(MongoUtils.UUID());
-            timeLine.setUserid(String.valueOf(friends.getUserid()));
-//            timeLine.setCtype("4");
+            timeLine.setUserid(funid);
             timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
         }
     }

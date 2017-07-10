@@ -41,7 +41,7 @@ public class Classroom {
     
     private long cardid; //名片id
     
-    private Integer charge;  //课程价格
+    private Integer charge = 0;  //课程价格
     
     private String isfree; //是否免费。0 免费 1 收费
     
