@@ -7,19 +7,19 @@ import org.apache.ibatis.annotations.Param;
 import com.longbei.appservice.entity.UserCard;
 
 public interface UserCardMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByUserCardId(Long userCardId);
 
     int insert(UserCard record);
 
-    int insertSelective(UserCard record);
+    int insertUserCard(UserCard userCard);
 
     UserCard selectByCardid(@Param("cardid") long cardid);
     
-    List<UserCard> selectList(@Param("startNum") int startNum, @Param("endNum") int endNum);
-    
-    List<String> selectUseridByCardid(@Param("cardid") long cardid);
+    List<UserCard> selectUserCardList(@Param("userCard")UserCard userCard,@Param("startNum") Integer startNum, @Param("pageSize") Integer pageSize);
 
-    int updateByPrimaryKeySelective(UserCard record);
+    Integer selectUserCardListCount(@Param("userCard")UserCard userCard);
+
+    int updateByUserCardId(UserCard record);
 
     int updateByPrimaryKey(UserCard record);
     

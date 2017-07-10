@@ -13,9 +13,10 @@
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="cardid" property="cardid" jdbcType="BIGINT" />
     <result column="isdel" property="isdel" />
+    <result column="sourcetype" property="sourcetype" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid, isdel
+    id, userid, ctype, avatar, displayname, brief, content, createtime, updatetime, cardid, isdel ,sourcetype
   </sql>
   <select id="selectByCardid" resultMap="BaseResultMap" >
     select 
@@ -24,29 +25,43 @@
     where cardid = #{cardid} 
     and isdel = 0 
   </select>
-  
-  <select id="selectList" resultMap="BaseResultMap" >
+  <select id="selectUserCardList" parameterType="com.longbei.appservice.entity.UserCard" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" /> 
-    from user_card 
-    where isdel = 0 
-    order by createtime desc 
-    <if test="endNum != 0" >
-      limit #{startNum},#{endNum}
+    from user_card
+    where isdel = 0
+    <if test="userCard.displayname != null and userCard.displayname != ''" >
+      AND displayname LIKE concat(concat('%',#{userCard.displayname}),'%')
+    </if>
+    <if test="userCard.sourcetype != null and userCard.sourcetype != ''" >
+      AND sourcetype = #{userCard.sourcetype}
+    </if>
+    <if test="userCard.ctype != null and userCard.ctype != ''" >
+      AND ctype = #{userCard.ctype}
+    </if>
+    order by createtime desc
+      limit #{startNum},#{pageSize}
+  </select>
+  <select id="selectUserCardListCount" parameterType="com.longbei.appservice.entity.UserCard" resultType="java.lang.Integer" >
+    select
+    count(*)
+    from user_card
+    where isdel = 0
+    <if test="userCard.displayname != null and userCard.displayname != ''" >
+      AND displayname LIKE concat(concat('%',#{userCard.displayname}),'%')
+    </if>
+    <if test="userCard.sourcetype != null and userCard.sourcetype != ''" >
+      AND sourcetype = #{userCard.sourcetype}
+    </if>
+    <if test="userCard.ctype != null and userCard.ctype != ''" >
+      AND ctype = #{userCard.ctype}
     </if>
   </select>
-  
-  <select id="selectUseridByCardid" resultMap="BaseResultMap" >
-    select userid 
-    from user_card
-    where cardid = #{cardid} 
-    and isdel = 0 
-  </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from user_card
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+  <update id="deleteByUserCardId" parameterType="java.lang.Long" >
+    update user_card
+    set isdel = 1
+    where cardid = #{cardid,jdbcType=BIGINT}
+  </update>
   <insert id="insert" parameterType="com.longbei.appservice.entity.UserCard" >
     insert into user_card (id, userid, ctype, 
       avatar, displayname, brief, 
@@ -57,12 +72,9 @@
       #{content,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
       #{cardid,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserCard" >
+  <insert id="insertUserCard" parameterType="com.longbei.appservice.entity.UserCard" >
     insert into user_card
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="userid != null" >
         userid,
       </if>
@@ -84,17 +96,14 @@
       <if test="createtime != null" >
         createtime,
       </if>
-      <if test="updatetime != null" >
-        updatetime,
-      </if>
       <if test="cardid != null" >
         cardid,
       </if>
+      <if test="sourcetype != null" >
+        sourcetype,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="userid != null" >
         #{userid,jdbcType=BIGINT},
       </if>
@@ -116,15 +125,15 @@
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
       <if test="cardid != null" >
         #{cardid,jdbcType=BIGINT},
       </if>
+      <if test="sourcetype != null" >
+        #{sourcetype,jdbcType=CHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserCard" >
+  <update id="updateByUserCardId" parameterType="com.longbei.appservice.entity.UserCard" >
     update user_card
     <set >
       <if test="userid != null" >
@@ -154,8 +163,11 @@
       <if test="cardid != null" >
         cardid = #{cardid,jdbcType=BIGINT},
       </if>
+      <if test="sourcetype != null" >
+        sourcetype = #{sourcetype,jdbcType=CHAR},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where cardid = #{cardid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserCard" >
     update user_card
