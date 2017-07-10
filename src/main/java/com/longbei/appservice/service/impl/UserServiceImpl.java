@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
 				if(this.userRelationService.checkIsFriend(lookid,userid)){
 					userInfo.setIsfriend("1");
 					//获取好友昵称
-					String  remark = this.userRelationService.getUserRemark(lookid,userid);
+					String remark = this.userRelationService.getUserRemark(lookid,userid);
 					if(StringUtils.isNotEmpty(remark)){
 						userInfo.setRemark(remark);
 					}

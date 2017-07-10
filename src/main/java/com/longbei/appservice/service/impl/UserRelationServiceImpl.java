@@ -495,7 +495,13 @@ public class UserRelationServiceImpl implements UserRelationService {
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());
 					}else{
-						map.put("usernickname", this.userRelationService.getUserRemark(userId,userInfo.getUserid()));
+						String remark = this.userRelationService.getUserRemark(userId,userInfo.getUserid());
+						if(StringUtils.isNotEmpty(remark)){
+							map.put("usernickname",remark);
+						}else{
+							map.put("usernickname", userInfo.getNickname());
+						}
+
 
 						if(userId == userInfo.getUserid().longValue()){
 							map.put("isfans","1");
@@ -1081,6 +1087,9 @@ public class UserRelationServiceImpl implements UserRelationService {
      */
 	@Override
 	public String getUserRemark(String currentUserId,String friendId){
+		if(StringUtils.isEmpty(currentUserId) || "-1".equals(currentUserId)){
+			return null;
+		}
 		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId)){
 			//获取昵称
 			return springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,friendId);
@@ -1097,6 +1106,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	/**
 	 * 获取用户的好友备注昵称
+	 * @desc 如果当前登录用户和friendId不是好友或者没有对该好友进行备注的话,返回的是空
 	 * @param currentUserId
 	 * @param friendId
      * @return
@@ -1107,6 +1117,38 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return null;
 		}
 		return getUserRemark(currentUserId.toString(),friendId.toString());
+	}
+
+	/**
+	 * 获取用户的好友备注昵称
+	 * @desc 如果flag是true的话,则即使currentUserId与friendId不是好友,也会返回friendId自己的昵称
+	 * @param currentUserId
+	 * @param friendId
+	 * @return
+	 */
+	@Override
+	public String getUserRemark(String currentUserId,String friendId,boolean flag){
+		String remark =getUserRemark(currentUserId,friendId);
+		if(!flag || StringUtils.isNotEmpty(remark)){
+			return remark;
+		}
+		AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId);
+		return appUserMongoEntity != null?appUserMongoEntity.getNickname():null;
+	}
+
+	/**
+	 * 获取用户的好友备注昵称
+	 * @desc 如果flag是true的话,则即使currentUserId与friendId不是好友,也会返回friendId自己的昵称
+	 * @param currentUserId
+	 * @param friendId
+	 * @return
+	 */
+	@Override
+	public String getUserRemark(Long currentUserId,Long friendId,boolean flag){
+		if(friendId == null){
+			return null;
+		}
+		return getUserRemark(currentUserId == null?"":currentUserId.toString(),friendId.toString(),flag);
 	}
 
 	/**
