@@ -215,6 +215,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     }else{
                         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                     }
+                    break;
                 case publishRank:
                     //发榜  判断发布榜单个数
                     Rank publishRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
@@ -259,6 +260,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_111,Constant.RTNINFO_SYS_111+userLevel.getPubrankjoinnum()+"人");
                         }
                     }
+                default:
+                    break;
             }
         }catch(Exception e){
             logger.error("hasPrivilege error msg:{}",e);

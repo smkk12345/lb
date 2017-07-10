@@ -1266,13 +1266,10 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<List<Improve>> selectOtherImproveList(String userid, String targetuserid,
                                                           Date lastdate, int pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(Long.valueOf(userid),Long.valueOf(targetuserid), "0");
-        int ispublic = 2;
-        if (null != snsFriends){
+        int ispublic = 2;//0 私密 1 好友 2 公开
+        if(this.userRelationService.checkIsFriend(userid,targetuserid)){
             ispublic = 1;
-        } else {
-            ispublic = 2;
-        }  //0 私密 1 好友 2 公开
+        }
         try {
             List<Improve> list = selectImproveListByUser(targetuserid,null,
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
@@ -1381,7 +1378,7 @@ public class ImproveServiceImpl implements ImproveService{
         Long uid = Long.parseLong(userid);
         Set<String> friendids = this.userRelationService.getFriendIds(uid);
         Set<String> fansIds = this.userRelationService.getFansIds(uid);
-        Map<String, String> map = userRelationService.selectFriendRemarkList(Long.parseLong(userid));
+        Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
         Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
@@ -3467,7 +3464,7 @@ public class ImproveServiceImpl implements ImproveService{
             Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
-                if(userCollectImproveIds.contains(improve.getId().toString())){
+                if(userCollectImproveIds.contains(improve.getImpid().toString())){
                     improve.setHascollect("1");
                 }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));

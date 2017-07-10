@@ -1202,7 +1202,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,rank);
             if(!ResultUtil.isSuccess(baseResp1)){
                 return baseResp1;
             }
@@ -2258,7 +2258,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         map.put("isfans",fansIds.contains(rankMembers.getUserid().toString())?"1":"0");
                         if(friendIds.contains(rankMembers.getUserid().toString())){
                             map.put("isfriend","1");
-                            map.put("usernickname",this.userRelationService.getUserRemark(userId,rankMembers.getUserid()));
+                            String remark = this.userRelationService.getUserRemark(userId,rankMembers.getUserid());
+                            if(StringUtils.isNotEmpty(remark)){
+                                map.put("usernickname",remark);
+                            }
                         }else{
                             map.put("isfriend","0");
                         }
@@ -2517,14 +2520,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 sortNum = new Long(rankMembers.getSortnum());
             }
             if(currentUserId != null){
-                SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
-                if(snsFans != null){
+                if(this.userRelationService.checkIsFans(currentUserId,userid)){
                     resultMap.put("isfans",1);
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
-                if(snsFriends != null && snsFriends.getIsdel() == 0){
+                if(this.userRelationService.checkIsFriend(currentUserId,userid)){
                     resultMap.put("isFriends",1);
                 }else{
                     resultMap.put("isFriends",0);
@@ -2578,7 +2579,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
                     if("0".equals(rank.getRanktype())){
                     	 map.put("awardnickname",award.getAwardtitle());
-                         map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid()));
+                         map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid(),true));
                          resultList.add(map);
                     }
                    
@@ -3193,7 +3194,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 RankAwardRelease tempRankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankAwardRelease.getAwardid());
                 awardMap.put("nickname",tempRankAwardRelease.getAwardnickname());
                 if(searchUserNickName){
-                    awardMap.put("usernickname",this.userRelationService.getUserRemark(userId,rankAwardRelease.getUserid()));
+                    awardMap.put("usernickname",this.userRelationService.getUserRemark(userId,rankAwardRelease.getUserid(),true));
                 }
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);

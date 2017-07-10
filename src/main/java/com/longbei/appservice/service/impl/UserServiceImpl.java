@@ -198,14 +198,16 @@ public class UserServiceImpl implements UserService {
 //			}
 			expandData.put("flowernum", userInfo.getGivedflowers());
 			if(lookid != 0){
-				SnsFriends snsFriends = userRelationService.selectByUidAndFid(lookid, userid);
-				if(null != snsFriends){
+				if(this.userRelationService.checkIsFriend(lookid,userid)){
 					userInfo.setIsfriend("1");
+					//获取好友昵称
+					String remark = this.userRelationService.getUserRemark(lookid,userid);
+					if(StringUtils.isNotEmpty(remark)){
+						userInfo.setRemark(remark);
+					}
 				}
 				userInfo.setIsfans(this.userRelationService.checkIsFans(userid,lookid)?"1":"0");
-				//获取好友昵称
-				String remark = userRelationService.selectRemark(lookid, userid, "0");
-				userInfo.setRemark(remark);
+
 			}
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);

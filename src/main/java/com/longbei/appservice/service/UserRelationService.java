@@ -198,6 +198,8 @@ public interface UserRelationService {
 	 * @return
 	 */
 	boolean checkIsFriend(Long userid,Long friendid);
+	//功能同以上方法
+	boolean checkIsFriend(String userid,String friendid);
 
 	/**
 	 * 获取用户的关注用户id列表
@@ -257,6 +259,7 @@ public interface UserRelationService {
 
 	/**
 	 * 获取好友的备注昵称
+	 * @desc 如果当前登录用户和friendId不是好友或者没有对该好友进行备注的话,返回的是空
 	 * @param currentUserId
 	 * @param friendId
      * @return
@@ -264,6 +267,18 @@ public interface UserRelationService {
 	String getUserRemark(String currentUserId,String friendId);
 	//功能同以上方法
 	String getUserRemark(Long currentUserId,Long friendId);
+
+	/**
+	 * 获取用户的备注昵称
+	 * @desc 如果flag是true的话,则即使currentUserId与friendId不是好友,也会返回friendId自己的昵称
+	 * @param currentUserId
+	 * @param friendId
+	 * @param flag
+     * @return
+     */
+	String getUserRemark(String currentUserId,String friendId,boolean flag);
+	//功能同以上方法
+	String getUserRemark(Long currentUserId,Long friendId,boolean flag);
 
 	/**
 	 * 添加/更改 用户 在redis中缓存的昵称
