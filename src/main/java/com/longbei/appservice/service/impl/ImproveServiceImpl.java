@@ -501,6 +501,9 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("select improve is error:",e);
         }
         initImproveInfo(improve,Long.parseLong(userid));
+        if(this.checkIsCollectImprove(userid,impid.toString())){
+            improve.setHascollect("1");
+        }
         return improve;
     }
 
@@ -1275,15 +1278,17 @@ public class ImproveServiceImpl implements ImproveService{
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
             //获取好友昵称
-			String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(targetuserid), "0");
-			if(!StringUtils.isBlank(remark)){
-				appUserMongoEntity.setNickname(remark);
-			}
+            this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+
             initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
             if (null != list && list.size() != 0){
+                Set<String> improveIds = this.getUserCollectImproveId(userid);
                 for (Improve improve : list){
                     //初始化是否 点赞 送花 送钻 收藏
                     initIsOptionForImprove(userid+"",improve);
+                    if(improveIds.contains(improve.getImpid().toString())){
+                        improve.setHascollect("1");
+                    }
                     improve.setAppUserMongoEntity(appUserMongoEntity);
                 }
             }
@@ -1307,6 +1312,7 @@ public class ImproveServiceImpl implements ImproveService{
 	public List<Improve> selectImproveListByUserDate(String userid, String ptype,String ctype, Date searchDate, Date lastdate, int pagesize) {
 		List<TimeLine> timeLines = timeLineDao.selectTimeListByUserAndTypeDate(userid,ctype, searchDate,lastdate,pagesize);
         List<Improve> improves = new ArrayList<>();
+        Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         for (int i = 0; i < timeLines.size() ; i++){
             TimeLine timeLine = timeLines.get(i);
             TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
@@ -1336,7 +1342,12 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
             improve.setBusinesstype(timeLineDetail.getBusinesstype());
+            if(userCollectImproveIds.contains(improve.getImpid().toString())){
+                improve.setHascollect("1");
+            }
+
             initImproveInfo(improve,Long.parseLong(userid));
+
             //初始化 赞 花 数量
             improve.setFlowers(timeLineDetail.getFlowers());
            //            initImproveLikeAndFlower(improve);
@@ -1370,7 +1381,8 @@ public class ImproveServiceImpl implements ImproveService{
         Long uid = Long.parseLong(userid);
         Set<String> friendids = this.userRelationService.getFriendIds(uid);
         Set<String> fansIds = this.userRelationService.getFansIds(uid);
-        Map<String, String> map = userRelationService.selectRemarkImpLine(Long.parseLong(userid));
+        Map<String, String> map = userRelationService.selectFriendRemarkList(Long.parseLong(userid));
+        Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
@@ -1401,21 +1413,17 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setDuration(timeLineDetail.getDuration());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
-                //获取好友昵称
-                String remark = "";
-                if(!map.isEmpty()){
-                	if(map.containsKey(userid + "_" + user.getId() + "_value")){
-                		remark = map.get(userid + "_" + user.getId() + "_value");
-                	}
+                if(map.containsKey(user.getId())){
+                    user.setNickname(map.get(user.getId()));
                 }
-//                String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(user.getId()));
-                if(StringUtils.isNotBlank(remark)){
-                    user.setNickname(remark);
-                }
+
                 improve.setAppUserMongoEntity(user);
                 if(!Constant.VISITOR_UID.equals(userid)){
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,fansIds);
                     initImproveInfo(improve,uid);
+                    if(userCollectImproveIds.contains(improve.getImpid().toString())){
+                        improve.setHascollect("1");
+                    }
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
@@ -1505,6 +1513,7 @@ public class ImproveServiceImpl implements ImproveService{
         if(null == improves || 0 == improves.size()){
             return;
         }
+        Set<String> improveIds = this.getUserCollectImproveId(userid);
         for (Improve improve : improves){
             if(improve == null){
                 continue;
@@ -1519,6 +1528,9 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
             //初始化是否 点赞 送花 送钻 收藏
             initIsOptionForImprove(userid,improve);
+            if(improveIds.contains(improve.getImpid().toString())){
+                improve.setHascollect("1");
+            }
         }
     }
 
@@ -1558,10 +1570,10 @@ public class ImproveServiceImpl implements ImproveService{
 	            return;
 	        }
 
-            if (fansids != null && fansids.contains(apuser.getUserid().toString())){
+            if (fansids != null && fansids.contains(apuser.getId())){
                 apuser.setIsfans("1");
             }
-	        if(friendids != null && friendids.contains(apuser.getUsername().toString())){
+	        if(friendids != null && friendids.contains(apuser.getId())){
 	            apuser.setIsfriend("1");
 	        }
 		}
@@ -1655,11 +1667,7 @@ public class ImproveServiceImpl implements ImproveService{
         initUserRelateInfo(userid,appUserMongoEntity);
         if(null != appUserMongoEntity){
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
-                //获取好友昵称
-                String remark = userRelationService.selectRemark(userid, improve.getUserid(), "0");
-                if(StringUtils.isNotBlank(remark)){
-                    appUserMongoEntity.setNickname(remark);
-                }
+                this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             }
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
@@ -1888,6 +1896,7 @@ public class ImproveServiceImpl implements ImproveService{
             userCollect.setBusinessid(businessid);
             int n = userCollectMapper.insert(userCollect);
             if(n == 1){
+                this.addUserCollectImproveId(userid,impid);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
@@ -1909,6 +1918,7 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             int n = userCollectMapper.removeCollect(Long.parseLong(userid),Long.parseLong(impid),buinesstype);
             if(n > 0){
+                this.deleteUserCollectImproveId(userid,impid);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch (Exception e){
@@ -2120,16 +2130,15 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<ImpAllDetail>>  baseResp = new BaseResp<>();
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
+            Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
+            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
             for (ImpAllDetail impAllDetail : impAllDetails) {
-            	//获取好友昵称
-                SnsFriends snsFriends = userRelationService.selectByUidAndFid(Long.parseLong(userid), impAllDetail.getUserid());
-//    			String remark = userRelationService.selectRemark(Long.parseLong(userid), impAllDetail.getUserid());
     			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid()));
     			if(null != appUserMongoEntity){
-                    if (null != snsFriends){
+                    if(friendIds.contains(appUserMongoEntity.getId())){
                         appUserMongoEntity.setIsfriend("1");
-                        if (!StringUtils.isBlank(snsFriends.getRemark())){
-                            appUserMongoEntity.setNickname(snsFriends.getRemark());
+                        if(friendRemark.containsKey(appUserMongoEntity.getId())){
+                            appUserMongoEntity.setNickname(friendRemark.get(appUserMongoEntity.getId()));
                         }
                     }
     				impAllDetail.setAppUser(appUserMongoEntity);
@@ -2652,7 +2661,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
-     * 是否 点赞 送花 送钻 收藏
+     * 是否 点赞 送花 送钻
      * @param userid
      * @param improve
      * @author luye
@@ -2722,7 +2731,7 @@ public class ImproveServiceImpl implements ImproveService{
 //        if (null != userCollects && userCollects.size() > 0 ){
 //            improve.setHascollect("1");
 //        }
-        isCollect(userid,improve);
+//        isCollect(userid,improve);
     }
 
 
@@ -2759,20 +2768,25 @@ public class ImproveServiceImpl implements ImproveService{
 
 
     private void isCollect(String userid,Improve improve){
-
-        String collectids = springJedisDao.get("userCollect"+userid);
-        improve.setHascollect("0");
-        if (StringUtils.isBlank(collectids)){
-            List<String> ids = userCollectMapper.selectCollectIdsByUser(userid);
-            springJedisDao.set("userCollect"+userid,JSON.toJSONString(ids),10);
-            if (ids.contains(String.valueOf(improve.getImpid()))){
-                improve.setHascollect("1");
-            }
-        } else {
-            if (collectids.contains(String.valueOf(improve.getImpid()))){
-                improve.setHascollect("1");
-            }
+        if(checkIsCollectImprove(userid,improve.getImpid().toString())){
+            improve.setHascollect("1");
+        }else{
+            improve.setHascollect("0");
         }
+
+//        String collectids = springJedisDao.get("userCollect"+userid);
+//        improve.setHascollect("0");
+//        if (StringUtils.isBlank(collectids)){
+//            Set<String> ids = userCollectMapper.selectCollectIdsByUser(userid);
+//            springJedisDao.set("userCollect"+userid,JSON.toJSONString(ids),10);
+//            if (ids.contains(String.valueOf(improve.getImpid()))){
+//                improve.setHascollect("1");
+//            }
+//        } else {
+//            if (collectids.contains(String.valueOf(improve.getImpid()))){
+//                improve.setHascollect("1");
+//            }
+//        }
     }
 
 
@@ -2840,13 +2854,13 @@ public class ImproveServiceImpl implements ImproveService{
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
+                if(checkIsCollectImprove(userid,impid)){
+                    improve.setHascollect("1");
+                }
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
                 //获取好友昵称
                 if (StringUtils.isNotBlank(userid)){
-                    String remark = userRelationService.selectRemark(Long.parseLong(userid), improve.getUserid(), "0");
-                    if(StringUtils.isNotEmpty(remark)){
-                        appUserMongoEntity.setNickname(remark);
-                    }
+                    this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
                     initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 }
                 improve.setAppUserMongoEntity(appUserMongoEntity);
@@ -3063,8 +3077,12 @@ public class ImproveServiceImpl implements ImproveService{
             if(null ==improves){
                 logger.warn("getImproveBytopicid return null");
             }
+            Set<String> improveIds = this.getUserCollectImproveId(userid);
             for (int i = 0; i <improves.size() ; i++) {
                 initImproveInfo(improves.get(i),userid);
+                if(improveIds.contains(improves.get(i).getImpid().toString())){
+                    improves.get(i).setHascollect("1");
+                }
             }
             return improves;
         }catch (Exception e){
@@ -3231,8 +3249,9 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
                     (null,null,startno,pagesize);
-            Map<String, String> map = userRelationService.selectRemarkImpLine(userid != null?Long.parseLong(userid):null);
+            Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
             if (null != timeLineDetails && timeLineDetails.size() != 0){
+                Set<String> improveIds = this.getUserCollectImproveId(userid);
                 for (int i = 0 ; i < timeLineDetails.size() ; i++){
                     TimeLineDetail timeLineDetail = timeLineDetails.get(i);
                     Improve improve = new Improve();
@@ -3247,19 +3266,19 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
 //                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     AppUserMongoEntity user = timeLineDetail.getUser();
-                    //获取好友昵称
-                    String remark = "";
-                    if(!map.isEmpty()){
-                        remark = map.get(userid + "_" + user.getId() + "_value");
+                    if(map.containsKey(user.getId())){
+                        user.setNickname(map.get(user.getId()));
                     }
-                    if(!StringUtils.isBlank(remark)){
-                        user.setNickname(remark);
-                    }
+
                     improve.setAppUserMongoEntity(user);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
                         improve.setAppUserMongoEntity(timeLineDetail.getUser());
                         initImproveInfo(improve,Long.parseLong(userid));
+
+                        if(improveIds.contains(improve.getImpid().toString())){
+                            improve.setHascollect("1");
+                        }
                     }
 
                     //初始化 赞 花 数量
@@ -3385,8 +3404,12 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
             if(ResultUtil.isSuccess(baseResp)) {
                 List<Improve> list = baseResp.getData();
+                Set<String> improveIds = this.getUserCollectImproveId(curuserid);
                 for (int i = 0; i < list.size(); i++) {
                     Improve improve = list.get(i);
+                    if(improveIds.contains(improve.getImpid().toString())){
+                        improve.setHascollect("1");
+                    }
                     initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
                     initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
                 }
@@ -3441,8 +3464,12 @@ public class ImproveServiceImpl implements ImproveService{
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
             List<Improve> list = baseResp.getData();
+            Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
+                if(userCollectImproveIds.contains(improve.getId().toString())){
+                    improve.setHascollect("1");
+                }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
                 initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
@@ -3606,6 +3633,7 @@ public class ImproveServiceImpl implements ImproveService{
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
+            Set<String> userCollectImroveIds = this.getUserCollectImproveId(userid);
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){
                     String []strattr = impid.split(",");
@@ -3622,6 +3650,9 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setAppUserMongoEntity(appuser);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         initUserRelateInfo(uid,appuser,friendids,funids);
+                        if(userCollectImroveIds.contains(improve.getImpid().toString())){
+                            improve.setHascollect("1");
+                        }
                         initImproveInfo(improve,uid);
                     }
                     improves.add(improve);
@@ -3691,4 +3722,135 @@ public class ImproveServiceImpl implements ImproveService{
         //添加进步之前的过滤
         return insertImproveFilter(businessid,userid,businesstype);
     }
+
+    /**
+     * 获取用户关注的所有进步id
+     * @param userid 用户id
+     * @return
+     */
+    @Override
+    public Set<String> getUserCollectImproveId(String userid) {
+        Set<String> improveIds = new HashSet<String>();
+        if(StringUtils.isEmpty(userid) || "-1".equals(userid)){
+            return improveIds;
+        }
+        improveIds = this.springJedisDao.members(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid);
+        if(improveIds == null || improveIds.size() == 0){
+            improveIds = initUserCollectImproveId(userid);
+        }
+        return improveIds;
+    }
+
+    /**
+     * 往redis中初始化用户收藏的进步id
+     * @param userid
+     * @return
+     */
+    private Set<String> initUserCollectImproveId(String userid){
+        Set<String> improveIds = this.userCollectMapper.selectCollectIdsByUser(userid);
+        if(improveIds == null){
+            improveIds = new HashSet<String>();
+        }
+        if(improveIds.size() == 0){
+            improveIds.add("0");//占位,下次再获取列表时,不用再重复去数据库获取
+        }
+        springJedisDao.sAdd(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid,(long)Constant.USER_RELATION_REDIS_CACHE_TIME*60,improveIds.toArray(new String[]{}));
+        return improveIds;
+    }
+
+    /**
+     * 获取用户关注的所有进步id
+     * @param userid 用户id
+     * @return
+     */
+    @Override
+    public Set<String> getUserCollectImproveId(Long userid) {
+        if(userid == null){
+            return new HashSet<String>();
+        }
+        return getUserCollectImproveId(userid.toString());
+    }
+
+    /**
+     * 判断用户是否收藏了该进步
+     * @param userid
+     * @param improveId
+     * @return
+     */
+    public boolean checkIsCollectImprove(String userid,String improveId){
+        if(StringUtils.isEmpty(userid) || StringUtils.isEmpty(improveId) || "-1".equals(userid)){
+            return false;
+        }
+        if(springJedisDao.hasKey(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid)){
+            return springJedisDao.sIsMember(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid,improveId);
+        }
+        Set<String> improveIds = this.initUserCollectImproveId(userid);
+        return improveIds.contains(improveId);
+    }
+
+    /**
+     * 判断用户是否收藏了改进步
+     * @param userid
+     * @param improveId
+     * @return
+     */
+    public boolean checkIsCollectImprove(Long userid,Long improveId){
+        if(userid == null || improveId == null){
+            return false;
+        }
+        return checkIsCollectImprove(userid.toString(),improveId.toString());
+    }
+
+    /**
+     * 添加redis中用户收藏的进步
+     */
+    @Override
+    public void addUserCollectImproveId(String userid,String improveId){
+        if(StringUtils.isEmpty(userid) || StringUtils.isEmpty(improveId)){
+            return ;
+        }
+        if(springJedisDao.hasKey(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid)){
+            springJedisDao.sAdd(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid,null,improveId);
+        }
+    }
+
+    /**
+     * 添加redis中用户收藏的进步
+     */
+    @Override
+    public void addUserCollectImproveId(Long userid,Long improveId){
+        if(userid == null || improveId == null){
+            return ;
+        }
+        addUserCollectImproveId(userid,improveId);
+    }
+
+    /**
+     * 删除redis中用户收藏的进步
+     * @param userid
+     * @param improveId
+     */
+    @Override
+    public void deleteUserCollectImproveId(String userid,String improveId){
+        if(StringUtils.isEmpty(userid) || StringUtils.isEmpty(improveId)){
+            return ;
+        }
+        if(springJedisDao.hasKey(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid)){
+            springJedisDao.sRem(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid,improveId);
+        }
+    }
+
+    /**
+     * 删除redis中用户收藏的进步
+     * @param userid
+     * @param improveId
+     */
+    @Override
+    public void deleteUserCollectImproveId(Long userid,Long improveId){
+        if(userid == null || improveId == null){
+            return ;
+        }
+        this.deleteUserCollectImproveId(userid.toString(),improveId.toString());
+    }
+
 }

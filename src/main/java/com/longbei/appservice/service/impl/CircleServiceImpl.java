@@ -200,17 +200,16 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             }
             Set<String> fansIds = this.userRelationService.getFansIds(userid);
             Set<String> friendIds = this.userRelationService.getFriendIds(userid);
+            Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
 
             for (CircleMembers circleMembers : circleMembersList) {
                 AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(String.valueOf(circleMembers.getUserid()));
                 if(userid != null && !userid.equals(circleMembers.getUserid())){
                     if(friendIds.contains(circleMembers.getUserid().toString())){
-                        SnsFriends snsFriends = this.friendService.getSnsFriend(userid,circleMembers.getUserid());
-                        if(snsFriends != null){
-                            if(StringUtils.isNotEmpty(snsFriends.getRemark())){
-                                appUserMongoEntity.setNickname(snsFriends.getRemark());
-                            }
-                            appUserMongoEntity.setIsfriend("1");
+                        appUserMongoEntity.setIsfriend("1");
+
+                        if(map.containsKey(circleMembers.getUserid().toString())){
+                            appUserMongoEntity.setNickname(friendRemark.get(circleMembers.getUserid().toString()));
                         }
                     }
                     appUserMongoEntity.setIsfans(fansIds.contains(circleMembers.getUserid().toString())?"1":"0");

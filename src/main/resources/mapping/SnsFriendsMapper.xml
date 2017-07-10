@@ -220,4 +220,19 @@
           and friendid=#{friendId}
   </update>
 
+  <!-- 根据userid获取好友列表 -->
+  <select id="selectFriendRemarkList" parameterType="map" resultMap="BaseResultMap">
+      select friendid,remark
+      from sns_friends
+      where
+        <if test="remarkIsNotNull != null">
+            remark is not NULL and
+        </if>
+        isdel = 0 AND
+        userid =#{userid}
+      <if test="startNum != null">
+          limit #{startNum},#{pageSize}
+      </if>
+  </select>
+
 </mapper>

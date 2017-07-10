@@ -34,7 +34,7 @@ public class GoalServiceImpl implements GoalService {
     @Autowired
     private ImproveGoalMapper improveGoalMapper;
     @Autowired
-    private FriendService friendService;
+    private UserRelationService userRelationService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
     @Autowired
@@ -184,7 +184,7 @@ public class GoalServiceImpl implements GoalService {
                     }
     			}
         		baseResp.setData(userGoal);
-                String nickname = this.friendService.getNickName(userid,userGoal.getUserid());
+                String nickname = this.userRelationService.getUserRemark(userid,userGoal.getUserid());
                 baseResp.getExpandData().put("nickname",nickname);
         	}else{
         		baseResp.setData(new UserGoal());

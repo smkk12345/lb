@@ -187,6 +187,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         try{
             UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
             if(null == userLevel){
+                logger.info("hasPrivilege userLevel is null and grade={}",userInfo.getGrade());
                 return baseResp.initCodeAndDesp();
             }
             switch (privilegeType){

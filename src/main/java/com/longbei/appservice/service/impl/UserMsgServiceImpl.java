@@ -1445,13 +1445,10 @@ public class UserMsgServiceImpl implements UserMsgService {
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg, long userid){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
-			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userMsg.getFriendid(), "0");
+
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
 			if(null != appUserMongoEntity){
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
+				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 				userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 			}else{
 				userMsg.setAppUserMongoEntityFriendid(new AppUserMongoEntity());

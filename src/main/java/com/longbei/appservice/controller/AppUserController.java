@@ -426,7 +426,7 @@ public class AppUserController extends BaseController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         if(!StringUtils.hasBlankParams(nickname)){
-            if(nickname.length() > 13){
+            if(nickname.length() > 26||nickname.length() < 2){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
             }
         }
@@ -486,6 +486,11 @@ public class AppUserController extends BaseController {
             if(isJump){
                 baseResp = userService.updateNickName(userid, "", "","","");
             }else{
+                if(!StringUtils.hasBlankParams(nickname)){
+                    if(nickname.length() > 26||nickname.length() < 2){
+                        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
+                    }
+                }
     		    baseResp = userService.updateNickName(userid, nickname, inviteusername,sex,pl);
             }
 		} catch (Exception e) {

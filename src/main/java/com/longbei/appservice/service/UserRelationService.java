@@ -33,15 +33,6 @@ public interface UserRelationService {
 	String selectRemark(Long userid, Long friendid, String isdel);
 	
 	/**
-	* @Title: selectRemark 
-	* @Description: 获取好友备注信息---redis
-	* @param @param userid
-	* @param @param friendid
-	* @return Map<String,String>    返回类型
-	 */
-	Map<String,String> selectRemarkImpLine(Long userid);
-	
-	/**
 	* @Title: insertFriend
 	* @Description: 添加好友
 	* @param @param userid
@@ -180,7 +171,25 @@ public interface UserRelationService {
 	 * @param userid
 	 * @return
 	 */
+	Set<String> getFriendIds(String userid);
+	//功能同上面的方法
 	Set<String> getFriendIds(Long userid);
+
+	/**
+	 * redis缓存的好友id列表中 添加好友id
+	 * @desc 往userid中插入friendid时 也同时会往friendid的好友id列表中插入userid
+	 * @param userid 当前登录用户id
+	 * @param friendId 好友id
+     */
+	void addFriendId(Long userid,Long friendId);
+
+	/**
+	 * 刪除redis中緩存的用戶id
+	 * @desc 删除userid中的friendid时,同时也会删除friendid中缓存的userid
+	 * @param userid 当前登录用户id
+	 * @param friendid 好友的id
+     */
+	void deleteFriendId(Long userid,Long friendid);
 
 	/**
 	 * 判断是否是好友
@@ -198,6 +207,20 @@ public interface UserRelationService {
 	Set<String> getFansIds(Long userid);
 
 	/**
+	 * redis中 添加关注的用户id
+	 * @param userid 当前登录用户id
+	 * @param likeFansId 被关注的用户id
+     */
+	void addFansId(Long userid,Long likeFansId);
+
+	/**
+	 * redis中 删除用户 关注的用户id
+	 * @param userid
+	 * @param likeUserId
+     */
+	void deleteFansId(Long userid,Long likeUserId);
+
+	/**
 	 * 判断是否已经关注该用户
 	 * @param userid 当前登录用户id
 	 * @param fansid
@@ -205,4 +228,53 @@ public interface UserRelationService {
      */
 	boolean checkIsFans(Long userid,Long fansid);
 
+	/**
+	 * @Title: 获取用户备注的好友 列表
+	 * @Description: 只会获取用户已经备注的好友
+	 * @param @param userid
+	 * @return Map<String1,String2>    返回类型 String1:好友的id String2备注的昵称
+	 */
+	Map<String,String> selectFriendRemarkList(String userid);
+	//功能同上面方法,传入的参数数据格式不一样 只是为了兼容更多接口
+	Map<String,String> selectFriendRemarkList(Long userid);
+
+	/**
+	 * 更改用户的备注 昵称
+	 * @param currentUserId 当前登录用户id
+	 * @param appUserMongoEntity 用户信息
+     * @return
+     */
+	void updateFriendRemark(String currentUserId, AppUserMongoEntity appUserMongoEntity);
+	//功能同上面接口
+	void updateFriendRemark(Long currentUserId, AppUserMongoEntity appUserMongoEntity);
+
+	/**
+	 * 获取好友的备注昵称
+	 * @param currentUserId
+	 * @param friendId
+     * @return
+     */
+	String getUserRemark(String currentUserId,String friendId);
+	//功能同以上方法
+	String getUserRemark(Long currentUserId,Long friendId);
+
+	/**
+	 * 添加/更改 用户 在redis中缓存的昵称
+	 * @param currentUserId 当前登录用户id
+	 * @param friendId 好友id
+	 * @param remark 备注名字
+     * @return
+     */
+	void addOrUpdateUserRemark(String currentUserId,String friendId,String remark);
+	//功能同以上方法
+	void addOrUpdateUserRemark(Long currentUserId,Long friendId,String remark);
+
+	/**
+	 * 刪除好友备注
+	 * @param currentUserId 当前登录用户id
+	 * @param friendId 好友id
+     */
+	void deleteUserRemark(String currentUserId,String friendId);
+	//同以上方法
+	void deleteUserRemark(Long currentUserId,Long friendId);
 }
