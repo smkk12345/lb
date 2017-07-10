@@ -3467,7 +3467,7 @@ public class ImproveServiceImpl implements ImproveService{
             Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
-                if(userCollectImproveIds.contains(improve.getId().toString())){
+                if(userCollectImproveIds.contains(improve.getImpid().toString())){
                     improve.setHascollect("1");
                 }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
