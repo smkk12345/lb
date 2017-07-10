@@ -735,6 +735,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             map.put("isdel","0");
             map.put("pageSize",pageSize);
             int totalCount = 0;
+            logger.info("selectRankListCount before map={}",JSONObject.fromObject(map).toString());
             if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
                  totalCount = rankMapper.selectRankListCount(map);
             }
@@ -744,6 +745,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else{
                 ranks =rankMapper.selectRankList(map);
             }
+            logger.info("selectRankListCountis={},selectRankList.size={}",totalCount,ranks.size());
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     rank1.setHasjoin("0");
