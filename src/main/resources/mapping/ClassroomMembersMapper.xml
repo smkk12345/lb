@@ -45,7 +45,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom_members
-    where classroomid = #{classroomid} 
+    where classroomid = #{classroomMembers.classroomid} 
     and itype = 0 
     <if test="classroomMembers.cusername != null and classroomMembers.cusername != ''" >
       	and cusername LIKE concat(concat('%',#{classroomMembers.cusername}),'%')
@@ -65,7 +65,7 @@
   <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.ClassroomMembers" resultType="java.lang.Integer" >
     select count(*) 
     from classroom_members
-    where classroomid = #{classroomid} 
+    where classroomid = #{classroomMembers.classroomid} 
     and itype = 0 
     <if test="classroomMembers.cusername != null and classroomMembers.cusername != ''" >
       	and cusername LIKE concat(concat('%',#{classroomMembers.cusername}),'%')
