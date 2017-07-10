@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.awt.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
@@ -552,4 +553,38 @@ public interface ImproveService {
 
     BaseResp<Object> improvevalidate(String userid,String brief,String businessid,String businesstype);
 
+    /**
+     * 获取用户关注的进步id
+     * @param userid 用户id
+     * @return
+     */
+    Set<String> getUserCollectImproveId(String userid);
+    //功能同以上方法
+    Set<String> getUserCollectImproveId(Long userid);
+
+    /**
+     * 判断用户是否收藏了该进步
+     * @param userid
+     * @param improveId
+     * @return
+     */
+    boolean checkIsCollectImprove(String userid,String improveId);
+    //功能同以上方法
+    boolean checkIsCollectImprove(Long userid,Long improveId);
+
+    /**
+     * 添加redis中用户收藏的进步
+     */
+    void addUserCollectImproveId(String userid,String improveId);
+    //功能同上面方法
+    void addUserCollectImproveId(Long userid,Long improveId);
+
+    /**
+     * 删除redis中用户收藏的进步
+     * @param userid
+     * @param improveId
+     */
+    void deleteUserCollectImproveId(String userid,String improveId);
+    //功能同上面方法
+    void deleteUserCollectImproveId(Long userid,Long improveId);
 }

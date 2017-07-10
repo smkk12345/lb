@@ -845,19 +845,17 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return springJedisDao.sIsMember(Constant.USER_FRIEND_REDIS_KEY+userid,friendid.toString());
 		}
 		Set<String> friendIds = this.initUserRedisFriendIds(userid.toString());
-		if(friendIds.contains(friendid.toString())){
-			return true;
-		}
-		return false;
+		return friendIds.contains(friendid.toString());
 	}
 
 	//redis中初始化用户的好友id列表
 	private Set<String> initUserRedisFriendIds(String userid){
 		Set<String> friendids = snsFriendsMapper.selectListidByUid(userid);
-		if(friendids.size() > 0){
-			springJedisDao.sAdd(Constant.USER_FRIEND_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),friendids.toArray(new String[]{}));
+		if(friendids.size() == 0){
+			friendids.add("0");//占位 防止下次加载时,再重复从数据库获取加载数据
 		}
-		return friendids == null?new HashSet<String>():friendids;
+		springJedisDao.sAdd(Constant.USER_FRIEND_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),friendids.toArray(new String[]{}));
+		return friendids;
 	}
 
 	/**
@@ -867,23 +865,61 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 */
 	@Override
 	public Set<String> getFansIds(Long userid){
+		if(null == userid){
+			return new HashSet<>();
+		}
+		return getFansIds(userid.toString());
+	}
+
+	@Override
+	public Set<String> getFansIds(String userid){
 		Set<String> fansIds = new HashSet<>();
-		if(userid == null || "-1".equals(userid.toString())){
+		if(userid == null || "-1".equals(userid)){
 			return fansIds;
 		}
 		fansIds = springJedisDao.members(Constant.USER_FANS_REDIS_KEY+userid);
 		if (fansIds == null || fansIds.size() == 0){
-			fansIds = this.initUserRedisFansIds(userid);
+			fansIds = this.initUserRedisFansIds(Long.parseLong(userid));
+		}
+		return fansIds;
+	}
+
+	/**
+	 * 获取粉丝列表
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public Set<String> getBeFansedIds(String userid){
+		Set<String> fansIds = new HashSet<>();
+		if(userid == null || "-1".equals(userid)){
+			return fansIds;
+		}
+		fansIds = springJedisDao.members(Constant.USER_BEFANSED_REDIS_KEY+userid);
+		if (fansIds == null || fansIds.size() == 0){
+			fansIds = this.initUserRedisBeFansIds(Long.parseLong(userid));
 		}
 		return fansIds;
 	}
 
 	private Set<String> initUserRedisFansIds(Long userid){
 		Set<String> fansIds = snsFansMapper.selectListidByUid(userid);
-		if(fansIds.size() > 0){
-			springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),fansIds.toArray(new String[]{}));
+
+		if(fansIds.size() == 0){
+			fansIds.add("0");//占位 防止下次重复加载
 		}
+		springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),fansIds.toArray(new String[]{}));
 		return fansIds;
+	}
+
+	private Set<String> initUserRedisBeFansIds(Long userid){
+		Set<String> beFansIds = snsFansMapper.selectListidByLikeUid(userid);
+
+		if(beFansIds.size() == 0){
+			beFansIds.add("0");//占位 防止下次重复加载
+		}
+		springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),beFansIds.toArray(new String[]{}));
+		return beFansIds;
 	}
 
 	/**
@@ -931,10 +967,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 
 		Set<String> fansIds = this.initUserRedisFansIds(userid);
-		if(fansIds.contains(fansid.toString())){
-			return true;
-		}
-		return false;
+		return fansIds.contains(fansid.toString());
 	}
 
 	/**
@@ -978,9 +1011,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 			for(SnsFriends snsFriends:snsFriendsList){
 				map.put(snsFriends.getFriendid().toString(),snsFriends.getRemark());
 			}
-			springJedisDao.putAll(Constant.USER_REMARK_REDIS_KEY + userid, map, 60*Constant.USER_RELATION_REDIS_CACHE_TIME);
 		}
-		return map == null?new HashMap<String,String>():map;
+		if(snsFriendsList.size() == 0){
+			map.put("0","1");
+		}
+		springJedisDao.putAll(Constant.USER_REMARK_REDIS_KEY + userid, map, 60*Constant.USER_RELATION_REDIS_CACHE_TIME);
+		return map;
 	}
 
 	/**

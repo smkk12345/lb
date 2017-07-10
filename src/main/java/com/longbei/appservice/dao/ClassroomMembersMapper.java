@@ -30,6 +30,20 @@ public interface ClassroomMembersMapper {
     
     /**
 	 * @author yinxc
+	 * 获取教室成员列表---(剔除   退出教室的)
+	 * 2017年7月7日
+	 * param classroom
+	 */
+    List<ClassroomMembers> selectSearchList(@Param("classroomMembers") ClassroomMembers classroomMembers, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取Count
+     */
+    Integer selectSearchCount(@Param("classroomMembers") ClassroomMembers classroomMembers);
+    
+    /**
+	 * @author yinxc
 	 * 获取我加入的教室成员列表---(剔除   退出教室的)
 	 * 2017年2月28日
 	 * param classroomid 教室id
@@ -63,6 +77,18 @@ public interface ClassroomMembersMapper {
 	 */
     int updateItypeByClassroomidAndUserid(@Param("classroomid") long classroomid, 
     		@Param("userid") long userid, @Param("itype") String itype);
+    
+    /*
+     * 递增教室成员发进步总数
+     */
+    int updateIcountByCidAndUid(@Param("classroomid") long classroomid, 
+    		@Param("userid") long userid, @Param("icount") int icount);
+    
+    /*
+     * 递增教室成员投诉总数
+     */
+    int updateCompcountByCidAndUid(@Param("classroomid") long classroomid, 
+    		@Param("userid") long userid, @Param("complaintotalcount") int complaintotalcount);
     
     /**
 	 * @author yinxc

@@ -110,8 +110,7 @@ public interface ClassroomMapper {
     /*
      * 获取count
      */
-    Integer selectCount(@Param("isup") String isup,  @Param("isdel") String isdel, 
-    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    Integer selectCount(@Param("isup") String isup,  @Param("isdel") String isdel);
     
     /**
 	 * @author yinxc

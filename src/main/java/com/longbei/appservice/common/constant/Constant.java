@@ -23,11 +23,14 @@ public class Constant {
 	public static final int USER_RELATION_REDIS_CACHE_TIME = 15;
 	//redis中 缓存用户昵称的key 前缀
 	public static final String USER_REMARK_REDIS_KEY = "friendRemark_";
-	//redis中 缓存用户所有粉丝id的key 前缀
+	//redis中 缓存用户所有关注id的key 前缀
 	public static final String USER_FANS_REDIS_KEY = "userFans";
+	//redis中 缓存用户所有粉丝id的key 前缀
+	public static final String USER_BEFANSED_REDIS_KEY = "userBeFansed";
 	//reids中 缓存用户所有好友id的key 前缀
 	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
-
+	//redis中 缓存用户收藏的所有进步id 前缀
+	public static final String USER_Collect_IMPROVE_REDIS_KEY = "userCollectImprove";
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 
@@ -568,6 +571,7 @@ public class Constant {
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
+	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,已被请下教室"; //教室
 	
 	
 	

@@ -41,6 +41,8 @@ public class SysRules {
 	private int liked;//	被点赞送积分数
 	private int flowered;//被送花积分数
 
+	private int shareMaxCount = 20;//单次分享的最大个数限制
+
 
 	public void setAddimprove(int addimprove) {
 		this.addimprove = addimprove;
@@ -258,4 +260,13 @@ public class SysRules {
 	public void setFlowered(int flowered) {
 		this.flowered = flowered;
 	}
+
+	public void setShareMaxCount(int shareMaxCount) {
+		this.shareMaxCount = shareMaxCount;
+	}
+
+	public int getShareMaxCount() {
+		return shareMaxCount;
+	}
+
 }

@@ -729,7 +729,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
 		Page<Classroom> page = new Page<>(startNum,endNum);
         try {
-            int totalcount = classroomMapper.selectCount(isup, isdel, startNum, endNum);
+            int totalcount = classroomMapper.selectCount(isup, isdel);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);
             List<Classroom> list = classroomMapper.selectClassroomList(isup, isdel, startNum, endNum);
             if(null != list && list.size()>0){
