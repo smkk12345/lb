@@ -867,13 +867,21 @@ public class UserRelationServiceImpl implements UserRelationService {
 	 */
 	@Override
 	public Set<String> getFansIds(Long userid){
+		if(null == userid){
+			return new HashSet<>();
+		}
+		return getFansIds(userid.toString());
+	}
+
+	@Override
+	public Set<String> getFansIds(String userid){
 		Set<String> fansIds = new HashSet<>();
-		if(userid == null || "-1".equals(userid.toString())){
+		if(userid == null || "-1".equals(userid)){
 			return fansIds;
 		}
 		fansIds = springJedisDao.members(Constant.USER_FANS_REDIS_KEY+userid);
 		if (fansIds == null || fansIds.size() == 0){
-			fansIds = this.initUserRedisFansIds(userid);
+			fansIds = this.initUserRedisFansIds(Long.parseLong(userid));
 		}
 		return fansIds;
 	}

@@ -206,6 +206,8 @@ public interface UserRelationService {
 	 */
 	Set<String> getFansIds(Long userid);
 
+	Set<String> getFansIds(String userid);
+
 	/**
 	 * redis中 添加关注的用户id
 	 * @param userid 当前登录用户id
