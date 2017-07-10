@@ -992,6 +992,13 @@ public class ImproveServiceImpl implements ImproveService{
                     baseResp = removeRankImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
+                	//更新教室成员  总赞，总花
+                	int likes = getLikeFromRedis(improveid, businessid, Constant.IMPROVE_CLASSROOM_TYPE);
+                	likes = 0 - likes;
+                	int flowers = improves.getFlowers();
+                	flowers = 0 - flowers;
+                	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), likes, flowers);
+                	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
@@ -1216,6 +1223,7 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<Object> baseResp = new BaseResp<>();
         int res = 0;
         try {
+        	
             res = improveClassroomMapper.remove(userid,classroomid,improveid);
         } catch (Exception e) {
             logger.error("remove rank immprove: classroomid:{} improveid:{} userid:{} is error:{}",
