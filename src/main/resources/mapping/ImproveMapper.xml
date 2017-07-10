@@ -610,7 +610,7 @@
     ir.ispublic,ir.sourcekey,ir.complaincount,ir.duration,ir.isbusinessdel,ir.picattribute,
     rm.likes as totallikes,rm.flowers as totalflowers,rm.sortnum
     FROM
-    rank_members rm LEFT JOIN improve_rank ir
+    rank_members rm JOIN improve_rank ir
     ON rm.rankid = ir.businessid AND rm.userid=ir.userid AND ir.ismainimp='1'
     WHERE
      ir.userid = #{userid} AND ir.businessid = #{businessid}
@@ -626,7 +626,7 @@
     ir.ispublic,ir.sourcekey,ir.complaincount,ir.duration,ir.isbusinessdel,ir.picattribute,
     rm.likes as totallikes,rm.flowers as totalflowers,rm.sortnum
     FROM
-    rank_members rm LEFT JOIN improve_rank ir
+    rank_members rm JOIN improve_rank ir
     ON rm.rankid = ir.businessid AND rm.userid=ir.userid AND ir.ismainimp='1'
     WHERE
     rm.rankid = #{rankid}
