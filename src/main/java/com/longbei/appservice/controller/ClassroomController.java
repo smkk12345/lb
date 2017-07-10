@@ -402,7 +402,7 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomMembers")
-    public BaseResp<List<ClassroomMembers>> selectRoomMembers(String classroomid, int startNo, int pageSize) {
+    public BaseResp<List<ClassroomMembers>> selectRoomMembers(String classroomid, Integer startNo, Integer pageSize) {
 		logger.info("selectRoomMembers classroomid={},startNo={},pageSize={}",
 				classroomid,startNo,pageSize);
 		BaseResp<List<ClassroomMembers>> baseResp = new BaseResp<>();
@@ -410,7 +410,15 @@ public class ClassroomController {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
+			int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+			int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+			if(null != startNo){
+				sNo = startNo.intValue();
+			}
+			if(null != pageSize){
+				sSize = pageSize.intValue();
+			}
+  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectRoomMembers classroomid = {}, startNo = {}, pageSize = {}",
   					classroomid, startNo, pageSize, e);

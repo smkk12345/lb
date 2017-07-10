@@ -162,6 +162,16 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	public ClassroomMembers selectListByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		try {
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, itype);
+			if(null != classroomMembers){
+				String cnickname = "";
+				if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
+		    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
+		    		if(null != appUserMongoEntity){
+		    			cnickname = appUserMongoEntity.getNickname();
+		    		}
+		    	}
+				classroomMembers.setCnickname(cnickname);
+			}
 			return classroomMembers;
 		} catch (Exception e) {
 			logger.error("selectListByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
