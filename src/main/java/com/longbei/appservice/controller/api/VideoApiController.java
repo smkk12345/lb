@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Video;
@@ -24,21 +25,20 @@ public class VideoApiController {
 
     /**
      * 获取视频分类的列表
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
     @RequestMapping(value="getVideoClassifyList")
-    public BaseResp<List<VideoClassify>> getVideoClassifyList(Integer startNum, Integer pageSize){
+    public BaseResp<Page<VideoClassify>> getVideoClassifyList(String keyword,Integer pageNo, Integer pageSize){
         BaseResp<List<VideoClassify>> baseResp = new BaseResp<List<VideoClassify>>();
-        if(startNum == null){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        if(pageNo == null){
+            pageNo = 1;
         }
         if(pageSize == null){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-
-        return this.videoService.getVideoClassifyList(startNum,pageSize);
+        return this.videoService.getVideoClassifyList(keyword,pageNo,pageSize);
     }
 
     /**
@@ -236,5 +236,18 @@ public class VideoApiController {
             return new BaseResp<List<Video>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         return this.videoService.loadRelevantVideo(videoId);
+    }
+
+    /**
+     * 点赞
+     * @param videoId
+     * @return
+     */
+    @RequestMapping(value="addLike",produces = "application/json")
+    public BaseResp<Object> addLike(Integer videoId){
+        if(videoId == null){
+            return new BaseResp<List<Video>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.videoService.addLike(videoId);
     }
 }

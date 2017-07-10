@@ -238,12 +238,23 @@ public class SpringJedisDao {
 //        return null;
 //    }
     //---------------------set---------------------//
-    public long sAdd(String key,String... values){
+
+    /**
+     * 往redis中放入set
+     * @param key
+     * @param time 过期时间 可传null null代表不设置过期时间
+     * @param values
+     * @return
+     */
+    public long sAdd(String key,Long time,String... values){
         try{
             SetOperations<String,String> setOperations = redisTemplate.opsForSet();
             //the number of elements that were added to the set,
             // not including all the elements already present into the set.
             long n = setOperations.add(key,values);
+            if(time != null){
+                expire(key,time);
+            }
             return n;
         }catch (Exception e){
             logger.error("redis set add error ",e);

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.ModuleMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.Module" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="moduleid" property="moduleid" jdbcType="VARCHAR" />
+    <result column="modulename" property="modulename" jdbcType="VARCHAR" />
+    <result column="modulepic" property="modulepic" jdbcType="VARCHAR" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="remarker" property="remarker" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, moduleid, modulename,modulepic , sortnum, remarker, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from module
+    where id = #{id,jdbcType=INTEGER}
+      and moduleid = #{moduleid,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from module
+    ORDER BY sortnum ASC
+  </select>
+
+
+  <delete id="deleteByPrimaryKey"  >
+    delete from module
+    where id = #{id,jdbcType=INTEGER}
+      and moduleid = #{moduleid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.Module" >
+    insert into module (id, moduleid, modulename, 
+      sortnum, remarker, createtime, 
+      updatetime)
+    values (#{id,jdbcType=INTEGER}, #{moduleid,jdbcType=VARCHAR}, #{modulename,jdbcType=VARCHAR}, 
+      #{sortnum,jdbcType=INTEGER}, #{remarker,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Module" >
+    insert into module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="moduleid != null" >
+        moduleid,
+      </if>
+      <if test="modulename != null" >
+        modulename,
+      </if>
+      <if test="sortnum != null" >
+        sortnum,
+      </if>
+      <if test="remarker != null" >
+        remarker,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="moduleid != null" >
+        #{moduleid,jdbcType=VARCHAR},
+      </if>
+      <if test="modulename != null" >
+        #{modulename,jdbcType=VARCHAR},
+      </if>
+      <if test="sortnum != null" >
+        #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="remarker != null" >
+        #{remarker,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Module" >
+    update module
+    <set >
+      <if test="modulename != null" >
+        modulename = #{modulename,jdbcType=VARCHAR},
+      </if>
+      <if test="sortnum != null" >
+        sortnum = #{sortnum,jdbcType=INTEGER},
+      </if>
+      <if test="remarker != null" >
+        remarker = #{remarker,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+      and moduleid = #{moduleid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Module" >
+    update module
+    set modulename = #{modulename,jdbcType=VARCHAR},
+      sortnum = #{sortnum,jdbcType=INTEGER},
+      remarker = #{remarker,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+      and moduleid = #{moduleid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,138 @@
+package com.longbei.appservice.entity;
+
+import java.util.Date;
+import java.util.List;
+
+public class Seminar {
+    /**
+     * 
+     */
+    private Integer id;
+
+    /**
+     * 专题id
+     */
+    private Long seminarid;
+
+    /**
+     * 专题封面图
+     */
+    private String seminarpic;
+
+    /**
+     * 专题标题
+     */
+    private String seminartitle;
+
+    /**
+     * 分享简介
+     */
+    private String sharebrief;
+
+    /**
+     * 专题标签
+     */
+    private String seminartarget;
+
+    /**
+     * 创建人id
+     */
+    private String createuserid;
+
+    /**
+     * 创建时间
+     */
+    private Date createtime;
+
+    /**
+     * 
+     */
+    private Date updatetime;
+
+
+    /**
+     * 专题所关联模块
+     */
+    private List<SeminarModule> seminarModules;
+
+
+    public List<SeminarModule> getSeminarModules() {
+        return seminarModules;
+    }
+
+    public void setSeminarModules(List<SeminarModule> seminarModules) {
+        this.seminarModules = seminarModules;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Long getSeminarid() {
+        return seminarid;
+    }
+
+    public void setSeminarid(Long seminarid) {
+        this.seminarid = seminarid;
+    }
+
+    public String getSeminarpic() {
+        return seminarpic;
+    }
+
+    public void setSeminarpic(String seminarpic) {
+        this.seminarpic = seminarpic == null ? null : seminarpic.trim();
+    }
+
+    public String getSeminartitle() {
+        return seminartitle;
+    }
+
+    public void setSeminartitle(String seminartitle) {
+        this.seminartitle = seminartitle == null ? null : seminartitle.trim();
+    }
+
+    public String getSharebrief() {
+        return sharebrief;
+    }
+
+    public void setSharebrief(String sharebrief) {
+        this.sharebrief = sharebrief == null ? null : sharebrief.trim();
+    }
+
+    public String getSeminartarget() {
+        return seminartarget;
+    }
+
+    public void setSeminartarget(String seminartarget) {
+        this.seminartarget = seminartarget == null ? null : seminartarget.trim();
+    }
+
+    public String getCreateuserid() {
+        return createuserid;
+    }
+
+    public void setCreateuserid(String createuserid) {
+        this.createuserid = createuserid == null ? null : createuserid.trim();
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+}

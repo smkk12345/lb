@@ -41,7 +41,7 @@ public class Classroom {
     
     private long cardid; //名片id
     
-    private Integer charge;  //课程价格
+    private Integer charge = 0;  //课程价格
     
     private String isfree; //是否免费。0 免费 1 收费
     
@@ -54,6 +54,16 @@ public class Classroom {
     private String isrecommend; //是否推荐。0 - 没有推荐 1 - 推荐   默认0
     
     private String isup; // 0 - 未发布 。1 --已发布    默认0
+    
+    private String cusername; //创建人手机号
+    
+    private Date closedate; //关闭时间
+    
+    private String closeremark; //关闭原因
+    
+    private String syllabus; //课程大纲
+    
+    private String crowd; //适合人群
     
     //----------------扩展字段--------------------------
     
@@ -441,6 +451,48 @@ public class Classroom {
 
 	public void setClasstype(String classtype) {
 		this.classtype = classtype;
+	}
+
+	public String getCusername() {
+		return cusername;
+	}
+
+	public void setCusername(String cusername) {
+		this.cusername = cusername;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public Date getClosedate() {
+		return closedate;
+	}
+
+	public void setClosedate(Date closedate) {
+		this.closedate = closedate;
+	}
+
+	public String getCloseremark() {
+		return closeremark;
+	}
+
+	public void setCloseremark(String closeremark) {
+		this.closeremark = closeremark;
+	}
+
+	public String getSyllabus() {
+		return syllabus;
+	}
+
+	public void setSyllabus(String syllabus) {
+		this.syllabus = syllabus;
+	}
+
+	public String getCrowd() {
+		return crowd;
+	}
+
+	public void setCrowd(String crowd) {
+		this.crowd = crowd;
 	}
 
 }

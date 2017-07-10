@@ -337,17 +337,15 @@ public class CommentMongoServiceImpl implements CommentMongoService {
      */
     private void initCommentLowerUserInfoList(List<CommentLower> lowers, String friendid){
     	if(null != lowers && lowers.size()>0){
+			Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(friendid);
     		for (CommentLower commentLower : lowers) {
     			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
 					if(StringUtils.isEmpty(friendid)){
 						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
 						commentLower.setSecondNickname(appUserMongoEntity.getNickname());
 					}else{
-						//获取好友昵称
-						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
-								Long.parseLong(commentLower.getSeconduserid()), "0");
-						if(StringUtils.isNotEmpty(remark)){
-							commentLower.setSecondNickname(remark);
+						if(friendRemark.containsKey(commentLower.getSeconduserid())){
+							commentLower.setSecondNickname(friendRemark.get(commentLower.getSeconduserid()));
 						}else{
 							AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
 							commentLower.setSecondNickname(appUserMongoEntity.getNickname());
@@ -359,11 +357,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 						AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
 						commentLower.setFirstNickname(appUserMongo.getNickname());
 					}else{
-						//获取好友昵称
-						String remark = userRelationService.selectRemark(Long.parseLong(friendid),
-								Long.parseLong(commentLower.getFirstuserid()), "0");
-						if(StringUtils.isNotEmpty(remark)){
-							commentLower.setFirstNickname(remark);
+						if(friendRemark.containsKey(commentLower.getFirstuserid())){
+							commentLower.setFirstNickname(friendRemark.get(commentLower.getFirstuserid()));
 						}else{
 							AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
 							commentLower.setFirstNickname(appUserMongo.getNickname());
@@ -382,11 +377,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
         if(null != appUserMongoEntity){
 			if(StringUtils.isNotEmpty(friendid)){
-				//获取好友昵称
-				String remark = userRelationService.selectRemark(Long.parseLong(friendid), Long.parseLong(comment.getUserid()), "0");
-				if(StringUtils.isNotEmpty(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
+				this.userRelationService.updateFriendRemark(friendid,appUserMongoEntity);
 			}
         	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
         }else{

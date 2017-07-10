@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
@@ -573,7 +574,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "2", "14", "教室发布最新公告", 0, "", "");
+									"", "12", classroomid + "", remark, "0", "14", "教室发布最新公告", 0, "", "");
 //							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
 						}
 					}
@@ -588,7 +589,62 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	@Override
+	public BaseResp<Object> closeRoom(long classroomid, String closeremark){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.updateIsdel(classroomid, closeremark, DateUtils.formatDateTime1(new Date()));
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(temp > 0){
+				//关闭教室，教室成员下教室
+				List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
+				if(null != list && list.size()>0){
+					for (ClassroomMembers classroomMembers : list) {
+						//退出教室
+						classroomMembersMapper.updateItypeByClassroomidAndUserid(classroomid, classroomMembers.getUserid(), "1");
+						//发通知消息
+						String remark = "您参加的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
+                        userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomMembers.getUserid().toString(),
+                                "", "12",
+                                classroomid + "", remark, "0", "54", "教室关闭", 0, "", "");
+					}
+				}
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("closeRoom classroomid = {}, closeremark = {}", 
+					classroomid, closeremark, e);
+		}
+		return reseResp;
+	}
 	
+	@Override
+	public BaseResp<Object> delRoom(long classroomid){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.deleteByPrimaryKey(classroomid);
+			if(temp > 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("delRoom classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+	
+	@Override
+	public BaseResp<Object> uproom(long classroomid){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomMapper.updateIsup(classroomid);
+			if(temp > 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("uproom classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
 	
 	/**
 	 * @author yinxc
@@ -673,7 +729,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
 		Page<Classroom> page = new Page<>(startNum,endNum);
         try {
-            int totalcount = classroomMapper.selectCount(isup, isdel, startNum, endNum);
+            int totalcount = classroomMapper.selectCount(isup, isdel);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);
             List<Classroom> list = classroomMapper.selectClassroomList(isup, isdel, startNum, endNum);
             if(null != list && list.size()>0){
@@ -714,6 +770,62 @@ public class ClassroomServiceImpl implements ClassroomService {
         } catch (Exception e) {
             logger.error("selectPcClassroomList for adminservice isup = {}, isdel = {}, startNum = {}, pageSize = {}",
   					isup, isdel, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+	
+	/**
+	 * @author yinxc
+	 * 获取教室信息
+	 * param pageNo   pageSize
+	 * 2017年2月28日
+	 */
+	@Override
+	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
+		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
+		Page<Classroom> page = new Page<>(startNum,endNum);
+        try {
+            int totalcount = classroomMapper.selectSearchCount(classrooms);
+//            startNum = Page.setPageNo(startNum,totalcount,endNum);
+            List<Classroom> list = classroomMapper.selectSearchList(classrooms, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (Classroom classroom : list) {
+					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+					classroom.setUserCard(userCard);
+					//教室总进步数量
+					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					classroom.setAllimp(allimp);
+					//教室课程数量
+					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+					classroom.setAllcourses(allcourses);
+					//获取创建人信息
+					String nickname = "";
+					//sourcetype  0:运营  1:app  2:商户
+					if("1".equals(classroom.getSourcetype())){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+						nickname = appUserMongoEntity.getNickname();
+					}
+					classroom.setNickname(nickname);
+					//获取评论总数
+					int commentNum = 0;
+					BaseResp<Integer> resResp = commentMongoService.selectCommentCountSum
+							(String.valueOf(classroom.getClassroomid()), "12", "");
+					if (ResultUtil.isSuccess(resResp)){
+						commentNum = resResp.getData();
+			        }
+					classroom.setCommentNum(commentNum);
+					//获取提问答疑总数
+					Long questionsNum = classroomQuestionsMongoService.selectCountQuestions(String.valueOf(classroom.getClassroomid()));
+					classroom.setQuestionsNum(questionsNum);
+            	}
+            }
+            page.setTotalCount(totalcount);
+            page.setList(list);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("selectPcSearchClassroomList for adminservice classroom, startNum = {}, pageSize = {}",
+  					JSON.toJSON(classrooms).toString(), startNum, endNum, e);
         }
         return baseResp;
 	}

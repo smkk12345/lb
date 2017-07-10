@@ -16,6 +16,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.CircleMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
+import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ImpComplaintsMapper;
 import com.longbei.appservice.dao.UserGoalMapper;
 import com.longbei.appservice.dao.RankMapper;
@@ -49,6 +50,9 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 	private ImproveMapper improveMapper;
 	@Autowired
 	private RankMembersMapper rankMembersMapper;
+    @Autowired
+    private ClassroomMembersMapper classroomMembersMapper;
+    
 //	@Autowired
 //	private RankService rankService;
 	
@@ -68,6 +72,11 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 			{
 				rankMembersMapper.updateRankMenberComplaincount(record.getBusinessid(),record.getComuserid());
 			}
+			if("4".equals(record.getBusinesstype())){
+				//递增教室成员投诉总数
+				classroomMembersMapper.updateCompcountByCidAndUid(record.getBusinessid(), record.getComuserid(), 1);
+			}
+			
 			updateImpComplaincount(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -336,7 +345,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//						25:订单发货N天后自动确认收货    26：实名认证审核结果
 						//						27:工作认证审核结果      28：学历认证审核结果
 						//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-						//						32：创建的龙榜/教室/圈子被选中推荐  
+						//						32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 						//						40：订单已取消 41 榜中进步下榜   
 						// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
 						//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
@@ -380,7 +389,7 @@ public class ImpComplaintsServiceImpl implements ImpComplaintsService {
 						//						25:订单发货N天后自动确认收货    26：实名认证审核结果
 						//						27:工作认证审核结果      28：学历认证审核结果
 						//						29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-						//						32：创建的龙榜/教室/圈子被选中推荐  
+						//						32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 						//						40：订单已取消 41 榜中进步下榜   
 						// 						42.榜单公告更新   43:后台反馈回复消息    45:榜中删除成员进步)
 						//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统

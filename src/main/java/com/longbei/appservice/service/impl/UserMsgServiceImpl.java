@@ -78,7 +78,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 *									25:订单发货N天后自动确认收货    26：实名认证审核结果
 	 *									27:工作认证审核结果      28：学历认证审核结果
 	 *									29：被PC选为热门话题    30：被选为达人   31：微进步被推荐
-	 *									32：创建的龙榜/教室/圈子被选中推荐  
+	 *									32：创建的龙榜/教室/圈子被选中推荐 53：被授予龙V认证
 	 *									40：订单已取消 41 榜中进步下榜)
 	 *				1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)
 	 *				2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
@@ -272,9 +272,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private Date getShowCommentDate(long userid, Date mymaxtime){
 		//获取好友   粉丝ids
-		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-		List<String> fansList = snsFansMapper.selectListidByUid(userid);
-		List<String> slist = selectListid(userid, friendList, fansList);
+		Set<String> friendList = this.userRelationService.getFriendIds(userid);
+		Set<String> fansList = this.userRelationService.getFansIds(userid);
+		Set<String> slist = selectListid(userid, friendList, fansList);
 		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
 		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
 				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
@@ -525,9 +525,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	
 	private Date getShowComment(long userid){
 		//获取好友   粉丝ids
-		List<String> friendList = snsFriendsMapper.selectListidByUid(userid);
-		List<String> fansList = snsFansMapper.selectListidByUid(userid);
-		List<String> slist = selectListid(userid, friendList, fansList);
+		Set<String> friendList = this.userRelationService.getFriendIds(userid);
+		Set<String> fansList = this.userRelationService.getFansIds(userid);
+		Set<String> slist = selectListid(userid, friendList, fansList);
 		//获取评论消息List    对比是否有好友   粉丝的未读评论消息
 		List<UserMsg> list = userMsgMapper.selectListByMtypeAndMsgtype(userid,
 				Constant.MSG_DIALOGUE_TYPE, Constant.MSG_COMMENT_TYPE, "0");
@@ -548,13 +548,15 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * 2017年2月6日
 	 * return_type list
 	 */
-	private List<String> selectListid(long userid, List<String> friendList, List<String> fansList){
+	private Set<String> selectListid(long userid, Set<String> friendList, Set<String> fansList){
 		friendList.addAll(fansList);
-		//通过HashSet剔除     删除ArrayList中重复元素
-		HashSet<String> h = new HashSet<String>(friendList);
-		friendList.clear();
-		friendList.addAll(h);
 		return friendList;
+//		friendList.addAll(fansList);
+//		//通过HashSet剔除     删除ArrayList中重复元素
+//		HashSet<String> h = new HashSet<String>(friendList);
+//		friendList.clear();
+//		friendList.addAll(h);
+//		return friendList;
 	}
 	
 	@Override
@@ -1292,15 +1294,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 //
 //				}
 				//判断当前用户是否已关注
-				SnsFans fans = snsFansMapper.selectByUidAndLikeid(snsFans.getLikeuserid(), userid);
-				if(null != fans){
-					snsFans.setIsfriend("1");
-				}
-				//判断已关注者是否是好友关系
-				SnsFriends snsFriends = snsFriendsMapper.selectByUidAndFid(userid, snsFans.getLikeuserid(), "0");
-				if(null != snsFriends){
-					snsFans.setIsfriend("1");
-				}
+				snsFans.setIsfocus(this.userRelationService.checkIsFans(snsFans.getLikeuserid(),userid)?"1":"0");
+				//是否是好友
+				snsFans.setIsfriend(this.userRelationService.checkIsFriend(userid,snsFans.getLikeuserid())?"1":"0");
+
 			}
 		}
 		return fanslist;
@@ -1448,13 +1445,10 @@ public class UserMsgServiceImpl implements UserMsgService {
      */
     private void initMsgUserInfoByFriendid(UserMsg userMsg, long userid){
     	if(!StringUtils.hasBlankParams(userMsg.getFriendid().toString())){
-			//获取好友昵称
-			String remark = userRelationService.selectRemark(userid, userMsg.getFriendid(), "0");
+
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
 			if(null != appUserMongoEntity){
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
+				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 				userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 			}else{
 				userMsg.setAppUserMongoEntityFriendid(new AppUserMongoEntity());

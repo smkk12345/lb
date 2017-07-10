@@ -185,24 +185,37 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     public BaseResp<Object> hasPrivilege(UserInfo userInfo, Constant.PrivilegeType privilegeType,Object o) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
-            UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+            UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
             if(null == userLevel){
+                logger.info("hasPrivilege userLevel is null and grade={}",userInfo.getGrade());
                 return baseResp.initCodeAndDesp();
             }
             switch (privilegeType){
-                case joinranknum:
+                case joinranknum: //公开榜单
+                    Rank rank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
+                    if(rank.getRanktype().equals("2")){
+                        return baseResp.initCodeAndDesp();
+                    }
                     //查询用户当前参与的榜数量 只查询当前榜正在进行中的
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("userid",userInfo.getUserid());
                     map.put("isfinish",1);
                     map.put("status",1);
+                    String[] typeArr = {"0","1"};
+                    map.put("ranktype",typeArr);
+                    map.put("isdel","0");
                     int count = this.rankMembersMapper.getJoinRankCount(map);
 
-                    if(count < userLevel.getJoinranknum()){
-                        return BaseResp.ok();
+                    if(count < userLevel.getJoinranknum()) {
+                        return baseResp.initCodeAndDesp();
+                    }else if(count == userLevel.getJoinranknum()){
+                        if(rank.getRanktype().equals("2")){
+                            return baseResp.initCodeAndDesp();
+                        }
                     }else{
                         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                     }
+                    break;
                 case publishRank:
                     //发榜  判断发布榜单个数
                     Rank publishRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
@@ -220,13 +233,13 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
 
                     if("0".equals(publishRank.getIspublic())){
                         if(publishCount < userLevel.getPubranknum()){
-                            return BaseResp.ok();
+                            return baseResp.initCodeAndDesp();
                         }else{
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_18,Constant.RTNINFO_SYS_18);
                         }
                     }else{
                         if(publishCount < userLevel.getPriranknum()){
-                            return BaseResp.ok();
+                            return baseResp.initCodeAndDesp();
                         }else{
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_19,Constant.RTNINFO_SYS_19);
                         }
@@ -236,22 +249,24 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     Rank createRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
                     if(createRank.getIspublic().equals("0")){ //公开榜单参与人数限制
                         if(createRank.getRanklimite() <=  userLevel.getPubrankjoinnum()){
-                            return BaseResp.ok();
+                            return baseResp.initCodeAndDesp();
                         }else{
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_110,Constant.RTNINFO_SYS_110+userLevel.getPubrankjoinnum()+"人");
                         }
                     }else{//私有榜单参与人数限制
                         if(createRank.getRanklimite() <=  userLevel.getPrirankjoinnum()){
-                            return BaseResp.ok();
+                            return baseResp.initCodeAndDesp();
                         }else{
                             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_111,Constant.RTNINFO_SYS_111+userLevel.getPubrankjoinnum()+"人");
                         }
                     }
+                default:
+                    break;
             }
         }catch(Exception e){
             logger.error("hasPrivilege error msg:{}",e);
         }
-        return baseResp.ok();
+        return baseResp.initCodeAndDesp();
     }
 
     /**
@@ -523,10 +538,17 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         BaseResp<Object> baseResp = new BaseResp<>();
         //如果有限制  去redis中去找
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
-        int result = Constant_point.getStaticProperty(operateType);
-        if(fnum>0){
-            result = result*fnum;
+        int result = 0;
+        if ("DAILY_FLOWER".equals(operateType)){
+            double flowergoals = Constant_point.DAILY_FLOWER;
+            result = (int) Math.floor(flowergoals*fnum);
+        } else {
+            result = Constant_point.getStaticProperty(operateType);
+            if(fnum>0){
+                result = result*fnum;
+            }
         }
+
 //        String limitField = operateType+"_LIMIT";
 //        String key = getPerKey(userid);
 //        if(Constant_point.hasContain(limitField)){

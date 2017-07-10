@@ -79,7 +79,7 @@ public class Constant_point {
     public static int DAILY_LIKE_LIMIT = SysRulesCache.behaviorRule.getLikegoalsmax();//点赞限制
     public static int DAILY_COMMENT = SysRulesCache.behaviorRule.getImpcommentgoals();//评论
     public static int DAILY_COMMENT_LIMIT = SysRulesCache.behaviorRule.getImpcommentgoalsmax();//评论限制
-    public static int DAILY_FLOWER = SysRulesCache.behaviorRule.getFlowergoals();//送花
+    public static double DAILY_FLOWER = SysRulesCache.behaviorRule.getFlowergoals();//送花
     public static int DAILY_FLOWER_LIMIT = SysRulesCache.behaviorRule.getFlowergoalsmax();//送花限制
     public static int DAILY_IMPFLOWER_LIMIT = SysRulesCache.behaviorRule.getEachimproveflowersmax();//单个用户对单条微进步，最多可献N朵花
 //    public static int DAILY_DIAMOND = 10;//送钻

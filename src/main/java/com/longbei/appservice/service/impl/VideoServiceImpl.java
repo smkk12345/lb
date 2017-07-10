@@ -1,9 +1,12 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.VideoClassifyMapper;
 import com.longbei.appservice.dao.VideoMapper;
+import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.Video;
 import com.longbei.appservice.entity.VideoClassify;
 import com.longbei.appservice.service.VideoService;
@@ -26,26 +29,41 @@ public class VideoServiceImpl implements VideoService {
     private VideoMapper videoMapper;
     @Autowired
     private VideoClassifyMapper videoClassifyMapper;
+    @Autowired
+    private SpringJedisDao springJedisDao;
 
     /**
      * 获取视频分类的列表
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<List<VideoClassify>> getVideoClassifyList(Integer startNum, Integer pageSize) {
-        logger.info("get videoClassify list startNum:{} pageSize:{}",startNum,pageSize);
-        BaseResp<List<VideoClassify>> baseResp = new BaseResp<List<VideoClassify>>();
+    public BaseResp<Page<VideoClassify>> getVideoClassifyList(String keyword,Integer pageNo, Integer pageSize) {
+        logger.info("get videoClassify list pageNo:{} pageSize:{}",pageNo,pageSize);
+        BaseResp<Page<VideoClassify>> baseResp = new BaseResp<Page<VideoClassify>>();
         try{
+            Integer startNum = (pageNo - 1) * pageSize;
             Map<String,Object> map = new HashMap<String,Object>();
+            if(StringUtils.isNotEmpty(keyword)){
+                map.put("keyword",keyword);
+            }
             map.put("startNum",startNum);
             map.put("pageSize",pageSize);
-            List<VideoClassify> list = this.videoClassifyMapper.getVideoClassifyList(map);
-            baseResp.setData(list);
+            int count = this.videoClassifyMapper.getVideoClassifyCount(map);
+            List<VideoClassify> list = new ArrayList<VideoClassify>();
+            if(count > 0){
+                list = this.videoClassifyMapper.getVideoClassifyList(map);
+            }
+            Page<VideoClassify> page = new Page<VideoClassify>();
+            page.setTotalCount(count);
+            page.setCurrentPage(pageNo);
+            page.setPageSize(pageSize);
+            page.setList(list);
+            baseResp.setData(page);
             return baseResp.initCodeAndDesp();
         }catch(Exception e){
-            logger.error("get videoClassify list startNum:{} pageSize:{} errorMsg:{}",startNum,pageSize,e);
+            logger.error("get videoClassify list pageNo:{} pageSize:{} errorMsg:{}",pageNo,pageSize,e);
         }
         return baseResp;
     }
@@ -197,6 +215,10 @@ public class VideoServiceImpl implements VideoService {
                 map.put("isShow",isShow);
             }
             Video video = this.videoMapper.getVideo(map);
+            if(isShow != null){
+                String likes = this.springJedisDao.get("video_"+videoId);
+                video.setLikes(StringUtils.isNotEmpty(likes)?Integer.parseInt(likes):0);
+            }
             baseResp.setData(video);
             return baseResp.initCodeAndDesp();
         }catch(Exception e){
@@ -360,6 +382,17 @@ public class VideoServiceImpl implements VideoService {
             logger.info("load relevant video videoId:{} errorMsg;{}",videoId,e);
         }
         return baseResp;
+    }
+
+    /**
+     * 点赞
+     * @param videoId
+     * @return
+     */
+    @Override
+    public BaseResp<Object> addLike(Integer videoId) {
+        this.springJedisDao.increment("video_"+videoId,(long)1);
+        return new BaseResp<>().initCodeAndDesp();
     }
 
 }

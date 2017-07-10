@@ -116,6 +116,8 @@ public class UserInfo {
 
     private String freezestatus; //冻结状态 1冻结 0解冻
 
+    private String vcertification; //用户加V 0无标示 1有加V标示
+
     public String getJobcertify() {
         return jobcertify;
     }
@@ -789,5 +791,13 @@ public class UserInfo {
 
     public void setFreezestatus(String freezestatus) {
         this.freezestatus = freezestatus;
+    }
+
+    public String getVcertification() {
+        return vcertification;
+    }
+
+    public void setVcertification(String vcertification) {
+        this.vcertification = vcertification;
     }
 }

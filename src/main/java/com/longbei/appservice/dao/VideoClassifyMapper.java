@@ -42,4 +42,11 @@ public interface VideoClassifyMapper {
      * @return
      */
     int updateVideoClassify(VideoClassify videoClassify);
+
+    /**
+     * 获取数量
+     * @param map
+     * @return
+     */
+    int getVideoClassifyCount(Map<String, Object> map);
 }

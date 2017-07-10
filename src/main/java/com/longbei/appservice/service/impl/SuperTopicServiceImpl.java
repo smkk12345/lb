@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 超级话题服务
@@ -98,10 +99,14 @@ public class SuperTopicServiceImpl implements SuperTopicService {
             if(null == improveTopics){
                 return baseResp.initCodeAndDesp();
             }
+            Set<String> userColletImproveIds = this.improveService.getUserCollectImproveId(userid);
             for (int i = 0; i < improveTopics.size(); i++) {
                 ImproveTopic improveTopic = improveTopics.get(i);
                 //Long impid,String userid,String businesstype,String businessid
                 Improve improve = improveService.selectImproveByImpid(improveTopic.getImpid(),userid+"",improveTopic.getBusinesstype()+"",improveTopic.getBusinessid()+"");
+                if(userColletImproveIds.contains(improve.getImpid().toString())){
+                    improve.setHascollect("1");
+                }
                 initImproveListOtherInfo(userid, improve);
                 list.add(improve);
             }
@@ -166,12 +171,8 @@ public class SuperTopicServiceImpl implements SuperTopicService {
      */
     private void initImproveUserInfo(Improve improve,Long userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-        //获取好友昵称
-        String remark = userRelationService.selectRemark(userid, improve.getUserid(), "0");
         if(null != appUserMongoEntity){
-            if(!StringUtils.isBlank(remark)){
-                appUserMongoEntity.setNickname(remark);
-            }
+            this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
             improve.setAppUserMongoEntity(new AppUserMongoEntity());
@@ -197,23 +198,19 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     }
 
     private void initFanInfo(long userid,AppUserMongoEntity apuser){
-        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
-        if(null != snsFans){
-            apuser.setIsfans("1");
-        }else{
-            apuser.setIsfans("0");
-        }
+        apuser.setIsfans(this.userRelationService.checkIsFans(userid,apuser.getUserid())?"1":"0");
+//        SnsFans snsFans =snsFansMapper.selectByUidAndLikeid(userid,apuser.getUserid());
+//        if(null != snsFans){
+//            apuser.setIsfans("1");
+//        }else{
+//            apuser.setIsfans("0");
+//        }
     }
 
     private void initFriendInfo(Long userid,AppUserMongoEntity apuser){
-        SnsFriends snsFriends =  snsFriendsMapper.selectByUidAndFid(userid,apuser.getUserid(), "0");
-        if(null != snsFriends){
-            if(!StringUtils.isBlank(snsFriends.getRemark())){
-                apuser.setNickname(snsFriends.getRemark());
-            }
+        if(this.userRelationService.checkIsFriend(userid,apuser.getUserid())){
             apuser.setIsfriend("1");
-        }else{
-            apuser.setIsfriend("0");
+            this.userRelationService.updateFriendRemark(userid,apuser);
         }
     }
     
@@ -254,14 +251,14 @@ public class SuperTopicServiceImpl implements SuperTopicService {
         if (isdiamond) {
             improve.setHasdiamond("1");
         }
-        //是否收藏
-        UserCollect userCollect = new UserCollect();
-        userCollect.setUserid(Long.parseLong(userid));
-        userCollect.setCid(improve.getImpid());
-        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
-        if (null != userCollects && userCollects.size() > 0 ){
-            improve.setHascollect("1");
-        }
+        //是否收藏  优化后,在前面已经判断过了 是否收藏
+//        UserCollect userCollect = new UserCollect();
+//        userCollect.setUserid(Long.parseLong(userid));
+//        userCollect.setCid(improve.getImpid());
+//        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
+//        if (null != userCollects && userCollects.size() > 0 ){
+//            improve.setHascollect("1");
+//        }
     }
 
 }

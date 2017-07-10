@@ -85,8 +85,28 @@ public class OrderServiceImpl implements OrderService {
 		return baseResp;
 	}
 
+	/**
+	 * 购买龙币是否支付成功
+	 * @param ordernum
+	 * @return
+	 */
+	@Override
+	public boolean isSuccessPay(String ordernum) {
+		try {
+			BaseResp<ProductOrders> baseResp = iProductBasicService.getOrder(ordernum);
+			if (ResultUtil.isSuccess(baseResp)){
+                ProductOrders order = baseResp.getData();
+                if (!"0".equals(order.getOrderstatus())) {
+                    return true;
+                }
+            }
+		} catch (Exception e) {
+			logger.error("isSuccessPay ordernum = {} is error:{}", ordernum, e);
+		}
+		return false;
+	}
 
-    /**
+	/**
 	 * @author yinxc
 	 * 购物车结算(用户龙币，进步币兑换商品)
 	 * 2017年4月5日
@@ -606,18 +626,12 @@ public class OrderServiceImpl implements OrderService {
      */
     private void initMsgUserInfoByUserid(ProductOrders productOrders, long userid){
     	if(!StringUtils.hasBlankParams(productOrders.getUserid())){
-    		//获取好友昵称
-    		String remark = userRelationService.selectRemark(userid, Long.parseLong(productOrders.getUserid()), "0");
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(productOrders.getUserid()));
-            if(null != appUserMongoEntity){
-				if(!StringUtils.isBlank(remark)){
-					appUserMongoEntity.setNickname(remark);
-				}
-				productOrders.setAppUserMongoEntity(appUserMongoEntity);
+			if(appUserMongoEntity != null){
+				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 			}else{
 				productOrders.setAppUserMongoEntity(new AppUserMongoEntity());
 			}
-            
     	}
     	
     }

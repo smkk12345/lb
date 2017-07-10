@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixb on 2017/3/16.
@@ -40,18 +41,16 @@ public class FindServiceImpl implements FindService{
             List<AppUserMongoEntity> list = userMongoDao.findNear(
                     Double.parseDouble(longitude),Double.parseDouble(latitude),50.00,gender,
                     Integer.parseInt(startNum),Integer.parseInt(pageSize));
+            Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
-                //获取好友昵称
-				String remark = userRelationService.selectRemark(Long.parseLong(userid), Long.parseLong(appuser.getId()), "0");
-				if(!StringUtils.isBlank(remark)){
-					appuser.setNickname(remark);
-				}
+                if(friendRemark.containsKey(appuser.getId())){
+                    appuser.setNickname(friendRemark.get(appuser.getId()));
+                }
                 //判断是否好友 是否关注 是否粉丝等等
                 try {
                     UserInfo userInfo = userInfoMapper.getByUserName(appuser.getUsername());
-                    if(null != userInfo)
-                    {
+                    if(null != userInfo){
                         appuser.setBrief(userInfo.getBrief());
                         appuser.setSex(userInfo.getSex());
                     }

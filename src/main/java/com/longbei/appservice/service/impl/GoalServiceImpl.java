@@ -34,7 +34,7 @@ public class GoalServiceImpl implements GoalService {
     @Autowired
     private ImproveGoalMapper improveGoalMapper;
     @Autowired
-    private FriendService friendService;
+    private UserRelationService userRelationService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
     @Autowired
@@ -184,7 +184,7 @@ public class GoalServiceImpl implements GoalService {
                     }
     			}
         		baseResp.setData(userGoal);
-                String nickname = this.friendService.getNickName(userid,userGoal.getUserid());
+                String nickname = this.userRelationService.getUserRemark(userid,userGoal.getUserid());
                 baseResp.getExpandData().put("nickname",nickname);
         	}else{
         		baseResp.setData(new UserGoal());
@@ -205,6 +205,10 @@ public class GoalServiceImpl implements GoalService {
     @SuppressWarnings("unchecked")
 	@Override
     public BaseResp<UserGoal> updateTitle(long goalId, String title) {
+        BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(title);
+        if(!ResultUtil.isSuccess(baseResp1)){
+            return baseResp1;
+        }
         BaseResp<UserGoal> baseResp = new BaseResp<>();
         try{
             int res = userGoalMapper.updateTitle(goalId,title);

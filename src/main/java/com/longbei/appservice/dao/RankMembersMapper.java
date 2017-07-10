@@ -180,4 +180,13 @@ public interface RankMembersMapper {
      * @return
      */
     List<RankMembers> selectWinningRankAwardByRank(@Param("rankid") Long rankid);
+
+    /**
+     * 关闭榜单
+     * @param rankid
+     * @return
+     */
+    int deleteByRankId(@Param("rankid") Long rankid);
+
+
 }

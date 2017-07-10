@@ -1,6 +1,8 @@
 package com.longbei.appservice.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.longbei.appservice.entity.SnsFans;
 import org.apache.ibatis.annotations.Param;
@@ -46,19 +48,26 @@ public interface SnsFansMapper {
     
     /**
 	 * @author yinxc
-	 * 获取用户粉丝数量Count
+	 * 获取用户关注数量Count
 	 * 2017年3月9日
 	 */
     int selectCountFans(@Param("userid") long userid);
     
     /**
 	 * @author yinxc
-	 * 获取当前用户粉丝idList
+	 * 获取当前用户关注idList
 	 * 2017年2月9日
 	 * return_type
 	 * SnsFansMapper
 	 */
-    List<String> selectListidByUid(@Param("userid") long userid);
+    Set<String> selectListidByUid(@Param("userid") long userid);
+
+	/**
+	 * 获取粉丝
+	 * @param likeUid
+	 * @return
+	 */
+	Set<String> selectListidByLikeUid(@Param("likeuserid") long likeUid);
     
     /**
 	 * @author yinxc
@@ -77,4 +86,5 @@ public interface SnsFansMapper {
      * @return
      */
 	List<SnsFans> selectFansByLikeUserid(@Param("likeuserId")Long likeuserId,@Param("startNum") Integer startNum,@Param("pageSize") Integer pageSize);
+
 }

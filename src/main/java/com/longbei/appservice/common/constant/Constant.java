@@ -19,6 +19,18 @@ public class Constant {
 	public static final int RMB_COIN = 10;//人民币 兑换 龙币 1元兑换10 龙币
 	public static final int RMB_POINT = 100;//人民币 兑换 龙分 1元兑换100 龙分
 
+	//redis 缓存用户关系的时间 单位是分钟 用户关系缓存包括 是否是好友 是否关注 好友备注
+	public static final int USER_RELATION_REDIS_CACHE_TIME = 15;
+	//redis中 缓存用户昵称的key 前缀
+	public static final String USER_REMARK_REDIS_KEY = "friendRemark_";
+	//redis中 缓存用户所有关注id的key 前缀
+	public static final String USER_FANS_REDIS_KEY = "userFans";
+	//redis中 缓存用户所有粉丝id的key 前缀
+	public static final String USER_BEFANSED_REDIS_KEY = "userBeFansed";
+	//reids中 缓存用户所有好友id的key 前缀
+	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
+	//redis中 缓存用户收藏的所有进步id 前缀
+	public static final String USER_Collect_IMPROVE_REDIS_KEY = "userCollectImprove";
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 
@@ -559,6 +571,7 @@ public class Constant {
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
+	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,已被请下教室"; //教室
 	
 	
 	
@@ -704,6 +717,7 @@ public class Constant {
 //	public static final String JPUSH_TAG_COUNT_1301 = "1301";//实名认证未通过
 	public static final String JPUSH_TAG_COUNT_1302 = "1302";//被选为达人
 //	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
+	public static final String JPUSH_TAG_COUNT_1304 = "1304";//被授予龙V认证
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息

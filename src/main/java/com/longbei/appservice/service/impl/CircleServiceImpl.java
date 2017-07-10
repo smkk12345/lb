@@ -11,6 +11,7 @@ import com.longbei.appservice.dao.ImproveCircleMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
     private UserService userService;
     @Autowired
     private ImproveCircleMapper improveCircleMapper;
+    @Autowired
+    private UserRelationService userRelationService;
 
     @Override
     public BaseResp<Object> relevantCircle(String circleName, Integer startNo, Integer pageSize) {
@@ -195,20 +198,21 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
             if (circleMembersList == null || circleMembersList.size() == 0) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
+            Set<String> fansIds = this.userRelationService.getFansIds(userid);
+            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
+            Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
+
             for (CircleMembers circleMembers : circleMembersList) {
                 AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(String.valueOf(circleMembers.getUserid()));
                 if(userid != null && !userid.equals(circleMembers.getUserid())){
-                    SnsFriends snsFriends = this.friendService.getSnsFriend(userid,circleMembers.getUserid());
-                    if(snsFriends != null){
-                        if(StringUtils.isNotEmpty(snsFriends.getRemark())){
-                            appUserMongoEntity.setNickname(snsFriends.getRemark());
-                        }
+                    if(friendIds.contains(circleMembers.getUserid().toString())){
                         appUserMongoEntity.setIsfriend("1");
+
+                        if(map.containsKey(circleMembers.getUserid().toString())){
+                            appUserMongoEntity.setNickname(friendRemark.get(circleMembers.getUserid().toString()));
+                        }
                     }
-                    appUserMongoEntity.setIsfans(this.fansService.checkIsFans(userid,circleMembers.getUserid())?"1":"0");
-                }else{
-                    appUserMongoEntity.setIsfriend("0");
-                    appUserMongoEntity.setIsfans("0");
+                    appUserMongoEntity.setIsfans(fansIds.contains(circleMembers.getUserid().toString())?"1":"0");
                 }
                 circleMembers.setAppUserMongoEntity(appUserMongoEntity);
             }
@@ -383,8 +387,8 @@ public class CircleServiceImpl extends BaseServiceImpl implements CircleService 
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_85, Constant.RTNINFO_SYS_85);
             }
             AppUserMongoEntity appUserMongoEntity =userMongoDao.getAppUser(userId+"");
-            appUserMongoEntity.setIsfans(fansService.checkIsFans(currentUserId,userId)?"1":"0");
-            appUserMongoEntity.setIsfriend(friendService.checkIsFriend(currentUserId,userId)?"1":"0");
+            appUserMongoEntity.setIsfans(this.userRelationService.checkIsFans(currentUserId,userId)?"1":"0");
+            appUserMongoEntity.setIsfriend(this.userRelationService.checkIsFriend(currentUserId,userId)?"1":"0");
             circleMembers.setAppUserMongoEntity(appUserMongoEntity);
             resultMap.put("circleMembers",circleMembers);
             baseResp.setData(resultMap);
