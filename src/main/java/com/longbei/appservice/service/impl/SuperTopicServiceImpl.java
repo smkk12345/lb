@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 超级话题服务
@@ -98,10 +99,14 @@ public class SuperTopicServiceImpl implements SuperTopicService {
             if(null == improveTopics){
                 return baseResp.initCodeAndDesp();
             }
+            Set<String> userColletImproveIds = this.improveService.getUserCollectImproveId(userid);
             for (int i = 0; i < improveTopics.size(); i++) {
                 ImproveTopic improveTopic = improveTopics.get(i);
                 //Long impid,String userid,String businesstype,String businessid
                 Improve improve = improveService.selectImproveByImpid(improveTopic.getImpid(),userid+"",improveTopic.getBusinesstype()+"",improveTopic.getBusinessid()+"");
+                if(userColletImproveIds.contains(improve.getImpid().toString())){
+                    improve.setHascollect("1");
+                }
                 initImproveListOtherInfo(userid, improve);
                 list.add(improve);
             }
@@ -246,14 +251,14 @@ public class SuperTopicServiceImpl implements SuperTopicService {
         if (isdiamond) {
             improve.setHasdiamond("1");
         }
-        //是否收藏
-        UserCollect userCollect = new UserCollect();
-        userCollect.setUserid(Long.parseLong(userid));
-        userCollect.setCid(improve.getImpid());
-        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
-        if (null != userCollects && userCollects.size() > 0 ){
-            improve.setHascollect("1");
-        }
+        //是否收藏  优化后,在前面已经判断过了 是否收藏
+//        UserCollect userCollect = new UserCollect();
+//        userCollect.setUserid(Long.parseLong(userid));
+//        userCollect.setCid(improve.getImpid());
+//        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
+//        if (null != userCollects && userCollects.size() > 0 ){
+//            improve.setHascollect("1");
+//        }
     }
 
 }

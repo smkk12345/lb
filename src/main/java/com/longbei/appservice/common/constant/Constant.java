@@ -27,7 +27,8 @@ public class Constant {
 	public static final String USER_FANS_REDIS_KEY = "userFans";
 	//reids中 缓存用户所有好友id的key 前缀
 	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
-
+	//redis中 缓存用户收藏的所有进步id 前缀
+	public static final String USER_Collect_IMPROVE_REDIS_KEY = "userCollectImprove";
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 
