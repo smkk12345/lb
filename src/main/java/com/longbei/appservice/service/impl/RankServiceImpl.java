@@ -1202,7 +1202,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,null);
+            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,rank);
             if(!ResultUtil.isSuccess(baseResp1)){
                 return baseResp1;
             }
