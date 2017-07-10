@@ -21,6 +21,13 @@
     where userid = #{userid}
   </select>
 
+  <select id="selectListidByLikeUid" resultType="java.lang.String">
+    select
+    userid
+    from sns_fans
+    where likeuserid = #{likeuserid}
+  </select>
+
   <select id="selectListidByUidNum" resultType="java.lang.String">
     select 
     <include refid="Bid_Column_List" />

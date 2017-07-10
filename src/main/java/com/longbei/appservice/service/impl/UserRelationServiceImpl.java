@@ -884,6 +884,24 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return fansIds;
 	}
 
+	/**
+	 * 获取粉丝列表
+	 * @param userid
+	 * @return
+	 */
+	@Override
+	public Set<String> getBeFansedIds(String userid){
+		Set<String> fansIds = new HashSet<>();
+		if(userid == null || "-1".equals(userid)){
+			return fansIds;
+		}
+		fansIds = springJedisDao.members(Constant.USER_BEFANSED_REDIS_KEY+userid);
+		if (fansIds == null || fansIds.size() == 0){
+			fansIds = this.initUserRedisBeFansIds(Long.parseLong(userid));
+		}
+		return fansIds;
+	}
+
 	private Set<String> initUserRedisFansIds(Long userid){
 		Set<String> fansIds = snsFansMapper.selectListidByUid(userid);
 
@@ -892,6 +910,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),fansIds.toArray(new String[]{}));
 		return fansIds;
+	}
+
+	private Set<String> initUserRedisBeFansIds(Long userid){
+		Set<String> beFansIds = snsFansMapper.selectListidByLikeUid(userid);
+
+		if(beFansIds.size() == 0){
+			beFansIds.add("0");//占位 防止下次重复加载
+		}
+		springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+userid,(long)(60*Constant.USER_RELATION_REDIS_CACHE_TIME),beFansIds.toArray(new String[]{}));
+		return beFansIds;
 	}
 
 	/**
