@@ -183,6 +183,9 @@ public class RankController {
         if(status == null){
             status = -1;
         }
+        if(StringUtils.isBlank(rankscope)){
+            rankscope = "-1";
+        }
         String codeword = null;
         if(StringUtils.isNotEmpty(searchByCodeword) && "1".equals(searchByCodeword)){
             codeword = rankTitle;
