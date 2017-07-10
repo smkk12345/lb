@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.UserCollect;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserCollectMapper {
     int deleteByPrimaryKey(Integer id);
@@ -22,7 +23,7 @@ public interface UserCollectMapper {
      */
     List<UserCollect> selectListByUserCollect(UserCollect userCollect);
 
-    List<String> selectCollectIdsByUser(@Param("userid") String userid);
+    Set<String> selectCollectIdsByUser(@Param("userid") String userid);
 
     int updateByPrimaryKeySelective(UserCollect record);
 

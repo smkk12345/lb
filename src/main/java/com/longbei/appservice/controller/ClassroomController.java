@@ -324,7 +324,7 @@ public class ClassroomController {
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/updateMembersItype
-    * @Description: 教室剔除成员
+    * @Description: 教室老师剔除成员---推送消息
     * @param @param classroomid
     * @param @param userid
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
@@ -340,7 +340,7 @@ public class ClassroomController {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid), 
+  			baseResp = classroomMembersService.quitClassroom(Integer.parseInt(classroomid), 
   					Long.parseLong(userid), "1");
   		} catch (Exception e) {
   			logger.error("updateMembersItype classroomid = {}, userid = {}", 
@@ -402,10 +402,10 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomMembers")
-    public BaseResp<Object> selectRoomMembers(String classroomid, int startNo, int pageSize) {
+    public BaseResp<List<ClassroomMembers>> selectRoomMembers(String classroomid, int startNo, int pageSize) {
 		logger.info("selectRoomMembers classroomid={},startNo={},pageSize={}",
 				classroomid,startNo,pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<ClassroomMembers>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }

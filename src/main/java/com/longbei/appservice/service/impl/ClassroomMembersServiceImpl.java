@@ -2,7 +2,6 @@ package com.longbei.appservice.service.impl;
 
 import java.util.List;
 
-import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
@@ -12,17 +11,18 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
-import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserMsgService;
 
 @Service("classroomMembersService")
 public class ClassroomMembersServiceImpl implements ClassroomMembersService {
@@ -33,12 +33,14 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
-	@Autowired
-	private ImproveClassroomMapper improveClassroomMapper;
+//	@Autowired
+//	private ImproveClassroomMapper improveClassroomMapper;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private UserMsgService userMsgService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -81,12 +83,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				// 用户已加入教室
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_37, Constant.RTNINFO_SYS_37);
 			}
+			UserInfo userInfo = userService.selectJustInfo(record.getUserid());
+			record.setCusername(userInfo.getUsername());
 			boolean temp = insert(record);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(record.getClassroomid(), 1);
 				//加入圈子成功获得龙分
-				UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 				userBehaviourService.pointChange(userInfo,"DAILY_ADDCLASSROOM",classroom.getPtype(),null,0,0);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
@@ -112,17 +115,17 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 
 	@Override
-	public BaseResp<Object> selectListByClassroomid(long classroomid, int startNum, int endNum) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, int startNum, int endNum) {
+		BaseResp<List<ClassroomMembers>> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
 					initMsgUserInfoByUserid(classroomMembers);
 					//教室所发的微进步总数
-					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", 
-							classroomMembers.getUserid().toString());
-					classroomMembers.setAllimp(allimp);
+//					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", 
+//							classroomMembers.getUserid().toString());
+//					classroomMembers.setAllimp(allimp);
 				}
 			}
 			reseResp.setData(list);
@@ -166,10 +169,39 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		}
 		return null;
 	}
+	
+	/**
+	 * @author yinxc
+	 * 教室老师剔除成员---推送消息
+	 * 2017年7月7日
+	 * param classroomid 教室id
+	 * param userid 成员id
+	 * param itype 0—加入教室 1—退出教室
+	 */
+	@Override
+	public BaseResp<Object> quitClassroom(long classroomid, long userid, String itype) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			boolean temp = update(classroomid, userid, itype);
+			if (temp) {
+				//修改教室教室参与人数 classinvoloed
+				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
+				//推送消息
+				String remark = Constant.MSG_CLASSROOM_MODEL;
+				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
+						"", "12", classroomid + "", remark, "0", "54", "教室删除成员", 0, "", "");
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
+					classroomid, userid, itype, e);
+		}
+		return reseResp;
+	}
 
 	/**
 	 * @author yinxc
-	 * 教室剔除成员
+	 * 成员退出教室
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 * param userid 成员id
@@ -208,5 +240,41 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
     		classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);;
     	}
     }
+
+    
+    
+    
+    
+    
+    //-----------------------------admin调用-------------------------------------
+	@Override
+	public BaseResp<Page<ClassroomMembers>> selectPcMembersList(ClassroomMembers members, int startNum, int endNum) {
+		BaseResp<Page<ClassroomMembers>> reseResp = new BaseResp<>();
+		Page<ClassroomMembers> page = new Page<>(startNum, endNum);
+		try {
+			int totalcount = classroomMembersMapper.selectSearchCount(members);
+			List<ClassroomMembers> list = classroomMembersMapper.selectSearchList(members, startNum, endNum);
+			if(null != list && list.size()>0){
+				String cnickname = "";
+				for (ClassroomMembers classroomMembers : list) {
+					if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
+			    		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
+			    		if(null != appUserMongoEntity){
+			    			cnickname = appUserMongoEntity.getNickname();
+			    		}
+			    	}
+					classroomMembers.setCnickname(cnickname);
+				}
+			}
+			page.setTotalCount(totalcount);
+            page.setList(list);
+			reseResp.setData(page);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectPcMembersList members = {}, startNum = {}, endNum = {}", 
+					members.getClassroomid(), startNum, endNum, e);
+		}
+		return reseResp;
+	}
 
 }
