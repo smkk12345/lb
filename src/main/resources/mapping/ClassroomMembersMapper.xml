@@ -281,4 +281,26 @@
     and userid = #{userid} 
   </update>
   
+  <update id="updateLFByCidAndUid" >
+    update classroom_members
+    <set>
+      <if test="flowers != 0">
+        flowers = flowers + #{flowers},
+      </if>
+      <if test="likes != 0">
+        likes = likes + #{likes},
+      </if>
+      userid = #{userid} 
+    </set> 
+    where 
+    <if test="likes &lt; 0">
+      likes > ROUND(#{likes}) and
+    </if>
+    <if test="flowers &lt; 0">
+      flowers > ROUND(#{flowers}) and
+    </if>
+    classroomid = #{classroomid} 
+    and userid = #{userid} 
+  </update>
+  
 </mapper>
