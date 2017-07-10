@@ -717,6 +717,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }else if(status == 1){//进行中的
                 map.put("isfinish","1");
                 map.put("minEndDate",new Date());
+                lastDate = null;
                 map.put("orderByType","starttimeDesc");
             }else if(status == 2){//未开始
                 map.put("isfinish","0");
@@ -725,10 +726,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 map.put("isfinish","2");
                 map.put("orderByType","endtime");
             }
-            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
-                Date tempLastDate = DateUtils.parseDate(lastDate);
-                map.put("lastDate",tempLastDate);
-            }
+//            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
+//                Date tempLastDate = DateUtils.parseDate(lastDate);
+//                map.put("lastDate",tempLastDate);
+//            }
             map.put("startNum",startNo);
             map.put("sstatus",status);
             map.put("ispublic","0");
