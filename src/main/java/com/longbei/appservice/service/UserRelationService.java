@@ -198,6 +198,8 @@ public interface UserRelationService {
 	 * @return
 	 */
 	boolean checkIsFriend(Long userid,Long friendid);
+	//功能同以上方法
+	boolean checkIsFriend(String userid,String friendid);
 
 	/**
 	 * 获取用户的关注用户id列表

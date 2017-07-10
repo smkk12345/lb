@@ -2517,14 +2517,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 sortNum = new Long(rankMembers.getSortnum());
             }
             if(currentUserId != null){
-                SnsFans snsFans = this.snsFansMapper.selectByUidAndLikeid(currentUserId,userid);
-                if(snsFans != null){
+                if(this.userRelationService.checkIsFans(currentUserId,userid)){
                     resultMap.put("isfans",1);
                 }else{
                     resultMap.put("isfans",0);
                 }
-                SnsFriends snsFriends = this.snsFriendsMapper.selectByUidAndFid(currentUserId, userid, "0");
-                if(snsFriends != null && snsFriends.getIsdel() == 0){
+                if(this.userRelationService.checkIsFriend(currentUserId,userid)){
                     resultMap.put("isFriends",1);
                 }else{
                     resultMap.put("isFriends",0);
