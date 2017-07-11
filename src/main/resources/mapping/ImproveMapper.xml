@@ -613,9 +613,8 @@
     rank_members rm JOIN improve_rank ir
     ON rm.rankid = ir.businessid AND rm.userid=ir.userid AND ir.ismainimp='1'
     WHERE
-     ir.userid = #{userid} AND ir.businessid = #{businessid}
-      AND
-     ir.ismainimp='1'
+        ir.businessid = #{businessid}
+     AND ir.userid = #{userid}
   </select>
 
   <select id="selectRankImprovesBySort" resultMap="BaseResultMap">
