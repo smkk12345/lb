@@ -197,6 +197,7 @@ public class AddMessageReceiveService implements MessageListener{
         friendids = this.relationService.getFriendIds(userid);
         funids = this.relationService.getFansIds(userid);
         friendids.addAll(funids);
+        friendids.add(userid);
        for (String fid : friendids){
            timeLine.setId(MongoUtils.UUID());
            timeLine.setUserid(fid);

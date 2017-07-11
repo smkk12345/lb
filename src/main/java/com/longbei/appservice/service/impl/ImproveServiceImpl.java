@@ -674,7 +674,7 @@ public class ImproveServiceImpl implements ImproveService{
 
         if ("1".equals(rank.getIsfinish())){
             Set<String> userids = springJedisDao.
-                    zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize);
+                    zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize-1);
             for (String userid : userids){
                 Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
                 RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
