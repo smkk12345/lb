@@ -677,6 +677,9 @@ public class ImproveServiceImpl implements ImproveService{
                     zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize);
             for (String userid : userids){
                 Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
+                RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                improve.setTotalflowers(rankMembers.getFlowers());
+                improve.setTotallikes(rankMembers.getLikes());
                 if (null != improve){
                     list.add(improve);
                 }
@@ -3147,7 +3150,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param businesstype 业务类型 榜，圈子，教室，目标
      * @param startno 分页起始条数
      * @param pagesize 分页每页条数
-     * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
+     * @param selectCount 是否查询总数 只有在selectCount == true时 才会查询总数
      * @return
      *
      * @author luye
@@ -3163,7 +3166,7 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
-            if(startno == 0 && selectCount){
+            if(selectCount){
                 Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
                         null, userid, null, iscomplain);
                 baseResp.getExpandData().put("totalcount",totalcount);
