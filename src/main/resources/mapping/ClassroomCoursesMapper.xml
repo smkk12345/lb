@@ -39,7 +39,32 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
-    order by coursesort asc 
+    order by coursesort desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom_courses
+    where classroomid = #{classroomCourses.classroomid} 
+    and isdel = 0 
+    <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
+      	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
+    </if>
+  </select>
+  
+  <select id="selectSearchList" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+    from classroom_courses
+    where classroomid = #{classroomCourses.classroomid} 
+    and isdel = 0 
+    <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
+      	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
+    </if>
+    order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
