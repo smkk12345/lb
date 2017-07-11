@@ -45,16 +45,26 @@
     where classroomid = #{classroomid,jdbcType=INTEGER}
   </select>
   
+  <select id="checkClasstitle" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where isdel = 0 
+    <if test="classtitle != null and classtitle != ''" >
+      and classtitle = #{classtitle}
+    </if>
+  </select>
+  
   <select id="selectClassroomListByIspublic" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0 and isup = 1 
+    where isdel = 0  
     <if test="ptype != null and ptype != ''" >
       and ptype = #{ptype}
     </if>
-    <if test="ispublic != null and ispublic != ''" >
-    	and ispublic = #{ispublic}
+    <if test="isup != null and isup != ''" >
+    	and isup = #{isup}
     </if>
     order by createtime desc 
     <if test="endNum != 0" >
@@ -161,7 +171,7 @@
     <include refid="Base_Column_List" />
     from classroom
     where
-    isdel = 0
+    isdel = 0 and isup = 1 
     <if test="userid != null and userid != ''" >
       and userid = #{userid}
     </if>
@@ -178,7 +188,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0
+    where isdel = 0 
     <if test="keyword != null" >
     	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  

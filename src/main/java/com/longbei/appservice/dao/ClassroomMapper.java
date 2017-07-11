@@ -30,11 +30,11 @@ public interface ClassroomMapper {
     /**
 	 * @author yinxc
 	 * 获取教室信息
-	 * param ispublic 是否所有人可见。0 所有人可见。1，部分可见
+	 * param isup 是否所有人可见。0 所有人可见。1，部分可见
 	 * param pageNo   pageSize
 	 * 2017年3月3日
 	 */
-    List<Classroom> selectClassroomListByIspublic(@Param("ispublic") String ispublic,
+    List<Classroom> selectClassroomListByIspublic(@Param("isup") String isup,
 												  @Param("ptype") String ptype,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
@@ -120,6 +120,16 @@ public interface ClassroomMapper {
 	 */
     List<Classroom> selectClassroomList(@Param("isup") String isup,  @Param("isdel") String isdel,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+     * @Description: 检查教室标题是否重复
+     * @param @param classtitle  教室标题
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @return 0:不存在重复   1：存在重复需要更改
+     * @auther yinxc
+     * @currentdate:2017年7月11日
+ 	*/
+    List<Classroom> checkClasstitle(@Param("classtitle") String classtitle);
     
     /*
      * 获取count
