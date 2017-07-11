@@ -35,7 +35,7 @@
     from classroom_members
     where classroomid = #{classroomid} 
     and itype = 0 
-    order by createtime desc 
+    order by likes+flowers*10 desc, createtime desc  
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

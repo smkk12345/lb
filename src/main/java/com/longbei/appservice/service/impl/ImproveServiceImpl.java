@@ -1001,6 +1001,8 @@ public class ImproveServiceImpl implements ImproveService{
                 	int flowers = improves.getFlowers();
                 	flowers = 0 - flowers;
                 	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), likes, flowers);
+                	//更新教室成员  总进步数
+                	classroomMembersMapper.updateIcountByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -1);
                 	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;

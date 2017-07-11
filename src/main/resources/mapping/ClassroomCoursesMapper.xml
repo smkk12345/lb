@@ -16,12 +16,13 @@
     <result column="isdefault" property="isdefault" jdbcType="CHAR" />
     <result column="fileurl" property="fileurl" jdbcType="VARCHAR" />
     <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="udpatetime" property="udpatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
-    classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, 
+    classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
     createtime, udpatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -79,13 +80,13 @@
     insert into classroom_courses (id, coursetitle, coursesort, 
       coursetype, coursebrief, pickey, 
       coursecontent, classroomid, uploaduserid, 
-      createuserid, isdel, isdefault, fileurl, sourcekey, createtime, 
+      createuserid, isdel, isdefault, fileurl, sourcekey, duration, createtime, 
       udpatetime)
     values (#{id,jdbcType=INTEGER}, #{coursetitle,jdbcType=VARCHAR}, #{coursesort,jdbcType=INTEGER}, 
       #{coursetype,jdbcType=CHAR}, #{coursebrief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, 
       #{coursecontent,jdbcType=VARCHAR}, #{classroomid}, #{uploaduserid,jdbcType=BIGINT}, 
       #{createuserid,jdbcType=BIGINT}, #{isdel,jdbcType=CHAR}, #{isdefault,jdbcType=CHAR}, #{fileurl}, #{sourcekey}, 
-      #{createtime,jdbcType=TIMESTAMP}, 
+      #{duration}, #{createtime,jdbcType=TIMESTAMP}, 
       #{udpatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
@@ -133,6 +134,9 @@
       <if test="sourcekey != null" >
         sourcekey,
       </if>
+      <if test="duration != null" >
+        duration,
+      </if>
       <if test="createtime != null" >
         createtime,
       </if>
@@ -177,11 +181,14 @@
       <if test="isdefault != null" >
         #{isdefault,jdbcType=CHAR},
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         #{fileurl},
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         #{sourcekey},
+      </if>
+      <if test="duration != null and duration != ''" >
+        #{duration},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -212,9 +219,6 @@
       <if test="coursecontent != null" >
         coursecontent = #{coursecontent,jdbcType=VARCHAR},
       </if>
-      <if test="classroomid != null" >
-        classroomid = #{classroomid},
-      </if>
       <if test="uploaduserid != null" >
         uploaduserid = #{uploaduserid,jdbcType=BIGINT},
       </if>
@@ -227,20 +231,20 @@
       <if test="isdefault != null" >
         isdefault = #{isdefault,jdbcType=CHAR},
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         fileurl = #{fileurl},
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         sourcekey = #{sourcekey},
       </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
+      <if test="duration != null and duration != ''" >
+        duration = #{duration},
       </if>
       <if test="udpatetime != null" >
-        udpatetime = #{udpatetime,jdbcType=TIMESTAMP},
+        udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} and classroomid = #{classroomid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
     update classroom_courses
@@ -256,7 +260,8 @@
       isdel = #{isdel,jdbcType=CHAR},
       isdefault = #{isdefault,jdbcType=CHAR}, 
       fileurl = #{fileurl},
-      sourcekey = #{sourcekey}, 
+      sourcekey = #{sourcekey},
+      duration = #{duration}, 
       createtime = #{createtime,jdbcType=TIMESTAMP},
       udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

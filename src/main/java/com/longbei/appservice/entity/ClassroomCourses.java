@@ -40,6 +40,8 @@ public class ClassroomCourses {
     private String fileurl; //视频文件url（转码后）
     
     private String sourcekey; //源文件
+    
+    private String duration; //音频时长
 
     /**
      * 
@@ -274,5 +276,13 @@ public class ClassroomCourses {
 
 	public void setIsdefault(String isdefault) {
 		this.isdefault = isdefault;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
 	}
 }
