@@ -856,7 +856,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum){
 		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
         try {
-        	List<UserCard> list = userCardMapper.selectUserCardList(null, startNum, endNum);
+        	UserCard userCard = new UserCard();
+        	userCard.setSourcetype("0");
+        	List<UserCard> list = userCardMapper.selectUserCardList(userCard, startNum, endNum);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         	baseResp.setData(list);
         } catch (Exception e) {
