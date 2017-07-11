@@ -2224,7 +2224,7 @@ public class ImproveServiceImpl implements ImproveService{
                 tablename = Constant_table.RANK_MEMBERS;
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
-                tablename = Constant_table.CIRCLE_MEMBERS;
+                tablename = Constant_table.CLASSROOM_MEMBERS;
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
                 tablename = Constant_table.CIRCLE_MEMBERS;
@@ -2498,6 +2498,8 @@ public class ImproveServiceImpl implements ImproveService{
                     rankSortService.updateRankSortScore(improve.getBusinessid(),
                             improve.getUserid(),type,icount);
                     break;
+                case Constant.IMPROVE_CLASSROOM_TYPE:
+                	improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName, "classroomid");
                 default:
                     break;
             }
