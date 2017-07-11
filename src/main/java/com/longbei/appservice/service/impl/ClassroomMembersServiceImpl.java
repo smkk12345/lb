@@ -321,6 +321,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
                         improveid, "12",
                         classroomid, remark, "0", "45", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
             }
+            reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
             logger.error("remove classroom Improve status = {}, userid = {} , classroomid = {}, improveid = {} ", 
             		status, userid, classroomid, improveid, e);
