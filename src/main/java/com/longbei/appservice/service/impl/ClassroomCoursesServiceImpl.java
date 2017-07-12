@@ -125,6 +125,19 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		}
 		return reseResp;
 	}
-	
 
+	@Override
+	public BaseResp<Object> updateSortByid(Integer id, long classroomid, Integer coursesort) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
+			if (temp > 0) {
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateIsdel id = {}", id, e);
+		}
+		return reseResp;
+	}
+	
 }

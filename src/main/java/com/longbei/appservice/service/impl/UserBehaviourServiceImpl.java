@@ -205,17 +205,11 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     map.put("ranktype",typeArr);
                     map.put("isdel","0");
                     int count = this.rankMembersMapper.getJoinRankCount(map);
-
                     if(count < userLevel.getJoinranknum()) {
                         return baseResp.initCodeAndDesp();
-                    }else if(count == userLevel.getJoinranknum()){
-                        if(rank.getRanktype().equals("2")){
-                            return baseResp.initCodeAndDesp();
-                        }
                     }else{
                         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_14,Constant.RTNINFO_SYS_14);
                     }
-                    break;
                 case publishRank:
                     //发榜  判断发布榜单个数
                     Rank publishRank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);

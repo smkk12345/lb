@@ -64,6 +64,16 @@ public class ModuleContent {
 
     private Video video;
 
+    private Seminar seminar;
+
+    public Seminar getSeminar() {
+        return seminar;
+    }
+
+    public void setSeminar(Seminar seminar) {
+        this.seminar = seminar;
+    }
+
     public String getUrl() {
         return url;
     }

@@ -2083,7 +2083,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         map.put("isfinish",1);
         map.put("isdel",0);
         rankList = this.rankMapper.selectRankList(map);
+        logger.info("initRankSort start");
         for(Rank rank:rankList){
+            springJedisDao.del(Constant.REDIS_RANK_SORT+rank.getRankid());
             int likeScore = rank.getLikescore();
             int flowerScore = rank.getFlowerscore();
             double b = rank.getEndtime().getTime() - rank.getStarttime().getTime();
@@ -2097,13 +2099,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //计算分数
                 double totalScore = rankMembers.getLikes() * likeScore + rankMembers.getFlowers() * flowerScore;
 
-                double a = rankMembers.getCreatetime().getTime() - rank.getStarttime().getTime();
+                double a = rankMembers.getUpdatetime().getTime() - rank.getStarttime().getTime();
                 double ratio = NumberUtil.round(a/b,5);
                 ratio = 1 - ratio;
                 totalScore = totalScore + ratio;
                 springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),rankMembers.getUserid()+"",totalScore);
             }
         }
+        logger.info("initRankSort success");
     }
 
     /**

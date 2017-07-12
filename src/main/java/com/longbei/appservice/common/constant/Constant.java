@@ -88,7 +88,7 @@ public class Constant {
 	public static final int STATUS_SYS_113 = -113;
 	public static final int STATUS_SYS_114 = -114;
 	public static final int STATUS_SYS_115 = -115;
-	public static final int STATUS_SYS_116 = -116;
+	public static final int STATUS_SYS_117 = -117;
 	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
@@ -239,7 +239,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
 	public static final String RTNINFO_SYS_114 = "每日切换帐号超过限制";
 	public static final String RTNINFO_SYS_115 = "单个设备注册用户量超过限制";
-	public static final String RTNINFO_SYS_116 = "您已被授予龙杯官方认证，无法修改用户名和简介";
+	public static final String RTNINFO_SYS_116 = "发送失败";
+	public static final String RTNINFO_SYS_117 = "您已被授予龙杯官方认证，无法修改用户名和简介";
 	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
 	//20-39  yxc

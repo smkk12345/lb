@@ -677,7 +677,13 @@ public class ImproveServiceImpl implements ImproveService{
                     zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize-1);
             for (String userid : userids){
                 Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
+                if(null == improve){
+                    continue;
+                }
                 RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                if(null == rankMembers){
+                    continue;
+                }
                 improve.setTotalflowers(rankMembers.getFlowers());
                 improve.setTotallikes(rankMembers.getLikes());
                 if (null != improve){
@@ -3180,25 +3186,6 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
-
-    @Override
-    public BaseResp<List<Improve>> selectBusinessImproveListForPc(String userid, String businessid, String iscomplain, String businesstype, Integer startno, Integer pagesize, boolean selectCount) {
-        BaseResp<List<Improve>> baseResp = new BaseResp<>();
-        try {
-            List<Improve> improves = improveMapper.selectListByBusinessid(businessid, getTableNameByBusinessType(businesstype),
-                    null, userid, null, iscomplain, startno, pagesize);
-            initImproveListOtherInfo(userid, improves);
-            baseResp = BaseResp.ok();
-            baseResp.setData(improves);
-            Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
-                        null, userid, null, iscomplain);
-            baseResp.getExpandData().put("totalcount",totalcount);
-        } catch (Exception e) {
-            logger.error("select businessi improve list userid={} businessid={} businesstype={} is error:"
-                    , userid, businessid, businesstype);
-        }
-        return baseResp;
-    }
 
     public BaseResp<Object> selectGoalMainImproveList(long userid, int startNum, int pageSize) {
         BaseResp<Object> baseResp = new BaseResp<>();

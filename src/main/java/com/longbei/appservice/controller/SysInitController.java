@@ -34,7 +34,7 @@ public class SysInitController extends BaseController{
         try
         {
             //系统规则
-            baseResp.getExpandData().put("sysRules", SysRulesCache.sysRules);
+            baseResp.getExpandData().put("sysRules", SysRulesCache.behaviorRule);
             //十全十美菜单
             baseResp.getExpandData().put("perfectmenus",SysRulesCache.perfectTenList);
             //oss路径

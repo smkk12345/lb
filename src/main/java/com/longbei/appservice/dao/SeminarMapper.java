@@ -8,7 +8,7 @@ import java.util.List;
 public interface SeminarMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int deleteBySeminarid(Integer seminarid);
+    int deleteBySeminarid(@Param("seminarid") String seminarid);
 
     int insert(Seminar record);
 
