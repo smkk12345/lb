@@ -630,6 +630,7 @@ public class UserServiceImpl implements UserService {
             } else {
 //            		baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
                 logger.debug("向手机  {} 发送验证码 {} 失败", mobile, randomCode);
+				baseResp = resp;
             }
         } catch (Exception e) {
             logger.error("向手机  {} 发送验证码 {} 时出现异常：{}", mobile, randomCode,e);
