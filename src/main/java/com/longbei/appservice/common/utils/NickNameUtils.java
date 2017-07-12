@@ -19,10 +19,10 @@ public class NickNameUtils {
 //        String day = now.get(Calendar.DAY_OF_MONTH)+"";
         String sb1  = "";
         String sb2  = "";
-        String mToken = sNum.charAt(8) + "" + sNum.charAt(5) + "" + sNum.charAt(2);
+        String mToken = sNum.charAt(4) + "" + sNum.charAt(3) + "" + sNum.charAt(1);
         for (int i = 0; i < sNum.length(); i++) {
             char c = sNum.charAt(i);
-            if(i == 2||i == 5||i == 8){
+            if(i == 1||i == 3||i == 4){
                 continue;
             }
             if(i%2 == 0){
