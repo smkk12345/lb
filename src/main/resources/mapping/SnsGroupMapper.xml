@@ -209,9 +209,9 @@
   </update>
 
   <!-- 删除群组 -->
-  <delete id="deleteByGroupId" parameterType="String">
+  <update id="deleteByGroupId" parameterType="String">
       delete from sns_group where groupid = #{groupid}
-  </delete>
+  </update>
 
   <!-- 更新群组群主id -->
   <update id="updateGroupMainUser" parameterType="String">
