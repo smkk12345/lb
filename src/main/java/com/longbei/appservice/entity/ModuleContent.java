@@ -34,6 +34,16 @@ public class ModuleContent {
     private String pickey;
 
     /**
+     *视频等媒体路径
+     */
+    private String url;
+
+    /**
+     * 文字内容
+     */
+    private String ctext;
+
+    /**
      * 创建时间
      */
     private Date createtime;
@@ -53,6 +63,22 @@ public class ModuleContent {
     private UserInfo userInfo;
 
     private Video video;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getCtext() {
+        return ctext;
+    }
+
+    public void setCtext(String ctext) {
+        this.ctext = ctext;
+    }
 
     public Rank getRank() {
         return rank;
