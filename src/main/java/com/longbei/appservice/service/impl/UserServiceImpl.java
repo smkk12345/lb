@@ -677,7 +677,7 @@ public class UserServiceImpl implements UserService {
 	public
 	BaseResp<Object> checkSms(String mobile, String random){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(random.equals("1688")){
+		if(random.equals("1688")&&!StringUtils.isMobileNO(mobile)){
 			return baseResp.initCodeAndDesp();
 		}
 		String res = springJedisDao.get(mobile);
@@ -702,7 +702,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp<Object> findPassword(String username, String newpwd, String randomCode) {
 		String res = springJedisDao.get(username);
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(randomCode.equals("1688")){
+		if(randomCode.equals("1688")&&!StringUtils.isMobileNO(username)){
 			return baseResp.initCodeAndDesp();
 		}
 		if (res == null) {
