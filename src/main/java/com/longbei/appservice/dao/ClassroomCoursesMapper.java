@@ -14,6 +14,8 @@ public interface ClassroomCoursesMapper {
     int insertSelective(ClassroomCourses record);
 
     ClassroomCourses selectByPrimaryKey(Integer id);
+    
+    ClassroomCourses select(@Param("classroomid") long classroomid, @Param("id") Integer id);
 
     int updateByPrimaryKeySelective(ClassroomCourses record);
 
@@ -104,6 +106,11 @@ public interface ClassroomCoursesMapper {
      */
     List<ClassroomCourses> selectSearchList(@Param("classroomCourses") ClassroomCourses classroomCourses, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取最小排序值(sort desc排序)
+     */
+    Integer selectMinSort(@Param("classroomid") long classroomid);
     
     
 }
