@@ -39,7 +39,7 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
-    order by coursesort desc 
+    order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
