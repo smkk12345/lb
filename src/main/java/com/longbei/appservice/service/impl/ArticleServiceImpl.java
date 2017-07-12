@@ -144,6 +144,7 @@ public class ArticleServiceImpl implements ArticleService{
             List<Article> articles = articleMapper.selectArticleList(article,pagesize*(pageno-1),pagesize);
             page.setTotalCount(totalCount);
             page.setList(articles);
+            baseResp.initCodeAndDesp();
             baseResp.setData(page);
         } catch (Exception e) {
             logger.error("select article list with page is error:{}",e);

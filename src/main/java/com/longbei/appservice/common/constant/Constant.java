@@ -88,6 +88,7 @@ public class Constant {
 	public static final int STATUS_SYS_113 = -113;
 	public static final int STATUS_SYS_114 = -114;
 	public static final int STATUS_SYS_115 = -115;
+	public static final int STATUS_SYS_116 = -116;
 	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
@@ -204,6 +205,7 @@ public class Constant {
 	public static final int STATUS_SYS_1102 = -1102;
 	public static final int STATUS_SYS_1103 = -1103;
 	public static final int STATUS_SYS_1104 = -1104;
+	public static final int STATUS_SYS_1105 = -1105;
 	
 	
 	
@@ -237,6 +239,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_113 = "您的账号已被冻结,暂时无法登陆";
 	public static final String RTNINFO_SYS_114 = "每日切换帐号超过限制";
 	public static final String RTNINFO_SYS_115 = "单个设备注册用户量超过限制";
+	public static final String RTNINFO_SYS_116 = "发送失败";
 	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
 	//20-39  yxc
@@ -359,6 +362,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1102 = "您未加入教室,请加入";
 	public static final String RTNINFO_SYS_1103 = "您没有权限删除老师已回复的信息";
 	public static final String RTNINFO_SYS_1104 = "赠送鲜花的数量不对";
+	public static final String RTNINFO_SYS_1105 = "教室标题不能重复";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";

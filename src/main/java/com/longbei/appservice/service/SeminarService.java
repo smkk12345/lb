@@ -17,7 +17,7 @@ import java.util.List;
 public interface SeminarService {
 
 
-    BaseResp<Object> insertSeminar(Seminar seminar);
+    BaseResp<String> insertSeminar(Seminar seminar);
 
 
     BaseResp<Object> insertSeminarModule(List<SeminarModule> seminarModules);

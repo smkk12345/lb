@@ -35,7 +35,7 @@
     from classroom_members
     where classroomid = #{classroomid} 
     and itype = 0 
-    order by createtime desc 
+    order by likes+flowers*10 desc, createtime desc  
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -91,7 +91,7 @@
     <include refid="Base_Column_List" />
     from classroom_members
     where userid = #{userid} 
-    and itype = 0 
+    and itype = 0  and isup = 1 
     order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
@@ -160,8 +160,14 @@
       <if test="diamonds != null" >
         diamonds,
       </if>
+      <if test="icount != null" >
+        icount,
+      </if>
       <if test="cusername != null" >
         cusername,
+      </if>
+      <if test="complaintotalcount != null" >
+        complaintotalcount,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -198,8 +204,14 @@
       <if test="diamonds != null" >
         #{diamonds,jdbcType=INTEGER},
       </if>
+      <if test="icount != null" >
+        #{icount},
+      </if>
       <if test="cusername != null" >
         #{cusername},
+      </if>
+      <if test="complaintotalcount != null" >
+        #{complaintotalcount},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},

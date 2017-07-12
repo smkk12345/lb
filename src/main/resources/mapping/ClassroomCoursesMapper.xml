@@ -16,12 +16,13 @@
     <result column="isdefault" property="isdefault" jdbcType="CHAR" />
     <result column="fileurl" property="fileurl" jdbcType="VARCHAR" />
     <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="udpatetime" property="udpatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
-    classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, 
+    classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
     createtime, udpatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -31,6 +32,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   
+  <select id="select" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </select>
+  
   <select id="selectListByClassroomid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
@@ -38,7 +47,39 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
-    order by coursesort asc 
+    order by coursesort desc, createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom_courses
+    where classroomid = #{classroomCourses.classroomid} 
+    and isdel = 0 
+    <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
+      	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
+    </if>
+  </select>
+  
+  <select id="selectMinSort" resultType="java.lang.Integer" >
+    select min(coursesort)  
+    from classroom_courses
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+  </select>
+  
+  <select id="selectSearchList" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+    from classroom_courses
+    where classroomid = #{classroomCourses.classroomid} 
+    and isdel = 0 
+    <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
+      	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
+    </if>
+    order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -79,13 +120,13 @@
     insert into classroom_courses (id, coursetitle, coursesort, 
       coursetype, coursebrief, pickey, 
       coursecontent, classroomid, uploaduserid, 
-      createuserid, isdel, isdefault, fileurl, sourcekey, createtime, 
+      createuserid, isdel, isdefault, fileurl, sourcekey, duration, createtime, 
       udpatetime)
     values (#{id,jdbcType=INTEGER}, #{coursetitle,jdbcType=VARCHAR}, #{coursesort,jdbcType=INTEGER}, 
       #{coursetype,jdbcType=CHAR}, #{coursebrief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, 
       #{coursecontent,jdbcType=VARCHAR}, #{classroomid}, #{uploaduserid,jdbcType=BIGINT}, 
       #{createuserid,jdbcType=BIGINT}, #{isdel,jdbcType=CHAR}, #{isdefault,jdbcType=CHAR}, #{fileurl}, #{sourcekey}, 
-      #{createtime,jdbcType=TIMESTAMP}, 
+      #{duration}, #{createtime,jdbcType=TIMESTAMP}, 
       #{udpatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
@@ -127,11 +168,14 @@
       <if test="isdefault != null" >
         isdefault,
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         fileurl,
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         sourcekey,
+      </if>
+      <if test="duration != null and duration != ''" >
+        duration,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -177,11 +221,14 @@
       <if test="isdefault != null" >
         #{isdefault,jdbcType=CHAR},
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         #{fileurl},
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         #{sourcekey},
+      </if>
+      <if test="duration != null and duration != ''" >
+        #{duration},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -212,9 +259,6 @@
       <if test="coursecontent != null" >
         coursecontent = #{coursecontent,jdbcType=VARCHAR},
       </if>
-      <if test="classroomid != null" >
-        classroomid = #{classroomid},
-      </if>
       <if test="uploaduserid != null" >
         uploaduserid = #{uploaduserid,jdbcType=BIGINT},
       </if>
@@ -227,20 +271,20 @@
       <if test="isdefault != null" >
         isdefault = #{isdefault,jdbcType=CHAR},
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         fileurl = #{fileurl},
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         sourcekey = #{sourcekey},
       </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
+      <if test="duration != null and duration != ''" >
+        duration = #{duration},
       </if>
       <if test="udpatetime != null" >
-        udpatetime = #{udpatetime,jdbcType=TIMESTAMP},
+        udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} and classroomid = #{classroomid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
     update classroom_courses
@@ -256,7 +300,8 @@
       isdel = #{isdel,jdbcType=CHAR},
       isdefault = #{isdefault,jdbcType=CHAR}, 
       fileurl = #{fileurl},
-      sourcekey = #{sourcekey}, 
+      sourcekey = #{sourcekey},
+      duration = #{duration}, 
       createtime = #{createtime,jdbcType=TIMESTAMP},
       udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
@@ -277,6 +322,13 @@
   <update id="updateIsdel" >
     update classroom_courses
     set isdel = 1 
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateSortByid" >
+    update classroom_courses
+    set coursesort = #{coursesort}  
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>

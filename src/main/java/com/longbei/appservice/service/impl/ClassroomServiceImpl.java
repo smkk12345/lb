@@ -258,6 +258,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("ptype", classroom.getPtype());
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
+				map.put("classroomid", classroomid);
 				//是否已经关注教室
 				Map<String,Object> usermap = new HashMap<String,Object>();
 				usermap.put("businessType", "4");
@@ -529,7 +530,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		//把教室没有课程视频的去掉
 		//isadd 访问用户是否已加入教室  0：未加入  1：加入
 		String isadd = "0";
-		for (Classroom classroom : list) {
+		for (int i = 0; i < list.size(); i++) {
+			Classroom classroom = list.get(i);
 			//获取老师名片信息
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
@@ -856,12 +858,30 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum){
 		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
         try {
-        	List<UserCard> list = userCardMapper.selectUserCardList(null, startNum, endNum);
+        	UserCard userCard = new UserCard();
+        	userCard.setSourcetype("0");
+        	List<UserCard> list = userCardMapper.selectUserCardList(userCard, startNum, endNum);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         	baseResp.setData(list);
         } catch (Exception e) {
             logger.error("selectPcUserCardList for adminservice startNum = {}, pageSize = {}",
   					startNum, endNum, e);
+        }
+        return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> checkClasstitle(String classtitle) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	List<Classroom> list = classroomMapper.checkClasstitle(classtitle);
+        	if(null != list && list.size()>0){
+        		baseResp.initCodeAndDesp(Constant.STATUS_SYS_1105, Constant.RTNINFO_SYS_1105);
+        	}else{
+        		baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        	}
+        } catch (Exception e) {
+            logger.error("checkClasstitle for adminservice classtitle = {}", classtitle, e);
         }
         return baseResp;
 	}

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service("userCardService")
@@ -35,6 +36,13 @@ public class UserCardServiceImpl implements UserCardService {
             int pageNo = Page.setPageNo(startNum/pageSize+1,totalcount,pageSize);
             List<UserCard> userCardList = new ArrayList<UserCard>();
             userCardList = userCardMapper.selectUserCardList(userCard,startNum,pageSize);
+            if(userCardList != null && userCardList.size()>0){
+                for(int i= 0;i<userCardList.size();i++)
+                {
+                    Date createtime = DateUtils.formatDate(userCardList.get(i).getCreatetime(), "yyyy-MM-dd HH:mm:ss");
+                    userCardList.get(i).setCreatetime(DateUtils.formatDateTime1(createtime));
+                }
+            }
             page.setTotalCount(totalcount);
             page.setList(userCardList);
         } catch (Exception e) {

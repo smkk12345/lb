@@ -674,9 +674,18 @@ public class ImproveServiceImpl implements ImproveService{
 
         if ("1".equals(rank.getIsfinish())){
             Set<String> userids = springJedisDao.
-                    zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize);
+                    zRevrange(Constant.REDIS_RANK_SORT+rank.getRankid(),startNo*pageSize,startNo*pageSize+pageSize-1);
             for (String userid : userids){
                 Improve improve = improveMapper.selectRankImprovesByUserIdAndRankId(userid,rankid);
+                if(null == improve){
+                    continue;
+                }
+                RankMembers rankMembers = rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                if(null == rankMembers){
+                    continue;
+                }
+                improve.setTotalflowers(rankMembers.getFlowers());
+                improve.setTotallikes(rankMembers.getLikes());
                 if (null != improve){
                     list.add(improve);
                 }
@@ -998,6 +1007,8 @@ public class ImproveServiceImpl implements ImproveService{
                 	int flowers = improves.getFlowers();
                 	flowers = 0 - flowers;
                 	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), likes, flowers);
+                	//更新教室成员  总进步数
+                	classroomMembersMapper.updateIcountByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -1);
                 	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
@@ -2224,7 +2235,7 @@ public class ImproveServiceImpl implements ImproveService{
                 tablename = Constant_table.RANK_MEMBERS;
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
-                tablename = Constant_table.CIRCLE_MEMBERS;
+                tablename = Constant_table.CLASSROOM_MEMBERS;
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
                 tablename = Constant_table.CIRCLE_MEMBERS;
@@ -2498,6 +2509,8 @@ public class ImproveServiceImpl implements ImproveService{
                     rankSortService.updateRankSortScore(improve.getBusinessid(),
                             improve.getUserid(),type,icount);
                     break;
+                case Constant.IMPROVE_CLASSROOM_TYPE:
+                	improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName, "classroomid");
                 default:
                     break;
             }
@@ -3145,7 +3158,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @param businesstype 业务类型 榜，圈子，教室，目标
      * @param startno 分页起始条数
      * @param pagesize 分页每页条数
-     * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
+     * @param selectCount 是否查询总数 只有在selectCount == true时 才会查询总数
      * @return
      *
      * @author luye
@@ -3161,7 +3174,7 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveListOtherInfo(userid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
-            if(startno == 0 && selectCount){
+            if(selectCount){
                 Integer totalcount = improveMapper.selectListTotalcount(businessid, getTableNameByBusinessType(businesstype),
                         null, userid, null, iscomplain);
                 baseResp.getExpandData().put("totalcount",totalcount);

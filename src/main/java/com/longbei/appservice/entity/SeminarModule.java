@@ -49,10 +49,26 @@ public class SeminarModule{
      */
     private Date updatetime;
 
+
+    /**
+     * 后端配置
+     */
+    private String config;
+
+
+
     /**
      * 模块所关联内容
      */
     private List<ModuleContent> moduleContents;
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
+    }
 
     public List<ModuleContent> getModuleContents() {
         return moduleContents;

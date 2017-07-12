@@ -128,10 +128,20 @@ public interface ClassroomService {
 	 * 获取教室信息
 	 * @param isup   0 - 未发布 。1 --已发布
 	 * @param isdel  0 未删除。1 删除
-	 * @param pageNo   pageSize
+	 * @param startNum   endNum
 	 * 2017年6月17日
 	 */
 	BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum);
+	
+	/**
+    * @Description: 检查教室标题是否重复
+    * @param @param classtitle  教室标题
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @return 0:不存在重复   1：存在重复需要更改
+    * @auther yinxc
+    * @currentdate:2017年7月11日
+	*/
+	BaseResp<Object> checkClasstitle(String classtitle);
 	
 	/**
     * @Description: 获取教室名片列表
@@ -151,7 +161,7 @@ public interface ClassroomService {
 	BaseResp<Object> insertClassroom(Classroom record);
 	
 	/**
-    * @Description: 添加教室
+    * @Description: 获取教室列表
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年7月4日
@@ -185,6 +195,5 @@ public interface ClassroomService {
      * @currentdate:2017年7月5日
  	*/
 	BaseResp<Object> uproom(long classroomid);
-	
 	
 }

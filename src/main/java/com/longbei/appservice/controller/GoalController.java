@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by smkk on 17/2/10.
  * 关联部分  发进步更新目标中icount条数 更新更新时间
@@ -43,15 +45,16 @@ public class GoalController extends BaseController {
      * @param week  提醒周   逗号隔开
      * @return
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @RequestMapping(value = "insert")
-    public BaseResp<Object> insertGoal(String userid,
-                                       String goaltag,
+    public BaseResp<Object> insertGoal(HttpServletRequest request,String userid,
                                        String ptype,
                                        String ispublic,
                                        String needwarn,
                                        String warntime,
                                        String week){
         BaseResp<Object> baseResp = new BaseResp<>();
+        String goaltag = request.getParameter("goaltag");
         if(StringUtils.hasBlankParams(userid,goaltag,ptype,ispublic)){
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }

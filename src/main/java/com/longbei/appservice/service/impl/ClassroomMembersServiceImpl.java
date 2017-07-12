@@ -1,6 +1,8 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserService;
@@ -26,6 +28,7 @@ import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("classroomMembersService")
 public class ClassroomMembersServiceImpl implements ClassroomMembersService {
@@ -46,6 +49,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private UserMsgService userMsgService;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -213,6 +218,57 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		}
 		return reseResp;
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> selectRoomMemberDetail(Long classroomid, Long userid, Long currentUserId) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid+"");
+	        //获取好友昵称
+	        this.userRelationService.updateFriendRemark(currentUserId,appUserMongoEntity);
+	        if(appUserMongoEntity == null) {
+	        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+	        }
+	        Map<String,Object> resultMap = new HashMap<String,Object>();
+			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+			if(members == null) {
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			}
+			if(currentUserId != null){
+                if(this.userRelationService.checkIsFans(currentUserId,userid)){
+                    resultMap.put("isfans",1);
+                }else{
+                    resultMap.put("isfans",0);
+                }
+                if(this.userRelationService.checkIsFriend(currentUserId,userid)){
+                    resultMap.put("isFriends",1);
+                }else{
+                    resultMap.put("isFriends",0);
+                }
+            }else{
+                resultMap.put("isfans",0);
+                resultMap.put("isFriends",0);
+            }
+			resultMap.put("likes", members.getLikes());
+            resultMap.put("flowers", members.getFlowers());
+            resultMap.put("nickname", appUserMongoEntity.getNickname());
+            resultMap.put("avatar", appUserMongoEntity.getAvatar());
+            resultMap.put("userid", appUserMongoEntity.getUserid());
+            resultMap.put("icount", members.getIcount());
+//            Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+//            if(classroom == null) {
+//				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//			}
+            resultMap.put("classroomid", classroomid);
+			baseResp.setData(resultMap);
+		} catch (Exception e) {
+			logger.error("selectRoomMemberDetail classroomid = {}, userid = {}, currentUserId = {}", 
+					classroomid, userid, currentUserId, e);
+		}
+		return baseResp;
+	}
 
 	/**
 	 * @author yinxc
@@ -321,11 +377,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
                         improveid, "12",
                         classroomid, remark, "0", "45", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
             }
+            reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
             logger.error("remove classroom Improve status = {}, userid = {} , classroomid = {}, improveid = {} ", 
             		status, userid, classroomid, improveid, e);
         }
         return reseResp;
 	}
+
 
 }

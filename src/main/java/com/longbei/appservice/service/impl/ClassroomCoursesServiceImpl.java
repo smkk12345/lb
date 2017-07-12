@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.entity.ClassroomCourses;
@@ -104,5 +105,39 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		int temp = classroomCoursesMapper.updateIsdel(classroomid, id);
 		return temp > 0 ? true : false;
 	}
+	
 
+	@Override
+	public BaseResp<Page<ClassroomCourses>> selectPcSearchCroomCoursesList(ClassroomCourses classroomCourses,
+			int startNum, int endNum) {
+		BaseResp<Page<ClassroomCourses>> reseResp = new BaseResp<>();
+		Page<ClassroomCourses> page = new Page<>(startNum, endNum);
+		try {
+			int totalcount = classroomCoursesMapper.selectSearchCount(classroomCourses);
+			List<ClassroomCourses> list = classroomCoursesMapper.selectSearchList(classroomCourses, startNum, endNum);
+			page.setTotalCount(totalcount);
+            page.setList(list);
+			reseResp.setData(page);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectPcSearchCroomCoursesList classroomid = {}, startNum = {}, endNum = {}", 
+					classroomCourses.getClassroomid(), startNum, endNum, e);
+		}
+		return reseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateSortByid(Integer id, long classroomid, Integer coursesort) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
+			if (temp > 0) {
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateIsdel id = {}", id, e);
+		}
+		return reseResp;
+	}
+	
 }

@@ -8,11 +8,13 @@
     <result column="contenttype" property="contenttype" jdbcType="CHAR" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="pickey" property="pickey" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="ctext" property="ctext" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, semmodid, contentid, contenttype, sortnum, pickey, createtime, updatetime
+    id, semmodid, contentid, contenttype, sortnum, pickey, createtime, updatetime, url, ctext
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
@@ -106,11 +108,12 @@
   <insert id="insertBatch" parameterType="java.util.List">
     insert into modulecontent (semmodid, contentid,
     contenttype, sortnum, pickey,
-    createtime, updatetime)
+    createtime, updatetime, url, ctext)
     values
     <foreach collection="list" item="content" index="index" separator="," >
       (#{content.semmodid},#{content.contentid},#{content.contenttype},
-      #{content.sortnum},#{content.pickey},#{content.createtime},#{content.updatetime})
+      #{content.sortnum},#{content.pickey},#{content.createtime},#{content.updatetime},
+      #{content.url},#{content.ctext})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ModuleContent" >

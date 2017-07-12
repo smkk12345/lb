@@ -35,11 +35,13 @@ public class ClassroomCourses {
 
     private Date udpatetime;//更新时间
     
-    private String isdefault;//是否 默认   1 默认封面  0 非默认
+    private String isdefault;//isdefault是否 默认   1 默认封面  0 非默认
     
     private String fileurl; //视频文件url（转码后）
     
     private String sourcekey; //源文件
+    
+    private String duration; //音频时长
 
     /**
      * 
@@ -274,5 +276,13 @@ public class ClassroomCourses {
 
 	public void setIsdefault(String isdefault) {
 		this.isdefault = isdefault;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
 	}
 }

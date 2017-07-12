@@ -285,6 +285,8 @@ public class BehaviorRule {
 
     private Integer registerdevicelimit = 5;//同一设备注册帐号数
 
+    private Integer shareMaxCount;//单次分享的最大个数限制
+
     public Long getId() {
         return id;
     }
@@ -747,5 +749,13 @@ public class BehaviorRule {
 
     public Integer getRegisterdevicelimit() {
         return registerdevicelimit;
+    }
+
+    public Integer getShareMaxCount() {
+        return shareMaxCount;
+    }
+
+    public void setShareMaxCount(Integer shareMaxCount) {
+        this.shareMaxCount = shareMaxCount;
     }
 }

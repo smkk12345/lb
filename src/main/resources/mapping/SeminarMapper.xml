@@ -37,10 +37,7 @@
     from seminar
     where 1=1
     <if test="seminar.seminartitle !=null">
-      AND seminartitle = ${seminar.seminartitle}
-    </if>
-    <if test="startNo != null">
-      limit #{startNo},#{pageSize}
+      AND seminartitle LIKE concat(concat('%',#{seminar.seminartitle}),'%')
     </if>
   </select>
 
@@ -51,7 +48,7 @@
     from seminar
     where 1=1
     <if test="seminar.seminartitle !=null">
-      AND seminartitle = ${seminar.seminartitle}
+      AND seminartitle LIKE concat(concat('%',#{seminar.seminartitle}),'%')
     </if>
     <if test="startNo != null">
       limit #{startNo},#{pageSize}
