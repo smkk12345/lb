@@ -270,7 +270,7 @@
       <if test="ptype != null" >
         ptype,
       </if>
-      <if test="classtype != null" >
+      <if test="classtype != null and classtype != ''" >
         classtype,
       </if>
       <if test="ispublic != null" >
@@ -285,22 +285,22 @@
       <if test="freecoursenum != null" >
         freecoursenum,
       </if>
-      <if test="isup != null" >
+      <if test="isup != null and isup != ''" >
         isup,
       </if>
-      <if test="sourcetype != null" >
+      <if test="sourcetype != null and sourcetype != ''" >
         sourcetype,
       </if>
-      <if test="cusername != null" >
+      <if test="cusername != null and cusername != ''" >
         cusername,
       </if>
       <if test="closedate != null" >
         closedate,
       </if>
-      <if test="syllabus != null" >
+      <if test="syllabus != null and crowd != ''" >
         syllabus,
       </if>
-      <if test="crowd != null" >
+      <if test="crowd != null and crowd != ''" >
         crowd,
       </if>
     </trim>

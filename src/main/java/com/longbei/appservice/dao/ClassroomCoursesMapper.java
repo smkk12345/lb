@@ -77,6 +77,17 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
+	 * 修改课程排序
+	 * 2017年7月12日
+	 * param id  课程id
+	 * param classroomid 教室id
+	 * param coursesort 课程序号
+	 */
+    Integer updateSortByid(@Param("classroomid") long classroomid, 
+    		@Param("id") Integer id, @Param("coursesort") Integer coursesort);
+    
+    /**
+	 * @author yinxc
 	 * 获取当前教室课程总数
 	 * 2017年3月3日
 	 * param classroomid 教室id

@@ -58,6 +58,14 @@ public interface ClassroomCoursesService {
 	*/
 	BaseResp<Page<ClassroomCourses>> selectPcSearchCroomCoursesList(ClassroomCourses classroomCourses, int startNum, int endNum);
 	
-	
+	/**
+	 * @author yinxc
+	 * 修改课程排序
+	 * 2017年7月12日
+	 * param id  课程id
+	 * param classroomid 教室id
+	 * param coursesort 课程序号
+	 */
+	BaseResp<Object> updateSortByid(Integer id, long classroomid, Integer coursesort);
 	
 }

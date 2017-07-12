@@ -39,7 +39,7 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
-    order by coursesort desc 
+    order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -307,6 +307,13 @@
   <update id="updateIsdel" >
     update classroom_courses
     set isdel = 1 
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateSortByid" >
+    update classroom_courses
+    set coursesort = #{coursesort}  
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>

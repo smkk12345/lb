@@ -258,6 +258,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("ptype", classroom.getPtype());
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
+				map.put("classroomid", classroomid);
 				//是否已经关注教室
 				Map<String,Object> usermap = new HashMap<String,Object>();
 				usermap.put("businessType", "4");
