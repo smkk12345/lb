@@ -613,6 +613,7 @@
     WHERE
         ir.businessid = #{businessid}
      AND ir.userid = #{userid}
+     limit 1
   </select>
 
   <select id="selectRankImprovesBySort" resultMap="BaseResultMap">
