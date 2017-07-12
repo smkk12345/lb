@@ -311,4 +311,11 @@
     and classroomid = #{classroomid} 
   </update>
   
+  <update id="updateSortByid" >
+    update classroom_courses
+    set coursesort = #{coursesort}  
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
 </mapper>
