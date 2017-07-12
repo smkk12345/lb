@@ -81,10 +81,6 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private TimeLineDao timeLineDao;
 
-    @Autowired
-    private RankService rankService;
-
-
 
     @Override
     public void run(String... strings) throws Exception {
@@ -105,7 +101,6 @@ public class InitConfig implements CommandLineRunner {
         initListener();
         //初始化sys——common
         initSysCommon();
-        rankService.initRankSort();
     }
 
     private void initUserBehaviorRule(int num){
