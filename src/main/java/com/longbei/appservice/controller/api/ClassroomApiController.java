@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -469,5 +470,51 @@ public class ClassroomApiController {
         }
         return baseResp;
     }
+    
+    /**
+     * @Description: 获取课程列表
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年6月17日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "updCoursesSort")
+    public BaseResp<Object> updCoursesSort(String classroomid, String id, String coursesort){
+        logger.info("updCoursesSort classroomid = {}, id = {}, coursesort = {}", classroomid, id, coursesort);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, id, coursesort)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomCoursesService.updateSortByid(Integer.parseInt(id), 
+  					Long.parseLong(classroomid), Integer.parseInt(coursesort));
+        } catch (Exception e) {
+        	logger.error("updCoursesSort classroomid = {}, id = {}, coursesort = {}", 
+        			classroomid, id, coursesort, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 删除教室课程
+     * @param @param classroomid 教室id
+     * @param @param id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月12日
+ 	*/
+    @RequestMapping(value = "/delCourses")
+ 	@ResponseBody
+    public BaseResp<Object> delCourses(String classroomid, String id, Model model){
+    	logger.info("delCourses classroomid = {}, id = {}", classroomid, id);
+    	BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = classroomCoursesService.updateIsdel(Long.parseLong(classroomid), Integer.parseInt(id));
+		} catch (Exception e) {
+			logger.error("delCourses classroomid = {}, id = {}", 
+					classroomid, id, e);
+		}
+		return baseResp;
+	}
     
 }

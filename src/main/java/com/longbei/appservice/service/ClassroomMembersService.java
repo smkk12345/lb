@@ -67,6 +67,17 @@ public interface ClassroomMembersService {
 	 */
 	BaseResp<Object> quitClassroom(long classroomid, long userid, String itype);
 	
+	/**
+	* @Description: 查看教室单个用户的信息
+	* @param @param classroomid 教室id
+	* @param @param userid 用户id
+	* @param @param currentUserId 当前登录用户id
+	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	* @auther yinxc
+	* @currentdate:2017年7月12日
+	*/
+	BaseResp<Object> selectRoomMemberDetail(Long classroomid, Long userid, Long currentUserId);
+	
 	
 	
 	

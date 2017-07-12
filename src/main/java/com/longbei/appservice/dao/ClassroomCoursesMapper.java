@@ -14,6 +14,8 @@ public interface ClassroomCoursesMapper {
     int insertSelective(ClassroomCourses record);
 
     ClassroomCourses selectByPrimaryKey(Integer id);
+    
+    ClassroomCourses select(@Param("classroomid") long classroomid, @Param("id") Integer id);
 
     int updateByPrimaryKeySelective(ClassroomCourses record);
 
@@ -77,6 +79,17 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
+	 * 修改课程排序
+	 * 2017年7月12日
+	 * param id  课程id
+	 * param classroomid 教室id
+	 * param coursesort 课程序号
+	 */
+    Integer updateSortByid(@Param("classroomid") long classroomid, 
+    		@Param("id") Integer id, @Param("coursesort") Integer coursesort);
+    
+    /**
+	 * @author yinxc
 	 * 获取当前教室课程总数
 	 * 2017年3月3日
 	 * param classroomid 教室id
@@ -93,6 +106,11 @@ public interface ClassroomCoursesMapper {
      */
     List<ClassroomCourses> selectSearchList(@Param("classroomCourses") ClassroomCourses classroomCourses, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取最小排序值(sort desc排序)
+     */
+    Integer selectMinSort(@Param("classroomid") long classroomid);
     
     
 }
