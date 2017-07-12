@@ -7,13 +7,14 @@
     <result column="seminarid" property="seminarid" jdbcType="BIGINT" />
     <result column="moduleid" property="moduleid" jdbcType="VARCHAR" />
     <result column="modulename" property="modulename" jdbcType="VARCHAR" />
+    <result column="config" property="config" jdbcType="VARCHAR" />
     <result column="isshow" property="isshow" jdbcType="CHAR" />
     <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, semmodid, seminarid, moduleid, modulename, isshow, sortnum, createtime, updatetime
+    id, semmodid, seminarid, moduleid, modulename, isshow, sortnum, createtime, updatetime, config
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -75,10 +76,16 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="config != null" >
+        config,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="semmodid != null" >
+        #{semmodid,jdbcType=BIGINT},
       </if>
       <if test="seminarid != null" >
         #{seminarid,jdbcType=BIGINT},
@@ -100,6 +107,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="config != null" >
+        #{config},
       </if>
     </trim>
   </insert>
@@ -123,6 +133,9 @@
       </if>
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="config != null" >
+        config = #{config},
       </if>
     </set>
     where seminarid = #{seminarid,jdbcType=INTEGER}

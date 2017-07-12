@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ import java.util.List;
  * @author luye
  * @create 2017-07-05 上午10:54
  **/
-@Controller
+@RestController
 @RequestMapping("api/seminar")
 public class SeminarApiController {
 
@@ -39,10 +37,13 @@ public class SeminarApiController {
      * @return
      */
     @RequestMapping(value = "list",method = RequestMethod.POST)
-    public BaseResp<Page<Seminar>> selectSerminars(@RequestBody Seminar seminar, Integer pageNo, Integer pageSize){
+    public BaseResp<Page<Seminar>> selectSerminars(@RequestBody Seminar seminar,
+                                                   @RequestParam("pageNo") String pageNo,
+                                                   @RequestParam("pageSize") String pageSize){
         BaseResp<Page<Seminar>> baseResp = new BaseResp();
         try {
-            baseResp = seminarService.selectSeminars(seminar,pageNo,pageSize);
+            baseResp = seminarService.selectSeminars(seminar,Integer.parseInt(pageNo)
+                    ,Integer.parseInt(pageSize));
         } catch (Exception e) {
             logger.error("select serminar list is error:",e);
         }
@@ -122,8 +123,8 @@ public class SeminarApiController {
      * @return
      */
     @RequestMapping(value = "insert",method = RequestMethod.POST)
-    public BaseResp<Object> insertSerminar(@RequestBody Seminar seminar){
-        BaseResp baseResp = new BaseResp();
+    public BaseResp<String> insertSerminar(@RequestBody Seminar seminar){
+        BaseResp<String> baseResp = new BaseResp();
         try {
             baseResp = seminarService.insertSeminar(seminar);
         } catch (Exception e) {

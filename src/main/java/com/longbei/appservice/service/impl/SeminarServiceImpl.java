@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,15 +50,17 @@ public class SeminarServiceImpl implements SeminarService{
 
 
     @Override
-    public BaseResp<Object> insertSeminar(Seminar seminar) {
-        BaseResp baseResp = new BaseResp();
+    public BaseResp<String> insertSeminar(Seminar seminar) {
+        BaseResp<String> baseResp = new BaseResp();
         try {
             Long seminarid = idGenerateService.getUniqueIdAsLong();
             seminar.setSeminarid(seminarid);
+            seminar.setCreatetime(new Date());
+            seminar.setUpdatetime(new Date());
             int res = seminarMapper.insertSelective(seminar);
             if (res > 0){
                 baseResp.initCodeAndDesp();
-                baseResp.setData(seminarid);
+                baseResp.setData(String.valueOf(seminarid));
             }
         } catch (Exception e) {
             logger.error("insert seminar:{} is error:", JSON.toJSONString(seminar),e);
@@ -242,7 +245,10 @@ public class SeminarServiceImpl implements SeminarService{
             baseResp = selectSeminar(seminarid);
             if (ResultUtil.isSuccess(baseResp)){
                 BaseResp<List<SeminarModule>> base = selectSeminarModules(seminarid);
-                baseResp.getData().setSeminarModules(base.getData());
+                if (null != baseResp.getData()){
+                    baseResp.getData().setSeminarModules(base.getData());
+                }
+
             }
         } catch (Exception e) {
             logger.error("select seminar all detail seminarid:{} is error:",seminarid,e);
