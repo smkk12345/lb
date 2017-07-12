@@ -2084,6 +2084,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         map.put("isdel",0);
         rankList = this.rankMapper.selectRankList(map);
         for(Rank rank:rankList){
+            springJedisDao.del(Constant.REDIS_RANK_SORT+rank.getRankid());
             int likeScore = rank.getLikescore();
             int flowerScore = rank.getFlowerscore();
             double b = rank.getEndtime().getTime() - rank.getStarttime().getTime();
