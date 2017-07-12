@@ -62,9 +62,9 @@
     delete from seminar
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteBySeminarid" parameterType="java.lang.Integer" >
+  <delete id="deleteBySeminarid">
     delete from seminar
-    where seminarid = #{seminarid,jdbcType=INTEGER}
+    where seminarid = #{seminarid}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Seminar" >
     insert into seminar (id, seminarid, seminarpic, 
@@ -140,9 +140,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Seminar" >
     update seminar
     <set >
-      <if test="seminarid != null" >
-        seminarid = #{seminarid,jdbcType=BIGINT},
-      </if>
       <if test="seminarpic != null" >
         seminarpic = #{seminarpic,jdbcType=VARCHAR},
       </if>
@@ -165,7 +162,7 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where seminarid = #{seminarid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.Seminar" >
     update seminar
