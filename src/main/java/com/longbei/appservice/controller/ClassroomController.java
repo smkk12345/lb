@@ -383,6 +383,8 @@ public class ClassroomController {
   			record.setUserid(Long.parseLong(userid));
   			//userstatus 用户在教室中的身份。0 — 普通学员 1—助教
   			record.setUserstatus("0");
+  			record.setIcount(0);
+  			record.setComplaintotalcount(0);
   			baseResp = classroomMembersService.insertClassroomMembers(record);
   		} catch (Exception e) {
   			logger.error("insertMembers classroomid = {}, userid = {}", 
@@ -533,7 +535,7 @@ public class ClassroomController {
         }
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "0", ptype, startNo, pageSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "1", ptype, startNo, pageSize);
   		} catch (Exception e) {
   			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}",
   					userid, startNo, pageSize, e);

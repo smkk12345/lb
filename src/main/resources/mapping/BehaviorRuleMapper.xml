@@ -58,7 +58,7 @@
     <result column="joinrankgoalstimes" property="joinrankgoalstimes" jdbcType="INTEGER" />
     <result column="joincirclegoalstimes" property="joincirclegoalstimes" jdbcType="INTEGER" />
     <result column="aoinclassgoalstimes" property="aoinclassgoalstimes" jdbcType="INTEGER" />
-    <result column="sharemaxcount" property="sharemaxcount" jdbcType="INTEGER" />
+    <result column="shareMaxCount" property="shareMaxCount" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals,
@@ -72,7 +72,7 @@
     friendregistergoalsmax, friendregisterimpcoinsmax, addfriendgoalsmax, addfriendimpcoinsmax,
     likegoalsmax, impcommentgoalsmax, flowergoalsmax, improvegoalsmax, improveimpcoinsmin,
     improveimpcoinsmax, improveimpcoinstimes, joinrankgoalstimes, joincirclegoalstimes,
-    aoinclassgoalstimes,sharemaxcount
+    aoinclassgoalstimes,shareMaxCount
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
@@ -105,7 +105,7 @@
     likegoalsmax, impcommentgoalsmax, flowergoalsmax,
     improvegoalsmax, improveimpcoinsmin, improveimpcoinsmax,
     improveimpcoinstimes, joinrankgoalstimes,
-    joincirclegoalstimes, aoinclassgoalstimes, sharemaxcount
+    joincirclegoalstimes, aoinclassgoalstimes, shareMaxCount
     )
     values (#{id,jdbcType=BIGINT}, #{registergoals,jdbcType=INTEGER}, #{qqbindgoals,jdbcType=INTEGER},
     #{webbindgoals,jdbcType=INTEGER}, #{wechatbindgoals,jdbcType=INTEGER}, #{certificationgoals,jdbcType=INTEGER},
@@ -128,7 +128,7 @@
     #{likegoalsmax,jdbcType=INTEGER}, #{impcommentgoalsmax,jdbcType=INTEGER}, #{flowergoalsmax,jdbcType=INTEGER},
     #{improvegoalsmax,jdbcType=INTEGER}, #{improveimpcoinsmin,jdbcType=INTEGER}, #{improveimpcoinsmax,jdbcType=INTEGER},
     #{improveimpcoinstimes,jdbcType=INTEGER}, #{joinrankgoalstimes,jdbcType=INTEGER},
-    #{joincirclegoalstimes,jdbcType=INTEGER}, #{aoinclassgoalstimes,jdbcType=INTEGER}, #{sharemaxcount,jdbcType=INTEGER}
+    #{joincirclegoalstimes,jdbcType=INTEGER}, #{aoinclassgoalstimes,jdbcType=INTEGER}, #{shareMaxCount,jdbcType=INTEGER}
     )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.BehaviorRule" >
@@ -302,8 +302,8 @@
       <if test="aoinclassgoalstimes != null" >
         aoinclassgoalstimes,
       </if>
-      <if test="sharemaxcount != null" >
-        sharemaxcount,
+      <if test="shareMaxCount != null" >
+        shareMaxCount,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -475,8 +475,8 @@
       <if test="aoinclassgoalstimes != null" >
         #{aoinclassgoalstimes,jdbcType=INTEGER},
       </if>
-      <if test="sharemaxcount != null" >
-        #{sharemaxcount,jdbcType=INTEGER},
+      <if test="shareMaxCount != null" >
+        #{shareMaxCount,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -648,8 +648,8 @@
       <if test="aoinclassgoalstimes != null" >
         aoinclassgoalstimes = #{aoinclassgoalstimes,jdbcType=INTEGER},
       </if>
-      <if test="sharemaxcount != null" >
-        sharemaxcount = #{sharemaxcount,jdbcType=INTEGER},
+      <if test="shareMaxCount != null" >
+        shareMaxCount = #{shareMaxCount,jdbcType=INTEGER},
       </if>
     </set>
   </update>
@@ -710,6 +710,6 @@
       joinrankgoalstimes = #{joinrankgoalstimes,jdbcType=INTEGER},
       joincirclegoalstimes = #{joincirclegoalstimes,jdbcType=INTEGER},
       aoinclassgoalstimes = #{aoinclassgoalstimes,jdbcType=INTEGER},
-      sharemaxcount = #{sharemaxcount,jdbcType=INTEGER}
+      shareMaxCount = #{shareMaxCount,jdbcType=INTEGER}
   </update>
 </mapper>

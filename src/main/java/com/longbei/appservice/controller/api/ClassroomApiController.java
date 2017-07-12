@@ -19,9 +19,11 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserCard;
+import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.ImproveService;
@@ -36,6 +38,8 @@ public class ClassroomApiController {
 	private IdGenerateService idGenerateService;
 	@Autowired
 	private ClassroomMembersService classroomMembersService;
+	@Autowired
+	private ClassroomCoursesService classroomCoursesService;
 	@Autowired
 	private ImproveService improveService;
 	
@@ -206,6 +210,27 @@ public class ClassroomApiController {
   		} catch (Exception e) {
   			logger.error("selectClassroomList isup = {}, isdel = {}, startNo = {}, pageSize = {}",
   					isup, isdel, startNo, pageSize, e);
+  		}
+  		return baseResp;
+    }
+	
+	/**
+    * @Title: http://ip:port/app_service/api/classroom/checkClasstitle
+    * @Description: 检查教室标题是否重复
+    * @param @param classtitle  教室标题
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @return 0:不存在重复   1：存在重复需要更改
+    * @auther yinxc
+    * @currentdate:2017年7月11日
+	*/
+	@RequestMapping(value = "checkClasstitle")
+    public BaseResp<Object> checkClasstitle(String classtitle) {
+		logger.info("checkClasstitle classtitle = {}", classtitle);
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = classroomService.checkClasstitle(classtitle);
+  		} catch (Exception e) {
+  			logger.error("checkClasstitle classtitle = {}", classtitle, e);
   		}
   		return baseResp;
     }
@@ -422,5 +447,27 @@ public class ClassroomApiController {
         return baseResp;
  	}
     
+    
+    
+    
+    /**
+     * @Description: 获取课程列表
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年6月17日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "searchCourses")
+    public BaseResp<Page<ClassroomCourses>> searchCourses(@RequestBody ClassroomCourses classroomCourses, String startNo, String pageSize){
+        logger.info("search classroomCourses={},startNo={},pageSize={}", JSON.toJSON(classroomCourses).toString(),startNo,pageSize);
+        BaseResp<Page<ClassroomCourses>> baseResp = new BaseResp<>();
+  		try {
+  			baseResp = classroomCoursesService.selectPcSearchCroomCoursesList(classroomCourses, Integer.parseInt(startNo), Integer.parseInt(pageSize));
+        } catch (Exception e) {
+        	logger.error("search classroomCourses={},startNo={},pageSize={}", 
+        			JSON.toJSON(classroomCourses).toString(), startNo, pageSize, e);
+        }
+        return baseResp;
+    }
     
 }
