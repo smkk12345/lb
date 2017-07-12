@@ -415,9 +415,6 @@ public interface ImproveService {
                                                 String businesstype,Integer startno,Integer pagesize,boolean selectCount);
 
 
-    BaseResp<List<Improve>> selectBusinessImproveListForPc(String userid,String businessid,String iscomplain,
-                                                      String businesstype,Integer startno,Integer pagesize,boolean selectCount);
-
 
 
 
