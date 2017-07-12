@@ -1,9 +1,5 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,7 +9,7 @@ public class UserCard {
 
     private Long userid;//用户id
 
-    private String ctype;//类型。0 榜主名片。1 圈主名片
+    private String ctype;//类型。0 榜主名片。1 圈主名片  2 教师名片
 
     private String avatar;//头像
 
@@ -23,13 +19,15 @@ public class UserCard {
 
     private String content;//图文介绍
 
-    private Date createtime;
+    private String createtime;
 
-    private Date updatetime;
+    private String updatetime;
 
     private Long cardid;//名片id
     
     private String isdel; //0 没删 1 - 删除   默认0
+
+    private String sourcetype; //0:运营  1:app  2:商户
 
     /**
      * 
@@ -74,8 +72,8 @@ public class UserCard {
     }
 
     /**
-     * 类型。0 榜主名片。1 圈主名片
-     * @param ctype 类型。0 榜主名片。1 圈主名片
+     * 类型。0 榜主名片。1 圈主名片  2 教师名片
+     * @param ctype 类型。0 榜主名片。1 圈主名片  2 教师名片
      */
     public void setCtype(String ctype) {
         this.ctype = ctype == null ? null : ctype.trim();
@@ -149,9 +147,8 @@ public class UserCard {
      * 
      * @return createtime 
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
@@ -159,7 +156,7 @@ public class UserCard {
      * 
      * @param createtime 
      */
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
@@ -167,9 +164,8 @@ public class UserCard {
      * 
      * @return updatetime 
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
@@ -177,7 +173,7 @@ public class UserCard {
      * 
      * @param updatetime 
      */
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
@@ -206,4 +202,12 @@ public class UserCard {
 	public void setIsdel(String isdel) {
 		this.isdel = isdel;
 	}
+
+    public String getSourcetype() {
+        return sourcetype;
+    }
+
+    public void setSourcetype(String sourcetype) {
+        this.sourcetype = sourcetype;
+    }
 }

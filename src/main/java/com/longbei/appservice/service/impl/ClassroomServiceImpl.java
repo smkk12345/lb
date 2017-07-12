@@ -381,6 +381,21 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Override
 	public Classroom selectByClassroomid(long classroomid) {
 		Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+		if(null != classroom){
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			classroom.setUserCard(userCard);
+			//教室课程数量
+			Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+			classroom.setAllcourses(allcourses);
+			//获取创建人信息
+			String nickname = "";
+			//sourcetype  0:运营  1:app  2:商户
+			if("1".equals(classroom.getSourcetype())){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+				nickname = appUserMongoEntity.getNickname();
+			}
+			classroom.setNickname(nickname);
+		}
 		return classroom;
 	}
 
@@ -841,7 +856,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<List<UserCard>> selectPcUserCardList(int startNum, int endNum){
 		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
         try {
-        	List<UserCard> list = userCardMapper.selectList(startNum, endNum);
+        	UserCard userCard = new UserCard();
+        	userCard.setSourcetype("0");
+        	List<UserCard> list = userCardMapper.selectUserCardList(userCard, startNum, endNum);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         	baseResp.setData(list);
         } catch (Exception e) {

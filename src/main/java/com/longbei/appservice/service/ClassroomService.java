@@ -128,7 +128,7 @@ public interface ClassroomService {
 	 * 获取教室信息
 	 * @param isup   0 - 未发布 。1 --已发布
 	 * @param isdel  0 未删除。1 删除
-	 * @param pageNo   pageSize
+	 * @param startNum   endNum
 	 * 2017年6月17日
 	 */
 	BaseResp<Page<Classroom>> selectPcClassroomList(String isup, String isdel, int startNum, int endNum);

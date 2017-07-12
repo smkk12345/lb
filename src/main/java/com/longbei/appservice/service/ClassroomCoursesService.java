@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.ClassroomCourses;
 
 public interface ClassroomCoursesService {
@@ -43,5 +44,20 @@ public interface ClassroomCoursesService {
 	 * isdel  0 — 未删除    1 —删除 
 	 */
 	BaseResp<Object> updateIsdel(long classroomid, Integer id);
+	
+	
+
+	
+	//---------------------------------admin调用------------------------------------------
+	
+	/**
+    * @Description: 获取教室课程列表
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年7月4日
+	*/
+	BaseResp<Page<ClassroomCourses>> selectPcSearchCroomCoursesList(ClassroomCourses classroomCourses, int startNum, int endNum);
+	
+	
 	
 }

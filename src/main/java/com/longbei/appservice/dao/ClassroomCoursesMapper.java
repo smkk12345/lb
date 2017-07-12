@@ -83,5 +83,16 @@ public interface ClassroomCoursesMapper {
 	 */
     Integer selectCountCourses(@Param("classroomid") long classroomid);
     
+    /*
+     * 获取Count
+     */
+    Integer selectSearchCount(@Param("classroomCourses") ClassroomCourses classroomCourses);
+    
+    /*
+     * 获取课程信息列表
+     */
+    List<ClassroomCourses> selectSearchList(@Param("classroomCourses") ClassroomCourses classroomCourses, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
     
 }

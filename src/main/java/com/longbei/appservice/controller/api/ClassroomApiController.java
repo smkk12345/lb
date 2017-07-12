@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,9 +20,11 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.ImproveService;
 
 @RestController
 @RequestMapping(value = "/api/classroom")
@@ -33,6 +36,8 @@ public class ClassroomApiController {
 	private IdGenerateService idGenerateService;
 	@Autowired
 	private ClassroomMembersService classroomMembersService;
+	@Autowired
+	private ImproveService improveService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomApiController.class);
 	
@@ -86,6 +91,98 @@ public class ClassroomApiController {
 		}
 		return baseResp;
 	}
+	
+	/**
+     * 获取用户在教室中所发的进步列表
+     * @param classroomid  教室id
+     * @param userid 用户id
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	@ResponseBody
+    @RequestMapping(value = "roomMemberImproves/{startNo}/{pageSize}")
+    public BaseResp<Page<Improve>> roomMemberImproves(String classroomid,String userid,String iscomplain,
+                                                              @PathVariable("startNo") Integer startNo,
+                                                              @PathVariable("pageSize") Integer pageSize){
+        logger.info("roomMemberImproves classroomid = {}, userid = {}, iscomplain = {}, startNo = {}, pageSize = {}", 
+        		classroomid, userid, iscomplain, startNo, pageSize);
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+
+        if (StringUtils.hasBlankParams(classroomid, userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isEmpty(startNo.toString())){
+        	startNo = 0;
+        }
+        Page<Improve> page = new Page<>(startNo/pageSize+1,pageSize);
+        if (StringUtils.isEmpty(pageSize.toString())){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+        try {
+            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid, classroomid, iscomplain,
+                    Constant.IMPROVE_CLASSROOM_TYPE, startNo, pageSize, true);
+            Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
+            page.setTotalCount(totalcount);
+            page.setList(listBaseResp.getData());
+            baseResp = BaseResp.ok();
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select rank improve list by user userid={} is error:",userid,e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 获取教室成员信息
+     * @param @param classroomid 教室id
+     * @param @param userid 
+     * @auther yinxc
+     * @currentdate:2017年7月10日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "selectMembersDetail")
+    public BaseResp<ClassroomMembers> selectMembersDetail(String classroomid, String userid){
+        logger.info("selectMembersDetail classroomid = {}, userid = {}", classroomid, userid);
+        BaseResp<ClassroomMembers> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, userid)){
+        	return baseResp;
+        }
+  		try {
+  			ClassroomMembers classroom = classroomMembersService.selectListByClassroomidAndUserid(Long.parseLong(classroomid), 
+  					Long.parseLong(userid), "0");
+  			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+  			baseResp.setData(classroom);
+        } catch (Exception e) {
+        	logger.error("selectMembersDetail classroomid = {}, userid = {}", classroomid, userid, e);
+        }
+        return baseResp;
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "updateStatus/{status}/{userid}/{classroomid}/{improveid}")
+    public BaseResp<Object> updateStatus(@PathVariable("status")String status,
+                                         @PathVariable("userid")String userid,
+                                         @PathVariable("classroomid")String classroomid,
+                                         @PathVariable("improveid")String improveid){
+        logger.info("updateStatus status = {}, userid = {}, classroomid = {}, improveid = {} :", 
+        		status, userid, classroomid, improveid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+
+        if (StringUtils.hasBlankParams(status,userid,classroomid,improveid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = classroomMembersService.updateStatus(status, userid, classroomid, improveid);
+        } catch (Exception e) {
+            logger.error("remove classroom improve improveid={} userid={}, classroomid = {}", 
+            		improveid, userid, classroomid, e);
+        }
+        return baseResp;
+
+    }
 	
 	//----------------------教室相关---------------------
 	
@@ -324,5 +421,6 @@ public class ClassroomApiController {
         }
         return baseResp;
  	}
-	
+    
+    
 }
