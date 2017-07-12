@@ -2083,6 +2083,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         map.put("isfinish",1);
         map.put("isdel",0);
         rankList = this.rankMapper.selectRankList(map);
+        logger.info("initRankSort start");
         for(Rank rank:rankList){
             springJedisDao.del(Constant.REDIS_RANK_SORT+rank.getRankid());
             int likeScore = rank.getLikescore();
@@ -2105,6 +2106,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),rankMembers.getUserid()+"",totalScore);
             }
         }
+        logger.info("initRankSort success");
     }
 
     /**

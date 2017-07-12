@@ -8,6 +8,7 @@ import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService
 import com.longbei.appservice.common.service.mq.reciver.TopicMessageReciverService;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.SysSettingService;
 import com.netflix.discovery.converters.Auto;
@@ -80,6 +81,9 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private TimeLineDao timeLineDao;
 
+    @Autowired
+    private RankService rankService;
+
 
 
     @Override
@@ -101,9 +105,7 @@ public class InitConfig implements CommandLineRunner {
         initListener();
         //初始化sys——common
         initSysCommon();
-
-        //去除时间线中的重复数据
-//        timeLineDao.distinctAllData();
+        rankService.initRankSort();
     }
 
     private void initUserBehaviorRule(int num){
