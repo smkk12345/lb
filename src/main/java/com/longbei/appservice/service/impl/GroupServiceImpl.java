@@ -20,6 +20,7 @@ import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -49,6 +50,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private IRongYunService iRongYunService;
     @Autowired
     private JPushService jPushService;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 新建群组
@@ -626,6 +629,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                 }
             }
+            if(userIds.length == 1 && (snsGroup.getMainuserid()+"").equals(userIds[0])){
+                return dismissGroup(snsGroup.getMainuserid(),groupId);
+            }
             for(String tempUserId:userIds){
                 if(tempUserId.equals(snsGroup.getMainuserid()+"")){
                     return baseResp.initCodeAndDesp(Constant.STATUS_SYS_95,Constant.RTNINFO_SYS_95);
@@ -781,6 +787,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             int row = this.snsGroupMapper.updateGroupMainUser(userId+"",groupId);
             if(row > 0){
+                //发送系统通知,告诉新用户是群主
+                SnsGroupMembers snsGroupMembers1 = this.snsGroupMembersMapper.findByUserIdAndGroupId(currentUserId,groupId);
+
+                String remark = snsGroupMembers1.getNickname()+"已经把群组:"+snsGroup.getGroupname()+"的群主权限转让给您,您要好好管理该群哟!";
+                userMsgService.insertMsg(Constant.SQUARE_USER_ID, userId.toString(),null, "5",
+                        groupId, remark, "0", "55", "转让群主权限", 0, "", "");
                 return baseResp.ok();
             }
         }catch(Exception e){
