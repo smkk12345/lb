@@ -2099,7 +2099,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //计算分数
                 double totalScore = rankMembers.getLikes() * likeScore + rankMembers.getFlowers() * flowerScore;
 
-                double a = rankMembers.getCreatetime().getTime() - rank.getStarttime().getTime();
+                double a = rankMembers.getUpdatetime().getTime() - rank.getStarttime().getTime();
                 double ratio = NumberUtil.round(a/b,5);
                 ratio = 1 - ratio;
                 totalScore = totalScore + ratio;
