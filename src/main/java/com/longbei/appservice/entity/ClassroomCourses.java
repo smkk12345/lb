@@ -35,7 +35,7 @@ public class ClassroomCourses {
 
     private Date udpatetime;//更新时间
     
-    private String isdefault;//是否 默认   1 默认封面  0 非默认
+    private String isdefault;//isdefault是否 默认   1 默认封面  0 非默认
     
     private String fileurl; //视频文件url（转码后）
     

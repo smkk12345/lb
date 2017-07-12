@@ -262,11 +262,12 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 //				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 //			}
             resultMap.put("classroomid", classroomid);
+			baseResp.setData(resultMap);
 		} catch (Exception e) {
 			logger.error("selectRoomMemberDetail classroomid = {}, userid = {}, currentUserId = {}", 
 					classroomid, userid, currentUserId, e);
 		}
-		return null;
+		return baseResp;
 	}
 
 	/**

@@ -32,6 +32,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   
+  <select id="select" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </select>
+  
   <select id="selectListByClassroomid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
@@ -53,6 +61,13 @@
     <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
       	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
     </if>
+  </select>
+  
+  <select id="selectMinSort" resultType="java.lang.Integer" >
+    select min(coursesort)  
+    from classroom_courses
+    where classroomid = #{classroomid} 
+    and isdel = 0 
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultMap="BaseResultMap" >
@@ -153,13 +168,13 @@
       <if test="isdefault != null" >
         isdefault,
       </if>
-      <if test="fileurl != null" >
+      <if test="fileurl != null and fileurl != ''" >
         fileurl,
       </if>
-      <if test="sourcekey != null" >
+      <if test="sourcekey != null and sourcekey != ''" >
         sourcekey,
       </if>
-      <if test="duration != null" >
+      <if test="duration != null and duration != ''" >
         duration,
       </if>
       <if test="createtime != null" >

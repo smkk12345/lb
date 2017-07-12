@@ -43,7 +43,7 @@ public class Classroom {
     
     private Integer charge = 0;  //课程价格
     
-    private String isfree; //是否免费。0 免费 1 收费
+    private String isfree; //isfree是否免费。0 免费 1 收费
     
     private Integer freecoursenum; //免费课程数量
 
