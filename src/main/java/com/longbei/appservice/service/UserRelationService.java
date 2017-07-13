@@ -10,6 +10,7 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.*;
+import net.sf.json.JSONArray;
 
 import java.util.Date;
 import java.util.List;
@@ -299,4 +300,7 @@ public interface UserRelationService {
 	void deleteUserRemark(String currentUserId,String friendId);
 	//同以上方法
 	void deleteUserRemark(Long currentUserId,Long friendId);
+
+	BaseResp<JSONArray> readMobileUserList(long userid, String mobileUserListStr);
+
 }

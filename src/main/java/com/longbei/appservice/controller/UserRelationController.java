@@ -11,6 +11,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.service.UserImpCoinDetailService;
+import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ import java.util.List;
 public class UserRelationController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(UserRelationController.class);
 	
-	 @Autowired
-	 private UserRelationService userRelationService;
+	@Autowired
+	private UserRelationService userRelationService;
 	@Autowired
 	private UserImpCoinDetailService userImpCoinDetailService;
 	
@@ -364,5 +365,25 @@ public class UserRelationController extends BaseController {
 		}
 		return baseResp;
 	}
+
+	/**
+	 * 获取手机通讯录好友
+	 * @url user/readMobileUserList
+	 * @param userid
+	 * @param mobileUserListStr
+	 * @return
+	 */
+	@RequestMapping(value="readMobileUserList")
+	public BaseResp<JSONArray> readMobileUserList(long userid,String mobileUserListStr){
+		logger.info("readMobileUserList userid={},mobileUserListStr={}",userid,mobileUserListStr);
+		BaseResp<JSONArray> baseResp = new BaseResp<>();
+		try{
+			baseResp = userRelationService.readMobileUserList(userid,mobileUserListStr);
+		}catch (Exception e){
+			logger.error("readMobileUserList userid={},mobileUserListStr={} ",userid,mobileUserListStr,e);
+		}
+		return baseResp;
+	}
+
 
 }
