@@ -110,6 +110,7 @@
   	SELECT count(*) from classroom_courses 
   	where classroomid = #{classroomid} 
   	and pickey != '' 
+  	and isdel = 0 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -241,10 +242,10 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
     update classroom_courses
     <set >
-      <if test="coursetitle != null" >
+      <if test="coursetitle != null and coursetitle != ''" >
         coursetitle = #{coursetitle,jdbcType=VARCHAR},
       </if>
-      <if test="coursesort != null" >
+      <if test="coursesort != null and coursesort != ''" >
         coursesort = #{coursesort,jdbcType=INTEGER},
       </if>
       <if test="coursetype != null" >
@@ -253,7 +254,7 @@
       <if test="coursebrief != null" >
         coursebrief = #{coursebrief,jdbcType=VARCHAR},
       </if>
-      <if test="pickey != null" >
+      <if test="pickey != null and pickey != ''" >
         pickey = #{pickey,jdbcType=VARCHAR},
       </if>
       <if test="coursecontent != null" >
@@ -284,7 +285,8 @@
         udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
       </if>
     </set>
-    where id = #{id} and classroomid = #{classroomid}
+    where id = #{id} 
+    and classroomid = #{classroomid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
     update classroom_courses

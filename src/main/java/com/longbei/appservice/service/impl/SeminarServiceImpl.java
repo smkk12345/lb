@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,10 @@ public class SeminarServiceImpl implements SeminarService{
     private UserInfoMapper userInfoMapper;
     @Autowired
     private VideoMapper videoMapper;
+    @Autowired
+    private RankAwardReleaseMapper rankAwardReleaseMapper;
+    @Autowired
+    private AwardMapper awardMapper;
 
 
     @Override
@@ -97,7 +102,7 @@ public class SeminarServiceImpl implements SeminarService{
     public BaseResp<Object> deleteSeminar(String seminarid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            int res = seminarMapper.deleteBySeminarid(Integer.parseInt(seminarid));
+            int res = seminarMapper.deleteBySeminarid(seminarid);
             if (res > 0){
                 List<SeminarModule> seminarModules = seminarModuleMapper.selectList(Long.parseLong(seminarid));
                 if (null != seminarModules && seminarModules.size() > 0){
@@ -116,10 +121,31 @@ public class SeminarServiceImpl implements SeminarService{
         return baseResp;
     }
 
+    private BaseResp deleteSeminarModules(String seminarid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+                List<SeminarModule> seminarModules = seminarModuleMapper.selectList(Long.parseLong(seminarid));
+                if (null != seminarModules && seminarModules.size() > 0){
+                    for (SeminarModule seminarModule : seminarModules){
+                        int isdel = seminarModuleMapper.deleteByPrimaryKey(seminarModule.getId());
+                        if (isdel > 0){
+                            moduleContentMapper.deleteBySemmodid(seminarModule.getSemmodid());
+                        }
+                    }
+                }
+
+            baseResp.initCodeAndDesp();
+        } catch (NumberFormatException e) {
+            logger.error("delete seminar:{} is error:",seminarid,e);
+        }
+        return baseResp;
+    }
+
     @Override
     public BaseResp<Object> updateSeminar(Seminar seminar) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
+            seminar.setUpdatetime(new Date());
             int res = seminarMapper.updateByPrimaryKeySelective(seminar);
             if (res > 0){
                 baseResp.initCodeAndDesp();
@@ -134,7 +160,7 @@ public class SeminarServiceImpl implements SeminarService{
     public BaseResp<Object> updateSeminarModule(String seminarid, List<SeminarModule> seminarModules) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            baseResp = deleteSeminar(seminarid);
+            baseResp = deleteSeminarModules(seminarid);
             if (ResultUtil.isSuccess(baseResp)){
                 baseResp = insertSeminarModule(seminarModules);
             }
@@ -177,6 +203,17 @@ public class SeminarServiceImpl implements SeminarService{
                                 case "1":
                                     Rank rank = rankMapper.
                                             selectRankByRankid(Long.parseLong(moduleContent.getContentid()));
+                                    List<RankAwardRelease> resultList = new ArrayList<>();
+                                    List<RankAwardRelease> rankAwardReleases = rankAwardReleaseMapper.selectListByRankid(moduleContent.getContentid());
+                                    if (null != rankAwardReleases && rankAwardReleases.size() > 0){
+                                        Award award = awardMapper.selectByPrimaryKey
+                                                (Long.parseLong(rankAwardReleases.get(0).getAwardid()));
+                                        rankAwardReleases.get(0).setAward(award);
+                                        resultList.add(rankAwardReleases.get(0));
+                                    }
+                                    if (null != rank){
+                                        rank.setRankAwards(resultList);
+                                    }
                                     moduleContent.setRank(rank);
                                     break;
                                 case "2":
@@ -184,19 +221,16 @@ public class SeminarServiceImpl implements SeminarService{
                                             selectByUserid(Long.parseLong(moduleContent.getContentid()));
                                     moduleContent.setUserInfo(userInfo);
                                     break;
-                                case "3":
-                                    break;
-                                case "4":
-                                    Map<String,Object> map = new HashedMap();
-                                    map.put("videoId",moduleContent.getContentid());
-                                    Video video = videoMapper.getVideo(map);
-                                    moduleContent.setVideo(video);
+                                case "6":
+                                    Seminar seminar = seminarMapper.selectBySeminarId(Long.parseLong(moduleContent.getContentid()));
+                                    moduleContent.setSeminar(seminar);
                                     break;
                                 default:
                                     break;
                             }
                         }
                     }
+                    seminarModule.setModuleContents(moduleContents);
                 }
             }
 

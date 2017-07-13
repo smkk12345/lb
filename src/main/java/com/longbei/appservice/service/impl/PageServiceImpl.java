@@ -129,6 +129,9 @@ public class PageServiceImpl implements PageService{
                     if ("0".equals(homePicture1.getContenttype())){
                         homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());
                     }
+                    if ("1".equals(homePicture1.getContenttype())){
+                        homePicture1.setHref(AppserviceConfig.seminarurl + "?seminarid=" + homePicture1.getHref());
+                    }
                 }
 //            }else if("2".equals(type)){
 //                HomePicture homePicture = new HomePicture();

@@ -88,7 +88,7 @@ public class Constant {
 	public static final int STATUS_SYS_113 = -113;
 	public static final int STATUS_SYS_114 = -114;
 	public static final int STATUS_SYS_115 = -115;
-	public static final int STATUS_SYS_116 = -116;
+	public static final int STATUS_SYS_117 = -117;
 	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
@@ -190,6 +190,7 @@ public class Constant {
 	public static final int STATUS_SYS_914 = -914;
 	public static final int STATUS_SYS_915 = -915;
 	public static final int STATUS_SYS_916 = -916;
+	public static final int STATUS_SYS_917 = -917;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -240,6 +241,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_114 = "每日切换帐号超过限制";
 	public static final String RTNINFO_SYS_115 = "单个设备注册用户量超过限制";
 	public static final String RTNINFO_SYS_116 = "发送失败";
+	public static final String RTNINFO_SYS_117 = "您已被授予龙杯官方认证，无法修改用户名和简介";
 	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
 	//20-39  yxc
@@ -355,6 +357,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_914 = "此龙榜已被榜主或管理员关闭";
 	public static final String RTNINFO_SYS_915 = "抱歉,您当前没有权限邀请好友入群!";
 	public static final String RTNINFO_SYS_916 = "抱歉,您当前无法更改群昵称!";
+	public static final String RTNINFO_SYS_917 = "龙杯目前最多可以添加5000个好友";
 
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
@@ -721,7 +724,8 @@ public class Constant {
 //	public static final String JPUSH_TAG_COUNT_1301 = "1301";//实名认证未通过
 	public static final String JPUSH_TAG_COUNT_1302 = "1302";//被选为达人
 //	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
-	public static final String JPUSH_TAG_COUNT_1304 = "1304";//被授予龙V认证
+	public static final String JPUSH_TAG_COUNT_1304 = "1304";//被授予龙杯名人认证
+	public static final String JPUSH_TAG_COUNT_1305 = "1305";//被授予龙杯Star认证
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息

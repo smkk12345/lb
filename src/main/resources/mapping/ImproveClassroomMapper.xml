@@ -327,14 +327,15 @@
 
   <select id="selectCountByClassroomidAndUserid" resultType="java.lang.Integer">
     select count(*) from improve_classroom
-    where 1 = 1 
+    where isdel = 0 
+    and isresponded = 0 
     <if test="businessid != null and businessid != ''" >
       AND businessid = #{businessid}
     </if>
     <if test="userid != null and userid != ''" >
       AND userid = #{userid}
     </if>
-    and isresponded = 0 
+    
   </select>
 
 

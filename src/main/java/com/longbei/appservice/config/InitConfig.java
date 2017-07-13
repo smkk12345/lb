@@ -266,7 +266,9 @@ public class InitConfig implements CommandLineRunner {
     }
 
     private void initUrl(){
-        String prefix = "http://"+AppserviceConfig.shareip+":"+AppserviceConfig.shareport+"/share_service/html/";
+
+        String prefix_base = "http://"+AppserviceConfig.shareip+":"+AppserviceConfig.shareport+"/share_service";
+        String prefix = prefix_base + "/html/";
         AppserviceConfig.h5_helper = prefix+"apptpl/help-index.html";
         AppserviceConfig.h5_rankcard = prefix+"apptpl/rank-master.html";
         AppserviceConfig.h5_share_improve_detail = prefix+"sharetpl/improve-detail.html";
@@ -278,6 +280,7 @@ public class InitConfig implements CommandLineRunner {
         AppserviceConfig.h5_agreementurl = prefix+"apptpl/help-agreement.html";
         AppserviceConfig.h5_levelprivilege = prefix+"apptpl/help-detail.html?issueId=39";
         AppserviceConfig.articleurl = prefix+"apptpl/article-detail.html";
+        AppserviceConfig.seminarurl = prefix_base+"/seminar/info";
         AppserviceConfig.h5_share_circle_detail = prefix+"sharetpl/circle-detail.html";
     }
 
