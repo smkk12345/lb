@@ -26,10 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wangyongzhi 17/3/6.
@@ -89,7 +86,12 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             if(senderUser == null || receiveUser == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
             }
-
+            //单个用户龙友上限为5000人
+            Set<String> friendids = userRelationService.getFriendIds(userId);
+            int friendsNum = friendids.size();
+            if(friendsNum >=5000) {
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_917, Constant.RTNINFO_SYS_917);
+            }
             //从mongo中查看该用户是否添加过该朋友
             FriendAddAsk friendAddAsk = friendMongoDao.findFriendAddAsk(userId,friendId);
             if(friendAddAsk == null){//从没添加过朋友
