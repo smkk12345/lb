@@ -50,6 +50,7 @@
     <if test="seminar.seminartitle !=null">
       AND seminartitle LIKE concat(concat('%',#{seminar.seminartitle}),'%')
     </if>
+    ORDER BY createtime DESC
     <if test="startNo != null">
       limit #{startNo},#{pageSize}
     </if>
