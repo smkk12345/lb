@@ -112,6 +112,9 @@
     <if test="cusername != null and cusername != ''" >
     	and cusername LIKE concat(concat('%',#{cusername}),'%')
     </if>
+    <if test="isrecommend != null and isrecommend != ''" >
+    	and isrecommend = #{isrecommend}
+    </if>
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.Classroom" resultMap="BaseResultMap" >
@@ -142,6 +145,9 @@
     </if>
     <if test="classroom.cusername != null and classroom.cusername != ''" >
     	and cusername LIKE concat(concat('%',#{classroom.cusername}),'%')
+    </if>
+    <if test="classroom.isrecommend != null and classroom.isrecommend != ''" >
+    	and isrecommend = #{classroom.isrecommend}
     </if>
     order by createtime desc 
     <if test="endNum != 0" >

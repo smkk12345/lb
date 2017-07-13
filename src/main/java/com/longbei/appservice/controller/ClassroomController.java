@@ -88,7 +88,7 @@ public class ClassroomController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Integer.parseInt(classroomid),
+			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Long.parseLong(classroomid),
 					Long.parseLong(userid), "1");
 		} catch (Exception e) {
 			logger.error("quitClassroom classroomid = {}, userid = {}",

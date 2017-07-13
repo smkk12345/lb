@@ -110,6 +110,7 @@
   	SELECT count(*) from classroom_courses 
   	where classroomid = #{classroomid} 
   	and pickey != '' 
+  	and isdel = 0 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

@@ -24,7 +24,7 @@ public interface UserInfoMapper {
 	 * @auther smkk
 	 * @currentdate:2017年1月17日
 	 */
-	UserInfo getByUserName(String username);
+//	UserInfo getByUserName(String username);
 	
 	/**
 	 * @author yinxc
@@ -44,7 +44,7 @@ public interface UserInfoMapper {
 
 	int updateByPrimaryKey(UserInfo record);
 
-	UserInfo getByNickName(String nickname);
+//	UserInfo getByNickName(String nickname);
 
 	/**
 	 * @author yinxc 通讯录本地及远程搜索(手机号和昵称搜索) 
@@ -140,7 +140,7 @@ public interface UserInfoMapper {
 	int updateBg(@Param("userid") long userid,
 				 @Param("bg") String bg);
 
-	List<UserInfo> getOtherDevice(@Param("deviceindex") String deviceindex);
+//	List<UserInfo> getOtherDevice(@Param("deviceindex") String deviceindex);
 
 	int updateIndexDevice(@Param("userid")long userid,@Param("deviceindex") String deviceindex);
 
