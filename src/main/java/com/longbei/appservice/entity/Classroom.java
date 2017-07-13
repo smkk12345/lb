@@ -51,7 +51,7 @@ public class Classroom {
     
     private String sourcetype; //0:运营  1:app  2:商户
     
-    private String isrecommend; //是否推荐。0 - 没有推荐 1 - 推荐   默认0
+    private String isrecommend; //isrecommend是否推荐。0 - 没有推荐 1 - 推荐   默认0
     
     private String isup; // 0 - 未发布 。1 --已发布    默认0
     
