@@ -89,7 +89,7 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
             //单个用户龙友上限为5000人
             Set<String> friendids = userRelationService.getFriendIds(userId);
             int friendsNum = friendids.size();
-            if(friendsNum >=5000) {
+            if(friendsNum >5000) {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_917, Constant.RTNINFO_SYS_917);
             }
             //从mongo中查看该用户是否添加过该朋友
