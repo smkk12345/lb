@@ -1566,7 +1566,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> updateUserStatus(UserInfo userInfo) {
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if((null==userInfo.getBrief() && null==userInfo.getVcertification() && StringUtils.isNotEmpty(userInfo.getNickname()))){
+		if(StringUtils.isBlank(userInfo.getBrief()) && StringUtils.isBlank(userInfo.getVcertification()) && StringUtils.isNotEmpty(userInfo.getNickname())){
 			//官方认证，检查认证用户名是否重复
 			UserInfo userInfo1= userInfoMapper.selectByUserid(userInfo.getUserid());
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(userInfo.getNickname());
@@ -1598,7 +1598,7 @@ public class UserServiceImpl implements UserService {
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
 							remark,"0","30", "取消达人",0, "", "");
 				}
-				if(null != userInfo.getVcertification() ) {
+				if(StringUtils.isNotBlank(userInfo.getVcertification()) ) {
 					UserInfo userInfo2= userInfoMapper.selectByUserid(userInfo.getUserid());
 					if ("1".equals(userInfo.getVcertification()) || "2".equals(userInfo.getVcertification())) {
 						//同步更改的用户信息

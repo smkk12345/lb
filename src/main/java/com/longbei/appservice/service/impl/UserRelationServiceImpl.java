@@ -8,19 +8,23 @@
 */
 package com.longbei.appservice.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.MongoUtils;
+import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import com.netflix.discovery.converters.Auto;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +33,16 @@ import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsFansMapper;
 import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author smkk
@@ -1200,4 +1209,69 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		deleteUserRemark(currentUserId.toString(),friendId.toString());
 	}
+
+	/**
+	 * url   user/readMobileUserList  param  userid  mobileUserListStr
+	 * <p>
+	 * 读取用户手机联系人操作
+	 */
+	@Override
+	public BaseResp<JSONArray> readMobileUserList(long userid,String mobileUserListStr) {
+		BaseResp<JSONArray> baseResp = new BaseResp<>();
+		JSONArray jsonArr = JSONArray.fromObject(mobileUserListStr);
+		Set<String> fids = getFriendIds(userid);
+		AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(userid));
+//		String usertel = appUser.getUsername();
+//		usertel = usertel.substring(0, 3) + "****" + usertel.substring(7, usertel.length());
+//		String codeUserid = DecodesUtils.getBase64(String.valueOf(userid));
+//		String enCodenickname = DecodesUtils.getBase64(appUser.getNickname());
+//		try {
+//			enCodenickname = URLEncoder.encode(appUser.getNickname(), "UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+		JSONArray resultArr = new JSONArray();
+		try {
+			for (int i = 0; i < jsonArr.size(); i++) {
+				String jsonStr = jsonArr.get(i).toString();
+				JSONObject js = JSONObject.fromObject(jsonStr);
+				String mobile = (String) js.get("num");
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+				if (appUser.getUsername().equals(mobile)) {
+					js.put("status", "3");//自己
+					if (appUserMongoEntity != null) {
+						js.put("userid", appUserMongoEntity.getId());
+						js.put("avatar", appUserMongoEntity.getAvatar());
+					} else {
+						js.put("userid", "");
+						js.put("avatar", "");
+					}
+				} else {
+					if (null != appUserMongoEntity) {
+						js.put("userid", appUserMongoEntity.getId());
+						js.put("avatar", appUserMongoEntity.getAvatar());
+						if (fids.contains(appUserMongoEntity.getId())) {
+							js.put("status", "2");//已经注册 是好友
+						} else {
+							js.put("status", "1");//已经注册  不是好友
+						}
+					} else {
+						js.put("status", "0");//未注册
+						js.put("userid", "");
+						js.put("avatar", "");
+					}
+				}
+				resultArr.add(js);
+				logger.debug(js.toString());
+			}
+			baseResp.setData(resultArr);
+			baseResp.initCodeAndDesp();
+		} catch (Exception e) {
+			logger.error("readMobileUserList error",e);
+		}
+		logger.debug(mobileUserListStr.toString());
+		return baseResp;
+	}
+
+
 }

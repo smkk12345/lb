@@ -67,6 +67,9 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		if(!StringUtils.isBlank(user.getSex())){
 			update.set("sex", user.getSex());
 		}
+		if(!StringUtils.isBlank(user.getDeviceindex())){
+			update.set("deviceindex", user.getDeviceindex());
+		}
 		try {
 			mongoTemplate1.updateMulti(query, update, AppUserMongoEntity.class);
 			if(StringUtils.isNotEmpty(user.getNickname()) || StringUtils.isNotEmpty(user.getAvatar())){
@@ -184,6 +187,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		userMongoEntity.setUsername(userInfo.getUsername());
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());
+		userMongoEntity.setDeviceindex(userInfo.getDeviceindex());
 		userMongoEntity.setCreatetime(DateUtils.formatDateTime1(userInfo.getCreatetime()));
 		saveAppUserMongoEntity(userMongoEntity);
 		return userMongoEntity;

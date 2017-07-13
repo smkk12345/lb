@@ -31,6 +31,7 @@
     <result column="closeremark" property="closeremark" />
     <result column="syllabus" property="syllabus" />
     <result column="crowd" property="crowd" />
+    <result column="weight" property="weight" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
@@ -112,6 +113,9 @@
     <if test="cusername != null and cusername != ''" >
     	and cusername LIKE concat(concat('%',#{cusername}),'%')
     </if>
+    <if test="isrecommend != null and isrecommend != ''" >
+    	and isrecommend = #{isrecommend}
+    </if>
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.Classroom" resultMap="BaseResultMap" >
@@ -143,7 +147,10 @@
     <if test="classroom.cusername != null and classroom.cusername != ''" >
     	and cusername LIKE concat(concat('%',#{classroom.cusername}),'%')
     </if>
-    order by createtime desc 
+    <if test="classroom.isrecommend != null and classroom.isrecommend != ''" >
+    	and isrecommend = #{classroom.isrecommend}
+    </if>
+    order by weight desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -160,7 +167,7 @@
     <if test="isdel != null and isdel != ''" >
     	and isdel = #{isdel}
     </if>
-    order by createtime desc 
+    order by weight desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -178,7 +185,7 @@
     <if test="ptype != null and ptype != ''" >
     	and ptype = #{ptype} 
     </if>
-    order by createtime desc 
+    order by weight desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -199,7 +206,7 @@
     	and ptype = #{ptype} 
     </if>
     and isup = 1 
-    order by createtime desc 
+    order by weight desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -503,6 +510,26 @@
     update classroom
     set 
       isup = 1 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsrecommend" >
+    update classroom
+    set 
+      <if test="isrecommend == 0" >
+        isrecommend = #{isrecommend},
+        weight = 0 
+      </if>
+      <if test="isrecommend == 1" >
+        isrecommend = #{isrecommend}
+      </if>
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateRoomRecommendSort" >
+    update classroom
+    set 
+      weight = #{weight} 
     where classroomid = #{classroomid} 
   </update>
   

@@ -116,7 +116,7 @@ public class UserInfo {
 
     private String freezestatus; //冻结状态 1冻结 0解冻
 
-    private String vcertification; //用户加V 0无标示 1有加V标示
+    private String vcertification; //龙杯官方认证 0无认证 1名人认证 2Star认证
 
     public String getJobcertify() {
         return jobcertify;

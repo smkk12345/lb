@@ -37,7 +37,7 @@ public class AppUserMongoEntity {
 	private Integer totalflowers;
 	@Transient
 	private String remark;
-	@Transient
+
 	private String deviceindex;
 
 	private int distance;

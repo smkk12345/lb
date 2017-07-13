@@ -196,4 +196,20 @@ public interface ClassroomService {
  	*/
 	BaseResp<Object> uproom(long classroomid);
 	
+	/**
+     * 更新教室推荐状态
+     * @param classroomid
+     * @param isrecommend
+     * @return
+     */
+	BaseResp<Object> updateRoomRecommend(long classroomid, String isrecommend);
+	
+	/**
+     * 更新教室推荐权重
+     * @param classroomid
+     * @param weight
+     * @return
+     */
+	BaseResp<Object> updateRoomRecommendSort(long classroomid, String weight);
+	
 }
