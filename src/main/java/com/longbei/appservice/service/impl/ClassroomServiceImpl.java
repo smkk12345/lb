@@ -121,7 +121,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			Map<String, Object> map = new HashMap<String, Object>();
-//			String isadd = "0";
+			String isadd = "0";
 			if(null != classroom){
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//老师称呼
@@ -147,6 +147,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}else{
 					map.put("classroomMembers", new ClassroomMembers());
 				}
+				//itype 0—加入教室 1—退出教室     为null查全部
+				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+				if(null != members){
+					isadd = "1";
+				}
+				map.put("isadd", isadd);
 				//获取最新加入成员头像5个
 				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
 				initUserInfoString(memberList);
@@ -159,7 +165,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 //				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
 //				reseResp.getExpandData().put("memberList", memberList);
 //				
-//				
 //				reseResp.getExpandData().put("impNum", impNum);
 //				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 //				if(null == classroomMembers){
@@ -169,12 +174,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 //					classroomMembers.setDiamonds(0);
 //				}
 //				reseResp.getExpandData().put("classroomMembers", classroomMembers);
-//				//itype 0—加入教室 1—退出教室     为null查全部
-//				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-//				if(null != members){
-//					isadd = "1";
-//				}
-//				classroom.setIsadd(isadd);
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -884,6 +883,21 @@ public class ClassroomServiceImpl implements ClassroomService {
             logger.error("checkClasstitle for adminservice classtitle = {}", classtitle, e);
         }
         return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateRoomRecommend(long classroomid, String isrecommend) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Integer temp = classroomMapper.updateIsrecommend(classroomid, isrecommend);
+			if (temp > 0) {
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateRoomRecommend classroomid = {}, isrecommend = {}", 
+					classroomid, isrecommend, e);
+		}
+		return reseResp;
 	}
 	
 }

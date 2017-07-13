@@ -512,4 +512,11 @@
     where classroomid = #{classroomid} 
   </update>
   
+  <update id="updateIsrecommend" >
+    update classroom
+    set 
+      isrecommend = #{isrecommend}  
+    where classroomid = #{classroomid} 
+  </update>
+  
 </mapper>

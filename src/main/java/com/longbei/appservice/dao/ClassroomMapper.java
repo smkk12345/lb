@@ -144,4 +144,13 @@ public interface ClassroomMapper {
     List<Classroom> selectSearchList(@Param("classroom") Classroom classroom,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
+    /**
+     * @Description: 修改教室推荐状态
+     * @param @param classroomid 教室id
+     * @param @param isrecommend 是否推荐。0 - 没有推荐 1 - 推荐   默认0
+     * @auther yinxc
+     * @currentdate:2017年7月5日
+ 	*/
+    Integer updateIsrecommend(@Param("classroomid") long classroomid, @Param("isrecommend") String isrecommend);
+    
 }
