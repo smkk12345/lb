@@ -49,7 +49,8 @@ public class FindServiceImpl implements FindService{
                 }
                 //判断是否好友 是否关注 是否粉丝等等
                 try {
-                    UserInfo userInfo = userInfoMapper.getByUserName(appuser.getUsername());
+
+                    UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(appuser.getId()));
                     if(null != userInfo){
                         appuser.setBrief(userInfo.getBrief());
                         appuser.setSex(userInfo.getSex());

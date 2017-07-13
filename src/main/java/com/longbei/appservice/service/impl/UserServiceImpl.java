@@ -289,10 +289,11 @@ public class UserServiceImpl implements UserService {
 		userInfo.setAvatar(avatar);
 		userInfo.setDeviceindex(deviceindex);
 		userInfo.setDevicetype(devicetype);
-		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
+//		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
 		if(!StringUtils.isBlank(inviteuserid)){
-			if(null != userInfo1){
-				userInfo.setInviteuserid(userInfo1.getUserid());
+			if(null != appUserMongoEntity){
+				userInfo.setInviteuserid(Long.parseLong(appUserMongoEntity.getId()));
 			}
 		}
 		try {
@@ -313,7 +314,8 @@ public class UserServiceImpl implements UserService {
 			logger.error("registerInfo",e);
 		}
 		if (ri) {
-			if(null != userInfo1){
+			if(null != appUserMongoEntity){
+				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 				//建立好友关系
 				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
 				//给推荐人添加龙分
@@ -561,7 +563,11 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public UserInfo getByNickName(String nickname) {
-		return userInfoMapper.getByNickName(nickname);
+		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
+		if(null == appUserMongoEntity){
+			return null;
+		}
+		return userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 	}
 
 	/* smkk
@@ -578,23 +584,24 @@ public class UserServiceImpl implements UserService {
         try {
             String operateName = "注册";
             if (operateType.equals("0")) {//已经注册  直接返回了
-				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
-				if(null != userInfo){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+				if(null != appUserMongoEntity){
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_02,Constant.RTNINFO_SYS_02);
 				}
                 operateName = "注册";
             } else if (operateType.equals("1")) {
                 operateName = "修改密码";
             } else if (operateType.equals("2")) {
-				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
-				if(null != userInfo){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+//				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
+				if(null != appUserMongoEntity){
 				}else {
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_04,Constant.RTNINFO_SYS_04);
 				}
                 operateName = "找回密码";
             } else if (operateType.equals("3")){
-				UserInfo userInfo = userInfoMapper.getByUserName(mobile);
-				if(null != userInfo){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+				if(null != appUserMongoEntity){
 					baseResp.getExpandData().put("isregistered","1");
 				}else {
 					baseResp.getExpandData().put("isregistered","0");
@@ -650,11 +657,12 @@ public class UserServiceImpl implements UserService {
 			return baseResp;
 		}
 		if(ResultUtil.isSuccess(baseResp)){
-			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+//			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
 			try{
-				if(null != userInfo){
-					userInfoMapper.clearOtherDevice(userInfo.getUserid(), deviceindex);
-					userInfoMapper.updateIndexDevice(userInfo.getUserid(), deviceindex);
+				if(null != appUserMongoEntity){
+					userInfoMapper.clearOtherDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
+					userInfoMapper.updateIndexDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
 				}
 //				userInfoMapper.updateDeviceIndexByUserName(userInfo);
 			}catch(Exception e){
@@ -720,10 +728,10 @@ public class UserServiceImpl implements UserService {
 				if(baseResp1.getCode() == Constant.STATUS_SYS_00){
 					String token = (String)baseResp1.getData();
 //					baseResp1.getExpandData().put("token", token);
-					UserInfo userInfo = userInfoMapper.getByUserName(username);
-					if(null != userInfo){
+					AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(username);
+					if(null != appUserMongoEntity){
 						//token 放到redis中去
-						springJedisDao.set("userid&token&"+userInfo.getUserid(), token);
+						springJedisDao.set("userid&token&"+appUserMongoEntity.getId(), token);
 					}
 				}
 			}
@@ -742,7 +750,8 @@ public class UserServiceImpl implements UserService {
 		if(baseResp.getCode() == Constant.STATUS_SYS_00){
 			String token = (String)baseResp.getData();
 			baseResp.getExpandData().put("token", token);
-			UserInfo userInfo = userInfoMapper.getByUserName(username);
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(username);
+			UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 			if(StringUtils.isBlank(userInfo.getRytoken())){
 				try {
 					BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", username, "#");
@@ -829,7 +838,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	private BaseResp<Object> deviceIndexChange(String deviceindex,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		List<UserInfo> list = userInfoMapper.getOtherDevice(deviceindex);
+		List<AppUserMongoEntity> list = userMongoDao.getAppUserByDeviceIndex(deviceindex);
 		if(null == list){
 			if(!StringUtils.isBlank(deviceindex)){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
@@ -845,8 +854,8 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfoMapper.updateIndexDevice(userid, deviceindex);
 		}else {
-			UserInfo userInfo = list.get(0);
-			if(userInfo.getUserid() == userid){
+			AppUserMongoEntity appUserMongoEntity = list.get(0);
+			if(Long.parseLong(appUserMongoEntity.getId()) == userid){
 			}else{
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
 			}
@@ -884,7 +893,8 @@ public class UserServiceImpl implements UserService {
 		}
 		if (ResultUtil.isSuccess(baseRespLogin)){
 			try {
-				UserInfo userInfo = userInfoMapper.getByUserName(username);
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(username);
+				UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 				baseResp.initCodeAndDesp(baseRespLogin.getCode(),baseRespLogin.getRtnInfo());
 				baseResp.setData(userInfo);
 			} catch (Exception e) {
@@ -944,7 +954,8 @@ public class UserServiceImpl implements UserService {
 			thirdregisterGainPoint(userInfo1,utype);
 			userInfo = (UserInfo) baseResp.getData();
 		}else{//手机号已经注册
-			userInfo = userInfoMapper.getByUserName(username);
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(username);
+			userInfo = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 			if(ResultUtil.fail(baseResp1)){
 				baseResp1.setData(userInfo);
@@ -1055,8 +1066,9 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserInfo oldUserInfo = userInfoMapper.selectByUserid(newUserInfo.getUserid());
 			if(StringUtils.isNotEmpty(newUserInfo.getNickname()) && !newUserInfo.getNickname().equals(oldUserInfo.getNickname())){
-				UserInfo infos = userInfoMapper.getByNickName(newUserInfo.getNickname());
-				if(null != infos && !infos.getUserid().equals(newUserInfo.getUserid())){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(newUserInfo.getNickname());
+//				UserInfo infos = userInfoMapper.getByNickName(newUserInfo.getNickname());
+				if(null != appUserMongoEntity && !appUserMongoEntity.getId().equals(newUserInfo.getUserid())){
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 				}
 			}
@@ -1451,17 +1463,18 @@ public class UserServiceImpl implements UserService {
 		try {
 			if(!StringUtils.isBlank(nickname)){
 				//判断昵称是否存在
-				UserInfo infos = userInfoMapper.getByNickName(nickname);
-
-				if(null != infos){
-					if(infos.getUserid() != Long.parseLong(userid)) {
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
+//				UserInfo infos = userInfoMapper.getByNickName(nickname);
+				if(null != appUserMongoEntity){
+					if(Long.parseLong(appUserMongoEntity.getId()) != Long.parseLong(userid)) {
 						return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 					}
 				}
 			}
 			//判断邀请人是否是龙杯用户
 			if(!StringUtils.hasBlankParams(invitecode)){
-				final UserInfo info = userInfoMapper.getByUserName(invitecode);
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
+				final UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 				if(null != info){
 					//是龙杯用户,送分.....
 					//建立好友关系
@@ -1556,8 +1569,8 @@ public class UserServiceImpl implements UserService {
 		if((null==userInfo.getBrief() && null==userInfo.getVcertification() && StringUtils.isNotEmpty(userInfo.getNickname()))){
 			//官方认证，检查认证用户名是否重复
 			UserInfo userInfo1= userInfoMapper.selectByUserid(userInfo.getUserid());
-			UserInfo infos = userInfoMapper.getByNickName(userInfo.getNickname());
-			if(null != infos && !infos.getUserid().equals(userInfo1.getUserid())){
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(userInfo.getNickname());
+			if(null != appUserMongoEntity && !appUserMongoEntity.getId().equals(userInfo1.getUserid())){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 			}else {
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

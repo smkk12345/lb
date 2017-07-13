@@ -108,6 +108,42 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		return null;
 	}
 
+
+	public AppUserMongoEntity getAppUserByUserName(String username){
+		username = username.trim();
+		Query query = Query.query(Criteria.where("username").is(username));
+		return getAppUserByQuery(query);
+	}
+
+	public AppUserMongoEntity getAppUserByNickName(String nickname){
+		nickname = nickname.trim();
+		Query query = Query.query(Criteria.where("nickname").is(nickname));
+		return getAppUserByQuery(query);
+	}
+
+	public List<AppUserMongoEntity> getAppUserByDeviceIndex(String deviceindex){
+		deviceindex = deviceindex.trim();
+		Query query = Query.query(Criteria.where("deviceindex").is(deviceindex));
+		try {
+			return find(query);
+		} catch (Exception e) {
+			logger.error("findOne error and msg={}",e);
+		}
+		return null;
+	}
+
+	private AppUserMongoEntity getAppUserByQuery(Query query){
+		try {
+			AppUserMongoEntity mongoUser = findOne(query);
+			if(null != mongoUser){
+				return mongoUser;
+			}
+		} catch (Exception e) {
+			logger.error("findOne error and msg={}",e);
+		}
+		return null;
+	}
+
 	/**
 	 * 根据用户名，昵称 模糊查询
 	 * @param appUserMongoEntity

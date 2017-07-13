@@ -37,6 +37,8 @@ public class AppUserMongoEntity {
 	private Integer totalflowers;
 	@Transient
 	private String remark;
+	@Transient
+	private String deviceindex;
 
 	private int distance;
 
@@ -165,4 +167,13 @@ public class AppUserMongoEntity {
 	public String getRemark() {
 		return remark;
 	}
+
+	public String getDeviceindex() {
+		return deviceindex;
+	}
+
+	public void setDeviceindex(String deviceindex) {
+		this.deviceindex = deviceindex;
+	}
+
 }
