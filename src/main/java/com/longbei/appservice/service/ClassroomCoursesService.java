@@ -68,4 +68,18 @@ public interface ClassroomCoursesService {
 	 */
 	BaseResp<Object> updateSortByid(Integer id, long classroomid, Integer coursesort);
 	
+	BaseResp<Object> saveCourses(ClassroomCourses classroomCourses);
+	
+	BaseResp<Object> editCourses(ClassroomCourses classroomCourses);
+	
+	/**
+     * @Description: 获取教室课程
+     * @param @param classroomid 教室id
+     * @param @param id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月12日
+ 	*/
+	BaseResp<ClassroomCourses> selectCourses(long classroomid, Integer id);
+	
 }
