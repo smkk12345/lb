@@ -399,6 +399,30 @@ public class ClassroomApiController {
  	}
     
     /**
+     * 更新教室推荐权重
+     * @param classroomid
+     * @param weight
+     * @return
+     */
+    @RequestMapping(value = "/updateRoomRecommendSort")
+ 	@ResponseBody
+    public BaseResp<Object> updateRoomRecommendSort(String classroomid, String weight){
+ 		logger.info("updateRoomRecommendSort classroomid = {}, weight = {}", 
+    			classroomid, weight);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, weight)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.updateRoomRecommendSort(Long.parseLong(classroomid), weight);
+        } catch (Exception e) {
+        	logger.error("updateRoomRecommendSort classroomid = {}, weight = {}", 
+    			classroomid, weight, e);
+        }
+        return baseResp;
+ 	}
+    
+    /**
      * @Description: 关闭教室
      * @param @param classroomid 教室id
      * @param @param closeremark 关闭原因

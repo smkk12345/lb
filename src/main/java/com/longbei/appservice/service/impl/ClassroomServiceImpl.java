@@ -899,5 +899,20 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return reseResp;
 	}
+
+	@Override
+	public BaseResp<Object> updateRoomRecommendSort(long classroomid, String weight) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Integer temp = classroomMapper.updateRoomRecommendSort(classroomid, weight);
+			if (temp > 0) {
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateRoomRecommendSort classroomid = {}, weight = {}", 
+					classroomid, weight, e);
+		}
+		return reseResp;
+	}
 	
 }

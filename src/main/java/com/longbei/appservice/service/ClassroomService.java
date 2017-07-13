@@ -204,4 +204,12 @@ public interface ClassroomService {
      */
 	BaseResp<Object> updateRoomRecommend(long classroomid, String isrecommend);
 	
+	/**
+     * 更新教室推荐权重
+     * @param classroomid
+     * @param weight
+     * @return
+     */
+	BaseResp<Object> updateRoomRecommendSort(long classroomid, String weight);
+	
 }
