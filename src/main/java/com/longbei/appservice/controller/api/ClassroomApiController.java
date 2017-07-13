@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -505,14 +504,79 @@ public class ClassroomApiController {
  	*/
     @RequestMapping(value = "/delCourses")
  	@ResponseBody
-    public BaseResp<Object> delCourses(String classroomid, String id, Model model){
+    public BaseResp<Object> delCourses(String classroomid, String id){
     	logger.info("delCourses classroomid = {}, id = {}", classroomid, id);
     	BaseResp<Object> baseResp = new BaseResp<Object>();
+    	if(StringUtils.hasBlankParams(classroomid, id)){
+        	return baseResp;
+        }
 		try {
 			baseResp = classroomCoursesService.updateIsdel(Long.parseLong(classroomid), Integer.parseInt(id));
 		} catch (Exception e) {
 			logger.error("delCourses classroomid = {}, id = {}", 
 					classroomid, id, e);
+		}
+		return baseResp;
+	}
+    
+    /**
+     * @Description: 添加教室课程
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月12日
+ 	*/
+    @RequestMapping(value = "/saveCourses")
+ 	@ResponseBody
+    public BaseResp<Object> saveCourses(@RequestBody ClassroomCourses classroomCourses){
+    	logger.info("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses));
+    	BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = classroomCoursesService.saveCourses(classroomCourses);
+		} catch (Exception e) {
+			logger.error("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses), e);
+		}
+		return baseResp;
+	}
+    
+    /**
+     * @Description: 修改教室课程
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月12日
+ 	*/
+    @RequestMapping(value = "/editCourses")
+ 	@ResponseBody
+    public BaseResp<Object> editCourses(@RequestBody ClassroomCourses classroomCourses){
+    	logger.info("editCourses classroomCourses = {}", JSON.toJSONString(classroomCourses));
+    	BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = classroomCoursesService.editCourses(classroomCourses);
+		} catch (Exception e) {
+			logger.error("editCourses classroomCourses = {}", JSON.toJSONString(classroomCourses), e);
+		}
+		return baseResp;
+	}
+    
+    /**
+     * @Description: 获取教室课程
+     * @param @param classroomid 教室id
+     * @param @param id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月12日
+ 	*/
+    @RequestMapping(value = "/selectCourses")
+ 	@ResponseBody
+    public BaseResp<ClassroomCourses> selectCourses(String classroomid, String id){
+    	logger.info("selectCourses classroomid = {}, id = {}", classroomid, id);
+    	BaseResp<ClassroomCourses> baseResp = new BaseResp<>();
+    	if(StringUtils.hasBlankParams(classroomid, id)){
+        	return baseResp;
+        }
+		try {
+			baseResp = classroomCoursesService.selectCourses(Long.parseLong(classroomid), Integer.parseInt(id));
+		} catch (Exception e) {
+			logger.error("selectCourses classroomid = {}, id = {}", classroomid, id, e);
 		}
 		return baseResp;
 	}
