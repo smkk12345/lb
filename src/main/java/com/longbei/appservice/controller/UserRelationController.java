@@ -24,6 +24,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.service.UserRelationService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -370,11 +371,11 @@ public class UserRelationController extends BaseController {
 	 * 获取手机通讯录好友
 	 * @url user/readMobileUserList
 	 * @param userid
-	 * @param mobileUserListStr
 	 * @return
 	 */
 	@RequestMapping(value="readMobileUserList")
-	public BaseResp<JSONArray> readMobileUserList(long userid,String mobileUserListStr){
+	public BaseResp<JSONArray> readMobileUserList(long userid, HttpServletRequest request){
+		String mobileUserListStr = request.getParameter("mobileUserListStr");
 		logger.info("readMobileUserList userid={},mobileUserListStr={}",userid,mobileUserListStr);
 		BaseResp<JSONArray> baseResp = new BaseResp<>();
 		try{
