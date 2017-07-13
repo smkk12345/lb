@@ -375,6 +375,30 @@ public class ClassroomApiController {
  	}
     
     /**
+     * 更新教室推荐状态
+     * @param classroomid
+     * @param isrecommend
+     * @return
+     */
+    @RequestMapping(value = "/updateRoomRecommend")
+ 	@ResponseBody
+    public BaseResp<Object> updateRoomRecommend(String classroomid, String isrecommend){
+ 		logger.info("updateRoomRecommend classroomid = {}, isrecommend = {}", 
+    			classroomid, isrecommend);
+ 		BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, isrecommend)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomService.updateRoomRecommend(Long.parseLong(classroomid), isrecommend);
+        } catch (Exception e) {
+        	logger.error("updateRoomRecommend classroomid = {}, isrecommend = {}", 
+    			classroomid, isrecommend, e);
+        }
+        return baseResp;
+ 	}
+    
+    /**
      * @Description: 关闭教室
      * @param @param classroomid 教室id
      * @param @param closeremark 关闭原因
