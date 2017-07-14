@@ -447,7 +447,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Classroom> list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, startNum, endNum);
+			List<Classroom> list = new ArrayList<>();
+			if("-1".equals(ptype)){
+				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
+				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+			}else{
+				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+			}
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);

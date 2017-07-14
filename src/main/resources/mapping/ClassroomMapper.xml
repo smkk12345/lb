@@ -37,7 +37,7 @@
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd 
+    closedate, closeremark, syllabus, crowd, weight 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -67,7 +67,10 @@
     <if test="isup != null and isup != ''" >
     	and isup = #{isup}
     </if>
-    order by createtime desc 
+    <if test="isrecommend != null isrecommend isup != ''" >
+    	and isrecommend = #{isrecommend}
+    </if>
+    order by weight desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -521,7 +524,8 @@
         weight = 0 
       </if>
       <if test="isrecommend == 1" >
-        isrecommend = #{isrecommend}
+        isrecommend = #{isrecommend},
+        weight = 0
       </if>
     where classroomid = #{classroomid} 
   </update>
