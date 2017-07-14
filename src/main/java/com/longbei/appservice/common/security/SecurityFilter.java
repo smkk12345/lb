@@ -1,11 +1,13 @@
 package com.longbei.appservice.common.security;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Version;
 import com.longbei.appservice.common.utils.*;
 
 import com.longbei.appservice.dao.redis.SpringJedisDao;
+import com.longbei.appservice.entity.SysAppupdate;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import net.sf.json.JSONObject;
@@ -50,11 +52,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 			arg2.doFilter(request, response);
 			return ;
 		}
-//
-//		if(true){
-//			arg2.doFilter(request, response);
-//			return ;
-//		}
 
 		//服务器之间api调用
 		if(url.contains("/api/")){
@@ -87,7 +84,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		
 		//app调用
 		boolean doFilter = true;
 		if(doFilter){
@@ -102,6 +98,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 			long localTime = new Date().getTime() / 1000;
 			if (Math.abs(localTime - Double.parseDouble(time)) > 10*60) {
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_09, Constant.RTNINFO_SYS_09);
+				return;
+			}
+			if(!versionController(request,response,version)){
+				returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
+						Constant.RTNINFO_SYS_1003);
 				return;
 			}
 			//重组request参数
@@ -161,24 +162,42 @@ public class SecurityFilter extends OncePerRequestFilter {
 		
 	}
 
-	private boolean canLogin(String version){
-		// IOS升级
-		boolean result = true;
+	private boolean versionController(HttpServletRequest request,
+									  HttpServletResponse response,String version){
+		//v1.0_2_3.0.2
 		String vers[] = version.split("_");
-		// 获取当前版本 判断是否是最新版本
-		String newver = vers[2].trim().replaceAll("\\.", "");
-		String oldVersion = Constant_Version.VERSION_000000+"";
+		if (vers.length > 0) {
+			String v = vers[2];
+			v = v.trim().replaceAll("\\.", "");
+			if ("2".equals(vers[1])){//andrion
+				return canLogin(v, SysRulesCache.sysAppupdateMap.get("0"));
+			}else{//ios
+				return canLogin(v, SysRulesCache.sysAppupdateMap.get("1"));
+			}
+		}
+		return false;
+	}
 
-		int size = getMinSize(oldVersion,newver);
+	private boolean canLogin(String version, SysAppupdate sysAppupdate){
+		if(null == sysAppupdate){
+			return true;
+		}
+		// 获取当前版本 判断是否是最新版本
+		String enforcedV = sysAppupdate.getEnforceversion();
+		enforcedV = enforcedV.trim().replaceAll("\\.", "");
+		if(StringUtils.isBlank(enforcedV)){
+			return true;
+		}
+		boolean result = true;
+		int size = getMinSize(enforcedV,version);
 		for (int i = 0; i < size; i++) {
-			int newi = newver.charAt(i);
-			int enforceveri = oldVersion.charAt(i);
+			int newi = version.charAt(i);
+			int enforceveri = enforcedV.charAt(i);
 			if (enforceveri > newi) {
 				result = false;
 				break;
 			}
 		}
-//		logger.info("version = {},oldVersion={},result={}",newver,oldVersion,result);
 		return result;
 	}
 

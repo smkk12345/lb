@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
@@ -104,6 +105,7 @@ public class SysSettingServiceImpl implements SysSettingService {
         try{
             int row = this.sysAppupdateMapper.deleteByPrimaryKey(id);
             if(row > 0){
+                initSysAppUpdateMap();
                 return baseResp.initCodeAndDesp();
             }
         }catch(Exception e){
@@ -147,6 +149,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
         int row = this.sysAppupdateMapper.insertSelective(sysAppupdate);
         if(row > 0){
+            initSysAppUpdateMap();
             return new BaseResp<>().ok();
         }
         return new BaseResp<>().fail();
@@ -190,6 +193,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
         int row = this.sysAppupdateMapper.updateByPrimaryKeySelective(sysAppupdate);
         if(row > 0){
+            initSysAppUpdateMap();
             return new BaseResp<>().ok();
         }
         return new BaseResp<>().fail();
@@ -315,5 +319,19 @@ public class SysSettingServiceImpl implements SysSettingService {
     public List<SysCommon> getSysCommons() {
         return sysCommonMapper.getSysCommons();
     }
+
+    @Override
+    public void initSysAppUpdateMap(){
+        //1 安卓 2 ios
+        SysAppupdate sysAppupdate = selectRecentByKey("0");
+        if (null != sysAppupdate){
+            SysRulesCache.sysAppupdateMap.put("0",sysAppupdate);
+        }
+        SysAppupdate sysAppupdate1 = selectRecentByKey("1");
+        if (null != sysAppupdate1){
+            SysRulesCache.sysAppupdateMap.put("1",sysAppupdate1);
+        }
+    }
+
 
 }

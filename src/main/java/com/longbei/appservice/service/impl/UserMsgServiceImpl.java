@@ -951,9 +951,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 						initMsgUserInfoByFriendid(userMsg, userid);
 					}else{
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
-						if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
-							appUserMongoEntity.setVcertification("0");
-						}
 						if("44".equals(userMsg.getMsgtype())){
 							//44: 榜中成员下榜     
 							if(!"0".equals(userMsg.getFriendid()+"")){
@@ -1452,9 +1449,6 @@ public class UserMsgServiceImpl implements UserMsgService {
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userMsg.getFriendid()));
 			if(null != appUserMongoEntity){
 				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
-				if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
-					appUserMongoEntity.setVcertification("0");
-				}
 				userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 			}else{
 				userMsg.setAppUserMongoEntityFriendid(new AppUserMongoEntity());
