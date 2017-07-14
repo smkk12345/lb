@@ -33,6 +33,14 @@ public interface ClassroomService {
 	
 	/**
 	 * @author yinxc
+	 * 获取教室详情---教室介绍信息
+     * @param @param classroomid 教室业务id
+	 * 2017年7月14日
+	 */
+	BaseResp<Object> croomDetail(long classroomid);
+	
+	/**
+	 * @author yinxc
 	 * 获取教室详情信息---教室课程有关数据(拆分)
 	 * 2017年3月7日
 	 * @param classroomid 教室业务id

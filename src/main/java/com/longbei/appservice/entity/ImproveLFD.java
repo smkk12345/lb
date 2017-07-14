@@ -23,6 +23,7 @@ public class ImproveLFD implements Serializable{
     private String opttype;
     private String businesstype;
     private Long businessid;
+    private String vcertification; //龙杯官方认证 0无认证 1名人认证 2Star认证
 
 
     private Date createtime;
@@ -89,5 +90,13 @@ public class ImproveLFD implements Serializable{
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public String getVcertification() {
+        return vcertification;
+    }
+
+    public void setVcertification(String vcertification) {
+        this.vcertification = vcertification;
     }
 }

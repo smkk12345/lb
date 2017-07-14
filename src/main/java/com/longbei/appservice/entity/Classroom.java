@@ -72,6 +72,8 @@ public class Classroom {
     private String nickname; //创建人信息
     
     private UserCard userCard; //名片类
+
+	private AppUserMongoEntity appUserMongoEntity;
     
     private String pickey; //最新课程视频截图key
     
@@ -87,7 +89,15 @@ public class Classroom {
     
     private Long questionsNum = 0l; //提问答疑总数
 
-    /**
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
+	}
+
+	/**
      * 
      * @return id 
      */

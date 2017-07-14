@@ -376,6 +376,9 @@ public class UserFlowerDetailServiceImpl extends BaseServiceImpl implements User
     	if(userFlowerDetail.getFriendid() != null){
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(userFlowerDetail.getFriendid()));
             if(null != appUserMongoEntity){
+				if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+					appUserMongoEntity.setVcertification("0");
+				}
             	this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             	userFlowerDetail.setAppUserMongoEntity(appUserMongoEntity);
             }else{

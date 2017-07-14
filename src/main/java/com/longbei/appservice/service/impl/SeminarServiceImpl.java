@@ -7,7 +7,9 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.SeminarService;
+import com.netflix.discovery.converters.Auto;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,10 @@ public class SeminarServiceImpl implements SeminarService{
     private RankAwardReleaseMapper rankAwardReleaseMapper;
     @Autowired
     private AwardMapper awardMapper;
+    @Autowired
+    private ClassroomMapper classroomMapper;
+    @Autowired
+    private ClassroomService classroomService;
 
 
     @Override
@@ -224,6 +230,10 @@ public class SeminarServiceImpl implements SeminarService{
                                 case "6":
                                     Seminar seminar = seminarMapper.selectBySeminarId(Long.parseLong(moduleContent.getContentid()));
                                     moduleContent.setSeminar(seminar);
+                                    break;
+                                case "7":
+                                    Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(moduleContent.getContentid()));
+                                    moduleContent.setClassroom(classroom);
                                     break;
                                 default:
                                     break;

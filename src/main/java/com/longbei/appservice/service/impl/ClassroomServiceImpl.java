@@ -309,6 +309,27 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+
+	@Override
+	public BaseResp<Object> croomDetail(long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(null != classroom){
+				map.put("classbrief", classroom.getClassbrief());
+				map.put("syllabus", classroom.getSyllabus());
+				map.put("crowd", classroom.getCrowd());
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("croomDetail classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+	
+	
 //	/**
 //	 * @author yinxc
 //	 * 教室学员作业列表
@@ -392,6 +413,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			//sourcetype  0:运营  1:app  2:商户
 			if("1".equals(classroom.getSourcetype())){
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+				classroom.setAppUserMongoEntity(appUserMongoEntity);
 				nickname = appUserMongoEntity.getNickname();
 			}
 			classroom.setNickname(nickname);
@@ -921,4 +943,5 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+
 }
