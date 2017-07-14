@@ -2,10 +2,7 @@ package com.longbei.appservice.common.Cache;
 
 import com.longbei.appservice.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import  java.util.Map;
-import java.util.List;
+import java.util.*;
 
 /**
  * 系统缓存  如系统规则
@@ -45,37 +42,43 @@ public class SysRulesCache {
     /**
      * 十全十美
      */
-    public static Map<Integer,String> perfectTenMap = new HashMap(){{
+    public static Map<Integer,String> perfectTenMap = new LinkedHashMap(){{
         put(0,"学习");
         put(1,"运动");
+        put(7,"工作");
+        put(4,"生活");
         put(2,"社交");
         put(3,"艺术");
-        put(4,"生活");
-        put(5,"公益");
         put(6,"文学");
-        put(7,"工作");
-        put(8,"修养");
         put(9,"健康");
+        put(5,"公益");
+        put(8,"修养");
     }};
 
     public static List<PerfectTen> perfectTenList = new ArrayList<PerfectTen>(){{
 //        add(new PerfectTen("-1","全部",-1));
         add(new PerfectTen("0","学习",0));
         add(new PerfectTen("1","运动",1));
-        add(new PerfectTen("2","社交",2));
-        add(new PerfectTen("3","艺术",3));
-        add(new PerfectTen("4","生活",4));
-        add(new PerfectTen("5","公益",5));
+        add(new PerfectTen("7","工作",2));
+        add(new PerfectTen("4","生活",3));
+        add(new PerfectTen("2","社交",4));
+        add(new PerfectTen("3","艺术",5));
         add(new PerfectTen("6","文学",6));
-        add(new PerfectTen("7","工作",7));
-        add(new PerfectTen("8","修养",8));
-        add(new PerfectTen("9","健康",9));
+        add(new PerfectTen("9","健康",7));
+        add(new PerfectTen("5","公益",8));
+        add(new PerfectTen("8","修养",9));
     }};
 
     /**
      * 十全十美每级详细说明 key--ptype十全十美类型 value--SysPerfectInfo实体
      */
     public static Map<String,SysPerfectInfo> sysPerfectInfoMap = new HashMap<>();
+
+    /**
+     * 版本信息
+     * 缓存版本IOS和安卓
+     */
+    public static Map<String,SysAppupdate> sysAppupdateMap = new HashMap<>();
 
 
 }

@@ -69,6 +69,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 		if(!StringUtils.isBlank(user.getVcertification())){
 			update.set("vcertification", user.getVcertification());
+		if(!StringUtils.isBlank(user.getDeviceindex())){
+			update.set("deviceindex", user.getDeviceindex());
 		}
 		try {
 			mongoTemplate1.upsert(query, update, AppUserMongoEntity.class);
@@ -124,16 +126,16 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		return getAppUserByQuery(query);
 	}
 
-	public List<AppUserMongoEntity> getAppUserByDeviceIndex(String deviceindex){
-		deviceindex = deviceindex.trim();
-		Query query = Query.query(Criteria.where("deviceindex").is(deviceindex));
-		try {
-			return find(query);
-		} catch (Exception e) {
-			logger.error("findOne error and msg={}",e);
-		}
-		return null;
-	}
+//	public List<AppUserMongoEntity> getAppUserByDeviceIndex(String deviceindex){
+//		deviceindex = deviceindex.trim();
+//		Query query = Query.query(Criteria.where("deviceindex").is(deviceindex));
+//		try {
+//			return find(query);
+//		} catch (Exception e) {
+//			logger.error("findOne error and msg={}",e);
+//		}
+//		return null;
+//	}
 
 	private AppUserMongoEntity getAppUserByQuery(Query query){
 		try {
@@ -187,6 +189,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		userMongoEntity.setUsername(userInfo.getUsername());
 		userMongoEntity.setSex(userInfo.getSex());
 		userMongoEntity.setNickname(userInfo.getNickname());
+		userMongoEntity.setDeviceindex(userInfo.getDeviceindex());
 		userMongoEntity.setCreatetime(DateUtils.formatDateTime1(userInfo.getCreatetime()));
 		saveAppUserMongoEntity(userMongoEntity);
 		return userMongoEntity;
