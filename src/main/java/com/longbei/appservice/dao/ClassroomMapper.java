@@ -31,11 +31,13 @@ public interface ClassroomMapper {
 	 * @author yinxc
 	 * 获取教室信息
 	 * param isup 是否所有人可见。0 所有人可见。1，部分可见
+	 * param isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
 	 * param pageNo   pageSize
 	 * 2017年3月3日
 	 */
     List<Classroom> selectClassroomListByIspublic(@Param("isup") String isup,
 												  @Param("ptype") String ptype,
+												  @Param("isrecommend") String isrecommend,
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
