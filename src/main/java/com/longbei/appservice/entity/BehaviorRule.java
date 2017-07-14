@@ -760,4 +760,12 @@ public class BehaviorRule {
     public void setShareMaxCount(Integer shareMaxCount) {
         this.shareMaxCount = shareMaxCount;
     }
+
+    public Integer getShareGroupCount() {
+        return shareGroupCount;
+    }
+
+    public void setShareGroupCount(Integer shareGroupCount) {
+        this.shareGroupCount = shareGroupCount;
+    }
 }
