@@ -1882,6 +1882,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
 
             AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userId+"");
+            if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                appUserMongoEntity.setVcertification("0");
+            }
             if(currentUserid != null && !currentUserid.equals(userId)){
             	//更改好友昵称
                 this.userRelationService.updateFriendRemark(currentUserid,appUserMongoEntity);
@@ -2139,6 +2142,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         }
                         rankMembers.setSortnum(startNum+i+1);
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
+                        if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                            appUserMongoEntity.setVcertification("0");
+                        }
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
                             this.userRelationService.updateFriendRemark(userId,appUserMongoEntity);
@@ -2158,6 +2164,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             rankMember.setSortnum(startNum + i +1);
                         }
                         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(rankMember.getUserid()+"");
+                        if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                            appUserMongoEntity.setVcertification("0");
+                        }
                         if(userId != null){
                             this.userRelationService.updateFriendRemark(userId,appUserMongoEntity);
                         }
@@ -2243,10 +2252,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if(appUserMongoEntity == null){
                         continue;
                     }
+                    if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                        appUserMongoEntity.setVcertification("0");
+                    }
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("userid",appUserMongoEntity.getUserid());
                     map.put("avatar",appUserMongoEntity.getAvatar());
                     map.put("usernickname",appUserMongoEntity.getNickname());
+                    map.put("vcertification",appUserMongoEntity.getVcertification());
 
                     if(userId == null){
                         map.put("isfans","0");

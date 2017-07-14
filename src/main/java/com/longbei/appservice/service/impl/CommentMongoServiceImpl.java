@@ -379,6 +379,9 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			if(StringUtils.isNotEmpty(friendid)){
 				this.userRelationService.updateFriendRemark(friendid,appUserMongoEntity);
 			}
+			if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+				appUserMongoEntity.setVcertification("0");
+			}
         	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
         }else{
         	comment.setAppUserMongoEntityUserid(new AppUserMongoEntity());
@@ -387,6 +390,9 @@ public class CommentMongoServiceImpl implements CommentMongoService {
     
     private void initCommentUserInfoByUserids(Comment comment){
     	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
+		if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+			appUserMongoEntity.setVcertification("0");
+		}
     	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
     }
 

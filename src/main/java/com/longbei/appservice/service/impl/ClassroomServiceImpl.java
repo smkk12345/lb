@@ -413,6 +413,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			//sourcetype  0:运营  1:app  2:商户
 			if("1".equals(classroom.getSourcetype())){
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(classroom.getUserid() + "");
+				classroom.setAppUserMongoEntity(appUserMongoEntity);
 				nickname = appUserMongoEntity.getNickname();
 			}
 			classroom.setNickname(nickname);

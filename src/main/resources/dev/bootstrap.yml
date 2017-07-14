@@ -22,7 +22,7 @@ spring:
     jackson:
         time-zone: GMT+8
     application:
-        name: appServiceLY021
+        name: appServiceLY2
     cloud:
         config:
             enabled: true
