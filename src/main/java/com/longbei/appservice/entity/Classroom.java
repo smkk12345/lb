@@ -90,6 +90,8 @@ public class Classroom {
     private Integer commentNum = 0; //评论总数
     
     private Long questionsNum = 0l; //提问答疑总数
+    
+    private Integer commentCount; //教室评论数
 
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
@@ -525,6 +527,15 @@ public class Classroom {
 
 	public void setIshomerecommend(String ishomerecommend) {
 		this.ishomerecommend = ishomerecommend;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(Integer commentCount) {
+		this.commentCount = commentCount;
 	}
 
 }

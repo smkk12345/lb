@@ -145,7 +145,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != classroomMembers){
 					map.put("classroomMembers", classroomMembers);
 				}else{
-					map.put("classroomMembers", new ClassroomMembers());
+					map.put("classroomMembers", null);
 				}
 				//itype 0—加入教室 1—退出教室     为null查全部
 				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
@@ -598,11 +598,25 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * param classroomid 教室业务id
 	 * param ismsg 是否@全体成员   0：否   1：是
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> updateClassnoticeByClassroomid(long classroomid, long userid, String classnotice, String ismsg) {
+	public BaseResp<Object> updateClassnoticeByClassroomid(long classroomid, long userid, 
+			String classnotice, String ismsg) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null == classroom){
+				return reseResp;
+			}
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			if(null == userCard){
+				return reseResp;
+			}
+			//判断当前用户是否是老师
+			if(userCard.getUserid() != userid){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1107, Constant.RTNINFO_SYS_1107);
+			}
+			
 			boolean temp = updateClassnotice(classroomid, classnotice);
 			if (temp) {
 				if("1".equals(ismsg)){
@@ -781,7 +795,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 					classroom.setUserCard(userCard);
 					//教室总进步数量
-					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					Integer allimp = classroomMembersMapper.selectRoomImproveCount(classroom.getClassroomid());
 					classroom.setAllimp(allimp);
 					//教室课程数量
 					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
@@ -837,7 +851,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 					classroom.setUserCard(userCard);
 					//教室总进步数量
-					Integer allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroom.getClassroomid().toString(), null);
+					Integer allimp = classroomMembersMapper.selectRoomImproveCount(classroom.getClassroomid());
 					classroom.setAllimp(allimp);
 					//教室课程数量
 					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
@@ -939,6 +953,42 @@ public class ClassroomServiceImpl implements ClassroomService {
 		} catch (Exception e) {
 			logger.error("updateRoomRecommendSort classroomid = {}, weight = {}", 
 					classroomid, weight, e);
+		}
+		return reseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateClassnoticeByPCClassroomid(long classroomid, long userid, String classnotice,
+			String ismsg) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			boolean temp = updateClassnotice(classroomid, classnotice);
+			if (temp) {
+				if("1".equals(ismsg)){
+					//修改完公告后，给教室每个成员推送消息
+					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
+					if(null != list && list.size()>0){
+						for (ClassroomMembers classroomMembers : list) {
+							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您";
+							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
+//							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
+//							//snsid---教室业务id
+//							//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
+							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+//							//mtype 0 系统消息  1 对话消息   2:@我消息
+							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
+									"", "12", classroomid + "", remark, "0", "14", "教室发布最新公告", 0, "", "");
+//							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
+						}
+					}
+				}
+				reseResp.setData(classroom);
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateClassnoticeByClassroomid classroomid = {}, classnotice = {}", 
+					classroomid, classnotice, e);
 		}
 		return reseResp;
 	}
