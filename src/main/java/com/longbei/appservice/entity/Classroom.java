@@ -65,6 +65,8 @@ public class Classroom {
     
     private String crowd; //适合人群
     
+    private Integer weight; //权重 值越大排序越靠前 
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -503,6 +505,15 @@ public class Classroom {
 
 	public void setCrowd(String crowd) {
 		this.crowd = crowd;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 }

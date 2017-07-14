@@ -838,7 +838,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	private BaseResp<Object> deviceIndexChange(String deviceindex,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
-		List<AppUserMongoEntity> list = userMongoDao.getAppUserByDeviceIndex(deviceindex);
+
+		List<UserInfo> list = userInfoMapper.getOtherDevice(deviceindex);
 		if(null == list){
 			if(!StringUtils.isBlank(deviceindex)){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
@@ -854,8 +855,8 @@ public class UserServiceImpl implements UserService {
 			}
 			userInfoMapper.updateIndexDevice(userid, deviceindex);
 		}else {
-			AppUserMongoEntity appUserMongoEntity = list.get(0);
-			if(Long.parseLong(appUserMongoEntity.getId()) == userid){
+			UserInfo userInfo = list.get(0);
+			if(userInfo.getUserid() == userid){
 			}else{
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_500,Constant.RTNINFO_SYS_500);
 			}

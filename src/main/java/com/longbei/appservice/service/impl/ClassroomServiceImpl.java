@@ -309,6 +309,27 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+
+	@Override
+	public BaseResp<Object> croomDetail(long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(null != classroom){
+				map.put("classbrief", classroom.getClassbrief());
+				map.put("syllabus", classroom.getSyllabus());
+				map.put("crowd", classroom.getCrowd());
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("croomDetail classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+	
+	
 //	/**
 //	 * @author yinxc
 //	 * 教室学员作业列表
@@ -448,7 +469,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			List<Classroom> list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, startNum, endNum);
+			List<Classroom> list = new ArrayList<>();
+			if("-1".equals(ptype)){
+				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
+				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+			}else{
+				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+			}
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
@@ -916,4 +943,5 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+
 }
