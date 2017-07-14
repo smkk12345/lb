@@ -42,6 +42,11 @@ public interface ClassroomMembersMapper {
      */
     Integer selectSearchCount(@Param("classroomMembers") ClassroomMembers classroomMembers);
     
+    /*
+     * 获取教室总进步数
+     */
+    Integer selectRoomImproveCount(@Param("classroomid") long classroomid);
+    
     /**
 	 * @author yinxc
 	 * 获取我加入的教室成员列表---(剔除   退出教室的)

@@ -69,6 +69,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 		if(!StringUtils.isBlank(user.getVcertification())){
 			update.set("vcertification", user.getVcertification());
+		}
 		if(!StringUtils.isBlank(user.getDeviceindex())){
 			update.set("deviceindex", user.getDeviceindex());
 		}
