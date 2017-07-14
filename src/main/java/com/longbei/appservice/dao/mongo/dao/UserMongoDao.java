@@ -69,14 +69,13 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		}
 		if(!StringUtils.isBlank(user.getVcertification())){
 			update.set("vcertification", user.getVcertification());
-		if(!StringUtils.isBlank(user.getDeviceindex())){
-			update.set("deviceindex", user.getDeviceindex());
 		}
 		try {
 			mongoTemplate1.upsert(query, update, AppUserMongoEntity.class);
 			if(StringUtils.isNotEmpty(user.getNickname()) || StringUtils.isNotEmpty(user.getAvatar())){
 				//如果用户更改了用户昵称或者用户头像,则更新融云的用户昵称和头像
-				BaseResp<Object> rongyunUpdateResp = this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
+				BaseResp<Object> rongyunUpdateResp =
+						this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
 			}
 		}catch (Exception e) {
 			logger.error("updateAppUserMongoEntity user = {}",
@@ -85,7 +84,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		AppUserMongoEntity mongoUser =  getAppUser(user.getUserid().toString());
 		return mongoUser;
 	}
-	
+
+
 	public AppUserMongoEntity getAppUser(String userid){
 //		logger.info("getAppUser userid={}",userid);
 		userid = userid.trim();

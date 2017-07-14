@@ -1691,9 +1691,6 @@ public class ImproveServiceImpl implements ImproveService{
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
             }
-            if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
-                appUserMongoEntity.setVcertification("0");
-            }
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
             improve.setAppUserMongoEntity(new AppUserMongoEntity());
@@ -2175,7 +2172,7 @@ public class ImproveServiceImpl implements ImproveService{
     			}
 //                impAllDetail.setAppUser(userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid())));
             }
-            baseResp = BaseResp.ok();
+            baseResp.initCodeAndDesp();
             baseResp.setData(impAllDetails);
             return baseResp;
         } catch (Exception e) {
@@ -3685,9 +3682,6 @@ public class ImproveServiceImpl implements ImproveService{
                         continue;
                     }
                     AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
-                    if(null != appuser && StringUtils.isBlank(appuser.getVcertification())){
-                        appuser.setVcertification("0");
-                    }
                     improve.setAppUserMongoEntity(appuser);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         initUserRelateInfo(uid,appuser,friendids,funids);

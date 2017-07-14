@@ -714,9 +714,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
                 for(SnsGroupMembers snsGroupMembers1:snsGroupMembersList) {
                     AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(snsGroupMembers1.getUserid() + "");
-                    if (null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())) {
-                        appUserMongoEntity.setVcertification("0");
-                    }
                     snsGroupMembers1.setAppUserMongoEntity(appUserMongoEntity);
                 }
 
