@@ -290,15 +290,7 @@ public class InitConfig implements CommandLineRunner {
      * 初始化版本信息分 IOS和安卓 1
      */
     private void initSysAppUpdateMap(){
-        //1 安卓 2 ios
-        SysAppupdate sysAppupdate = sysSettingService.selectRecentByKey("1");
-        if (null != sysAppupdate){
-            SysRulesCache.sysAppupdateMap.put("1",sysAppupdate);
-        }
-        SysAppupdate sysAppupdate1 = sysSettingService.selectRecentByKey("2");
-        if (null != sysAppupdate1){
-            SysRulesCache.sysAppupdateMap.put("2",sysAppupdate1);
-        }
+        sysSettingService.initSysAppUpdateMap();
     }
 
 

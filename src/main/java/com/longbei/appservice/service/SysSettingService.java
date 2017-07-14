@@ -75,4 +75,7 @@ public interface SysSettingService {
      * @return
      */
     BaseResp<Object> updateSysAppUpdate(Integer id,String ttype, String version, String enforced, String url, String remark, String updateexplain);
+
+    void initSysAppUpdateMap();
+
 }

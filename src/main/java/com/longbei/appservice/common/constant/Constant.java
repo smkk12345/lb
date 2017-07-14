@@ -200,6 +200,7 @@ public class Constant {
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
+	public static final int STATUS_SYS_1003 = -1003;
 	
 	public static final int STATUS_SYS_1100 = -1100;
 	public static final int STATUS_SYS_1101 = -1101;
@@ -319,7 +320,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
 	public static final String RTNINFO_SYS_1002 = "token失效";
-
+	public static final String RTNINFO_SYS_1003 = "请前往应用中心更新版本";
 
 
 	public static final String RTNINFO_SYS_50 = "添加榜单成功";
