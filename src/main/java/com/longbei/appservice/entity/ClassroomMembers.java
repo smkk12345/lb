@@ -29,7 +29,7 @@ public class ClassroomMembers {
     
     private Integer flowers; //花总数量
     
-    private Integer diamonds = 0; //钻石总数量
+    private Integer diamonds; //钻石总数量
     
     private AppUserMongoEntity appUserMongoEntityUserid; //消息用户信息----Userid
     

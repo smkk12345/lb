@@ -200,6 +200,7 @@ public class Constant {
 	public static final int STATUS_SYS_1000 = -1000;
 	public static final int STATUS_SYS_1001 = -1001;
 	public static final int STATUS_SYS_1002 = -1002;
+	public static final int STATUS_SYS_1003 = -1003;
 	
 	public static final int STATUS_SYS_1100 = -1100;
 	public static final int STATUS_SYS_1101 = -1101;
@@ -207,6 +208,8 @@ public class Constant {
 	public static final int STATUS_SYS_1103 = -1103;
 	public static final int STATUS_SYS_1104 = -1104;
 	public static final int STATUS_SYS_1105 = -1105;
+	public static final int STATUS_SYS_1106 = -1106;
+	public static final int STATUS_SYS_1107 = -1107;
 	
 	
 	
@@ -319,7 +322,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
 	public static final String RTNINFO_SYS_1002 = "token失效";
-
+	public static final String RTNINFO_SYS_1003 = "请前往应用中心更新版本";
 
 
 	public static final String RTNINFO_SYS_50 = "添加榜单成功";
@@ -366,6 +369,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_1103 = "您没有权限删除老师已回复的信息";
 	public static final String RTNINFO_SYS_1104 = "赠送鲜花的数量不对";
 	public static final String RTNINFO_SYS_1105 = "教室标题不能重复";
+	public static final String RTNINFO_SYS_1106 = "您没有权限剔除教室成员";
+	public static final String RTNINFO_SYS_1107 = "您没有权限发布教室公告";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";

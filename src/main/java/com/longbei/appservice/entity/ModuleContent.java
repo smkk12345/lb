@@ -66,6 +66,16 @@ public class ModuleContent {
 
     private Seminar seminar;
 
+    private Classroom classroom;
+
+    public Classroom getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
+    }
+
     public Seminar getSeminar() {
         return seminar;
     }

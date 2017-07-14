@@ -701,7 +701,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }else{
                 resultMap.put("isMainUser",false);
             }
-
             if(status == 0 && snsGroupMembersList != null && snsGroupMembersList.size() > 0){
                 for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
                     if(snsGroupMembers.getInviteuserid() != null){
@@ -712,7 +711,13 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     }
                 }
             }
+            if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
+                for(SnsGroupMembers snsGroupMembers1:snsGroupMembersList) {
+                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(snsGroupMembers1.getUserid() + "");
+                    snsGroupMembers1.setAppUserMongoEntity(appUserMongoEntity);
+                }
 
+            }
             resultMap.put("snsGroupMembersList",snsGroupMembersList);
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

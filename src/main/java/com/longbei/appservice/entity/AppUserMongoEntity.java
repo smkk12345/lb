@@ -37,10 +37,12 @@ public class AppUserMongoEntity {
 	private Integer totalflowers;
 	@Transient
 	private String remark;
-	@Transient
+
 	private String deviceindex;
 
 	private int distance;
+
+	private String vcertification = "0";//龙杯官方认证 0无认证 1名人认证 2Star认证
 
 	public Integer getTotallikes() {
 		return totallikes;
@@ -176,4 +178,11 @@ public class AppUserMongoEntity {
 		this.deviceindex = deviceindex;
 	}
 
+	public String getVcertification() {
+		return vcertification;
+	}
+
+	public void setVcertification(String vcertification) {
+		this.vcertification = vcertification;
+	}
 }

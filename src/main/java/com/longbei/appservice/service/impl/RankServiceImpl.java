@@ -2247,6 +2247,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     map.put("userid",appUserMongoEntity.getUserid());
                     map.put("avatar",appUserMongoEntity.getAvatar());
                     map.put("usernickname",appUserMongoEntity.getNickname());
+                    map.put("vcertification",appUserMongoEntity.getVcertification());
 
                     if(userId == null){
                         map.put("isfans","0");

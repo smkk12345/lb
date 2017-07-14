@@ -33,6 +33,14 @@ public interface ClassroomService {
 	
 	/**
 	 * @author yinxc
+	 * 获取教室详情---教室介绍信息
+     * @param @param classroomid 教室业务id
+	 * 2017年7月14日
+	 */
+	BaseResp<Object> croomDetail(long classroomid);
+	
+	/**
+	 * @author yinxc
 	 * 获取教室详情信息---教室课程有关数据(拆分)
 	 * 2017年3月7日
 	 * @param classroomid 教室业务id
@@ -211,5 +219,16 @@ public interface ClassroomService {
      * @return
      */
 	BaseResp<Object> updateRoomRecommendSort(long classroomid, String weight);
+	
+	/**
+	 * @author yinxc
+	 * 修改教室公告---classnotice
+	 * 2017年3月2日
+	 * param classnotice 公告
+	 * param userid 老师id
+	 * param classroomid 教室业务id
+	 * param ismsg 是否@全体成员   0：否   1：是
+	 */
+	BaseResp<Object> updateClassnoticeByPCClassroomid(long classroomid, long userid, String classnotice, String ismsg);
 	
 }

@@ -101,6 +101,9 @@ public class InitConfig implements CommandLineRunner {
         initListener();
         //初始化sys——common
         initSysCommon();
+        //初始化版本信息 分安卓和IOS
+        initSysAppUpdateMap();
+
     }
 
     private void initUserBehaviorRule(int num){
@@ -266,7 +269,6 @@ public class InitConfig implements CommandLineRunner {
     }
 
     private void initUrl(){
-
         String prefix_base = "http://"+AppserviceConfig.shareip+":"+AppserviceConfig.shareport+"/share_service";
         String prefix = prefix_base + "/html/";
         AppserviceConfig.h5_helper = prefix+"apptpl/help-index.html";
@@ -283,6 +285,15 @@ public class InitConfig implements CommandLineRunner {
         AppserviceConfig.seminarurl = prefix_base+"/seminar/info";
         AppserviceConfig.h5_share_circle_detail = prefix+"sharetpl/circle-detail.html";
     }
+
+    /**
+     * 初始化版本信息分 IOS和安卓 1
+     */
+    private void initSysAppUpdateMap(){
+        sysSettingService.initSysAppUpdateMap();
+    }
+
+
 
 
 }

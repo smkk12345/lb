@@ -501,6 +501,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
 					map.put("brief",userInfo.getBrief());
+					map.put("vcertification",userInfo.getVcertification());
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());
 					}else{
@@ -614,8 +615,6 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}else{
 			snsFans.setAppUserMongoEntityLikeuserid(new AppUserMongoEntity());
 		}
-//		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getUserid()));
-//		snsFans.setAppUserMongoEntityLikeuserid(appUserMongoEntity);
 	}
 
 	private void insertAddFansMsg(Long userId,Long likeUserId){
@@ -653,6 +652,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 
 	@Override
 	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid,String dataStr){
+//		dataStr="2017-05-14 10:18:34";
 		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
 		List<AppUserMongoEntity> dataList = new ArrayList<>();
 		if(StringUtils.isBlank(dataStr)){
@@ -672,10 +672,6 @@ public class UserRelationServiceImpl implements UserRelationService {
 			idList.add(userRe.getChangeuid());
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(userRe.getChangeuid());
 			initUserRelateInfo(Long.parseLong(userid),appUserMongEntity);
-//			String remark = selectRemark(Long.parseLong(userid), Long.parseLong(userRe.getChangeuid()));
-//			if(!StringUtils.isBlank(remark)){
-//				appUserMongEntity.setNickname(remark);
-//			}
 			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
 				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
 			}

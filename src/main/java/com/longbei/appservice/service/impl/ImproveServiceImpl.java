@@ -2163,7 +2163,7 @@ public class ImproveServiceImpl implements ImproveService{
     			}
 //                impAllDetail.setAppUser(userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid())));
             }
-            baseResp = BaseResp.ok();
+            baseResp.initCodeAndDesp();
             baseResp.setData(impAllDetails);
             return baseResp;
         } catch (Exception e) {
@@ -2669,6 +2669,7 @@ public class ImproveServiceImpl implements ImproveService{
             for (ImproveLFD improveLFD : improveLFDs){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
                 improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+                improveLFD.setVcertification(appUser.getVcertification());
             }
             improveLFDstr = JSON.toJSONString(improveLFDs);
             springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,5);
@@ -3733,9 +3734,11 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> improvevalidate(String userid, String brief, String businessid,String businesstype) {
         BaseResp baseResp = new BaseResp();
-        baseResp = sysSensitiveService.getSensitiveWordSet(brief);
-        if(ResultUtil.fail(baseResp)){
-            return baseResp;
+        if(!StringUtils.isBlank(brief)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+            if(ResultUtil.fail(baseResp)){
+                return baseResp;
+            }
         }
         //添加进步之前的过滤
         return insertImproveFilter(businessid,userid,businesstype);

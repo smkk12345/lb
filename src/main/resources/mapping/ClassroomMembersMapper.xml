@@ -41,6 +41,12 @@
     </if>
   </select>
   
+  <select id="selectRoomImproveCount" resultType="java.lang.Integer">
+      SELECT sum(icount) FROM classroom_members 
+      WHERE classroomid = #{classroomid} 
+      AND itype = 0 
+  </select>
+  
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.ClassroomMembers" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

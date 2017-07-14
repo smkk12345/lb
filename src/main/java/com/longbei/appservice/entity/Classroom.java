@@ -65,11 +65,17 @@ public class Classroom {
     
     private String crowd; //适合人群
     
+    private Integer weight; //权重 值越大排序越靠前 
+    
+    private String ishomerecommend; //是否在首页推荐 0 - 没有 1 - 推荐
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
     
     private UserCard userCard; //名片类
+
+	private AppUserMongoEntity appUserMongoEntity;
     
     private String pickey; //最新课程视频截图key
     
@@ -84,8 +90,18 @@ public class Classroom {
     private Integer commentNum = 0; //评论总数
     
     private Long questionsNum = 0l; //提问答疑总数
+    
+    private Integer commentCount; //教室评论数
 
-    /**
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
+	}
+
+	/**
      * 
      * @return id 
      */
@@ -493,6 +509,33 @@ public class Classroom {
 
 	public void setCrowd(String crowd) {
 		this.crowd = crowd;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIshomerecommend() {
+		return ishomerecommend;
+	}
+
+	public void setIshomerecommend(String ishomerecommend) {
+		this.ishomerecommend = ishomerecommend;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(Integer commentCount) {
+		this.commentCount = commentCount;
 	}
 
 }

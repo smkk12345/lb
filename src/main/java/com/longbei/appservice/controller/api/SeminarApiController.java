@@ -2,10 +2,13 @@ package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Module;
 import com.longbei.appservice.entity.Seminar;
 import com.longbei.appservice.entity.SeminarModule;
 import com.longbei.appservice.service.SeminarService;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 专题
@@ -91,7 +95,12 @@ public class SeminarApiController {
     public BaseResp<Seminar> selectSerminarAllDetail(String seminarid){
         BaseResp<Seminar> baseResp = new BaseResp();
         try {
+            String shareurl = AppserviceConfig.seminarurl + "?seminarid=" + seminarid + "&ref=share";
+            String shorturl = ShortUrlUtils.getShortUrl(shareurl);
             baseResp = seminarService.selectSeminarAllDetail(seminarid);
+            Map<String,Object> map = new HashedMap();
+            map.put("shorturl",shorturl);
+            baseResp.setExpandData(map);
         } catch (Exception e) {
             logger.error("select seminar all info seminarid:{} is error:",seminarid,e);
         }

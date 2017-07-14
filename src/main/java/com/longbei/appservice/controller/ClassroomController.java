@@ -762,4 +762,32 @@ public class ClassroomController {
    		return baseResp;
     }
   	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/croomDetail
+     * @Description: 获取教室详情---教室介绍信息
+     * @param @param classroomid 教室业务id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data: 
+     *					classbrief：教室简介
+     * 					syllabus:课程大纲
+     * 					crowd:适合人群
+     * @auther yinxc
+     * @currentdate:2017年7月14日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "croomDetail")
+    public BaseResp<Object> croomDetail(String classroomid) {
+		logger.info("croomDetail classroomid = {}", classroomid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.croomDetail(Long.parseLong(classroomid));
+   		} catch (Exception e) {
+   			logger.error("croomDetail classroomid = {}", classroomid, e);
+   		}
+   		return baseResp;
+    }
+  	
 }
