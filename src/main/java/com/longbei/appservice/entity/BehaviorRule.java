@@ -287,6 +287,8 @@ public class BehaviorRule {
 
     private Integer shareMaxCount;//单次分享的最大个数限制
 
+    private Integer shareGroupCount = 1;//单次内部分享到群限制
+
     public Long getId() {
         return id;
     }

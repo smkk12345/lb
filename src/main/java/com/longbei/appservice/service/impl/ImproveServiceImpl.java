@@ -3750,9 +3750,11 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> improvevalidate(String userid, String brief, String businessid,String businesstype) {
         BaseResp baseResp = new BaseResp();
-        baseResp = sysSensitiveService.getSensitiveWordSet(brief);
-        if(ResultUtil.fail(baseResp)){
-            return baseResp;
+        if(!StringUtils.isBlank(brief)){
+            baseResp = sysSensitiveService.getSensitiveWordSet(brief);
+            if(ResultUtil.fail(baseResp)){
+                return baseResp;
+            }
         }
         //添加进步之前的过滤
         return insertImproveFilter(businessid,userid,businesstype);
