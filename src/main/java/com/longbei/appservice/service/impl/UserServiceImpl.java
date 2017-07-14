@@ -1175,6 +1175,9 @@ public class UserServiceImpl implements UserService {
 		if(StringUtils.isNotEmpty(newUserInfo.getFeeling()) && !newUserInfo.getFeeling().equals(oldUserInfo.getFeeling())){
 			updateUserInfo.setFeeling(newUserInfo.getFeeling());
 		}
+		if(StringUtils.isNotEmpty(newUserInfo.getVcertification()) && !newUserInfo.getVcertification().equals(oldUserInfo.getVcertification())){
+			updateUserInfo.setVcertification(newUserInfo.getVcertification());
+		}
 		return updateUserInfo;
 	}
 
@@ -1570,7 +1573,7 @@ public class UserServiceImpl implements UserService {
 			//官方认证，检查认证用户名是否重复
 			UserInfo userInfo1= userInfoMapper.selectByUserid(userInfo.getUserid());
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(userInfo.getNickname());
-			if(null != appUserMongoEntity && !appUserMongoEntity.getId().equals(userInfo1.getUserid())){
+			if(null != appUserMongoEntity && !appUserMongoEntity.getNickname().equals(userInfo1.getNickname())){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 			}else {
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -1599,8 +1602,7 @@ public class UserServiceImpl implements UserService {
 							remark,"0","30", "取消达人",0, "", "");
 				}
 				if(StringUtils.isNotBlank(userInfo.getVcertification()) ) {
-					UserInfo userInfo2= userInfoMapper.selectByUserid(userInfo.getUserid());
-					if ("1".equals(userInfo.getVcertification()) || "2".equals(userInfo.getVcertification())) {
+					   UserInfo userInfo2= userInfoMapper.selectByUserid(userInfo.getUserid());
 						//同步更改的用户信息
 						UserInfo updateUserInfo = compareUserInfo(userInfo2, userInfo);
 						userMongoDao.updateAppUserMongoEntity(updateUserInfo);
@@ -1609,7 +1611,6 @@ public class UserServiceImpl implements UserService {
 						if (StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())) {
 							updateUserRelevantInfo(updateUserInfo.getUserid(), userInfo2.getNickname(), updateUserInfo.getNickname(), updateUserInfo.getAvatar());
 						}
-					}
 					if ("1".equals(userInfo.getVcertification())) {
 						String remark = "你被授予龙杯名人认证";
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(userInfo.getUserid()), null, "9", null,

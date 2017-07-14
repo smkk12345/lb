@@ -1293,6 +1293,9 @@ public class ImproveServiceImpl implements ImproveService{
             List<Improve> list = selectImproveListByUser(targetuserid,null,
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
+            if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                appUserMongoEntity.setVcertification("0");
+            }
             //获取好友昵称
             this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 
@@ -1429,6 +1432,9 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setDuration(timeLineDetail.getDuration());
                 improve.setPtype(timeLine.getPtype());
                 AppUserMongoEntity user = timeLineDetail.getUser();
+                if(null != user && StringUtils.isBlank(user.getVcertification())){
+                    user.setVcertification("0");
+                }
                 if(map.containsKey(user.getId())){
                     user.setNickname(map.get(user.getId()));
                 }
@@ -1684,6 +1690,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(null != appUserMongoEntity){
             if(userid != null && userid != -1 && !"-1".equals(userid+"")){
                 this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+            }
+            if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                appUserMongoEntity.setVcertification("0");
             }
             improve.setAppUserMongoEntity(appUserMongoEntity);
         }else{
@@ -2156,6 +2165,9 @@ public class ImproveServiceImpl implements ImproveService{
                         if(friendRemark.containsKey(appUserMongoEntity.getId())){
                             appUserMongoEntity.setNickname(friendRemark.get(appUserMongoEntity.getId()));
                         }
+                    }
+                    if(StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                        appUserMongoEntity.setVcertification("0");
                     }
     				impAllDetail.setAppUser(appUserMongoEntity);
     			}else{
@@ -2669,6 +2681,11 @@ public class ImproveServiceImpl implements ImproveService{
             for (ImproveLFD improveLFD : improveLFDs){
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
                 improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+                if(null != appUser && StringUtils.isBlank(appUser.getVcertification())){
+                    improveLFD.setVcertification("0");
+                }else {
+                    improveLFD.setVcertification(appUser.getVcertification());
+                }
             }
             improveLFDstr = JSON.toJSONString(improveLFDs);
             springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,5);
@@ -3284,6 +3301,9 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
 //                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     AppUserMongoEntity user = timeLineDetail.getUser();
+                    if(null != user && StringUtils.isBlank(user.getVcertification())){
+                        user.setVcertification("0");
+                    }
                     if(map.containsKey(user.getId())){
                         user.setNickname(map.get(user.getId()));
                     }
@@ -3665,6 +3685,9 @@ public class ImproveServiceImpl implements ImproveService{
                         continue;
                     }
                     AppUserMongoEntity appuser = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                    if(null != appuser && StringUtils.isBlank(appuser.getVcertification())){
+                        appuser.setVcertification("0");
+                    }
                     improve.setAppUserMongoEntity(appuser);
                     if(!Constant.VISITOR_UID.equals(userid)){
                         initUserRelateInfo(uid,appuser,friendids,funids);

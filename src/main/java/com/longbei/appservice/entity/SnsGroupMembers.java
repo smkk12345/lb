@@ -27,6 +27,8 @@ public class SnsGroupMembers {
 
     private Boolean disturbstatus;//是否开启消息免打扰
 
+    protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
+
     /**
      * 
      * @return id 
@@ -173,5 +175,13 @@ public class SnsGroupMembers {
 
     public void setDisturbstatus(Boolean disturbstatus) {
         this.disturbstatus = disturbstatus;
+    }
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
     }
 }

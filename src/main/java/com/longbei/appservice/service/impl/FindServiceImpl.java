@@ -44,6 +44,9 @@ public class FindServiceImpl implements FindService{
             Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
             for (int i = 0; i < list.size(); i++) {
                 AppUserMongoEntity appuser = list.get(i);
+                if(null != appuser && StringUtils.isBlank(appuser.getVcertification())){
+                    appuser.setVcertification("0");
+                }
                 if(friendRemark.containsKey(appuser.getId())){
                     appuser.setNickname(friendRemark.get(appuser.getId()));
                 }

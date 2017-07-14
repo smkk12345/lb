@@ -449,6 +449,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                     }
                     if(userId.longValue() == friendAddAsk.getSenderUserId().longValue()){
                     	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getReceiveUserId()+"");
+                        if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                            appUserMongoEntity.setVcertification("0");
+                        }
                     	//获取好友昵称
     					String remark = userRelationService.selectRemark(userId, friendAddAsk.getReceiveUserId(),"0");
     					if(!StringUtils.isBlank(remark)){
@@ -457,6 +460,9 @@ public class FriendServiceImpl extends BaseServiceImpl implements FriendService 
                         friendAddAsk.setAppUserMongoEntity(appUserMongoEntity);
                     }else{
                     	AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(friendAddAsk.getSenderUserId()+"");
+                        if(null != appUserMongoEntity && StringUtils.isBlank(appUserMongoEntity.getVcertification())){
+                            appUserMongoEntity.setVcertification("0");
+                        }
                     	//获取好友昵称
     					String remark = userRelationService.selectRemark(userId, friendAddAsk.getSenderUserId(),"0");
     					if(!StringUtils.isBlank(remark)){
