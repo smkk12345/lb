@@ -67,7 +67,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		if(!StringUtils.isBlank(user.getSex())){
 			update.set("sex", user.getSex());
 		}
-		if(!StringUtils.isBlank(user.getVcertification())){
+		if(!StringUtils.isBlank(user.getVcertification())) {
 			update.set("vcertification", user.getVcertification());
 		}
 		try {
@@ -77,9 +77,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 				BaseResp<Object> rongyunUpdateResp =
 						this.rongYunService.refreshUserInfo(user.getUserid().toString(),user.getNickname(),user.getAvatar());
 			}
-		}catch (Exception e) {
-			logger.error("updateAppUserMongoEntity user = {}",
-					com.alibaba.fastjson.JSON.toJSON(user).toString(), e);
+		}catch (Exception e){
+
 		}
 		AppUserMongoEntity mongoUser =  getAppUser(user.getUserid().toString());
 		return mongoUser;
