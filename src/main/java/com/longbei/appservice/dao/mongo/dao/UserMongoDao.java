@@ -124,16 +124,16 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		return getAppUserByQuery(query);
 	}
 
-	public List<AppUserMongoEntity> getAppUserByDeviceIndex(String deviceindex){
-		deviceindex = deviceindex.trim();
-		Query query = Query.query(Criteria.where("deviceindex").is(deviceindex));
-		try {
-			return find(query);
-		} catch (Exception e) {
-			logger.error("findOne error and msg={}",e);
-		}
-		return null;
-	}
+//	public List<AppUserMongoEntity> getAppUserByDeviceIndex(String deviceindex){
+//		deviceindex = deviceindex.trim();
+//		Query query = Query.query(Criteria.where("deviceindex").is(deviceindex));
+//		try {
+//			return find(query);
+//		} catch (Exception e) {
+//			logger.error("findOne error and msg={}",e);
+//		}
+//		return null;
+//	}
 
 	private AppUserMongoEntity getAppUserByQuery(Query query){
 		try {

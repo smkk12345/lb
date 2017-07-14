@@ -74,5 +74,11 @@ public class SysRulesCache {
      */
     public static Map<String,SysPerfectInfo> sysPerfectInfoMap = new HashMap<>();
 
+    /**
+     * 版本信息
+     * 缓存版本IOS和安卓
+     */
+    public static Map<String,SysAppupdate> sysAppupdateMap = new HashMap<>();
+
 
 }
