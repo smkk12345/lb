@@ -32,12 +32,13 @@
     <result column="syllabus" property="syllabus" />
     <result column="crowd" property="crowd" />
     <result column="weight" property="weight" />
+    <result column="ishomerecommend" property="ishomerecommend" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight 
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -67,7 +68,7 @@
     <if test="isup != null and isup != ''" >
     	and isup = #{isup}
     </if>
-    <if test="isrecommend != null isrecommend isup != ''" >
+    <if test="isrecommend != null and isrecommend != ''" >
     	and isrecommend = #{isrecommend}
     </if>
     order by weight desc, createtime desc 
@@ -119,6 +120,9 @@
     <if test="isrecommend != null and isrecommend != ''" >
     	and isrecommend = #{isrecommend}
     </if>
+    <if test="ishomerecommend != null and ishomerecommend != ''" >
+    	and ishomerecommend = #{ishomerecommend}
+    </if>
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.Classroom" resultMap="BaseResultMap" >
@@ -152,6 +156,9 @@
     </if>
     <if test="classroom.isrecommend != null and classroom.isrecommend != ''" >
     	and isrecommend = #{classroom.isrecommend}
+    </if>
+    <if test="classroom.ishomerecommend != null and classroom.ishomerecommend != ''" >
+    	and ishomerecommend = #{classroom.ishomerecommend}
     </if>
     order by weight desc, createtime desc 
     <if test="endNum != 0" >

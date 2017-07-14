@@ -67,6 +67,8 @@ public class Classroom {
     
     private Integer weight; //权重 值越大排序越靠前 
     
+    private String ishomerecommend; //是否在首页推荐 0 - 没有 1 - 推荐
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -504,6 +506,15 @@ public class Classroom {
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIshomerecommend() {
+		return ishomerecommend;
+	}
+
+	public void setIshomerecommend(String ishomerecommend) {
+		this.ishomerecommend = ishomerecommend;
 	}
 
 }
