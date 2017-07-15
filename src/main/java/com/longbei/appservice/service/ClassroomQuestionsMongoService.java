@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import java.util.Date;
+import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.ClassroomQuestions;
@@ -37,7 +38,7 @@ public interface ClassroomQuestionsMongoService {
 	 * param classroomid 教室id
 	 * param startNo  pageSize
 	 */
-	BaseResp<Object> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, 
+	BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, 
 			int pageSize);
 	
 	/**

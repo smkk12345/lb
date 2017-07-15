@@ -13,6 +13,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
@@ -201,10 +202,10 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<Object> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
+    public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
 		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}, pageSize = {}", 
 				classroomid, userid, lastDate, pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<ClassroomQuestions>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -279,9 +280,9 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesList")
-    public BaseResp<Object> coursesList(String classroomid, int startNo, int pageSize) {
+    public BaseResp<List<ClassroomCourses>> coursesList(String classroomid, int startNo, int pageSize) {
 		logger.info("coursesList classroomid={},startNo={},pageSize={}",classroomid,startNo,pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<ClassroomCourses>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }

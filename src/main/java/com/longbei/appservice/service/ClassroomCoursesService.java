@@ -1,5 +1,7 @@
 package com.longbei.appservice.service;
 
+import java.util.List;
+
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.ClassroomCourses;
@@ -12,7 +14,7 @@ public interface ClassroomCoursesService {
 	 * 2017年3月1日
 	 * param classroomid 教室id
 	 */
-	BaseResp<Object> selectListByClassroomid(long classroomid, int startNum, int endNum);
+	BaseResp<List<ClassroomCourses>> selectListByClassroomid(long classroomid, int startNum, int endNum);
 	
 	ClassroomCourses selectByid(Integer id);
 	

@@ -98,8 +98,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 	@Override
-	public BaseResp<Object> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, int pageSize) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, int pageSize) {
+		BaseResp<List<ClassroomQuestions>> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //	  		List<String> idlist = new ArrayList<>();
