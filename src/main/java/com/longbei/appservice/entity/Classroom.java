@@ -67,7 +67,7 @@ public class Classroom {
     
     private Integer weight; //权重 值越大排序越靠前 
     
-    private String ishomerecommend; //是否在首页推荐 0 - 没有 1 - 推荐
+    private String ishomerecommend; //ishomerecommend 是否在首页推荐 0 - 没有 1 - 推荐
     
     //----------------扩展字段--------------------------
     

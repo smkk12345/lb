@@ -156,6 +156,15 @@ public interface ClassroomMapper {
     Integer updateIsrecommend(@Param("classroomid") long classroomid, @Param("isrecommend") String isrecommend);
     
     /**
+     * @Description: 修改教室今日推荐状态
+     * @param @param classroomid 教室id
+     * @param @param ishomerecommend 是否在首页推荐 0 - 没有 1 - 推荐
+     * @auther yinxc
+     * @currentdate:2017年7月13日
+ 	*/
+    Integer updateIshomerecommend(@Param("classroomid") long classroomid, @Param("ishomerecommend") String ishomerecommend);
+    
+    /**
      * @Description: 修改教室推荐权重
      * @param @param classroomid 教室id
      * @param @param weight 权重 值越大排序越靠前

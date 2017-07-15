@@ -526,14 +526,15 @@
   <update id="updateIsrecommend" >
     update classroom
     set 
-      <if test="isrecommend == 0" >
-        isrecommend = #{isrecommend},
-        weight = 0 
-      </if>
-      <if test="isrecommend == 1" >
-        isrecommend = #{isrecommend},
-        weight = 0
-      </if>
+	     isrecommend = #{isrecommend},
+	     weight = 0 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIshomerecommend" >
+    update classroom
+    set 
+        ishomerecommend = #{ishomerecommend} 
     where classroomid = #{classroomid} 
   </update>
   
