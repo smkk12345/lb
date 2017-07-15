@@ -87,7 +87,7 @@ public class ClassroomApiController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = classroomMembersService.quitClassroom(Integer.parseInt(classroomid),
+			baseResp = classroomMembersService.quitClassroomByPC(Integer.parseInt(classroomid),
 					Long.parseLong(userid), "1");
 		} catch (Exception e) {
 			logger.error("quitClassroom classroomid = {}, userid = {}",
@@ -365,7 +365,7 @@ public class ClassroomApiController {
         	return baseResp;
         }
   		try {
-  			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
+  			baseResp = classroomService.updateClassnoticeByPCClassroomid(Long.parseLong(classroomid), 
   					Long.parseLong(Constant.SQUARE_USER_ID), classnotice, noticetype);
         } catch (Exception e) {
         	logger.error("insertNotice classroomid = {}, classnotice = {}, noticetype = {}", 
@@ -628,5 +628,75 @@ public class ClassroomApiController {
 		}
 		return baseResp;
 	}
+    
+    
+    
+    
+    
+    //----------------------------------------share分享------------------------------------------------
+    
+    /**
+     * @Title: http://ip:port/app_service/api/classroom/classroomHeadDetail
+     * @Description: 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
+     * @param @param classroomid 教室业务id
+     * @param @param userid 当前访问id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data: 
+     *					fileurl：教室课程视频url---转码后
+     * 					pickey:教室课程视频截图
+     * 					classphotos:教室图片
+     * 					cardid:创建人id
+     * 					isfollow：是否已经关注教室   0：否  1：已关注
+     * 					isadd：是否加入教室    0：否  1：已加入
+     * 					content：名片信息---老师h5
+     * 					roomurlshare:分享url
+     * @auther yinxc
+     * @currentdate:2017年6月14日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomHeadDetail")
+    public BaseResp<Object> classroomHeadDetail(String classroomid, String userid) {
+		logger.info("classroomHeadDetail classroomid = {}", classroomid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(classroomid, userid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectRoomHeadDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   		} catch (Exception e) {
+   			logger.error("classroomHeadDetail classroomid = {}", classroomid, e);
+   		}
+   		return baseResp;
+    }
+  	
+  	
+  	/**
+     * @Title: http://ip:port/app_service/api/classroom/classroomDetail
+     * @Description: 获取教室详情信息---教室有关数据(拆分)
+     * @param @param userid 当前访问id
+     * @param @param classroomid 教室业务id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data:Classroom
+     * 		 Map结果集：     impNum:当前用户在教室发作业的总数
+     * 					classroomMembers:当前用户花赞钻石总数
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "classroomDetail")
+    public BaseResp<Object> classroomDetail(String userid, String classroomid) {
+		logger.info("classroomDetail userid={},classroomid={}",userid,classroomid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectRoomDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   		} catch (Exception e) {
+   			logger.error("classroomDetail userid = {}, classroomid = {}", 
+   					userid, classroomid, e);
+   		}
+   		return baseResp;
+    }
     
 }
