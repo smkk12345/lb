@@ -65,7 +65,7 @@ public interface ClassroomMembersService {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室
 	 */
-	BaseResp<Object> quitClassroom(long classroomid, long userid, String itype);
+	BaseResp<Object> quitClassroom(long classroomid, long userid, long currentUserId, String itype);
 	
 	/**
 	* @Description: 查看教室单个用户的信息
@@ -102,5 +102,15 @@ public interface ClassroomMembersService {
      */
     BaseResp<Object> updateStatus(String status,String userid,String classroomid,String improveid);
 	
+    
+    /**
+	 * @author yinxc
+	 * 教室老师剔除成员---推送消息
+	 * 2017年7月7日
+	 * param classroomid 教室id
+	 * param userid 成员id
+	 * param itype 0—加入教室 1—退出教室
+	 */
+	BaseResp<Object> quitClassroomByPC(long classroomid, long userid, String itype);
 
 }

@@ -7,6 +7,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
@@ -46,6 +47,11 @@ public class PageServiceImpl implements PageService{
     private RankMembersMapper rankMembersMapper;
     @Autowired
     private CommentMongoService commentMongoService;
+    @Autowired
+    private ClassroomMapper classroomMapper;
+    @Autowired
+    private ClassroomMembersMapper classroomMembersMapper;
+    
 
     @Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
@@ -172,10 +178,15 @@ public class PageServiceImpl implements PageService{
             List<Long> list = homeRecommend.getBusinessids();
             if (null != list && list.size()!=0){
                 for (Long lo: list){
-                    Rank rank = new Rank();
-                    rank.setRankid(lo);
-                    rank.setIshomerecommend("1");
-                    rankMapper.updateSymbolByRankId(rank);
+                	//recommendtype 0 - 榜单 1 - 教室 2 - 圈子
+                	if(homeRecommend.getRecommendtype() == 0){
+                		Rank rank = new Rank();
+                        rank.setRankid(lo);
+                        rank.setIshomerecommend("1");
+                        rankMapper.updateSymbolByRankId(rank);
+                	}else{
+                		classroomMapper.updateIshomerecommend(lo, "1");
+                	}
                 }
             }
             baseResp = BaseResp.ok();
@@ -185,7 +196,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<Page<HomeRecommend>> selectHomeRecommendList(HomeRecommend homeRecommend,
                                                                  Integer pageno, Integer pagesize) {
         BaseResp<Page<HomeRecommend>> baseResp = new BaseResp<>();
@@ -195,15 +207,35 @@ public class PageServiceImpl implements PageService{
             int totalcount = homeRecommendMapper.selectCount(homeRecommend);
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
             for (HomeRecommend homeRecommend1 : homeRecommends){
-                Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
-                BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"2",null);
-                if (ResultUtil.isSuccess(baseResp1)){
-                    rank.setCommentCount(baseResp1.getData());
+                //recommendtype 0 - 榜单 1 - 教室 2 - 圈子
+                if (0.== homeRecommend1.getRecommendtype()) {
+                    Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                    BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"10",null);
+                    if (ResultUtil.isSuccess(baseResp1)){
+                        rank.setCommentCount(baseResp1.getData());
+                    }
+                    String icount = rankMembersMapper.getRankImproveCount
+                            (String.valueOf(homeRecommend1.getBusinessid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(homeRecommend1.getBusinessid()));
+                    rank.setIcount(Integer.parseInt(icount));
+                    homeRecommend1.setRank(rank);
+                } else {
+                    Classroom classroom = classroomMapper.selectByPrimaryKey(homeRecommend1.getBusinessid());
+                    if(classroom == null){
+                        continue;
+                    }
+                    BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"12",null);
+                    if (ResultUtil.isSuccess(baseResp1)){
+                    	classroom.setCommentCount(baseResp1.getData());
+                    }
+                    //教室总进步数量
+                    Integer allimp = classroomMembersMapper.selectRoomImproveCount(classroom.getClassroomid());
+                    if(allimp == null){
+						allimp = 0;
+					}
+					classroom.setAllimp(allimp);
+					homeRecommend1.setClassroom(classroom);
                 }
-                String icount = rankMembersMapper.getRankImproveCount
-                        (String.valueOf(homeRecommend1.getBusinessid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(homeRecommend1.getBusinessid()));
-                rank.setIcount(Integer.parseInt(icount));
-                homeRecommend1.setRank(rank);
+
             }
             page.setTotalCount(totalcount);
             page.setList(homeRecommends);
@@ -248,10 +280,17 @@ public class PageServiceImpl implements PageService{
             int res = homeRecommendMapper.updateByPrimaryKeySelective(homeRecommend);
             if (res > 0){
                 if ("1".equals(homeRecommend.getIsdel())){
-                    Rank rank = new Rank();
-                    rank.setRankid(homeRecommend.getBusinessid());
-                    rank.setIshomerecommend("0");
-                    rankMapper.updateSymbolByRankId(rank);
+                	HomeRecommend recommend = homeRecommendMapper.selectByPrimaryKey(homeRecommend.getId());
+                	//recommendtype 0 - 榜单 1 - 教室 2 - 圈子
+                	if(recommend.getRecommendtype() == 0){
+                		Rank rank = new Rank();
+                        rank.setRankid(homeRecommend.getBusinessid());
+                        rank.setIshomerecommend("0");
+                        rankMapper.updateSymbolByRankId(rank);
+                	}else{
+                		classroomMapper.updateIshomerecommend(homeRecommend.getBusinessid(), "0");
+                	}
+                	
                 }
                 baseResp = BaseResp.ok();
             }

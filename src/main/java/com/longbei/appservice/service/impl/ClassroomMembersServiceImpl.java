@@ -19,11 +19,13 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -51,6 +53,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private ImproveService improveService;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private UserCardMapper userCardMapper;
+	
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
 
@@ -198,10 +204,24 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	 * param userid 成员id
 	 * param itype 0—加入教室 1—退出教室
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> quitClassroom(long classroomid, long userid, String itype) {
+	public BaseResp<Object> quitClassroom(long classroomid, long userid, long currentUserId, String itype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null == classroom){
+				return reseResp;
+			}
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			if(null == userCard){
+				return reseResp;
+			}
+			//判断当前用户是否是老师
+			if(userCard.getUserid() != currentUserId){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
+			}
+			
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
@@ -386,5 +406,33 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
         return reseResp;
 	}
 
+	/**
+	 * @author yinxc
+	 * 教室老师剔除成员---推送消息
+	 * 2017年7月7日
+	 * param classroomid 教室id
+	 * param userid 成员id
+	 * param itype 0—加入教室 1—退出教室
+	 */
+	@Override
+	public BaseResp<Object> quitClassroomByPC(long classroomid, long userid, String itype) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			boolean temp = update(classroomid, userid, itype);
+			if (temp) {
+				//修改教室教室参与人数 classinvoloed
+				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
+				//推送消息
+				String remark = Constant.MSG_CLASSROOM_MODEL;
+				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
+						"", "12", classroomid + "", remark, "0", "54", "教室删除成员", 0, "", "");
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateItypeByClassroomidAndUserid classroomid = {}, userid = {}, itype = {}", 
+					classroomid, userid, itype, e);
+		}
+		return reseResp;
+	}
 
 }

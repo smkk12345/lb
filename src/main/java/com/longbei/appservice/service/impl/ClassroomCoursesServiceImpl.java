@@ -29,8 +29,8 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	private static Logger logger = LoggerFactory.getLogger(ClassroomCoursesServiceImpl.class);
 
 	@Override
-	public BaseResp<Object> selectListByClassroomid(long classroomid, int startNum, int endNum) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<ClassroomCourses>> selectListByClassroomid(long classroomid, int startNum, int endNum) {
+		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			//教室课程总数
