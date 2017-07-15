@@ -31,6 +31,8 @@ public class HomeRecommend {
      * 显示用
      */
     private Rank rank;
+    
+    private Classroom classroom;
 
 
     /**
@@ -127,4 +129,12 @@ public class HomeRecommend {
     public void setCreateuserid(String createuserid) {
         this.createuserid = createuserid == null ? null : createuserid.trim();
     }
+
+	public Classroom getClassroom() {
+		return classroom;
+	}
+
+	public void setClassroom(Classroom classroom) {
+		this.classroom = classroom;
+	}
 }

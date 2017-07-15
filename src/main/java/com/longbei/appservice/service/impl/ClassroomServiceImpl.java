@@ -796,6 +796,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 					classroom.setUserCard(userCard);
 					//教室总进步数量
 					Integer allimp = classroomMembersMapper.selectRoomImproveCount(classroom.getClassroomid());
+					if(allimp == null){
+						allimp = 0;
+					}
 					classroom.setAllimp(allimp);
 					//教室课程数量
 					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
@@ -852,6 +855,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 					classroom.setUserCard(userCard);
 					//教室总进步数量
 					Integer allimp = classroomMembersMapper.selectRoomImproveCount(classroom.getClassroomid());
+					if(allimp == null){
+						allimp = 0;
+					}
 					classroom.setAllimp(allimp);
 					//教室课程数量
 					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());

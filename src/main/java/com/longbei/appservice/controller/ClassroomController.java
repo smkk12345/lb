@@ -70,62 +70,6 @@ public class ClassroomController {
 		return baseResp;
 	}
 
-	/**
-	* @Title: http://ip:port/app_service/classroom/quitClassroom
-	* @Description: 退出教室
-	* @param @param classroomid
-	* @param @param userid
-	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-	* @auther yinxc
-	* @currentdate:2017年2月28日
-	*/
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "quitClassroom")
-	public BaseResp<Object> quitClassroom(String classroomid, String userid) {
-		logger.info("quitClassroom classroomid={},userid={}",classroomid,userid);
-		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(classroomid, userid)) {
-			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-		}
-		try {
-			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Long.parseLong(classroomid),
-					Long.parseLong(userid), "1");
-		} catch (Exception e) {
-			logger.error("quitClassroom classroomid = {}, userid = {}",
-					classroomid, userid, e);
-		}
-		return baseResp;
-	}
-	
-	/**
-    * @Title: http://ip:port/app_service/classroom/updateClassnotice
-    * @Description: 修改教室公告
-    * @param @param classroomid  教室业务id
-    * @param @param userid 当前用户--老师id
-    * @param @param classnotice 公告信息
-    * @param @param ismsg 是否@全体成员   0：否   1：是
-    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-    * @auther yinxc
-    * @currentdate:2017年3月1日
-	*/
-	@SuppressWarnings("unchecked")
- 	@RequestMapping(value = "updateClassnotice")
-    public BaseResp<Object> updateClassnotice(String classroomid, String userid, String classnotice, String ismsg) {
-		logger.info("updateClassnotice classroomid={},userid={},classnotice={},ismsg={}",
-				classroomid,userid,classnotice,ismsg);
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(classroomid, userid, classnotice, ismsg)) {
-             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-        }
-  		try {
-  			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
-  					Long.parseLong(userid), classnotice, ismsg);
-  		} catch (Exception e) {
-  			logger.error("updateClassnotice classroomid = {}, userid = {}, classnotice = {}", 
-  					classroomid, userid, classnotice, e);
-  		}
-  		return baseResp;
-    }
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/delQuestionsLower
@@ -355,28 +299,85 @@ public class ClassroomController {
     * @Description: 教室老师剔除成员---推送消息
     * @param @param classroomid
     * @param @param userid
+    * @param @param currentUserId 当前登录用户id
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "updateMembersItype")
-    public BaseResp<Object> updateMembersItype(String classroomid, String userid) {
-		logger.info("updateMembersItype classroomid={},userid={}",classroomid,userid);
+    public BaseResp<Object> updateMembersItype(String classroomid, String userid, String currentUserId) {
+		logger.info("updateMembersItype classroomid={},userid={}, currentUserId={}",classroomid,userid,currentUserId);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(classroomid, userid)) {
+  		if (StringUtils.hasBlankParams(classroomid, userid, currentUserId)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = classroomMembersService.quitClassroom(Integer.parseInt(classroomid), 
-  					Long.parseLong(userid), "1");
+  			baseResp = classroomMembersService.quitClassroom(Long.parseLong(classroomid),
+  					Long.parseLong(userid), Long.parseLong(currentUserId), "1");
   		} catch (Exception e) {
-  			logger.error("updateMembersItype classroomid = {}, userid = {}", 
-  					classroomid, userid, e);
+  			logger.error("updateMembersItype classroomid = {}, userid = {}, currentUserId = {}", 
+  					classroomid, userid, currentUserId, e);
   		}
   		return baseResp;
     }
 	
+	/**
+    * @Title: http://ip:port/app_service/classroom/updateClassnotice
+    * @Description: 修改教室公告
+    * @param @param classroomid  教室业务id
+    * @param @param userid 当前用户--老师id
+    * @param @param classnotice 公告信息
+    * @param @param ismsg 是否@全体成员   0：否   1：是
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年3月1日
+	*/
+	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "updateClassnotice")
+    public BaseResp<Object> updateClassnotice(String classroomid, String userid, String classnotice, String ismsg) {
+		logger.info("updateClassnotice classroomid={},userid={},classnotice={},ismsg={}",
+				classroomid,userid,classnotice,ismsg);
+		BaseResp<Object> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(classroomid, userid, classnotice, ismsg)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		try {
+  			baseResp = classroomService.updateClassnoticeByClassroomid(Long.parseLong(classroomid), 
+  					Long.parseLong(userid), classnotice, ismsg);
+  		} catch (Exception e) {
+  			logger.error("updateClassnotice classroomid = {}, userid = {}, classnotice = {}", 
+  					classroomid, userid, classnotice, e);
+  		}
+  		return baseResp;
+    }
+	
+	/**
+	* @Title: http://ip:port/app_service/classroom/quitClassroom
+	* @Description: 退出教室
+	* @param @param classroomid
+	* @param @param userid
+	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	* @auther yinxc
+	* @currentdate:2017年2月28日
+	*/
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "quitClassroom")
+	public BaseResp<Object> quitClassroom(String classroomid, String userid) {
+		logger.info("quitClassroom classroomid={},userid={}",classroomid,userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid, userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomMembersService.updateItypeByClassroomidAndUserid(Long.parseLong(classroomid),
+					Long.parseLong(userid), "1");
+		} catch (Exception e) {
+			logger.error("quitClassroom classroomid = {}, userid = {}",
+					classroomid, userid, e);
+		}
+		return baseResp;
+	}
 	
 	
 	/**
