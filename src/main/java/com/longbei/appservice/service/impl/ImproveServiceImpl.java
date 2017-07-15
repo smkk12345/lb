@@ -1742,16 +1742,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(null == improve || null == userInfo){
             return baseResp;
         }
-//        if(improve.getUserid() == Long.parseLong(userid)){
-//            baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
-//            return  baseResp;
-//        }
-//        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
-//        if(!ResultUtil.isSuccess(baseResp)){
-//            return baseResp;
-//        }
+        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
         try{
-
             //redis
             addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);

@@ -65,27 +65,30 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfo = userInfoMapper.selectByPrimaryKey(userid);
         }
         try{
+            String key = getPerKey(userInfo.getUserid());
             switch (operateType){
                 case Constant.PERDAY_CHECK_IN:
-                    int checkIn = getHashValueFromCache(getPerKey(userInfo.getUserid()), dateStr+Constant.PERDAY_CHECK_IN);
+                    int checkIn = getHashValueFromCache(key, dateStr+Constant.PERDAY_CHECK_IN);
                     if (checkIn == 0){//为空,可以签到
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                     }
                     break;
                 //发进步
                 case Constant.PERDAY_ADD_IMPROVE:
-                    int addImproveCount = getHashValueFromCache(getPerKey(userInfo.getUserid()),dateStr+Constant.PERDAY_ADD_IMPROVE);
+                    int addImproveCount = getHashValueFromCache(key,dateStr+Constant.PERDAY_ADD_IMPROVE);
                     if(addImproveCount < SysRulesCache.sysRules.getMaximprove()){
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                     }
                     break;
                 //点赞
                 case Constant.PERDAY_ADD_LIKE:
-                    int addLikeCount = getHashValueFromCache(getPerKey(userInfo.getUserid()),dateStr+Constant.PERDAY_ADD_LIKE);
-                    int maxCount = SysRulesCache.sysRules.getLevellike()*userInfo.getGrade()+
-                            SysRulesCache.sysRules.getLimitlike();
-                    if(addLikeCount < maxCount){
+                    int addLikeCount = getHashValueFromCache(key,dateStr+Constant.PERDAY_ADD_LIKE);
+                    UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
+                    if(addLikeCount < userLevel.getLikes()){
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                        springJedisDao.increment(key,dateStr+Constant.PERDAY_ADD_LIKE,1);
+                    }else{
+                        baseResp.initCodeAndDesp(Constant.STATUS_SYS_402,Constant.RTNINFO_SYS_402);
                     }
                     break;
                 default:
