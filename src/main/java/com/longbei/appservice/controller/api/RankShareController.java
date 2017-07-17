@@ -7,6 +7,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.JsonDateValueProcessor;
 import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.GoalService;
 import com.longbei.appservice.service.ImproveService;
@@ -48,6 +49,8 @@ public class RankShareController {
     private CommentMongoService commentMongoService;
     @Autowired
     private GoalService goalService;
+    @Autowired
+    private ClassroomMembersService classroomMembersService;
 
     /**
      * 获取榜单详情
@@ -157,17 +160,24 @@ public class RankShareController {
      * @url http://ip:port/app_service/api/rankShare/selectRankMemberDetail
      * @param userid 用户id
      * @param rankId 榜单id
+     * @param businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
      * @return
      */
-    @ResponseBody
+    @SuppressWarnings("unchecked")
+	@ResponseBody
     @RequestMapping(value="selectRankMemberDetail")
-    public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId){
+    public BaseResp<Object> selectRankMemberDetail(Long userid,Long rankId, String businesstype){
         logger.info("userid={},rankId={}",userid,rankId);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,null);
+        if("2".equals(businesstype)){
+        	baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,null);
+        }
+        if("4".equals(businesstype)){
+        	baseResp = this.classroomMembersService.selectRoomMemberDetail(rankId, userid, null);
+        }
         return baseResp;
     }
 
@@ -260,19 +270,25 @@ public class RankShareController {
      * @url: http://ip:port/appservice/api/rankShare/selectListInRank
      * @param userid
      * @param rankid
+     * @param businesstype 类型    0 零散进步   1 目标进步    2 榜中  3圈子中进步 4 教室
      * @return
      */
-    @ResponseBody
+	@ResponseBody
     @RequestMapping(value = "selectListInRank")
-    public BaseResp selectListInRank(String userid, String rankid) {
+    public BaseResp selectListInRank(String userid, String rankid, String businesstype) {
         logger.info("userid={},rankid={}",userid,rankid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        if (StringUtils.hasBlankParams(userid, rankid)) {
+        if (StringUtils.hasBlankParams(userid, rankid, businesstype)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         logger.info("inprove select userid={},impid={}", userid);
         try {
-            return improveService.selectListInRank(null,userid,rankid, Constant.IMPROVE_RANK_TYPE,0,15);
+        	if("2".equals(businesstype)){
+        		return improveService.selectListInRank(null,userid,rankid, Constant.IMPROVE_RANK_TYPE,0,15);
+        	}
+        	if("4".equals(businesstype)){
+        		return improveService.selectListInRank(null,userid,rankid, Constant.IMPROVE_CLASSROOM_TYPE,0,15);
+        	}
         } catch (Exception e) {
             logger.error("get improve detail  is error userid={},impid={} ", userid, e);
         }

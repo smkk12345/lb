@@ -793,33 +793,4 @@ public class ClassroomApiController {
      }
   	
     
- 	/**
-	* @Title: http://ip:port/app_service/api/classroom/selectRoomMemberDetail
-	* @Description: 查看教室单个用户的信息
-	* @param @param classroomid 教室id
-	* @param @param userid 用户id
-	* @param @param currentUserId 当前登录用户id
-	* @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
-	* @auther yinxc
-	* @currentdate:2017年7月12日
-	*/
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "selectRoomMemberDetail")
-	public BaseResp<Object> selectRoomMemberDetail(String classroomid, String userid, String currentUserId) {
-		logger.info("selectRoomMemberDetail classroomid = {}, userid = {}, currentUserId = {}", 
-				classroomid, userid, currentUserId);
-		BaseResp<Object> baseResp = new BaseResp<>();
-		if (StringUtils.hasBlankParams(classroomid, userid, currentUserId)) {
-			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-		}
-		try {
-			baseResp = classroomMembersService.selectRoomMemberDetail(Long.parseLong(classroomid), 
-					Long.parseLong(userid), Long.parseLong(currentUserId));
-		} catch (Exception e) {
-			logger.error("selectRoomMemberDetail classroomid = {}, userid = {}, currentUserId = {}", 
-				classroomid, userid, currentUserId, e);
-		}
-		return baseResp;
-	}
- 	
 }
