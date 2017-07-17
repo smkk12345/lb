@@ -989,6 +989,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				String displayname = userCard.getDisplayname();
 				map.put("cardid", userCard.getUserid());
 				map.put("cardavatar", userCard.getAvatar());
+				map.put("cardbrief", userCard.getBrief());
+				//名片信息---老师h5
+				map.put("content", userCard.getContent());
 				map.put("displayname", displayname);
 				map.put("ptype", classroom.getPtype()); //十全十美类型
 				map.put("classtitle", classroom.getClasstitle()); //教室标题
@@ -1048,8 +1051,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 					}
 				}
 				map.put("isadd", isadd);
-				//名片信息---老师h5
-				map.put("content", userCard.getContent());
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
