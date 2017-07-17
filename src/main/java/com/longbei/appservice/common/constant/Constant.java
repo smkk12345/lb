@@ -322,7 +322,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1000 = "未获取授权信息";
 	public static final String RTNINFO_SYS_1001 = "token错误";
 	public static final String RTNINFO_SYS_1002 = "token失效";
-	public static final String RTNINFO_SYS_1003 = "请前往应用中心更新版本";
+	public static final String RTNINFO_SYS_1003 = "您的当前版本太低,请前往应用中心更新版本";
 
 
 	public static final String RTNINFO_SYS_50 = "添加榜单成功";

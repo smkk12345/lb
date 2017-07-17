@@ -246,6 +246,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
         }
 
+        baseResp.initCodeAndDesp();
         if(isNew){
             if(app.getEnforced().equals("1")){
             }else{
@@ -256,8 +257,8 @@ public class SysSettingServiceImpl implements SysSettingService {
             baseResp.setData(app);
         }else {
             baseResp.setData(null);
+            baseResp.setRtnInfo("当前版本已是最新版本!");
         }
-        baseResp.initCodeAndDesp();
         return baseResp;
     }
 
