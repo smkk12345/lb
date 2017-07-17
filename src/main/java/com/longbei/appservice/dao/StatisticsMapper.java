@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.Statistics;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface StatisticsMapper {
     int updateByPrimaryKeySelective(Statistics record);
 
     int updateByPrimaryKey(Statistics record);
+
+    int sumByField(@Param("field") String field);
 }
