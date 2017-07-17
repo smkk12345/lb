@@ -222,7 +222,43 @@ public class ImproveApiController {
         return baseResp;
     }
 
+    
+   //------------------------------share调用---------------------------------------
 
+    
+    /**
+     * 查询单个用户在教室中发布的进步列表
+     * @param curuserid
+     * @param userid
+     * @param classroomid
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+	@ResponseBody
+    @RequestMapping(value = "selectListInClassroom")
+    public BaseResp selectListInClassroom(String curuserid,String userid, String classroomid, Integer startNo,Integer pageSize) {
+        logger.info(" curuserid = {}, userid = {}, classroomid = {}, startNo = {}, pageSize = {}", 
+        		curuserid, userid, classroomid, startNo, pageSize);
+        if (StringUtils.hasBlankParams(curuserid, userid, classroomid)) {
+            return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        if(null == startNo){
+        	startNo = 0;
+        }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+        logger.info("inprove select userid={},impid={}", userid);
+        try {
+            return improveService.selectListInRank(curuserid, userid, classroomid,
+                    Constant.IMPROVE_CLASSROOM_TYPE, startNo, pageSize);
+        } catch (Exception e) {
+            logger.error("get improve detail  is error userid={},impid={} ", userid, e);
+        }
+        return null;
+    }
 
 }
 
