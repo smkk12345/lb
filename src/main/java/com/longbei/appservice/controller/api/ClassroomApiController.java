@@ -715,20 +715,20 @@ public class ClassroomApiController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
     public BaseResp<Object> classroomMembersDateList(String classroomid,
-													 String type, int startNo, int pageSize) {
-		logger.info("classroomMembersDateList classroomid={},type={},startNo={},pageSize={}",
-				classroomid,type,startNo,pageSize);
+													 String type) {
+		logger.info("classroomMembersDateList classroomid={},type={}",
+				classroomid,type);
 		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList("", classroomid, "0", type, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveList(null, classroomid, "0", type, 0, 15);
    			baseResp.setData(list);
    		} catch (Exception e) {
-   			logger.error("classroomMembersDateList classroomid = {}, type = {}, startNo = {}, pageSize = {}",
-   					classroomid, type, startNo, pageSize, e);
+   			logger.error("classroomMembersDateList classroomid = {}, type = {}",
+   					classroomid, type, e);
    		}
    		return baseResp;
     }
