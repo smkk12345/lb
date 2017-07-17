@@ -933,10 +933,12 @@ public class ImproveServiceImpl implements ImproveService{
   					improve.setReplyImprove(replyImprove);
   				}
   				if(!"1".equals(isreply)){
-  					//判断当前用户是否是老师
-					if(userCard.getUserid() != Long.parseLong(userid)){
-						isreply = "2";
-					}
+  					if(!StringUtils.isBlank(userid)){
+  						//判断当前用户是否是老师
+  						if(userCard.getUserid() != Long.parseLong(userid)){
+  							isreply = "2";
+  						}
+  					}
   				}
   				improve.setIsreply(isreply);
   				
@@ -1529,7 +1531,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(null == improves || 0 == improves.size()){
             return;
         }
-        Set<String> improveIds = this.getUserCollectImproveId(userid);
+        if(!StringUtils.isBlank(userid)){
+        	
+        }
         for (Improve improve : improves){
             if(improve == null){
                 continue;
@@ -1544,7 +1548,8 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
             //初始化是否 点赞 送花 送钻 收藏
             initIsOptionForImprove(userid,improve);
-            if(improveIds.contains(improve.getImpid().toString())){
+        	Set<String> improveIds = this.getUserCollectImproveId(userid);
+        	if(improveIds.contains(improve.getImpid().toString())){
                 improve.setHascollect("1");
             }
         }

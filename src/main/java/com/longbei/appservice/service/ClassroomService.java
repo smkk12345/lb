@@ -20,7 +20,7 @@ public interface ClassroomService {
 	 * @param classroomid 教室业务id
 	 * @param userid 当前访问者id
 	 */
-	BaseResp<Object> selectRoomDetail(long classroomid, long userid);
+	BaseResp<Object> selectRoomDetail(Long classroomid, Long userid);
 	
 	/**
 	 * @author yinxc
@@ -29,7 +29,7 @@ public interface ClassroomService {
 	 * @param classroomid 教室业务id
 	 * @param userid 当前访问者id
 	 */
-	BaseResp<Object> selectRoomHeadDetail(long classroomid, long userid);
+	BaseResp<Object> selectRoomHeadDetail(Long classroomid, Long userid);
 	
 	/**
 	 * @author yinxc
@@ -230,5 +230,17 @@ public interface ClassroomService {
 	 * param ismsg 是否@全体成员   0：否   1：是
 	 */
 	BaseResp<Object> updateClassnoticeByPCClassroomid(long classroomid, long userid, String classnotice, String ismsg);
+	
+	
+	//----------------------share调用----------------------------
+	
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息
+	 * 2017年3月6日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	BaseResp<Object> selectRoomDetailAll(Long classroomid, Long userid);
 	
 }
