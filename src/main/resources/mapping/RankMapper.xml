@@ -154,7 +154,14 @@
       AND ptype = #{rank.ptype}
     </if>
     <if test="rank.ranktype != null and rank.ranktype != '-1'.toString()" >
-      AND ranktype = #{rank.ranktype}
+        <choose>
+            <when test="rank.ranktype=='-2'.toString()">
+                AND ranktype != '2'
+            </when>
+            <otherwise>
+                AND ranktype = #{rank.ranktype}
+            </otherwise>
+        </choose>
     </if>
     <if test="rank.isfinish != null and rank.isfinish != '-1'.toString()" >
       AND isfinish = #{rank.isfinish}
