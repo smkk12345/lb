@@ -231,4 +231,16 @@ public interface ClassroomService {
 	 */
 	BaseResp<Object> updateClassnoticeByPCClassroomid(long classroomid, long userid, String classnotice, String ismsg);
 	
+	
+	//----------------------share调用----------------------------
+	
+	/**
+	 * @author yinxc
+	 * 获取教室详情信息
+	 * 2017年3月6日
+	 * @param classroomid 教室业务id
+	 * @param userid 当前访问者id
+	 */
+	BaseResp<Object> selectRoomDetailAll(Long classroomid, Long userid);
+	
 }
