@@ -116,7 +116,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * @param userid 当前访问者id
 	 */
 	@Override
-	public BaseResp<Object> selectRoomDetail(long classroomid, long userid) {
+	public BaseResp<Object> selectRoomDetail(Long classroomid, Long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
@@ -138,42 +138,31 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
-				//获取当前用户在教室发作业的总数
-				Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
-				map.put("impNum", impNum);
-				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-				if(null != classroomMembers){
-					map.put("classroomMembers", classroomMembers);
+				if(userid != null){
+					//获取当前用户在教室发作业的总数
+					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
+					map.put("impNum", impNum);
+					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != classroomMembers){
+						map.put("classroomMembers", classroomMembers);
+					}else{
+						map.put("classroomMembers", null);
+					}
+					
+					//itype 0—加入教室 1—退出教室     为null查全部
+					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != members){
+						isadd = "1";
+					}
 				}else{
 					map.put("classroomMembers", null);
 				}
-				//itype 0—加入教室 1—退出教室     为null查全部
-				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-				if(null != members){
-					isadd = "1";
-				}
+				
 				map.put("isadd", isadd);
 				//获取最新加入成员头像5个
 				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
 				initUserInfoString(memberList);
 				map.put("membersImageList", memberList); //成员头像列表
-				
-				
-				//名片信息
-//				classroom.setUserCard(userCard);
-				//获取成员列表
-//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
-//				reseResp.getExpandData().put("memberList", memberList);
-//				
-//				reseResp.getExpandData().put("impNum", impNum);
-//				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-//				if(null == classroomMembers){
-//					classroomMembers = new ClassroomMembers();
-//					classroomMembers.setLikes(0);
-//					classroomMembers.setFlowers(0);
-//					classroomMembers.setDiamonds(0);
-//				}
-//				reseResp.getExpandData().put("classroomMembers", classroomMembers);
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -226,7 +215,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * @param userid 当前访问者id
 	 */
 	@Override
-	public BaseResp<Object> selectRoomHeadDetail(long classroomid, long userid) {
+	public BaseResp<Object> selectRoomHeadDetail(Long classroomid, Long userid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
@@ -269,11 +258,12 @@ public class ClassroomServiceImpl implements ClassroomService {
                 }else{
                 	map.put("isfollow", "0");
                 }
-				
-				//itype 0—加入教室 1—退出教室     为null查全部
-				ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-				if(null != members){
-					isadd = "1";
+				if(userid != null){
+					//itype 0—加入教室 1—退出教室     为null查全部
+					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != members){
+						isadd = "1";
+					}
 				}
 				map.put("isadd", isadd);
 				//名片信息---老师h5
@@ -281,25 +271,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 				
 				//分享url
 				map.put("roomurlshare", "");
-				
-				//获取成员列表
-//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 10);
-//				expandData.put("memberList", memberList);
-				
-				//获取当前用户在教室发作业的总数
-//				int impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid, userid);
-//				reseResp.getExpandData().put("impNum", impNum);
-//				ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-//				if(null == classroomMembers){
-//					classroomMembers = new ClassroomMembers();
-//					classroomMembers.setLikes(0);
-//					classroomMembers.setFlowers(0);
-//					classroomMembers.setDiamonds(0);
-//				}
-//				reseResp.getExpandData().put("classroomMembers", classroomMembers);
-				
-				
-//				classroom.setIsadd(isadd);
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

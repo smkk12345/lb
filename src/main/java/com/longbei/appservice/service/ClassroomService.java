@@ -20,7 +20,7 @@ public interface ClassroomService {
 	 * @param classroomid 教室业务id
 	 * @param userid 当前访问者id
 	 */
-	BaseResp<Object> selectRoomDetail(long classroomid, long userid);
+	BaseResp<Object> selectRoomDetail(Long classroomid, Long userid);
 	
 	/**
 	 * @author yinxc
@@ -29,7 +29,7 @@ public interface ClassroomService {
 	 * @param classroomid 教室业务id
 	 * @param userid 当前访问者id
 	 */
-	BaseResp<Object> selectRoomHeadDetail(long classroomid, long userid);
+	BaseResp<Object> selectRoomHeadDetail(Long classroomid, Long userid);
 	
 	/**
 	 * @author yinxc

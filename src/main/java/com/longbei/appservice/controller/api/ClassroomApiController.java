@@ -644,7 +644,6 @@ public class ClassroomApiController {
      * @Title: http://ip:port/app_service/api/classroom/classroomHeadDetail
      * @Description: 获取教室详情信息---教室有关数据(拆分)---教室顶部数据
      * @param @param classroomid 教室业务id
-     * @param @param userid 当前访问id
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @desc data: 
      *					fileurl：教室课程视频url---转码后
@@ -660,14 +659,14 @@ public class ClassroomApiController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomHeadDetail")
-    public BaseResp<Object> classroomHeadDetail(String classroomid, String userid) {
+    public BaseResp<Object> classroomHeadDetail(String classroomid) {
 		logger.info("classroomHeadDetail classroomid = {}", classroomid);
 		BaseResp<Object> baseResp = new BaseResp<>();
-   		if (StringUtils.hasBlankParams(classroomid, userid)) {
+   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
-   			baseResp = classroomService.selectRoomHeadDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   			baseResp = classroomService.selectRoomHeadDetail(Long.parseLong(classroomid), null);
    		} catch (Exception e) {
    			logger.error("classroomHeadDetail classroomid = {}", classroomid, e);
    		}
@@ -678,7 +677,6 @@ public class ClassroomApiController {
   	/**
      * @Title: http://ip:port/app_service/api/classroom/classroomDetail
      * @Description: 获取教室详情信息---教室有关数据(拆分)
-     * @param @param userid 当前访问id
      * @param @param classroomid 教室业务id
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @desc data:Classroom
@@ -689,17 +687,16 @@ public class ClassroomApiController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomDetail")
-    public BaseResp<Object> classroomDetail(String userid, String classroomid) {
-		logger.info("classroomDetail userid={},classroomid={}",userid,classroomid);
+    public BaseResp<Object> classroomDetail(String classroomid) {
+		logger.info("classroomDetail classroomid={}",classroomid);
 		BaseResp<Object> baseResp = new BaseResp<>();
-   		if (StringUtils.hasBlankParams(userid, classroomid)) {
+   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
-   			baseResp = classroomService.selectRoomDetail(Long.parseLong(classroomid), Long.parseLong(userid));
+   			baseResp = classroomService.selectRoomDetail(Long.parseLong(classroomid), null);
    		} catch (Exception e) {
-   			logger.error("classroomDetail userid = {}, classroomid = {}", 
-   					userid, classroomid, e);
+   			logger.error("classroomDetail classroomid = {}", classroomid, e);
    		}
    		return baseResp;
     }
@@ -717,21 +714,21 @@ public class ClassroomApiController {
  	*/
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
-    public BaseResp<Object> classroomMembersDateList(String userid, String classroomid,
+    public BaseResp<Object> classroomMembersDateList(String classroomid,
 													 String type, int startNo, int pageSize) {
-		logger.info("classroomMembersDateList userid={},classroomid={},type={},startNo={},pageSize={}",
-				userid,classroomid,type,startNo,pageSize);
+		logger.info("classroomMembersDateList classroomid={},type={},startNo={},pageSize={}",
+				classroomid,type,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
-   		if (StringUtils.hasBlankParams(userid, classroomid, type)) {
+   		if (StringUtils.hasBlankParams(classroomid, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, "0", type, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveList("", classroomid, "0", type, startNo, pageSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
-   			logger.error("classroomMembersDateList userid = {}, classroomid = {}, type = {}, startNo = {}, pageSize = {}",
-   					userid, classroomid, type, startNo, pageSize, e);
+   			logger.error("classroomMembersDateList classroomid = {}, type = {}, startNo = {}, pageSize = {}",
+   					classroomid, type, startNo, pageSize, e);
    		}
    		return baseResp;
     }
