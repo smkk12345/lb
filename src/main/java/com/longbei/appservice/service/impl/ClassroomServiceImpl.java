@@ -988,6 +988,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 //				String cardNickname = initUserInfo(classroom.getCardid());
 				String displayname = userCard.getDisplayname();
 				map.put("cardid", userCard.getUserid());
+				map.put("cardavatar", userCard.getAvatar());
 				map.put("displayname", displayname);
 				map.put("ptype", classroom.getPtype()); //十全十美类型
 				map.put("classtitle", classroom.getClasstitle()); //教室标题
@@ -1020,23 +1021,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
 				initUserInfoString(memberList);
 				map.put("membersImageList", memberList); //成员头像列表
-				//获取最新课程视频截图key
-				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), 0, 1);
+				//获取最新课程视频截图key  --- 分享获取第一个视频
+				List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 1);
 				//获取视频url---转码后
-				//isfree 是否免费。0 免费 1 收费
-				if("0".equals(classroom.getIsfree())){
-					if(null != courseList && courseList.size()>0){
-						map.put("fileurl", courseList.get(0).getFileurl());
-					}
-				}else{
-					//若收费，获取第一条免费课程
-					List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 1);
-					if(null != courselist && courselist.size()>0){
-						map.put("fileurl", courselist.get(0).getFileurl());
-					}
-				}
-				if(null != courseList && courseList.size()>0){
-					map.put("pickey", courseList.get(0).getPickey());
+				if(null != courselist && courselist.size()>0){
+					map.put("fileurl", courselist.get(0).getFileurl());
 				}
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classroomid", classroomid);
