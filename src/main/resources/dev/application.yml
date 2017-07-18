@@ -79,7 +79,7 @@ alimedia:
     accessKeyId: bmb3uihjoxyWYaQ3
     accessKeySecret: XIOs9nlE6sMxmU0jpXeXwsfQs17JbO
     mp3:
-        query_mp3: longbei-test3-media
+        query_mp3: longbeitestmp3
         workflowmp3: longbei3-mp3
     mp4:
         query_mp4: longbeitestmp4
@@ -100,4 +100,4 @@ alimedia:
 #service.outernet: http://localhost:8085/outernet_service
 #service.product: http://localhost:8089/product_service
 #oss_media: http://longbei3-mp4-out.oss-cn-shanghai.aliyuncs.com/
-oss_media: http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/
+oss_media: http://longbei-dev-media-out.oss-cn-beijing.aliyuncs.com/
