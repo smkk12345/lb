@@ -272,4 +272,17 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         }
         return baseResp;
     }
+
+    @Override
+    public BaseResp<Integer> sumByField(String field) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            int sum = statisticsMapper.sumByField(field);
+            baseResp.setData(sum);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("sumByField field={} is error:{}",field);
+        }
+        return baseResp;
+    }
 }

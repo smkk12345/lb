@@ -76,4 +76,16 @@ public class StatisticApiController {
         BaseResp<List<Statistics>> listResp = statisticService.listStatisticsForDays(days);
         return listResp;
     }
+
+    /**
+     * 查询某统计数据的历史总数:总注册用户数、龙榜总数、龙币充值总数
+     * @param field 要查询总数的统计数据字段
+     * @return
+     */
+    @RequestMapping(value = "sumByField")
+    private BaseResp<Integer> sumByField(String field) {
+        logger.info("sumByField field={}",field);
+        BaseResp<Integer> baseResp = statisticService.sumByField(field);
+        return baseResp;
+    }
 }
