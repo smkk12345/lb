@@ -139,9 +139,6 @@
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_members
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="classroomid != null" >
         classroomid,
       </if>
@@ -183,9 +180,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="classroomid != null" >
         #{classroomid,jdbcType=INTEGER},
       </if>
@@ -230,12 +224,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
     update classroom_members
     <set >
-      <if test="classroomid != null" >
-        classroomid = #{classroomid,jdbcType=INTEGER},
-      </if>
-      <if test="userid != null" >
-        userid = #{userid,jdbcType=BIGINT},
-      </if>
       <if test="itype != null" >
         itype = #{itype,jdbcType=INTEGER},
       </if>
@@ -261,7 +249,8 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid} 
+    and userid = #{userid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomMembers" >
     update classroom_members
