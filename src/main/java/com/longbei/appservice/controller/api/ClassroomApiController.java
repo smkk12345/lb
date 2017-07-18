@@ -694,7 +694,7 @@ public class ClassroomApiController {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
-   			baseResp = classroomService.selectRoomDetail(Long.parseLong(classroomid), null);
+   			baseResp = classroomService.selectRoomDetailAll(Long.parseLong(classroomid), null);
    		} catch (Exception e) {
    			logger.error("classroomDetail classroomid = {}", classroomid, e);
    		}
@@ -715,20 +715,20 @@ public class ClassroomApiController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
     public BaseResp<Object> classroomMembersDateList(String classroomid,
-													 String type, int startNo, int pageSize) {
-		logger.info("classroomMembersDateList classroomid={},type={},startNo={},pageSize={}",
-				classroomid,type,startNo,pageSize);
+													 String type) {
+		logger.info("classroomMembersDateList classroomid={},type={}",
+				classroomid,type);
 		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList("", classroomid, "0", type, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveList(null, classroomid, "0", type, 0, 15);
    			baseResp.setData(list);
    		} catch (Exception e) {
-   			logger.error("classroomMembersDateList classroomid = {}, type = {}, startNo = {}, pageSize = {}",
-   					classroomid, type, startNo, pageSize, e);
+   			logger.error("classroomMembersDateList classroomid = {}, type = {}",
+   					classroomid, type, e);
    		}
    		return baseResp;
     }
@@ -744,17 +744,16 @@ public class ClassroomApiController {
  	*/
  	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "coursesList")
-     public BaseResp<List<ClassroomCourses>> coursesList(String classroomid, int startNo, int pageSize) {
- 		logger.info("coursesList classroomid={},startNo={},pageSize={}",classroomid,startNo,pageSize);
+     public BaseResp<List<ClassroomCourses>> coursesList(String classroomid) {
+ 		logger.info("coursesList classroomid={}",classroomid);
  		BaseResp<List<ClassroomCourses>> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid)) {
               return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
    		try {
-   			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
+   			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), 0, 15);
    		} catch (Exception e) {
-   			logger.error("coursesList classroomid = {}, startNo = {}, pageSize = {}",
- 					classroomid, startNo, pageSize, e);
+   			logger.error("coursesList classroomid = {}", classroomid, e);
    		}
    		return baseResp;
      }
@@ -764,27 +763,23 @@ public class ClassroomApiController {
      * @Description: 获取教室提问答疑列表
      * @param @param classroomid  教室id
      * @param @param userid  当前访问者id
-     * @param @param lastDate 分页数据最后一个的时间
-     * @param @param pageSize
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年7月15日
  	*/
  	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "questionsList")
-     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
- 		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}, pageSize = {}", 
- 				classroomid, userid, lastDate, pageSize);
+     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid) {
+ 		logger.info("questionsList classroomid = {}",
+ 				classroomid);
  		BaseResp<List<ClassroomQuestions>> baseResp = new BaseResp<>();
-   		if (StringUtils.hasBlankParams(classroomid, userid)) {
+   		if (StringUtils.hasBlankParams(classroomid)) {
               return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
    		try {
-   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, 
-   					lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
+   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, null, null, 15);
    		} catch (Exception e) {
-   			logger.error("questionsList classroomid = {}, lastDate = {}, pageSize = {}",
- 					classroomid, lastDate, pageSize, e);
+   			logger.error("questionsList classroomid = {}", classroomid, e);
    		}
    		return baseResp;
      }

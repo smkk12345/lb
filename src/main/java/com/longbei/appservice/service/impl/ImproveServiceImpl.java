@@ -1544,15 +1544,13 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveCommentInfo(improve);
             //初始化点赞，送花，送钻简略信息
             initLikeFlowerDiamondInfo(improve);
-            if(!StringUtils.isBlank(userid)){
-            	//初始化进步用户信息
-                initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
-                //初始化是否 点赞 送花 送钻 收藏
-                initIsOptionForImprove(userid,improve);
-            	Set<String> improveIds = this.getUserCollectImproveId(userid);
-            	if(improveIds.contains(improve.getImpid().toString())){
-                    improve.setHascollect("1");
-                }
+            //初始化进步用户信息
+            initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
+            //初始化是否 点赞 送花 送钻 收藏
+            initIsOptionForImprove(userid,improve);
+        	Set<String> improveIds = this.getUserCollectImproveId(userid);
+        	if(improveIds.contains(improve.getImpid().toString())){
+                improve.setHascollect("1");
             }
         }
     }
@@ -1749,16 +1747,11 @@ public class ImproveServiceImpl implements ImproveService{
         if(null == improve || null == userInfo){
             return baseResp;
         }
-//        if(improve.getUserid() == Long.parseLong(userid)){
-//            baseResp.initCodeAndDesp(Constant.STATUS_SYS_13,Constant.RTNINFO_SYS_13);
-//            return  baseResp;
-//        }
-//        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
-//        if(!ResultUtil.isSuccess(baseResp)){
-//            return baseResp;
-//        }
+        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
         try{
-
             //redis
             addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);

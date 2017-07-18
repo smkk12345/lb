@@ -40,4 +40,6 @@ public interface StatisticService extends BaseService {
      * @return
      */
     BaseResp<List<Statistics>> listStatisticsForDays(int days);
+
+    BaseResp<Integer> sumByField(String field);
 }

@@ -970,5 +970,95 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	
+	
+	
+	//----------------------------------share调用---------------------------------------------
+
+	@Override
+	public BaseResp<Object> selectRoomDetailAll(Long classroomid, Long userid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			String isadd = "0";
+			if(null != classroom){
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				//老师称呼
+//				String cardNickname = initUserInfo(classroom.getCardid());
+				String displayname = userCard.getDisplayname();
+				map.put("cardid", userCard.getUserid());
+				map.put("cardavatar", userCard.getAvatar());
+				map.put("cardbrief", userCard.getBrief());
+				//名片信息---老师h5
+				map.put("content", userCard.getContent());
+				map.put("displayname", displayname);
+				map.put("ptype", classroom.getPtype()); //十全十美类型
+				map.put("classtitle", classroom.getClasstitle()); //教室标题
+				map.put("charge", classroom.getCharge()); //课程价格
+				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
+				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
+				map.put("classnotice", classroom.getClassnotice()); //教室公告
+				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
+				map.put("classbrief", classroom.getClassbrief()); //教室简介
+				if(userid != null){
+					//获取当前用户在教室发作业的总数
+					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
+					map.put("impNum", impNum);
+					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != classroomMembers){
+						map.put("classroomMembers", classroomMembers);
+					}else{
+						map.put("classroomMembers", null);
+					}
+					//itype 0—加入教室 1—退出教室     为null查全部
+					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != members){
+						isadd = "1";
+					}
+				}else{
+					map.put("classroomMembers", null);
+				}
+				map.put("isadd", isadd);
+				//获取最新加入成员头像5个
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
+				initUserInfoString(memberList);
+				map.put("membersImageList", memberList); //成员头像列表
+				//获取最新课程视频截图key  --- 分享获取第一个视频
+				List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, 0, 1);
+				//获取视频url---转码后
+				if(null != courselist && courselist.size()>0){
+					map.put("fileurl", courselist.get(0).getFileurl());
+				}
+				map.put("classphotos", classroom.getClassphotos());
+				map.put("classroomid", classroomid);
+				//是否已经关注教室
+				Map<String,Object> usermap = new HashMap<String,Object>();
+				usermap.put("businessType", "4");
+				usermap.put("businessId", classroomid);
+				usermap.put("userId", userid);
+                List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
+                if(userBusinessConcern.size() > 0){
+                	map.put("isfollow", "1");
+                }else{
+                	map.put("isfollow", "0");
+                }
+				if(userid != null){
+					//itype 0—加入教室 1—退出教室     为null查全部
+					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+					if(null != members){
+						isadd = "1";
+					}
+				}
+				map.put("isadd", isadd);
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectRoomDetail classroomid = {}, userid = {}", classroomid, userid, e);
+		}
+		return reseResp;
+	}
+	
 
 }

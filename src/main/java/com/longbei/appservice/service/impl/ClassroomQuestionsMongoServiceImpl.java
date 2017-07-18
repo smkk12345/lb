@@ -2,6 +2,8 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Date;
 import java.util.List;
+
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +124,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 					}
 					if(!"1".equals(isreply)){
 	  					//判断当前用户是否是老师
-	  					if(userCard.getUserid() != Long.parseLong(userid)){
+	  					if(!StringUtils.isBlank(userid) && userCard.getUserid() != Long.parseLong(userid)){
 	  							isreply = "2";
 	  					}
 	  				}

@@ -241,4 +241,7 @@
       updatetime = #{updatetime,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="sumByField" resultType="java.lang.Integer" >
+    select sum(${field}) from sys_statistics
+  </select>
 </mapper>
