@@ -195,8 +195,8 @@ public class AddMessageReceiveService implements MessageListener{
         Set<String> friendids = null;
         Set<String> funids = null;
         friendids = this.relationService.getFriendIds(userid);
-        funids = this.relationService.getBeFansedIds(userid);
-        friendids.addAll(funids);
+//        funids = this.relationService.getBeFansedIds(userid);
+//        friendids.addAll(funids);
         friendids.add(userid);
         if(friendids == null || friendids.size() == 0){
             return ;
