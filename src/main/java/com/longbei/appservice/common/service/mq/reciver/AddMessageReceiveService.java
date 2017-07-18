@@ -195,14 +195,24 @@ public class AddMessageReceiveService implements MessageListener{
         Set<String> friendids = null;
         Set<String> funids = null;
         friendids = this.relationService.getFriendIds(userid);
-        funids = this.relationService.getFansIds(userid);
+        funids = this.relationService.getBeFansedIds(userid);
         friendids.addAll(funids);
         friendids.add(userid);
-       for (String fid : friendids){
-           timeLine.setId(MongoUtils.UUID());
-           timeLine.setUserid(fid);
-           timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
-       }
+        if(friendids == null || friendids.size() == 0){
+            return ;
+        }
+        List<TimeLine> timeLineList = new ArrayList<TimeLine>();
+        for (String fid : friendids){
+            TimeLine timeLine1 =  timeLine.clone();
+            timeLine1.setId(MongoUtils.UUID());
+            timeLine1.setUserid(fid);
+            timeLineList.add(timeLine1);
+        }
+        try{
+            timeLineDao.insertList(timeLineList,Constant.TIMELINE_IMPROVE_ALL_COLLECTION);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -213,11 +223,17 @@ public class AddMessageReceiveService implements MessageListener{
     private void insertTimeLineFriend(TimeLine timeLine,String userid){
         Set<String> friendids = null;
         friendids = this.relationService.getFriendIds(userid);
-        for (String friendid : friendids) {
-            timeLine.setId(MongoUtils.UUID());
-            timeLine.setUserid(friendid);
-            timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+        if(friendids == null || friendids.size() ==0){
+            return ;
         }
+        List<TimeLine> timeLineList = new ArrayList<TimeLine>();
+        for (String friendid : friendids) {
+            TimeLine timeLine1 = timeLine.clone();
+            timeLine1.setId(MongoUtils.UUID());
+            timeLine1.setUserid(friendid);
+            timeLineList.add(timeLine1);
+        }
+        timeLineDao.insertList(timeLineList,Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
     }
     /**
      * 关注
@@ -227,11 +243,17 @@ public class AddMessageReceiveService implements MessageListener{
     private void insertTimeLineAttr(TimeLine timeLine,String userid){
         Set<String> beFunIds = null;
         beFunIds = this.relationService.getBeFansedIds(userid);
-        for (String funid : beFunIds) {
-            timeLine.setId(MongoUtils.UUID());
-            timeLine.setUserid(funid);
-            timeLineDao.save(timeLine,Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
+        if(beFunIds == null || beFunIds.size() == 0){
+            return ;
         }
+        List<TimeLine> timeLineList = new ArrayList<TimeLine>();
+        for (String funid : beFunIds) {
+            TimeLine timeLine1 = timeLine.clone();
+            timeLine1.setId(MongoUtils.UUID());
+            timeLine1.setUserid(funid);
+            timeLineList.add(timeLine1);
+        }
+        timeLineDao.insertList(timeLineList,Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
     }
     /**
      * 熟人
@@ -304,6 +326,7 @@ public class AddMessageReceiveService implements MessageListener{
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             logger.error("",message.toString());
         }
 

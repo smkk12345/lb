@@ -960,6 +960,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 		if(springJedisDao.hasKey(Constant.USER_FANS_REDIS_KEY+userid)){
 			springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,likeUserId);
 		}
+		if(springJedisDao.hasKey(Constant.USER_BEFANSED_REDIS_KEY+likeUserId)){
+			springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+likeUserId,userid);
+		}
+
 	}
 
 	/**
@@ -973,6 +977,9 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		if(springJedisDao.hasKey(Constant.USER_FANS_REDIS_KEY+userid)){
 			springJedisDao.sRem(Constant.USER_FANS_REDIS_KEY+userid,likeUserId.toString());
+		}
+		if(springJedisDao.hasKey(Constant.USER_BEFANSED_REDIS_KEY+likeUserId)){
+			springJedisDao.sRem(Constant.USER_BEFANSED_REDIS_KEY+likeUserId,userid.toString());
 		}
 	}
 
