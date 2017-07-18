@@ -763,27 +763,23 @@ public class ClassroomApiController {
      * @Description: 获取教室提问答疑列表
      * @param @param classroomid  教室id
      * @param @param userid  当前访问者id
-     * @param @param lastDate 分页数据最后一个的时间
-     * @param @param pageSize
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年7月15日
  	*/
  	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "questionsList")
-     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid, String lastDate) {
- 		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}", 
- 				classroomid, userid, lastDate);
+     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid) {
+ 		logger.info("questionsList classroomid = {}, userid = {}", 
+ 				classroomid, userid);
  		BaseResp<List<ClassroomQuestions>> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid, userid)) {
               return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
    		try {
-   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, 
-   					lastDate == null ? null : DateUtils.parseDate(lastDate), 15);
+   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, null, 15);
    		} catch (Exception e) {
-   			logger.error("questionsList classroomid = {}, lastDate = {}",
- 					classroomid, lastDate, e);
+   			logger.error("questionsList classroomid = {}", classroomid, e);
    		}
    		return baseResp;
      }
