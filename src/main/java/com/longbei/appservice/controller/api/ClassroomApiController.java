@@ -769,15 +769,15 @@ public class ClassroomApiController {
  	*/
  	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "questionsList")
-     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid) {
- 		logger.info("questionsList classroomid = {}, userid = {}", 
- 				classroomid, userid);
+     public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid) {
+ 		logger.info("questionsList classroomid = {}",
+ 				classroomid);
  		BaseResp<List<ClassroomQuestions>> baseResp = new BaseResp<>();
-   		if (StringUtils.hasBlankParams(classroomid, userid)) {
+   		if (StringUtils.hasBlankParams(classroomid)) {
               return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
    		try {
-   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, null, 15);
+   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, null, null, 15);
    		} catch (Exception e) {
    			logger.error("questionsList classroomid = {}", classroomid, e);
    		}
