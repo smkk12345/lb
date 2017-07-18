@@ -28,7 +28,7 @@
           order by id desc
       </if>
       <if test="orderType != null and orderType == 'sortnum'">
-          order by sortnum
+          order by sortnum desc
       </if>
       limit #{startNum},#{pageSize}
   </select>

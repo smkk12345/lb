@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 
-public class TimeLine {
+public class TimeLine implements Cloneable{
 
 	@Id
 	private String id;
@@ -131,5 +131,14 @@ public class TimeLine {
 		this.remark = remark;
 	}
 
-	
+	@Override
+	public TimeLine clone() {
+		TimeLine timeLine1 = null;
+		try{
+			timeLine1 = (TimeLine)super.clone();
+		}catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return timeLine1;
+	}
 }

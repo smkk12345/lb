@@ -37,6 +37,13 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         mongoTemplate.save(timeLine,collectName);
     }
 
+    public void insertList(List<TimeLine> timeLineList,String collectName){
+        if(timeLineList == null || timeLineList.size() == 0){
+            return ;
+        }
+        mongoTemplate.insert(timeLineList,collectName);
+    }
+
     public List<TimeLine> selectTimeListByUserAndType(String userid,String ptype,
                                                       String timelinetype, Date lastdate,
                                                       int pagesize,int ispublic){

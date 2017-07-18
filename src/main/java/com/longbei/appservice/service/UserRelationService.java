@@ -203,6 +203,11 @@ public interface UserRelationService {
 	boolean checkIsFriend(String userid,String friendid);
 
 	/**
+	 * 获取粉丝id列表
+	 */
+	Set<String> getBeFansedIds(String userid);
+
+	/**
 	 * 获取用户的关注用户id列表
 	 * @param userid
 	 * @return
@@ -210,11 +215,6 @@ public interface UserRelationService {
 	Set<String> getFansIds(Long userid);
 
 	Set<String> getFansIds(String userid);
-
-	/**
-	 * 获取粉丝id列表
-	 */
-	Set<String> getBeFansedIds(String userid);
 
 	/**
 	 * redis中 添加关注的用户id

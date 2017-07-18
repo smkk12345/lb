@@ -1734,7 +1734,7 @@ public class ImproveServiceImpl implements ImproveService{
         if ("0".equals(businesstype)){
             businessid = null;
         }
-        springJedisDao.set("improve_like_temp_"+impid+userid,"1",1);
+        springJedisDao.set("improve_like_temp_"+impid+userid,"1",2);
 
         boolean islike = improveMongoDao.exits(String.valueOf(impid),
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
