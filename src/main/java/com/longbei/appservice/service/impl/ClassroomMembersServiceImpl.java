@@ -122,8 +122,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		//itype 0—加入教室 1—退出教室     为null查全部
 		ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(record.getClassroomid(), record.getUserid(), "1");
 		if(null != members){
-			members.setItype(0);
-			temp = classroomMembersMapper.updateByPrimaryKeySelective(members);
+			temp = classroomMembersMapper.updateItypeByClassroomidAndUserid(members.getClassroomid(), members.getUserid(), "0");
 		}else{
 			temp = classroomMembersMapper.insertSelective(record);
 		}
