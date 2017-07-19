@@ -243,6 +243,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != courseList && courseList.size()>0){
 					map.put("pickey", courseList.get(0).getPickey());
 				}
+				map.put("courseCount", courseList.size());
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classtitle", classroom.getClasstitle());
 				map.put("ptype", classroom.getPtype());
@@ -594,6 +595,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp;
 			}
 			reseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<String, Object>();
+			expandData.put("roomsize", list.size());
+			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectListByPtype ptype = {}, keyword = {}, startNum = {}, endNum = {}", 
@@ -716,6 +720,8 @@ public class ClassroomServiceImpl implements ClassroomService {
                                 classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
 					}
 				}
+				//取消关注该教室
+				userBusinessConcernMapper.deleteBusinessConcern(4, classroomid);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

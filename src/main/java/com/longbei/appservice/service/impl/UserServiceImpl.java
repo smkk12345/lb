@@ -648,10 +648,10 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> smsBatch(List<String> mobiles) {
+	public BaseResp<Object> smsBatch(List<String> mobiles,String template) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			baseResp = iAlidayuService.sendMsgBatch(mobiles);
+			baseResp = iAlidayuService.sendMsgBatch(mobiles,template);
 		} catch (Exception e) {
 			logger.error("smsBatch is error",e);
 		}
