@@ -429,6 +429,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 baseResp.setExpandData(expandData);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
+            
+            Map<String,Object> insertMap = new HashMap<String,Object>();
+            insertMap.put("snsGroupMembers",newSnsGroupMember);
+            insertMap.put("userList",userList);
+            int insertRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
 
             //通知群主审核
             if(newSnsGroupMember.getStatus() == 0){
@@ -440,10 +445,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 status = 1;
             }
 
-            Map<String,Object> insertMap = new HashMap<String,Object>();
-            insertMap.put("snsGroupMembers",newSnsGroupMember);
-            insertMap.put("userList",userList);
-            int insertRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
             if(insertRow > 0){
                 if(newSnsGroupMember.getStatus() == 1){
                     insertGroupNum += userIdList.size();
@@ -792,6 +793,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             }
             int row = this.snsGroupMapper.updateGroupMainUser(userId+"",groupId);
             if(row > 0){
+                Map<String,Object> updateMap = new HashMap<String,Object>();
+                updateMap.put("groupId",groupId);
+                updateMap.put("identity",0);
+                updateMap.put("userId",currentUserId);
+                this.snsGroupMembersMapper.updateUserGroupOtherInfo(updateMap);
+                updateMap.put("identity",20);
+                updateMap.put("userId",userId);
+                this.snsGroupMembersMapper.updateUserGroupOtherInfo(updateMap);
+
                 //发送系统通知,告诉新用户是群主
                 SnsGroupMembers snsGroupMembers1 = this.snsGroupMembersMapper.findByUserIdAndGroupId(currentUserId,groupId);
 
