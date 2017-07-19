@@ -204,7 +204,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     map.put("userid",userInfo.getUserid());
                     map.put("isfinish",1);
                     map.put("status",1);
-                    String[] typeArr = {"0","1"};
+                    String[] typeArr = {"0"};
                     map.put("ranktype",typeArr);
                     map.put("isdel","0");
                     int count = this.rankMembersMapper.getJoinRankCount(map);
