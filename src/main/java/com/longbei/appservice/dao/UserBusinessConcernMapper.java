@@ -26,6 +26,14 @@ public interface UserBusinessConcernMapper {
      * @return
      */
     int deleteUserBusinessConcern(@Param("userid") Long userid,@Param("businessType") Integer businessType,@Param("businessId") Long businessId);
+    
+    /**
+     * 删除关注数据
+     * @param businessType
+     * @param businessId
+     * @return
+     */
+    int deleteBusinessConcern(@Param("businessType") Integer businessType,@Param("businessId") Long businessId);
 
     /**
      * 查询自己的关注列表

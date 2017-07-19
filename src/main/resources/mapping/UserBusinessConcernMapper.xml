@@ -24,6 +24,11 @@
         delete from user_business_concern
         where businesstype=#{businessType} and businessid=#{businessId} AND userid = #{userid}
     </delete>
+    
+    <delete id="deleteBusinessConcern">
+        delete from user_business_concern
+        where businesstype=#{businessType} and businessid=#{businessId}
+    </delete>
 
     <!--  -->
     <select id="findUserBusinessConcernList" parameterType="map" resultMap="BaseResultMap">
