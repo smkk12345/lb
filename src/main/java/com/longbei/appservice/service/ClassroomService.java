@@ -79,12 +79,20 @@ public interface ClassroomService {
 	/**
 	 * @author yinxc
 	 * 获取我加入的教室信息List
-	 * param ptype:十全十美类型    可为null
 	 * param userid
 	 * param pageNo   pageSize
 	 * 2017年2月28日
 	 */
-	BaseResp<Object> selectInsertByUserid(long userid, int startNum, int endNum);
+	BaseResp<List<Classroom>> selectInsertByUserid(long userid, int startNum, int endNum);
+	
+	/**
+	 * @author yinxc
+	 * 获取已加入的教室信息List
+	 * param userid
+	 * param pageNo   pageSize
+	 * 2017年7月19日
+	 */
+	BaseResp<List<Classroom>> selectFansByUserid(long userid, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc

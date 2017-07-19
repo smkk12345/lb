@@ -591,4 +591,7 @@ public interface ImproveService {
     void deleteUserCollectImproveId(String userid,String improveId);
     //功能同上面方法
     void deleteUserCollectImproveId(Long userid,Long improveId);
+
+
+    BaseResp<String> improveLikesCopy();
 }

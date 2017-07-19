@@ -13,6 +13,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
@@ -40,7 +41,7 @@ public class ClassroomController {
 	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
-
+	
 
 	/**
 	* @Title: http://ip:port/app_service/classroom/selectRoomMemberDetail
@@ -202,16 +203,20 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "questionsList")
-    public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid, String lastDate, int pageSize) {
+    public BaseResp<List<ClassroomQuestions>> questionsList(String classroomid, String userid, String lastDate, Integer pageSize) {
 		logger.info("questionsList classroomid = {}, userid = {}, lastDate = {}, pageSize = {}", 
 				classroomid, userid, lastDate, pageSize);
 		BaseResp<List<ClassroomQuestions>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
   			baseResp = classroomQuestionsMongoService.selectQuestionsListByClassroomid(classroomid, userid, 
-  					lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
+  					lastDate == null ? null : DateUtils.parseDate(lastDate), sSize);
   		} catch (Exception e) {
   			logger.error("questionsList classroomid = {}, lastDate = {}, pageSize = {}",
 					classroomid, lastDate, pageSize, e);
@@ -280,14 +285,22 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "coursesList")
-    public BaseResp<List<ClassroomCourses>> coursesList(String classroomid, int startNo, int pageSize) {
+    public BaseResp<List<ClassroomCourses>> coursesList(String classroomid, Integer startNo, Integer pageSize) {
 		logger.info("coursesList classroomid={},startNo={},pageSize={}",classroomid,startNo,pageSize);
 		BaseResp<List<ClassroomCourses>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(classroomid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
-  			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), startNo, pageSize);
+  			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), sNo, sSize);
   		} catch (Exception e) {
   			logger.error("coursesList classroomid = {}, startNo = {}, pageSize = {}",
 					classroomid, startNo, pageSize, e);
@@ -472,15 +485,23 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectCreateRoom")
-    public BaseResp<Object> selectCreateRoom(String userid, String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectCreateRoom(String userid, String ptype, Integer startNo, Integer pageSize) {
 		logger.info("selectCreateRoom userid={},ptype={},startNo={},pageSize={}",
 				userid,ptype,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
-  			baseResp = classroomService.selectListByUserid(Long.parseLong(userid), ptype, startNo, pageSize);
+  			baseResp = classroomService.selectListByUserid(Long.parseLong(userid), ptype, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectCreateRoom userid = {}, ptype = {}, startNo = {}, pageSize = {}",
   					userid, ptype, startNo, pageSize, e);
@@ -490,26 +511,39 @@ public class ClassroomController {
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/selectInsertRoom
-    * @Description: 获取我加入的教室
+    * @Description: 获取我加入, 已关注的教室
     * @param @param userid
-    * @param @param startNum   pageSize
+    * @param @param type 0:已加入  1：已关注
+    * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
-    * @currentdate:2017年2月28日
+    * @currentdate:2017年7月19日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectInsertRoom")
-    public BaseResp<Object> selectInsertRoom(String userid, int startNo, int pageSize) {
-		logger.info("selectInsertRoom userid={},startNum={},pageSize={}",userid,startNo,pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(userid)) {
+    public BaseResp<List<Classroom>> selectInsertRoom(String userid, String type, Integer startNo, Integer pageSize) {
+		logger.info("selectInsertRoom userid={},type={},startNum={},pageSize={}",userid,type,startNo,pageSize);
+		BaseResp<List<Classroom>> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
-  			baseResp = classroomService.selectInsertByUserid(Long.parseLong(userid), startNo, pageSize);
+  			if("0".equals(type)){
+  				baseResp = classroomService.selectInsertByUserid(Long.parseLong(userid), sNo, sSize);
+  			}else{
+  				baseResp = classroomService.selectFansByUserid(Long.parseLong(userid), sNo, sSize);
+  			}
   		} catch (Exception e) {
-  			logger.error("selectInsertRoom userid = {}, startNo = {}, pageSize = {}",
-  					userid, startNo, pageSize, e);
+  			logger.error("selectInsertRoom userid = {}, type = {], startNo = {}, pageSize = {}",
+  					userid, type, startNo, pageSize, e);
   		}
   		return baseResp;
     }
@@ -528,15 +562,23 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomSearch")
-    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, Integer startNo, Integer pageSize) {
 		logger.info("selectRoomSearch keyword={},ptype={},startNo={},pageSize={}",
 				keyword,ptype,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(keyword)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
-  			baseResp = classroomService.selectListByPtype(ptype, keyword, startNo, pageSize);
+  			baseResp = classroomService.selectListByPtype(ptype, keyword, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectRoomSearch keyword = {}, ptype = {}, startNo = {}, pageSize = {}",
   					keyword, ptype, startNo, pageSize, e);
@@ -556,16 +598,24 @@ public class ClassroomController {
 	*/
  	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectClassroomList")
-    public BaseResp<Object> selectClassroomList(String userid, String ptype, int startNo, int pageSize) {
+    public BaseResp<Object> selectClassroomList(String userid, String ptype, Integer startNo, Integer pageSize) {
 		logger.info("selectClassroomList userid = {}, ptype = {}, startNo = {}, pageSize = {}",
 				userid, ptype, startNo, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "1", ptype, startNo, pageSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "1", ptype, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}",
   					userid, startNo, pageSize, e);
@@ -587,20 +637,28 @@ public class ClassroomController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersList")
     public BaseResp<Object> classroomMembersList(String userid, String classroomid, String sift, 
-    		 int startNo, int pageSize) {
+    		 Integer startNo, Integer pageSize) {
 		logger.info("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}",
 				userid, classroomid, sift, startNo, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid, sift)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+   		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, sNo, sSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
    			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}",
-   					userid, classroomid, sift, startNo, pageSize, e);
+   					userid, classroomid, sift, sNo, sSize, e);
    		}
    		return baseResp;
     }
@@ -620,16 +678,24 @@ public class ClassroomController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
     public BaseResp<Object> classroomMembersDateList(String userid, String classroomid, String sift,
-													 String type, int startNo, int pageSize) {
+													 String type, Integer startNo, Integer pageSize) {
 		logger.info("classroomMembersDateList userid={},classroomid={},sift={},type={},startNo={},pageSize={}",
 				userid,classroomid,sift,type,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(userid, classroomid, sift, type)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
+   		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, startNo, pageSize);
+   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
    			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}",

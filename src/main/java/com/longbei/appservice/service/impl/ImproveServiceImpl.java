@@ -129,6 +129,8 @@ public class ImproveServiceImpl implements ImproveService{
     private StatisticService statisticService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private ImproveLikesMapper improveLikesMapper;
 
     /**
      *  @author luye
@@ -2303,7 +2305,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     private boolean hasLikeCache(String impid,String userid){
-        String result = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid + userid);
+        String result = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid + "@" + userid);
         if (null == result || !"1".equals(result)){
             return false;
         }
@@ -2340,7 +2342,7 @@ public class ImproveServiceImpl implements ImproveService{
         //将赞保存到redis
         setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
         //添加临时记录
-        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + userid,"1",10*60*60);
+        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60*1000);
     }
 
@@ -2348,8 +2350,9 @@ public class ImproveServiceImpl implements ImproveService{
     private void setLikeToRedis(String impid,String businessid,String businesstype,int num){
         if (!springJedisDao.hasKey(Constant.REDIS_IMPROVE_LIKE + impid)){
             //mysql 同步
-            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
-            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
+//            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            ImproveLikes improveLikes = improveLikesMapper.selectByimpid(impid);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improveLikes==null?0:improveLikes.getLikes());
         }
         springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,num);
     }
@@ -2358,13 +2361,16 @@ public class ImproveServiceImpl implements ImproveService{
     private int getLikeFromRedis(String impid,String businessid,String businesstype){
         String count = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid);
         if (StringUtils.isBlank(count)){
-            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
-            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improve.getLikes());
-            return improve.getLikes();
+//            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
+            ImproveLikes improveLikes = improveLikesMapper.selectByimpid(impid);
+            springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improveLikes==null?0:improveLikes.getLikes());
+            return improveLikes.getLikes();
         } else {
             return Integer.parseInt(count);
         }
     }
+
+
 
 
     /**
@@ -2398,7 +2404,7 @@ public class ImproveServiceImpl implements ImproveService{
         setLikeToRedis(improve.getImpid()+"",businessid,businesstype,-1);
         springJedisDao.del("improve_like_temp_"+improve.getImpid()+userid);
         //删除临时记录
-        springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + userid);
+        springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid);
         springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),"like"+improve.getImpid());
     }
 
@@ -3874,4 +3880,37 @@ public class ImproveServiceImpl implements ImproveService{
         this.deleteUserCollectImproveId(userid.toString(),improveId.toString());
     }
 
+//    public static void main(String[] args) {
+//        String str = "improve_like_123";
+//        System.out.println(str.lastIndexOf("improve_like_"));
+//        System.out.println(str.length());
+//        System.out.println(str.substring(str.lastIndexOf("_")+1,str.length()));
+//    }
+
+
+    @Override
+    public BaseResp<String> improveLikesCopy() {
+        BaseResp<String> baseResp = new BaseResp<>();
+        Set<String> keys = springJedisDao.keys(Constant.REDIS_IMPROVE_LIKE+"*");
+        for (String key : keys){
+            try {
+                String impid = key.substring(key.lastIndexOf("_")+1,key.length());
+                String likes = springJedisDao.get(key);
+                ImproveLikes improveLikes = improveLikesMapper.selectByimpid(impid);
+                ImproveLikes improveLikes1 = new ImproveLikes();
+                improveLikes1.setImpid(Long.parseLong(impid));
+                improveLikes1.setLikes(Integer.parseInt(likes));
+                if (null == improveLikes){
+                    improveLikes1.setCreatetime(new Date());
+                    improveLikesMapper.insertSelective(improveLikes1);
+                } else {
+                    improveLikes1.setUpdatetime(new Date());
+                    improveLikesMapper.updateByImpidSelective(improveLikes1);
+                }
+            } catch (Exception e) {
+                logger.error("get improve like from redis to mysql is error:",e);
+            }
+        }
+        return baseResp.initCodeAndDesp();
+    }
 }

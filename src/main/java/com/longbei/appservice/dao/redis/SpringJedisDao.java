@@ -210,7 +210,8 @@ public class SpringJedisDao {
     public Set<String> keys(String key){
         try{
             HashOperations<String, String, String> options = redisTemplate.opsForHash();
-            return options.keys(key);
+            return redisTemplate.keys(key);
+//            return options.keys(key);
         }catch (Exception e){
             logger.error("redis keys error key={}",key,e);
         }

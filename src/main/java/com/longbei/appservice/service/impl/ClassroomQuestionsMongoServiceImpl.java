@@ -3,7 +3,6 @@ package com.longbei.appservice.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,12 +102,12 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	public BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, int pageSize) {
 		BaseResp<List<ClassroomQuestions>> reseResp = new BaseResp<>();
 		try {
-			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+//			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //	  		List<String> idlist = new ArrayList<>();
 //	  		if(null != classroom){
 //	  			idlist = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //	  		}
-			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsListByClassroomid(classroomid, lastDate, pageSize);
 			if(null != list && list.size()>0){
 				for (ClassroomQuestions classroomQuestions : list) {
@@ -122,12 +121,12 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	  					isreply = "1";
 	  					classroomQuestions.setClassroomQuestionsLower(lowerlist.get(0));
 					}
-					if(!"1".equals(isreply)){
-	  					//判断当前用户是否是老师
-	  					if(!StringUtils.isBlank(userid) && userCard.getUserid() != Long.parseLong(userid)){
-	  							isreply = "2";
-	  					}
-	  				}
+//					if(!"1".equals(isreply)){
+//	  					//判断当前用户是否是老师
+//	  					if(!StringUtils.isBlank(userid) && userCard.getUserid() != Long.parseLong(userid)){
+//	  							isreply = "2";
+//	  					}
+//	  				}
 					classroomQuestions.setIsreply(isreply);
 				}
 			}
