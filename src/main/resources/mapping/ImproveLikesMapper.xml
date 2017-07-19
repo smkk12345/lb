@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.ImproveLikesMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ImproveLikes" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="impid" property="impid" jdbcType="BIGINT" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="VARCHAR" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, impid, businessid, businesstype, likes, createtime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from improve_likes
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByimpid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_likes
+    where impid = #{impid}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from improve_likes
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ImproveLikes" >
+    insert into improve_likes (id, impid, businessid, 
+      businesstype, likes, createtime, 
+      updatetime)
+    values (#{id,jdbcType=INTEGER}, #{impid,jdbcType=BIGINT}, #{businessid,jdbcType=BIGINT}, 
+      #{businesstype,jdbcType=VARCHAR}, #{likes,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImproveLikes" >
+    insert into improve_likes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="impid != null" >
+        impid,
+      </if>
+      <if test="businessid != null" >
+        businessid,
+      </if>
+      <if test="businesstype != null" >
+        businesstype,
+      </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="impid != null" >
+        #{impid,jdbcType=BIGINT},
+      </if>
+      <if test="businessid != null" >
+        #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="likes != null" >
+        #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByImpidSelective" parameterType="com.longbei.appservice.entity.ImproveLikes" >
+    update improve_likes
+    <set >
+      <if test="businessid != null" >
+        businessid = #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        businesstype = #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="likes != null" >
+        likes = #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where
+    impid = #{impid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImproveLikes" >
+    update improve_likes
+    set impid = #{impid,jdbcType=BIGINT},
+      businessid = #{businessid,jdbcType=BIGINT},
+      businesstype = #{businesstype,jdbcType=VARCHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

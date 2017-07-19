@@ -69,6 +69,14 @@ public interface UserService {
 	UserInfo getByNickName(String nickname);
 	
 	BaseResp<Object> sms(String mobile,String operateType);
+
+	/**
+	 * @Description: 批量发送短信
+	 * @param mobiles 手机号码列表
+	 * @auther IngaWu
+	 * @currentdate:2017年7月18日
+	 */
+	BaseResp<Object> smsBatch(List<String> mobiles);
 	/**
 	* @Title: checkSms
 	* @Description: 校验验证码
