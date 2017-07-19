@@ -330,23 +330,25 @@ public class AppUserApiController {
     /**
      * @Description: 批量发送短信
      * @param mobiles 手机号码列表
+     * @param templateId 短信模版id
      * @auther IngaWu
      * @currentdate:2017年7月18日
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "smsBatch")
     @ResponseBody
-    public BaseResp<Object> smsBatch(List<String> mobiles){
-        logger.info("smsBatch and mobiles={}",JSON.toJSONString(mobiles));
+    public BaseResp<Object> smsBatch(List<String> mobiles,String templateId){
+        mobiles.add("18310395688");
+        logger.info("smsBatch and mobiles={},templateId={}",JSON.toJSONString(mobiles),templateId);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(mobiles.toString())) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-                baseResp = userService.smsBatch(mobiles);
+                baseResp = userService.smsBatch(mobiles,templateId);
             return baseResp;
         } catch (Exception e) {
-            logger.error("smsBatch and mobiles={}",JSON.toJSONString(mobiles),e);
+            logger.error("smsBatch and mobiles={},templateId={}",JSON.toJSONString(mobiles),templateId,e);
         }
         return baseResp;
     }

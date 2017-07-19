@@ -30,9 +30,11 @@ public interface IAlidayuService {
     /**
      * 阿里大鱼批量发送短信外网接口
      * @param mobiles 手机号码列表
+     * @param templateId 短信模版id
      */
     @RequestMapping(method = RequestMethod.GET, value = "/alidayu/sendMsgBatch")
     @Headers("Content-Type: application/json")
-    BaseResp<Object> sendMsgBatch(List<String> mobiles);
+    BaseResp<Object> sendMsgBatch(List<String> mobiles,
+                                  @RequestParam("templateId") String templateId);
 
 }
