@@ -260,6 +260,21 @@ public class ImproveApiController {
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
+    @ResponseBody
+    @RequestMapping(value = "implikescopy")
+    public BaseResp<String> improveLikesCopy(){
+        BaseResp<String> baseResp = new BaseResp<>();
+        try {
+            baseResp = improveService.improveLikesCopy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baseResp;
+    }
+
+
+
 }
 
 
