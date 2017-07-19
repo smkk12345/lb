@@ -454,7 +454,7 @@ public class ClassroomApiController {
  	}
     
     /**
-     * @Description: 关闭教室
+     * @Description: 删除教室
      * @param @param classroomid 教室id
      * @param @param closeremark 关闭原因
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
