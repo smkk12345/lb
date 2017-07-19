@@ -589,6 +589,8 @@ public class Constant {
 	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
 	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,您已被请下教室"; //教室
+	public static final String  MSG_CLASSROOMCOURSES_FANS_MODEL = "您关注的教室《n》添加新课程啦，赶快去看看吧！";
+	public static final String  MSG_CLASSROOMCOURSES_INSERT_MODEL = "您加入的教室《n》添加新课程啦，赶快去看看吧！";
 	
 	
 	
