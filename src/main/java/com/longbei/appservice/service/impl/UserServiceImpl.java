@@ -645,6 +645,19 @@ public class UserServiceImpl implements UserService {
 		return baseResp;
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> smsBatch(List<String> mobiles) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try {
+			baseResp = iAlidayuService.sendMsgBatch(mobiles);
+		} catch (Exception e) {
+			logger.error("smsBatch is error",e);
+		}
+		return baseResp;
+	}
+
 	/* smkk
 	 * @see com.longbei.appservice.service.UserService#checkSms(java.lang.String, java.lang.String)
 	 * 2017年1月16日

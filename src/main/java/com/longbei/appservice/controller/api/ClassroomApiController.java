@@ -92,7 +92,7 @@ public class ClassroomApiController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
-			baseResp = classroomMembersService.quitClassroomByPC(Integer.parseInt(classroomid),
+			baseResp = classroomMembersService.quitClassroomByPC(Long.parseLong(classroomid),
 					Long.parseLong(userid), "1");
 		} catch (Exception e) {
 			logger.error("quitClassroom classroomid = {}, userid = {}",
