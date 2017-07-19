@@ -473,8 +473,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * 2017年2月28日
 	 */
 	@Override
-	public BaseResp<Object> selectInsertByUserid(long userid, int startNum, int endNum) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<Classroom>> selectInsertByUserid(long userid, int startNum, int endNum) {
+		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
 		try {
 			List<Classroom> roomlist = new ArrayList<Classroom>();
 			List<ClassroomMembers> list = classroomMembersMapper.selectInsertByUserid(userid, startNum, endNum);
@@ -488,8 +488,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
-			//操作
-			roomlist = selectList(roomlist);
+			if(null != roomlist && roomlist.size()>0){
+				//操作
+				roomlist = selectList(roomlist);
+			}
 			reseResp.setData(roomlist);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -498,6 +500,43 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return reseResp;
 	}
+	
+	
+	@Override
+	public BaseResp<List<Classroom>> selectFansByUserid(long userid, int startNum, int endNum) {
+		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
+		try {
+			List<Classroom> roomlist = new ArrayList<Classroom>();
+			Map<String,Object> map = new HashMap<String,Object>();
+            map.put("userId",userid);
+            map.put("businessType","4");
+            map.put("orderType","idDesc");
+            map.put("startNum",startNum);
+            map.put("pageSize",endNum);
+            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findUserBusinessConcernList(map);
+			if(null != concernList && concernList.size()>0){
+				for (UserBusinessConcern userBusinessConcern : concernList) {
+					Classroom classroom = classroomMapper.selectByPrimaryKey(userBusinessConcern.getBusinessid());
+					roomlist.add(classroom);
+				}
+			}
+			if(startNum == 0 && roomlist.size() == 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
+				return reseResp;
+			}
+			if(null != roomlist && roomlist.size()>0){
+				//操作
+				roomlist = selectList(roomlist);
+			}
+			reseResp.setData(roomlist);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectFansByUserid userid = {}, startNum = {}, endNum = {}", 
+					userid, startNum, endNum, e);
+		}
+		return reseResp;
+	}
+	
 
 	@Override
 	public BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum) {
@@ -1059,6 +1098,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return reseResp;
 	}
-	
+
 
 }
