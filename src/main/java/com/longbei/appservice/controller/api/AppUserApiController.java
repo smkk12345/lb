@@ -338,7 +338,6 @@ public class AppUserApiController {
     @RequestMapping(value = "smsBatch")
     @ResponseBody
     public BaseResp<Object> smsBatch(List<String> mobiles,String template){
-        mobiles.add("18310395688");
         logger.info("smsBatch and mobiles={},template={}",JSON.toJSONString(mobiles),template);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(mobiles.toString())) {
