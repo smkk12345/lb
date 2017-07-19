@@ -192,6 +192,7 @@ public class Constant {
 	public static final int STATUS_SYS_915 = -915;
 	public static final int STATUS_SYS_916 = -916;
 	public static final int STATUS_SYS_917 = -917;
+	public static final int STATUS_SYS_918 = -918;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -366,6 +367,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_915 = "抱歉,您当前没有权限邀请好友入群!";
 	public static final String RTNINFO_SYS_916 = "抱歉,您当前无法更改群昵称!";
 	public static final String RTNINFO_SYS_917 = "龙杯目前最多可以添加5000个好友";
+	public static final String RTNINFO_SYS_918 = "抱歉,该群组已被删除!";
 
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";

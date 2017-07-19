@@ -1100,7 +1100,7 @@ public class UserServiceImpl implements UserService {
 				userMongoDao.updateAppUserMongoEntity(updateUserInfo);
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(updateUserInfo.getUserid()));
-				if(StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())){//修改了昵称
+				if(StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())){//修改了昵称或者头像
 					updateUserRelevantInfo(updateUserInfo.getUserid(),oldUserInfo.getNickname(),updateUserInfo.getNickname(),updateUserInfo.getAvatar());
 				}
 			}
