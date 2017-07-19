@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户详情接口
@@ -321,6 +323,30 @@ public class AppUserApiController {
         } catch (Exception e) {
             logger.error("updateSensitiveWords for adminservice and words={},sensitiveId={}", words,sensitiveId,e);
 
+        }
+        return baseResp;
+    }
+
+    /**
+     * @Description: 批量发送短信
+     * @param mobiles 手机号码列表
+     * @auther IngaWu
+     * @currentdate:2017年7月18日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "smsBatch")
+    @ResponseBody
+    public BaseResp<Object> smsBatch(List<String> mobiles){
+        logger.info("smsBatch and mobiles={}",JSON.toJSONString(mobiles));
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(mobiles.toString())) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+                baseResp = userService.smsBatch(mobiles);
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("smsBatch and mobiles={}",JSON.toJSONString(mobiles),e);
         }
         return baseResp;
     }
