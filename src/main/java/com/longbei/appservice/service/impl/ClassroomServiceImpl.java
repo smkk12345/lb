@@ -893,7 +893,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Override
 	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
-		Page<Classroom> page = new Page<>(startNum,endNum);
+		Page<Classroom> page = new Page<>(startNum/endNum+1,endNum);
         try {
             int totalcount = classroomMapper.selectSearchCount(classrooms);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);
