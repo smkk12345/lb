@@ -419,7 +419,14 @@ public class Constant {
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
 			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,/rank/selectRankAward,"+
-			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
+			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist"+
+
+			"/classroom/classroomHeadDetail," +
+			"/classroom/classroomDetail," +
+			"/classroom/classroomMembersDateList,"+
+			"/classroom/coursesList,"+
+			"/classroom/selectClassroomList,"+
+			"/classroom/selectRoomMembers";
 
 	/**
 	 * 进步相关配置
