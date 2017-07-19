@@ -715,7 +715,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(snsGroupMembersList != null && snsGroupMembersList.size() > 0) {
                 for(SnsGroupMembers snsGroupMembers1:snsGroupMembersList) {
                     AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(snsGroupMembers1.getUserid() + "");
-                    snsGroupMembers1.setAppUserMongoEntity(appUserMongoEntity);
+                    if(appUserMongoEntity == null){
+                        snsGroupMembers1.setVcertification("0");
+                    }else{
+                        snsGroupMembers1.setVcertification(appUserMongoEntity.getVcertification());
+                    }
                 }
 
             }
@@ -975,7 +979,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             Map<String,Object> resultMap = new HashMap<String,Object>();
             SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(groupId+"",null);
             if(snsGroup == null){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_918,Constant.RTNINFO_SYS_918);
             }
             //群组头像
             snsGroup.setAvatarArray(getGroupAvatarArray(groupId));

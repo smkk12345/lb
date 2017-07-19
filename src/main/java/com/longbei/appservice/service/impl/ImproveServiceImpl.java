@@ -2364,7 +2364,7 @@ public class ImproveServiceImpl implements ImproveService{
 //            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
             ImproveLikes improveLikes = improveLikesMapper.selectByimpid(impid);
             springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improveLikes==null?0:improveLikes.getLikes());
-            return improveLikes.getLikes();
+            return improveLikes==null?0:improveLikes.getLikes();
         } else {
             return Integer.parseInt(count);
         }

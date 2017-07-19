@@ -73,10 +73,11 @@ public interface UserService {
 	/**
 	 * @Description: 批量发送短信
 	 * @param mobiles 手机号码列表
+     * @param template 短信模版id
 	 * @auther IngaWu
 	 * @currentdate:2017年7月18日
 	 */
-	BaseResp<Object> smsBatch(List<String> mobiles);
+	BaseResp<Object> smsBatch(List<String> mobiles,String template);
 	/**
 	* @Title: checkSms
 	* @Description: 校验验证码

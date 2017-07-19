@@ -97,7 +97,7 @@
     <include refid="Base_Column_List" />
     from classroom_members
     where userid = #{userid} 
-    and itype = 0  and isup = 1 
+    and itype = 0
     order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}

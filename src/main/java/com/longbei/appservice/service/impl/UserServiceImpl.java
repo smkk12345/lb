@@ -648,10 +648,10 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> smsBatch(List<String> mobiles) {
+	public BaseResp<Object> smsBatch(List<String> mobiles,String template) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try {
-			baseResp = iAlidayuService.sendMsgBatch(mobiles);
+			baseResp = iAlidayuService.sendMsgBatch(mobiles,template);
 		} catch (Exception e) {
 			logger.error("smsBatch is error",e);
 		}
@@ -1100,7 +1100,7 @@ public class UserServiceImpl implements UserService {
 				userMongoDao.updateAppUserMongoEntity(updateUserInfo);
 				queueMessageSendService.sendAddMessage(Constant.MQACTION_USERRELATION,
 						Constant.MQDOMAIN_USER_UPDATE,String.valueOf(updateUserInfo.getUserid()));
-				if(StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())){//修改了昵称
+				if(StringUtils.isNotEmpty(updateUserInfo.getNickname()) || StringUtils.isNotEmpty(updateUserInfo.getAvatar())){//修改了昵称或者头像
 					updateUserRelevantInfo(updateUserInfo.getUserid(),oldUserInfo.getNickname(),updateUserInfo.getNickname(),updateUserInfo.getAvatar());
 				}
 			}
