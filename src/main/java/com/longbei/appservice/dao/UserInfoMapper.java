@@ -126,10 +126,11 @@ public interface UserInfoMapper {
 
 
 
-	int selectCount(UserInfo userInfo);
+	int selectCount(@Param("user") UserInfo userInfo,@Param("validateidcard") String validateidcard);
 
 
 	List<UserInfo> selectList(@Param("user") UserInfo userInfo,
+							  @Param("validateidcard") String validateidcard,
 							  @Param("order") String order,
 							  @Param("ordersc") String ordersc,
 							  @Param("startno") Integer startno,
