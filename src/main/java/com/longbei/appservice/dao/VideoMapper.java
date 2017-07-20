@@ -51,4 +51,11 @@ public interface VideoMapper {
      * @return
      */
     List<Video> getRelevantVideo(Map<String, Object> paraMap);
+
+    /**
+     * 根据视频分类的id 获取视频的数量
+     * @param map
+     * @return
+     */
+    int getVideoCount(Map<String, Object> map);
 }
