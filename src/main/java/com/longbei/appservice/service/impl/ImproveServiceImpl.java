@@ -3491,12 +3491,39 @@ public class ImproveServiceImpl implements ImproveService{
         BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
+        	Classroom classroom = null;
+        	UserCard userCard = null;
+        	if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
+        		classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
+                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
+                }
+        	}
+        	
             List<Improve> list = baseResp.getData();
             Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
                 if(userCollectImproveIds.contains(improve.getImpid().toString())){
                     improve.setHascollect("1");
+                }
+                
+                if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
+                	//获取教室微进步批复作业列表
+                	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
+                	String isreply = "0";
+                    if(null != replyList && replyList.size()>0){
+                    	isreply = "1";
+                    }
+                    if(!"1".equals(isreply)){
+                        if(null != userCard){
+                            //判断当前用户是否是老师
+                            if(userCard.getUserid() != Long.parseLong(userid)){
+                                isreply = "2";
+                            }
+                        }
+                    }
+                    improve.setIsreply(isreply);
                 }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
