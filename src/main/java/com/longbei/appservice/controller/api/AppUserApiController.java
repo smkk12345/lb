@@ -337,7 +337,7 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "smsBatch")
     @ResponseBody
-    public BaseResp<Object> smsBatch(List<String> mobiles,String template){
+    public BaseResp<Object> smsBatch(@RequestBody List<String> mobiles,String template){
         logger.info("smsBatch and mobiles={},template={}",JSON.toJSONString(mobiles),template);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(mobiles.toString())) {
