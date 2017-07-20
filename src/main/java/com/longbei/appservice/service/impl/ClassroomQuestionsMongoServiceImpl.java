@@ -1,7 +1,9 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
@@ -102,12 +104,12 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	public BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, int pageSize) {
 		BaseResp<List<ClassroomQuestions>> reseResp = new BaseResp<>();
 		try {
-//			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //	  		List<String> idlist = new ArrayList<>();
 //	  		if(null != classroom){
 //	  			idlist = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //	  		}
-//			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsListByClassroomid(classroomid, lastDate, pageSize);
 			if(null != list && list.size()>0){
 				for (ClassroomQuestions classroomQuestions : list) {
@@ -131,6 +133,9 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				}
 			}
 			reseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<>();
+			expandData.put("cardid", userCard.getUserid());
+			reseResp.setExpandData(expandData);
 			if(list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_35);
 				return reseResp;

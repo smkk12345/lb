@@ -192,6 +192,7 @@ public class Constant {
 	public static final int STATUS_SYS_915 = -915;
 	public static final int STATUS_SYS_916 = -916;
 	public static final int STATUS_SYS_917 = -917;
+	public static final int STATUS_SYS_918 = -918;
 
 	//100-120 商品有关
 	public static final int STATUS_SYS_100 = -100;
@@ -366,6 +367,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_915 = "抱歉,您当前没有权限邀请好友入群!";
 	public static final String RTNINFO_SYS_916 = "抱歉,您当前无法更改群昵称!";
 	public static final String RTNINFO_SYS_917 = "龙杯目前最多可以添加5000个好友";
+	public static final String RTNINFO_SYS_918 = "抱歉,该群组已被删除!";
 
 	//教室   1100 --- 1120
 	public static final String RTNINFO_SYS_1100 = "当前问题您已回答";
@@ -419,7 +421,14 @@ public class Constant {
 			"/rank/selectRankList," +
 			"/rank/rankDetail,/rank/rankMemberSort," +
 			"/rank/ownRankSort,/rank/selectFashionMan,/improve/rank/list,/rank/selectRankArea,/rank/selectRankAward,"+
-			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist";
+			"/rank/rankAwardList,/rank/onlyRankAward,/rank/getWinningRankAwardUser,/improve/hotlist"+
+
+			"/classroom/classroomHeadDetail," +
+			"/classroom/classroomDetail," +
+			"/classroom/classroomMembersDateList,"+
+			"/classroom/coursesList,"+
+			"/classroom/selectClassroomList,"+
+			"/classroom/selectRoomMembers";
 
 	/**
 	 * 进步相关配置
@@ -588,7 +597,9 @@ public class Constant {
 	public static final String  MSG_RANKIMP_QUIT_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被请下《n》龙榜"; //下榜进步
 	public static final String  MSG_RANKIMP_REMOVE_MODEL = "您的参榜进步与榜规则或倡导精神不符，已被删除"; //榜结束删除进步
 	public static final String  MSG_RANK_CLOSS_MODEL = "您参加的龙榜因严重违反龙杯相关规则和倡导精神,已被关闭"; //榜关闭
-	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,已被请下教室"; //教室
+	public static final String  MSG_CLASSROOM_MODEL = "因不符合龙榜规则和倡导精神,您已被请下教室"; //教室
+	public static final String  MSG_CLASSROOMCOURSES_FANS_MODEL = "您关注的教室《n》添加新课程啦，赶快去看看吧！";
+	public static final String  MSG_CLASSROOMCOURSES_INSERT_MODEL = "您加入的教室《n》添加新课程啦，赶快去看看吧！";
 	
 	
 	

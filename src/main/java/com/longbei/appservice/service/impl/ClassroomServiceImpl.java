@@ -18,7 +18,9 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
@@ -135,12 +137,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
-				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
+				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
-				if(userid != null){
+				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
 					//获取当前用户在教室发作业的总数
 					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
+					if(null == impNum){
+						impNum = 0;
+					}
 					map.put("impNum", impNum);
 					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(null != classroomMembers){
@@ -241,6 +246,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != courseList && courseList.size()>0){
 					map.put("pickey", courseList.get(0).getPickey());
 				}
+				map.put("courseCount", courseList.size());
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classtitle", classroom.getClasstitle());
 				map.put("ptype", classroom.getPtype());
@@ -248,29 +254,36 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("cardid", userCard.getUserid());
 				map.put("classroomid", classroomid);
 				//是否已经关注教室
-				Map<String,Object> usermap = new HashMap<String,Object>();
-				usermap.put("businessType", "4");
-				usermap.put("businessId", classroomid);
-				usermap.put("userId", userid);
-                List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
-                if(userBusinessConcern.size() > 0){
-                	map.put("isfollow", "1");
-                }else{
-                	map.put("isfollow", "0");
-                }
-				if(userid != null){
-					//itype 0—加入教室 1—退出教室     为null查全部
-					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-					if(null != members){
-						isadd = "1";
+				if(userid.toString().equals(Constant.VISITOR_UID)){
+					map.put("isfollow", "0");
+				}else{
+					Map<String,Object> usermap = new HashMap<String,Object>();
+					usermap.put("businessType", "4");
+					usermap.put("businessId", classroomid);
+					usermap.put("userId", userid);
+					List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
+
+					if(userBusinessConcern.size() > 0){
+						map.put("isfollow", "1");
+					}else{
+						map.put("isfollow", "0");
+					}
+					if(userid != null){
+						//itype 0—加入教室 1—退出教室     为null查全部
+						ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+						if(null != members){
+							isadd = "1";
+						}
 					}
 				}
+
 				map.put("isadd", isadd);
 				//名片信息---老师h5
 				map.put("content", userCard.getContent());
 				
 				//分享url
-				map.put("roomurlshare", "");
+				map.put("roomurlshare", 
+						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -449,7 +462,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			}
 			if(null != list && list.size()>0){
 				//操作
-				list = selectList(list);
+				list = selectUserList(list, userid);
 			}
 			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
@@ -473,8 +486,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * 2017年2月28日
 	 */
 	@Override
-	public BaseResp<Object> selectInsertByUserid(long userid, int startNum, int endNum) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<Classroom>> selectInsertByUserid(long userid, int startNum, int endNum) {
+		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
 		try {
 			List<Classroom> roomlist = new ArrayList<Classroom>();
 			List<ClassroomMembers> list = classroomMembersMapper.selectInsertByUserid(userid, startNum, endNum);
@@ -488,8 +501,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
 			}
-			//操作
-			roomlist = selectList(roomlist);
+			if(null != roomlist && roomlist.size()>0){
+				//操作
+				roomlist = selectUserList(roomlist, userid);
+			}
 			reseResp.setData(roomlist);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -498,6 +513,79 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return reseResp;
 	}
+	
+	private List<Classroom> selectUserList(List<Classroom> list, long userid){
+		//把教室没有课程视频的去掉
+		//isadd 访问用户是否已加入教室  0：未加入  1：加入
+		String isadd = "0";
+		for (int i = 0; i < list.size(); i++) {
+			Classroom classroom = list.get(i);
+			//获取老师名片信息
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			classroom.setUserCard(userCard);
+			//获取教室课程默认封面，把教室没有课程视频的去掉
+			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+			if(res == 0){
+				list.remove(classroom);
+			} else {
+//				ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroom.getClassroomid());
+//				if(null != classroomCourses){
+//					//课程默认封面    fileurl  视频文件url（转码后）
+//					classroom.setFileurl(classroomCourses.getFileurl());
+//				}
+				//获取最新课程视频截图key
+				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), 0, 1);
+				if(null != courseList && courseList.size()>0){
+					classroom.setPickey(courseList.get(0).getPickey());
+				}
+			}
+			//itype 0—加入教室 1—退出教室     为null查全部
+			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroom.getClassroomid(), 
+					userid, "0");
+			if(null != classroomMembers){
+				isadd = "1";
+			}
+			classroom.setIsadd(isadd);
+		}
+		return list;
+	}
+	
+	
+	@Override
+	public BaseResp<List<Classroom>> selectFansByUserid(long userid, int startNum, int endNum) {
+		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
+		try {
+			List<Classroom> roomlist = new ArrayList<Classroom>();
+			Map<String,Object> map = new HashMap<String,Object>();
+            map.put("userId",userid);
+            map.put("businessType","4");
+            map.put("orderType","idDesc");
+            map.put("startNum",startNum);
+            map.put("pageSize",endNum);
+            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findUserBusinessConcernList(map);
+			if(null != concernList && concernList.size()>0){
+				for (UserBusinessConcern userBusinessConcern : concernList) {
+					Classroom classroom = classroomMapper.selectByPrimaryKey(userBusinessConcern.getBusinessid());
+					roomlist.add(classroom);
+				}
+			}
+			if(startNum == 0 && roomlist.size() == 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
+				return reseResp;
+			}
+			if(null != roomlist && roomlist.size()>0){
+				//操作
+				roomlist = selectUserList(roomlist, userid);
+			}
+			reseResp.setData(roomlist);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectFansByUserid userid = {}, startNum = {}, endNum = {}", 
+					userid, startNum, endNum, e);
+		}
+		return reseResp;
+	}
+	
 
 	@Override
 	public BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum) {
@@ -516,6 +604,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp;
 			}
 			reseResp.setData(list);
+			Map<String, Object> expandData = new HashMap<String, Object>();
+			expandData.put("roomsize", list.size());
+			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectListByPtype ptype = {}, keyword = {}, startNum = {}, endNum = {}", 
@@ -635,9 +726,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 						String remark = "您参加的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
                         userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomMembers.getUserid().toString(),
                                 "", "12",
-                                classroomid + "", remark, "0", "54", "教室关闭", 0, "", "");
+                                classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
 					}
 				}
+				//取消关注该教室
+				userBusinessConcernMapper.deleteBusinessConcern(4, classroomid);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -815,7 +908,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Override
 	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
-		Page<Classroom> page = new Page<>(startNum,endNum);
+		Page<Classroom> page = new Page<>(startNum/endNum+1,endNum);
         try {
             int totalcount = classroomMapper.selectSearchCount(classrooms);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);
@@ -999,7 +1092,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
-				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
+				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				if(userid != null){
 					//获取当前用户在教室发作业的总数
@@ -1059,6 +1152,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return reseResp;
 	}
-	
+
 
 }

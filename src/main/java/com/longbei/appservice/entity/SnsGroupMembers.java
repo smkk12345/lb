@@ -27,6 +27,10 @@ public class SnsGroupMembers {
 
     private Boolean disturbstatus;//是否开启消息免打扰
 
+    private Integer identity;//身份标识/在群中的身份 0-普通 20 — 群主
+
+    private String vcertification;//龙杯官方认证 0无认证 1名人认证 2Star认证
+
     protected AppUserMongoEntity appUserMongoEntity; //进步用户信息
 
     /**
@@ -183,5 +187,21 @@ public class SnsGroupMembers {
 
     public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
         this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public Integer getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(Integer identity) {
+        this.identity = identity;
+    }
+
+    public String getVcertification() {
+        return vcertification;
+    }
+
+    public void setVcertification(String vcertification) {
+        this.vcertification = vcertification;
     }
 }

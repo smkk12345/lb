@@ -73,10 +73,11 @@ public interface UserService {
 	/**
 	 * @Description: 批量发送短信
 	 * @param mobiles 手机号码列表
+     * @param template 短信模版id
 	 * @auther IngaWu
 	 * @currentdate:2017年7月18日
 	 */
-	BaseResp<Object> smsBatch(List<String> mobiles);
+	BaseResp<Object> smsBatch(List<String> mobiles,String template);
 	/**
 	* @Title: checkSms
 	* @Description: 校验验证码
@@ -219,13 +220,14 @@ public interface UserService {
 	/**
 	 * 获取用户列表
 	 * @param userInfo
+	 * @param validateidcard //是否验证了身份证号码 0是未提交信息 1是验证中 2验证通过 3验证不通过
 	 * @param order
 	 * @param ordersc
 	 * @param pageno
 	 * @param pagesize
 	 * @return
 	 */
-	BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo,String order,String ordersc,Integer pageno,Integer pagesize);
+	BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo,String validateidcard,String order,String ordersc,Integer pageno,Integer pagesize);
 
 	/**
 	 * 更新用户状态 达人，封号等

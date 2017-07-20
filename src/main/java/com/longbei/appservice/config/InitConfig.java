@@ -284,6 +284,7 @@ public class InitConfig implements CommandLineRunner {
         AppserviceConfig.articleurl = prefix+"apptpl/article-detail.html";
         AppserviceConfig.seminarurl = prefix_base+"/seminar/info";
         AppserviceConfig.h5_share_circle_detail = prefix+"sharetpl/circle-detail.html";
+        AppserviceConfig.h5_share_classroom_detail = prefix+"sharetpl/classroom-detail.html";
     }
 
     /**

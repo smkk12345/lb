@@ -935,13 +935,16 @@ public class ImproveServiceImpl implements ImproveService{
   					improve.setReplyImprove(replyImprove);
   				}
   				if(!"1".equals(isreply)){
-  					if(!StringUtils.isBlank(userid)){
+  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
   						//判断当前用户是否是老师
   						if(userCard.getUserid() != Long.parseLong(userid)){
   							isreply = "2";
   						}
   					}
   				}
+  				if(userid.toString().equals(Constant.VISITOR_UID)){
+  					isreply = "2";
+				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -2364,7 +2367,7 @@ public class ImproveServiceImpl implements ImproveService{
 //            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
             ImproveLikes improveLikes = improveLikesMapper.selectByimpid(impid);
             springJedisDao.increment(Constant.REDIS_IMPROVE_LIKE + impid,improveLikes==null?0:improveLikes.getLikes());
-            return improveLikes.getLikes();
+            return improveLikes==null?0:improveLikes.getLikes();
         } else {
             return Integer.parseInt(count);
         }

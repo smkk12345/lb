@@ -2554,6 +2554,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("isfinish",rank.getIsfinish());
             resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime(),"yyyy-MM-dd HH:mm:ss"));
             resultMap.put("starttime",DateUtils.formatDate(rank.getStarttime(),"yyyy-MM-dd HH:mm:ss"));
+            resultMap.put("vcertification",appUserMongoEntity.getVcertification());
             baseResp.setData(resultMap);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -3577,7 +3578,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             List<UserInfo> userInfos = new ArrayList<>();
             if (!isNullUser(userInfo)){
-                userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+                userInfos = userInfoMapper.selectList(userInfo,null,null,null,null,null);
             }
             RankMembers rankMembers = new RankMembers();
             rankMembers.setIsfashionman("1");
