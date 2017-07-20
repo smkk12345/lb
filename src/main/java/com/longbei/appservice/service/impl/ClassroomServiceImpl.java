@@ -140,9 +140,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
-				if(userid != null){
+				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
 					//获取当前用户在教室发作业的总数
 					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
+					if(null == impNum){
+						impNum = 0;
+					}
 					map.put("impNum", impNum);
 					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(null != classroomMembers){
@@ -251,23 +254,29 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("cardid", userCard.getUserid());
 				map.put("classroomid", classroomid);
 				//是否已经关注教室
-				Map<String,Object> usermap = new HashMap<String,Object>();
-				usermap.put("businessType", "4");
-				usermap.put("businessId", classroomid);
-				usermap.put("userId", userid);
-                List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
-                if(userBusinessConcern.size() > 0){
-                	map.put("isfollow", "1");
-                }else{
-                	map.put("isfollow", "0");
-                }
-				if(userid != null){
-					//itype 0—加入教室 1—退出教室     为null查全部
-					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-					if(null != members){
-						isadd = "1";
+				if(userid.toString().equals(Constant.VISITOR_UID)){
+					map.put("isfollow", "0");
+				}else{
+					Map<String,Object> usermap = new HashMap<String,Object>();
+					usermap.put("businessType", "4");
+					usermap.put("businessId", classroomid);
+					usermap.put("userId", userid);
+					List<UserBusinessConcern> userBusinessConcern = userBusinessConcernMapper.findUserBusinessConcernList(usermap);
+
+					if(userBusinessConcern.size() > 0){
+						map.put("isfollow", "1");
+					}else{
+						map.put("isfollow", "0");
+					}
+					if(userid != null){
+						//itype 0—加入教室 1—退出教室     为null查全部
+						ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+						if(null != members){
+							isadd = "1";
+						}
 					}
 				}
+
 				map.put("isadd", isadd);
 				//名片信息---老师h5
 				map.put("content", userCard.getContent());
@@ -899,7 +908,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Override
 	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
-		Page<Classroom> page = new Page<>(startNum,endNum);
+		Page<Classroom> page = new Page<>(startNum/endNum+1,endNum);
         try {
             int totalcount = classroomMapper.selectSearchCount(classrooms);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);

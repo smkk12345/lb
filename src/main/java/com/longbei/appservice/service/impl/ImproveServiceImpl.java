@@ -935,13 +935,16 @@ public class ImproveServiceImpl implements ImproveService{
   					improve.setReplyImprove(replyImprove);
   				}
   				if(!"1".equals(isreply)){
-  					if(!StringUtils.isBlank(userid)){
+  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
   						//判断当前用户是否是老师
   						if(userCard.getUserid() != Long.parseLong(userid)){
   							isreply = "2";
   						}
   					}
   				}
+  				if(userid.toString().equals(Constant.VISITOR_UID)){
+  					isreply = "2";
+				}
   				improve.setIsreply(isreply);
   				
   			}
