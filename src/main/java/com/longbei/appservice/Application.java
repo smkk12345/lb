@@ -22,7 +22,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableFeignClients(basePackages =
         {"com.longbei.appservice.service.api.outernetservice",
                 "com.longbei.appservice.service.api.userservice" ,
-                        "com.longbei.appservice.service.api.productservice"})
+                        "com.longbei.appservice.service.api.productservice",
+                "com.longbei.appservice.service.api.authservice"})
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
 

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * oss  alidayu
- * Created by longbei on 2016/9/12.
+ * Created by luye on 2016/9/12.
  */
 @Configuration
 @ConfigurationProperties

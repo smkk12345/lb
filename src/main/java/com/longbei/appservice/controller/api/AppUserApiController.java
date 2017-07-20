@@ -154,6 +154,7 @@ public class AppUserApiController {
     /**
      * 获取用户列表
      * @param userInfo
+     * @param validateidcard //是否验证了身份证号码 0是未提交信息 1是验证中 2验证通过 3验证不通过
      * @param order
      * @param ordersc
      * @param pageno
@@ -163,9 +164,9 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/userlist")
     @ResponseBody
-    public BaseResp<Page<UserInfo>> selectUserList(@RequestBody UserInfo userInfo, String order,
+    public BaseResp<Page<UserInfo>> selectUserList(@RequestBody UserInfo userInfo,String validateidcard, String order,
                                                    String ordersc, String pageno, String pagesize){
-        logger.info("userInfo={},order={},ordersc={},pageno={},pagesize={}", JSON.toJSONString(userInfo),order,ordersc,pageno,pagesize);
+        logger.info("userInfo={},validateidcard={},order={},ordersc={},pageno={},pagesize={}", JSON.toJSONString(userInfo),validateidcard,order,ordersc,pageno,pagesize);
         BaseResp<Page<UserInfo>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(ordersc)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -177,7 +178,7 @@ public class AppUserApiController {
             pagesize = Constant.DEFAULT_PAGE_SIZE;
         }
         try {
-            baseResp = userService.selectUserList(userInfo,order,ordersc,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+            baseResp = userService.selectUserList(userInfo,validateidcard,order,ordersc,Integer.parseInt(pageno),Integer.parseInt(pagesize));
         } catch (Exception e) {
             logger.error("select user list for pc is error:",e);
         }
@@ -337,7 +338,7 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "smsBatch")
     @ResponseBody
-    public BaseResp<Object> smsBatch(List<String> mobiles,String template){
+    public BaseResp<Object> smsBatch(@RequestBody List<String> mobiles,String template){
         logger.info("smsBatch and mobiles={},template={}",JSON.toJSONString(mobiles),template);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(mobiles.toString())) {

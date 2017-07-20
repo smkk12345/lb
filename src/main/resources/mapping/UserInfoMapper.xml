@@ -70,38 +70,60 @@
     where userid = #{userid}
   </select>
 
-  <select id="selectCount" parameterType="com.longbei.appservice.entity.UserInfo" resultType="java.lang.Integer">
-    SELECT count(*) FROM user_info
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT
+    count(*)
+    FROM user_info
     <where>
-      <if test="nickname != null and nickname!=''">
-        AND nickname LIKE concat(concat("%",#{nickname}),"%")
+      userid != 10000
+      <if test="user.nickname != null and user.nickname!=''">
+        AND nickname LIKE concat(concat("%",#{user.nickname}),"%")
       </if>
-      <if test="username != null and username!=''">
-        AND username LIKE concat(concat("%",#{username}),"%")
+      <if test="user.username != null and user.username!=''">
+        AND username LIKE concat(concat("%",#{user.username}),"%")
       </if>
-      <if test="isfashionman != null">
-        AND isfashionman = #{isfashionman}
+      <if test="user.isfashionman != null">
+        AND isfashionman = #{user.isfashionman}
       </if>
-      <if test="sex != null and sex != '-1'.toString()">
-        AND sex = #{sex}
+      <if test="user.vcertification != null and user.vcertification != ''">
+        AND vcertification = #{user.vcertification}
       </if>
-      <if test="sgrade != null and sgrade!=0">
-        AND grade &gt;= #{sgrade}
+      <if test="user.sex != null and user.sex != '-1'.toString()">
+        AND sex = #{user.sex}
       </if>
-      <if test="egrade != null and egrade!=0">
-        AND grade &lt; #{egrade}
+      <if test="user.sgrade != null and user.sgrade!=0">
+        AND grade &gt;= #{user.sgrade}
       </if>
-      <if test="screatetime != null">
-        AND createtime &gt;= #{screatetime}
+      <if test="user.egrade != null and user.egrade!=0">
+        AND grade &lt; #{user.egrade}
       </if>
-      <if test="ecreatetime != null">
-        AND createtime &lt; #{ecreatetime}
+      <if test="user.screatetime != null">
+        AND createtime &gt;= #{user.screatetime}
       </if>
-      <if test="vcertification != null and vcertification != ''">
-        AND vcertification = #{vcertification}
+      <if test="user.ecreatetime != null">
+        AND createtime &lt; #{user.ecreatetime}
+      </if>
+      <if test="validateidcard != null and validateidcard != '' and validateidcard !='-1'.toString()">
+        AND userid in(SELECT
+        DISTINCT `a`.`userid` AS `userid`
+        FROM
+        (
+        `user_info` `a`
+        JOIN `user_idcard` `b` ON((`a`.`userid` = `b`.`userid`))
+        ) WHERE 1=1 and `b`.`validateidcard`= #{validateidcard} order by `a`.`userid`)
+      </if>
+      <if test="validateidcard != null and validateidcard != '' and validateidcard =='-1'.toString()">
+        AND userid not in(SELECT
+        DISTINCT `a`.`userid` AS `userid`
+        FROM
+        (
+        `user_info` `a`
+        JOIN `user_idcard` `b` ON((`a`.`userid` = `b`.`userid`))
+        ) WHERE 1=1 and `b`.`validateidcard` != 0)
       </if>
     </where>
   </select>
+
 
   <select id="selectList" resultMap="BaseResultMap">
     SELECT
@@ -135,6 +157,24 @@
       </if>
       <if test="user.ecreatetime != null">
         AND createtime &lt; #{user.ecreatetime}
+      </if>
+      <if test="validateidcard != null and validateidcard != '' and validateidcard !='-1'.toString()">
+        AND userid in(SELECT
+        DISTINCT `a`.`userid` AS `userid`
+      FROM
+      (
+      `user_info` `a`
+      JOIN `user_idcard` `b` ON((`a`.`userid` = `b`.`userid`))
+      ) WHERE 1=1 and `b`.`validateidcard`= #{validateidcard} order by `a`.`userid`)
+      </if>
+      <if test="validateidcard != null and validateidcard != '' and validateidcard =='-1'.toString()">
+        AND userid not in(SELECT
+        DISTINCT `a`.`userid` AS `userid`
+        FROM
+        (
+        `user_info` `a`
+        JOIN `user_idcard` `b` ON((`a`.`userid` = `b`.`userid`))
+        ) WHERE 1=1 and `b`.`validateidcard` != 0)
       </if>
     </where>
     <if test="order=='-1'.toString()">
