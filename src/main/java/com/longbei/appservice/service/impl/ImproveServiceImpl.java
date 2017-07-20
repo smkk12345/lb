@@ -942,6 +942,9 @@ public class ImproveServiceImpl implements ImproveService{
   						}
   					}
   				}
+  				if(userid.toString().equals(Constant.VISITOR_UID)){
+  					isreply = "2";
+				}
   				improve.setIsreply(isreply);
   				
   			}

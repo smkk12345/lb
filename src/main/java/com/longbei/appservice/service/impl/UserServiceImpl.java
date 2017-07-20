@@ -1546,16 +1546,16 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo, String order, String ordersc, Integer pageno, Integer pagesize) {
+	public BaseResp<Page<UserInfo>> selectUserList(UserInfo userInfo,String validateidcard, String order, String ordersc, Integer pageno, Integer pagesize) {
 		BaseResp<Page<UserInfo>> baseResp = new BaseResp<>();
 		Page<UserInfo> page = new Page<>(pageno,pagesize);
 		try {
-			int totalcount = userInfoMapper.selectCount(userInfo);
+			int totalcount = userInfoMapper.selectCount(userInfo,validateidcard);
 			Integer startno = null;
 			if (null != pageno){
 				startno = pagesize*(pageno-1);
 			}
-			List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,order,ordersc,startno,pagesize);
+			List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,validateidcard,order,ordersc,startno,pagesize);
 			for(int i=0;i<userInfos.size();i++){
 				BaseResp<UserAccount> baseResp1 = userAccountService.selectUserAccountByUserId(userInfos.get(i).getUserid());
 				UserAccount userAccount = baseResp1.getData();
