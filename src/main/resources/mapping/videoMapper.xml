@@ -112,4 +112,10 @@
         order by sortnum
         limit 2
     </select>
+
+    <select id="getVideoCount" parameterType="map" resultType="Integer">
+        select count(1)
+        from video
+        where videoclassifyid = #{videoClassifyId}
+    </select>
 </mapper>

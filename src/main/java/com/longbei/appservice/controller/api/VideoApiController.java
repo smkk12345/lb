@@ -105,22 +105,22 @@ public class VideoApiController {
     /**
      * 获取视频列表
      * @param videoClassifyId
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
     @RequestMapping("getVideoList")
-    public BaseResp<List<Video>> getVideoList(Integer videoClassifyId,Integer startNum,Integer pageSize){
+    public BaseResp<Page<Video>> getVideoList(Integer videoClassifyId,Integer pageNo,Integer pageSize){
         if(videoClassifyId == null){
-            return new BaseResp<List<Video>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return new BaseResp<Page<Video>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if(startNum == null){
-            startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+        if(pageNo == null){
+            pageNo = 1;
         }
         if(pageSize == null){
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
-        return this.videoService.getVideoList(videoClassifyId,startNum,pageSize);
+        return this.videoService.getVideoList(videoClassifyId,pageNo,pageSize);
     }
 
     /**
