@@ -1552,7 +1552,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			int totalcount = userInfoMapper.selectCount(userInfo);
 			Integer startno = null;
-			if (null != pageno){
+			if (null != pageno && -1 != pageno){
 				startno = pagesize*(pageno-1);
 			}
 			List<UserInfo> userInfos = userInfoMapper.selectList(userInfo,order,ordersc,startno,pagesize);
