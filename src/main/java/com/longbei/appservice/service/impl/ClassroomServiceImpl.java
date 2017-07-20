@@ -140,7 +140,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				
-				if(userid != null&&!userid.equals(Constant.VISITOR_UID)){
+				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
 					//获取当前用户在教室发作业的总数
 					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
 					if(null == impNum){
@@ -254,7 +254,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("cardid", userCard.getUserid());
 				map.put("classroomid", classroomid);
 				//是否已经关注教室
-				if(userid.equals(Constant.VISITOR_UID)){
+				if(userid.toString().equals(Constant.VISITOR_UID)){
 					map.put("isfollow", "0");
 				}else{
 					Map<String,Object> usermap = new HashMap<String,Object>();
