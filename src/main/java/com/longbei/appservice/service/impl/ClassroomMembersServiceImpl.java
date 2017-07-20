@@ -276,6 +276,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
             resultMap.put("avatar", appUserMongoEntity.getAvatar());
             resultMap.put("userid", appUserMongoEntity.getUserid());
             resultMap.put("icount", members.getIcount());
+            resultMap.put("vcertification", appUserMongoEntity.getVcertification());
 //            Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 //            if(classroom == null) {
 //				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
