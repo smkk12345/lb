@@ -62,10 +62,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 		//服务器之间api调用
 		if(url.contains("/api/")){
 			String authorization = request.getHeader("Authorization");
-//			if(url.contains("getServiceToken")){
-//				arg2.doFilter(request, response);
-//				return;
-//			}
+			for (String str : shareUrls){
+				if(url.contains(str)){
+					arg2.doFilter(request, response);
+					return;
+				}
+			}
 			if(StringUtils.isBlank(authorization)){
 				//未发现token
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
@@ -353,5 +355,30 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 	}
 
+
+
+	private static List<String> shareUrls = new ArrayList<String>();
+
+	static {
+		shareUrls.add("/article/getinfo/");
+		shareUrls.add("/video/getVideoListDetail");
+		shareUrls.add("rankShare");
+		shareUrls.add("video/getVideoListDetail");
+		shareUrls.add("video/getVideoDetail");
+		shareUrls.add("video/loadRelevantVideo");
+		shareUrls.add("rankShare/goalDetai");
+		shareUrls.add("video/addLike");
+		shareUrls.add("issue/selectByIssueIdH5");
+		shareUrls.add("issue/hotIssueList");
+		shareUrls.add("issue/selectListByTypeH5");
+		shareUrls.add("issue/selectIssueTypesH5");
+		shareUrls.add("common/shortUrl");
+		shareUrls.add("seminar/allinfo");
+		shareUrls.add("classroom/classroomHeadDetail");
+		shareUrls.add("classroom/classroomDetail");
+		shareUrls.add("classroom/classroomMembersDateList");
+		shareUrls.add("classroom/coursesList");
+		shareUrls.add("classroom/questionsList");
+	}
 	
 }
