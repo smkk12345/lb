@@ -33,6 +33,14 @@ public interface ClassroomService {
 	
 	/**
 	 * @author yinxc
+	 * 获取老师h5信息
+	 * 2017年7月20日
+	 * @param classroomid 教室业务id
+	 */
+	BaseResp<Object> selectUsercard(long classroomid);
+	
+	/**
+	 * @author yinxc
 	 * 获取教室详情---教室介绍信息
      * @param @param classroomid 教室业务id
 	 * 2017年7月14日

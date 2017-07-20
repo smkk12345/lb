@@ -396,7 +396,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
                 }
                 userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
                         improveid, "12",
-                        classroomid, remark, "0", "45", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
+                        classroomid, remark, "0", "59", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
@@ -425,7 +425,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
-						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "");
+						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

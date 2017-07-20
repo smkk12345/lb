@@ -293,6 +293,33 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	
+
+	@Override
+	public BaseResp<Object> selectUsercard(long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(null != classroom){
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
+				map.put("classroomid", classroomid);
+				//名片信息---老师h5
+				map.put("content", userCard.getContent());
+				map.put("displayname", userCard.getDisplayname());
+				map.put("brief", userCard.getBrief());
+				map.put("avatar", userCard.getAvatar());
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectUsercard classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+
+	
 
 	@Override
 	public BaseResp<Object> croomDetail(long classroomid) {
@@ -646,6 +673,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != classroomMembers){
 				isadd = "1";
 			}
+			classroom.setAllcourses(res);
 			classroom.setIsadd(isadd);
 		}
 		return list;

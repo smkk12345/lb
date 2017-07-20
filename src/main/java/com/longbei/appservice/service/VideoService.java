@@ -58,11 +58,11 @@ public interface VideoService {
     /**
      * 获取视频列表
      * @param videoClassifyId
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
-    BaseResp<List<Video>> getVideoList(Integer videoClassifyId, Integer startNum, Integer pageSize);
+    BaseResp<Page<Video>> getVideoList(Integer videoClassifyId, Integer pageNo, Integer pageSize);
 
     /**
      * 获取视频详情
