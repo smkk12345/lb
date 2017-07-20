@@ -858,4 +858,34 @@ public class ClassroomController {
    		return baseResp;
     }
   	
+  	
+  	/**
+     * @Title: http://ip:port/app_service/classroom/selectUsercard
+     * @Description: 获取老师h5信息
+     * @param @param classroomid 教室业务id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @desc data: 
+     * 					displayname：老师称呼
+     * 					avatar：老师头像
+     * 					content：名片信息---老师h5
+     * 					brief:简介
+     * @auther yinxc
+     * @currentdate:2017年7月20日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectUsercard")
+    public BaseResp<Object> selectUsercard(String classroomid) {
+		logger.info("selectUsercard classroomid = {}", classroomid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			baseResp = classroomService.selectUsercard(Long.parseLong(classroomid));
+   		} catch (Exception e) {
+   			logger.error("selectUsercard classroomid = {}", classroomid, e);
+   		}
+   		return baseResp;
+    }
+  	
 }
