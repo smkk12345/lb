@@ -232,11 +232,10 @@ public class TimeLineDetail {
 		this.hasGiveFlower = hasGiveFlower;
 	}
 
-	public String getCreatedate() {
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar beijingcal = Calendar.getInstance();
-        beijingcal.setTimeInMillis(createdate.getTime());
-        return sf.format(beijingcal.getTime());
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+	public Date getCreatedate() {
+		return createdate;
 	}
 	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
