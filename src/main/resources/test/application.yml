@@ -60,11 +60,11 @@ spring:
                       max-connections: 100
                 queue:
                        name:
-                             add: improvecircle.add.test
-                             update: improvecircle.update.test
+                             add: improvecircle.add.test1
+                             update: improvecircle.update.test1
                 topic:
                        name:
-                             common: common.test
+                             common: common.test1
 oss:
     endpoint: https://pic1.longbei.ren
     accessKeyId: bmb3uihjoxyWYaQ3
