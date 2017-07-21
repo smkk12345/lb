@@ -199,8 +199,8 @@
     from imp_all_detail
     where (detailtype = 0 or detailtype = 1)
     and createtime &lt; #{endDate}
-    and createtime > #{startDate}
-    and status = 1
+    and createtime >= #{startDate}
+    and status = 0
     group by userid,detailtype
     order by userid,detailtype
   </select>

@@ -57,15 +57,29 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             Date startDate = DateUtils.getDateStart(DateUtils.getBeforeDay(new Date(),1));
             Date endDate = DateUtils.getDateEnd(startDate);
             String currentDay = DateUtils.formatDate(startDate);
-            //查询用户发的进步数量
-            List<UserImproveStatistic> userImproveList = this.timeLineDetailDao.getUserImproveStatistic(startDate,endDate);
+            //从redis获取 用户这一天中发的进步总数
+            Map<String,String> userImproveNum = this.springJedisDao.entries(Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+currentDay);
+            if(userImproveNum == null){
+                userImproveNum = new HashMap<String,String>();
+            }
+            List<UserImproveStatistic> userImproveList = new ArrayList<UserImproveStatistic>();
+            for(String key:userImproveNum.keySet()){
+                UserImproveStatistic userImproveStatistic = new UserImproveStatistic();
+                userImproveStatistic.setCurrentday(currentDay);
+                userImproveStatistic.setUserid(Long.parseLong(key));
+                userImproveStatistic.setImprovecount(Integer.parseInt(userImproveNum.get(key)));
+                userImproveList.add(userImproveStatistic);
+            }
+
+//            //查询用户发的进步数量
+//            List<UserImproveStatistic> userImproveList = this.timeLineDetailDao.getUserImproveStatistic(startDate,endDate);
             //批量 存入数据库
             if(userImproveList.size() > 0){
                 int row=this.userImproveStatisticMapper.batchInsertUserImproveStatistic(userImproveList);
-                for(UserImproveStatistic userImproveStatistic:userImproveList){
-                    String key = userImproveStatistic.getUserid()+"_"+userImproveStatistic.getCurrentday()+"_"+"statisticImprove";
-                    this.redisDao.set(key,"1",2*60*60);//用户的统计存放两个小时,标识该用户已经有当天的统计数据了
-                }
+//                for(UserImproveStatistic userImproveStatistic:userImproveList){
+//                    String key = userImproveStatistic.getUserid()+"_"+userImproveStatistic.getCurrentday()+"_"+"statisticImprove";
+//                    this.redisDao.set(key,"1",2*60*60);//用户的统计存放两个小时,标识该用户已经有当天的统计数据了
+//                }
             }
             List<UserImproveStatistic> insertUserImproveStatisticList = new ArrayList<UserImproveStatistic>();
             //查询当天的用户点赞统计
@@ -79,8 +93,8 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
                         nextAllDetail = improveAllDetailList.get(i+1);
                     }
                     //判断key是否已经存在
-                    String key = impAllDetail.getUserid()+"_"+currentDay+"_"+"statisticImprove";
-                    if(this.redisDao.exists(key)){
+//                    String key = impAllDetail.getUserid()+"_"+currentDay+"_"+"statisticImprove";
+                    if(userImproveNum.containsKey(impAllDetail.getUserid().toString())){
                         //update
                         Map<String,Object> map = new HashMap<String,Object>();
                         map.put("userid",impAllDetail.getUserid());
