@@ -132,7 +132,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	public BaseResp<Page<ClassroomCourses>> selectPcSearchCroomCoursesList(ClassroomCourses classroomCourses,
 			int startNum, int endNum) {
 		BaseResp<Page<ClassroomCourses>> reseResp = new BaseResp<>();
-		Page<ClassroomCourses> page = new Page<>(startNum, endNum);
+		Page<ClassroomCourses> page = new Page<>(startNum/endNum+1, endNum);
 		try {
 			int totalcount = classroomCoursesMapper.selectSearchCount(classroomCourses);
 			List<ClassroomCourses> list = classroomCoursesMapper.selectSearchList(classroomCourses, startNum, endNum);
@@ -191,6 +191,9 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			classroomCourses.setUdpatetime(new Date());
 			int temp = classroomCoursesMapper.insertSelective(classroomCourses);
 			if (temp > 0) {
+				//修改课程数量
+				classroomMapper.updateAllcoursesByClassroomid(classroomCourses.getClassroomid(), 1);
+				
 				//推送消息---已关注该教室的人员
 				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
@@ -208,10 +211,10 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//推送消息---已加入该教室的人员
 				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
 				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<String> memberList = classroomMembersMapper.selectMidByCid(classroom.getClassroomid());
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectInsertByUserid(classroom.getClassroomid(),0,0);
 				if(null != memberList && memberList.size()>0){
-					for (String userid : memberList) {
-						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
+					for (int i=0;i<memberList.size();i++) {
+						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
 								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
 					}
 				}

@@ -601,6 +601,59 @@
     limit #{startno},#{pagesize}
   </select>
 
+  <select id="selectClassRoomImproveList" resultMap="BaseResultMap">
+    SELECT
+    icsr.id, icsr.impid, icsr.itype, icsr.brief, icsr.pickey, icsr.filekey, icsr.userid,icsr.duration,
+    icsr.businessid, icsr.businesstype, icsr.likes,csm.likes as totallikes,csm.flowers as totalflowers,
+    icsr.flowers, icsr.diamonds, icsr.createtime, icsr.updatetime, icsr.indexnum, icsr.isdel, ismainimp, icsr.ptype,
+    icsr.ispublic,icsr.sourcekey,icsr.complaincount,csm.itype,csm.userstatus,csm.hascharge,csm.cusername
+    FROM improve_classroom icsr
+    LEFT JOIN classroom_members csm ON  icsr.businessid=csm.classroomid  and icsr.userid=csm.userid
+    WHERE csm.itype = '0' AND icsr.isbusinessdel = '0' AND icsr.isrecommend='0'
+    <if test="startdate != null">
+      AND icsr.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND icsr.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND icsr.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+    <if test="order == null || order == '0'.toString()">
+      ORDER  BY  icsr.createtime DESC
+    </if>
+    <if test="order == '1'.toString()">
+      ORDER BY icsr.likes DESC ,icsr.createtime DESC
+    </if>
+
+    <if test="order == '2'.toString()">
+      ORDER BY icsr.flowers DESC ,icsr.csm.createtime DESC
+    </if>
+    limit #{startno},#{pagesize}
+  </select>
+
+  <select id="selectClassRoomImproveCount" resultType="java.lang.Integer">
+    SELECT
+    count(*)
+    FROM improve_classroom icsr
+    LEFT JOIN classroom_members csm ON  icsr.businessid=csm.classroomid  and icsr.userid=csm.userid
+    WHERE csm.itype = '0' AND icsr.isbusinessdel = '0' AND icsr.isrecommend='0'
+    <if test="startdate != null">
+      AND icsr.createtime &gt;= #{startdate}
+    </if>
+    <if test="brief != null">
+      AND icsr.brief LIKE concat(concat('%',#{brief}),'%')
+    </if>
+    <if test="users != null and users.size() > 0">
+      AND icsr.userid IN
+      <foreach item="item" index="index" collection="users" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
+  </select>
 
   <select id="selectRankImprovesByUserIdAndRankId" resultMap="BaseResultMap">
     SELECT

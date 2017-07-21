@@ -293,6 +293,33 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	
+
+	@Override
+	public BaseResp<Object> selectUsercard(long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(null != classroom){
+				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				map.put("cardid", userCard.getUserid());
+				map.put("classroomid", classroomid);
+				//名片信息---老师h5
+				map.put("content", userCard.getContent());
+				map.put("displayname", userCard.getDisplayname());
+				map.put("brief", userCard.getBrief());
+				map.put("avatar", userCard.getAvatar());
+			}
+			reseResp.setData(map);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectUsercard classroomid = {}", classroomid, e);
+		}
+		return reseResp;
+	}
+
+	
 
 	@Override
 	public BaseResp<Object> croomDetail(long classroomid) {
@@ -451,6 +478,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 	@Override
 	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
+		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
+				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			List<Classroom> list = new ArrayList<>();
@@ -524,10 +553,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
 			//获取教室课程默认封面，把教室没有课程视频的去掉
-			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
-			if(res == 0){
-				list.remove(classroom);
-			} else {
+//			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+//			if(res == 0){
+//				list.remove(classroom);
+//			} else {
 //				ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroom.getClassroomid());
 //				if(null != classroomCourses){
 //					//课程默认封面    fileurl  视频文件url（转码后）
@@ -538,7 +567,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != courseList && courseList.size()>0){
 					classroom.setPickey(courseList.get(0).getPickey());
 				}
-			}
+//			}
 			//itype 0—加入教室 1—退出教室     为null查全部
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroom.getClassroomid(), 
 					userid, "0");
@@ -625,10 +654,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
 			//获取教室课程默认封面，把教室没有课程视频的去掉
-			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
-			if(res == 0){
-				list.remove(classroom);
-			} else {
+//			Integer res = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+//			if(res == 0){
+//				list.remove(classroom);
+//			} else {
 //				ClassroomCourses classroomCourses = classroomCoursesMapper.selectIsdefaultByClassroomid(classroom.getClassroomid());
 //				if(null != classroomCourses){
 //					//课程默认封面    fileurl  视频文件url（转码后）
@@ -639,13 +668,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != courseList && courseList.size()>0){
 					classroom.setPickey(courseList.get(0).getPickey());
 				}
-			}
+//			}
 			//itype 0—加入教室 1—退出教室     为null查全部
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroom.getClassroomid(), 
 					classroom.getUserid(), "0");
 			if(null != classroomMembers){
 				isadd = "1";
 			}
+//			classroom.setAllcourses(res);
 			classroom.setIsadd(isadd);
 		}
 		return list;
@@ -865,8 +895,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 					}
 					classroom.setAllimp(allimp);
 					//教室课程数量
-					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
-					classroom.setAllcourses(allcourses);
+//					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+//					classroom.setAllcourses(allcourses);
 					//获取创建人信息
 					String nickname = "";
 					//sourcetype  0:运营  1:app  2:商户
@@ -924,8 +954,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 					}
 					classroom.setAllimp(allimp);
 					//教室课程数量
-					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
-					classroom.setAllcourses(allcourses);
+//					Integer allcourses = classroomCoursesMapper.selectCountCourses(classroom.getClassroomid());
+//					classroom.setAllcourses(allcourses);
 					//获取创建人信息
 					String nickname = "";
 					//sourcetype  0:运营  1:app  2:商户

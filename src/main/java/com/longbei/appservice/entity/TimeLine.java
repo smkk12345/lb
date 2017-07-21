@@ -1,10 +1,12 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.beans.Transient;
 import java.text.SimpleDateFormat;
@@ -101,11 +103,10 @@ public class TimeLine implements Cloneable{
 		this.timeLineDetail = timeLineDetail;
 	}
 
-	public String getCreatedate() {
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar beijingcal = Calendar.getInstance();
-        beijingcal.setTimeInMillis(createdate.getTime());
-        return sf.format(beijingcal.getTime());
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+	public Date getCreatedate() {
+		return createdate;
 	}
 
 	public void setCreatedate(Date createdate) {

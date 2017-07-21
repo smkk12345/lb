@@ -82,6 +82,16 @@ public interface ClassroomMapper {
     
     /**
 	 * @author yinxc
+	 * 修改教室课程数量---allcourses
+	 * param userid
+	 * param classroomid 
+	 * param num 加入教室为1   剔除教室为-1
+	 * 2017年3月2日
+	 */
+    int updateAllcoursesByClassroomid(@Param("classroomid") long classroomid, @Param("num") Integer num);
+    
+    /**
+	 * @author yinxc
 	 * 修改教室是否免费---isfree -----暂时不用(03-03不让修改)
 	 * 2017年3月2日
 	 * param isfree 是否免费。0 免费 1 收费

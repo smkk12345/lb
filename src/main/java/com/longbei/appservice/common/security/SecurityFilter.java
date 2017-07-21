@@ -361,6 +361,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 	static {
 		shareUrls.add("/article/getinfo/");
+		shareUrls.add("notify");
 		shareUrls.add("/video/getVideoListDetail");
 		shareUrls.add("rankShare");
 		shareUrls.add("video/getVideoListDetail");
