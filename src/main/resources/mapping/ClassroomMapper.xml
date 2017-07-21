@@ -33,12 +33,13 @@
     <result column="crowd" property="crowd" />
     <result column="weight" property="weight" />
     <result column="ishomerecommend" property="ishomerecommend" />
+    <result column="allcourses" property="allcourses" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend 
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -61,7 +62,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0  
+    where isdel = 0 and allcourses != 0  
     <if test="ptype != null and ptype != ''" >
       and ptype = #{ptype}
     </if>
@@ -205,7 +206,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0 
+    where isdel = 0 and allcourses != 0 
     <if test="keyword != null" >
     	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  
@@ -489,6 +490,13 @@
     update classroom
     set 
       classinvoloed = classinvoloed + #{num} 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateAllcoursesByClassroomid" >
+    update classroom
+    set 
+      allcourses = allcourses + #{num} 
     where classroomid = #{classroomid} 
   </update>
   

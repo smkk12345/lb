@@ -69,6 +69,8 @@ public class Classroom {
     
     private String ishomerecommend; //ishomerecommend 是否在首页推荐 0 - 没有 1 - 推荐
     
+    private Integer allcourses; //教室课程数量
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -84,8 +86,6 @@ public class Classroom {
     private String isadd; //访问用户是否已加入教室  0：未加入  1：加入
     
     private Integer allimp = 0; //教室进步数量
-    
-    private Integer allcourses = 0; //教室课程数量
     
     private Integer commentNum = 0; //评论总数
     

@@ -191,6 +191,9 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			classroomCourses.setUdpatetime(new Date());
 			int temp = classroomCoursesMapper.insertSelective(classroomCourses);
 			if (temp > 0) {
+				//修改课程数量
+				classroomMapper.updateAllcoursesByClassroomid(classroomCourses.getClassroomid(), 1);
+				
 				//推送消息---已关注该教室的人员
 				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
