@@ -172,28 +172,35 @@ public class VideoServiceImpl implements VideoService {
     /**
      * 获取视频列表
      * @param videoClassifyId
-     * @param startNum
+     * @param pageNo
      * @param pageSize
      * @return
      */
     @Override
-    public BaseResp<List<Video>> getVideoList(Integer videoClassifyId, Integer startNum, Integer pageSize) {
-        logger.info("get video list videoClassifyId:{} startNum:{} pageSize:{}",videoClassifyId,startNum,pageSize);
-        BaseResp<List<Video>> baseResp = new BaseResp<List<Video>>();
+    public BaseResp<Page<Video>> getVideoList(Integer videoClassifyId, Integer pageNo, Integer pageSize) {
+        logger.info("get video list videoClassifyId:{} pageNo:{} pageSize:{}",videoClassifyId,pageNo,pageSize);
+        BaseResp<Page<Video>> baseResp = new BaseResp<Page<Video>>();
         try{
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("videoClassifyId",videoClassifyId);
-            map.put("startNum",startNum);
+            map.put("startNum",(pageNo-1)*pageSize);
             map.put("pageSize",pageSize);
-            List<Video> videoList = this.videoMapper.getVideoList(map);
-            if(videoList != null){
-                baseResp.setData(videoList);
-            }else{
-                baseResp.setData(new ArrayList<Video>());
+            List<Video> videoList = new ArrayList<>();
+            int count = this.videoMapper.getVideoCount(map);
+            if(count > 0){
+                videoList = this.videoMapper.getVideoList(map);
             }
+
+            Page<Video> page = new Page<Video>();
+            page.setTotalCount(count);
+            page.setCurrentPage(pageNo);
+            page.setPageSize(pageSize);
+            page.setList(videoList);
+
+            baseResp.setData(page);
             return baseResp.initCodeAndDesp();
         }catch(Exception e){
-            logger.error("get video list videoClassifyId:{} startNum:{} pageSize:{} errorMsg:{}",videoClassifyId,startNum,pageSize,e);
+            logger.error("get video list videoClassifyId:{} pageNo:{} pageSize:{} errorMsg:{}",videoClassifyId,pageNo,pageSize,e);
         }
 
         return baseResp;

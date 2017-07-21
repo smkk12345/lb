@@ -8,6 +8,8 @@ import com.longbei.appservice.common.utils.*;
 
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.SysAppupdate;
+import com.longbei.appservice.service.api.authservice.AuthService;
+import com.longbei.appservice.service.api.outernetservice.ComputeClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import net.sf.json.JSONObject;
@@ -16,6 +18,7 @@ import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +35,9 @@ import java.util.*;
 @SuppressWarnings({ "unchecked", "unused", "rawtypes", "cast" })
 @WebFilter(filterName="myFilter",urlPatterns="/*")
 public class SecurityFilter extends OncePerRequestFilter {
+
+	private AuthService authService = null;
+
 	private static String localAddress = "";
 	private static SpringJedisDao springJedisDao = null;
 	private static Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
@@ -55,18 +61,21 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		//服务器之间api调用
 		if(url.contains("/api/")){
-//			String authorization = request.getHeader("Authorization");
-//			if(url.contains("getServiceToken")){
-//				arg2.doFilter(request, response);
-//				return;
-//			}
-//			if(StringUtils.isBlank(authorization)){
-//				//未发现token
-//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
-//				return;
-//			}
-//			String token = authorization.replaceFirst("Basic", "");
-//			logger.debug(authorization);
+			String authorization = request.getHeader("Authorization");
+			for (String str : shareUrls){
+				if(url.contains(str)){
+					arg2.doFilter(request, response);
+					return;
+				}
+			}
+			if(StringUtils.isBlank(authorization)){
+				//未发现token
+				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
+				return;
+			}
+			String token = authorization.replaceFirst("Basic", "");
+			logger.debug(authorization);
+			BaseResp<String> baseResp = authService.verifyToken(Constant.SERVER_APP_SERVICE,token);
 //			Claims claims = Jwts.parser()
 //					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
 //					.parseClaimsJws(token).getBody();
@@ -80,8 +89,14 @@ public class SecurityFilter extends OncePerRequestFilter {
 //				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1002, Constant.RTNINFO_SYS_1002);
 //				return;
 //			}
-			arg2.doFilter(request, response);
-			return;
+			if (ResultUtil.isSuccess(baseResp)){
+				arg2.doFilter(request, response);
+				return;
+			} else {
+				returnAfterErrorToken(request, response, baseResp.getCode(), baseResp.getRtnInfo());
+				return;
+			}
+
 		}
 
 		//app调用
@@ -316,9 +331,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 		if(null == springJedisDao){
 			BeanFactory beans = WebApplicationContextUtils
 					.getWebApplicationContext(getServletContext());
-
 			try {
 				springJedisDao = (SpringJedisDao) beans.getBean("springJedisDao");
+				authService = beans.getBean(AuthService.class);
 			} catch (Exception e) {
 
 			}
@@ -340,5 +355,30 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 	}
 
+
+
+	private static List<String> shareUrls = new ArrayList<String>();
+
+	static {
+		shareUrls.add("/article/getinfo/");
+		shareUrls.add("/video/getVideoListDetail");
+		shareUrls.add("rankShare");
+		shareUrls.add("video/getVideoListDetail");
+		shareUrls.add("video/getVideoDetail");
+		shareUrls.add("video/loadRelevantVideo");
+		shareUrls.add("rankShare/goalDetai");
+		shareUrls.add("video/addLike");
+		shareUrls.add("issue/selectByIssueIdH5");
+		shareUrls.add("issue/hotIssueList");
+		shareUrls.add("issue/selectListByTypeH5");
+		shareUrls.add("issue/selectIssueTypesH5");
+		shareUrls.add("common/shortUrl");
+		shareUrls.add("seminar/allinfo");
+		shareUrls.add("classroom/classroomHeadDetail");
+		shareUrls.add("classroom/classroomDetail");
+		shareUrls.add("classroom/classroomMembersDateList");
+		shareUrls.add("classroom/coursesList");
+		shareUrls.add("classroom/questionsList");
+	}
 	
 }

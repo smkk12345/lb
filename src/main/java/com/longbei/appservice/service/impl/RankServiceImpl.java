@@ -3583,7 +3583,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         try {
             List<UserInfo> userInfos = new ArrayList<>();
             if (!isNullUser(userInfo)){
-                userInfos = userInfoMapper.selectList(userInfo,null,null,null,null);
+                userInfos = userInfoMapper.selectList(userInfo,null,null,null,null,null);
             }
             RankMembers rankMembers = new RankMembers();
             rankMembers.setIsfashionman("1");
