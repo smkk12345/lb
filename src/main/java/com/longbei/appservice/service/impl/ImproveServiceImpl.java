@@ -3354,6 +3354,10 @@ public class ImproveServiceImpl implements ImproveService{
                 totalcount = improveMapper.selectRankImproveCount(starttime,null,brief,users);
                 improves = improveMapper.selectRankImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
             }
+            if (Constant.IMPROVE_CLASSROOM_TYPE.equals(businesstype)){
+                totalcount = improveMapper.selectClassRoomImproveCount(starttime,null,brief,users);
+                improves = improveMapper.selectClassRoomImproveList(starttime,null,brief,users,order,pagesize*(pageno-1),pagesize);
+            }
             page.setTotalCount(totalcount);
             page.setList(improves);
             baseResp = BaseResp.ok();
