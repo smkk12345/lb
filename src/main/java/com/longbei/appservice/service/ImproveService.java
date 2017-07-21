@@ -369,9 +369,9 @@ public interface ImproveService {
      * 进步信息初始化
      * @param improve
      */
-    public void initImproveInfo(Improve improve,Long userid);
+    void initImproveInfo(Improve improve,Long userid);
 
-    public int getPerDayImproveCount(long userid,String businesstype);
+    int getPerDayImproveCount(long userid,String businesstype);
 
     /**
      * 获取超级话题下的进步列表

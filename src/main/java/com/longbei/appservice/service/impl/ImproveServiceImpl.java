@@ -1770,12 +1770,12 @@ public class ImproveServiceImpl implements ImproveService{
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-
                     //系统今日点赞总数 +1
                     statisticService.updateStatistics(Constant.SYS_LIKE_NUM,1);
 
                     //更新进步赞数（mysql）
-
+                    String tableName = getTableNameByBusinessType(businesstype);
+                    improveMapper.updateLikes(impid,"0",finalBusinessid,tableName);
 
                     if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
                         //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
@@ -1865,10 +1865,13 @@ public class ImproveServiceImpl implements ImproveService{
             removeLikeToImproveForMongo(impid,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE)  ;
             //mysql
             removeLikeToImprove(improve,userid,impid,businessid,businesstype);
+            final String finalbusinessid = businessid;
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-
+                //更新进步赞数（mysql）
+                    String tableName = getTableNameByBusinessType(businesstype);
+                    improveMapper.updateLikes(impid,"1",finalbusinessid,tableName);
                     //系统今日点赞总数 取消赞 -1
                     statisticService.updateStatistics(Constant.SYS_LIKE_NUM,-1);
                     //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
