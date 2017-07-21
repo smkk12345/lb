@@ -958,10 +958,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 			return;
 		}
 		if(springJedisDao.hasKey(Constant.USER_FANS_REDIS_KEY+userid)){
-			springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,likeUserId);
+			springJedisDao.sAdd(Constant.USER_FANS_REDIS_KEY+userid,null,likeUserId.toString());
 		}
 		if(springJedisDao.hasKey(Constant.USER_BEFANSED_REDIS_KEY+likeUserId)){
-			springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+likeUserId,userid);
+			springJedisDao.sAdd(Constant.USER_BEFANSED_REDIS_KEY+likeUserId,null,userid.toString());
 		}
 
 	}
