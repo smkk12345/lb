@@ -2924,7 +2924,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             	//获取好友昵称
                 if (userid != null && userid != -1 && !Constant.VISITOR_UID.equals(userid+"")){
                     if(friendRemark.containsKey(rankMembers.getUserid().toString())){
-                        appUserMongoEntity.setNickname(friendRemark.get(rankMembers.getUserid().toString()));
+                        if(null != appUserMongoEntity){
+                            appUserMongoEntity.setNickname(friendRemark.get(rankMembers.getUserid().toString()));
+                        }
                     }
                     if(startNum == 0 && userid != null && userid.equals(rankMembers.getUserid())){
                         flag = false;
@@ -2936,6 +2938,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             showBtn = 4;//中奖 且已领奖
                         }
                     }
+                }
+                if(null == appUserMongoEntity){//处理老数据
+                    appUserMongoEntity = new AppUserMongoEntity();
                 }
                 rankMembers.setAppUserMongoEntity(appUserMongoEntity);
                 rankMembers.setAwardlevel(rankMembers.getRankAward().getAwardlevel());
