@@ -1424,7 +1424,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setPicattribute(timeLineDetail.getPicattribute());
-                improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+                improve.setCreatetime(timeLineDetail.getCreatedate());
                 String businessType = timeLine.getBusinesstype();
                 if(StringUtils.isBlank(businessType)){
                     improve.setBusinesstype("0");
