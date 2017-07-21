@@ -232,8 +232,8 @@ public class ImproveServiceImpl implements ImproveService{
                 UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
                 baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,Constant.USER_IMP_COIN_ADDIMPROVE,improve.getImpid(),0);
                 //发布完成之后redis存储i一天数量信息
-                String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+userid+"_"+DateUtils.getDate();
-                springJedisDao.increment(key,businesstype,1);
+                String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
+                springJedisDao.increment(key,userid,1);
                 springJedisDao.expire(key,Constant.CACHE_24X60X60);
                 userBehaviourService.userSumInfo(Constant.UserSumType.addedImprove,Long.parseLong(userid),null,0);
 
@@ -400,7 +400,6 @@ public class ImproveServiceImpl implements ImproveService{
             logger.error("insert rank immprove:{} is error:{}", "",e);
         }
         if(res != 0){
-
 
             String tempnum = springJedisDao.get("rankid"+improve.getBusinessid()+
                     "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
@@ -1042,6 +1041,15 @@ public class ImproveServiceImpl implements ImproveService{
                 Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
                         Long.parseLong(userid),improve,0);
+
+                //看进步是不是今天的,如果是今天的进步,则将redis中保存的用户当天发表的进步-1
+                Date startDate = DateUtils.getDateStart(new Date());
+                Date endDate = DateUtils.getDateEnd(startDate);
+                if(improve.getCreatetime().getTime() >= startDate.getTime() && improve.getCreatetime().getTime() < endDate.getTime()){
+                    String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
+                    springJedisDao.increment(key,userid,-1);
+                }
+
             }
         } catch (Exception e) {
             logger.error("remove improve is error:",e);
@@ -1425,7 +1433,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setPicattribute(timeLineDetail.getPicattribute());
-                improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+                improve.setCreatetime(timeLineDetail.getCreatedate());
                 String businessType = timeLine.getBusinesstype();
                 if(StringUtils.isBlank(businessType)){
                     improve.setBusinesstype("0");
@@ -1482,16 +1490,7 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
-//                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
-//                if (null == userGoal){
-//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
-//                }
-//                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
-//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
-//                }else {
                     baseResp.initCodeAndDesp();
-//                }
-
                 break;
             case Constant.IMPROVE_RANK_TYPE: {
                     Rank rank = null;

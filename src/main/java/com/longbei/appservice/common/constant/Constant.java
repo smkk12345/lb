@@ -432,7 +432,9 @@ public class Constant {
 			"/classroom/classroomMembersDateList,"+
 			"/classroom/coursesList,"+
 			"/classroom/selectClassroomList,"+
-			"/classroom/selectRoomMembers";
+			"/classroom/selectRoomMembers,"+
+			"/classroom/selectUsercard,"+
+			"/classroom/croomDetail";
 
 	/**
 	 * 进步相关配置
@@ -938,6 +940,6 @@ public class Constant {
 	public static final String TIMELINE_IMPROVE_ACQ = "5";
 
 
-
+	public static final int FRIEND_LIMIT = 10;
 
 }

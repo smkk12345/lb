@@ -12,7 +12,7 @@ public class ImpAllDetail {
 
     private Long impid;//微进步id
 
-    private String status;//点赞，还是已经取消
+    private String status;//点赞，还是已经取消  0 赞。1 取消赞
 
     private Integer times;//点击次数
 

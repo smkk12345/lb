@@ -144,7 +144,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
                 if (null == timeLine){
                     return;
                 }
-                if ((simpleDateFormat.parse(timeLine.getCreatedate())).getTime()
+                if ((timeLine.getCreatedate()).getTime()
                         < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
                     return;
                 }
@@ -200,7 +200,7 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
                 if (null == timeLine){
                     return;
                 }
-                if ((simpleDateFormat.parse(timeLine.getCreatedate())).getTime()
+                if ((timeLine.getCreatedate()).getTime()
                         < simpleDateFormat.parse("2017-06-23 00:00:00").getTime()){
                     return;
                 }
