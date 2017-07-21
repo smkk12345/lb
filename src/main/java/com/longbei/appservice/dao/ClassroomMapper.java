@@ -38,7 +38,17 @@ public interface ClassroomMapper {
     List<Classroom> selectClassroomListByIspublic(@Param("isup") String isup,
 												  @Param("ptype") String ptype,
 												  @Param("isrecommend") String isrecommend,
-    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+												  @Param("startNum") int startNum, @Param("endNum") int endNum);
+    /**
+	 * @author yinxc
+	 * 获取我加入的教室信息
+	 * param userid 
+	 * param startNum   endNum
+	 * 2017年7月21日
+	 */
+    List<Classroom> selectInsertByUserid(@Param("userid") long userid, 
+    									@Param("startNum") int startNum, 
+    									@Param("endNum") int endNum);
     
     /**
 	 * @author yinxc
@@ -61,6 +71,11 @@ public interface ClassroomMapper {
 	 */
     List<Classroom> selectListByPtype(@Param("ptype") String ptype, @Param("keyword") String keyword, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取count
+     */
+    Integer selectCountByPtype(@Param("ptype") String ptype, @Param("keyword") String keyword);
     
     /**
 	 * @author yinxc

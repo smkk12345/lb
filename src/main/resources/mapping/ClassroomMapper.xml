@@ -78,6 +78,22 @@
     </if>
   </select>
   
+  <select id="selectInsertByUserid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom  r inner join classroom_members cm 
+          on r.classroomid = cm.classroomid
+      where r.isdel = 0
+      	 and r.allcourses != 0 
+      	 and r.isup = 1 
+          and cm.itype = 0
+          and cm.userid = #{userid}
+      order by cm.updatetime desc
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
   <select id="selectCount" resultType="java.lang.Integer" >
     select count(*) 
     from classroom
@@ -221,6 +237,19 @@
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
+  </select>
+  
+  <select id="selectCountByPtype" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom
+    where isdel = 0 and allcourses != 0 
+    <if test="keyword != null" >
+    	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    </if>
+    <if test="ptype != null" >
+    	and ptype = #{ptype} 
+    </if>
+    and isup = 1 
   </select>
   
   <delete id="deleteByPrimaryKey" >
