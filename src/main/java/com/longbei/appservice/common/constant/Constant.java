@@ -428,7 +428,9 @@ public class Constant {
 			"/classroom/classroomMembersDateList,"+
 			"/classroom/coursesList,"+
 			"/classroom/selectClassroomList,"+
-			"/classroom/selectRoomMembers";
+			"/classroom/selectRoomMembers,"+
+			"/classroom/selectUsercard,"+
+			"/classroom/croomDetail";
 
 	/**
 	 * 进步相关配置

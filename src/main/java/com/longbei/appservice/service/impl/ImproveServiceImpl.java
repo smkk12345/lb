@@ -401,7 +401,6 @@ public class ImproveServiceImpl implements ImproveService{
         }
         if(res != 0){
 
-
             String tempnum = springJedisDao.get("rankid"+improve.getBusinessid()+
                     "userid"+improve.getUserid()+DateUtils.formatDate(new Date(),"yyyy-MM-dd"));
             int num = StringUtils.isEmpty(tempnum)?0:Integer.parseInt(tempnum);
@@ -1482,16 +1481,7 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_GOAL_TYPE:
-//                UserGoal userGoal = userGoalMapper.selectByGoalId(improve.getBusinessid());
-//                if (null == userGoal){
-//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_58,Constant.RTNINFO_SYS_58);
-//                }
-//                if (userGoal.getUserid().longValue() != improve.getUserid().longValue()){
-//                     baseResp.initCodeAndDesp(Constant.STATUS_SYS_59,Constant.RTNINFO_SYS_59);
-//                }else {
                     baseResp.initCodeAndDesp();
-//                }
-
                 break;
             case Constant.IMPROVE_RANK_TYPE: {
                     Rank rank = null;
