@@ -15,6 +15,10 @@ public class PerfectTen {
         this.sort = sort;
     }
 
+    public PerfectTen(){
+
+    };
+
     public void setDistitle(String distitle) {
         this.distitle = distitle;
     }

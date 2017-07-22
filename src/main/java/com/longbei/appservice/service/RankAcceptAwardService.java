@@ -37,7 +37,7 @@ public interface RankAcceptAwardService {
      * @param rankAcceptAward
      * @return
      */
-    BaseResp<Object> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward);
+    BaseResp<Integer> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward);
 
     /**
      * 获取领奖详细信息

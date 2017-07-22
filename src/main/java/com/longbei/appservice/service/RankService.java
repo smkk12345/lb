@@ -114,7 +114,7 @@ public interface RankService extends BaseService{
      * @param rank
      * @return
      */
-    BaseResp<Object> selectRankListNum(Rank rank);
+    BaseResp<Integer> selectRankListNum(Rank rank);
 
     /**
      * 获取榜单列表 推荐的 针对app

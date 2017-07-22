@@ -120,8 +120,8 @@ public class RankAcceptAwardServiceImpl extends BaseServiceImpl implements RankA
     }
 
     @Override
-    public BaseResp<Object> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Integer> selectRankAcceptAwardListNum(RankAcceptAward rankAcceptAward){
+        BaseResp<Integer> baseResp = new BaseResp<Integer>();
         try {
             int totalcount = rankAcceptAwardMapper.selectCount(rankAcceptAward);
             baseResp.setData(totalcount);

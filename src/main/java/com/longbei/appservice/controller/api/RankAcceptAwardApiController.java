@@ -61,9 +61,9 @@ public class RankAcceptAwardApiController {
      * @currentdate:2017年6月24日
      */
     @RequestMapping(value = {"selectRankAcceptAwardListNum"})
-    public BaseResp<Object> selectRankAcceptAwardListNum(@RequestBody RankAcceptAward rankAcceptAward){
+    public BaseResp<Integer> selectRankAcceptAwardListNum(@RequestBody RankAcceptAward rankAcceptAward){
         logger.info("selectRankAcceptAwardListNum for adminservice and rankAcceptAward ={}", JSON.toJSONString(rankAcceptAward));
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+        BaseResp<Integer> baseResp = new BaseResp<Integer>();
         try {
             baseResp = rankAcceptAwardService.selectRankAcceptAwardListNum(rankAcceptAward);
         } catch (Exception e) {

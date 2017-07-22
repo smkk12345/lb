@@ -594,8 +594,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
-    public BaseResp<Object> selectRankListNum(Rank rank){
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+    public BaseResp<Integer> selectRankListNum(Rank rank){
+        BaseResp<Integer> baseResp = new BaseResp<Integer>();
         try {
             int totalcount = rankMapper.selectListCount(rank);
             baseResp.setData(totalcount);

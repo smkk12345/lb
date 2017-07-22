@@ -93,9 +93,9 @@ public class RankApiController {
      */
     @ResponseBody
     @RequestMapping(value = {"selectRankListNum"})
-    public BaseResp<Object> selectRankListNum(@RequestBody Rank rank){
+    public BaseResp<Integer> selectRankListNum(@RequestBody Rank rank){
         logger.info("selectRankListNum for adminservice and rank ={}", JSON.toJSONString(rank));
-        BaseResp<Object> baseResp = new BaseResp<Object>();
+        BaseResp<Integer> baseResp = new BaseResp<Integer>();
         try {
             baseResp = rankService.selectRankListNum(rank);
         } catch (Exception e) {
