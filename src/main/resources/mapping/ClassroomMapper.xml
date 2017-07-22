@@ -80,7 +80,14 @@
   
   <select id="selectInsertByUserid" resultMap="BaseResultMap" >
     select 
-    <include refid="Base_Column_List" />
+    r.id, r.classroomid, r.classtitle, r.classphotos, r.classcateid, 
+    r.classinvoloed, r.classlimited, r.classbrief,      
+	r.classnotice, r.createtime, r.updatetime, r.ptype, r.classtype, 
+	r.ispublic, r.userid, r.cardid,      
+	r.charge, r.isfree, r.freecoursenum, r.isdel, r.sourcetype, 
+	r.isrecommend, r.isup, r.cusername,      
+	r.closedate, r.closeremark, r.syllabus, r.crowd, r.weight, 
+	r.ishomerecommend, r.allcourses 
     from classroom  r inner join classroom_members cm 
           on r.classroomid = cm.classroomid
       where r.isdel = 0
