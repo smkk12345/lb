@@ -809,7 +809,7 @@ public class ClassroomController {
      * 					cardid:创建人id
      * 					isfollow：是否已经关注教室   0：否  1：已关注
      * 					isadd：是否加入教室    0：否  1：已加入
-     * 					content：名片信息---老师h5
+     * 					content：描述
      * 					roomurlshare:分享url
      * @auther yinxc
      * @currentdate:2017年6月14日

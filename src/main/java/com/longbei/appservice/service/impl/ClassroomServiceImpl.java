@@ -246,7 +246,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if(null != courseList && courseList.size()>0){
 					map.put("pickey", courseList.get(0).getPickey());
 				}
-				map.put("courseCount", courseList.size());
+				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classtitle", classroom.getClasstitle());
 				map.put("ptype", classroom.getPtype());
@@ -278,8 +278,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}
 
 				map.put("isadd", isadd);
-				//名片信息---老师h5
-				map.put("content", userCard.getContent());
+				//描述
+				map.put("content", classroom.getClassbrief());
 				
 				//分享url
 				map.put("roomurlshare", 
@@ -509,23 +509,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 	/**
 	 * @author yinxc
 	 * 获取我加入的教室信息List
-	 * param ptype:十全十美类型    可为null
 	 * param userid
-	 * param pageNo   pageSize
-	 * 2017年2月28日
+	 * param startNum   endNum
+	 * 2017年7月21日
 	 */
 	@Override
 	public BaseResp<List<Classroom>> selectInsertByUserid(long userid, int startNum, int endNum) {
 		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
 		try {
-			List<Classroom> roomlist = new ArrayList<Classroom>();
-			List<ClassroomMembers> list = classroomMembersMapper.selectInsertByUserid(userid, startNum, endNum);
-			if(null != list && list.size()>0){
-				for (ClassroomMembers classroomMembers : list) {
-					Classroom classroom = classroomMapper.selectByPrimaryKey(classroomMembers.getClassroomid());
-					roomlist.add(classroom);
-				}
-			}
+			List<Classroom> roomlist = classroomMapper.selectInsertByUserid(userid, startNum, endNum);
 			if(startNum == 0 && roomlist.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_33);
 				return reseResp;
@@ -633,8 +625,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp;
 			}
 			reseResp.setData(list);
+			Integer roomsize = classroomMapper.selectCountByPtype(ptype, keyword);
 			Map<String, Object> expandData = new HashMap<String, Object>();
-			expandData.put("roomsize", list.size());
+			expandData.put("roomsize", roomsize);
 			reseResp.setExpandData(expandData);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -788,6 +781,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> uproom(long classroomid){
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(classroom.getAllcourses() == 0){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_1108, Constant.RTNINFO_SYS_1108);
+				return reseResp;
+			}
 			int temp = classroomMapper.updateIsup(classroomid);
 			if(temp > 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -1078,8 +1076,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "0", "14", "教室发布最新公告", 0, "", "");
-//							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
+									"", "12", classroomid + "", remark, "2", "14", "教室发布最新公告", 0, "", "");
 						}
 					}
 				}
