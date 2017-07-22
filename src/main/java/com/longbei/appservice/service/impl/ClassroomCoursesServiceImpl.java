@@ -45,12 +45,12 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 
 	@Override
 	public BaseResp<List<ClassroomCourses>> selectListByClassroomid(long classroomid, int startNum, int endNum) {
+		Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			//教室课程总数
-			Integer coursesNum = classroomCoursesMapper.selectCountCourses(classroomid);
-			reseResp.getExpandData().put("coursesNum", coursesNum);
+			reseResp.getExpandData().put("coursesNum", classroom.getAllcourses());
 			reseResp.setData(list);
 			if(startNum == 0 && list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_34);
@@ -112,8 +112,16 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	public BaseResp<Object> updateIsdel(long classroomid, Integer id) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if("1".equals(classroom.getIsup()) && classroom.getAllcourses() == 1){
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_1109, Constant.RTNINFO_SYS_1109);
+				return reseResp;
+			}
 			boolean temp = updatedel(classroomid, id);
 			if (temp) {
+				//修改课程数量
+				classroomMapper.updateAllcoursesByClassroomid(classroomid, -1);
+				
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
