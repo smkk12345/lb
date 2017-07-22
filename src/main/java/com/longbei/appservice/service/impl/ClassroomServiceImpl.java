@@ -123,8 +123,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			Map<String, Object> map = new HashMap<String, Object>();
-			String isadd = "0";
 			if(null != classroom){
+				String isadd = "0";
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//老师称呼
 //				String cardNickname = initUserInfo(classroom.getCardid());
@@ -538,8 +538,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private List<Classroom> selectUserList(List<Classroom> list, long userid){
 		//把教室没有课程视频的去掉
 		//isadd 访问用户是否已加入教室  0：未加入  1：加入
-		String isadd = "0";
 		for (int i = 0; i < list.size(); i++) {
+			String isadd = "0";
 			Classroom classroom = list.get(i);
 			//获取老师名片信息
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
@@ -640,7 +640,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private List<Classroom> selectList(List<Classroom> list){
 		//把教室没有课程视频的去掉
 		//isadd 访问用户是否已加入教室  0：未加入  1：加入
-		String isadd = "0";
 		for (int i = 0; i < list.size(); i++) {
 			Classroom classroom = list.get(i);
 			//获取老师名片信息
@@ -662,6 +661,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					classroom.setPickey(courseList.get(0).getPickey());
 				}
 //			}
+			String isadd = "0";
 			//itype 0—加入教室 1—退出教室     为null查全部
 			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroom.getClassroomid(), 
 					classroom.getUserid(), "0");
@@ -1101,8 +1101,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			Map<String, Object> map = new HashMap<String, Object>();
-			String isadd = "0";
 			if(null != classroom){
+				String isadd = "0";
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				//老师称呼
 //				String cardNickname = initUserInfo(classroom.getCardid());
