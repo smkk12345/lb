@@ -124,4 +124,16 @@ public interface IUserBasicService {
 	@RequestMapping(method = RequestMethod.GET, value = "/user/selectUserByUserName")
 	BaseResp<UserBasic> selectUserByUserName(@RequestParam("username") String username);
 
+
+	/**
+	 * @Title: remove
+	 * @Description: 移除
+	 * @param @param username
+	 * @param @return    设定文件
+	 * @return void
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/user/remove")
+	void remove(@RequestParam("username") String username);
+
+
 }
