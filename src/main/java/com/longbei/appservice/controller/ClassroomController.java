@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
@@ -65,6 +68,11 @@ public class ClassroomController {
 		try {
 			baseResp = classroomMembersService.selectRoomMemberDetail(Long.parseLong(classroomid), 
 					Long.parseLong(userid), Long.parseLong(currentUserId));
+			if(ResultUtil.isSuccess(baseResp)){
+	            baseResp.getExpandData().put("shareurl",
+	                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve
+	                            + "?rankid=" + classroomid + "&userid=" + userid + "&businesstype=4"));
+	        }
 		} catch (Exception e) {
 			logger.error("selectRoomMemberDetail classroomid = {}, userid = {}, currentUserId = {}", 
 				classroomid, userid, currentUserId, e);
