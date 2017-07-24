@@ -25,8 +25,6 @@ import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.HotLineMongoDao;
 import com.longbei.appservice.dao.RankMapper;
-import com.longbei.appservice.dao.SnsFansMapper;
-import com.longbei.appservice.dao.SnsFriendsMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.UserMsgService;
@@ -41,10 +39,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private ImproveService improveService;
 	@Autowired
 	private UserMongoDao userMongoDao;
-	@Autowired
-	private SnsFansMapper snsFansMapper;
-	@Autowired
-	private SnsFriendsMapper snsFriendsMapper;
+//	@Autowired
+//	private SnsFansMapper snsFansMapper;
+//	@Autowired
+//	private SnsFriendsMapper snsFriendsMapper;
 	@Autowired
 	private RankMapper rankMapper;
 	@Autowired
@@ -211,7 +209,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			record.setNum(num);
 			record.setTitle(title);
 			record.setCommentid(commentid);
-			record.setCommentid(href);
+			record.setHref(href);
 			record.setCommentlowerid(commentlowerid);
 			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
 			// 送花 4 送钻石  5:粉丝  等等)
@@ -1280,28 +1278,28 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private List<SnsFans> fanslists(List<SnsFans> fanslist, long userid, String msgtype){
-		//拼接id  List集合-----未读的粉丝消息
-		List<String> idList = userMsgMapper.selectIdByMsgtypeList(userid, msgtype);
-		if(null != fanslist && fanslist.size()>0){
-			for (SnsFans snsFans : fanslist) {
-				if(idList.contains(snsFans.getLikeuserid())){
-					//含有    未读
-					snsFans.setIsread("0");
-				}
-//				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
-//				if(null != appUserMongoEntity){
-//
+//	private List<SnsFans> fanslists(List<SnsFans> fanslist, long userid, String msgtype){
+//		//拼接id  List集合-----未读的粉丝消息
+//		List<String> idList = userMsgMapper.selectIdByMsgtypeList(userid, msgtype);
+//		if(null != fanslist && fanslist.size()>0){
+//			for (SnsFans snsFans : fanslist) {
+//				if(idList.contains(snsFans.getLikeuserid())){
+//					//含有    未读
+//					snsFans.setIsread("0");
 //				}
-				//判断当前用户是否已关注
-				snsFans.setIsfocus(this.userRelationService.checkIsFans(snsFans.getLikeuserid(),userid)?"1":"0");
-				//是否是好友
-				snsFans.setIsfriend(this.userRelationService.checkIsFriend(userid,snsFans.getLikeuserid())?"1":"0");
-
-			}
-		}
-		return fanslist;
-	}
+////				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(snsFans.getLikeuserid()));
+////				if(null != appUserMongoEntity){
+////
+////				}
+//				//判断当前用户是否已关注
+//				snsFans.setIsfocus(this.userRelationService.checkIsFans(snsFans.getLikeuserid(),userid)?"1":"0");
+//				//是否是好友
+//				snsFans.setIsfriend(this.userRelationService.checkIsFriend(userid,snsFans.getLikeuserid())?"1":"0");
+//
+//			}
+//		}
+//		return fanslist;
+//	}
 	
 	/**
 	 * @author yinxc

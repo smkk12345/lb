@@ -29,6 +29,7 @@ import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
+import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserRelationService;
 
@@ -55,6 +56,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private UserRelationService userRelationService;
 	@Autowired
 	private UserCardMapper userCardMapper;
+	@Autowired
+	private UserMoneyDetailService userMoneyDetailService;
 	
 	
 	
@@ -77,21 +80,30 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		try {
 			//成员在加入教室之前，如果该教室收费，需先交费后才可加入
 			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
+			if(null == classroom){
+				return reseResp;
+			}
+			UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 			//isfree  是否免费。0 免费 1 收费
-			if(null != classroom){
-				//classinvoloed---教室参与人数     classlimited---教室限制人数
-				if(classroom.getClassinvoloed() == classroom.getClasslimited()){
-					//先判断教室参与人数是否已满
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_36, Constant.RTNINFO_SYS_36);
+			//classinvoloed---教室参与人数     classlimited---教室限制人数
+			if(classroom.getClassinvoloed() == classroom.getClasslimited()){
+				//先判断教室参与人数是否已满
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_36, Constant.RTNINFO_SYS_36);
+			}
+			if("1".equals(classroom.getIsfree())){
+				//需要交费    charge --- 课程价格
+				Integer charge = classroom.getCharge();
+				//判断用户龙币是否充足
+				if(charge > userInfo.getTotalmoney()){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_23, Constant.RTNINFO_SYS_23);
 				}
-				if("1".equals(classroom.getIsfree())){
-					//需要交费    charge --- 课程价格
-					
-					
-					
-					
-					
-				}
+				//用户扣费
+				userMoneyDetailService.insertPublic(record.getUserid(), "12", charge, 0);
+				//创建人教室收益
+				userMoneyDetailService.insertPublic(Long.parseLong(Constant.SQUARE_USER_ID), "11", charge, record.getUserid());
+				//修改教室总收益
+				classroomMapper.updateEarningsByClassroomid(record.getClassroomid(), charge);
+				
 			}
 			//itype 0—加入教室 1—退出教室     为null查全部
 			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(record.getClassroomid(), record.getUserid(), "0");
@@ -99,7 +111,6 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				// 用户已加入教室
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_37, Constant.RTNINFO_SYS_37);
 			}
-			UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 			record.setCusername(userInfo.getUsername());
 			boolean temp = insert(record);
 			if (temp) {
@@ -228,7 +239,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
-						"", "12", classroomid + "", remark, "0", "54", "教室删除成员", 0, "", "");
+						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "");
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -277,10 +288,11 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
             resultMap.put("userid", appUserMongoEntity.getUserid());
             resultMap.put("icount", members.getIcount());
             resultMap.put("vcertification", appUserMongoEntity.getVcertification());
-//            Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
-//            if(classroom == null) {
-//				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-//			}
+            Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+            if(classroom == null) {
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			}
+            resultMap.put("ranktitle", classroom.getClasstitle());
             resultMap.put("classroomid", classroomid);
 			baseResp.setData(resultMap);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
