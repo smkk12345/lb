@@ -86,7 +86,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
                     UserLevel userLevel = SysRulesCache.levelPointMap.get(userInfo.getGrade());
                     if(addLikeCount < userLevel.getLikes()){
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
-                        springJedisDao.increment(key,dateStr+Constant.PERDAY_ADD_LIKE,1);
+
                     }else{
                         baseResp.initCodeAndDesp(Constant.STATUS_SYS_402,Constant.RTNINFO_SYS_402);
                     }

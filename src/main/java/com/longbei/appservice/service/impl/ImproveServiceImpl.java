@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 进步业务操作实现类
@@ -1731,14 +1732,18 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> addlike(final String userid, final String impid, final String businesstype, String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
+        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+        if(!ResultUtil.isSuccess(baseResp)){
+            return baseResp;
+        }
         //防止重复提交
         if(isExitsForRedis(impid,userid)){
-            return baseResp;
+            return baseResp.initCodeAndDesp();
         }
         if ("0".equals(businesstype)){
             businessid = null;
         }
-        springJedisDao.set("improve_like_temp_"+impid+userid,"1",2);
+        springJedisDao.set("improve_like_temp_"+impid+userid,"1", 1,TimeUnit.MICROSECONDS);
 
         boolean islike = improveMongoDao.exits(String.valueOf(impid),
                 userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
@@ -1751,11 +1756,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(null == improve || null == userInfo){
             return baseResp;
         }
-        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
-        if(!ResultUtil.isSuccess(baseResp)){
-            return baseResp;
-        }
+
         try{
+
             //redis
             addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
@@ -2349,6 +2352,8 @@ public class ImproveServiceImpl implements ImproveService{
         //添加临时记录
         springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
         springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60*1000);
+        String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+        springJedisDao.increment(Constant.RP_USER_PERDAY+userid,dateStr+Constant.PERDAY_ADD_LIKE,1);
     }
 
 
