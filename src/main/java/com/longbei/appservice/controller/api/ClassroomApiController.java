@@ -516,7 +516,7 @@ public class ClassroomApiController {
     }
     
     /**
-     * @Description: 获取课程列表
+     * @Description: 修改课程序号
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年6月17日
@@ -535,6 +535,32 @@ public class ClassroomApiController {
         } catch (Exception e) {
         	logger.error("updCoursesSort classroomid = {}, id = {}, coursesort = {}", 
         			classroomid, id, coursesort, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 发布教室课程
+     * @param @param classroomid 教室id
+     * @param @param id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月25日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "updateIsup")
+    public BaseResp<Object> updateIsup(String classroomid, String id){
+        logger.info("updateIsup classroomid = {}, id = {}", classroomid, id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, id)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomCoursesService.updateIsup(Integer.parseInt(id), 
+  					Long.parseLong(classroomid));
+        } catch (Exception e) {
+        	logger.error("updateIsup classroomid = {}, id = {}", 
+        			classroomid, id, e);
         }
         return baseResp;
     }
