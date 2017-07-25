@@ -289,8 +289,6 @@ public class BehaviorRule {
 
     private Integer shareGroupCount = 1;//单次内部分享到群限制
 
-    private Integer joinclassroomgoals;//用户每天参加教室数量，退出不扣分
-
     private Integer joinclassroomgoalstimes;//用户每天参加教室得分次数限制
 
 
@@ -774,16 +772,8 @@ public class BehaviorRule {
         this.shareGroupCount = shareGroupCount;
     }
 
-    public Integer getJoinclassroomgoals() {
-        return joinclassroomgoals;
-    }
-
     public Integer getJoinclassroomgoalstimes() {
         return joinclassroomgoalstimes;
-    }
-
-    public void setJoinclassroomgoals(Integer joinclassroomgoals) {
-        this.joinclassroomgoals = joinclassroomgoals;
     }
 
     public void setJoinclassroomgoalstimes(Integer joinclassroomgoalstimes) {
