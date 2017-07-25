@@ -8,6 +8,15 @@ import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.UserCard;
 
 public interface ClassroomService {
+	
+	/**
+     * 获取教室列表 推荐的 针对app
+     * @param startNo
+     * @param pageSize
+     * @return
+     * @author yinxc
+     */
+    BaseResp<List<Classroom>> selectClassroomListForApp(long userid,Integer startNo,Integer pageSize);
 
 	Classroom selectByClassroomid(long classroomid);
 	
