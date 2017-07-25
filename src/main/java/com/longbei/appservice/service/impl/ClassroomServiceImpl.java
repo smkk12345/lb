@@ -24,6 +24,7 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.dao.UserCardMapper;
@@ -32,6 +33,7 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
@@ -56,19 +58,68 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
 	@Autowired
 	private CommentMongoService commentMongoService;
-//	@Autowired
-//	private ImproveMapper improveMapper;
 	@Autowired
 	private ImproveClassroomMapper improveClassroomMapper;
 	@Autowired
 	private UserBusinessConcernMapper userBusinessConcernMapper;
 	@Autowired
 	private UserMongoDao userMongoDao;
-//	@Autowired
-//	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private HomeRecommendMapper homeRecommendMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
+	
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<List<Classroom>> selectClassroomListForApp(long userid, Integer startNo, Integer pageSize) {
+		BaseResp<List<Classroom>> baseResp = new BaseResp<>();
+        try{
+            List<Classroom> list = new ArrayList<Classroom>();
+            HomeRecommend homeRecommend = new HomeRecommend();
+            homeRecommend.setIsdel("0");
+            homeRecommend.setRecommendtype(1);
+            List<HomeRecommend> homeRecommendList = homeRecommendMapper.selectList(homeRecommend,startNo,pageSize);
+            if(homeRecommendList == null){
+                homeRecommendList = new ArrayList<HomeRecommend>();
+            }
+
+            for(HomeRecommend homeRecommend1: homeRecommendList){
+            	Classroom classroom = classroomMapper.selectByPrimaryKey(homeRecommend1.getBusinessid());
+                if(classroom == null || "1".equals(classroom.getIsdel())){
+                    continue;
+                }
+                String isadd = "0";
+                //获取老师名片信息
+    			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+    			classroom.setUserCard(userCard);
+    			//获取最新课程视频截图key
+				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), 0, 1);
+				if(null != courseList && courseList.size()>0){
+					classroom.setPickey(courseList.get(0).getPickey());
+				}
+    			
+                if(!Constant.VISITOR_UID.equals(String.valueOf(userid))){
+                	//itype 0—加入教室 1—退出教室     为null查全部
+        			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroom.getClassroomid(), 
+        					userid, "0");
+        			if(null != classroomMembers){
+        				isadd = "1";
+        			}
+                }
+                classroom.setIsadd(isadd);
+                list.add(classroom);
+            }
+            baseResp.setData(list);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("select classroom list for app error startNo:{} pageSize:{}",startNo,pageSize);
+        }
+        return baseResp;
+	}
+
 
 
 	/**

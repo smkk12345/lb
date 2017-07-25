@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
@@ -44,6 +45,40 @@ public class ClassroomController {
 	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
+	
+	
+	/**
+     * url: http://ip:port/app_service/classroom/selectClassroomListForApp
+     * @ 首页推荐的教室列表
+     * @param userid
+     * @param startNo
+     * @param pageSize
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	@ResponseBody
+    @RequestMapping(value = "selectClassroomListForApp")
+    public BaseResp<List<Classroom>> selectClassroomListForApp(String userid ,Integer startNo, Integer pageSize){
+        logger.info("selectClassroomListForApp userid={},startNo={},pageSize={}",userid,startNo,pageSize);
+        BaseResp<List<Classroom>> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(startNo == null || startNo < 0){
+        	startNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+        }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+
+        try {
+            baseResp = classroomService.selectClassroomListForApp(Long.parseLong(userid),startNo,pageSize);
+        } catch (Exception e) {
+            logger.error("select Classroom list userid = {}, startNo = {}, pageSize = {}", 
+            		userid, startNo, pageSize, e);
+        }
+        return baseResp;
+    }
 	
 
 	/**
