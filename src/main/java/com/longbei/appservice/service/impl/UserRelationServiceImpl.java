@@ -737,9 +737,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			appUserMongEntity.setIsfriend("1");
 			appUserMongEntity.setRemark(userRe.getRemark());
 			initFanInfo(userid,appUserMongEntity);
-			if(!StringUtils.isBlank(appUserMongEntity.getRemark())){
-				appUserMongEntity.setNickname(appUserMongEntity.getRemark());
-			}
+
 			resultList.add(appUserMongEntity);
 		}
 
