@@ -56,6 +56,8 @@ public class SysInitController extends BaseController{
                     ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_invite));
             baseResp.getExpandData().put("pcurl",AppserviceConfig.pcurl);
 
+            baseResp.getExpandData().put("classosspath", AppserviceConfig.oss_media);
+
         }catch (Exception e){
             logger.error("initerror",e);
         }
