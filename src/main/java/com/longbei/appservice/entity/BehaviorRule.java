@@ -276,11 +276,6 @@ public class BehaviorRule {
      */
     private Integer joincirclegoalstimes;
 
-    /**
-     * 用户参加教室，可得龙分次数，上限值
-     */
-    private Integer aoinclassgoalstimes;
-
     private Integer changedeveicelimitperday = 3;//同一设备每天切换帐号数量
 
     private Integer registerdevicelimit = 5;//同一设备注册帐号数
@@ -730,14 +725,6 @@ public class BehaviorRule {
 
     public void setJoincirclegoalstimes(Integer joincirclegoalstimes) {
         this.joincirclegoalstimes = joincirclegoalstimes;
-    }
-
-    public Integer getAoinclassgoalstimes() {
-        return aoinclassgoalstimes;
-    }
-
-    public void setAoinclassgoalstimes(Integer aoinclassgoalstimes) {
-        this.aoinclassgoalstimes = aoinclassgoalstimes;
     }
 
     public void setChangedeveicelimitperday(Integer changedeveicelimitperday) {
