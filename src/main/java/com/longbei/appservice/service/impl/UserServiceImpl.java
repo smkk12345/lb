@@ -547,14 +547,18 @@ public class UserServiceImpl implements UserService {
 		String nickname = NickNameUtils.getSingleNickName("LB",username);
 		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
-		baseResp.getExpandData().put("token", token);
-		baseResp.getExpandData().put("userid", userid);
-		baseResp.getExpandData().put("nickname", nickname);
-		//token 放到redis中去
-		springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
-		//注册成功,当日注册数加1
-		statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
-
+		if(ResultUtil.isSuccess(baseResp)){
+			baseResp.getExpandData().put("token", token);
+			baseResp.getExpandData().put("userid", userid);
+			baseResp.getExpandData().put("nickname", nickname);
+			//token 放到redis中去
+			springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
+			//注册成功,当日注册数加1
+			statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
+		}else{
+			//失败之后删除登统中心数据
+			iUserBasicService.remove(username);
+		}
 		return baseResp;
 	}
 
@@ -1295,6 +1299,7 @@ public class UserServiceImpl implements UserService {
 			list.add("可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
 			list.add("可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");
 			list.add("可以同时发布" + userLevel.getPriranknum() + "个定制非公开龙榜");
+			list.add("可以同时发布" + userLevel.getClassroomnum() + "个教室");
 		}
 		return list;
 	}

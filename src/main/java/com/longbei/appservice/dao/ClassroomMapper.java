@@ -105,6 +105,16 @@ public interface ClassroomMapper {
 	 */
     int updateAllcoursesByClassroomid(@Param("classroomid") long classroomid, @Param("num") Integer num);
     
+    
+    /**
+	 * @author yinxc
+	 * 修改教室总收益---earnings
+	 * param classroomid 
+	 * param charge 教室课程价格
+	 * 2017年7月24日
+	 */
+    Integer updateEarningsByClassroomid(@Param("classroomid") long classroomid, @Param("charge") Integer charge);
+    
     /**
 	 * @author yinxc
 	 * 修改教室是否免费---isfree -----暂时不用(03-03不让修改)

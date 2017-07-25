@@ -172,6 +172,9 @@ public class RankShareController {
         if(userid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
+        if(StringUtils.isBlank(businesstype)){
+        	businesstype = "2";
+        }
         if("2".equals(businesstype)){
         	baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,null);
         }

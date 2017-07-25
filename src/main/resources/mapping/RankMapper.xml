@@ -102,7 +102,14 @@
       AND ptype = #{ptype}
     </if>
     <if test="ranktype != null and ranktype != '-1'.toString()" >
-      AND ranktype = #{ranktype}
+      <choose>
+        <when test="ranktype=='-2'.toString()">
+          AND ranktype != '2'
+        </when>
+        <otherwise>
+          AND ranktype = #{ranktype}
+        </otherwise>
+      </choose>
     </if>
     <if test="isfinish != null and isfinish != '-1'.toString()" >
       AND isfinish = #{isfinish}

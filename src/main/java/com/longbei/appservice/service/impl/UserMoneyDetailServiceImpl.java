@@ -46,6 +46,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 	 * param origin： 来源   0:充值  购买     1：购买礼物(花,钻)  2:兑换商品时抵用进步币
 	 * 					3：发布龙榜    4：赞助榜单    5：赞助教室  
 	 * 					6:取消订单返还龙币 7 龙榜审核未通过返回。8 龙榜撤回。   9 龙榜奖品剩余 10.榜单提交审核
+	 * 					11：教室收益   12：教室收费 
 	 *
 	 * param number 数量 --- 消耗：(1：购买礼物(花,钻)  2:兑换商品时抵用进步币 3：发布龙榜    4：赞助榜单    5：赞助教室)
 	 * 						value值为负---方法里面已做判断
@@ -64,7 +65,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			userMoneyDetail.setOrigin(origin);
 			userMoneyDetail.setUserid(userid);
 			if("0".equals(origin) || "6".equals(origin) || "7".equals(origin) 
-					|| "8".equals(origin) || "9".equals(origin)){
+					|| "8".equals(origin) || "9".equals(origin) || "11".equals(origin)){
 				userMoneyDetail.setNumber(number);
 			}else{
 				number = 0 - number;
