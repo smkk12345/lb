@@ -140,6 +140,16 @@ public class RankImage {
         return rankCheckDetails;
     }
 
+    private boolean isshow = true; //显
+
+    public boolean isshow() {
+        return isshow;
+    }
+
+    public void setIsshow(boolean isshow) {
+        this.isshow = isshow;
+    }
+
     public void setRankCheckDetails(List<RankCheckDetail> rankCheckDetails) {
         this.rankCheckDetails = rankCheckDetails;
     }
