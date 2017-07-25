@@ -71,6 +71,8 @@ public class Classroom {
     
     private Integer allcourses; //教室课程数量
     
+    private Integer earnings;  //教室总收益---龙币
+    
     //----------------扩展字段--------------------------
     
     private String nickname; //创建人信息
@@ -536,6 +538,15 @@ public class Classroom {
 
 	public void setCommentCount(Integer commentCount) {
 		this.commentCount = commentCount;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getEarnings() {
+		return earnings;
+	}
+
+	public void setEarnings(Integer earnings) {
+		this.earnings = earnings;
 	}
 
 }

@@ -941,6 +941,6 @@ public class Constant {
 	public static final String TIMELINE_IMPROVE_ACQ = "5";
 
 
-	public static final int FRIEND_LIMIT = 10;
+	public static final int FRIEND_LIMIT = 5000;
 
 }

@@ -15,7 +15,7 @@ public class UserIdcard {
 
     private String validateemail;
 
-    private String validateidcard;//是否验证了身份证号码  -1 未认证   0  认证中    1 已认证 2 认证失败
+    private String validateidcard;//是否验证了身份证号码  0-验证中 1-验证通过 2-验证不通过
 
     private String idcardimage;
     
@@ -131,8 +131,8 @@ public class UserIdcard {
     }
 
     /**
-     * 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
-     * @return validateidcard 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
+     * 是否验证了身份证号码 0-验证中 1-验证通过 2-验证不通过
+     * @return validateidcard 是否验证了身份证号码 0-验证中 1-验证通过 2-验证不通过
      */
     @JsonInclude(Include.ALWAYS)
     public String getValidateidcard() {
@@ -140,8 +140,8 @@ public class UserIdcard {
     }
 
     /**
-     * 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
-     * @param validateidcard 是否验证了身份证号码 0  是未提交信息 1  是验证中 2 验证通过 3  验证不通过
+     * 是否验证了身份证号码 0-验证中 1-验证通过 2-验证不通过
+     * @param validateidcard 是否验证了身份证号码 0-验证中 1-验证通过 2-验证不通过
      */
     public void setValidateidcard(String validateidcard) {
         this.validateidcard = validateidcard == null ? null : validateidcard.trim();
