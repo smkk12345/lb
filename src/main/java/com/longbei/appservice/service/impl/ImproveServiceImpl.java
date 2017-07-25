@@ -2969,9 +2969,13 @@ public class ImproveServiceImpl implements ImproveService{
                         if(!"1".equals(isreply)){
                             if(null != userCard){
                                 //判断当前用户是否是老师
-                                if(userCard.getUserid() != Long.parseLong(userid)){
-                                    isreply = "2";
-                                }
+                            	if(!StringUtils.isBlank(userid)){
+                            		if(userCard.getUserid() != Long.parseLong(userid)){
+                                        isreply = "2";
+                                    }
+                            	}else{
+                            		isreply = "2";
+                            	}
                             }
                         }
                         improve.setIsreply(isreply);
