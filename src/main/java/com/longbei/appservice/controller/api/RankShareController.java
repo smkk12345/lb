@@ -202,12 +202,14 @@ public class RankShareController {
         }
         try {
             baseResp =improveService.select(null, impid, businesstype, businessid);
-            if(!"0".equals(businesstype) && !"5".equals(businesstype)){
-                Improve improve = baseResp.getData();
-                Long userid = improve.getUserid();
-                //查看该用户在榜中发布的所有进步数量 以及 排名
-                Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
-                baseResp.setExpandData(resultMap);
+            if(!"0".equals(businesstype) && !"5".equals(businesstype) && baseResp.getCode() == 0){
+            	if("2".equals(businesstype)){
+            		Improve improve = baseResp.getData();
+                    Long userid = improve.getUserid();
+                    //查看该用户在榜中发布的所有进步数量 以及 排名
+                    Map<String,Object> resultMap = this.rankService.getUserSortNumAndImproveCount(userid,Long.parseLong(businessid));
+                    baseResp.setExpandData(resultMap);
+            	}
             }
             return baseResp;
         } catch (Exception e) {

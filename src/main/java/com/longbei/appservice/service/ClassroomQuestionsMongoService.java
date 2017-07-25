@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
 
@@ -30,6 +31,14 @@ public interface ClassroomQuestionsMongoService {
 	 * 2017年3月1日
 	 */
 	BaseResp<Object> insertQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower);
+
+
+	/**
+	 * @despripciton 更改教室答疑
+	 * @author IngaWu
+	 * 2017年7月21日
+	 */
+	BaseResp<Object> updateQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower);
 	
 	/**
 	 * @author yinxc
@@ -40,6 +49,20 @@ public interface ClassroomQuestionsMongoService {
 	 */
 	BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, 
 			int pageSize);
+
+	/**
+	 * @Title: selectQuestionsList
+	 * @Description: 获取教室提问答疑列表
+	 * @param classroomId 教室id
+	 * @param nickname 用户昵称
+	 * @param startCreatetime 查询提问时间开始时间
+	 * @param endCreatetime 查询提问时间结束时间
+	 * @param startNum 分页起始值
+	 * @param pageSize 每页显示条数
+	 * @author IngaWu
+	 * @currentdate:2017年7月21日
+	 */
+	Page<ClassroomQuestions> selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize);
 	
 	/**
 	 * @author yinxc
@@ -47,7 +70,7 @@ public interface ClassroomQuestionsMongoService {
 	 * 2017年3月1日
 	 * param id 提问答疑id
 	 */
-	BaseResp<Object> selectQuestionsByid(String id);
+	BaseResp<ClassroomQuestions> selectQuestionsByQuestionsId(String questionsId);
 	
 	/**
 	 * @author yinxc
@@ -56,6 +79,12 @@ public interface ClassroomQuestionsMongoService {
 	 * param id 提问答疑id
 	 */
 	BaseResp<Object> deleteQuestions(String id, String userid);
+
+	/**
+	 * 删除教室问题
+	 * @param questionsId 提问答疑id
+	 */
+	BaseResp<Object> deleteQuestionsByQuestionsId(String questionsId);
 	
 	/**
 	 * @author yinxc
@@ -64,14 +93,23 @@ public interface ClassroomQuestionsMongoService {
 	 * param id 提问答疑回复id
 	 */
 	BaseResp<Object> deleteQuestionsLower(String classroomid, String id, String userid);
-	
+
+	/**
+	 * @Title: updateQuestionsIsIgnore
+	 * @Description: 更改问题忽略状态
+	 * @param questionsId 问题id
+	 * @param isIgnore  0：未忽略  1：已忽略
+	 * @auther IngaWu
+	 * @currentdate:2017年7月21日
+	 */
+	BaseResp<Object> updateQuestionsIsIgnore(String questionsId,String isIgnore);
+
 	/**
 	 * @author yinxc
 	 * 删除教室提问答疑回复
 	 * 2017年3月1日
-	 * return_type
 	 * ClassroomQuestionsMongoService
 	 */
-//	BaseResp<Object> deleteLowerByQuestionsid(String questionsid);
+	BaseResp<Object> deleteLowerByQuestionsId(String questionsId);
 	
 }
