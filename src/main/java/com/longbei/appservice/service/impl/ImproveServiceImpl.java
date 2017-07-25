@@ -2887,6 +2887,7 @@ public class ImproveServiceImpl implements ImproveService{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
+            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
