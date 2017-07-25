@@ -94,7 +94,7 @@ public class Constant_point {
     public static int DAILY_ADDRANK = SysRulesCache.behaviorRule.getJoinrankgoals();//加榜
     public static int DAILY_ADDRANK_LIMIT = SysRulesCache.behaviorRule.getJoinrankgoalstimes()*DAILY_ADDRANK;//加榜限制
     public static int DAILY_ADDCLASSROOM = SysRulesCache.behaviorRule.getJoinclassgoals();//加教室
-    public static int DAILY_ADDCLASSROOM_LIMIT = SysRulesCache.behaviorRule.getJoinclassroomgoalstimes();//加教室限制
+    public static int DAILY_ADDCLASSROOM_LIMIT = SysRulesCache.behaviorRule.getJoinclassroomgoalstimes()*DAILY_ADDCLASSROOM;//加教室限制
     public static int DAILY_ADDCIRCLE = SysRulesCache.behaviorRule.getJoincirclegoals();//加圈子
     public static int DAILY_ADDCIRCLE_LIMIT = SysRulesCache.behaviorRule.getJoincirclegoalstimes();//加圈子限制
     /**
