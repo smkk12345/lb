@@ -125,7 +125,8 @@ public class ClassroomApiController {
             BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid, classroomid, iscomplain,
                     Constant.IMPROVE_CLASSROOM_TYPE, startNo, pageSize, true);
             Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
-            page.setTotalCount(totalcount);
+			Page.setPageNo(startNo/pageSize+1,totalcount,pageSize);
+			page.setTotalCount(totalcount);
             page.setList(listBaseResp.getData());
             baseResp = BaseResp.ok();
             baseResp.setData(page);
