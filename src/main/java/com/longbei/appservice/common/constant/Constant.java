@@ -435,7 +435,8 @@ public class Constant {
 			"/classroom/selectRoomMembers,"+
 			"/classroom/selectUsercard,"+
 			"/classroom/croomDetail,"+
-			"/classroom/selectRoomSearch";
+			"/classroom/selectRoomSearch,"+
+			"/classroom/selectClassroomListForApp";
 
 	/**
 	 * 进步相关配置
