@@ -34,12 +34,13 @@
     <result column="weight" property="weight" />
     <result column="ishomerecommend" property="ishomerecommend" />
     <result column="allcourses" property="allcourses" />
+    <result column="earnings" property="earnings" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses 
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -533,6 +534,13 @@
     update classroom
     set 
       allcourses = allcourses + #{num} 
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateEarningsByClassroomid" >
+    update classroom
+    set 
+      earnings = earnings + #{charge} 
     where classroomid = #{classroomid} 
   </update>
   
