@@ -3,6 +3,8 @@ package com.longbei.appservice.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.common.utils.DateUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import com.alibaba.fastjson.JSONArray;
@@ -70,20 +73,87 @@ public class ClassroomQuestionsMongoDao {
 		}
 		return list;
 	}
-	
+
+	public List<ClassroomQuestions>selectQuestionsList(String classroomId, String userid, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
+		logger.info("selectQuestionsList and classroomId={},userid={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId, userid,startCreatetime,startCreatetime,startNum,pageSize);
+		Criteria criteria  = Criteria.where("classroomid").is(classroomId);
+		if (!StringUtils.isBlank(userid) &&  !"null".equals(userid)) {
+			criteria = criteria.and("userid").is(userid);
+		}
+		if (!StringUtils.isBlank(startCreatetime) && StringUtils.isBlank(endCreatetime)) {
+			Date startDate =DateUtils.parseDate(startCreatetime);
+			criteria = criteria.and("createtime").gte(startDate);
+		}
+		if (!StringUtils.isBlank(endCreatetime) && StringUtils.isBlank(startCreatetime)) {
+			Date endDate =DateUtils.parseDate(endCreatetime);
+			criteria = criteria.and("createtime").lt(endDate);
+		}
+		if (!StringUtils.isBlank(endCreatetime) && !StringUtils.isBlank(startCreatetime)) {
+			Date startDate =DateUtils.parseDate(startCreatetime);
+			Date endDate =DateUtils.parseDate(endCreatetime);
+			criteria = criteria.and("createtime").gte(startDate).lt(endDate);
+		}
+		Query query = Query.query(criteria);
+		query.with(new Sort(Direction.DESC, "createtime"));
+		if(startNum != 0 || startNum!= null){
+			query.skip(startNum);
+		}
+		if(pageSize != 0 || pageSize !=null){
+			query.limit(pageSize);
+		}
+		List<ClassroomQuestions> list = null;
+		try {
+			list = mongoTemplate1.find(query, ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("selectQuestionsList and classroomId={},userid={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId,userid,startCreatetime,endCreatetime,startNum,pageSize,e);
+		}
+		return list;
+	}
+
+	public Long selectQuestionsListCount(String classroomId, String userid, String startCreatetime, String endCreatetime){
+		Criteria criteria  = Criteria.where("classroomid").is(classroomId);
+		if (!StringUtils.isBlank(userid) &&  !"null".equals(userid)) {
+			criteria = criteria.and("userid").is(userid);
+		}
+		if (!StringUtils.isBlank(startCreatetime) && StringUtils.isBlank(endCreatetime)) {
+			Date startDate =DateUtils.parseDate(startCreatetime);
+			criteria = criteria.and("createtime").gte(startDate);
+		}
+		if (!StringUtils.isBlank(endCreatetime) && StringUtils.isBlank(startCreatetime)) {
+			Date endDate =DateUtils.parseDate(endCreatetime);
+			criteria = criteria.and("createtime").lt(endDate);
+		}
+		if (!StringUtils.isBlank(endCreatetime) && !StringUtils.isBlank(startCreatetime)) {
+			Date startDate =DateUtils.parseDate(startCreatetime);
+			Date endDate =DateUtils.parseDate(endCreatetime);
+			criteria = criteria.and("createtime").gte(startDate).lt(endDate);
+		}
+		Query query = Query.query(criteria);
+		query.with(new Sort(Direction.DESC, "createtime"));
+		List<ClassroomQuestions> list = null;
+		Long count = 0L;
+		try {
+			count= mongoTemplate1.count(query,ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("selectQuestionsListCount and classroomid={}, userid={}, startCreatetime={}, endCreatetime={}",
+					classroomId, userid, startCreatetime, endCreatetime, e);
+		}
+		return count;
+	}
+
 	/**
 	 * @author yinxc
 	 * 获取教室提问答疑信息
 	 * 2017年3月1日
 	 * param id 提问答疑id
 	 */
-	public ClassroomQuestions selectQuestionsByid(String id){
+	public ClassroomQuestions selectQuestionsByQuestionsId(String questionsId){
 		ClassroomQuestions classroomQuestions = null;
 		try {
-			Query query = Query.query(Criteria.where("_id").is(id));
+			Query query = Query.query(Criteria.where("_id").is(questionsId));
 			classroomQuestions = mongoTemplate1.findOne(query, ClassroomQuestions.class);
 		} catch (Exception e) {
-			logger.error("selectQuestionsByid id = {}", id, e);
+			logger.error("selectQuestionsByQuestionsId and questionsId = {}", questionsId, e);
 		}
 		return classroomQuestions;
 	}
@@ -120,5 +190,27 @@ public class ClassroomQuestionsMongoDao {
 			logger.error("deleteQuestions id = {}", id, e);
 		}
 	}
-	
+
+	public void deleteQuestionsByQuestionsid(String questionsId){
+		try {
+			Query query = Query.query(Criteria.where("_id").is(questionsId));
+			mongoTemplate1.remove(query, ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("deleteQuestionsByQuestionsid and questionsId = {}", questionsId, e);
+		}
+	}
+
+	public void updateQuestionsIsIgnore(String questionsId, String isIgnore){
+		try {
+			Update update = new Update();
+			Query query = Query.query(Criteria.where("_id").is(questionsId));
+			ClassroomQuestions classroomQuestions = mongoTemplate1.findOne(query,ClassroomQuestions.class);
+			if (null != classroomQuestions){
+				update.set("isignore",isIgnore);
+			}
+			mongoTemplate1.upsert(query,update,ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("updateQuestionsIsIgnore and questionsId = {},isIgnore={}",questionsId,isIgnore,e);
+		}
+	}
 }

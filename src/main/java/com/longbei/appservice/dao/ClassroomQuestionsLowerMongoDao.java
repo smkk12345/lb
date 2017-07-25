@@ -2,12 +2,14 @@ package com.longbei.appservice.dao;
 
 import java.util.List;
 
+import com.longbei.appservice.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import com.alibaba.fastjson.JSONArray;
@@ -31,6 +33,22 @@ public class ClassroomQuestionsLowerMongoDao {
 			mongoTemplate1.insert(classroomQuestionsLower);
 		} catch (Exception e) {
 			logger.error("insertQuestionsLower classroomQuestionsLower = {}", 
+					JSONArray.toJSON(classroomQuestionsLower).toString(), e);
+		}
+	}
+
+	public void updateQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower){
+		try {
+			Criteria criteria  = Criteria.where("questionsid").is(classroomQuestionsLower.getQuestionsid());
+			Query query = Query.query(criteria);
+			ClassroomQuestionsLower classroomQuestionsLower1 = mongoTemplate1.findOne(query, ClassroomQuestionsLower.class);
+			Update update = new Update();
+			if (null != classroomQuestionsLower1 && StringUtils.isNotBlank(classroomQuestionsLower.getContent())){
+				update.set("content",classroomQuestionsLower.getContent());
+			}
+			mongoTemplate1.upsert(query,update,ClassroomQuestionsLower.class);
+		} catch (Exception e) {
+			logger.error("insertQuestionsLower classroomQuestionsLower = {}",
 					JSONArray.toJSON(classroomQuestionsLower).toString(), e);
 		}
 	}
@@ -82,5 +100,4 @@ public class ClassroomQuestionsLowerMongoDao {
 			logger.error("deleteLowerByQuestionsid questionsid = {}", questionsid, e);
 		}
 	}
-	
 }
