@@ -70,6 +70,16 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
+	 * 修改课程的发布状态
+	 * 2017年7月25日
+	 * param id  课程id
+	 * param isup 是否上架   0：未上架    1：已上架
+	 */
+    int updateIsupByid(@Param("isup") String isup, @Param("id") Integer id, @Param("classroomid") long classroomid);
+    
+    
+    /**
+	 * @author yinxc
 	 * 删除课程信息(假删)
 	 * 2017年3月1日
 	 * param id  课程id

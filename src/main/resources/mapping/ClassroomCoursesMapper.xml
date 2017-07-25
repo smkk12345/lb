@@ -19,11 +19,12 @@
     <result column="duration" property="duration" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="udpatetime" property="udpatetime" jdbcType="TIMESTAMP" />
+    <result column="isup" property="isup" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime
+    createtime, udpatetime, isup
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -61,6 +62,9 @@
     <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
       	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
     </if>
+    <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
+      	and isup = #{classroomCourses.isup}
+    </if>
   </select>
   
   <select id="selectMinSort" resultType="java.lang.Integer" >
@@ -78,6 +82,9 @@
     and isdel = 0 
     <if test="classroomCourses.coursetitle != null and classroomCourses.coursetitle != ''" >
       	and coursetitle LIKE concat(concat('%',#{classroomCourses.coursetitle}),'%')
+    </if>
+    <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
+      	and isup = #{classroomCourses.isup}
     </if>
     order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
@@ -331,6 +338,13 @@
   <update id="updateSortByid" >
     update classroom_courses
     set coursesort = #{coursesort}  
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateIsupByid" >
+    update classroom_courses
+    set isup = #{isup}  
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>
