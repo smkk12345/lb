@@ -74,25 +74,10 @@ public class ClassroomQuestionsMongoDao {
 		return list;
 	}
 
-	public List<ClassroomQuestions>selectQuestionsList(String classroomId, String userid, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
-		logger.info("selectQuestionsList and classroomId={},userid={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId, userid,startCreatetime,startCreatetime,startNum,pageSize);
+	public List<ClassroomQuestions>selectQuestionsList(String classroomId,String dealStatus, String userid, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
+		logger.info("selectQuestionsList and classroomId={},dealStatus={},userid={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId,dealStatus,userid,startCreatetime,startCreatetime,startNum,pageSize);
 		Criteria criteria  = Criteria.where("classroomid").is(classroomId);
-		if (!StringUtils.isBlank(userid) &&  !"null".equals(userid)) {
-			criteria = criteria.and("userid").is(userid);
-		}
-		if (!StringUtils.isBlank(startCreatetime) && StringUtils.isBlank(endCreatetime)) {
-			Date startDate =DateUtils.parseDate(startCreatetime);
-			criteria = criteria.and("createtime").gte(startDate);
-		}
-		if (!StringUtils.isBlank(endCreatetime) && StringUtils.isBlank(startCreatetime)) {
-			Date endDate =DateUtils.parseDate(endCreatetime);
-			criteria = criteria.and("createtime").lt(endDate);
-		}
-		if (!StringUtils.isBlank(endCreatetime) && !StringUtils.isBlank(startCreatetime)) {
-			Date startDate =DateUtils.parseDate(startCreatetime);
-			Date endDate =DateUtils.parseDate(endCreatetime);
-			criteria = criteria.and("createtime").gte(startDate).lt(endDate);
-		}
+		initSelectListCondition(criteria,dealStatus,userid,startCreatetime,endCreatetime);
 		Query query = Query.query(criteria);
 		query.with(new Sort(Direction.DESC, "createtime"));
 		if(startNum != 0 || startNum!= null){
@@ -110,8 +95,41 @@ public class ClassroomQuestionsMongoDao {
 		return list;
 	}
 
-	public Long selectQuestionsListCount(String classroomId, String userid, String startCreatetime, String endCreatetime){
+	public Long selectQuestionsListCount(String classroomId, String dealStatus,String userid, String startCreatetime, String endCreatetime){
 		Criteria criteria  = Criteria.where("classroomid").is(classroomId);
+		initSelectListCondition(criteria,dealStatus,userid,startCreatetime,endCreatetime);
+		Query query = Query.query(criteria);
+		query.with(new Sort(Direction.DESC, "createtime"));
+		List<ClassroomQuestions> list = null;
+		Long count = 0L;
+		try {
+			count= mongoTemplate1.count(query,ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("selectQuestionsListCount and classroomid={}, userid={}, startCreatetime={}, endCreatetime={}",
+					classroomId, userid, startCreatetime, endCreatetime, e);
+		}
+		return count;
+	}
+
+    //查询提问答疑列表条件
+	private  void initSelectListCondition(Criteria criteria,String dealStatus, String userid, String startCreatetime, String endCreatetime){
+		if (!StringUtils.isBlank(dealStatus)) {	 //dealStatus 处理状态 0未回复 1已忽略 2已回复 3未忽略 4已处理(已忽略+已回复)
+			if("0".equals(dealStatus)) {
+				criteria = criteria.and("isignore").ne("1").and("isreply").ne("1");
+			}
+			else if("1".equals(dealStatus)) {
+				criteria = criteria.and("isignore").is("1");
+			}
+			else if("2".equals(dealStatus)) {
+				criteria = criteria.and("isreply").is("1");
+			}
+			else if("3".equals(dealStatus)) {
+				criteria.orOperator(Criteria.where("isignore").is("0"),Criteria.where("isignore").is(null));
+			}
+			else if("4".equals(dealStatus)) {
+				criteria.orOperator(Criteria.where("isignore").is("1"),Criteria.where("isreply").is("1"));
+			}
+		}
 		if (!StringUtils.isBlank(userid) &&  !"null".equals(userid)) {
 			criteria = criteria.and("userid").is(userid);
 		}
@@ -128,19 +146,7 @@ public class ClassroomQuestionsMongoDao {
 			Date endDate =DateUtils.parseDate(endCreatetime);
 			criteria = criteria.and("createtime").gte(startDate).lt(endDate);
 		}
-		Query query = Query.query(criteria);
-		query.with(new Sort(Direction.DESC, "createtime"));
-		List<ClassroomQuestions> list = null;
-		Long count = 0L;
-		try {
-			count= mongoTemplate1.count(query,ClassroomQuestions.class);
-		} catch (Exception e) {
-			logger.error("selectQuestionsListCount and classroomid={}, userid={}, startCreatetime={}, endCreatetime={}",
-					classroomId, userid, startCreatetime, endCreatetime, e);
-		}
-		return count;
 	}
-
 	/**
 	 * @author yinxc
 	 * 获取教室提问答疑信息
@@ -211,6 +217,20 @@ public class ClassroomQuestionsMongoDao {
 			mongoTemplate1.upsert(query,update,ClassroomQuestions.class);
 		} catch (Exception e) {
 			logger.error("updateQuestionsIsIgnore and questionsId = {},isIgnore={}",questionsId,isIgnore,e);
+		}
+	}
+
+	public void updateQuestionsIsReply(String questionsId, String isReply){
+		try {
+			Update update = new Update();
+			Query query = Query.query(Criteria.where("_id").is(questionsId));
+			ClassroomQuestions classroomQuestions = mongoTemplate1.findOne(query,ClassroomQuestions.class);
+			if (null != classroomQuestions){
+				update.set("isreply",isReply);
+			}
+			mongoTemplate1.upsert(query,update,ClassroomQuestions.class);
+		} catch (Exception e) {
+			logger.error("updateQuestionsIsIgnore and questionsId = {},isReply={}",questionsId,isReply,e);
 		}
 	}
 }

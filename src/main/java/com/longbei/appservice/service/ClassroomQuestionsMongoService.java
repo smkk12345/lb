@@ -54,6 +54,7 @@ public interface ClassroomQuestionsMongoService {
 	 * @Title: selectQuestionsList
 	 * @Description: 获取教室提问答疑列表
 	 * @param classroomId 教室id
+	 * @param dealStatus 处理状态 0未回复 1已忽略 2已回复 3未忽略 4已处理(已忽略+已回复)
 	 * @param nickname 用户昵称
 	 * @param startCreatetime 查询提问时间开始时间
 	 * @param endCreatetime 查询提问时间结束时间
@@ -62,8 +63,20 @@ public interface ClassroomQuestionsMongoService {
 	 * @author IngaWu
 	 * @currentdate:2017年7月21日
 	 */
-	Page<ClassroomQuestions> selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize);
-	
+	Page<ClassroomQuestions> selectQuestionsList(String classroomId,String dealStatus,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize);
+
+	/**
+	 * @Title: selectQuestionsListCount
+	 * @Description: 获取教室提问答疑列表数量
+	 * @param classroomId 教室id
+	 * @param dealStatus 处理状态 0未回复 1已忽略 2已回复 3未忽略 4已处理(已忽略+已回复)
+	 * @param nickname 用户昵称
+	 * @param startCreatetime 查询提问时间开始时间
+	 * @param endCreatetime 查询提问时间结束时间
+	 * @author IngaWu
+	 * @currentdate:2017年7月26日
+	 */
+	BaseResp<Integer> selectQuestionsListCount(String classroomId,String dealStatus,String nickname,String startCreatetime, String endCreatetime);
 	/**
 	 * @author yinxc
 	 * 获取教室提问答疑信息
@@ -105,11 +118,21 @@ public interface ClassroomQuestionsMongoService {
 	BaseResp<Object> updateQuestionsIsIgnore(String questionsId,String isIgnore);
 
 	/**
-	 * @author yinxc
-	 * 删除教室提问答疑回复
-	 * 2017年3月1日
-	 * ClassroomQuestionsMongoService
+	 * @Title: updateQuestionsIsIgnore
+	 * @Description: 更改问题答疑回复状态
+	 * @param questionsId 问题id
+	 * @param isReply  0：未回复  1：已回复
+	 * @auther IngaWu
+	 * @currentdate:2017年7月26日
 	 */
+	BaseResp<Object> updateQuestionsIsReply(String questionsId,String isReply);
+
+		/**
+         * @author yinxc
+         * 删除教室提问答疑回复
+         * 2017年3月1日
+         * ClassroomQuestionsMongoService
+         */
 	BaseResp<Object> deleteLowerByQuestionsId(String questionsId);
 	
 }

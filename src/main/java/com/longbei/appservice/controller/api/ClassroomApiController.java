@@ -809,6 +809,7 @@ public class ClassroomApiController {
 	 * @Title: selectQuestionsList
 	 * @Description: 获取教室提问答疑列表 for PC端
 	 * @param classroomId 教室id
+	 * @param dealStatus 处理状态 0未回复 1已忽略 2已回复 3未忽略 4已处理(已忽略+已回复)
 	 * @param nickname 用户昵称
 	 * @param startCreatetime 查询提问时间开始时间
 	 * @param endCreatetime 查询提问时间结束时间
@@ -818,8 +819,8 @@ public class ClassroomApiController {
 	 * @currentdate:2017年7月21日
 	 */
 	@RequestMapping(value = "selectQuestionsList")
-	public BaseResp<Page<ClassroomQuestions>> selectQuestionsList(String classroomId,String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
-		logger.info("selectQuestionsList and classroomId={},nickname={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId, nickname,startCreatetime,endCreatetime,startNum,pageSize);
+	public BaseResp<Page<ClassroomQuestions>> selectQuestionsList(String classroomId,String dealStatus,String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
+		logger.info("selectQuestionsList and classroomId={},dealStatus={},nickname={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId,dealStatus, nickname,startCreatetime,endCreatetime,startNum,pageSize);
 		BaseResp<Page<ClassroomQuestions>> baseResp = new BaseResp<>();
 		if (null == startNum) {
 			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -828,11 +829,34 @@ public class ClassroomApiController {
 			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
 		}
 		try {
-			Page<ClassroomQuestions> page = classroomQuestionsMongoService.selectQuestionsList(classroomId,nickname, startCreatetime, endCreatetime, startNum, pageSize);
+			Page<ClassroomQuestions> page = classroomQuestionsMongoService.selectQuestionsList(classroomId,dealStatus,nickname, startCreatetime, endCreatetime, startNum, pageSize);
 			baseResp = BaseResp.ok();
 			baseResp.setData(page);
 		} catch (Exception e) {
-			logger.error("selectQuestionsList and classroomId={}, nickname={},startCreatetime={},endCreatetime={},pageNo={},pageSize={}", classroomId,nickname,startCreatetime,endCreatetime,startNum,pageSize, e);
+			logger.error("selectQuestionsList and classroomId={},dealStatus={}, nickname={},startCreatetime={},endCreatetime={},pageNo={},pageSize={}", classroomId,dealStatus,nickname,startCreatetime,endCreatetime,startNum,pageSize, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: selectQuestionsListCount
+	 * @Description: 获取教室提问答疑列表数量 for PC端
+	 * @param classroomId 教室id
+	 * @param dealStatus 处理状态 0未回复 1已忽略 2已回复 3未忽略 4已处理(已忽略+已回复)
+	 * @param nickname 用户昵称
+	 * @param startCreatetime 查询提问时间开始时间
+	 * @param endCreatetime 查询提问时间结束时间
+	 * @author IngaWu
+	 * @currentdate:2017年7月26日
+	 */
+	@RequestMapping(value = "selectQuestionsListCount")
+	public BaseResp<Integer> selectQuestionsListCount(String classroomId,String dealStatus,String nickname, String startCreatetime, String endCreatetime){
+		logger.info("selectQuestionsListCount and classroomId={},dealStatus={},nickname={},startCreatetime={},endCreatetime={}",classroomId,dealStatus, nickname,startCreatetime,endCreatetime);
+		BaseResp<Integer> baseResp = new BaseResp<>();
+		try {
+			baseResp = classroomQuestionsMongoService.selectQuestionsListCount(classroomId,dealStatus,nickname, startCreatetime, endCreatetime);
+		} catch (Exception e) {
+			logger.error("selectQuestionsListCount and classroomId={},dealStatus={}, nickname={},startCreatetime={},endCreatetime={}", classroomId,dealStatus,nickname,startCreatetime,endCreatetime, e);
 		}
 		return baseResp;
 	}
@@ -972,6 +996,7 @@ public class ClassroomApiController {
 		}
 		return baseResp;
 	}
+
 	//--------------------------提问答疑列表 end-------------------------
 
 }
