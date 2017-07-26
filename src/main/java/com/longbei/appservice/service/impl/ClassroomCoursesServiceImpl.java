@@ -117,10 +117,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_1109, Constant.RTNINFO_SYS_1109);
 				return reseResp;
 			}
+			ClassroomCourses classroomCourses = classroomCoursesMapper.select(classroomid, id);
 			boolean temp = updatedel(classroomid, id);
 			if (temp) {
-				//修改课程数量
-				classroomMapper.updateAllcoursesByClassroomid(classroomid, -1);
+				//isup是否上架   0：未上架    1：已上架
+				if("1".equals(classroomCourses.getIsup())){
+					//修改课程数量
+					classroomMapper.updateAllcoursesByClassroomid(classroomid, -1);
+				}
 				
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}

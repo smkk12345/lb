@@ -43,7 +43,7 @@ public class ClassroomCourses {
     
     private String duration; //音频时长
     
-    private String isup; //是否上架   0：未上架    1：已上架
+    private String isup; //isup是否上架   0：未上架    1：已上架
 
     /**
      * 

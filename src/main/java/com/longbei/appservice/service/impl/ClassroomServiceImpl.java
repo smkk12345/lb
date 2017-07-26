@@ -760,7 +760,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
 					if(null != list && list.size()>0){
 						for (ClassroomMembers classroomMembers : list) {
-							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您";
+							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您:" + classnotice;
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 //							//snsid---教室业务id
@@ -1119,7 +1119,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
 					if(null != list && list.size()>0){
 						for (ClassroomMembers classroomMembers : list) {
-							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您";
+							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您:" + classnotice;
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 //							//snsid---教室业务id
