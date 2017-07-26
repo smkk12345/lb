@@ -3143,8 +3143,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 baseResp.setData(resultList);
             }
-            baseResp.getExpandData().put("shareurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
+            baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("rank award list error startNum:{} pageSize:{}",startNum,pageSize);

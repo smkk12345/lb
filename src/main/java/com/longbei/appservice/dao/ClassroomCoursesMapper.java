@@ -28,6 +28,7 @@ public interface ClassroomCoursesMapper {
 	 * param classroomid 教室id
 	 */
     List<ClassroomCourses> selectListByClassroomid(@Param("classroomid") long classroomid, 
+    		@Param("isup") String isup, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
@@ -37,6 +38,7 @@ public interface ClassroomCoursesMapper {
 	 * param classroomid 教室id
 	 */
     List<ClassroomCourses> selectCroomidOrderByCtime(@Param("classroomid") long classroomid, 
+    		@Param("isup") String isup, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
@@ -104,7 +106,7 @@ public interface ClassroomCoursesMapper {
 	 * 2017年3月3日
 	 * param classroomid 教室id
 	 */
-    Integer selectCountCourses(@Param("classroomid") long classroomid);
+    Integer selectCountCourses(@Param("classroomid") long classroomid, @Param("isup") String isup);
     
     /*
      * 获取Count
@@ -122,5 +124,17 @@ public interface ClassroomCoursesMapper {
      */
     Integer selectMinSort(@Param("classroomid") long classroomid);
     
+    
+    /*
+     * 修改教室课程全部为免费
+     */
+    int updateCoursetypeByClassroomid(@Param("classroomid") long classroomid, @Param("coursetype") String coursetype);
+    
+    /*
+     * 修改教室课程类型
+     * coursetype 课程类型.  0 不收费 1 收费
+     */
+    Integer updateCoursetypeByid(@Param("classroomid") long classroomid, 
+    		@Param("id") Integer id, @Param("coursetype") String coursetype);
     
 }

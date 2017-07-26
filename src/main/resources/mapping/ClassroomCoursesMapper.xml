@@ -48,6 +48,9 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
+    <if test="isup != null and isup != ''" >
+      	and isup = #{isup}
+    </if>
     order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
@@ -99,6 +102,9 @@
     where classroomid = #{classroomid} 
     and isdel = 0 
     and pickey != '' 
+    <if test="isup != null and isup != ''" >
+      	and isup = #{isup}
+    </if>
     order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
@@ -118,6 +124,9 @@
   	where classroomid = #{classroomid} 
   	and pickey != '' 
   	and isdel = 0 
+  	<if test="isup != null and isup != ''" >
+      	and isup = #{isup}
+    </if>
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -345,6 +354,19 @@
   <update id="updateIsupByid" >
     update classroom_courses
     set isup = #{isup}  
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateCoursetypeByClassroomid" >
+    update classroom_courses
+    set coursetype = #{coursetype}  
+    where classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateCoursetypeByid" >
+    update classroom_courses
+    set coursetype = #{coursetype}  
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>
