@@ -354,9 +354,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	@Override
 	public BaseResp<Page<ClassroomMembers>> selectPcMembersList(ClassroomMembers members, int startNum, int endNum) {
 		BaseResp<Page<ClassroomMembers>> reseResp = new BaseResp<>();
-		Page<ClassroomMembers> page = new Page<>(startNum, endNum);
+		Page<ClassroomMembers> page = new Page<>(startNum/endNum+1, endNum);
 		try {
 			int totalcount = classroomMembersMapper.selectSearchCount(members);
+			Page.setPageNo(startNum/endNum+1,totalcount,endNum);
 			List<ClassroomMembers> list = classroomMembersMapper.selectSearchList(members, startNum, endNum);
 			if(null != list && list.size()>0){
 				String cnickname = "";
