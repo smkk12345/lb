@@ -93,7 +93,7 @@ public interface IProductBasicService {
 
 	/**
 	 * 根据状态和用户id获取购物车列表
-	 * @author yinxc
+	 * @author yinxccategory
 	 * @param userid
 	 * @param startNo
 	 * @param pageSize
