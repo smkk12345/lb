@@ -19,10 +19,11 @@
     <result column="commentlowerid" property="commentlowerid" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="href" property="href" jdbcType="VARCHAR" />
+    <result column="notice" property="notice" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, userid, friendid, msgtype, snsid, remark, isdel, isread, gtype, 
-    gtypeid, title, mtype, num, commentid, commentlowerid, createtime,href
+    gtypeid, title, mtype, num, commentid, commentlowerid, createtime, href, notice
   </sql>
   <sql id="Fid_Column_List" >
     friendid
@@ -302,6 +303,9 @@
       <if test="href != null" >
         href,
       </if>
+      <if test="notice != null" >
+        notice,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -355,6 +359,9 @@
       </if>
       <if test="href != null" >
         #{href},
+      </if>
+      <if test="notice != null" >
+        #{notice},
       </if>
     </trim>
   </insert>

@@ -31,7 +31,8 @@ public class UserMsg {
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
 							//					14:发布新公告   15:获奖   16:剔除  42.榜单公告更新   17:加入请求审批结果 
 							//					34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜   49:发布榜单审核未通过 50:个人定制榜邀请
-							// 					51.入榜审核通过 52.入榜审核不通过  54: 教室成员退出教室  57:教室关闭    60:教室发布新公告)
+							// 					51.入榜审核通过 52.入榜审核不通过  54: 教室成员退出教室  57:教室关闭    60:教室发布新公告
+							//					61:教室疑答回复)
 
 	private String msgtype; //0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝 等等
 							//10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
@@ -45,7 +46,7 @@ public class UserMsg {
 	  						//40：订单已取消 41 榜中进步下榜 42.榜单公告更新      43:后台反馈回复消息  44: 榜中成员下榜
 							//  45:榜中删除成员进步 46 榜关闭 48:入群被拒绝     49:发布榜单审核未通过   50:个人定制榜邀请
 							// 51.入榜审核通过 52.入榜审核不通过 53：被授予龙杯名人认证 54: 教室成员退出教室 55：转让群主权限 56：被授予龙杯Star认证
-							// 57:教室关闭       58:教室课程更新   59:删除教室成员进步  60:教室发布新公告
+							// 57:教室关闭       58:教室课程更新   59:删除教室成员进步  60:教室发布新公告  61:教室疑答回复
 	private Long snsid;// 进步id
 
 	private String remark;// 可能会有一些说明
@@ -70,6 +71,8 @@ public class UserMsg {
 	private String commentlowerid;  //子评论id
 
 	private String href; //连接
+	
+	private String notice; //公告
 	
 	
 	//----------------扩展字段------------------------------------------
@@ -375,6 +378,14 @@ public class UserMsg {
 
 	public void setCommentlowerid(String commentlowerid) {
 		this.commentlowerid = commentlowerid;
+	}
+
+	public String getNotice() {
+		return notice;
+	}
+
+	public void setNotice(String notice) {
+		this.notice = notice;
 	}
 
 	//	public String getImpPickey() {
