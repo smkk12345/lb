@@ -1301,7 +1301,7 @@ public class UserServiceImpl implements UserService {
 			list.add("可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
 			list.add("可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");
 			list.add("可以同时发布" + userLevel.getPriranknum() + "个定制非公开龙榜");
-			list.add("可以同时发布" + userLevel.getClassroomnum() + "个教室");
+//			list.add("可以同时发布" + userLevel.getClassroomnum() + "个教室");
 		}
 		return list;
 	}

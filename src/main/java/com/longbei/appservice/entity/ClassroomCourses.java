@@ -15,7 +15,7 @@ public class ClassroomCourses {
 
     private Integer coursesort;//课程序号
 
-    private String coursetype;//课程类型.  0 不收费 1 收费
+    private String coursetype;//coursetype 课程类型.  0 不收费 1 收费
 
     private String coursebrief;//课程简介
 
@@ -43,7 +43,7 @@ public class ClassroomCourses {
     
     private String duration; //音频时长
     
-    private String isup; //是否上架   0：未上架    1：已上架
+    private String isup; //isup是否上架   0：未上架    1：已上架
 
     /**
      * 

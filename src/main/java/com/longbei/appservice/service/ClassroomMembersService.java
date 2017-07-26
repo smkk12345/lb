@@ -25,7 +25,7 @@ public interface ClassroomMembersService {
 	 * 2017年2月28日
 	 * param classroomid 教室id
 	 */
-	BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, int startNum, int endNum);
+	BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, String userid, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc

@@ -37,8 +37,8 @@ public class ClassroomApiController {
 	private ImproveService improveService;
 	@Autowired
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
-	@Autowired
-	private UserCardService userCardService;
+//	@Autowired
+//	private UserCardService userCardService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomApiController.class);
 	
@@ -817,6 +817,7 @@ public class ClassroomApiController {
 	 * @author IngaWu
 	 * @currentdate:2017年7月21日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "selectQuestionsList")
 	public BaseResp<Page<ClassroomQuestions>> selectQuestionsList(String classroomId,String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
 		logger.info("selectQuestionsList and classroomId={},nickname={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId, nickname,startCreatetime,endCreatetime,startNum,pageSize);
@@ -845,6 +846,7 @@ public class ClassroomApiController {
 	 * @auther IngaWu
 	 * @currentdate:2017年7月21日
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateQuestionsIsIgnore")
 	public BaseResp<Object> updateQuestionsIsIgnore(String questionsId ,String isIgnore) {
 		logger.info("updateQuestionsIsIgnore for adminservice questionsId={},isIgnore={}", questionsId,isIgnore);
@@ -915,10 +917,7 @@ public class ClassroomApiController {
 	public BaseResp<Object> insertQuestionsLower(@RequestBody ClassroomQuestionsLower classroomQuestionsLower,String classroomId) {
 		logger.info("insertQuestionsLower and classroomQuestionsLower={},classroomId={}",JSON.toJSONString(classroomQuestionsLower),classroomId);
 		BaseResp<Object> baseResp = new BaseResp<>();
-		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomId));
-		UserCard userCard = userCardService.selectUserCardByUserCardId(classroom.getCardid()).getData();
-		classroomQuestionsLower.setUserid(userCard.getUserid()+"");
-		if (StringUtils.hasBlankParams(classroomQuestionsLower.getQuestionsid(),classroomQuestionsLower.getContent(), classroomQuestionsLower.getUserid())) {
+		if (StringUtils.hasBlankParams(classroomQuestionsLower.getQuestionsid(),classroomQuestionsLower.getContent())) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
 		try {
