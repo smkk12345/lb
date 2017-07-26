@@ -118,6 +118,16 @@ public class UserInfo {
 
     private String vcertification; //龙杯官方认证 0无认证 1名人认证 2Star认证
 
+    private String handleinvite; //邀请注册处理  0-未处理 1-已经处理
+
+    public String getHandleinvite() {
+        return handleinvite;
+    }
+
+    public void setHandleinvite(String handleinvite) {
+        this.handleinvite = handleinvite;
+    }
+
     public String getJobcertify() {
         return jobcertify;
     }
