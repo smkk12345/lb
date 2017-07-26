@@ -276,11 +276,6 @@ public class BehaviorRule {
      */
     private Integer joincirclegoalstimes;
 
-    /**
-     * 用户参加教室，可得龙分次数，上限值
-     */
-    private Integer aoinclassgoalstimes;
-
     private Integer changedeveicelimitperday = 3;//同一设备每天切换帐号数量
 
     private Integer registerdevicelimit = 5;//同一设备注册帐号数
@@ -288,6 +283,9 @@ public class BehaviorRule {
     private Integer shareMaxCount;//单次分享的最大个数限制
 
     private Integer shareGroupCount = 1;//单次内部分享到群限制
+
+    private Integer joinclassroomgoalstimes;//用户每天参加教室得分次数限制
+
 
     public Long getId() {
         return id;
@@ -729,14 +727,6 @@ public class BehaviorRule {
         this.joincirclegoalstimes = joincirclegoalstimes;
     }
 
-    public Integer getAoinclassgoalstimes() {
-        return aoinclassgoalstimes;
-    }
-
-    public void setAoinclassgoalstimes(Integer aoinclassgoalstimes) {
-        this.aoinclassgoalstimes = aoinclassgoalstimes;
-    }
-
     public void setChangedeveicelimitperday(Integer changedeveicelimitperday) {
         this.changedeveicelimitperday = changedeveicelimitperday;
     }
@@ -767,5 +757,13 @@ public class BehaviorRule {
 
     public void setShareGroupCount(Integer shareGroupCount) {
         this.shareGroupCount = shareGroupCount;
+    }
+
+    public Integer getJoinclassroomgoalstimes() {
+        return joinclassroomgoalstimes;
+    }
+
+    public void setJoinclassroomgoalstimes(Integer joinclassroomgoalstimes) {
+        this.joinclassroomgoalstimes = joinclassroomgoalstimes;
     }
 }

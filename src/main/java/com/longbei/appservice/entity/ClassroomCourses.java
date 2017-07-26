@@ -42,6 +42,8 @@ public class ClassroomCourses {
     private String sourcekey; //源文件
     
     private String duration; //音频时长
+    
+    private String isup; //是否上架   0：未上架    1：已上架
 
     /**
      * 
@@ -284,5 +286,14 @@ public class ClassroomCourses {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getIsup() {
+		return isup;
+	}
+
+	public void setIsup(String isup) {
+		this.isup = isup;
 	}
 }

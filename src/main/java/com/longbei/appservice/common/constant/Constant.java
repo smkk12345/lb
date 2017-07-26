@@ -214,7 +214,8 @@ public class Constant {
 	public static final int STATUS_SYS_1107 = -1107;
 	public static final int STATUS_SYS_1108 = -1108;
 	public static final int STATUS_SYS_1109 = -1109;
-	
+	public static final int STATUS_SYS_1110 = -1110;
+
 	
 	
 	/**
@@ -382,6 +383,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1107 = "您没有权限发布教室公告";
 	public static final String RTNINFO_SYS_1108 = "发布教室至少需要上传一个课程";
 	public static final String RTNINFO_SYS_1109 = "已发布教室至少保留一个课程";
+	public static final String RTNINFO_SYS_1110 = "教室老师已回复的问题不能忽略";
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -435,7 +437,8 @@ public class Constant {
 			"/classroom/selectRoomMembers,"+
 			"/classroom/selectUsercard,"+
 			"/classroom/croomDetail,"+
-			"/classroom/selectRoomSearch";
+			"/classroom/selectRoomSearch,"+
+			"/classroom/selectClassroomListForApp";
 
 	/**
 	 * 进步相关配置

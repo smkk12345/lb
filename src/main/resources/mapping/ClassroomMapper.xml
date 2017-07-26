@@ -283,37 +283,34 @@
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="classroomid != null" >
+      <if test="classroomid != null and classroomid != ''" >
         classroomid,
       </if>
-      <if test="userid != null" >
+      <if test="userid != null and userid != ''" >
         userid,
       </if>
-      <if test="cardid != null" >
+      <if test="cardid != null and cardid != ''" >
         cardid,
       </if>
-      <if test="classtitle != null" >
+      <if test="classtitle != null and classtitle != ''" >
         classtitle,
       </if>
-      <if test="classphotos != null" >
+      <if test="classphotos != null and classphotos != ''" >
         classphotos,
       </if>
-      <if test="classcateid != null" >
+      <if test="classcateid != null and classcateid != ''" >
         classcateid,
       </if>
-      <if test="classinvoloed != null" >
+      <if test="classinvoloed != null and classinvoloed != ''" >
         classinvoloed,
       </if>
-      <if test="classlimited != null" >
+      <if test="classlimited != null and classlimited != ''" >
         classlimited,
       </if>
-      <if test="classbrief != null" >
+      <if test="classbrief != null and classbrief != ''" >
         classbrief,
       </if>
-      <if test="classnotice != null" >
+      <if test="classnotice != null and classnotice != ''" >
         classnotice,
       </if>
       <if test="createtime != null" >
@@ -322,22 +319,22 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
-      <if test="ptype != null" >
+      <if test="ptype != null and ptype != ''" >
         ptype,
       </if>
       <if test="classtype != null and classtype != ''" >
         classtype,
       </if>
-      <if test="ispublic != null" >
+      <if test="ispublic != null and ispublic != ''" >
         ispublic,
       </if>
-      <if test="charge != null" >
+      <if test="charge != null and charge != ''" >
         charge,
       </if>
-      <if test="isfree != null" >
+      <if test="isfree != null and isfree != ''" >
         isfree,
       </if>
-      <if test="freecoursenum != null" >
+      <if test="freecoursenum != null and freecoursenum != ''" >
         freecoursenum,
       </if>
       <if test="isup != null and isup != ''" >
@@ -349,10 +346,7 @@
       <if test="cusername != null and cusername != ''" >
         cusername,
       </if>
-      <if test="closedate != null" >
-        closedate,
-      </if>
-      <if test="syllabus != null and crowd != ''" >
+      <if test="syllabus != null and syllabus != ''" >
         syllabus,
       </if>
       <if test="crowd != null and crowd != ''" >
@@ -360,61 +354,58 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+      <if test="classroomid != null and classroomid != ''" >
+        #{classroomid},
       </if>
-      <if test="classroomid != null" >
-        #{classroomid,jdbcType=INTEGER},
-      </if>
-      <if test="userid != null" >
+      <if test="userid != null and userid != ''" >
         #{userid},
       </if>
-      <if test="cardid != null" >
+      <if test="cardid != null and cardid != ''" >
         #{cardid},
       </if>
-      <if test="classtitle != null" >
-        #{classtitle,jdbcType=VARCHAR},
+      <if test="classtitle != null and classtitle != ''" >
+        #{classtitle},
       </if>
-      <if test="classphotos != null" >
-        #{classphotos,jdbcType=VARCHAR},
+      <if test="classphotos != null and classphotos != ''" >
+        #{classphotos},
       </if>
-      <if test="classcateid != null" >
-        #{classcateid,jdbcType=INTEGER},
+      <if test="classcateid != null and classcateid != ''" >
+        #{classcateid},
       </if>
-      <if test="classinvoloed != null" >
-        #{classinvoloed,jdbcType=INTEGER},
+      <if test="classinvoloed != null and classinvoloed != ''" >
+        #{classinvoloed},
       </if>
-      <if test="classlimited != null" >
-        #{classlimited,jdbcType=INTEGER},
+      <if test="classlimited != null and classlimited != ''" >
+        #{classlimited},
       </if>
-      <if test="classbrief != null" >
-        #{classbrief,jdbcType=VARCHAR},
+      <if test="classbrief != null and classbrief != ''" >
+        #{classbrief},
       </if>
-      <if test="classnotice != null" >
-        #{classnotice,jdbcType=VARCHAR},
+      <if test="classnotice != null and classnotice != ''" >
+        #{classnotice},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
+        #{createtime},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
+        #{updatetime},
       </if>
-      <if test="ptype != null" >
-        #{ptype,jdbcType=CHAR},
+      <if test="ptype != null and ptype != ''" >
+        #{ptype},
       </if>
       <if test="classtype != null and classtype != ''" >
         #{classtype},
       </if>
-      <if test="ispublic != null" >
-        #{ispublic,jdbcType=CHAR},
+      <if test="ispublic != null and ispublic != ''" >
+        #{ispublic},
       </if>
-      <if test="charge != null" >
+      <if test="charge != null and charge != ''" >
         #{charge},
       </if>
-      <if test="isfree != null" >
+      <if test="isfree != null and isfree != ''" >
         #{isfree},
       </if>
-      <if test="freecoursenum != null" >
+      <if test="freecoursenum != null and freecoursenum != ''" >
         #{freecoursenum},
       </if>
       <if test="isup != null and isup != ''" >
@@ -425,9 +416,6 @@
       </if>
       <if test="cusername != null and cusername != ''" >
         #{cusername},
-      </if>
-      <if test="closedate != null" >
-        #{closedate},
       </if>
       <if test="syllabus != null and syllabus != ''" >
         #{syllabus},

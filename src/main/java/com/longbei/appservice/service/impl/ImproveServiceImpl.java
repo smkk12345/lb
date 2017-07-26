@@ -2887,6 +2887,7 @@ public class ImproveServiceImpl implements ImproveService{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
+            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
@@ -2968,9 +2969,13 @@ public class ImproveServiceImpl implements ImproveService{
                         if(!"1".equals(isreply)){
                             if(null != userCard){
                                 //判断当前用户是否是老师
-                                if(userCard.getUserid() != Long.parseLong(userid)){
-                                    isreply = "2";
-                                }
+                            	if(!StringUtils.isBlank(userid)){
+                            		if(userCard.getUserid() != Long.parseLong(userid)){
+                                        isreply = "2";
+                                    }
+                            	}else{
+                            		isreply = "2";
+                            	}
                             }
                         }
                         improve.setIsreply(isreply);

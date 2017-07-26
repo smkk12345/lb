@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,14 +151,45 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 	@Override
-	public BaseResp<Object> selectQuestionsByid(String id) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public Page<ClassroomQuestions>selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
+		Page<ClassroomQuestions> page = new Page<>(startNum / pageSize + 1, pageSize);
 		try {
-			ClassroomQuestions classroomQuestions = classroomQuestionsMongoDao.selectQuestionsByid(id);
+			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+			if(StringUtils.isNotBlank(nickname)){
+				appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
+			}
+			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsList(classroomId, appUserMongoEntity.getUserid()+"", startCreatetime, endCreatetime, startNum, pageSize);
+			long totalcount = classroomQuestionsMongoDao.selectQuestionsListCount(classroomId, appUserMongoEntity.getUserid()+"", startCreatetime,endCreatetime);
+			if (null != list && list.size() > 0) {
+				for (ClassroomQuestions classroomQuestions : list) {
+					initQuestionsUserInfoByUserid(classroomQuestions);
+					List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestions.getId());
+					String isreply = "0";
+					if (null != lowerlist && lowerlist.size() > 0) {
+						initQuestionsLowerUserInfoList(lowerlist);
+						isreply = "1";
+						classroomQuestions.setClassroomQuestionsLower(lowerlist.get(0));
+					}
+					classroomQuestions.setIsreply(isreply);
+				}
+			}
+			page.setTotalCount((int)totalcount);
+			page.setList(list);
+		} catch (Exception e) {
+			logger.error("selectQuestionsList for adminservice error and msg={}", e);
+		}
+		return page;
+	 }
+
+	@Override
+	public BaseResp<ClassroomQuestions> selectQuestionsByQuestionsId(String questionsId) {
+		BaseResp<ClassroomQuestions> reseResp = new BaseResp<>();
+		try {
+			ClassroomQuestions classroomQuestions = classroomQuestionsMongoDao.selectQuestionsByQuestionsId(questionsId);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(classroomQuestions);
 		} catch (Exception e) {
-			logger.error("selectQuestionsByid id = {}", id, e);
+			logger.error("selectQuestionsByQuestionsId questionsId = {}", questionsId, e);
 		}
 		return reseResp;
 	}
@@ -180,20 +213,38 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 		return reseResp;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> deleteQuestionsByQuestionsId(String questionsId) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			classroomQuestionsMongoDao.deleteQuestionsByQuestionsid(questionsId);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("deleteQuestions questionsId = {}", questionsId, e);
+		}
+		return reseResp;
+	}
 	
-//	/**
-//	 * @author yinxc
-//	 * 删除问题时，根据问题id删除老师回复问题的数据
-//	 * 2017年3月1日
-//	 * param questionsid 问题id
-//	 */
-//	private void deleteLowerByQid(String questionsid){
-//		try {
-//			classroomQuestionsLowerMongoDao.deleteLowerByQuestionsid(questionsid);;
-//		} catch (Exception e) {
-//			logger.error("deleteLowerByQid questionsid = {}", questionsid, e);
-//		}
-//	}
+	/**
+	 * @author yinxc
+	 * 删除问题时，根据问题id删除老师回复问题的数据
+	 * 2017年3月1日
+	 * param questionsId 问题id
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> deleteLowerByQuestionsId(String questionsId){
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			classroomQuestionsLowerMongoDao.deleteLowerByQuestionsid(questionsId);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("deleteLowerByQid and questionsId = {}", questionsId, e);
+		}
+		return reseResp;
+	}
 	
 	private void delete(String id, String userid){
 		try {
@@ -209,7 +260,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	public BaseResp<Object> insertQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			//获取老师回复
+			//获取老师回复,已回复的无法忽略
 			List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestionsLower.getQuestionsid());
 			if(null != lowerlist && lowerlist.size()>0){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1100, Constant.RTNINFO_SYS_1100);
@@ -224,7 +275,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 		return reseResp;
 	}
-	
+
 	private void insertLower(ClassroomQuestionsLower classroomQuestionsLower){
 		try {
 			classroomQuestionsLowerMongoDao.insertQuestionsLower(classroomQuestionsLower);
@@ -232,6 +283,20 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			logger.error("insertLower classroomQuestionsLower = {}", 
 					JSONObject.fromObject(classroomQuestionsLower).toString(), e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			classroomQuestionsLowerMongoDao.updateQuestionsLower(classroomQuestionsLower);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("updateQuestionsLower and classroomQuestionsLower = {}",
+					JSONObject.fromObject(classroomQuestionsLower).toString(), e);
+		}
+		return reseResp;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -248,6 +313,24 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("deleteQuestionsLower id = {}", id, e);
+		}
+		return reseResp;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateQuestionsIsIgnore(String questionsId,String isIgnore) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			//先判断老师是否已回复，已回复无法忽略
+			List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(questionsId);
+			if(null != lowerlist && lowerlist.size()>0){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1110, Constant.RTNINFO_SYS_1110);
+			}
+			classroomQuestionsMongoDao.updateQuestionsIsIgnore(questionsId,isIgnore);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("updateQuestionsIsIgnore and questionsId = {}", questionsId, e);
 		}
 		return reseResp;
 	}

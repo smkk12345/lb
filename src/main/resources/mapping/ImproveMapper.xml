@@ -380,7 +380,7 @@
   <sql id="Classroom_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey, 
-    pimpid, isresponded
+    pimpid, isresponded,duration
   </sql>
 
   <select id="selectListByBusinessid" resultMap="BaseResultMap" >

@@ -2585,12 +2585,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
                     Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
                     //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
-                    if("0".equals(rank.getRanktype())){
-                    	 map.put("awardnickname",award.getAwardtitle());
-                         map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid(),true));
-                         resultList.add(map);
-                    }
-                   
+//                    if("0".equals(rank.getRanktype())){
+                     map.put("awardnickname",award.getAwardtitle());
+                     map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid(),true));
+                     resultList.add(map);
+//                    }
                 }
             }
             baseResp.setData(resultList);

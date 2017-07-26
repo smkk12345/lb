@@ -208,7 +208,7 @@ public class PageServiceImpl implements PageService{
             List<HomeRecommend> homeRecommends = homeRecommendMapper.selectList(homeRecommend,pagesize*(pageno-1),pagesize);
             for (HomeRecommend homeRecommend1 : homeRecommends){
                 //recommendtype 0 - 榜单 1 - 教室 2 - 圈子
-                if (0.== homeRecommend1.getRecommendtype()) {
+                if (0 == homeRecommend1.getRecommendtype()) {
                     Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
                     BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"10",null);
                     if (ResultUtil.isSuccess(baseResp1)){
@@ -218,7 +218,7 @@ public class PageServiceImpl implements PageService{
                             (String.valueOf(homeRecommend1.getBusinessid()))==null?"0":rankMembersMapper.getRankImproveCount(String.valueOf(homeRecommend1.getBusinessid()));
                     rank.setIcount(Integer.parseInt(icount));
                     homeRecommend1.setRank(rank);
-                } else {
+                } else if (1 == homeRecommend1.getRecommendtype()) {
                     Classroom classroom = classroomMapper.selectByPrimaryKey(homeRecommend1.getBusinessid());
                     if(classroom == null){
                         continue;

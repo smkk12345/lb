@@ -3,6 +3,8 @@ package com.longbei.appservice.controller.api;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,6 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.ClassroomCourses;
-import com.longbei.appservice.entity.ClassroomMembers;
-import com.longbei.appservice.entity.ClassroomQuestions;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.UserCard;
-import com.longbei.appservice.service.ClassroomCoursesService;
-import com.longbei.appservice.service.ClassroomMembersService;
-import com.longbei.appservice.service.ClassroomQuestionsMongoService;
-import com.longbei.appservice.service.ClassroomService;
-import com.longbei.appservice.service.ImproveService;
 
 @RestController
 @RequestMapping(value = "/api/classroom")
@@ -46,6 +37,8 @@ public class ClassroomApiController {
 	private ImproveService improveService;
 	@Autowired
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
+	@Autowired
+	private UserCardService userCardService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomApiController.class);
 	
@@ -132,7 +125,8 @@ public class ClassroomApiController {
             BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid, classroomid, iscomplain,
                     Constant.IMPROVE_CLASSROOM_TYPE, startNo, pageSize, true);
             Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
-            page.setTotalCount(totalcount);
+			Page.setPageNo(startNo/pageSize+1,totalcount,pageSize);
+			page.setTotalCount(totalcount);
             page.setList(listBaseResp.getData());
             baseResp = BaseResp.ok();
             baseResp.setData(page);
@@ -523,7 +517,7 @@ public class ClassroomApiController {
     }
     
     /**
-     * @Description: 获取课程列表
+     * @Description: 修改课程序号
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @auther yinxc
      * @currentdate:2017年6月17日
@@ -542,6 +536,32 @@ public class ClassroomApiController {
         } catch (Exception e) {
         	logger.error("updCoursesSort classroomid = {}, id = {}, coursesort = {}", 
         			classroomid, id, coursesort, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * @Description: 发布教室课程
+     * @param @param classroomid 教室id
+     * @param @param id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年7月25日
+ 	*/
+    @ResponseBody
+    @RequestMapping(value = "updateIsup")
+    public BaseResp<Object> updateIsup(String classroomid, String id){
+        logger.info("updateIsup classroomid = {}, id = {}", classroomid, id);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(classroomid, id)){
+        	return baseResp;
+        }
+  		try {
+  			baseResp = classroomCoursesService.updateIsup(Integer.parseInt(id), 
+  					Long.parseLong(classroomid));
+        } catch (Exception e) {
+        	logger.error("updateIsup classroomid = {}, id = {}", 
+        			classroomid, id, e);
         }
         return baseResp;
     }
@@ -782,6 +802,176 @@ public class ClassroomApiController {
    		}
    		return baseResp;
      }
-  	
-    
+
+	//---------------------------提问答疑列表 start------------------------
+
+	/**
+	 * @Title: selectQuestionsList
+	 * @Description: 获取教室提问答疑列表 for PC端
+	 * @param classroomId 教室id
+	 * @param nickname 用户昵称
+	 * @param startCreatetime 查询提问时间开始时间
+	 * @param endCreatetime 查询提问时间结束时间
+	 * @param startNum 分页起始值
+	 * @param pageSize 每页显示条数
+	 * @author IngaWu
+	 * @currentdate:2017年7月21日
+	 */
+	@RequestMapping(value = "selectQuestionsList")
+	public BaseResp<Page<ClassroomQuestions>> selectQuestionsList(String classroomId,String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize){
+		logger.info("selectQuestionsList and classroomId={},nickname={},startCreatetime={},endCreatetime={},startNum={},pageSize={}",classroomId, nickname,startCreatetime,endCreatetime,startNum,pageSize);
+		BaseResp<Page<ClassroomQuestions>> baseResp = new BaseResp<>();
+		if (null == startNum) {
+			startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
+		}
+		if (null == pageSize) {
+			pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		}
+		try {
+			Page<ClassroomQuestions> page = classroomQuestionsMongoService.selectQuestionsList(classroomId,nickname, startCreatetime, endCreatetime, startNum, pageSize);
+			baseResp = BaseResp.ok();
+			baseResp.setData(page);
+		} catch (Exception e) {
+			logger.error("selectQuestionsList and classroomId={}, nickname={},startCreatetime={},endCreatetime={},pageNo={},pageSize={}", classroomId,nickname,startCreatetime,endCreatetime,startNum,pageSize, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: updateQuestionsIsIgnore
+	 * @Description: 更改问题忽略状态
+	 * @param questionsId 问题id
+	 * @param isIgnore  0：未忽略  1：已忽略
+	 * @auther IngaWu
+	 * @currentdate:2017年7月21日
+	 */
+	@RequestMapping(value = "/updateQuestionsIsIgnore")
+	public BaseResp<Object> updateQuestionsIsIgnore(String questionsId ,String isIgnore) {
+		logger.info("updateQuestionsIsIgnore for adminservice questionsId={},isIgnore={}", questionsId,isIgnore);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(questionsId,isIgnore)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.updateQuestionsIsIgnore(questionsId,isIgnore);
+		} catch (Exception e) {
+			logger.error("updateQuestionsIsIgnore for adminservice questionsId={},isIgnore={}", questionsId,isIgnore,e);
+
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: deleteQuestionsByquestionsId
+	 * @Description:删除教室问题
+	 * @param questionsId 问题id
+	 * @currentdate:2017年7月21日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "deleteQuestionsByquestionsId")
+	public BaseResp<Object> deleteQuestionsByquestionsId(String questionsId) {
+		logger.info("deleteQuestionsByquestionsId and  questionsId={}",questionsId);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(questionsId)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.deleteQuestionsByQuestionsId(questionsId);
+		} catch (Exception e) {
+			logger.error("deleteQuestionsByquestionsId for adminservice and anquestionsId = {}", questionsId, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: deleteLowerByQuestionsId
+	 * @Description: 删除教室答疑
+	 * @param  questionsId  问题id
+	 * @currentdate:2017年7月21日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "deleteLowerByQuestionsId")
+	public BaseResp<Object> deleteLowerByQuestionsId(String questionsId) {
+		logger.info("deleteLowerByQuestionsId and questionsId = {}", questionsId);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.isBlank(questionsId)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.deleteLowerByQuestionsId(questionsId);
+		} catch (Exception e) {
+			logger.error("deleteLowerByQuestionsId and questionsId = {}", questionsId, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: insertQuestionsLower
+	 * @Description: 添加教室答疑
+	 * @currentdate:2017年7月21日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "insertQuestionsLower")
+	public BaseResp<Object> insertQuestionsLower(@RequestBody ClassroomQuestionsLower classroomQuestionsLower,String classroomId) {
+		logger.info("insertQuestionsLower and classroomQuestionsLower={},classroomId={}",JSON.toJSONString(classroomQuestionsLower),classroomId);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomId));
+		UserCard userCard = userCardService.selectUserCardByUserCardId(classroom.getCardid()).getData();
+		classroomQuestionsLower.setUserid(userCard.getUserid()+"");
+		if (StringUtils.hasBlankParams(classroomQuestionsLower.getQuestionsid(),classroomQuestionsLower.getContent(), classroomQuestionsLower.getUserid())) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.insertQuestionsLower(classroomQuestionsLower);
+		} catch (Exception e) {
+			logger.error("insertQuestionsLower and classroomQuestionsLower={}",JSON.toJSONString(classroomQuestionsLower),e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: selectQuestionsByQuestionsId
+	 * @Description: 查询教室答疑详情
+	 * @currentdate:2017年7月21日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "selectQuestionsByQuestionsId")
+	public BaseResp<ClassroomQuestions> selectQuestionsByQuestionsId(String questionsId) {
+		logger.info("selectQuestionsByQuestionsId and questionsId={}",questionsId);
+		BaseResp<ClassroomQuestions> baseResp = new BaseResp<>();
+		if (StringUtils.isBlank(questionsId)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.selectQuestionsByQuestionsId(questionsId);
+		} catch (Exception e) {
+			logger.error("selectQuestionsByQuestionsId and questionsId={}",questionsId,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: updateQuestionsLower
+	 * @Description: 修改教室答疑
+	 * @auther IngaWu
+	 * @currentdate:2017年7月21日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "updateQuestionsLower")
+	public BaseResp<Object> updateQuestionsLower(@RequestBody ClassroomQuestionsLower classroomQuestionsLower) {
+		classroomQuestionsLower.setCreatetime(new Date());
+		logger.info("updateQuestionsLower and classroomQuestionsLower={}",JSON.toJSONString(classroomQuestionsLower));
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomQuestionsLower.getQuestionsid(), classroomQuestionsLower.getContent())) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomQuestionsMongoService.updateQuestionsLower(classroomQuestionsLower);
+		} catch (Exception e) {
+			logger.error("updateQuestionsLower and classroomQuestionsLower={}",JSON.toJSONString(classroomQuestionsLower),e);
+		}
+		return baseResp;
+	}
+	//--------------------------提问答疑列表 end-------------------------
+
 }
