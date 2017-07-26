@@ -25,6 +25,26 @@
     SELECT count(1) FROM homerecommend
     <where>
       isdel = '0'
+      <if test="rank != null and rank.ranktitle != null and rank.ranktitle !=''">
+        AND businessid in
+        (
+        SELECT
+        DISTINCT `a`.`businessid` AS `businessid`
+        FROM
+        (
+        `homerecommend` `a`
+        JOIN `rank` `b` ON((`a`.`businessid` = `b`.`rankid`))
+        ) WHERE 1=1 and `b`.`ranktitle` LIKE concat(concat('%',#{rank.ranktitle}),'%')
+        UNION ALL
+        SELECT
+        DISTINCT `a`.`businessid` AS `businessid`
+        FROM
+        (
+        `homerecommend` `a`
+        JOIN `classroom` `c` ON((`a`.`businessid` = `c`.`classroomid`))
+        ) WHERE 1=1 and `c`.`classtitle` LIKE concat(concat('%',#{rank.ranktitle}),'%')
+        )
+      </if>
       <if test="recommendtype != null and recommendtype!='-1'.toString()">
         AND recommendtype = #{recommendtype}
       </if>
@@ -38,6 +58,26 @@
     from homerecommend
     <where>
       isdel = '0'
+      <if test="homeRecommend.rank != null and homeRecommend.rank.ranktitle != null and homeRecommend.rank.ranktitle !=''">
+        AND businessid in
+        (
+        SELECT
+        DISTINCT `a`.`businessid` AS `businessid`
+        FROM
+        (
+        `homerecommend` `a`
+        JOIN `rank` `b` ON((`a`.`businessid` = `b`.`rankid`))
+        ) WHERE 1=1 and `b`.`ranktitle` LIKE concat(concat('%',#{homeRecommend.rank.ranktitle}),'%')
+        UNION ALL
+        SELECT
+        DISTINCT `a`.`businessid` AS `businessid`
+        FROM
+        (
+        `homerecommend` `a`
+        JOIN `classroom` `c` ON((`a`.`businessid` = `c`.`classroomid`))
+        ) WHERE 1=1 and `c`.`classtitle` LIKE concat(concat('%',#{homeRecommend.rank.ranktitle}),'%')
+        )
+      </if>
       <if test="homeRecommend.recommendtype != null and homeRecommend.recommendtype!='-1'.toString()">
         AND recommendtype = #{homeRecommend.recommendtype}
       </if>

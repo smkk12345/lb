@@ -168,6 +168,53 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		}
 		return reseResp;
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateIsup(Integer id, long classroomid) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			int temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
+			if (temp > 0) {
+				//修改课程数量
+				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
+				Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+				if(null == classroom){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+				}
+				//推送消息---已关注该教室的人员
+				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
+				remark = remark.replace("n", classroom.getClasstitle());
+				Map<String,Object> map = new HashMap<String,Object>();
+	            map.put("businessType","4");
+	            map.put("businessId",classroom.getClassroomid());
+	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
+				if(null != concernList && concernList.size()>0){
+					for (UserBusinessConcern userBusinessConcern : concernList) {
+						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
+								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
+					}
+				}
+				
+				//推送消息---已加入该教室的人员
+				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
+				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectInsertByUserid(classroom.getClassroomid(),0,0);
+				if(null != memberList && memberList.size()>0){
+					for (int i=0;i<memberList.size();i++) {
+						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
+								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
+					}
+				}
+				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		} catch (Exception e) {
+			logger.error("updateIsup classroomid = {}, id = {}", classroomid, id, e);
+		}
+		return reseResp;
+	}
+
 
 	@Override
 	public BaseResp<Object> saveCourses(ClassroomCourses classroomCourses) {
@@ -199,33 +246,6 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			classroomCourses.setUdpatetime(new Date());
 			int temp = classroomCoursesMapper.insertSelective(classroomCourses);
 			if (temp > 0) {
-				//修改课程数量
-				classroomMapper.updateAllcoursesByClassroomid(classroomCourses.getClassroomid(), 1);
-				
-				//推送消息---已关注该教室的人员
-				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
-				remark = remark.replace("n", classroom.getClasstitle());
-				Map<String,Object> map = new HashMap<String,Object>();
-	            map.put("businessType","4");
-	            map.put("businessId",classroom.getClassroomid());
-	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
-				if(null != concernList && concernList.size()>0){
-					for (UserBusinessConcern userBusinessConcern : concernList) {
-						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
-								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
-					}
-				}
-				
-				//推送消息---已加入该教室的人员
-				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
-				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<ClassroomMembers> memberList = classroomMembersMapper.selectInsertByUserid(classroom.getClassroomid(),0,0);
-				if(null != memberList && memberList.size()>0){
-					for (int i=0;i<memberList.size();i++) {
-						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
-					}
-				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
