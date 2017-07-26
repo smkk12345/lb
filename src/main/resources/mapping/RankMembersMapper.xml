@@ -223,6 +223,7 @@
         and rank_members.iswinning = 1
         and rank.ispublic = 0
         and rank.isfinish = 5
+        and rank.ranktype = '0'
         and rank_members.awardlevel = 1
       order by rank.endtime DESC
       limit 0,6
