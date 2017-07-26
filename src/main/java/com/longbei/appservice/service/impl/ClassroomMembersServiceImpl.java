@@ -141,13 +141,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 
 	@Override
-	public BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, int startNum, int endNum) {
+	public BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, String userid, int startNum, int endNum) {
 		BaseResp<List<ClassroomMembers>> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
-					initMsgUserInfoByUserid(classroomMembers);
+					initMsgUserInfoByUserid(classroomMembers, userid);
 					//教室所发的微进步总数
 //					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", 
 //							classroomMembers.getUserid().toString());
@@ -173,7 +173,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			List<ClassroomMembers> list = classroomMembersMapper.selectInsertByUserid(userid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
-					initMsgUserInfoByUserid(classroomMembers);
+					initMsgUserInfoByUserid(classroomMembers, userid + "");
 				}
 			}
 			return list;
@@ -338,10 +338,17 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	/**
      * 初始化教室成员用户信息 ------Userid
      */
-    private void initMsgUserInfoByUserid(ClassroomMembers classroomMembers){
+    private void initMsgUserInfoByUserid(ClassroomMembers classroomMembers, String userid){
     	if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
-    		classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);;
+    		if(null != appUserMongoEntity){
+    			if(StringUtils.isNotEmpty(userid)){
+    				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+    			}
+    			classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);
+            }else{
+            	classroomMembers.setAppUserMongoEntityUserid(new AppUserMongoEntity());
+            }
     	}
     }
 

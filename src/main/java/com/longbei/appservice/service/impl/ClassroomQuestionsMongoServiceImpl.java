@@ -23,6 +23,7 @@ import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
 
@@ -41,8 +42,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private UserCardMapper userCardMapper;
 	@Autowired
 	private ClassroomMapper classroomMapper;
-//	@Autowired
-//	private ClassroomMembersMapper classroomMembersMapper;
+	@Autowired
+	private UserRelationService userRelationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
@@ -76,7 +77,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomQuestions.getClassroomid()));
 			if(null != classroom){
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-				initQuestionsUserInfoByUserid(classroomQuestions);
+				initQuestionsUserInfoByUserid(classroomQuestions, null);
 				String isreply = "0";
 				if(!"1".equals(isreply)){
 					//判断当前用户是否是老师
@@ -102,28 +103,43 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<List<ClassroomQuestions>> selectQuestionsListByClassroomid(String classroomid, String userid, Date lastDate, int pageSize) {
 		BaseResp<List<ClassroomQuestions>> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+			if(null == classroom){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
 //	  		List<String> idlist = new ArrayList<>();
 //	  		if(null != classroom){
 //	  			idlist = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //	  		}
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			if(null == userCard){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
 			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsListByClassroomid(classroomid, lastDate, pageSize);
 			if(null != list && list.size()>0){
 				for (ClassroomQuestions classroomQuestions : list) {
-					initQuestionsUserInfoByUserid(classroomQuestions);
+					initQuestionsUserInfoByUserid(classroomQuestions, userid);
+					
 					//获取老师回复
 					List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestions.getId());
 					String isreply = "0";
 					if(null != lowerlist && lowerlist.size()>0){
-						initQuestionsLowerUserInfoList(lowerlist);
+//						initQuestionsLowerUserInfoList(lowerlist);
+						ClassroomQuestionsLower classroomQuestionsLower = lowerlist.get(0);
+						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+						appUserMongoEntity.setAvatar(userCard.getAvatar());
+						appUserMongoEntity.setId(userCard.getUserid().toString());
+						appUserMongoEntity.setUserid(userCard.getUserid().toString());
+						appUserMongoEntity.setNickname(userCard.getDisplayname());
+						classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongoEntity);
 						//已回答
 	  					isreply = "1";
-	  					classroomQuestions.setClassroomQuestionsLower(lowerlist.get(0));
+	  					classroomQuestions.setClassroomQuestionsLower(classroomQuestionsLower);
 					}
 //					if(!"1".equals(isreply)){
 //	  					//判断当前用户是否是老师
@@ -151,7 +167,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 	@Override
-	public Page<ClassroomQuestions>selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
+	public Page<ClassroomQuestions> selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
 		Page<ClassroomQuestions> page = new Page<>(startNum / pageSize + 1, pageSize);
 		try {
 			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
@@ -162,7 +178,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			long totalcount = classroomQuestionsMongoDao.selectQuestionsListCount(classroomId, appUserMongoEntity.getUserid()+"", startCreatetime,endCreatetime);
 			if (null != list && list.size() > 0) {
 				for (ClassroomQuestions classroomQuestions : list) {
-					initQuestionsUserInfoByUserid(classroomQuestions);
+					initQuestionsUserInfoByUserid(classroomQuestions, null);
 					List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestions.getId());
 					String isreply = "0";
 					if (null != lowerlist && lowerlist.size() > 0) {
@@ -214,7 +230,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		return reseResp;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> deleteQuestionsByQuestionsId(String questionsId) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -233,7 +248,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	 * 2017年3月1日
 	 * param questionsId 问题id
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> deleteLowerByQuestionsId(String questionsId){
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -285,7 +299,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -373,9 +386,16 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
     /**
      * 初始化消息中用户信息 ------Userid
      */
-    private void initQuestionsUserInfoByUserid(ClassroomQuestions classroomQuestions){
+    private void initQuestionsUserInfoByUserid(ClassroomQuestions classroomQuestions, String userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomQuestions.getUserid()));
-        classroomQuestions.setAppUserMongoEntityUserid(appUserMongoEntity);
+        if(null != appUserMongoEntity){
+			if(StringUtils.isNotEmpty(userid)){
+				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+			}
+			classroomQuestions.setAppUserMongoEntityUserid(appUserMongoEntity);
+        }else{
+        	classroomQuestions.setAppUserMongoEntityUserid(new AppUserMongoEntity());
+        }
     }
 
 }
