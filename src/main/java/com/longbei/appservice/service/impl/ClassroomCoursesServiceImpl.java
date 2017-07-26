@@ -48,7 +48,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
 		try {
-			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, startNum, endNum);
+			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", startNum, endNum);
 			//教室课程总数
 			reseResp.getExpandData().put("coursesNum", classroom.getAllcourses());
 			reseResp.setData(list);
@@ -125,7 +125,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 					//修改课程数量
 					classroomMapper.updateAllcoursesByClassroomid(classroomid, -1);
 				}
-				
+				//教室课程第一课改为免费
+				if("1".equals(classroom.getIsfree())){
+					classroomCoursesMapper.updateCoursetypeByClassroomid(classroomid, "1");
+					List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
+					if(null != courselist && courselist.size()>0){
+						classroomCoursesMapper.updateCoursetypeByid(classroomid, courselist.get(0).getId(), "0");
+					}
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -159,12 +166,25 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		return reseResp;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateSortByid(Integer id, long classroomid, Integer coursesort) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null == classroom){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
 			int temp = classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
 			if (temp > 0) {
+				//教室课程第一课改为免费
+				if("1".equals(classroom.getIsfree())){
+					classroomCoursesMapper.updateCoursetypeByClassroomid(classroomid, "1");
+					List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
+					if(null != courselist && courselist.size()>0){
+						classroomCoursesMapper.updateCoursetypeByid(classroomid, courselist.get(0).getId(), "0");
+					}
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -230,10 +250,11 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			}
 			//获取排序值
 			int coursesort = 10000;
+			//coursetype 课程类型.  0 不收费 1 收费
 			String coursetype = "0";
 			//isdefault是否 默认   1 默认封面  0 非默认
 			String isdefault = "1";
-			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomCourses.getClassroomid(), 0, 1);
+			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomCourses.getClassroomid(), "1", 0, 1);
 			if(null != list && list.size()>0){
 				coursesort = classroomCoursesMapper.selectMinSort(classroomCourses.getClassroomid()) - 1;
 				//isfree是否免费。0 免费 1 收费
@@ -242,6 +263,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				}
 				isdefault = "0";
 			}
+			
 			classroomCourses.setCoursesort(coursesort);
 			classroomCourses.setCoursetype(coursetype);
 			classroomCourses.setCreatetime(new Date());

@@ -75,6 +75,15 @@ public class BehaviorRule {
      * 邀请好友注册成功可得X个进步币；X不超过2000/天
      */
     private Integer friendregisterimpcoins;
+    private Integer friendregisterimpcoins2;
+    private Integer friendregisterimpcoins3;
+    private Integer friendregisterimpcoins4;
+    private Integer friendregisterimpcoins5;
+
+    /**
+     * 被邀请的用户发几条进步，可以给邀请人发放奖励
+     */
+    private Integer inviteimprovenum;
 
     /**
      * 添加好友可得N个龙分；N不超过20/天
@@ -286,6 +295,45 @@ public class BehaviorRule {
 
     private Integer joinclassroomgoalstimes;//用户每天参加教室得分次数限制
 
+    public Integer getInviteimprovenum() {
+        return inviteimprovenum;
+    }
+
+    public void setInviteimprovenum(Integer inviteimprovenum) {
+        this.inviteimprovenum = inviteimprovenum;
+    }
+
+    public Integer getFriendregisterimpcoins2() {
+        return friendregisterimpcoins2;
+    }
+
+    public void setFriendregisterimpcoins2(Integer friendregisterimpcoins2) {
+        this.friendregisterimpcoins2 = friendregisterimpcoins2;
+    }
+
+    public Integer getFriendregisterimpcoins3() {
+        return friendregisterimpcoins3;
+    }
+
+    public void setFriendregisterimpcoins3(Integer friendregisterimpcoins3) {
+        this.friendregisterimpcoins3 = friendregisterimpcoins3;
+    }
+
+    public Integer getFriendregisterimpcoins4() {
+        return friendregisterimpcoins4;
+    }
+
+    public void setFriendregisterimpcoins4(Integer friendregisterimpcoins4) {
+        this.friendregisterimpcoins4 = friendregisterimpcoins4;
+    }
+
+    public Integer getFriendregisterimpcoins5() {
+        return friendregisterimpcoins5;
+    }
+
+    public void setFriendregisterimpcoins5(Integer friendregisterimpcoins5) {
+        this.friendregisterimpcoins5 = friendregisterimpcoins5;
+    }
 
     public Long getId() {
         return id;

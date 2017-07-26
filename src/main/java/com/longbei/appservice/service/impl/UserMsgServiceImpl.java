@@ -25,6 +25,7 @@ import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.HotLineMongoDao;
 import com.longbei.appservice.dao.RankMapper;
+import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.UserMsgMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.UserMsgService;
@@ -61,6 +62,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private UserRelationService userRelationService;
 	@Autowired
 	private HotLineMongoDao hotLineMongoDao;
+	@Autowired
+	private UserCardMapper userCardMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserMsgServiceImpl.class);
 	
@@ -178,7 +181,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 	@Override
 	public BaseResp<Object> insertMsg(String userid, String friendid, String impid, String businesstype,
 									  String businessid, String remark, String mtype, String msgtype, String title, int num,
-									  String commentid, String commentlowerid,String href) {
+									  String commentid, String commentlowerid,String href, String notice) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		if (StringUtils.isBlank(friendid)){
 			return reseResp;
@@ -214,6 +217,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			// mtype  0 系统消息(通知消息.进步消息等) 1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3
 			// 送花 4 送钻石  5:粉丝  等等)
 			record.setMtype(mtype);
+			record.setNotice(notice);
 			try {
 				userMsgMapper.insertSelective(record);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -941,12 +945,29 @@ public class UserMsgServiceImpl implements UserMsgService {
 			List<UserMsg> list = userMsgMapper.selectOtherList(userid, mtype, msgtype, startNum, endNum);
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
-				//@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问  
-				//					14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果,通过或拒绝  34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜)
+				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
+				//					14:发布新公告   15:获奖   16:剔除  42.榜单公告更新   17:加入请求审批结果 
+				//					34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜   49:发布榜单审核未通过 50:个人定制榜邀请
+				// 					51.入榜审核通过 52.入榜审核不通过  54: 教室成员退出教室  57:教室关闭    60:教室发布新公告
+				//					61:教室疑答回复
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
 							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype())){
-						initMsgUserInfoByFriendid(userMsg, userid);
+						if("61".equals(userMsg.getMsgtype())){
+							if(!StringUtils.isBlank(userMsg.getFriendid().toString())){
+								//教室疑答回复---显示教室老师信息
+								UserCard userCard = userCardMapper.selectByCardid(userMsg.getFriendid());
+								AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+								appUserMongoEntity.setAvatar(userCard.getAvatar());
+								appUserMongoEntity.setId(userCard.getUserid().toString());
+								appUserMongoEntity.setUserid(userCard.getUserid().toString());
+								appUserMongoEntity.setNickname(userCard.getDisplayname());
+								userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+							}
+							
+						}else{
+							initMsgUserInfoByFriendid(userMsg, userid);
+						}
 					}else{
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 						if("44".equals(userMsg.getMsgtype())){

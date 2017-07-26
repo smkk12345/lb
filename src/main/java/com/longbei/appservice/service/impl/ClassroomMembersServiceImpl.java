@@ -141,13 +141,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	}
 
 	@Override
-	public BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, int startNum, int endNum) {
+	public BaseResp<List<ClassroomMembers>> selectListByClassroomid(long classroomid, String userid, int startNum, int endNum) {
 		BaseResp<List<ClassroomMembers>> reseResp = new BaseResp<>();
 		try {
 			List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
-					initMsgUserInfoByUserid(classroomMembers);
+					initMsgUserInfoByUserid(classroomMembers, userid);
 					//教室所发的微进步总数
 //					int allimp = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", 
 //							classroomMembers.getUserid().toString());
@@ -173,7 +173,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			List<ClassroomMembers> list = classroomMembersMapper.selectInsertByUserid(userid, startNum, endNum);
 			if(null != list && list.size()>0){
 				for (ClassroomMembers classroomMembers : list) {
-					initMsgUserInfoByUserid(classroomMembers);
+					initMsgUserInfoByUserid(classroomMembers, userid + "");
 				}
 			}
 			return list;
@@ -338,10 +338,17 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	/**
      * 初始化教室成员用户信息 ------Userid
      */
-    private void initMsgUserInfoByUserid(ClassroomMembers classroomMembers){
+    private void initMsgUserInfoByUserid(ClassroomMembers classroomMembers, String userid){
     	if(!StringUtils.hasBlankParams(classroomMembers.getUserid().toString())){
     		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomMembers.getUserid()));
-    		classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);;
+    		if(null != appUserMongoEntity){
+    			if(StringUtils.isNotEmpty(userid)){
+    				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+    			}
+    			classroomMembers.setAppUserMongoEntityUserid(appUserMongoEntity);
+            }else{
+            	classroomMembers.setAppUserMongoEntityUserid(new AppUserMongoEntity());
+            }
     	}
     }
 
@@ -409,7 +416,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
                 }
                 userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
                         improveid, "12",
-                        classroomid, remark, "0", "59", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper);
+                        classroomid, remark, "0", "59", "删除教室成员进步", 0, "", "", AppserviceConfig.h5_helper, null);
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
         } catch (Exception e) {
@@ -438,7 +445,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
-						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper);
+						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper, null);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

@@ -65,7 +65,7 @@ public interface UserMsgService {
 	BaseResp<Object> insertMsg(String userid, String friendid, String impid,
 							   String businesstype, String businessid, String remark,
 							   String mtype, String msgtype, String title, int num,
-							   String commentid, String commentlowerid,String href);
+							   String commentid, String commentlowerid,String href, String notice);
 	
 	/**
 	 * 删除评论信息

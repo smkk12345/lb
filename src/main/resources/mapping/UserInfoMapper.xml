@@ -47,20 +47,21 @@
     <result column="sortno" property="sortno" jdbcType="INTEGER" />
     <result column="defaultbg" property="defaultbg"/>
     <result column="vcertification" property="vcertification"/>
+    <result column="handleinvite" property="handleinvite"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, updatetime, createtime, 
     avatar, username, rcuserid, invitecode, inviteuserid, rytoken,deviceindex,devicetype,
-    hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,
+    hcnickname,curpoint,point,grade,settings,area,schoolcertify,jobcertify,isfashionman,totalimp,handleinvite
     totallikes,totalfans,givedflowers,upfashionmantime,downfashionmantime,sortno,defaultbg,vcertification
   </sql>
   
   <sql id="InfoMore_List" >
     id, userid, totalflower, totaldiamond, totalmoney, totalcoin, nickname, realname, 
     sex, city, area, brief, birthday, constellation, blood, feeling, totalimp,totallikes,totalfans,givedflowers,
-    avatar, username, curpoint, point, grade,defaultbg,vcertification
+    avatar, username, curpoint, point, grade,defaultbg,vcertification,handleinvite
   </sql>
   
   <select id="selectInfoMore" resultMap="BaseResultMap"  >
@@ -598,6 +599,9 @@
       </if>
       <if test="vcertification != null and vcertification != ''">
         vcertification = #{vcertification,jdbcType=CHAR}
+      </if>
+      <if test="handleinvite != null and handleinvite != ''">
+        handleinvite = #{handleinvite,jdbcType=CHAR}
       </if>
     </set>
     where userid = #{userid,jdbcType=BIGINT}

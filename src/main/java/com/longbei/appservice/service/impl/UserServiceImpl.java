@@ -10,6 +10,7 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.*;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -33,6 +34,7 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
 
 import net.sf.json.JSONObject;
+import org.springframework.util.*;
 
 /**
  * 创建时间：2015-1-27 下午5:22:59
@@ -1299,7 +1301,7 @@ public class UserServiceImpl implements UserService {
 			list.add("可以同时发布" + userLevel.getPubranknum() + "个公开龙榜");
 			list.add("可以发布" + userLevel.getPrirankjoinnum() + "人的定制非公开龙榜");
 			list.add("可以同时发布" + userLevel.getPriranknum() + "个定制非公开龙榜");
-			list.add("可以同时发布" + userLevel.getClassroomnum() + "个教室");
+//			list.add("可以同时发布" + userLevel.getClassroomnum() + "个教室");
 		}
 		return list;
 	}
@@ -1480,7 +1482,6 @@ public class UserServiceImpl implements UserService {
 		userInfo.setUserid(Long.parseLong(userid));
 		userInfo.setNickname(nickname);
 		userInfo.setSex(sex);
-		userInfo.setInvitecode(invitecode);
 		userInfo.setHcnickname("1");
 		try {
 			if(!StringUtils.isBlank(nickname)){
@@ -1527,7 +1528,8 @@ public class UserServiceImpl implements UserService {
 					//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
 					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
 					//给推荐人添加龙币
-//					userImpCoinDetailService.insertPublic(info.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
+					userInfo.setInvitecode(inviteFriendIds(info));
+					userInfo.setHandleinvite("0");
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}
@@ -1548,6 +1550,28 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
+
+
+
+	private String inviteFriendIds(UserInfo userInfo){
+		String inviteUserIds = "";
+		Long userid = userInfo.getUserid();
+		inviteUserIds += userInfo;
+		String ids = userInfo.getInvitecode();
+		if (!StringUtils.isBlank(ids)){
+			inviteUserIds += "," + ids;
+		}
+		String []inviteIdsArr = inviteUserIds.split(",");
+		if (inviteIdsArr.length > 5){
+			inviteUserIds = inviteIdsArr[0] + "," +
+							inviteIdsArr[1] + "," +
+							inviteIdsArr[2] + "," +
+							inviteIdsArr[3] + "," +
+							inviteIdsArr[4];
+		}
+		return inviteUserIds;
+	}
+
 
 
 	@Override

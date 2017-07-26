@@ -28,6 +28,10 @@ public class Constant_Imp_Icon {
             first = first + more;
         }
         INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
+        INVITE_LEVEL2 = SysRulesCache.behaviorRule.getFriendregisterimpcoins2();
+        INVITE_LEVEL3 = SysRulesCache.behaviorRule.getFriendregisterimpcoins3();
+        INVITE_LEVEL4 = SysRulesCache.behaviorRule.getFriendregisterimpcoins4();
+        INVITE_LEVEL5 = SysRulesCache.behaviorRule.getFriendregisterimpcoins5();
         INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
         DAILY_ADDFRIEND = SysRulesCache.behaviorRule.getAddfriendimpcoins();
         DAILY_ADDFRIEND_LIMIT = SysRulesCache.behaviorRule.getAddfriendimpcoinsmax();
@@ -58,7 +62,11 @@ public class Constant_Imp_Icon {
      */
 //    public static int INVITE_LEVEL1 = 10;
     public static int INVITE_LEVEL1 = SysRulesCache.behaviorRule.getFriendregisterimpcoins();
-    
+    public static int INVITE_LEVEL2 = SysRulesCache.behaviorRule.getFriendregisterimpcoins2();
+    public static int INVITE_LEVEL3 = SysRulesCache.behaviorRule.getFriendregisterimpcoins3();
+    public static int INVITE_LEVEL4 = SysRulesCache.behaviorRule.getFriendregisterimpcoins4();
+    public static int INVITE_LEVEL5 = SysRulesCache.behaviorRule.getFriendregisterimpcoins5();
+
     public static int INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
 
     /**

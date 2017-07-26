@@ -76,19 +76,19 @@ public class SecurityFilter extends OncePerRequestFilter {
 			String token = authorization.replaceFirst("Basic", "");
 			logger.debug(authorization);
 			BaseResp<String> baseResp = authService.verifyToken(Constant.SERVER_APP_SERVICE,token);
-			Claims claims = Jwts.parser()
-					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
-					.parseClaimsJws(token).getBody();
-			if(!"commonservice".equals(claims.getSubject())){
-				//错误的token
-				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1001, Constant.RTNINFO_SYS_1001);
-				return;
-			}
-			if(claims.getExpiration().getTime() <= new Date().getTime()){
-				//token失效
-				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1002, Constant.RTNINFO_SYS_1002);
-				return;
-			}
+//			Claims claims = Jwts.parser()
+//					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
+//					.parseClaimsJws(token).getBody();
+//			if(!"commonservice".equals(claims.getSubject())){
+//				//错误的token
+//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1001, Constant.RTNINFO_SYS_1001);
+//				return;
+//			}
+//			if(claims.getExpiration().getTime() <= new Date().getTime()){
+//				//token失效
+//				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1002, Constant.RTNINFO_SYS_1002);
+//				return;
+//			}
 			if (ResultUtil.isSuccess(baseResp)){
 				arg2.doFilter(request, response);
 				return;

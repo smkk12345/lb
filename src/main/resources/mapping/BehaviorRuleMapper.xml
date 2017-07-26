@@ -60,6 +60,12 @@
     <result column="shareMaxCount" property="shareMaxCount" jdbcType="INTEGER" />
     <result column="shareGroupCount" property="shareGroupCount" jdbcType="INTEGER" />
     <result column="joinclassroomgoalstimes" property="joinclassroomgoalstimes" jdbcType="INTEGER" />
+
+    <result column="friendregisterimpcoins2" property="friendregisterimpcoins2" jdbcType="INTEGER" />
+    <result column="friendregisterimpcoins3" property="friendregisterimpcoins3" jdbcType="INTEGER" />
+    <result column="friendregisterimpcoins4" property="friendregisterimpcoins4" jdbcType="INTEGER" />
+    <result column="friendregisterimpcoins5" property="friendregisterimpcoins5" jdbcType="INTEGER" />
+    <result column="inviteimprovenum" property="inviteimprovenum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals,
@@ -73,7 +79,8 @@
     friendregistergoalsmax, friendregisterimpcoinsmax, addfriendgoalsmax, addfriendimpcoinsmax,
     likegoalsmax, impcommentgoalsmax, flowergoalsmax, improvegoalsmax, improveimpcoinsmin,
     improveimpcoinsmax, improveimpcoinstimes, joinrankgoalstimes, joincirclegoalstimes,
-    shareMaxCount,shareGroupCount,joinclassroomgoalstimes
+    shareMaxCount,shareGroupCount,joinclassroomgoalstimes,friendregisterimpcoins2,friendregisterimpcoins3,
+    friendregisterimpcoins4,friendregisterimpcoins5,inviteimprovenum
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select

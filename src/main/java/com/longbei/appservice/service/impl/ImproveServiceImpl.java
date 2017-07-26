@@ -3,12 +3,10 @@ package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_Perfect;
-import com.longbei.appservice.common.constant.Constant_point;
-import com.longbei.appservice.common.constant.Constant_table;
+import com.longbei.appservice.common.constant.*;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -230,7 +228,14 @@ public class ImproveServiceImpl implements ImproveService{
         //进步发布完成之后
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
             try{
-                UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
+                final UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
+                //处理邀请发放进步币问题
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        inviteCoinsHandle(userInfo);
+                    }
+                });
                 baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,Constant.USER_IMP_COIN_ADDIMPROVE,improve.getImpid(),0);
                 //发布完成之后redis存储i一天数量信息
                 String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
@@ -256,6 +261,47 @@ public class ImproveServiceImpl implements ImproveService{
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
+
+
+    private void inviteCoinsHandle(UserInfo userInfo){
+        if (userInfo.getTotalimp() + 1 >= SysRulesCache.behaviorRule.getInviteimprovenum() &&
+                "0".equals(userInfo.getHandleinvite())){
+            UserInfo info = new UserInfo();
+            info.setUserid(userInfo.getUserid());
+            info.setHandleinvite("1");
+            userInfoMapper.updateByUseridSelective(info);
+            String ids = userInfo.getInvitecode();
+            String []idarr = ids.split(",");
+            for (int i = 0 ; i < idarr.length ; i++){
+                userImpCoinDetailService.insertPublic(userInfo.getUserid(),"3",getImproveCoin(i),0,null);
+            }
+        }
+    }
+
+    private int getImproveCoin(int level){
+        int icoinnum = 0;
+        switch (level){
+            case 1 :
+                icoinnum = Constant_Imp_Icon.INVITE_LEVEL1;
+                break;
+            case 2 :
+                icoinnum = Constant_Imp_Icon.INVITE_LEVEL2;
+                break;
+            case 3 :
+                icoinnum = Constant_Imp_Icon.INVITE_LEVEL3;
+                break;
+            case 4 :
+                icoinnum = Constant_Imp_Icon.INVITE_LEVEL4;
+                break;
+            case 5 :
+                icoinnum = Constant_Imp_Icon.INVITE_LEVEL5;
+                break;
+            default:
+                break;
+        }
+        return icoinnum;
+    }
+
     
     /**
 	 * @author yinxc
