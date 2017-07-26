@@ -483,6 +483,7 @@ public class ClassroomController {
     * @Title: http://ip:port/app_service/classroom/selectRoomMembers
     * @Description: 获取教室成员列表
     * @param @param classroomid
+    * @param @param userid 当前登录者id
     * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
@@ -490,11 +491,11 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomMembers")
-    public BaseResp<List<ClassroomMembers>> selectRoomMembers(String classroomid, Integer startNo, Integer pageSize) {
-		logger.info("selectRoomMembers classroomid={},startNo={},pageSize={}",
-				classroomid,startNo,pageSize);
+    public BaseResp<List<ClassroomMembers>> selectRoomMembers(String classroomid, String userid, Integer startNo, Integer pageSize) {
+		logger.info("selectRoomMembers classroomid={}, userid={},startNo={},pageSize={}",
+				classroomid,userid,startNo,pageSize);
 		BaseResp<List<ClassroomMembers>> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(classroomid)) {
+  		if (StringUtils.hasBlankParams(classroomid, userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
@@ -506,10 +507,10 @@ public class ClassroomController {
 			if(null != pageSize){
 				sSize = pageSize.intValue();
 			}
-  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), sNo, sSize);
+  			baseResp = classroomMembersService.selectListByClassroomid(Long.parseLong(classroomid), userid, sNo, sSize);
   		} catch (Exception e) {
-  			logger.error("selectRoomMembers classroomid = {}, startNo = {}, pageSize = {}",
-  					classroomid, startNo, pageSize, e);
+  			logger.error("selectRoomMembers classroomid = {}, userid = {}, startNo = {}, pageSize = {}",
+  					classroomid, userid, startNo, pageSize, e);
   		}
   		return baseResp;
     }
@@ -854,6 +855,9 @@ public class ClassroomController {
      * 					isadd：是否加入教室    0：否  1：已加入
      * 					content：描述
      * 					roomurlshare:分享url
+     * 					ptype:类型
+     * 					isfree：是否免费。0 免费 1 收费
+     * 					charge：课程价格
      * @auther yinxc
      * @currentdate:2017年6月14日
  	*/
