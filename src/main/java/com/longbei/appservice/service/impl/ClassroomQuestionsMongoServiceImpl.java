@@ -23,6 +23,7 @@ import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.UserMsgService;
 import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
@@ -44,6 +45,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private ClassroomMapper classroomMapper;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private UserMsgService userMsgService;
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
@@ -274,12 +277,20 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	public BaseResp<Object> insertQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			ClassroomQuestions classroomQuestions = classroomQuestionsMongoDao.selectQuestionsByQuestionsId(classroomQuestionsLower.getQuestionsid());
+			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomQuestions.getClassroomid()));
+			classroomQuestionsLower.setUserid(classroom.getCardid()+"");
 			//获取老师回复,已回复的无法忽略
 			List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestionsLower.getQuestionsid());
 			if(null != lowerlist && lowerlist.size()>0){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1100, Constant.RTNINFO_SYS_1100);
 			}
 			insertLower(classroomQuestionsLower);
+			//推送@我消息
+			String remark = "您在教室中的发起的问题,老师已回复";
+			userMsgService.insertMsg(classroom.getCardid()+"", classroomQuestionsLower.getFriendid(), 
+					"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+			
 			initQuestionsLower(classroomQuestionsLower);
 			reseResp.setData(classroomQuestionsLower);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

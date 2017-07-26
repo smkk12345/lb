@@ -3946,7 +3946,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     //			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid,
                             improveid, "2",
-                            rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "", AppserviceConfig.h5_helper);
+                            rankid, remark, "0", "45", "榜中删除成员进步", 0, "", "", AppserviceConfig.h5_helper, null);
                 }
             }
             if ("2".equals(status)) {
@@ -3973,7 +3973,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 				//			10：榜中  11 圈子中  12 教室中  13:教室批复作业   14:反馈 15 关注
             	userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid, 
             			improveid, "2", 
-            			rankid, remark, "0", "41", "榜中进步下榜", 0, "", "",AppserviceConfig.h5_helper);
+            			rankid, remark, "0", "41", "榜中进步下榜", 0, "", "",AppserviceConfig.h5_helper, null);
                 
             }
             reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
