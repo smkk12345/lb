@@ -302,6 +302,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			ClassroomQuestions classroomQuestions = classroomQuestionsMongoDao.selectQuestionsByQuestionsId(classroomQuestionsLower.getQuestionsid());
 			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomQuestions.getClassroomid()));
 			classroomQuestionsLower.setUserid(classroom.getCardid()+"");
+			classroomQuestionsLower.setFriendid(classroomQuestions.getUserid());
 			//获取老师回复,已回复的无法忽略
 			List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestionsLower.getQuestionsid());
 			if(null != lowerlist && lowerlist.size()>0){
@@ -309,7 +310,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			}
 			insertLower(classroomQuestionsLower);
 			//推送@我消息
-			String remark = "您在教室中的发起的问题,老师已回复";
+			String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
 			userMsgService.insertMsg(classroom.getCardid()+"", classroomQuestionsLower.getFriendid(), 
 					"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
 			
