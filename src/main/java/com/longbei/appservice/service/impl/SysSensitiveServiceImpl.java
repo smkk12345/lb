@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.security.SensitiveWord;
+import com.longbei.appservice.common.service.mq.send.TopicMessageSendService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.SysSensitiveMapper;
 import com.longbei.appservice.entity.SysSensitive;
@@ -26,6 +27,8 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
 
     @Autowired
     private SysSensitiveMapper sysSensitiveMapper;
+    @Autowired
+    private TopicMessageSendService topicMessageSendService;
 
     @Override
     public Set<String> selectSensitiveWord() {
@@ -88,6 +91,8 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
         try {
             int n = sysSensitiveMapper.updateSensitiveWords(sensitive);
             if(n >= 1){
+                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
+                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_SENSITIVE);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {
