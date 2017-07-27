@@ -272,10 +272,34 @@ public class ImproveServiceImpl implements ImproveService{
             userInfoMapper.updateByUseridSelective(info);
             String ids = userInfo.getInvitecode();
             String []idarr = ids.split(",");
+            List<UserMsg> userMsgs = new ArrayList<>();
             for (int i = 0 ; i < idarr.length ; i++){
                 userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
+                userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
             }
+            userMsgService.batchInsertUserMsg(userMsgs);
         }
+    }
+
+    public UserMsg createInviteUserMsg(String  userid,int impcionnum){
+        String remark = "您通过邀请好友获得了"+ impcionnum +"个进步币奖励";
+        UserMsg userMsg = new UserMsg();
+        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+        userMsg.setUserid(Long.parseLong(userid));
+        //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
+        userMsg.setMtype("0");
+        userMsg.setMsgtype("62");
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+        //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+        userMsg.setGtype("16");
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setCreatetime(new Date());
+        userMsg.setUpdatetime(new Date());
+//        userMsg.setSnsid(rank.getRankid());
+        userMsg.setRemark(remark);
+        userMsg.setTitle("您通过邀请好友获得了"+ impcionnum +"个进步币奖励");
+        return userMsg;
     }
 
     private int getImproveCoin(int level){
