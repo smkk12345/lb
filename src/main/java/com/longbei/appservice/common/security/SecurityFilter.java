@@ -197,10 +197,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 		// 获取当前版本 判断是否是最新版本
 		String enforcedV = sysAppupdate.getEnforceversion();
-		enforcedV = enforcedV.trim().replaceAll("\\.", "");
 		if(StringUtils.isBlank(enforcedV)){
 			return true;
 		}
+		enforcedV = enforcedV.trim().replaceAll("\\.", "");
 		boolean result = true;
 		int size = getMinSize(enforcedV,version);
 		for (int i = 0; i < size; i++) {
