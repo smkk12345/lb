@@ -230,12 +230,12 @@ public class ImproveServiceImpl implements ImproveService{
             try{
                 final UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
                 //处理邀请发放进步币问题
-                threadPoolTaskExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
+//                threadPoolTaskExecutor.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
                         inviteCoinsHandle(userInfo);
-                    }
-                });
+//                    }
+//                });
                 baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,Constant.USER_IMP_COIN_ADDIMPROVE,improve.getImpid(),0);
                 //发布完成之后redis存储i一天数量信息
                 String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
@@ -273,7 +273,7 @@ public class ImproveServiceImpl implements ImproveService{
             String ids = userInfo.getInvitecode();
             String []idarr = ids.split(",");
             for (int i = 0 ; i < idarr.length ; i++){
-                userImpCoinDetailService.insertPublic(userInfo.getUserid(),"3",getImproveCoin(i),0,null);
+                userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
             }
         }
     }
