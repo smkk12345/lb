@@ -3275,6 +3275,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if(appUserMongoEntity != null){
                         userDetail.put("usernickname",appUserMongoEntity.getNickname());//用户昵称
                         userDetail.put("avatar",appUserMongoEntity.getAvatar());
+                        userDetail.put("vcertification",appUserMongoEntity.getVcertification());
                     }
                     userDetail.put("likes",rankMembers.getLikes());//赞的数量
                     userDetail.put("flowers",rankMembers.getFlowers());//花的数量
