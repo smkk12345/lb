@@ -809,7 +809,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 //发送系统通知,告诉新用户是群主
                 SnsGroupMembers snsGroupMembers1 = this.snsGroupMembersMapper.findByUserIdAndGroupId(currentUserId,groupId);
 
-                String remark = snsGroupMembers1.getNickname()+"已经把群组:"+snsGroup.getGroupname()+"的群主权限转让给您,您要好好管理该群哟!";
+                String remark = snsGroupMembers1.getNickname()+"已经把群组:("+snsGroup.getGroupname()+")的群主权限转让给您,您要好好管理该群哟!";
                 userMsgService.insertMsg(Constant.SQUARE_USER_ID, userId.toString(),null, "5",
                         groupId, remark, "0", "55", "转让群主权限", 0, "", "");
                 return baseResp.ok();

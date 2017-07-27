@@ -76,8 +76,10 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 				baseResp.setData(new ArrayList<UserPlDetail>());
 				return baseResp.initCodeAndDesp();
 			}
+			LinkedHashMap<String,UserPlDetail> map = new LinkedHashMap<>();
 			for (int i = 0; i <list.size() ; i++) {
 				UserPlDetail userPlDetail = list.get(i);
+				map.put(userPlDetail.getPtype(),userPlDetail);
 				String ptype = userPlDetail.getPtype();
 				userPlDetail.setPerfectname(SysRulesCache.perfectTenMap.get(Integer.parseInt(ptype)));
 				SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
@@ -85,13 +87,44 @@ public class UserPlDetailServiceImpl implements UserPlDetailService {
 					userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
 				}
 				userPlDetail.setTotalscorce(getTotalScore(userPlDetail));
+
 			}
+
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-			baseResp.setData(list);
+			baseResp.setData(sort(map));
 		} catch (Exception e) {
 			logger.error("selectUserPerfectListByUserId and userid={},startNum={},pageSize={}",userid,startNum,pageSize,e);
 		}
 		return baseResp;
+	}
+
+	/**
+	 * 应产品要求修改顺序
+	 * @param map
+	 * @return
+	 */
+	private List<UserPlDetail> sort(LinkedHashMap<String,UserPlDetail> map){
+		List<UserPlDetail> resList = new ArrayList<>();
+		List<UserPlDetail> topList = new ArrayList<>();
+		List<UserPlDetail> downList = new ArrayList<>();
+
+		Iterator iter = SysRulesCache.perfectTenMap.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			Integer key = (Integer)entry.getKey();
+			UserPlDetail userPlDetail = map.get(String.valueOf(key.intValue()));
+			if(null == userPlDetail){
+				continue;
+			}
+			if(userPlDetail.getToplevel().equals("1")){
+				topList.add(userPlDetail);
+			}else {
+				downList.add(userPlDetail);
+			}
+		}
+		resList.addAll(topList);
+		resList.addAll(downList);
+		return resList;
 	}
 
 	private Integer getTotalScore(UserPlDetail userPlDetail){
