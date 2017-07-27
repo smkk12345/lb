@@ -115,11 +115,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_09, Constant.RTNINFO_SYS_09);
 				return;
 			}
-			if(!versionController(request,response,version)){
-				returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
-						Constant.RTNINFO_SYS_1003);
-				return;
-			}
+
 			//重组request参数
 			String paramStr = DecodesUtils.getFromBase64(param);
 			JSONObject jMap = JSONObject.fromObject(paramStr);
@@ -140,6 +136,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 						&&Constant.VISITOR_URL.indexOf(urlPath)>-1)) {
 					token = "longbei2017";
 				} else {
+					if(!versionController(request,response,version)){
+						returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
+								Constant.RTNINFO_SYS_1003);
+						return;
+					}
 					token = springJedisDao.get("userid&token&"+uid);
 				}
 //				String vers[] = version.split("_");
