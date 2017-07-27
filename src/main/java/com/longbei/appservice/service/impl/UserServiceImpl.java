@@ -291,13 +291,14 @@ public class UserServiceImpl implements UserService {
 		userInfo.setAvatar(avatar);
 		userInfo.setDeviceindex(deviceindex);
 		userInfo.setDevicetype(devicetype);
-		AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
+
 //		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
-		if(!StringUtils.isBlank(inviteuserid)){
-			if(null != appUserMongoEntity){
-				userInfo.setInviteuserid(Long.parseLong(appUserMongoEntity.getId()));
-			}
-		}
+//		if(!StringUtils.isBlank(inviteuserid)){
+//			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
+//			if(null != appUserMongoEntity){
+//				userInfo.setInviteuserid(Long.parseLong(appUserMongoEntity.getId()));
+//			}
+//		}
 		try {
 			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(String.valueOf(userid), username, "#");
 			if(!ResultUtil.isSuccess(tokenRtn)){
@@ -316,15 +317,15 @@ public class UserServiceImpl implements UserService {
 			logger.error("registerInfo",e);
 		}
 		if (ri) {
-			if(null != appUserMongoEntity){
-				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
-				//建立好友关系
-				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
-				//给推荐人添加龙分
-				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
-				//给推荐人添加龙币
-				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
-			}
+//			if(null != appUserMongoEntity){
+//				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
+//				//建立好友关系
+//				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
+//				//给推荐人添加龙分
+//				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+//				//给推荐人添加龙币
+//				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
+//			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -1526,7 +1527,7 @@ public class UserServiceImpl implements UserService {
 						});
 					}
 					//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
-					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,"3",0,0);
+					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
 					//给推荐人添加龙币
 					userInfo.setInvitecode(inviteFriendIds(info));
 					userInfo.setHandleinvite("0");
@@ -1556,7 +1557,7 @@ public class UserServiceImpl implements UserService {
 	private String inviteFriendIds(UserInfo userInfo){
 		String inviteUserIds = "";
 		Long userid = userInfo.getUserid();
-		inviteUserIds += userInfo;
+		inviteUserIds += userid;
 		String ids = userInfo.getInvitecode();
 		if (!StringUtils.isBlank(ids)){
 			inviteUserIds += "," + ids;
