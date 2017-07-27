@@ -26,8 +26,7 @@ public class ClassroomQuestions {
 	private ClassroomQuestionsLower classroomQuestionsLower;
 	@Transient
 	private AppUserMongoEntity appUserMongoEntityUserid; //问题用户信息----Userid
-	@Transient
-	private String isreply; //是否已回答  0：未回答  1：已回答  2:页面不显示天津唉回答(只有教室老师有回答权限)
+	private String isreply = "0"; //是否已回答  0：未回答  1：已回答  2:页面不显示天津唉回答(只有教室老师有回答权限)
 
 	
 	@JsonInclude(Include.ALWAYS)

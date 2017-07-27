@@ -40,6 +40,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	@Autowired
 	private ClassroomService classroomService;
 	@Autowired
+	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
+	@Autowired
 	private UserCardMapper userCardMapper;
 	@Autowired
 	private ClassroomMapper classroomMapper;
@@ -170,15 +172,16 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 	@Override
-	public Page<ClassroomQuestions> selectQuestionsList(String classroomId,String nickname,String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
+	public Page<ClassroomQuestions>selectQuestionsList(String classroomId, String dealStatus, String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
+
 		Page<ClassroomQuestions> page = new Page<>(startNum / pageSize + 1, pageSize);
 		try {
 			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 			if(StringUtils.isNotBlank(nickname)){
 				appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
 			}
-			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsList(classroomId, appUserMongoEntity.getUserid()+"", startCreatetime, endCreatetime, startNum, pageSize);
-			long totalcount = classroomQuestionsMongoDao.selectQuestionsListCount(classroomId, appUserMongoEntity.getUserid()+"", startCreatetime,endCreatetime);
+			List<ClassroomQuestions> list = classroomQuestionsMongoDao.selectQuestionsList(classroomId, dealStatus,appUserMongoEntity.getUserid()+"", startCreatetime, endCreatetime, startNum, pageSize);
+			long totalcount = classroomQuestionsMongoDao.selectQuestionsListCount(classroomId, dealStatus, appUserMongoEntity.getUserid()+"", startCreatetime,endCreatetime);
 			if (null != list && list.size() > 0) {
 				for (ClassroomQuestions classroomQuestions : list) {
 					initQuestionsUserInfoByUserid(classroomQuestions, null);
@@ -189,6 +192,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 						isreply = "1";
 						classroomQuestions.setClassroomQuestionsLower(lowerlist.get(0));
 					}
+					classroomQuestionsMongoService.updateQuestionsIsReply(classroomQuestions.getId(),isreply);
 					classroomQuestions.setIsreply(isreply);
 				}
 			}
@@ -199,6 +203,23 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		}
 		return page;
 	 }
+
+	@Override
+	public BaseResp<Integer> selectQuestionsListCount(String classroomId,String dealStatus,String nickname,String startCreatetime,String endCreatetime) {
+		BaseResp<Integer> reseResp = new BaseResp<>();
+		try {
+			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+			if(StringUtils.isNotBlank(nickname)){
+				appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
+			}
+			long totalcount = classroomQuestionsMongoDao.selectQuestionsListCount(classroomId, dealStatus, appUserMongoEntity.getUserid()+"", startCreatetime,endCreatetime);
+			reseResp.setData((int)totalcount);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectQuestionsListCount for adminservice error and msg={}", e);
+		}
+		return reseResp;
+	}
 
 	@Override
 	public BaseResp<ClassroomQuestions> selectQuestionsByQuestionsId(String questionsId) {
@@ -256,6 +277,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			classroomQuestionsLowerMongoDao.deleteLowerByQuestionsid(questionsId);
+			classroomQuestionsMongoService.updateQuestionsIsReply(questionsId,"1");
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("deleteLowerByQid and questionsId = {}", questionsId, e);
@@ -304,6 +326,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private void insertLower(ClassroomQuestionsLower classroomQuestionsLower){
 		try {
 			classroomQuestionsLowerMongoDao.insertQuestionsLower(classroomQuestionsLower);
+			classroomQuestionsMongoService.updateQuestionsIsReply(classroomQuestionsLower.getQuestionsid(),"1");
 		} catch (Exception e) {
 			logger.error("insertLower classroomQuestionsLower = {}", 
 					JSONObject.fromObject(classroomQuestionsLower).toString(), e);
@@ -362,12 +385,25 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private void deleteLower(String id, String userid){
 		try {
 			classroomQuestionsLowerMongoDao.deleteQuestionsLower(id, userid);
+			classroomQuestionsMongoService.updateQuestionsIsReply(id,"0");
 		} catch (Exception e) {
 			logger.error("deleteLower id = {}", id, e);
 		}
 	}
-	
-	
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateQuestionsIsReply(String questionsId,String isReply) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		try {
+			classroomQuestionsMongoDao.updateQuestionsIsReply(questionsId,isReply);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("updateQuestionsIsIgnore and questionsId = {}", questionsId, e);
+		}
+		return reseResp;
+	}
 	
 	//------------------------公用方法，初始化用户信息------------------------------------------
     /**
