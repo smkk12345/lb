@@ -129,12 +129,20 @@ public class SecurityFilter extends OncePerRequestFilter {
 			}
 			String urlPath = request.getRequestURI();
 			urlPath = urlPath.replace("/app_service/", "");
-			if(Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) == 0
-			&&!versionController(request,response,version)){
-				returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
-						Constant.RTNINFO_SYS_1003);
-				return;
+//			int n = Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath);
+			if(Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) == -1){
+				if(!versionController(request,response,version)){
+					returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
+							Constant.RTNINFO_SYS_1003);
+					return;
+				}
 			}
+//			if(Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) == 0
+//			&&!versionController(request,response,version)){
+//				returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
+//						Constant.RTNINFO_SYS_1003);
+//				return;
+//			}
 			String token = "";
 			try {
 				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1
