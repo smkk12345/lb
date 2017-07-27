@@ -224,7 +224,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//推送消息---已加入该教室的人员
 				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
 				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<ClassroomMembers> memberList = classroomMembersMapper.selectInsertByUserid(classroom.getClassroomid(),0,0);
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
 				if(null != memberList && memberList.size()>0){
 					for (int i=0;i<memberList.size();i++) {
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
