@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.service.mq.send.TopicMessageSendService;
 import com.longbei.appservice.dao.BehaviorRuleMapper;
 import com.longbei.appservice.entity.BehaviorRule;
@@ -20,6 +21,9 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
 
     @Autowired
     private BehaviorRuleMapper behaviorRuleMapper;
+
+    @Autowired
+    private TopicMessageSendService topicMessageSendService;
 
 //    @Autowired
 //    private TopicMessageSendService topicMessageSendService;
@@ -55,7 +59,8 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
         try {
             int res = behaviorRuleMapper.updateByPrimaryKeySelective(behaviorRule);
             if(res>0){
-//                topicMessageSendService.send(null,null,"1");
+                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
+                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_RULE);
                 return true;
             }
         } catch (Exception e) {
