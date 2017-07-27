@@ -1012,9 +1012,13 @@ public class ImproveServiceImpl implements ImproveService{
   						}
   					}
   				}
-  				if(userid.toString().equals(Constant.VISITOR_UID)){
+  				if(!StringUtils.isBlank(userid)){
+  					if(userid.toString().equals(Constant.VISITOR_UID)){
+  	  					isreply = "2";
+  					}
+  				}else{
   					isreply = "2";
-				}
+  				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -2957,7 +2961,7 @@ public class ImproveServiceImpl implements ImproveService{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
-            logger.info("select improve = {}", JSON.toJSON(improve).toString());
+//            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
