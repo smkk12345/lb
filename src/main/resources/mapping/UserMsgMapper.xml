@@ -497,6 +497,9 @@
           <if test="userMsg.num != null">
             num,
           </if>
+          <if test="userMsg.notice != null">
+            notice,
+          </if>
           <if test="userMsg.createtime != null">
             createtime,updatetime,
           </if>
@@ -537,6 +540,9 @@
               </if>
               <if test="userMsg.num != null">
                 #{userMsg.num},
+              </if>
+              <if test="userMsg.notice != null">
+                #{userMsg.notice},
               </if>
               <if test="userMsg.createtime != null">
                 #{userMsg.createtime},#{userMsg.createtime}

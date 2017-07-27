@@ -1126,7 +1126,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "2", "60", "教室发布最新公告", 0, "", "");
+									"", "12", classroomid + "", remark, "2", "60", "教室发布最新公告", 0, "", "", "", classnotice);
 						}
 					}
 				}

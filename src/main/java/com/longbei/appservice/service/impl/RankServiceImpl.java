@@ -2031,6 +2031,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         userMsg.setIsdel("0");
                         userMsg.setIsread("0");
                         userMsg.setTitle("龙榜公告更新");
+                        userMsg.setNotice(notice);
                         userMsgService.batchInsertUserMsg(userIdList,userMsg);
                     }catch (Exception e){
                         logger.error("update rank info notice user error msg:{}",e);
