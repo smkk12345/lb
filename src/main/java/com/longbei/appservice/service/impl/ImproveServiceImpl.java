@@ -305,19 +305,19 @@ public class ImproveServiceImpl implements ImproveService{
     private int getImproveCoin(int level){
         int icoinnum = 0;
         switch (level){
-            case 1 :
+            case 0 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL1;
                 break;
-            case 2 :
+            case 1 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL2;
                 break;
-            case 3 :
+            case 2 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL3;
                 break;
-            case 4 :
+            case 3 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL4;
                 break;
-            case 5 :
+            case 4 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL5;
                 break;
             default:
