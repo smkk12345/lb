@@ -36,12 +36,13 @@ public class MediaWorkFlowController {
             response.setStatus(500);
             return ;
         }
-        if(!authenticate(request)){
+        if(!authenticate(request)){//权限验证 校验是否是阿里云的请求
             response.setStatus(403);
             return;
         }
 
         JSONObject bodyJson = JSONObject.fromObject(requestBody);
+        System.out.println(bodyJson);
         this.mediaWorkFlowService.handleMediaTranscodingNotice(bodyJson,response);
     }
 

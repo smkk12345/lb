@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.MediaResourceMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.MediaResource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="resourcetypeid" property="resourcetypeid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="filename" property="filename" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="filesize" property="filesize" jdbcType="INTEGER" />
+    <result column="screenpthoto" property="screenpthoto" jdbcType="VARCHAR" />
+    <result column="filepath" property="filepath" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="source" property="source" jdbcType="CHAR" />
+    <result column="filesuffix" property="filesuffix" jdbcType="VARCHAR" />
+    <result column="filetype" property="filetype" jdbcType="CHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="resourcetypename" property="resourcetypename" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    media_resource.id, media_resource.title, media_resource.resourcetypeid,media_resource.filename,
+    media_resource.createtime,media_resource.filesize,media_resource.screenpthoto,
+    media_resource.filepath,media_resource.userid,media_resource.ispublic,media_resource.source,
+    media_resource.filesuffix,media_resource.filetype,media_resource.isdel
+  </sql>
+
+  <select id="findMediaResourceCount" resultType="INTEGER">
+      SELECT  count(1)
+      from media_resource
+      <where>
+          isdel = 0
+          <if test="mediaResource.title != null and mediaResource.title != ''">
+              and title like concat(concat('%'),#{mediaResource.title},'%')
+          </if>
+          <if test="mediaResource.filename != null and mediaResource.filename != ''">
+              and filename like concat(concat('%'),#{mediaResource.filename},'%')
+          </if>
+          <if test="mediaResource.ispublic != null">
+              and ispublic = #{mediaResource.ispublic}
+          </if>
+          <if test="mediaResource.source != null">
+              and source = #{mediaResource.source}
+          </if>
+          <if test="mediaResource.userid != null">
+              and filetype = #{mediaResource.filetype}
+          </if>
+          <if test="mediaResource.resourcetypeid != null">
+              and resourcetypeid = #{mediaResource.resourcetypeid}
+          </if>
+          <if test="mediaResource.userid != null">
+              and userid = #{mediaResource.userid}
+          </if>
+      </where>
+  </select>
+
+  <!-- 查询资源库列表 -->
+  <select id="findMediaResourceList" resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List" />,media_resourcetype.typename resourcetypename
+      from media_resourcetype
+              right join media_resource
+          on media_resourcetype.id = media_resource.resourcetypeid
+        <where>
+            isdel = 0
+            <if test="mediaResource.title != null and mediaResource.title != ''">
+              and title like concat(concat('%'),#{mediaResource.title},'%')
+            </if>
+            <if test="mediaResource.filename != null and mediaResource.filename != ''">
+                and filename like concat(concat('%'),#{mediaResource.filename},'%')
+            </if>
+            <if test="mediaResource.ispublic != null">
+               and ispublic = #{mediaResource.ispublic}
+            </if>
+            <if test="mediaResource.source != null">
+                and source = #{mediaResource.source}
+            </if>
+            <if test="mediaResource.userid != null">
+                and filetype = #{mediaResource.filetype}
+            </if>
+            <if test="mediaResource.resourcetypeid != null">
+                and resourcetypeid = #{mediaResource.resourcetypeid}
+            </if>
+            <if test="mediaResource.userid != null">
+                and userid = #{mediaResource.userid}
+            </if>
+        </where>
+    order by id desc
+    limit #{startno},#{pagesize}
+  </select>
+
+  <!-- 添加资源数据 -->
+  <insert id="insertMediaResource" parameterType="com.longbei.appservice.entity.MediaResource">
+      insert into media_resource(
+        <trim prefixOverrides=",">
+            <if test="mediaResource.resourcetypeid != null">
+              resourcetypeid
+            </if>
+            <if test="mediaResource.title != null">
+              ,title
+            </if>
+            <if test="mediaResource.createtime != null">
+              ,createtime
+            </if>
+            <if test="mediaResource.filename != null">
+              ,filename
+            </if>
+            <if test="mediaResource.filesize != null">
+              ,filesize
+            </if>
+            <if test="mediaResource.screenpthoto != null">
+              ,screenpthoto
+            </if>
+            <if test="mediaResource.filepath != null">
+              ,filepath
+            </if>
+            <if test="mediaResource.userid != null">
+              ,userid
+            </if>
+            <if test="mediaResource.ispublic != null">
+              ,ispublic
+            </if>
+            <if test="mediaResource.source != null">
+              ,source
+            </if>
+            <if test="mediaResource.filesuffix != null">
+              ,filesuffix
+            </if>
+            <if test="mediaResource.filetype != null">
+              ,filetype
+            </if>
+            <if test="mediaResource.isdel != null">
+              ,isdel
+            </if>
+        </trim>
+      )values(
+          <trim prefixOverrides=",">
+              <if test="mediaResource.resourcetypeid != null">
+                #{mediaResource.resourcetypeid}
+              </if>
+              <if test="mediaResource.title != null">
+                ,#{mediaResource.title}
+              </if>
+              <if test="mediaResource.createtime != null">
+                ,#{mediaResource.createtime}
+              </if>
+              <if test="mediaResource.filename != null">
+                ,#{mediaResource.filename}
+              </if>
+              <if test="mediaResource.filesize != null">
+                ,#{mediaResource.filesize}
+              </if>
+              <if test="mediaResource.screenpthoto != null">
+                ,#{mediaResource.screenpthoto}
+              </if>
+              <if test="mediaResource.filepath != null">
+                ,#{mediaResource.filepath}
+              </if>
+              <if test="mediaResource.userid != null">
+                ,#{mediaResource.userid}
+              </if>
+              <if test="mediaResource.ispublic != null">
+                ,#{mediaResource.ispublic}
+              </if>
+              <if test="mediaResource.source != null">
+                ,#{mediaResource.source}
+              </if>
+              <if test="mediaResource.filesuffix != null">
+                ,#{mediaResource.filesuffix}
+              </if>
+              <if test="mediaResource.filetype != null">
+                ,#{mediaResource.filetype}
+              </if>
+              <if test="mediaResource.isdel != null">
+                ,#{mediaResource.isdel}
+              </if>
+          </trim>
+      )
+  </insert>
+
+  <!-- 获取资源库文件 -->
+  <select id="getMediaResourceDetail" parameterType="INTEGER" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+      from
+        media_resource
+      where id = #{id}
+  </select>
+
+  <!-- 更新资源库数据 -->
+  <update id="updateMediaResource" parameterType="com.longbei.appservice.entity.MediaResource">
+    update media_resource
+      <set>
+          <trim prefixOverrides=",">
+              <if test="mediaResource.resourcetypeid != null">
+                resourcetypeid = #{mediaResource.resourcetypeid}
+              </if>
+              <if test="mediaResource.title != null and mediaResource.title != ''">
+                ,title = #{mediaResource.title}
+              </if>
+              <if test="mediaResource.filename != null">
+                ,filename = #{mediaResource.filename}
+              </if>
+              <if test="mediaResource.filesize != null">
+                ,filesize = #{mediaResource.filesize}
+              </if>
+              <if test="mediaResource.screenpthoto != null">
+                ,screenpthoto = #{mediaResource.screenpthoto}
+              </if>
+              <if test="mediaResource.filepath != null">
+                ,filepath = #{mediaResource.filepath}
+              </if>
+              <if test="mediaResource.userid != null">
+                ,userid =#{mediaResource.userid}
+              </if>
+              <if test="mediaResource.ispublic != null">
+                ,ispublic = #{mediaResource.ispublic}
+              </if>
+              <if test="mediaResource.source != null">
+                ,source= #{mediaResource.source}
+              </if>
+              <if test="mediaResource.filesuffix != null">
+                ,filesuffix = #{mediaResource.filesuffix}
+              </if>
+              <if test="mediaResource.filetype != null">
+                ,filetype = #{mediaResource.filetype}
+              </if>
+              <if test="mediaResource.isdel != null">
+                ,isdel = #{mediaResource.isdel}
+              </if>
+          </trim>
+      </set>
+    where id = #{mediaResource.id}
+  </update>
+</mapper>

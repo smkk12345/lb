@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.MediaResourceTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.MediaResourceType" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="typename" property="typename" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="icount" property="icount" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, typename, sort, icount, createtime
+  </sql>
+
+  <select id="findMediaResourceTypeList" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from media_resourcetype
+    order by sort desc
+  </select>
+
+</mapper>
