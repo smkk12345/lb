@@ -150,6 +150,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 					return;
 				} else {
 					request = new ParamHttpServletRequestWrapper((HttpServletRequest) request, map);
+					urlPath = urlPath.replaceFirst("/","");
 					String localSigin = TokenUtils.getSigin(urlPath, time, uid, param, token);
 					if (sigin.equals(localSigin)) {
 						arg2.doFilter(request, response);
