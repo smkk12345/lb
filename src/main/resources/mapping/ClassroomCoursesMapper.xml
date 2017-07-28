@@ -114,7 +114,7 @@
     <if test="isup != null and isup != ''" >
       	and isup = #{isup}
     </if>
-    order by createtime desc 
+    order by coursesort desc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>

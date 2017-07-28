@@ -199,6 +199,10 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	public BaseResp<Object> updateIsup(Integer id, long classroomid) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null == classroom){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
 			int temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
 			if (temp > 0) {
 				List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
@@ -207,16 +211,16 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 					Integer coursesort = classroomCoursesMapper.selectMaxSort(classroomid) + 1;
 					classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
 				}else{
+					if("1".equals(classroom.getIsfree())){
+						classroomCoursesMapper.updateCoursetypeByid(classroomid, id, "0");
+					}
 					//修改课程排序
 					classroomCoursesMapper.updateSortByid(classroomid, id, 1);
 				}
 				
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
-				Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
-				if(null == classroom){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
-				}
+				
 				//推送消息---已关注该教室的人员
 				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
@@ -263,21 +267,20 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			//coursetype 课程类型.  0 不收费 1 收费
 			String coursetype = "0";
 			//isdefault是否 默认   1 默认封面  0 非默认
-			String isdefault = "1";
-			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomCourses.getClassroomid(), "1", 0, 1);
-			if(null != list && list.size()>0){
-//				coursesort = classroomCoursesMapper.selectMaxSort(classroomCourses.getClassroomid()) - 1;
-				//isfree是否免费。0 免费 1 收费
-				if("1".equals(classroom.getIsfree())){
-					coursetype = "1";
-				}
-				isdefault = "0";
+//			String isdefault = "1";
+//			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomCourses.getClassroomid(), "1", 0, 1);
+//			if(null != list && list.size()>0){
+////				coursesort = classroomCoursesMapper.selectMaxSort(classroomCourses.getClassroomid()) - 1;
+//				isdefault = "0";
+//			}
+			//isfree是否免费。0 免费 1 收费
+			if("1".equals(classroom.getIsfree())){
+				coursetype = "1";
 			}
-			
 			classroomCourses.setCoursesort(0);
 			classroomCourses.setCoursetype(coursetype);
 			classroomCourses.setCreatetime(new Date());
-			classroomCourses.setIsdefault(isdefault);
+			classroomCourses.setIsdefault("0");
 			classroomCourses.setIsdel("0");
 			classroomCourses.setUdpatetime(new Date());
 			int temp = classroomCoursesMapper.insertSelective(classroomCourses);
