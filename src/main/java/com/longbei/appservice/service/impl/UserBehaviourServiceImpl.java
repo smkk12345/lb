@@ -196,7 +196,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             switch (privilegeType){
                 case joinranknum: //公开榜单
                     Rank rank = (Rank)JSONObject.toBean(JSONObject.fromObject(o),Rank.class);
-                    if(rank.getRanktype().equals("2")){
+                    if(rank.getRanktype().equals("2")||rank.getRanktype().equals("1")){
                         return baseResp.initCodeAndDesp();
                     }
                     //查询用户当前参与的榜数量 只查询当前榜正在进行中的
