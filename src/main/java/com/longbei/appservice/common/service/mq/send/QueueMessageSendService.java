@@ -31,6 +31,7 @@ public class QueueMessageSendService {
     private Queue updatequeue;
 
     @Autowired
+    @Qualifier("improveJmsProducer")
     private BaseJmsProducer improveJmsProducer;
 
     /**

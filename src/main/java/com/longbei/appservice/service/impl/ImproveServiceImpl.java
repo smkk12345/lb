@@ -230,12 +230,12 @@ public class ImproveServiceImpl implements ImproveService{
             try{
                 final UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
                 //处理邀请发放进步币问题
-                threadPoolTaskExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
+//                threadPoolTaskExecutor.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
                         inviteCoinsHandle(userInfo);
-                    }
-                });
+//                    }
+//                });
                 baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,Constant.USER_IMP_COIN_ADDIMPROVE,improve.getImpid(),0);
                 //发布完成之后redis存储i一天数量信息
                 String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
@@ -272,28 +272,52 @@ public class ImproveServiceImpl implements ImproveService{
             userInfoMapper.updateByUseridSelective(info);
             String ids = userInfo.getInvitecode();
             String []idarr = ids.split(",");
+            List<UserMsg> userMsgs = new ArrayList<>();
             for (int i = 0 ; i < idarr.length ; i++){
-                userImpCoinDetailService.insertPublic(userInfo.getUserid(),"3",getImproveCoin(i),0,null);
+                userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
+                userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
             }
+            userMsgService.batchInsertUserMsg(userMsgs);
         }
+    }
+
+    public UserMsg createInviteUserMsg(String  userid,int impcionnum){
+        String remark = "您通过邀请好友获得了"+ impcionnum +"个进步币奖励";
+        UserMsg userMsg = new UserMsg();
+        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+        userMsg.setUserid(Long.parseLong(userid));
+        //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
+        userMsg.setMtype("0");
+        userMsg.setMsgtype("62");
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+        //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+        userMsg.setGtype("16");
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setCreatetime(new Date());
+        userMsg.setUpdatetime(new Date());
+//        userMsg.setSnsid(rank.getRankid());
+        userMsg.setRemark(remark);
+        userMsg.setTitle("您通过邀请好友获得了"+ impcionnum +"个进步币奖励");
+        return userMsg;
     }
 
     private int getImproveCoin(int level){
         int icoinnum = 0;
         switch (level){
-            case 1 :
+            case 0 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL1;
                 break;
-            case 2 :
+            case 1 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL2;
                 break;
-            case 3 :
+            case 2 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL3;
                 break;
-            case 4 :
+            case 3 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL4;
                 break;
-            case 5 :
+            case 4 :
                 icoinnum = Constant_Imp_Icon.INVITE_LEVEL5;
                 break;
             default:
@@ -988,9 +1012,13 @@ public class ImproveServiceImpl implements ImproveService{
   						}
   					}
   				}
-  				if(userid.toString().equals(Constant.VISITOR_UID)){
+  				if(!StringUtils.isBlank(userid)){
+  					if(userid.toString().equals(Constant.VISITOR_UID)){
+  	  					isreply = "2";
+  					}
+  				}else{
   					isreply = "2";
-				}
+  				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -2933,7 +2961,7 @@ public class ImproveServiceImpl implements ImproveService{
             //Long impid,String userid,
             //String businesstype,String businessid, String isdel,String ispublic
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
-            logger.info("select improve = {}", JSON.toJSON(improve).toString());
+//            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
@@ -3739,17 +3767,21 @@ public class ImproveServiceImpl implements ImproveService{
             friendids = this.userRelationService.getFriendIds(uid);
             funids = this.userRelationService.getFansIds(uid);
         }
-        if(!springJedisDao.hasKey(key)){
-            if(key.equals("1")){
-                key = "24";
-            }else {
-                int newKey = Integer.parseInt(key) - 1;
-                key = String.valueOf(newKey);
-            }
-        }
+//        if(!springJedisDao.hasKey(key)){
+//            if(key.equals("1")){
+//                key = "24";
+//            }else {
+//                int newKey = Integer.parseInt(key) - 1;
+//                key = String.valueOf(newKey);
+//            }
+//        }
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
+            if(impids.isEmpty()){
+                int n = Integer.parseInt(key) - 1;
+                impids = springJedisDao.zRevrange(String.valueOf(n),startNum,startNum+pageSize);
+            }
             Set<String> userCollectImroveIds = this.getUserCollectImproveId(userid);
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){

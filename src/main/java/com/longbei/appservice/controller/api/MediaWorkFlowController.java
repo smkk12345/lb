@@ -3,6 +3,8 @@ package com.longbei.appservice.controller.api;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.MediaWorkFlowService;
 import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
@@ -30,8 +32,11 @@ public class MediaWorkFlowController {
     @Autowired
     private MediaWorkFlowService mediaWorkFlowService;
 
+    private static Logger logger = LoggerFactory.getLogger(MediaWorkFlowController.class);
+
     @RequestMapping(value="transcodingNotice")
     public void transcodingNotice(HttpServletRequest request, @RequestBody String requestBody, HttpServletResponse response){
+        logger.info("transcodingNotice call and requestBoby={}",requestBody);
         if(StringUtils.isEmpty(requestBody)){
             response.setStatus(500);
             return ;

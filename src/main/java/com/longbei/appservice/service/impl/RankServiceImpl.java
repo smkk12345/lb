@@ -2031,6 +2031,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         userMsg.setIsdel("0");
                         userMsg.setIsread("0");
                         userMsg.setTitle("龙榜公告更新");
+                        userMsg.setNotice(notice);
                         userMsgService.batchInsertUserMsg(userIdList,userMsg);
                     }catch (Exception e){
                         logger.error("update rank info notice user error msg:{}",e);
@@ -3274,6 +3275,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     if(appUserMongoEntity != null){
                         userDetail.put("usernickname",appUserMongoEntity.getNickname());//用户昵称
                         userDetail.put("avatar",appUserMongoEntity.getAvatar());
+                        userDetail.put("vcertification",appUserMongoEntity.getVcertification());
                     }
                     userDetail.put("likes",rankMembers.getLikes());//赞的数量
                     userDetail.put("flowers",rankMembers.getFlowers());//花的数量

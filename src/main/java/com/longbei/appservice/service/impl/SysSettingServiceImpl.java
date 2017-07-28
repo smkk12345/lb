@@ -284,7 +284,7 @@ public class SysSettingServiceImpl implements SysSettingService {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("point", Constant_point.INVITE_LEVEL1);//龙分
         map.put("impIcon", Constant_Imp_Icon.INVITE_LEVEL1);//进步币
-        map.put("downloadUrl","http://www.baidu.com");
+        map.put("downloadUrl","http://47.93.36.156:9999/login");
 
         baseResp.setData(map);
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);

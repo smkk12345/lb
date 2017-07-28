@@ -809,7 +809,7 @@ public class ClassroomController {
   	
   	/**
      * @Title: http://ip:port/app_service/classroom/coursesDetail
-     * @Description: 获取教室详情信息---教室课程有关数据(拆分)
+     * @Description: 获取教室详情信息---教室课程有关数据(拆分)---暂时不用
      * @param @param classroomid 教室业务id
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @desc data: courseList 
@@ -858,6 +858,8 @@ public class ClassroomController {
      * 					ptype:类型
      * 					isfree：是否免费。0 免费 1 收费
      * 					charge：课程价格
+     * 					coursetype   课程类型.  0 不收费 1 收费
+     * 					coursesort   课程序号
      * @auther yinxc
      * @currentdate:2017年6月14日
  	*/

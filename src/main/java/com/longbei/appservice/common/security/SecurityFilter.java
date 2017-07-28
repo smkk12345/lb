@@ -48,7 +48,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain arg2) throws ServletException, IOException {
-		String url = request.getRequestURI();
+		String urlPath = request.getRequestURI();
+		urlPath = urlPath.replace("/app_service", "");
 		if(StringUtils.isBlank(localAddress)){
 			localAddress = request.getLocalAddr();
 		}
@@ -60,14 +61,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 
 		//服务器之间api调用
-		if(url.contains("/api/")){
-			String authorization = request.getHeader("Authorization");
-			for (String str : shareUrls){
-				if(url.contains(str)){
-					arg2.doFilter(request, response);
-					return;
-				}
+		if(urlPath.contains("/api/")){
+			if(!apiFilter(urlPath)){
+				arg2.doFilter(request, response);
+				return;
 			}
+			String authorization = request.getHeader("Authorization");
 			if(StringUtils.isBlank(authorization)){
 				//未发现token
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
@@ -98,7 +97,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 			}
 
 		}
-
 		//app调用
 		boolean doFilter = true;
 		if(doFilter){
@@ -115,11 +113,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_09, Constant.RTNINFO_SYS_09);
 				return;
 			}
-			if(!versionController(request,response,version)){
-				returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
-						Constant.RTNINFO_SYS_1003);
-				return;
-			}
+
 			//重组request参数
 			String paramStr = DecodesUtils.getFromBase64(param);
 			JSONObject jMap = JSONObject.fromObject(paramStr);
@@ -131,10 +125,18 @@ public class SecurityFilter extends OncePerRequestFilter {
 				Object value = jMap.get(key);
 				map.put(key, value);
 			}
+
+//			int n = Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath);
+			if(Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) == -1){
+				if(!versionController(request,response,version)){
+					returnAfterErrorToken(request, response,  Constant.STATUS_SYS_1003,
+							Constant.RTNINFO_SYS_1003);
+					return;
+				}
+			}
+//
 			String token = "";
 			try {
-				String urlPath = request.getRequestURI();
-				urlPath = urlPath.replace("/app_service/", "");
 				if (Constant.NOT_NEED_SECURITY_FILTER_URL_ARR.indexOf(urlPath) > -1
 						|| (Constant.VISITOR_UID.equals(uid)
 						&&Constant.VISITOR_URL.indexOf(urlPath)>-1)) {
@@ -142,25 +144,13 @@ public class SecurityFilter extends OncePerRequestFilter {
 				} else {
 					token = springJedisDao.get("userid&token&"+uid);
 				}
-//				String vers[] = version.split("_");
-//				if (vers.length > 0) {
-//					if ("1".equals(vers[1])){
-//						returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
-//								"龙杯服务器升级，预计7月1号恢复正常，给您带来的不便，敬请谅解");
-//						return;
-//					}
-//					if(!canLogin(version)){
-//						returnAfterErrorToken(request, response, Constant.STATUS_SYS_01,
-//								"请前往应用中心更新版本");
-//						return;
-//					}
-//				}
 				if (StringUtils.isBlank(token)) {
 					//token过期
 					returnAfterErrorToken(request, response, Constant.STATUS_SYS_08, Constant.RTNINFO_SYS_08);
 					return;
 				} else {
 					request = new ParamHttpServletRequestWrapper((HttpServletRequest) request, map);
+					urlPath = urlPath.replaceFirst("/","");
 					String localSigin = TokenUtils.getSigin(urlPath, time, uid, param, token);
 					if (sigin.equals(localSigin)) {
 						arg2.doFilter(request, response);
@@ -171,7 +161,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("token error url = "+url+" and msg = "+e);
+				logger.error("token error url = "+urlPath+" and msg = "+e);
 			}
 		}
 		
@@ -199,10 +189,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 		// 获取当前版本 判断是否是最新版本
 		String enforcedV = sysAppupdate.getEnforceversion();
-		enforcedV = enforcedV.trim().replaceAll("\\.", "");
 		if(StringUtils.isBlank(enforcedV)){
 			return true;
 		}
+		enforcedV = enforcedV.trim().replaceAll("\\.", "");
 		boolean result = true;
 		int size = getMinSize(enforcedV,version);
 		for (int i = 0; i < size; i++) {
@@ -210,6 +200,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 			int enforceveri = enforcedV.charAt(i);
 			if (enforceveri > newi) {
 				result = false;
+				break;
+			}else if (enforceveri < newi){
+				result = true;
 				break;
 			}
 		}
@@ -355,31 +348,51 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 	}
 
+	private boolean apiFilter(String urlPath){
+		if(shareUrls.contains(urlPath)){
+			return false;
+		}
+		if(outernetUrls.contains(urlPath)){
+			return false;
+		}
+		if(urlPath.contains("/api/notify/verify")){
+			return false;
+		}
+		return true;
+	}
 
 
-	private static List<String> shareUrls = new ArrayList<String>();
+	private static Set<String> shareUrls = new HashSet<>();
 
 	static {
-		shareUrls.add("/article/getinfo/");
-		shareUrls.add("notify");
-		shareUrls.add("/video/getVideoListDetail");
-		shareUrls.add("rankShare");
-		shareUrls.add("video/getVideoListDetail");
-		shareUrls.add("video/getVideoDetail");
-		shareUrls.add("video/loadRelevantVideo");
-		shareUrls.add("rankShare/goalDetai");
-		shareUrls.add("video/addLike");
-		shareUrls.add("issue/selectByIssueIdH5");
-		shareUrls.add("issue/hotIssueList");
-		shareUrls.add("issue/selectListByTypeH5");
-		shareUrls.add("issue/selectIssueTypesH5");
-		shareUrls.add("common/shortUrl");
-		shareUrls.add("seminar/allinfo");
-		shareUrls.add("classroom/classroomHeadDetail");
-		shareUrls.add("classroom/classroomDetail");
-		shareUrls.add("classroom/classroomMembersDateList");
-		shareUrls.add("classroom/coursesList");
-		shareUrls.add("classroom/questionsList");
+		shareUrls.add("/api/article/getinfo/");
+		shareUrls.add("/api/video/getVideoListDetail");
+		shareUrls.add("/api/rankShare");
+		shareUrls.add("/api/video/getVideoListDetail");
+		shareUrls.add("/api/video/getVideoDetail");
+		shareUrls.add("/api/video/loadRelevantVideo");
+		shareUrls.add("/api/rankShare/goalDetai");
+		shareUrls.add("/api/video/addLike");
+		shareUrls.add("/api/issue/selectByIssueIdH5");
+		shareUrls.add("/api/issue/hotIssueList");
+		shareUrls.add("/api/issue/selectListByTypeH5");
+		shareUrls.add("/api/issue/selectIssueTypesH5");
+		shareUrls.add("/api/common/shortUrl");
+		shareUrls.add("/api/seminar/allinfo");
+		shareUrls.add("/api/classroom/classroomHeadDetail");
+		shareUrls.add("/api/classroom/classroomDetail");
+		shareUrls.add("/api/classroom/classroomMembersDateList");
+		shareUrls.add("/api/classroom/coursesList");
+		shareUrls.add("/api/classroom/questionsList");
 	}
-	
+
+	/**
+	 * 外网回掉接口,不用走token
+	 */
+	private static Set<String> outernetUrls = new HashSet<String>(){{
+		add("/api/media/transcodingNotice");
+//		add("/api/notify/verify/ali");
+//		add("/api/notify//verify/wx");
+	}};
+
 }

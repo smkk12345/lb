@@ -201,6 +201,16 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		try {
 			int temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
 			if (temp > 0) {
+				List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
+				if(null != list && list.size()>0){
+					//修改课程排序
+					Integer coursesort = classroomCoursesMapper.selectMaxSort(classroomid) + 1;
+					classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
+				}else{
+					//修改课程排序
+					classroomCoursesMapper.updateSortByid(classroomid, id, 1);
+				}
+				
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
 				Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
@@ -212,7 +222,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				remark = remark.replace("n", classroom.getClasstitle());
 				Map<String,Object> map = new HashMap<String,Object>();
 	            map.put("businessType","4");
-	            map.put("businessId",classroom.getClassroomid());
+	            map.put("businessId", classroom.getClassroomid());
 	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
 				if(null != concernList && concernList.size()>0){
 					for (UserBusinessConcern userBusinessConcern : concernList) {
@@ -224,11 +234,11 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//推送消息---已加入该教室的人员
 				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
 				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<ClassroomMembers> memberList = classroomMembersMapper.selectInsertByUserid(classroom.getClassroomid(),0,0);
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
 				if(null != memberList && memberList.size()>0){
 					for (int i=0;i<memberList.size();i++) {
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
+								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室添加新课程", 0, "", "");
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -249,14 +259,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				return reseResp;
 			}
 			//获取排序值
-			int coursesort = 10000;
+//			int coursesort = 10000;
 			//coursetype 课程类型.  0 不收费 1 收费
 			String coursetype = "0";
 			//isdefault是否 默认   1 默认封面  0 非默认
 			String isdefault = "1";
 			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomCourses.getClassroomid(), "1", 0, 1);
 			if(null != list && list.size()>0){
-				coursesort = classroomCoursesMapper.selectMinSort(classroomCourses.getClassroomid()) - 1;
+//				coursesort = classroomCoursesMapper.selectMaxSort(classroomCourses.getClassroomid()) - 1;
 				//isfree是否免费。0 免费 1 收费
 				if("1".equals(classroom.getIsfree())){
 					coursetype = "1";
@@ -264,7 +274,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				isdefault = "0";
 			}
 			
-			classroomCourses.setCoursesort(coursesort);
+			classroomCourses.setCoursesort(0);
 			classroomCourses.setCoursetype(coursetype);
 			classroomCourses.setCreatetime(new Date());
 			classroomCourses.setIsdefault(isdefault);

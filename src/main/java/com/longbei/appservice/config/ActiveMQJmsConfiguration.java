@@ -57,14 +57,13 @@ public class ActiveMQJmsConfiguration {
     }
 
 
-
-
     @Bean(name = "updatequeue")
     public Queue updateQueue(){
         return new ActiveMQQueue(updatequeue);
     }
 
-    @Bean
+
+    @Bean(name = "commontopic")
     public Topic topic(){
         return new ActiveMQTempTopic(topiccommon);
     }
@@ -114,7 +113,7 @@ public class ActiveMQJmsConfiguration {
         return producer;
     }
 
-
+    
 //    @Bean(name="topicJmsProducer")
 //    public BaseJmsProducer baseTopicProducerBean() {
 //        ActivemqJmsProducer producer = new ActivemqJmsProducer();
