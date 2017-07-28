@@ -201,6 +201,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 			if (enforceveri > newi) {
 				result = false;
 				break;
+			}else if (enforceveri < newi){
+				result = true;
+				break;
 			}
 		}
 		return result;
