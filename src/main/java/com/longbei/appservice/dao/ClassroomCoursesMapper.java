@@ -15,6 +15,12 @@ public interface ClassroomCoursesMapper {
 
     ClassroomCourses selectByPrimaryKey(Integer id);
     
+    /*
+     * 获取单个排序课程
+     */
+    ClassroomCourses selectSortByCid(@Param("classroomid") long classroomid, @Param("coursesort") Integer coursesort);
+    
+    
     ClassroomCourses select(@Param("classroomid") long classroomid, @Param("id") Integer id);
 
     int updateByPrimaryKeySelective(ClassroomCourses record);
@@ -120,9 +126,9 @@ public interface ClassroomCoursesMapper {
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /*
-     * 获取最小排序值(sort desc排序)
+     * 获取最大排序值(sort desc排序)
      */
-    Integer selectMinSort(@Param("classroomid") long classroomid);
+    Integer selectMaxSort(@Param("classroomid") long classroomid);
     
     
     /*

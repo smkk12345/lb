@@ -283,19 +283,23 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//获取视频url---转码后
 //				String fileurl = "";
 				//isfree 是否免费。0 免费 1 收费
-				if("0".equals(classroom.getIsfree())){
-					if(null != courseList && courseList.size()>0){
-						map.put("fileurl", courseList.get(0).getFileurl());
-					}
-				}else{
-					//若收费，获取第一条免费课程
-					List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
-					if(null != courselist && courselist.size()>0){
-						map.put("fileurl", courselist.get(0).getFileurl());
-					}
-				}
+//				if("0".equals(classroom.getIsfree())){
+//					if(null != courseList && courseList.size()>0){
+//						map.put("fileurl", courseList.get(0).getFileurl());
+//						map.put("coursesort", courseList.get(0).getCoursesort());
+//					}
+//				}else{
+//					//若收费，获取第一条免费课程
+//					ClassroomCourses classroomCourses = classroomCoursesMapper.selectSortByCid(classroomid, 1);
+//					if(null != classroomCourses){
+//						map.put("fileurl", classroomCourses.getFileurl());
+//						map.put("coursesort", classroomCourses.getCoursesort());
+//					}
+//				}
 				if(null != courseList && courseList.size()>0){
 					map.put("pickey", courseList.get(0).getPickey());
+					map.put("fileurl", courseList.get(0).getFileurl());
+					map.put("coursesort", courseList.get(0).getCoursesort());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());
@@ -608,6 +612,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), "1", 0, 1);
 				if(null != courseList && courseList.size()>0){
 					classroom.setPickey(courseList.get(0).getPickey());
+					classroom.setCoursesort(courseList.get(0).getCoursesort());
 				}
 //			}
 			//itype 0—加入教室 1—退出教室     为null查全部
@@ -709,6 +714,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				List<ClassroomCourses> courseList = classroomCoursesMapper.selectCroomidOrderByCtime(classroom.getClassroomid(), "1", 0, 1);
 				if(null != courseList && courseList.size()>0){
 					classroom.setPickey(courseList.get(0).getPickey());
+					classroom.setCoursesort(courseList.get(0).getCoursesort());
 				}
 //			}
 			String isadd = "0";
@@ -1195,11 +1201,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 				initUserInfoString(memberList);
 				map.put("membersImageList", memberList); //成员头像列表
 				//获取最新课程视频截图key  --- 分享获取第一个视频
-				List<ClassroomCourses> courselist = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
+				ClassroomCourses classroomCourses = classroomCoursesMapper.selectSortByCid(classroomid, 1);
 				//获取视频url---转码后
-				if(null != courselist && courselist.size()>0){
-					map.put("fileurl", courselist.get(0).getFileurl());
-				}
+//				if(null != courselist && courselist.size()>0){
+					map.put("fileurl", classroomCourses.getFileurl());
+//				}
 				map.put("classphotos", classroom.getClassphotos());
 				map.put("classroomid", classroomid);
 				//是否已经关注教室

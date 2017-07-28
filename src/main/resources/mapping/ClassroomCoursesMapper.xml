@@ -41,6 +41,14 @@
     and classroomid = #{classroomid} 
   </select>
   
+  <select id="selectSortByCid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses
+    where classroomid = #{classroomid} 
+    and coursesort = #{coursesort} 
+  </select>
+  
   <select id="selectListByClassroomid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
@@ -51,7 +59,7 @@
     <if test="isup != null and isup != ''" >
       	and isup = #{isup}
     </if>
-    order by coursesort desc, createtime desc 
+    order by coursesort asc, createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -70,11 +78,12 @@
     </if>
   </select>
   
-  <select id="selectMinSort" resultType="java.lang.Integer" >
-    select min(coursesort)  
+  <select id="selectMaxSort" resultType="java.lang.Integer" >
+    select max(coursesort)  
     from classroom_courses
     where classroomid = #{classroomid} 
     and isdel = 0 
+    and isup = 1 
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.ClassroomCourses" resultMap="BaseResultMap" >
@@ -89,7 +98,7 @@
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
     </if>
-    order by coursesort desc, createtime desc 
+    order by isup desc, coursesort asc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
