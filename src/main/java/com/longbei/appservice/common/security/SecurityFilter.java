@@ -49,7 +49,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain arg2) throws ServletException, IOException {
 		String urlPath = request.getRequestURI();
-		urlPath = urlPath.replace("/app_service/", "");
+		urlPath = urlPath.replace("/app_service", "");
 		if(StringUtils.isBlank(localAddress)){
 			localAddress = request.getLocalAddr();
 		}
