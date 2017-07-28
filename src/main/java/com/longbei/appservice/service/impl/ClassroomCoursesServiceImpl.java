@@ -203,21 +203,20 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			if(null == classroom){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 			}
+			List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
+			if(null != list && list.size()>0){
+				//修改课程排序
+				Integer coursesort = classroomCoursesMapper.selectMaxSort(classroomid) + 1;
+				classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
+			}else{
+				if("1".equals(classroom.getIsfree())){
+					classroomCoursesMapper.updateCoursetypeByid(classroomid, id, "0");
+				}
+				//修改课程排序
+				classroomCoursesMapper.updateSortByid(classroomid, id, 1);
+			}
 			int temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
 			if (temp > 0) {
-				List<ClassroomCourses> list = classroomCoursesMapper.selectListByClassroomid(classroomid, "1", 0, 1);
-				if(null != list && list.size()>0){
-					//修改课程排序
-					Integer coursesort = classroomCoursesMapper.selectMaxSort(classroomid) + 1;
-					classroomCoursesMapper.updateSortByid(classroomid, id, coursesort);
-				}else{
-					if("1".equals(classroom.getIsfree())){
-						classroomCoursesMapper.updateCoursetypeByid(classroomid, id, "0");
-					}
-					//修改课程排序
-					classroomCoursesMapper.updateSortByid(classroomid, id, 1);
-				}
-				
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
 				
