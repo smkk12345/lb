@@ -94,6 +94,8 @@ public class Classroom {
     private Long questionsNum = 0l; //提问答疑总数
     
     private Integer commentCount; //教室评论数
+    
+    private Integer coursesort; //课程序号
 
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
@@ -547,6 +549,15 @@ public class Classroom {
 
 	public void setEarnings(Integer earnings) {
 		this.earnings = earnings;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Integer getCoursesort() {
+		return coursesort;
+	}
+
+	public void setCoursesort(Integer coursesort) {
+		this.coursesort = coursesort;
 	}
 
 }
