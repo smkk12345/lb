@@ -98,7 +98,7 @@
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
     </if>
-    order by isup desc, coursesort asc 
+    order by isup desc, coursesort asc, createtime asc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
