@@ -490,8 +490,22 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> updateByClassroomid(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
 			boolean temp = update(record);
 			if (temp) {
+				if(!classroom.getIsfree().equals(record.getIsfree())){
+					//修改教室是否免费收费     修改课程收费状态
+					if("1".equals(record.getIsfree())){
+						classroomCoursesMapper.updateCoursetypeByClassroomid(record.getClassroomid(), "1");
+						ClassroomCourses classroomCourses = classroomCoursesMapper.selectSortByCid(record.getClassroomid(), 1);
+						if(null != classroomCourses){
+							classroomCoursesMapper.updateCoursetypeByid(record.getClassroomid(), classroomCourses.getId(), "0");
+						}
+					}else{
+						//coursetype 课程类型.  0 不收费 1 收费
+						classroomCoursesMapper.updateCoursetypeByClassroomid(record.getClassroomid(), "0");
+					}
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
