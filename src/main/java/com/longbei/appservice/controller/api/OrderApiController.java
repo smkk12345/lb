@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DecodesUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -294,9 +295,13 @@ public class OrderApiController {
     * @currentdate:2017年3月24日
 	*/
 	@SuppressWarnings("unchecked")
-  	@RequestMapping(value = "/updateDeliver", method = RequestMethod.POST)
+  	@RequestMapping(value = "/updateDeliver")
     public BaseResp<Object> updateDeliver(String userid, String orderid, String logisticscode, String logisticscompany) {
-		logger.info("userid = {}, orderid = {}, logisticscode = {}, logisticscompany = {}", userid, orderid, logisticscode, logisticscompany);
+		if(!StringUtils.isBlank(logisticscompany)){
+			logisticscompany = DecodesUtils.getFromBase64(logisticscompany);
+		}
+		logger.info("updateDeliver userid = {}, orderid = {}, logisticscode = {}, logisticscompany = {}", 
+				userid, orderid, logisticscode, logisticscompany);
 		BaseResp<Object> baseResp = new BaseResp<Object>();
   		if (StringUtils.hasBlankParams(userid, orderid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -356,6 +361,7 @@ public class OrderApiController {
 	 * @param currentTime
 	 * @return
      */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="autoConfirmReceipt")
 	public BaseResp<Object> autoConfirmReceipt(Long currentTime){
 		logger.info("currentTime = {}", currentTime);
@@ -446,8 +452,9 @@ public class OrderApiController {
 	 * @param ordernum
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "isSuccessPay", method = RequestMethod.POST)
-	BaseResp isSuccessPay(String ordernum){
+	public BaseResp isSuccessPay(String ordernum){
 		logger.info("isSuccessPay ordernum={}", ordernum);
 		BaseResp baseResp = new BaseResp();
 		boolean flag = false;

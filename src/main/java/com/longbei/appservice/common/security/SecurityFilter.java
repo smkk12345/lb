@@ -67,6 +67,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				return;
 			}
 			String authorization = request.getHeader("Authorization");
+			String servicename = request.getHeader("servicename");
 			if(StringUtils.isBlank(authorization)){
 				//未发现token
 				returnAfterErrorToken(request, response, Constant.STATUS_SYS_1000, Constant.RTNINFO_SYS_1000);
@@ -74,7 +75,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 			}
 			String token = authorization.replaceFirst("Basic", "");
 			logger.debug(authorization);
-			BaseResp<String> baseResp = authService.verifyToken(Constant.SERVER_APP_SERVICE,token);
+			BaseResp<String> baseResp = null;
+			if(StringUtils.isBlank(servicename)){
+				baseResp = authService.verifyToken(Constant.SERVER_APP_SERVICE,token);
+			}else{
+				baseResp = authService.verifyToken(servicename,token);
+			}
 //			Claims claims = Jwts.parser()
 //					.setSigningKey(DatatypeConverter.parseBase64Binary(Constant.TOKEN_SIGN_COMMON))
 //					.parseClaimsJws(token).getBody();
