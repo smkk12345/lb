@@ -40,13 +40,16 @@
           <if test="mediaResource.filename != null and mediaResource.filename != ''">
               and filename like concat(concat('%'),#{mediaResource.filename},'%')
           </if>
+          <if test="istranscoding != null and istranscoding == '1'">
+              and filekey is not null
+          </if>
           <if test="mediaResource.ispublic != null">
               and ispublic = #{mediaResource.ispublic}
           </if>
           <if test="mediaResource.source != null">
               and source = #{mediaResource.source}
           </if>
-          <if test="mediaResource.userid != null">
+          <if test="mediaResource.filetype != null">
               and filetype = #{mediaResource.filetype}
           </if>
           <if test="mediaResource.resourcetypeid != null">
@@ -73,13 +76,16 @@
             <if test="mediaResource.filename != null and mediaResource.filename != ''">
                 and filename like concat(concat('%'),#{mediaResource.filename},'%')
             </if>
+            <if test="istranscoding != null and istranscoding == '1'">
+                and filekey is not null
+            </if>
             <if test="mediaResource.ispublic != null">
                and ispublic = #{mediaResource.ispublic}
             </if>
             <if test="mediaResource.source != null">
                 and source = #{mediaResource.source}
             </if>
-            <if test="mediaResource.userid != null">
+            <if test="mediaResource.filetype != null">
                 and filetype = #{mediaResource.filetype}
             </if>
             <if test="mediaResource.resourcetypeid != null">

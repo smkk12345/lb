@@ -30,7 +30,9 @@
       <if test="orderType != null and orderType == 'sortnum'">
           order by sortnum desc
       </if>
-      limit #{startNum},#{pageSize}
+      <if test="startNum != null">
+          limit #{startNum},#{pageSize}
+      </if>
   </select>
 
   <select id="getVideo" parameterType="map" resultMap="BaseResultMap">

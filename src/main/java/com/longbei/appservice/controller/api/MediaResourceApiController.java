@@ -39,12 +39,13 @@ public class MediaResourceApiController {
      * @param mediaResource 查询的条件
      *        注意mediaResource中的source来源 必传,标识是web查询还是admin查询
      *        source 0.web 1.admin 是哪个平台查询的 必传 如果来源是web,则userid必传
+     *          istranscoding 是否只查询转码后的 1.代表只查询转码后的
      * @param pageno
      * @param pagesize
      * @return
      */
     @RequestMapping(value="findMediaResourceList")
-    public BaseResp<Page<MediaResource>> findMediaResourceList(MediaResource mediaResource, Integer pageno, Integer pagesize){
+    public BaseResp<Page<MediaResource>> findMediaResourceList(@RequestBody MediaResource mediaResource,String isistranscoding, Integer pageno, Integer pagesize){
         if(pageno == null){
             pageno = 1;
         }
@@ -54,7 +55,7 @@ public class MediaResourceApiController {
         if(mediaResource == null || (mediaResource.getSource() != null && mediaResource.getSource() == 0 && mediaResource.getUserid() == null)){
             return new BaseResp<>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        return this.mediaResourceService.findMediaResourceList(mediaResource,pageno,pagesize);
+        return this.mediaResourceService.findMediaResourceList(mediaResource,isistranscoding,pageno,pagesize);
     }
 
     /**

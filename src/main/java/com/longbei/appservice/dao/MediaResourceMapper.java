@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface MediaResourceMapper {
 
-    int findMediaResourceCount(@Param("mediaResource") MediaResource mediaResource);
+    int findMediaResourceCount(@Param("mediaResource") MediaResource mediaResource,@Param("istranscoding") String istranscoding);
 
     /**
      * 查询资源库列表
@@ -20,7 +20,7 @@ public interface MediaResourceMapper {
      * @param pagesize
      * @return
      */
-    List<MediaResource> findMediaResourceList(@Param("mediaResource")MediaResource mediaResource,@Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
+    List<MediaResource> findMediaResourceList(@Param("mediaResource")MediaResource mediaResource,@Param("istranscoding")String istranscoding,@Param("startno") Integer startno,@Param("pagesize") Integer pagesize);
 
     /**
      * 添加资源数据

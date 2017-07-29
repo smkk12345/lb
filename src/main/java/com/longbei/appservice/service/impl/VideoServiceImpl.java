@@ -342,8 +342,8 @@ public class VideoServiceImpl implements VideoService {
             map.put("videoClassifyId",videoClassifyId);
             map.put("orderType","sortnum");
             map.put("isShow",true);
-            map.put("startNum",0);
-            map.put("pageSize",6);
+//            map.put("startNum",0);
+//            map.put("pageSize",6);
             List<Video> videoList = this.videoMapper.getVideoList(map);
             if(videoList == null){
                 videoList = new ArrayList<Video>();

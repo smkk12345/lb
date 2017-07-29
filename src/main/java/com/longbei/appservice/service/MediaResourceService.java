@@ -24,7 +24,7 @@ public interface MediaResourceService {
      * @param pagesize
      * @return
      */
-    BaseResp<Page<MediaResource>> findMediaResourceList(MediaResource mediaResource, Integer pageno, Integer pagesize);
+    BaseResp<Page<MediaResource>> findMediaResourceList(MediaResource mediaResource,String istranscoding, Integer pageno, Integer pagesize);
 
     /**
      * 添加资源库

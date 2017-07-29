@@ -60,16 +60,16 @@ public class MediaResourceServiceImpl implements MediaResourceService {
      * @return
      */
     @Override
-    public BaseResp<Page<MediaResource>> findMediaResourceList(MediaResource mediaResource, Integer pageno, Integer pagesize) {
+    public BaseResp<Page<MediaResource>> findMediaResourceList(MediaResource mediaResource,String istranscoding, Integer pageno, Integer pagesize) {
         logger.info("find mediaResouce list mediaResource:{} pageno:{} pagesize:{}",mediaResource.toString(),pageno,pagesize);
         BaseResp<Page<MediaResource>> baseResp = new BaseResp<>();
         try{
             int count = 0;
             List<MediaResource> mediaResourceList= new ArrayList<>();
-            count = this.mediaResourceMapper.findMediaResourceCount(mediaResource);
+            count = this.mediaResourceMapper.findMediaResourceCount(mediaResource,istranscoding);
             if(count > 0){
                 int startno = (pageno-1)*pagesize;
-                mediaResourceList = this.mediaResourceMapper.findMediaResourceList(mediaResource,startno,pagesize);
+                mediaResourceList = this.mediaResourceMapper.findMediaResourceList(mediaResource,istranscoding,startno,pagesize);
             }
 
             Page<MediaResource> pageinfo = new Page<MediaResource>();
