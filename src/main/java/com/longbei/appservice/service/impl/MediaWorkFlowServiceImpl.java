@@ -107,10 +107,12 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
             String name = (String)mediaWorkflowExecution.get("Name");
             //通过工作流名称 判断走mp3 还是 mp4
             map.put("workflow",name);
+            String mediaId = (String)mediaWorkflowExecution.get("MediaId");
 
             JSONObject jsonObject2 = mediaWorkflowExecution.getJSONObject("Input").getJSONObject("InputFile");
             String objId = jsonObject2.getString("Object");
-            map.put("filePath",objId);
+            String filePath = jsonObject2.getString("Object");
+            map.put("filePath",filePath);
             String[] objArr = objId.split("/");
             objId = objArr[objArr.length-1];
             map.put("key",objId);
@@ -126,6 +128,9 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
                     map.put("url",getFileKey(j,objId));
                     continue;
                 }
+            }
+            if(filePath.contains("longbei_media_resource")){
+                map.put("duration",getTimeStr(mediaId));
             }
             return map;
         }

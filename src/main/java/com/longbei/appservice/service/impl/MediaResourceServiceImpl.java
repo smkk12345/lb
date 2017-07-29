@@ -175,9 +175,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             }else{
                 sourceKey = "longbei_vido/longbei_media_resource/"+key;
             }
-            if(!workflow.contains("mp3") && StringUtils.isNotEmpty(pickey)){
-                pickey = "[\""+pickey+"\"]";
-            }
+//            if(!workflow.contains("mp3") && StringUtils.isNotEmpty(pickey)){
+//                pickey = "[\""+pickey+"\"]";
+//            }
 
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("sourcePath",sourceKey);
