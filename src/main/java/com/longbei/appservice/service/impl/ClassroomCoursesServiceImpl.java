@@ -276,7 +276,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			if("1".equals(classroom.getIsfree())){
 				coursetype = "1";
 			}
-			classroomCourses.setCoursesort(0);
+			classroomCourses.setCoursesort(100);
 			classroomCourses.setCoursetype(coursetype);
 			classroomCourses.setCreatetime(new Date());
 			classroomCourses.setIsdefault("0");
