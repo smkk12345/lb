@@ -47,4 +47,14 @@ public interface MediaResourceService {
      */
     BaseResp<Object> updateMediaResource(MediaResource mediaResource);
 
+    /**
+     * 转码通知 ,修改文件相关信息
+     * @param key
+     * @param pickey
+     * @param workflow
+     * @param duration
+     * @param picAttribute
+     * @return
+     */
+    BaseResp<Object> updateMediaResourceInfo(String key, String pickey,String fileKey, String workflow, String duration, String picAttribute);
 }

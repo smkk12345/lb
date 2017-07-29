@@ -47,7 +47,7 @@ public class MediaWorkFlowController {
         }
 
         JSONObject bodyJson = JSONObject.fromObject(requestBody);
-        System.out.println(bodyJson);
+//        System.out.println(bodyJson);
         this.mediaWorkFlowService.handleMediaTranscodingNotice(bodyJson,response);
     }
 

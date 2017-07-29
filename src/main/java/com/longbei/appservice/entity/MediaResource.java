@@ -25,6 +25,9 @@ public class MediaResource {
     private Integer filetype;//文件类型 0.视频 1.音频 2.其他文件 3.PPT 4.图片 5.doc 6.ppt 7.excel
     private Integer isdel;//是否已经删除 0.未删除 1.已删除
 
+    private String filekey;//文件的路径
+    private String duration;//音频时长
+
     private String resourcetypename;//所属分类的名称
 
     public Integer getId() {
@@ -149,6 +152,22 @@ public class MediaResource {
         this.isdel = isdel;
     }
 
+    public String getFilekey() {
+        return filekey;
+    }
+
+    public void setFilekey(String filekey) {
+        this.filekey = filekey;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
     @Override
     public String toString() {
         return "MediaResource{" +
@@ -166,6 +185,8 @@ public class MediaResource {
                 ", filesuffix='" + filesuffix + '\'' +
                 ", filetype=" + filetype +
                 ", isdel=" + isdel +
+                ", filekey='" + filekey + '\'' +
+                ", duration='" + duration + '\'' +
                 ", resourcetypename='" + resourcetypename + '\'' +
                 '}';
     }

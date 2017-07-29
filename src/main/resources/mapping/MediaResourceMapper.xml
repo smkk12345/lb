@@ -17,13 +17,16 @@
     <result column="filetype" property="filetype" jdbcType="CHAR" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="resourcetypename" property="resourcetypename" jdbcType="VARCHAR" />
+    <result column="filekey" property="filekey" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
     media_resource.id, media_resource.title, media_resource.resourcetypeid,media_resource.filename,
     media_resource.createtime,media_resource.filesize,media_resource.screenpthoto,
     media_resource.filepath,media_resource.userid,media_resource.ispublic,media_resource.source,
-    media_resource.filesuffix,media_resource.filetype,media_resource.isdel
+    media_resource.filesuffix,media_resource.filetype,media_resource.isdel,media_resource.filekey,
+    media_resource.duration
   </sql>
 
   <select id="findMediaResourceCount" resultType="INTEGER">
@@ -233,4 +236,21 @@
       </set>
     where id = #{mediaResource.id}
   </update>
+
+    <!-- 更新视频资源 -->
+    <update id="updateMedia" parameterType="map">
+        update media_resource
+        <set>
+            <trim suffixOverrides=",">
+                filekey = #{fileKey},
+                <if test="picKey != null">
+                    screenpthoto = #{picKey},
+                </if>
+                <if test="duration != null">
+                    duration = #{duration},
+                </if>
+            </trim>
+        </set>
+        where filepath = #{sourcePath}
+    </update>
 </mapper>

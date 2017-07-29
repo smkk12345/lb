@@ -12,6 +12,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.MediaResourceService;
 import com.longbei.appservice.service.MediaWorkFlowService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -34,6 +35,8 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
     private ImproveService improveService;
     @Autowired
     private SpringJedisDao springJedisDao;
+    @Autowired
+    private MediaResourceService mediaResourceService;
 
     /**
      * 处理转码结果通知
@@ -54,17 +57,19 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
         }else{
             messageMap = getObjectMap(message);
         }
-
         if(!updateRemoteStatus(messageMap)){
             long num = this.springJedisDao.increment("media_notice_error_"+run_id,1);
             if(num > 5){
                 response.setStatus(200);
+                this.springJedisDao.del("media_notice_error_"+run_id);
                 return;
             }
+            this.springJedisDao.expire("media_notice_error_"+run_id,24*60*60);
             response.setStatus(500);
         }else{
             response.setStatus(200);
         }
+
     }
 
     private boolean updateRemoteStatus(Map<String, String> map) {
@@ -78,7 +83,14 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
             picAttribute = getPicInfo(picurl);
         }
         String duration = map.get("duration");
-        BaseResp baseResp = improveService.updateMedia(key,picurl,url,workflow,duration,picAttribute);
+
+        String filePath =map.get("filePath");//OSS 保存的文件 源文件路径
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(filePath.contains("longbei_media_resource")){
+            baseResp = mediaResourceService.updateMediaResourceInfo(key,picurl,url,workflow,duration,picAttribute);
+        }else{
+            baseResp = improveService.updateMedia(key,picurl,url,workflow,duration,picAttribute);
+        }
         if(baseResp.getCode() == Constant.STATUS_SYS_00){
             result = true;
         }
@@ -98,6 +110,7 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
             JSONObject jsonObject2 = mediaWorkflowExecution.getJSONObject("Input").getJSONObject("InputFile");
             String objId = jsonObject2.getString("Object");
+            map.put("filePath",objId);
             String[] objArr = objId.split("/");
             objId = objArr[objArr.length-1];
             map.put("key",objId);
@@ -165,6 +178,7 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
         JSONObject jsonObject2 = mediaWorkflowExecution.getJSONObject("Input").getJSONObject("InputFile");
         String objId = jsonObject2.getString("Object");
+        map.put("filePath",objId);
         String[] objArr = objId.split("/");
         objId = objArr[objArr.length-1];
         map.put("key",objId);

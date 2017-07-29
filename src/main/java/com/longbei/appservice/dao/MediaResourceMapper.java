@@ -4,6 +4,7 @@ import com.longbei.appservice.entity.MediaResource;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangyongzhi 17/7/27.
@@ -41,4 +42,11 @@ public interface MediaResourceMapper {
      * @return
      */
     int updateMediaResource(@Param("mediaResource")MediaResource mediaResource);
+
+    /**
+     * 更新文件资料
+     * @param map
+     * @return
+     */
+    int updateMedia(Map<String, Object> map);
 }

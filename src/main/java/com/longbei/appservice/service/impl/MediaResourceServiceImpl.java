@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.MediaResourceMapper;
 import com.longbei.appservice.dao.MediaResourceTypeMapper;
 import com.longbei.appservice.entity.MediaResource;
@@ -13,9 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wangyongzhi 17/7/27.
@@ -146,6 +145,56 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             }
         }catch(Exception e){
             logger.error("update mediaResource mediaResource:{} errorMsg:{}",mediaResource.toString(),e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 转码通知 ,修改文件相关信息
+     * @param key 文件的key
+     * @param pickey 图片的地址
+     * @param fileKey 文件路径
+     * @param workflow 工作流 名称
+     * @param duration 音频时长 只有音频才有时长
+     * @param picAttribute
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateMediaResourceInfo(String key, String pickey,String fileKey, String workflow, String duration, String picAttribute) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            if(StringUtils.hasBlankParams(key,workflow)){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            String sourceKey = key;
+            if(StringUtils.isBlank(duration)){
+                duration = null;
+            }
+            if(workflow.contains("mp3")){
+                sourceKey = "longbei_mp3/longbei_media_resource/"+key;
+            }else{
+                sourceKey = "longbei_vido/longbei_media_resource/"+key;
+            }
+            if(!workflow.contains("mp3") && StringUtils.isNotEmpty(pickey)){
+                pickey = "[\""+pickey+"\"]";
+            }
+
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("sourcePath",sourceKey);
+            map.put("fileKey",fileKey);
+            if(StringUtils.isNotEmpty(pickey)){
+                map.put("picKey",pickey);
+            }
+            if(duration != null){
+                map.put("duration",duration);
+            }
+
+            int row = this.mediaResourceMapper.updateMedia(map);
+            if(row > 0){
+                return baseResp.initCodeAndDesp();
+            }
+        }catch(Exception e){
+            logger.error("ali zhuanma updateMediaResourceInfo error key:{} fileKey:{} errorMsg:{}",key,fileKey,e);
         }
         return baseResp;
     }
