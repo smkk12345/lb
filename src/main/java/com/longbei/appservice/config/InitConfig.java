@@ -70,7 +70,7 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private Queue addqueue;
     @Autowired
-    private Topic topic;
+    private Topic commontopic;
     @Autowired
     private Queue updatequeue;
     @Autowired
@@ -128,7 +128,7 @@ public class InitConfig implements CommandLineRunner {
             //进步相关监听
             initImproveListener(session,addqueue,addMessageReceiveService);
             initImproveListenerTopic(session,session.createTopic(topiccommon),topicMessageReciverService);
-//            initImproveListenerTopic(session,topic,topicMessageReciverService);
+//            initImproveListenerTopic(session,commontopic,topicMessageReciverService);
             //其他监听
         } catch (Exception e) {
             logger.error("initListener ",e);
