@@ -37,6 +37,19 @@ public interface UserLevelMapper {
      */
     Integer selectUserLevelListCount();
 
+    /**
+     * 批量插入等级权限
+     * @param levelList
+     * @return
+     */
+    int insertBatchLevelRules(List<UserLevel> levelList);
+
+    /**
+     * 全部删除等级权限
+     * @return
+     */
+    int deleteLevelRules();
+
     int updateByPrimaryKeySelective(UserLevel record);
 
     int updateByPrimaryKey(UserLevel record);

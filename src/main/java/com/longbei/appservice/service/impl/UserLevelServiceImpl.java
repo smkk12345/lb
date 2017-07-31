@@ -59,4 +59,30 @@ public class UserLevelServiceImpl implements UserLevelService {
 		}
 		return page;
 	}
+
+	@Override
+	public BaseResp insertBatchLevelRules(List<UserLevel> levelList) {
+		try {
+			int res = userLevelMapper.insertBatchLevelRules(levelList);
+			if (res > 0) {
+                return BaseResp.ok();
+            }
+		} catch (Exception e) {
+			logger.error("insertBatchLevelRules is error:", e);
+		}
+		return BaseResp.fail();
+	}
+
+	@Override
+	public BaseResp deleteLevelRules() {
+		try {
+			int res = userLevelMapper.deleteLevelRules();
+			if (res > 0) {
+				return BaseResp.ok();
+			}
+		} catch (Exception e) {
+			logger.error("deleteLevelRules is error:", e);
+		}
+		return BaseResp.fail();
+	}
 }
