@@ -4,6 +4,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserLevel;
 
+import java.util.List;
+
 public interface UserLevelService {
 
 	/**
@@ -22,5 +24,19 @@ public interface UserLevelService {
 	 * @currentdate:2017年6月1日
 	 */
 	Page<UserLevel> selectUserLevelList(Integer startNum, Integer pageSize);
+
+	/**
+	 * 批量插入等级权限
+	 * @param levelList
+	 * @return
+	 */
+	BaseResp insertBatchLevelRules(List<UserLevel> levelList);
+
+	/**
+	 * 全部删除等级权限
+	 * @return
+	 */
+	BaseResp deleteLevelRules();
+
     		
 }

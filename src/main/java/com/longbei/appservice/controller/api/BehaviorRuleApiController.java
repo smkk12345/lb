@@ -8,7 +8,6 @@ import com.longbei.appservice.entity.BehaviorRule;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.BehaviorRuleService;
 import com.longbei.appservice.service.UserLevelService;
-import kafka.utils.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 行为奖励规则接口
@@ -143,6 +144,40 @@ public class BehaviorRuleApiController {
         }
         return baseResp;
     }
+
+    /**
+     * 批量插入等级权限
+     * @param levelList
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/insertBatchLevelRules")
+    public BaseResp insertBatchLevelRules(@RequestBody List<UserLevel> levelList) {
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = userLevelService.insertBatchLevelRules(levelList);
+        } catch (Exception e) {
+            logger.error("insertBatchLevelRules is error:", e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 全部删除等级权限
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/deleteLevelRules")
+    public BaseResp deleteLevelRules() {
+        BaseResp baseResp = new BaseResp();
+        try {
+            baseResp = userLevelService.deleteLevelRules();
+        } catch (Exception e) {
+            logger.error("deleteLevelRules is error:", e);
+        }
+        return baseResp;
+    }
+
 
 
 }
