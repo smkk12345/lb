@@ -91,8 +91,8 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
         try {
             int n = sysSensitiveMapper.updateSensitiveWords(sensitive);
             if(n >= 1){
-                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
-                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_SENSITIVE);
+//                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
+//                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_SENSITIVE);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {

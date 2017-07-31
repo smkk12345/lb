@@ -139,7 +139,8 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
     private static String getFileKey(JSONObject js, String objid){
         String runid = (String)js.get("RunId");
-        String result = "filekey/"+runid+"/"+ AppserviceConfig.alimedia_mp4_query_mp4+"/"+objid;
+//        String result = "filekey/"+runid+"/"+ AppserviceConfig.alimedia_mp4_query_mp4+"/"+objid;
+        String result = "filekey/"+runid+".mp4";
         return result;
     }
 
@@ -203,7 +204,8 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
     private static String getFileForMp3(JSONObject js,String objid){
         String runid = (String)js.get("RunId");
-        String result = "mp3key/"+runid+"/"+AppserviceConfig.alimedia_mp3_query_mp3+"/"+objid;
+//        String result = "mp3key/"+runid+"/"+AppserviceConfig.alimedia_mp3_query_mp3+"/"+objid;
+        String result ="mp3key/"+runid+".mp3";
         return  result;
     }
 

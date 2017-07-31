@@ -59,8 +59,8 @@ public class BehaviorRuleServiceImpl implements BehaviorRuleService {
         try {
             int res = behaviorRuleMapper.updateByPrimaryKeySelective(behaviorRule);
             if(res>0){
-                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
-                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_RULE);
+//                topicMessageSendService.send(Constant.MQACTION_IMPROVE,
+//                        Constant.MQDOMAIN_IMP_ADD,Constant.UPDATE_RULE);
                 return true;
             }
         } catch (Exception e) {

@@ -49,6 +49,7 @@ public class ActiveMQJmsConfiguration {
 
     private static BaseActiveMQJmsTemplate jmsTemplate;
 
+
     private static ActiveMQConnectionFactory activeMQConnectionFactory;
 
     @Bean(name = "addqueue")
@@ -98,11 +99,14 @@ public class ActiveMQJmsConfiguration {
         return jmsTemplate;
     }
 
+
+
     public BaseActiveMQJmsTemplate initDestination(Destination queue){
         jmsTemplate = baseActiveMQJmsTemplateBean();
         jmsTemplate.setDefaultDestination(queue);
         return jmsTemplate;
     }
+
 
 
     @Bean(name="improveJmsProducer")
@@ -114,15 +118,6 @@ public class ActiveMQJmsConfiguration {
     }
 
     
-//    @Bean(name="topicJmsProducer")
-//    public BaseJmsProducer baseTopicProducerBean() {
-//        ActivemqJmsProducer producer = new ActivemqJmsProducer();
-//        ActiveMQTempTopic activeMQTempTopic = new ActiveMQTempTopic();
-//        producer.setJmsTemplate(initDestination(topic()));
-//        logger.debug("oooo init improveJmsProducer ....");
-//        return producer;
-//    }
-
 //    @Bean(name="improveJmsConsumer")
 //    public BaseJmsConsumer baseJmsConsumerBean() {
 //        ActivemqJmsConsumer consumer = new ActivemqJmsConsumer();
@@ -155,6 +150,7 @@ public class ActiveMQJmsConfiguration {
     public void setTopiccommon(String topiccommon) {
         this.topiccommon = topiccommon;
     }
+
 
 
 
