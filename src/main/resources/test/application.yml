@@ -94,6 +94,6 @@ alimedia:
         mp4:
             query_mp4: longbeitestmp4
             workflowmp4: longbei-test-media-mp4
-            outurl: http://longbei-media-resource-test-out.oss-cn-beijing.aliyuncs.com
+            outurl: http://longbei-media-resource-test-out.oss-cn-beijing.aliyuncs.com/
         queryEndPoint: http://1808184037454567.mns.cn-beijing.aliyuncs.com/
         area: beijing
