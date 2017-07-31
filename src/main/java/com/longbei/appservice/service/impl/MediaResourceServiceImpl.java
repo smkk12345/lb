@@ -173,7 +173,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             if(workflow.contains("mp3")){
                 sourceKey = "longbei_mp3/longbei_media_resource/"+key;
             }else{
-                sourceKey = "longbei_vido/longbei_media_resource/"+key;
+                sourceKey = "longbei_media_resource_video/"+key;
             }
 //            if(!workflow.contains("mp3") && StringUtils.isNotEmpty(pickey)){
 //                pickey = "[\""+pickey+"\"]";
