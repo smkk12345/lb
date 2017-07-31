@@ -21,28 +21,9 @@ import javax.jms.*;
 public class TopicMessageSendService {
 
     private  static Logger logger = LoggerFactory.getLogger(TopicMessageSendService.class);
-    /**
-     * 发送一条消息到指定的队列（目标）
-     * @param topicName 队列名称
-     * @param message 消息内容
-     */
-    @Autowired
-    @Qualifier("commontopic")
-    private Topic topic;
 
-
-    @Autowired
-    private BaseActiveMQJmsTemplate baseActiveMQJmsTemplate;
 
     public void send(String action, String domain, final String message){
-        baseActiveMQJmsTemplate.send(topic, new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                TextMessage textMessage = session
-                        .createTextMessage(message);
-                return textMessage;
-            }
-        });
     }
 
 
