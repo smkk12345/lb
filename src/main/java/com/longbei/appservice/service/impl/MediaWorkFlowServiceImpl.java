@@ -87,7 +87,12 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
         String filePath =map.get("filePath");//OSS 保存的文件 源文件路径
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(filePath.contains("longbei_media_resource")){
-            url = AppserviceConfig.alimedia_mp4_outurl +"/"+ url;
+            if(filePath.contains("_video")){
+                url = AppserviceConfig.alimedia_mp4_outurl +"/"+ url;
+            }else{
+                url = AppserviceConfig.oss_media + url;
+            }
+
             baseResp = mediaResourceService.updateMediaResourceInfo(key,picurl,url,workflow,duration,picAttribute);
         }else{
             baseResp = improveService.updateMedia(key,picurl,url,workflow,duration,picAttribute);
