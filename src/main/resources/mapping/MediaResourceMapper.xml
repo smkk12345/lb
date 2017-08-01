@@ -40,7 +40,7 @@
           <if test="mediaResource.filename != null and mediaResource.filename != ''">
               and filename like concat(concat('%'),#{mediaResource.filename},'%')
           </if>
-          <if test="istranscoding != null">
+          <if test="istranscoding != null and istranscoding != ''">
               and filekey is not null
           </if>
           <if test="mediaResource.ispublic != null">
@@ -76,7 +76,7 @@
             <if test="mediaResource.filename != null and mediaResource.filename != ''">
                 and filename like concat(concat('%'),#{mediaResource.filename},'%')
             </if>
-            <if test="istranscoding != null">
+            <if test="istranscoding != null and istranscoding != ''">
                 and filekey is not null
             </if>
             <if test="mediaResource.ispublic != null">
