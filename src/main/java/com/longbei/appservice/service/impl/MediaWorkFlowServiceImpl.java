@@ -87,6 +87,12 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
         String filePath =map.get("filePath");//OSS 保存的文件 源文件路径
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(filePath.contains("longbei_media_resource")){
+            if(filePath.contains("_video")){
+                url = AppserviceConfig.alimedia_mp4_outurl +"/"+ url;
+            }else{
+                url = AppserviceConfig.oss_media + url;
+            }
+
             baseResp = mediaResourceService.updateMediaResourceInfo(key,picurl,url,workflow,duration,picAttribute);
         }else{
             baseResp = improveService.updateMedia(key,picurl,url,workflow,duration,picAttribute);
@@ -139,7 +145,8 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
     private static String getFileKey(JSONObject js, String objid){
         String runid = (String)js.get("RunId");
-        String result = "filekey/"+runid+"/"+ AppserviceConfig.alimedia_mp4_query_mp4+"/"+objid;
+//        String result = "filekey/"+runid+"/"+ AppserviceConfig.alimedia_mp4_query_mp4+"/"+objid;
+        String result = "filekey/"+runid+".mp4";
         return result;
     }
 
@@ -203,7 +210,8 @@ public class MediaWorkFlowServiceImpl implements MediaWorkFlowService {
 
     private static String getFileForMp3(JSONObject js,String objid){
         String runid = (String)js.get("RunId");
-        String result = "mp3key/"+runid+"/"+AppserviceConfig.alimedia_mp3_query_mp3+"/"+objid;
+//        String result = "mp3key/"+runid+"/"+AppserviceConfig.alimedia_mp3_query_mp3+"/"+objid;
+        String result ="mp3key/"+runid+".mp3";
         return  result;
     }
 

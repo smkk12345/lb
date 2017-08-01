@@ -104,6 +104,21 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertBatchLevelRules" parameterType="java.util.List">
+    insert into user_level
+    (id,grade, star, diff, point, discount,pubrankjoinnum,
+    pubranknum,circlenum,prirankjoinnum,priranknum,classroomnum,joinranknum,likes)
+    values
+    <foreach collection="list" item="level" index="index" separator="," >
+      (#{level.id},#{level.grade},#{level.star},#{level.diff},#{level.point},
+      #{level.discount},#{level.pubrankjoinnum},#{level.pubranknum},#{level.circlenum},
+      #{level.prirankjoinnum},#{level.priranknum},#{level.classroomnum},#{level.joinranknum},
+      #{level.likes})
+    </foreach>
+  </insert>
+  <delete id="deleteLevelRules">
+    DELETE FROM user_level;
+  </delete>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserLevel" >
     update user_level
     <set >

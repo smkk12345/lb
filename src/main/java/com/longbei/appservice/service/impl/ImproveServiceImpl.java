@@ -3377,7 +3377,7 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setBusinessid(timeLineDetail.getBusinessid());
                     improve.setBusinesstype(timeLineDetail.getBusinesstype());
                     improve.setItype(timeLineDetail.getItype());
-                    improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+                    improve.setCreatetime(timeLineDetail.getCreatedate());
 //                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
                     AppUserMongoEntity user = timeLineDetail.getUser();
                     if(map.containsKey(user.getId())){
@@ -3767,21 +3767,17 @@ public class ImproveServiceImpl implements ImproveService{
             friendids = this.userRelationService.getFriendIds(uid);
             funids = this.userRelationService.getFansIds(uid);
         }
-//        if(!springJedisDao.hasKey(key)){
-//            if(key.equals("1")){
-//                key = "24";
-//            }else {
-//                int newKey = Integer.parseInt(key) - 1;
-//                key = String.valueOf(newKey);
-//            }
-//        }
+        if(!springJedisDao.hasKey(key)){
+            if(key.equals("1")){
+                key = "24";
+            }else {
+                int newKey = Integer.parseInt(key) - 1;
+                key = String.valueOf(newKey);
+            }
+        }
         logger.info("selectRecommendImprove userid={},startNum={},pageSize={},key={}",userid,startNum,pageSize,key);
         try {
             impids = springJedisDao.zRevrange(key,startNum,startNum+pageSize);
-            if(impids.isEmpty()){
-                int n = Integer.parseInt(key) - 1;
-                impids = springJedisDao.zRevrange(String.valueOf(n),startNum,startNum+pageSize);
-            }
             Set<String> userCollectImroveIds = this.getUserCollectImproveId(userid);
             for (String impid : impids){
                 if (!StringUtils.isBlank(impid)){

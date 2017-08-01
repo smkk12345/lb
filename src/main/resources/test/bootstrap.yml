@@ -4,15 +4,6 @@
       context-path: /app_service # the context path, defaults to '/'
       servlet-path: / # the servlet path, defaults to '/'
 
-#兑换比例    可谓小数
-#flowertomoney：花转换龙币比例
-flowertomoney: 1
-#龙币兑换进步币比例
-moneytocoin: 10
-#花兑换进步币比例
-flowertocoin: 10
-#人民币兑换龙币比例
-yuantomoney: 0.1
 
 ios_buyflower: https://sandbox.itunes.apple.com/verifyReceipt
 

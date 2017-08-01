@@ -41,6 +41,7 @@ public class AppserviceConfig {
     public static String alimedia_accessKeySecret;
     public static String alimedia_mp3_query_mp3;
     public static String alimedia_mp3_workflowmp3;
+    public static String alimedia_mp4_outurl;
 
     @Value("${service.outernet}")
     public void setHost_outernet_service(String host_outernet_service) {
@@ -100,6 +101,15 @@ public class AppserviceConfig {
     @Value("${alimedia.mp3.workflowmp3}")
     public  void setAlimedia_mp3_workflowmp3(String alimedia_mp3_workflowmp3) {
         this.alimedia_mp3_workflowmp3 = alimedia_mp3_workflowmp3;
+    }
+
+    public String getAlimedia_mp4_outurl() {
+        return alimedia_mp4_outurl;
+    }
+
+    @Value("${alimedia.mp4.outurl}")
+    public void setAlimedia_mp4_outurl(String alimedia_mp4_outurl) {
+        AppserviceConfig.alimedia_mp4_outurl = alimedia_mp4_outurl;
     }
 
     /**

@@ -45,7 +45,7 @@ public class MediaResourceApiController {
      * @return
      */
     @RequestMapping(value="findMediaResourceList")
-    public BaseResp<Page<MediaResource>> findMediaResourceList(@RequestBody MediaResource mediaResource,String isistranscoding, Integer pageno, Integer pagesize){
+    public BaseResp<Page<MediaResource>> findMediaResourceList(@RequestBody MediaResource mediaResource,String istranscoding, Integer pageno, Integer pagesize){
         if(pageno == null){
             pageno = 1;
         }
@@ -55,7 +55,7 @@ public class MediaResourceApiController {
         if(mediaResource == null || (mediaResource.getSource() != null && mediaResource.getSource() == 0 && mediaResource.getUserid() == null)){
             return new BaseResp<>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        return this.mediaResourceService.findMediaResourceList(mediaResource,isistranscoding,pageno,pagesize);
+        return this.mediaResourceService.findMediaResourceList(mediaResource,istranscoding,pageno,pagesize);
     }
 
     /**
