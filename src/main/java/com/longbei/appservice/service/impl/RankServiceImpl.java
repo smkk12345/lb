@@ -540,10 +540,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             List<Rank> ranks = selectRankListByRank(rank,pageno,pagesize,showAward);
 
             for (Rank rank1 : ranks){
-                BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"2",null);
-                if (ResultUtil.isSuccess(baseResp)){
-                    rank1.setCommentCount(baseResp.getData());
-                }
+//                BaseResp<Integer> baseResp = commentMongoService.selectCommentCountSum(String.valueOf(rank1.getRankid()),"2",null);
+//                if (ResultUtil.isSuccess(baseResp)){
+//                    rank1.setCommentCount(baseResp.getData());
+//                }
+                rank1.setCommentCount(0);
                 String tempicount = rankMembersMapper.getRankImproveCount
                         (String.valueOf(rank1.getRankid()));
                 String icount = tempicount ==null?"0":tempicount;
