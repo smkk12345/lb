@@ -10,41 +10,83 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="ishot" property="ishot" jdbcType="CHAR" />
+    <result column="uptime" property="uptime" jdbcType="TIMESTAMP" />
+    <result column="downtime" property="downtime" jdbcType="TIMESTAMP" />
+    <result column="topicid" property="topicid" jdbcType="BIGINT" />
+    <result column="impcount" property="impcount" jdbcType="INTEGER" />
+    <result column="scancount" property="scancount" jdbcType="INTEGER" />
+    <result column="isup" property="isup" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, photos, title, content, isdel, createtime, updatetime, sort
+    id, photos, title, content, isdel, createtime, updatetime, sort, ishot, uptime, downtime ,topicid, impcount, scancount, isup
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from super_topic
-    where id = #{id,jdbcType=INTEGER}
-  </select>
   <select id="selectList" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
     FROM super_topic
-     limit #{startNum},#{endNum}
+    where isdel = '0'
+    limit #{startNum},#{endNum}
   </select>
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from super_topic
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+  <select id="selectSuperTopicList"  parameterType="com.longbei.appservice.entity.SuperTopic" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from super_topic
+    where isdel = '0'
+    <if test="superTopic.topicid != null and superTopic.topicid != ''" >
+      AND topicid = #{superTopic.topicid}
+    </if>
+    <if test="superTopic.title != null and superTopic.title != ''" >
+      AND title LIKE concat(concat('%',#{superTopic.title}),'%')
+    </if>
+    <if test="superTopic.ishot != null and superTopic.ishot != ''" >
+      AND ishot = #{superTopic.ishot}
+    </if>
+    <if test="superTopic.isup != null and superTopic.isup != ''" >
+      AND isup = #{superTopic.isup}
+    </if>
+    ORDER BY  sort, createtime DESC
+    <if test="startNum != null" >
+      limit #{startNum},#{pageSize}
+    </if>
+  </select>
+  <select id="selectSuperTopicListCount"  parameterType="com.longbei.appservice.entity.SuperTopic" resultType="java.lang.Integer" >
+    select
+    count(*)
+    from super_topic
+    where isdel = '0'
+    <if test="superTopic.topicid != null and superTopic.topicid != ''" >
+      AND topicid = #{superTopic.topicid}
+    </if>
+    <if test="superTopic.ishot != null and superTopic.ishot != ''" >
+      AND ishot = #{superTopic.ishot}
+    </if>
+    <if test="superTopic.isup != null and superTopic.isup != ''" >
+      AND isup = #{superTopic.isup}
+    </if>
+    <if test="superTopic.title != null and superTopic.title != ''" >
+      AND title LIKE concat(concat('%',#{superTopic.title}),'%')
+    </if>
+  </select>
+  <select id="selectSuperTopicByTopicId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from super_topic
+    where topicid = #{topicId,jdbcType=BIGINT}
+  </select>
   <insert id="insert" parameterType="com.longbei.appservice.entity.SuperTopic" >
-    insert into super_topic (id, photos, title, 
+    insert into super_topic (photos, title,
       content, isdel, createtime, 
-      updatetime, sort)
-    values (#{id,jdbcType=INTEGER}, #{photos,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      updatetime, sort,ishot, uptime, downtime ,topicid, impcount, scancount, isup)
+    values (#{photos,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
       #{content,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER})
+      #{updatetime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER},
+    #{ishot,jdbcType=CHAR},#{uptime,jdbcType=TIMESTAMP},#{downtime,jdbcType=TIMESTAMP},
+    #{topicid,jdbcType=BIGINT},#{impcount,jdbcType=INTEGER},#{scancount,jdbcType=INTEGER},#{isup,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SuperTopic" >
+  <insert id="insertSuperTopic" parameterType="com.longbei.appservice.entity.SuperTopic" >
     insert into super_topic
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="photos != null" >
         photos,
       </if>
@@ -66,11 +108,29 @@
       <if test="sort != null" >
         sort,
       </if>
+      <if test="ishot != null" >
+        ishot,
+      </if>
+      <if test="uptime != null" >
+        uptime,
+      </if>
+      <if test="downtime  != null" >
+        downtime ,
+      </if>
+      <if test="topicid != null" >
+        topicid,
+      </if>
+      <if test="impcount != null" >
+        impcount,
+      </if>
+      <if test="scancount != null" >
+        scancount,
+      </if>
+      <if test="isup != null" >
+        isup,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="photos != null" >
         #{photos,jdbcType=VARCHAR},
       </if>
@@ -92,9 +152,30 @@
       <if test="sort != null" >
         #{sort,jdbcType=INTEGER},
       </if>
+      <if test="ishot != null" >
+        #{ishot,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="topicid != null" >
+        #{topicid,jdbcType=BIGINT},
+      </if>
+      <if test="impcount  != null" >
+        #{impcount,jdbcType=INTEGER},
+      </if>
+      <if test="scancount != null" >
+        #{scancount,jdbcType=INTEGER},
+      </if>
+      <if test="isup != null" >
+        #{isup,jdbcType=CHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SuperTopic" >
+  <update id="updateSuperTopicByTopicId" parameterType="com.longbei.appservice.entity.SuperTopic" >
     update super_topic
     <set >
       <if test="photos != null" >
@@ -118,8 +199,26 @@
       <if test="sort != null" >
         sort = #{sort,jdbcType=INTEGER},
       </if>
+      <if test="ishot != null" >
+        ishot = #{ishot,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        uptime = #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        downtime = #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="impcount != null" >
+        impcount = #{impcount,jdbcType=INTEGER},
+      </if>
+      <if test="scancount != null" >
+        scancount = #{scancount,jdbcType=INTEGER},
+      </if>
+      <if test="isup != null" >
+        isup = #{isup,jdbcType=CHAR},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where topicid = #{topicid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SuperTopic" >
     update super_topic
@@ -129,7 +228,29 @@
       isdel = #{isdel,jdbcType=CHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      sort = #{sort,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+      sort = #{sort,jdbcType=INTEGER},
+      ishot = #{ishot,jdbcType=CHAR},
+      uptime = #{uptime,jdbcType=TIMESTAMP},
+      downtime = #{downtime,jdbcType=TIMESTAMP},
+      impcount = #{impcount,jdbcType=INTEGER},
+      scancount = #{scancount,jdbcType=INTEGER},
+      isup = #{isup,jdbcType=CHAR}
+    where topicid = #{topicid,jdbcType=BIGINT}
+  </update>
+  <update id="updateImpcount">
+    UPDATE super_topic SET
+    impcount = impcount + #{num}
+    where topicid = #{topicId}
+  </update>
+  <update id="updateScancount">
+    UPDATE super_topic SET
+    scancount = scancount +1
+    where topicid = #{topicId}
+  </update>
+  <update id="removeSuperTopicByTopicId" parameterType="java.lang.Long" >
+    update super_topic
+    set
+    isdel = '1'
+    where topicid = #{topicId,jdbcType=BIGINT}
   </update>
 </mapper>
