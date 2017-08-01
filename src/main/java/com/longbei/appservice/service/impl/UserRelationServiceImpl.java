@@ -1242,7 +1242,11 @@ public class UserRelationServiceImpl implements UserRelationService {
 					js.put("status", "3");//自己
 					if (appUserMongoEntity != null) {
 						js.put("userid", appUserMongoEntity.getId());
-						js.put("avatar", appUserMongoEntity.getAvatar());
+						if(StringUtils.isNotBlank(appUserMongoEntity.getAvatar())){
+							js.put("avatar", appUserMongoEntity.getAvatar());
+						}else {
+							js.put("avatar", "");
+						}
 					} else {
 						js.put("userid", "");
 						js.put("avatar", "");
@@ -1250,7 +1254,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 				} else {
 					if (null != appUserMongoEntity) {
 						js.put("userid", appUserMongoEntity.getId());
-						js.put("avatar", appUserMongoEntity.getAvatar());
+						if(StringUtils.isNotBlank(appUserMongoEntity.getAvatar())){
+							js.put("avatar", appUserMongoEntity.getAvatar());
+						}else {
+							js.put("avatar", "");
+						}
+
 						if (fids.contains(appUserMongoEntity.getId())) {
 							js.put("status", "2");//已经注册 是好友
 						} else {
