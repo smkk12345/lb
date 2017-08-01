@@ -582,9 +582,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                }
                 rank1.setCommentCount(0);
                 logger.info("comment count init end : {}",System.currentTimeMillis() - commentCountStart);
+                Long improveCountStart = System.currentTimeMillis();
                 String tempicount = rankMembersMapper.getRankImproveCount
                         (String.valueOf(rank1.getRankid()));
-                Long improveCountStart = System.currentTimeMillis();
                 String icount = tempicount ==null?"0":tempicount;
                 rank1.setIcount(Integer.parseInt(icount));
                 logger.info("improveCountStart count init end : {}",System.currentTimeMillis() - improveCountStart);
