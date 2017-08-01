@@ -210,6 +210,9 @@ public class PageServiceImpl implements PageService{
                 //recommendtype 0 - 榜单 1 - 教室 2 - 圈子
                 if (0 == homeRecommend1.getRecommendtype()) {
                     Rank rank = rankMapper.selectRankByRankid(homeRecommend1.getBusinessid());
+                    if (null == rank){
+                        continue;
+                    }
                     BaseResp<Integer> baseResp1 = commentMongoService.selectCommentCountSum(String.valueOf(homeRecommend1.getBusinessid()),"10",null);
                     if (ResultUtil.isSuccess(baseResp1)){
                         rank.setCommentCount(baseResp1.getData());

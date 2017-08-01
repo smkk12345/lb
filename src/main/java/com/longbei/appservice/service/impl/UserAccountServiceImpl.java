@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.UserAccountMapper;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.UserAccount;
@@ -101,7 +102,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccount.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
         }
         try {
-            initFreezeTime(userAccount,strFreezeTime);
+            if (!StringUtils.isBlank(strFreezeTime)){
+                initFreezeTime(userAccount,strFreezeTime);
+            }
             int n = userAccountMapper.updateUserAccountByUserId(userAccount);
             if(n >= 1){
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
