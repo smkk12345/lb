@@ -1435,7 +1435,7 @@ public class ImproveServiceImpl implements ImproveService{
             improve.setSourcekey(timeLineDetail.getSourcekey());
             improve.setItype(timeLineDetail.getItype());
             improve.setPicattribute(timeLineDetail.getPicattribute());
-            improve.setCreatetime(DateUtils.parseDate(timeLineDetail.getCreatedate()));
+            improve.setCreatetime(timeLineDetail.getCreatedate());
             improve.setAppUserMongoEntity(timeLineDetail.getUser());
             if(null != timeLineDetail.getUser()){
             	improve.setUserid(timeLineDetail.getUser().getUserid());
