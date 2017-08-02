@@ -986,14 +986,16 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             int status = 0;//0.可加群 1.已提交入群申请 2.已经在群中
             //校验该用户是否已经在这个群中
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
-            if(snsGroupMembers != null && snsGroupMembers.getStatus() != 4 && snsGroupMembers.getStatus() != 2){
-                status = snsGroupMembers.getStatus() == 0?1:2;
-                resultMap.put("nickname",snsGroupMembers.getNickname());
-                if(snsGroup.getMainuserid().longValue() == userid.longValue()){
-                    resultMap.put("isMainUser",true);
-                }else{
-                    resultMap.put("isMainUser",false);
-                }
+            if(snsGroupMembers == null || snsGroupMembers.getStatus() == 4 || snsGroupMembers.getStatus() == 2){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_918,Constant.RTNINFO_SYS_918);
+            }
+
+            status = snsGroupMembers.getStatus() == 0?1:2;
+            resultMap.put("nickname",snsGroupMembers.getNickname());
+            if(snsGroup.getMainuserid().longValue() == userid.longValue()){
+                resultMap.put("isMainUser",true);
+            }else{
+                resultMap.put("isMainUser",false);
             }
             baseResp.setData(snsGroup);
             resultMap.put("status",status);
