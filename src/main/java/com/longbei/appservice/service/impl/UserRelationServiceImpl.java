@@ -1236,21 +1236,45 @@ public class UserRelationServiceImpl implements UserRelationService {
 			for (int i = 0; i < jsonArr.size(); i++) {
 				String jsonStr = jsonArr.get(i).toString();
 				JSONObject js = JSONObject.fromObject(jsonStr);
+				Map<String,String> map = JSONObject.fromObject(jsonStr);
 				String mobile = (String) js.get("num");
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+				if(i == 53){
+					System.out.print("aaa");
+				}
 				if (appUser.getUsername().equals(mobile)) {
 					js.put("status", "3");//自己
 					if (appUserMongoEntity != null) {
 						js.put("userid", appUserMongoEntity.getId());
-						js.put("avatar", appUserMongoEntity.getAvatar());
+
+						if(js.get("userid").equals("10961")){
+							System.out.print("aaa");
+						}
+						if(StringUtils.isNotBlank(appUserMongoEntity.getAvatar())){
+							if(appUserMongoEntity.getAvatar().equals("null")){
+								js.put("avatar", "");
+							}else{
+								js.put("avatar", appUserMongoEntity.getAvatar());
+							}
+						}else {
+							js.put("avatar", "");
+						}
 					} else {
-						js.put("userid", "");
+						js.put("userid","");
 						js.put("avatar", "");
 					}
 				} else {
 					if (null != appUserMongoEntity) {
 						js.put("userid", appUserMongoEntity.getId());
-						js.put("avatar", appUserMongoEntity.getAvatar());
+						if(StringUtils.isNotBlank(appUserMongoEntity.getAvatar())){
+							if(appUserMongoEntity.getAvatar().equals("null")){
+								js.put("avatar", "");
+							}else{
+								js.put("avatar", appUserMongoEntity.getAvatar());
+							}
+						}else {
+							js.put("avatar", "");
+						}
 						if (fids.contains(appUserMongoEntity.getId())) {
 							js.put("status", "2");//已经注册 是好友
 						} else {
@@ -1263,14 +1287,14 @@ public class UserRelationServiceImpl implements UserRelationService {
 					}
 				}
 				resultArr.add(js);
-				logger.debug(js.toString());
+//				logger.debug(js.toString());
 			}
 			baseResp.setData(resultArr);
 			baseResp.initCodeAndDesp();
 		} catch (Exception e) {
 			logger.error("readMobileUserList error",e);
 		}
-		logger.debug(mobileUserListStr.toString());
+//		logger.debug(JSONArray.fromObject(resultArr).toString());
 		return baseResp;
 	}
 

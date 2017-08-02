@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,9 @@ import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.UserLevelService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("userLevelService")
 public class UserLevelServiceImpl implements UserLevelService {
@@ -65,12 +68,27 @@ public class UserLevelServiceImpl implements UserLevelService {
 		try {
 			int res = userLevelMapper.insertBatchLevelRules(levelList);
 			if (res > 0) {
+				//更新等级特权缓存
+				this.updateSysRuleLevelPointCache();
                 return BaseResp.ok();
             }
 		} catch (Exception e) {
 			logger.error("insertBatchLevelRules is error:", e);
 		}
 		return BaseResp.fail();
+	}
+
+	/**
+	 * 更新等级特权缓存
+	 */
+	private void updateSysRuleLevelPointCache(){
+		Map<Integer,UserLevel> map = new HashMap<>();
+		List<UserLevel> list = userLevelMapper.selectAll(null,null);
+		for (int i = 0; i < list.size(); i++) {
+			UserLevel userLevel = list.get(i);
+			map.put(userLevel.getGrade(),userLevel);
+		}
+		SysRulesCache.levelPointMap = map;
 	}
 
 	@Override

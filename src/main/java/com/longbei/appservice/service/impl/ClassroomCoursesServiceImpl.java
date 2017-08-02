@@ -113,11 +113,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
-			if("1".equals(classroom.getIsup()) && classroom.getAllcourses() == 1){
-				reseResp.initCodeAndDesp(Constant.STATUS_SYS_1109, Constant.RTNINFO_SYS_1109);
-				return reseResp;
-			}
 			ClassroomCourses classroomCourses = classroomCoursesMapper.select(classroomid, id);
+			//删除已上架的作判断
+			if("1".equals(classroomCourses.getIsup())){
+				if("1".equals(classroom.getIsup()) && classroom.getAllcourses() == 1){
+					reseResp.initCodeAndDesp(Constant.STATUS_SYS_1109, Constant.RTNINFO_SYS_1109);
+					return reseResp;
+				}
+			}
 			boolean temp = updatedel(classroomid, id);
 			if (temp) {
 				//isup是否上架   0：未上架    1：已上架
