@@ -146,6 +146,12 @@ public class ImproveTopicServiceImpl implements ImproveTopicService{
                           improveTopic1.setSort(0);
                           try {
                               int n = improveTopicMapper.insertImproveTopic(improveTopic1);
+                              if(n >= 1){//逐条更新monggo状态和话题统计进步数量
+                                  List<Long> impid =new ArrayList<>();
+                                  impid.add(impids.get(i));
+                                  timeLineDetailDao.updateImproveTopicStatus(impid,businesstype,isTopic);
+                                  superTopicMapper.updateImpcount(Long.parseLong(topicId),1);
+                              }
                           } catch (Exception e) {
                               logger.error("insertImproveTopic error and msg={}", e);
                           }
@@ -157,17 +163,26 @@ public class ImproveTopicServiceImpl implements ImproveTopicService{
                           improveTopic2.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
                           try {
                               int n = improveTopicMapper.updateImproveTopicByImpId(improveTopic2);
+                              if(n >= 1){
+                                  if(n >= 1){//逐条更新monggo状态和话题统计进步数量
+                                      List<Long> impid =new ArrayList<>();
+                                      impid.add(improveTopic2.getImpid());
+                                      timeLineDetailDao.updateImproveTopicStatus(impid,businesstype,isTopic);
+                                      superTopicMapper.updateImpcount(Long.parseLong(topicId),1);
+                                  }
+                              }
                           } catch (Exception e) {
                               logger.error("updateImproveTopicByImpId error and msg={}",e);
                           }
                       }
                   }
-                  superTopicMapper.updateImpcount(Long.parseLong(topicId),impids.size());
               } else if ("0".equals(isTopic)){
-                  improveTopicMapper.updateImpTopicStatusByImpId(impids,isTopic);
-                  superTopicMapper.updateImpcount(Long.parseLong(topicId),-(impids.size()));
+                  int n= improveTopicMapper.updateImpTopicStatusByImpId(impids,isTopic);
+                  if(n >= impids.size()) {
+                      timeLineDetailDao.updateImproveTopicStatus(impids, businesstype, isTopic);
+                      superTopicMapper.updateImpcount(Long.parseLong(topicId), -(impids.size()));
+                  }
               }
-            timeLineDetailDao.updateImproveTopicStatus(topicId,impids,businesstype,isTopic);
             baseResp = BaseResp.ok();
         } catch (Exception e) {
             logger.error("updateImproveTopicStatus is error:",e);
