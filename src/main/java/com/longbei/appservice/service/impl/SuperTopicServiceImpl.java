@@ -1,14 +1,13 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.ImproveTopicMapper;
-import com.longbei.appservice.dao.SnsFansMapper;
-import com.longbei.appservice.dao.SnsFriendsMapper;
-import com.longbei.appservice.dao.SuperTopicMapper;
-import com.longbei.appservice.dao.UserCollectMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -19,10 +18,7 @@ import com.longbei.appservice.entity.SnsFans;
 import com.longbei.appservice.entity.SnsFriends;
 import com.longbei.appservice.entity.SuperTopic;
 import com.longbei.appservice.entity.UserCollect;
-import com.longbei.appservice.service.CommentMongoService;
-import com.longbei.appservice.service.ImproveService;
-import com.longbei.appservice.service.SuperTopicService;
-import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.service.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +59,10 @@ public class SuperTopicServiceImpl implements SuperTopicService {
     private SnsFansMapper snsFansMapper;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private IdGenerateService idGenerateService;
+    @Autowired
+    private TimeLineDetailDao timeLineDetailDao;
 
     /**
      * 获取超级话题列表
@@ -259,6 +260,115 @@ public class SuperTopicServiceImpl implements SuperTopicService {
 //        if (null != userCollects && userCollects.size() > 0 ){
 //            improve.setHascollect("1");
 //        }
+    }
+
+
+    @Override
+    public Page<SuperTopic> selectSuperTopicList(SuperTopic superTopic, Integer startNum, Integer pageSize){
+        Page<SuperTopic> page = new Page<>(startNum/pageSize+1,pageSize);
+        try {
+            int totalcount = superTopicMapper.selectSuperTopicListCount(superTopic);
+            Page.setPageNo(startNum/pageSize+1,totalcount,pageSize);
+            List<SuperTopic> superTopicList = new ArrayList<SuperTopic>();
+            superTopicList = superTopicMapper.selectSuperTopicList(superTopic,startNum,pageSize);
+            for(int i= 0;i<superTopicList.size();i++) {
+                if(StringUtils.isNotBlank(superTopicList.get(i).getCreatetime())) {
+                    Date createtime = DateUtils.formatDate(superTopicList.get(i).getCreatetime(), "yyyy-MM-dd HH:mm:ss");
+                    superTopicList.get(i).setCreatetime(DateUtils.formatDateTime1(createtime));
+                }
+                if(StringUtils.isNotBlank(superTopicList.get(i).getUptime())) {
+                    Date uptime = DateUtils.formatDate(superTopicList.get(i).getUptime(), "yyyy-MM-dd HH:mm:ss");
+                    superTopicList.get(i).setUptime(DateUtils.formatDateTime1(uptime));
+                }
+                if(StringUtils.isNotBlank(superTopicList.get(i).getDowntime())) {
+                    Date downtime = DateUtils.formatDate(superTopicList.get(i).getDowntime(), "yyyy-MM-dd HH:mm:ss");
+                    superTopicList.get(i).setDowntime(DateUtils.formatDateTime1(downtime));
+                }
+            }
+            page.setTotalCount(totalcount);
+            page.setList(superTopicList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return page;
+    }
+
+    @Override
+    public BaseResp<SuperTopic> selectSuperTopicByTopicId(Long topicId) {
+        BaseResp<SuperTopic> baseResp = new BaseResp<SuperTopic>();
+        try {
+            SuperTopic superTopic = superTopicMapper.selectSuperTopicByTopicId(topicId);
+            baseResp.setData(superTopic);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        }
+        catch (Exception e) {
+            logger.error("selectSuperTopicByTopicId error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> deleteSuperTopicByTopicId(Long topicId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int m = superTopicMapper.removeSuperTopicByTopicId(topicId);
+            if(m == 1){
+                SuperTopic superTopic =new SuperTopic();
+                superTopic.setTopicid(topicId);
+                List<SuperTopic> superTopicList = superTopicMapper.selectSuperTopicList(superTopic,null,null);
+                timeLineDetailDao.updateImproveTopicStatus(topicId+"",null,null,"0");
+                improveTopicMapper.deleteImpTopicListByTopicId(topicId);
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("deleteSuperTopicByTopicId error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> insertSuperTopic(SuperTopic superTopic){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        superTopic.setTopicid(idGenerateService.getUniqueIdAsLong());
+        superTopic.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        superTopic.setIsdel("0");
+        superTopic.setIshot("0");
+        superTopic.setIsup("0");
+        superTopic.setImpcount(0);
+        superTopic.setScancount(0);
+        superTopic.setSort(0);
+        try {
+            int n = superTopicMapper.insertSuperTopic(superTopic);
+            if(n == 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("insertSuperTopic error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public 	BaseResp<Object> updateSuperTopicByTopicId(SuperTopic superTopic) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+        superTopic.setUpdatetime(date);
+        if(StringUtils.isNotBlank(superTopic.getIsup())) {
+            if("1".equals(superTopic.getIsup())){
+                superTopic.setUptime(date);}
+            else if("0".equals(superTopic.getIsup())){
+                superTopic.setDowntime(date);
+            }
+        }
+        try {
+            int n = superTopicMapper.updateSuperTopicByTopicId(superTopic);
+            if(n >= 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("updateSuperTopicByTopicId error and msg={}",e);
+        }
+        return baseResp;
     }
 
 }

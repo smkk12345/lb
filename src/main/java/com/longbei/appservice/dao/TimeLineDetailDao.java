@@ -104,6 +104,99 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
     }
 
+    /**
+     * 获取进步列表（for话题）
+     * @param businesstype 微进步关联的业务类型 0未关联 1目标 2榜 3圈子 4教室 5教室批复作业
+     * @param isTopic isTopic 是否为话题 0否 1是
+     * @param brief 微进步内容
+     * @param userids 用户id
+     * @param startNum 分页起始值
+     * @param pageSize 每页显示条数
+     * @auther IngaWu
+     * @currentdate:2017年7月29日
+     */
+    public List<TimeLineDetail> selectImpTopicList(String topicId,String businesstype,String isTopic,String brief,List<String> userids, int startNum,
+                                                           int pageSize){
+        Criteria criteria = new Criteria();
+        if(!StringUtils.isEmpty(topicId)){
+            criteria.and("topicid").is(topicId);
+        }
+        if(!StringUtils.isEmpty(isTopic)){
+            if ("0".equals(isTopic)) {
+                criteria.and("istopic").ne("1");
+            }else {
+                criteria.and("istopic").is(isTopic);
+            }
+        }
+        if(!StringUtils.isEmpty(businesstype)){
+            criteria.and("businesstype").is(businesstype);
+        }
+        if (null != userids && userids.size() != 0){
+            criteria.and("user.$id").in(userids);
+        }
+        if (!StringUtils.isEmpty(brief)){
+            criteria.and("brief").regex(brief);
+        }
+        Query query = new Query(criteria);
+        query.with(new Sort(Sort.Direction.DESC,"topicsort")).with(new Sort(Sort.Direction.DESC, "topictime"));
+        query.skip(startNum);
+        query.limit(pageSize);
+        System.out.println(query);
+        List<TimeLineDetail> timeLineDetails = mongoTemplate.find(query,TimeLineDetail.class);
+        return timeLineDetails;
+    }
+
+
+    public Long selectImpTopicListCount(String topicId,String businesstype,String isTopic,String brief,List<String> userids){
+        Criteria criteria = new Criteria();
+        if(!StringUtils.isEmpty(topicId)){
+            criteria.and("topicid").is(topicId);
+        }
+        if(!StringUtils.isEmpty(isTopic)){
+            if ("0".equals(isTopic)) {
+                criteria.and("istopic").ne("1");
+            }else {
+                criteria.and("istopic").is(isTopic);
+            }
+        }
+        if(!StringUtils.isEmpty(businesstype)){
+            criteria.and("businesstype").is(businesstype);
+        }
+        if (null != userids && userids.size() != 0){
+            criteria.and("user.$id").in(userids);
+        }
+        if (!StringUtils.isEmpty(brief)){
+            criteria.and("brief").regex(brief);
+        }
+        Query query = new Query(criteria);
+        Long count = mongoTemplate.count(query,TimeLineDetail.class);
+        return count;
+    }
+
+    public void updateImproveTopicStatus(String topicId,List<Long> impids,String businesstype,String isTopic){
+        Criteria criteria = new Criteria();
+
+        if(null != impids && impids.size()!=0){
+            criteria.and("improveId").in(impids);
+        }
+        if(!StringUtils.isEmpty(businesstype)){
+            criteria.and("businesstype").is(businesstype);
+        }
+        Query query = new Query(criteria);
+        Update update = new Update();
+        if("0".equals(isTopic)) {
+            update.set("topicid", null);
+        }else {
+            update.set("topicid",topicId);
+        }
+        update.set("istopic",isTopic);
+        update.set("topictime",new Date());
+        update.set("topicsort",0);
+//        System.out.println(query);
+//        System.out.println("update--------"+update);
+        mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
+    }
+
     public void updateRecommendImproveSort(Long improveId,String businesstype,int sort){
         Criteria criteria = Criteria.where("improveId").is(improveId)
                 .and("businesstype").is(businesstype);
@@ -178,5 +271,11 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    public TimeLineDetail selectTimeLineByImpid (Long impid){
+        Query query = Query.query(Criteria.where("improveId").is(impid));
+        TimeLineDetail timeLineDetail = mongoTemplate.findOne(query, TimeLineDetail.class);
+        return timeLineDetail;
     }
 }

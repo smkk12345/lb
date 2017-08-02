@@ -39,6 +39,9 @@ public class TimeLineDetail {
 	private int sort; //推荐排序
 	private String picattribute; //图片属性
 	private String duration;
+	private String istopic="0"; //是否为话题 0否 1是
+
+
 	public String getPicattribute() {
 		return picattribute;
 	}
@@ -249,4 +252,11 @@ public class TimeLineDetail {
 		return duration;
 	}
 
+	public String getIstopic() {
+		return istopic;
+	}
+
+	public void setIstopic(String istopic) {
+		this.istopic = istopic;
+	}
 }

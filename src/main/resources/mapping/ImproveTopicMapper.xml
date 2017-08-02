@@ -12,24 +12,13 @@
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="ispublic" property="ispublic" jdbcType="CHAR" />
     <result column="businessid" property="businessid" jdbcType="BIGINT" />
-    <result column="businesstype" property="businesstype" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="CHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, impid, gtype, supertopicid, createtime, updatetime,topictitle
+    id, impid, gtype, supertopicid, createtime, updatetime,topictitle,isdel,ispublic,businessid,businesstype,sort
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from improve_topic
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectByImpId" resultMap="BaseResultMap" >
-    SELECT
-    <include refid="Base_Column_List"/>
-    FROM
-    improve_topic
-    where impid=#{impid,jdbcType=BIGINT}
-  </select>
+
   <select id="selectByTopicId" resultMap="BaseResultMap" >
     SELECT
     <include refid="Base_Column_List"/>
@@ -37,24 +26,19 @@
     improve_topic
     where supertopicid=#{topicId,jdbcType=BIGINT} and isdel='0' and ispublic = '0'
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from improve_topic
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ImproveTopic" >
-    insert into improve_topic (id, impid, gtype, 
-      supertopicid, createtime, updatetime
+    insert into improve_topic (impid, gtype,
+      supertopicid, createtime, updatetime ,topictitle,isdel,ispublic,businessid,businesstype,sort
       )
-    values (#{id,jdbcType=INTEGER}, #{impid,jdbcType=BIGINT}, #{gtype,jdbcType=CHAR}, 
-      #{supertopicid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+    values (#{impid,jdbcType=BIGINT}, #{gtype,jdbcType=CHAR},
+      #{supertopicid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+      #{topictitle,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR},
+      #{businessid,jdbcType=BIGINT}, #{businesstype,jdbcType=CHAR}, #{sort,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ImproveTopic" >
+  <insert id="insertImproveTopic" parameterType="com.longbei.appservice.entity.ImproveTopic" >
     insert into improve_topic
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="impid != null" >
         impid,
       </if>
@@ -70,11 +54,26 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="topictitle != null" >
+        topictitle,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
+      <if test="businessid != null" >
+        businessid,
+      </if>
+      <if test="businesstype != null" >
+        businesstype,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="impid != null" >
         #{impid,jdbcType=BIGINT},
       </if>
@@ -90,14 +89,29 @@
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="topictitle != null" >
+        #{topictitle,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="businessid != null" >
+        #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=CHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ImproveTopic" >
+  <update id="updateImproveTopicByImpId" parameterType="com.longbei.appservice.entity.ImproveTopic" >
     update improve_topic
     <set >
-      <if test="impid != null" >
-        impid = #{impid,jdbcType=BIGINT},
-      </if>
       <if test="gtype != null" >
         gtype = #{gtype,jdbcType=CHAR},
       </if>
@@ -110,18 +124,98 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="topictitle != null" >
+        topictitle = #{topictitle,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=CHAR},
+      </if>
+      <if test="businessid != null" >
+        businessid = #{businessid,jdbcType=BIGINT},
+      </if>
+      <if test="businesstype != null" >
+        businesstype = #{businesstype,jdbcType=CHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where impid = #{impid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ImproveTopic" >
     update improve_topic
-    set impid = #{impid,jdbcType=BIGINT},
+    set
       gtype = #{gtype,jdbcType=CHAR},
       supertopicid = #{supertopicid,jdbcType=BIGINT},
       createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      topictitle = #{topictitle,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=CHAR},
+      ispublic = #{ispublic,jdbcType=CHAR},
+      businessid = #{businessid,jdbcType=BIGINT},
+      businesstype = #{businesstype,jdbcType=CHAR},
+      sort = #{sort,jdbcType=INTEGER}
+    where impid = #{impid,jdbcType=BIGINT}
   </update>
 
 
+  <select id="selectImproveTopicList"  parameterType="com.longbei.appservice.entity.ImproveTopic" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from improve_topic
+    where isdel = '1'
+    AND  supertopicid = #{improveTopic.supertopicid}
+    <if test="improveTopic.topictitle != null and improveTopic.topictitle != ''" >
+      AND topictitle LIKE concat(concat('%',#{improveTopic.topictitle}),'%')
+    </if>
+    <if test="improveTopic.businesstype != null and improveTopic.businesstype != '-1'.toString()" >
+      AND businesstype = #{improveTopic.businesstype,jdbcType=CHAR}
+    </if>
+    ORDER BY sort,createtime DESC
+    <if test="startNum != null" >
+      limit #{startNum},#{pageSize}
+    </if>
+  </select>
+  <select id="selectImproveTopicListCount"  parameterType="com.longbei.appservice.entity.ImproveTopic" resultType="java.lang.Integer" >
+    select
+    count(*)
+    from improve_topic
+    where isdel = '1'
+    AND  supertopicid = #{improveTopic.supertopicid}
+    <if test="improveTopic.topictitle != null and improveTopic.topictitle != ''" >
+      AND topictitle LIKE concat(concat('%',#{improveTopic.topictitle}),'%')
+    </if>
+    <if test="improveTopic.businesstype != null and improveTopic.businesstype != '-1'.toString()" >
+      AND businesstype = #{improveTopic.businesstype,jdbcType=CHAR}
+    </if>
+  </select>
+  <select id="selectImproveTopicByImpId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from improve_topic
+    where impid = #{impId,jdbcType=BIGINT}
+  </select>
+  <update id="removeImproveTopicByImpId" parameterType="java.lang.Long" >
+    update improve_topic
+    set
+    isdel = '1'
+    where impid = #{impid,jdbcType=BIGINT}
+  </update>
+  <update id="updateImpTopicStatusByImpId" >
+    UPDATE improve_topic
+    SET isdel=#{isTopic}
+    where
+    impid in (
+    <foreach collection="impids" item="impid" separator=",">
+      #{impid}
+    </foreach>
+    )
+  </update>
+  <delete id="deleteImpTopicListByTopicId" parameterType="java.lang.Long" >
+    delete from improve_topic
+    where supertopicid = #{topicId}
+  </delete>
 </mapper>

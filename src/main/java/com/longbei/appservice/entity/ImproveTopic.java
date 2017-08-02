@@ -1,7 +1,5 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
 public class ImproveTopic {
     private Integer id;
 
@@ -11,29 +9,37 @@ public class ImproveTopic {
 
     private Long supertopicid;//超级话题id
 
-    private Date createtime;//创建时间
+    private String createtime;//创建时间
 
-    private Date updatetime;//修改时间
+    private String updatetime;//修改时间
 
-    private String topictitle;//换成一下超级话题的title
+    private String topictitle;//缓存超级话题的title
+    
+    private String isdel;//是否为话题 0否 1是
+    
+    private String ispublic;//是否公开 0公开 1未公开
 
-    private long businessid;
+    private Long businessid;
 
-    private long businesstype;
+    private Long businesstype;
 
-    public void setBusinessid(long businessid) {
+    private Integer sort;//话题排序
+
+    private Improve improve;
+
+    public void setBusinessid(Long businessid) {
         this.businessid = businessid;
     }
 
-    public void setBusinesstype(long businesstype) {
+    public void setBusinesstype(Long businesstype) {
         this.businesstype = businesstype;
     }
 
-    public long getBusinessid() {
+    public Long getBusinessid() {
         return businessid;
     }
 
-    public long getBusinesstype() {
+    public Long getBusinesstype() {
         return businesstype;
     }
 
@@ -113,7 +119,7 @@ public class ImproveTopic {
      * 创建时间
      * @return createtime 创建时间
      */
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
@@ -121,7 +127,7 @@ public class ImproveTopic {
      * 创建时间
      * @param createtime 创建时间
      */
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
@@ -129,7 +135,7 @@ public class ImproveTopic {
      * 修改时间
      * @return updatetime 修改时间
      */
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
@@ -137,7 +143,39 @@ public class ImproveTopic {
      * 修改时间
      * @param updatetime 修改时间
      */
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public String getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(String isdel) {
+        this.isdel = isdel;
+    }
+
+    public String getIspublic() {
+        return ispublic;
+    }
+
+    public void setIspublic(String ispublic) {
+        this.ispublic = ispublic;
+    }
+
+    public Improve getImprove() {
+        return improve;
+    }
+
+    public void setImprove(Improve improve) {
+        this.improve = improve;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public Integer getSort() {
+        return sort;
     }
 }

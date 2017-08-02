@@ -27,7 +27,7 @@ public interface ImproveService {
      * @param brief 说明
      * @param pickey 图片的key
      * @param filekey 文件key  视频文件  音频文件 普通文件
-     * @param businesstype  微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室    5：教室批复作业
+     * @param businesstype  微进步关联的业务类型 0未关联 1目标 2榜 3圈子 4教室 5教室批复作业
      * @param ptype 十全十美id
      * @param ispublic 可见程度  0 私密 1 好友可见 2 全部可见
      * @param itype 类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件

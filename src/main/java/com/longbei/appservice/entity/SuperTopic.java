@@ -1,9 +1,9 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
 public class SuperTopic {
     private Integer id;
+
+    private Long topicid;//话题id
 
     private String photos;//图片key
 
@@ -11,13 +11,25 @@ public class SuperTopic {
 
     private String content;//小编内容
 
-    private String isdel;//0 未删除  1 假删
+    private String isdel;//是否删除 0未删除  1假删
 
-    private Date createtime;//创建时间
+    private String createtime;//创建时间
 
-    private Date updatetime;//更新时间
+    private String updatetime;//更新时间
 
     private Integer sort;//排序
+
+    private String ishot;//是否热点 0否 1是
+
+    private String uptime;//上线时间
+
+    private String downtime;//下线时间
+
+    private Integer impcount;//微进步数量
+
+    private Integer scancount;//浏览量
+
+    private String isup;//上下线  0下线 1上线
 
     /**
      * 
@@ -103,7 +115,7 @@ public class SuperTopic {
      * 创建时间
      * @return createtime 创建时间
      */
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
@@ -111,7 +123,7 @@ public class SuperTopic {
      * 创建时间
      * @param createtime 创建时间
      */
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
@@ -119,7 +131,7 @@ public class SuperTopic {
      * 更新时间
      * @return updatetime 更新时间
      */
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
@@ -127,7 +139,7 @@ public class SuperTopic {
      * 更新时间
      * @param updatetime 更新时间
      */
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
@@ -145,5 +157,61 @@ public class SuperTopic {
      */
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public Long getTopicid() {
+        return topicid;
+    }
+
+    public void setTopicid(Long topicid) {
+        this.topicid = topicid;
+    }
+
+    public String getIshot() {
+        return ishot;
+    }
+
+    public void setIshot(String ishot) {
+        this.ishot = ishot;
+    }
+
+    public String getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
+    }
+
+    public String getDowntime() {
+        return downtime;
+    }
+
+    public void setDowntime(String downtime) {
+        this.downtime = downtime;
+    }
+
+    public Integer getImpcount() {
+        return impcount;
+    }
+
+    public void setImpcount(Integer impcount) {
+        this.impcount = impcount;
+    }
+
+    public Integer getScancount() {
+        return scancount;
+    }
+
+    public void setScancount(Integer scancount) {
+        this.scancount = scancount;
+    }
+
+    public String getIsup() {
+        return isup;
+    }
+
+    public void setIsup(String isup) {
+        this.isup = isup;
     }
 }
