@@ -124,7 +124,7 @@ public class ImproveTopicServiceImpl implements ImproveTopicService{
     }
 
     @Override
-    public BaseResp<Object> updateImproveTopicStatus(String topicId,final String businesstype, final List<Long> impids, String isTopic) {
+    public BaseResp<Object> updateImproveTopicStatus(String topicId,final String businesstype, final List<Long> impids, String isTopic,String topicTitle) {
         BaseResp baseResp = new BaseResp();
         try {
               if(StringUtils.isBlank(isTopic)) {
@@ -143,6 +143,7 @@ public class ImproveTopicServiceImpl implements ImproveTopicService{
                           improveTopic1.setGtype(timeLineDetail.getItype());
                           improveTopic1.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
                           improveTopic1.setIsdel(isTopic);
+                          improveTopic1.setTopictitle(topicTitle);
                           improveTopic1.setSort(0);
                           try {
                               int n = improveTopicMapper.insertImproveTopic(improveTopic1);
@@ -159,6 +160,8 @@ public class ImproveTopicServiceImpl implements ImproveTopicService{
                           ImproveTopic improveTopic2=new ImproveTopic();
                           improveTopic2.setImpid(improveTopic.getImpid());
                           improveTopic2.setIsdel(isTopic);
+                          improveTopic2.setTopictitle(topicTitle);
+                          improveTopic2.setSort(0);
                           improveTopic2.setCreatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
                           improveTopic2.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
                           try {

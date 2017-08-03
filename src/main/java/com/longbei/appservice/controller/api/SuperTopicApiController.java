@@ -193,16 +193,16 @@ public class SuperTopicApiController {
 	 * @currentdate:2017年7月28日
 	 */
 	@RequestMapping(value = "updateImproveTopicStatus")
-	public BaseResp<Object> updateImproveTopicStatus(String topicId,String businesstype, @RequestBody List<Long> impids, String isTopic){
-		logger.info("topicId={},businesstype={},impids={},isTopic={}",topicId,businesstype,JSON.toJSONString(impids),isTopic);
+	public BaseResp<Object> updateImproveTopicStatus(String topicId,String businesstype, @RequestBody List<Long> impids, String isTopic,String topicTitle){
+		logger.info("topicId={},businesstype={},impids={},isTopic={},topicTitle={}",topicId,businesstype,JSON.toJSONString(impids),isTopic,topicTitle);
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if (StringUtils.isBlank(businesstype)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
- 			baseResp = improveTopicService.updateImproveTopicStatus(topicId,businesstype,impids,isTopic);
+ 			baseResp = improveTopicService.updateImproveTopicStatus(topicId,businesstype,impids,isTopic,topicTitle);
 		} catch (Exception e) {
-			logger.error("topicId={},businesstype={},impids={},isTopic={}",topicId,businesstype,JSON.toJSONString(impids),isTopic,e);
+			logger.error("topicId={},businesstype={},impids={},isTopic={},topicTitle={}",topicId,businesstype,JSON.toJSONString(impids),isTopic,topicTitle,e);
 		}
 		return baseResp;
 	}
