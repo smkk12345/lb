@@ -1806,7 +1806,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<Object> addlike(final String userid, final String impid, final String businesstype, String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
-        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),null,Constant.PERDAY_ADD_LIKE);
+        final UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+        baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),userInfo,Constant.PERDAY_ADD_LIKE);
         if(!ResultUtil.isSuccess(baseResp)){
             return baseResp;
         }
@@ -1826,37 +1827,32 @@ public class ImproveServiceImpl implements ImproveService{
         }
 
         final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        final UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+
         if(null == improve || null == userInfo){
             return baseResp;
         }
 
         try{
-
             //redis
             addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
             //mongo
             addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                     userInfo.getAvatar());
-            //mysql
-            addLikeToImprove(improve,userid,impid,businessid,businesstype);
 
             final String finalBusinessid = businessid;
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    //系统今日点赞总数 +1
-                    statisticService.updateStatistics(Constant.SYS_LIKE_NUM,1);
+                    //mysql
+                    addLikeToImprove(improve,userid,impid,finalBusinessid,businesstype);
 
                     //更新进步赞数（mysql）
                     String tableName = getTableNameByBusinessType(businesstype);
                     improveMapper.updateLikes(impid,"0",finalBusinessid,tableName);
 
-                    if(Constant.IMPROVE_CIRCLE_TYPE.equals(businesstype)){
-                        //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
-                        circleMemberService.updateCircleMemberInfo(improve.getUserid(), finalBusinessid,1,null,null);
-                    }
+                    //系统今日点赞总数 +1
+                    statisticService.updateStatistics(Constant.SYS_LIKE_NUM,1);
 
                     try{
                         userBehaviourService.pointChange(userInfo,"DAILY_LIKE",Constant_Perfect.PERFECT_GAM,null,0,0);
@@ -1874,8 +1870,9 @@ public class ImproveServiceImpl implements ImproveService{
                 }
             });
             baseResp.getExpandData().put("haslike","1");
-            baseResp.getExpandData().put("likes",getLikeFromRedis(improve.getImpid()+"",
-                    improve.getBusinessid()+"",improve.getBusinesstype()));
+//            baseResp.getExpandData().put("likes",getLikeFromRedis(improve.getImpid()+"",
+//                    improve.getBusinessid()+"",improve.getBusinesstype()));
+            baseResp.getExpandData().put("likes",improve.getLikes()+1);
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
@@ -2424,8 +2421,8 @@ public class ImproveServiceImpl implements ImproveService{
         //将赞保存到redis
         setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
         //添加临时记录
-        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
-        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60*1000);
+//        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
+//        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60);
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         springJedisDao.increment(Constant.RP_USER_PERDAY+userid,dateStr+Constant.PERDAY_ADD_LIKE,1);
     }
@@ -2601,6 +2598,11 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
                 	improveMapper.updateSourceData(improve.getBusinessid(),improve.getUserid(),count,otype,sourceTableName, "classroomid");
+                    break;
+                case Constant.IMPROVE_CIRCLE_TYPE:
+                    //如果是圈子,则更新circleMember中用户在该圈子中获得的总点赞数
+                    circleMemberService.updateCircleMemberInfo(improve.getUserid(), improve.getBusinessid().toString(),1,null,null);
+                    break;
                 default:
                     break;
             }
