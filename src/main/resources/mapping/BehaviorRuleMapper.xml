@@ -541,6 +541,21 @@
       <if test="friendregisterimpcoins != null" >
         friendregisterimpcoins = #{friendregisterimpcoins,jdbcType=INTEGER},
       </if>
+      <if test="friendregisterimpcoins2 != null" >
+        friendregisterimpcoins2 = #{friendregisterimpcoins2,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoins3 != null" >
+        friendregisterimpcoins3 = #{friendregisterimpcoins3,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoins4 != null" >
+        friendregisterimpcoins4 = #{friendregisterimpcoins4,jdbcType=INTEGER},
+      </if>
+      <if test="friendregisterimpcoins5 != null" >
+        friendregisterimpcoins5 = #{friendregisterimpcoins5,jdbcType=INTEGER},
+      </if>
+      <if test="inviteimprovenum != null" >
+        inviteimprovenum = #{inviteimprovenum,jdbcType=INTEGER},
+      </if>
       <if test="addfriendgoals != null" >
         addfriendgoals = #{addfriendgoals,jdbcType=INTEGER},
       </if>
