@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.RedisDao;
 import com.longbei.appservice.common.utils.DateUtils;
@@ -284,6 +285,26 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         } catch (Exception e) {
             logger.error("listByStartDate select Statistics List is error:{}",e);
         }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Page<Statistics>> selectStatisticsListByPage(int pageno, int pagesize) {
+        BaseResp<Page<Statistics>> baseResp = new BaseResp<>();
+        Page<Statistics> page = new Page<>(pageno, pagesize);
+        int totalcount = 0;
+        List<Statistics> statisticsList = null;
+        try {
+            totalcount = statisticsMapper.selectListCount();
+            pageno = Page.setPageNo(pageno,totalcount,pagesize);
+            statisticsList = statisticsMapper.selectListWithPage((pageno-1)*pagesize,pagesize);
+        } catch (Exception e) {
+            logger.error("selectStatisticsListByPage pageno={},pagesize={} is error:", pageno, pagesize, e);
+        }
+        page.setTotalCount(totalcount);
+        page.setList(statisticsList);
+        baseResp = BaseResp.ok();
+        baseResp.setData(page);
         return baseResp;
     }
 

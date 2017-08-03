@@ -44,6 +44,19 @@
     delete from sys_statistics
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <select id="selectListCount" resultType="java.lang.Integer">
+  SELECT  COUNT(1)
+  FROM sys_statistics
+  </select>
+  <select id="selectListWithPage" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List" />
+  FROM sys_statistics
+  ORDER BY createtime DESC
+  <if test="startno != null">
+    limit #{startno},#{pagesize}
+  </if>
+  </select>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Statistics" >
     insert into sys_statistics (id, registernum, checknum, 
       likenum, flowernum, improvenum, 

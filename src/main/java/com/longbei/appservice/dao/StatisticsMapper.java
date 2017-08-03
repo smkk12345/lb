@@ -21,4 +21,11 @@ public interface StatisticsMapper {
     int updateByPrimaryKey(Statistics record);
 
     int sumByField(@Param("field") String field);
+
+    int selectListCount();
+
+    List<Statistics> selectListWithPage(@Param("startno") Integer startno,
+                                        @Param("pagesize") Integer pagesize);
+
+
 }

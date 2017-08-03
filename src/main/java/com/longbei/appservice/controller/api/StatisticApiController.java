@@ -1,10 +1,12 @@
 package com.longbei.appservice.controller.api;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.controller.ProductController;
 import com.longbei.appservice.entity.Statistics;
 import com.longbei.appservice.service.StatisticService;
+import feign.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +77,25 @@ public class StatisticApiController {
         logger.info("listStatisticsForDays: select Statistics list for {} days",days);
         BaseResp<List<Statistics>> listResp = statisticService.listStatisticsForDays(days);
         return listResp;
+    }
+
+    /**
+     * 分页查询进几天的统计数据
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @RequestMapping(value = "selectStatisticsListByPage")
+    public BaseResp<Page<Statistics>> selectStatisticsListByPage(String pageno, String pagesize){
+        logger.info("selectStatisticsListByPage: select Statistics list pageno = {},pagesize = {}", pageno, pagesize);
+        Page.initPageNoAndPageSize(pageno,pagesize);
+        BaseResp<Page<Statistics>> baseResp = new BaseResp<>();
+        try {
+            baseResp = statisticService.selectStatisticsListByPage(Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("selectStatisticsListByPage is error:",e);
+        }
+        return baseResp;
     }
 
     /**

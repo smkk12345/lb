@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Statistics;
 
 import java.util.Date;
@@ -40,6 +41,14 @@ public interface StatisticService extends BaseService {
      * @return
      */
     BaseResp<List<Statistics>> listStatisticsForDays(int days);
+
+    /**
+     * 分页查询进几天的统计数据
+     * @param pageno
+     * @param pageSize
+     * @return
+     */
+    BaseResp<Page<Statistics>> selectStatisticsListByPage(int pageno, int pageSize);
 
     BaseResp<Integer> sumByField(String field);
 }
