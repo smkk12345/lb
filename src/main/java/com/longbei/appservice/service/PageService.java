@@ -55,13 +55,32 @@ public interface PageService {
     
     /**
      * 查询首页---启动页列表
-     * @param homePicture
+     * @param homePoster
      * @param pageno
      * @param pagesize
-     * @return
-     * @author luye
+     * @author yinxc
      */
     BaseResp<Page<HomePoster>> homeposterlist(HomePoster homePoster,Integer pageno,Integer pagesize);
+    
+    /**
+     * 查询首页---启动页列表
+     * @param homePoster
+     * @author yinxc
+     */
+    BaseResp<Object> insertHomePoster(HomePoster homePoster);
+    
+    
+    /**
+     * 启动页上下线修改
+     * @author yinxc
+     */
+    BaseResp<Object> updateIsup(String isup, String id);
+    
+    /**
+     * 删除启动页
+     * @author yinxc
+     */
+    BaseResp<Object> updateIsdel(String id);
 
 
 

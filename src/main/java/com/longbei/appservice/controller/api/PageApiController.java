@@ -240,6 +240,56 @@ public class PageApiController {
         }
         return baseResp;
     }
+    
+    
+    /**
+     * 添加启动页
+     * @param homePoster
+     * @return
+     * @author yinxc
+     */
+    @RequestMapping(value = "insertHomePoster")
+    public BaseResp<Object> insertHomePoster(@RequestBody HomePoster homePoster){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.insertHomePoster(homePoster);
+        } catch (Exception e) {
+            logger.error("insertHomePoster is error:",e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * 启动页上下线修改
+     * @author yinxc
+     */
+    @RequestMapping(value = "updateIsup")
+    public BaseResp<Object> updateIsup(String isup, String id){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.updateIsup(isup, id);
+        } catch (Exception e) {
+        	logger.error("updateIsup isup = {}, id = {}", isup, id, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * 删除启动页
+     * @author yinxc
+     */
+    @RequestMapping(value = "updateIsdel")
+    public BaseResp<Object> updateIsdel(String id){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.updateIsdel(id);
+        } catch (Exception e) {
+        	logger.error("updateIsdel id = {}", id, e);
+        }
+        return baseResp;
+    }
+    
+    
 
     /**
      * 保存或更新注册协议

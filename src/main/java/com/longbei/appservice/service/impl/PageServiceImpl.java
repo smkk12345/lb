@@ -143,6 +143,63 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> insertHomePoster(HomePoster homePoster) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	homePoster.setCreatetime(new Date());
+        	homePoster.setIsup("0");
+        	homePoster.setIsdel("0");
+            int res = homePosterMapper.insertSelective(homePoster);
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("insert into homepicture is error:",e);
+        }
+        return baseResp;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateIsup(String isup, String id) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	int res = 0;
+        	//启动页上线只保留一个  (2017-08-04)
+        	if("1".equals(isup)){
+        		homePosterMapper.updateIsdown(DateUtils.formatDateTime1(new Date()));
+        		res = homePosterMapper.updateIsup(isup, id, DateUtils.formatDateTime1(new Date()), null);
+        	}else{
+        		res = homePosterMapper.updateIsup(isup, id, null, DateUtils.formatDateTime1(new Date()));
+        	}
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+        	logger.error("updateIsup isup = {}, id = {}", isup, id, e);
+        }
+        return baseResp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateIsdel(String id) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	int res = homePosterMapper.deleteByPrimaryKey(Integer.parseInt(id));
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+        	logger.error("updateIsdel id = {}", id, e);
+        }
+        return baseResp;
+	}
 
 
     @Override
