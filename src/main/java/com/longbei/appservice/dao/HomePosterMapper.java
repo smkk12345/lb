@@ -25,4 +25,18 @@ public interface HomePosterMapper {
                                  @Param("startno")Integer startno,
                                  @Param("pagesize")Integer pagesize);
     
+    
+    /**
+     * 启动页上下线修改
+     * @author yinxc
+     */
+    Integer updateIsup(@Param("isup") String isup, @Param("id") String id, 
+    		@Param("uptime") String uptime, @Param("downtime") String downtime);
+    
+    /**
+     * 启动页上线修改为下线状态
+     * @author yinxc
+     */
+    Integer updateIsdown(@Param("downtime") String downtime);
+    
 }

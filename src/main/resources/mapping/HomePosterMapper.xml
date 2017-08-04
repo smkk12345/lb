@@ -54,7 +54,7 @@
     <if test="homePoster.isup != null and homePoster.isup != '-1'.toString()">
       AND isup = #{homePoster.isup}
     </if>
-    ORDER BY sort DESC,createtime DESC
+    ORDER BY isup DESC,createtime DESC
     <if test="startno != null">
       limit #{startno},#{pagesize}
     </if>
@@ -191,4 +191,33 @@
       isdel = #{isdel,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateIsup" >
+    update home_poster
+    <set >
+      <if test="isup != null" >
+    	isup = #{isup},
+      </if>
+      <if test="uptime != null" >
+        uptime = #{uptime},
+      </if>
+      <if test="downtime != null" >
+        downtime = #{downtime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  
+  
+  <update id="updateIsdown" >
+    update home_poster
+    <set >
+    	isup = 0,
+      <if test="downtime != null" >
+        downtime = #{downtime},
+      </if>
+    </set>
+    where isup = 1
+  </update>
+  
 </mapper>
