@@ -341,7 +341,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                     // 定制榜，添加参榜口令joinCode
                     if (!"0".equals(rankImage.getRanktype())){
-                        rank.setJoincode(codeDao.getCode(null));
+                        rank.setJoincode(codeDao.getRankPwdCode(CodeDao.CodeType.joinpwdrank.toString()));
                     }
 //                    logger.warn("rank image info : {}", com.alibaba.fastjson.JSON.toJSONString(rankImage));
 //                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
@@ -3792,7 +3792,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     tempcount++;
                     rankMembers.setUserid(rkmember.getUserid());
                     rankMembers.setIswinning("1");
-                    String awardcode = codeDao.getCode(null);
+                    String awardcode = codeDao.getCode(CodeDao.CodeType.rank.toString());
                     rankMembers.setReceivecode(awardcode);
                     RankAward rankAward1 = new RankAward();
                     rankAward1.setAwardlevel(i+1);

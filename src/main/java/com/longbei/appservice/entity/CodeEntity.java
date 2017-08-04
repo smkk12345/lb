@@ -17,6 +17,7 @@ public class CodeEntity {
     private String id;
     private String businessname = "rank";
     private int datatype = 1;
+    private int length;
     private String []code;
 
     public String getId() {
@@ -50,4 +51,13 @@ public class CodeEntity {
     public void setCode(String[] code) {
         this.code = code;
     }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
 }
