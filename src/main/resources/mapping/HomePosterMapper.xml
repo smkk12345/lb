@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.HomePosterMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.HomePoster" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="photos" property="photos" jdbcType="VARCHAR" />
+    <result column="contenttype" property="contenttype" jdbcType="CHAR" />
+    <result column="isup" property="isup" jdbcType="CHAR" />
+    <result column="uptime" property="uptime" jdbcType="TIMESTAMP" />
+    <result column="downtime" property="downtime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="cuserid" property="cuserid" jdbcType="VARCHAR" />
+    <result column="href" property="href" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, photos, contenttype, isup, uptime, downtime, createtime, cuserid, href, 
+    isdel
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from home_poster
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCount" parameterType="com.longbei.appservice.entity.HomePoster" resultType="java.lang.Integer">
+    SELECT count(*) FROM home_poster 
+    WHERE isdel = 0 
+    <if test="title != null and title != ''">
+      AND title LIKE concat(concat('%',#{title}),'%')
+    </if>
+    <if test="contenttype != null and contenttype != '-1'.toString()">
+      AND contenttype = #{contenttype}
+    </if>
+    <if test="isup != null and isup != '-1'.toString()">
+      AND isup = #{isup}
+    </if>
+  </select>
+  
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from home_poster
+    WHERE isdel = 0 
+    <if test="homePoster.title != null and homePoster.title != ''">
+      AND title LIKE concat(concat('%',#{homePoster.title}),'%')
+    </if>
+    <if test="homePoster.contenttype != null and homePoster.contenttype != '-1'.toString()">
+      AND contenttype = #{homePoster.contenttype}
+    </if>
+    <if test="homePoster.isup != null and homePoster.isup != '-1'.toString()">
+      AND isup = #{homePoster.isup}
+    </if>
+    ORDER BY sort DESC,createtime DESC
+    <if test="startno != null">
+      limit #{startno},#{pagesize}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from home_poster
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.HomePoster" >
+    insert into home_poster (id, title, photos, 
+      contenttype, isup, uptime, 
+      downtime, createtime, cuserid, 
+      href, isdel)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{photos,jdbcType=VARCHAR}, 
+      #{contenttype,jdbcType=CHAR}, #{isup,jdbcType=CHAR}, #{uptime,jdbcType=TIMESTAMP}, 
+      #{downtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{cuserid,jdbcType=VARCHAR}, 
+      #{href,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.HomePoster" >
+    insert into home_poster
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="photos != null" >
+        photos,
+      </if>
+      <if test="contenttype != null" >
+        contenttype,
+      </if>
+      <if test="isup != null" >
+        isup,
+      </if>
+      <if test="uptime != null" >
+        uptime,
+      </if>
+      <if test="downtime != null" >
+        downtime,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="cuserid != null" >
+        cuserid,
+      </if>
+      <if test="href != null" >
+        href,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="photos != null" >
+        #{photos,jdbcType=VARCHAR},
+      </if>
+      <if test="contenttype != null" >
+        #{contenttype,jdbcType=CHAR},
+      </if>
+      <if test="isup != null" >
+        #{isup,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuserid != null" >
+        #{cuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null" >
+        #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.HomePoster" >
+    update home_poster
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="photos != null" >
+        photos = #{photos,jdbcType=VARCHAR},
+      </if>
+      <if test="contenttype != null" >
+        contenttype = #{contenttype,jdbcType=CHAR},
+      </if>
+      <if test="isup != null" >
+        isup = #{isup,jdbcType=CHAR},
+      </if>
+      <if test="uptime != null" >
+        uptime = #{uptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downtime != null" >
+        downtime = #{downtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuserid != null" >
+        cuserid = #{cuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null" >
+        href = #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.HomePoster" >
+    update home_poster
+    set title = #{title,jdbcType=VARCHAR},
+      photos = #{photos,jdbcType=VARCHAR},
+      contenttype = #{contenttype,jdbcType=CHAR},
+      isup = #{isup,jdbcType=CHAR},
+      uptime = #{uptime,jdbcType=TIMESTAMP},
+      downtime = #{downtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      cuserid = #{cuserid,jdbcType=VARCHAR},
+      href = #{href,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
