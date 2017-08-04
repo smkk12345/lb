@@ -114,6 +114,10 @@ public class UserServiceImpl implements UserService {
 	private DeviceIndexMapper deviceIndexMapper;
 	@Autowired
 	private StatisticService statisticService;
+	@Autowired
+	private SysNicknamesMapper sysNicknamesMapper;
+	@Autowired
+	private SysSensitiveService sysSensitiveService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -532,7 +536,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public BaseResp<Object> registerbasic(String username, String password,String inviteuserid,
-			String deviceindex,String devicetype,String avatar) {
+			String deviceindex,String devicetype,String avatar,String nickname) {
 		long userid = idGenerateService.getUniqueIdAsLong();
 
 		//验证设备号注册
@@ -547,7 +551,22 @@ public class UserServiceImpl implements UserService {
 		}
 		//Long userid,String username, String nickname,String inviteuserid
 		//获取唯一昵称
-		String nickname = NickNameUtils.getSingleNickName("LB",username);
+		if(StringUtils.isBlank(nickname)){
+			nickname = getRandomNickName();
+		}
+		nickname = getSingleNickName(nickname);
+
+		baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
+		if(!ResultUtil.isSuccess(baseResp)){
+			return baseResp;
+		}
+
+		if(!StringUtils.hasBlankParams(nickname)){
+			if(nickname.length() > 26||nickname.length() < 2){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
+			}
+		}
+
 		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		if(ResultUtil.isSuccess(baseResp)){
@@ -563,6 +582,20 @@ public class UserServiceImpl implements UserService {
 			iUserBasicService.remove(username);
 		}
 		return baseResp;
+	}
+
+	/**
+	 * 获取不重复的用户昵称
+	 * @param nickname
+	 * @return
+	 */
+	private String getSingleNickName(String nickname) {
+		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
+		while (null != app ){
+			nickname = nickname + RandomUtils.getRandomCode(1,10000);
+			app = userMongoDao.getAppUserByNickName(nickname);
+		}
+		return nickname;
 	}
 
 	/* (non-Javadoc)
@@ -946,7 +979,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> registerthird(String username, String password,
 			String utype, String openid,String inviteuserid,String deviceindex,
-			String devicetype,String randomcode,String avatar) {
+			String devicetype,String randomcode,String avatar,String nickname) {
 
 		BaseResp<Object> baseResp = iUserBasicService.gettoken(username, password);
 		UserInfo userInfo = null;
@@ -959,7 +992,8 @@ public class UserServiceImpl implements UserService {
 			if(baseResp.getCode()!=Constant.STATUS_SYS_00){
 				return baseResp;
 			}
-			baseResp = registerbasic(username,password,inviteuserid,deviceindex,devicetype,avatar);
+
+			baseResp = registerbasic(username,password,inviteuserid,deviceindex,devicetype,avatar,nickname);
 			//登统中心注册失败  直接返回了
 			if(baseResp.getCode() != Constant.STATUS_SYS_00){
 				return baseResp;
@@ -1481,20 +1515,10 @@ public class UserServiceImpl implements UserService {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserid(Long.parseLong(userid));
-		userInfo.setNickname(nickname);
+//		userInfo.setNickname(nickname);
 		userInfo.setSex(sex);
 		userInfo.setHcnickname("1");
 		try {
-			if(!StringUtils.isBlank(nickname)){
-				//判断昵称是否存在
-				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(nickname);
-//				UserInfo infos = userInfoMapper.getByNickName(nickname);
-				if(null != appUserMongoEntity){
-					if(Long.parseLong(appUserMongoEntity.getId()) != Long.parseLong(userid)) {
-						return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
-					}
-				}
-			}
 			//判断邀请人是否是龙杯用户
 			if(!StringUtils.hasBlankParams(invitecode)){
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
@@ -1802,4 +1826,12 @@ public class UserServiceImpl implements UserService {
 		}
 		return baseResp;
 	}
+
+	@Override
+	public String getRandomNickName() {
+		SysNicknames sysNicknames = sysNicknamesMapper.getRankNicknames();
+		return sysNicknames.getNickname();
+	}
+
+
 }
