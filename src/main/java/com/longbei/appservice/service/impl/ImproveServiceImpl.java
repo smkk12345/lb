@@ -2403,21 +2403,8 @@ public class ImproveServiceImpl implements ImproveService{
                                                            final String businesstype){
         Map<String,String> map = new HashMap<>();
         map.put("lfd"+userid,userid);
-        if (Constant.IMPROVE_ISPUBLIC_2.equals(improve.getIspublic())){
-            threadPoolTaskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
-                    try {
-                        String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                        springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,1, (long) (25*60*60));
-                    } catch (ParseException e) {
-                        logger.error("date format is error:",e);
-                    }
-                }
-            });
-        }
-
+        //24小时热门进步
+        toDoHotImprove(improve,businessid,businesstype,1);
         //将赞保存到redis
         setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
         //添加临时记录
@@ -2425,6 +2412,23 @@ public class ImproveServiceImpl implements ImproveService{
 //        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60);
         String dateStr = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
         springJedisDao.increment(Constant.RP_USER_PERDAY+userid,dateStr+Constant.PERDAY_ADD_LIKE,1);
+    }
+
+    public void toDoHotImprove(final Improve improve, final String businessid, final String businesstype, final int score){
+        if (Constant.IMPROVE_ISPUBLIC_2.equals(improve.getIspublic())){
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+                    try {
+                        String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                        springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,score, (long) (25*60*60));
+                    } catch (ParseException e) {
+                        logger.error("date format is error:",e);
+                    }
+                }
+            });
+        }
     }
 
 
