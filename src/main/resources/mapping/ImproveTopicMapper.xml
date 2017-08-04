@@ -24,7 +24,10 @@
     <include refid="Base_Column_List"/>
     FROM
     improve_topic
-    where supertopicid=#{topicId,jdbcType=BIGINT} and isdel='0' and ispublic = '0'
+    where supertopicid=#{topicId,jdbcType=BIGINT} and isdel='1' and ispublic = '0'
+    <if test="pageSize != null and pageSize!= 0" >
+      limit #{startNum},#{pageSize}
+    </if>
   </select>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ImproveTopic" >
     insert into improve_topic (impid, gtype,

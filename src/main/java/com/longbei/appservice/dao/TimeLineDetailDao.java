@@ -138,7 +138,6 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
             criteria.and("brief").regex(brief);
         }
         Query query = new Query(criteria);
-        query.with(new Sort(Sort.Direction.DESC,"topicsort")).with(new Sort(Sort.Direction.DESC, "topictime"));
         query.skip(startNum);
         query.limit(pageSize);
         System.out.println(query);
@@ -173,9 +172,8 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         return count;
     }
 
-    public void updateImproveTopicStatus(String topicId,List<Long> impids,String businesstype,String isTopic){
+    public void updateImproveTopicStatus(List<Long> impids,String businesstype,String isTopic){
         Criteria criteria = new Criteria();
-
         if(null != impids && impids.size()!=0){
             criteria.and("improveId").in(impids);
         }
@@ -184,16 +182,9 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         }
         Query query = new Query(criteria);
         Update update = new Update();
-        if("0".equals(isTopic)) {
-            update.set("topicid", null);
-        }else {
-            update.set("topicid",topicId);
-        }
         update.set("istopic",isTopic);
-        update.set("topictime",new Date());
-        update.set("topicsort",0);
-//        System.out.println(query);
-//        System.out.println("update--------"+update);
+        System.out.println(query);
+        System.out.println("update--------"+update);
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
     }
 

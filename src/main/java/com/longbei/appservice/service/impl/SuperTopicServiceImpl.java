@@ -313,10 +313,12 @@ public class SuperTopicServiceImpl implements SuperTopicService {
         try {
             int m = superTopicMapper.removeSuperTopicByTopicId(topicId);
             if(m == 1){
-                SuperTopic superTopic =new SuperTopic();
-                superTopic.setTopicid(topicId);
-                List<SuperTopic> superTopicList = superTopicMapper.selectSuperTopicList(superTopic,null,null);
-                timeLineDetailDao.updateImproveTopicStatus(topicId+"",null,null,"0");
+                List<ImproveTopic> improveTopics = improveTopicMapper.selectByTopicId(topicId,0,0);
+                List<Long> impids = new ArrayList<>();
+                for(int i=0;i<improveTopics.size();i++) {
+                    impids.add(improveTopics.get(i).getImpid());
+                }
+                timeLineDetailDao.updateImproveTopicStatus(impids,null,"0");
                 improveTopicMapper.deleteImpTopicListByTopicId(topicId);
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }

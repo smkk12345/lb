@@ -13,8 +13,8 @@ public interface ImproveTopicMapper {
 
     List<ImproveTopic> selectByTopicId(
             @Param("topicId") long topicId,
-            @Param("startNum")int startNum,
-            @Param("endNum")int endNum
+            @Param("startNum")Integer startNum,
+            @Param("pageSize")Integer pageSize
     );
 
     List<ImproveTopic> selectImproveTopicList(@Param("improveTopic") ImproveTopic ImproveTopic,

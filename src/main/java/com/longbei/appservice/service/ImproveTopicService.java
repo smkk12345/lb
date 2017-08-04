@@ -47,7 +47,7 @@ public interface ImproveTopicService {
 	 * @auther IngaWu
 	 * @currentdate:2017年7月28日
 	 */
-	BaseResp<Object> updateImproveTopicStatus(String topicId,String businesstype, List<Long> impids, String isTopic);
+	BaseResp<Object> updateImproveTopicStatus(String topicId,String businesstype, List<Long> impids, String isTopic,String topicTitle);
 
 	/**
 	 * 更新进步话题排序
