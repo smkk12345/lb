@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
@@ -209,6 +210,33 @@ public class PageApiController {
             baseResp = pageService.selectPublishBg();
         } catch (Exception e) {
             logger.error("select publishbg is error:",e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * 查询首页---启动页列表
+     * @param homePoster
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author yinxc
+     */
+    @RequestMapping(value = "homeposterlist")
+    public BaseResp<Page<HomePoster>> homeposterlist(@RequestBody HomePoster homePoster,
+                                                          String pageno, String pagesize){
+        logger.info("homeposterlist homePoster:{},pageno={},pagesize={}", JSON.toJSONString(homePoster),pageno,pagesize);
+        BaseResp<Page<HomePoster>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = pageService.homeposterlist(homePoster,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select home poster list is error:",e);
         }
         return baseResp;
     }

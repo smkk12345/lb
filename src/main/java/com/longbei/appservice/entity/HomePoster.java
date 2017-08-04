@@ -13,9 +13,9 @@ public class HomePoster {
 
     private String photos;
 
-    private String contenttype;//关联 内容类型 0 - 龙榜 1 - 教室  2 - 专题   3 - 达人  4 - 商品
+    private String contenttype;//contenttype 关联 内容类型 0 - 龙榜 1 - 教室  2 - 专题   3 - 达人  4 - 商品
 
-    private String isup;//否上线 0 - 未上线 1 - 上线     默认0
+    private String isup;//isup 否上线 0 - 未上线 1 - 上线     默认0
 
     private Date uptime;
 
@@ -29,7 +29,7 @@ public class HomePoster {
     
     private String hreftitle; //内容类型对应的名称
 
-    private String isdel;//0 未删除 1 已经删除
+    private String isdel;//isdel 0 未删除 1 已经删除
 
     /**
      * 

@@ -9,6 +9,7 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SysCommon;
@@ -51,6 +52,8 @@ public class PageServiceImpl implements PageService{
     private ClassroomMapper classroomMapper;
     @Autowired
     private ClassroomMembersMapper classroomMembersMapper;
+    @Autowired
+    private HomePosterMapper homePosterMapper;
     
 
     @Override
@@ -120,6 +123,26 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
     }
+    
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Page<HomePoster>> homeposterlist(HomePoster homePoster, Integer pageno, Integer pagesize) {
+        BaseResp<Page<HomePoster>> baseResp = new BaseResp<>();
+        Page<HomePoster> page = new Page<>(pageno,pagesize);
+
+        try {
+            int totalcount = homePosterMapper.selectCount(homePoster);
+            List<HomePoster> homePictures = homePosterMapper.selectList(homePoster,(pageno-1)*pagesize,pagesize);
+            baseResp = BaseResp.ok();
+            page.setTotalCount(totalcount);
+            page.setList(homePictures);
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select home poster list is error:",e);
+        }
+        return baseResp;
+	}
 
 
     @Override
@@ -361,4 +384,5 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
     }
+
 }

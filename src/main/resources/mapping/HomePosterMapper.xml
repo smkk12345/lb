@@ -12,10 +12,11 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="cuserid" property="cuserid" jdbcType="VARCHAR" />
     <result column="href" property="href" jdbcType="VARCHAR" />
+    <result column="hreftitle" property="hreftitle" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, title, photos, contenttype, isup, uptime, downtime, createtime, cuserid, href, 
+    id, title, photos, contenttype, isup, uptime, downtime, createtime, cuserid, href, hreftitle, 
     isdel
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -76,9 +77,6 @@
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.HomePoster" >
     insert into home_poster
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
       <if test="title != null" >
         title,
       </if>
@@ -106,14 +104,14 @@
       <if test="href != null" >
         href,
       </if>
+      <if test="hreftitle != null and hreftitle != ''" >
+        hreftitle,
+      </if>
       <if test="isdel != null" >
         isdel,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="title != null" >
         #{title,jdbcType=VARCHAR},
       </if>
@@ -141,6 +139,9 @@
       <if test="href != null" >
         #{href,jdbcType=VARCHAR},
       </if>
+      <if test="hreftitle != null and hreftitle != ''" >
+        #{hreftitle},
+      </if>
       <if test="isdel != null" >
         #{isdel,jdbcType=CHAR},
       </if>
@@ -158,9 +159,6 @@
       <if test="contenttype != null" >
         contenttype = #{contenttype,jdbcType=CHAR},
       </if>
-      <if test="isup != null" >
-        isup = #{isup,jdbcType=CHAR},
-      </if>
       <if test="uptime != null" >
         uptime = #{uptime,jdbcType=TIMESTAMP},
       </if>
@@ -170,14 +168,11 @@
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="cuserid != null" >
-        cuserid = #{cuserid,jdbcType=VARCHAR},
-      </if>
       <if test="href != null" >
         href = #{href,jdbcType=VARCHAR},
       </if>
-      <if test="isdel != null" >
-        isdel = #{isdel,jdbcType=CHAR},
+      <if test="hreftitle != null and hreftitle != ''" >
+        hreftitle = #{hreftitle},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
