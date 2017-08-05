@@ -240,6 +240,7 @@ public class AppUserController extends BaseController {
         String randomCode = request.getParameter("randomCode");
         String deviceindex = request.getParameter("deviceindex");
         String devicetype = request.getParameter("devicetype");
+        String nickname = request.getParameter("nickname");
         logger.info("registerbasic params username={},password={},inviteuserid={},randomCode={},deviceindex={},devicetype={}", username, password,inviteuserid,randomCode,deviceindex,devicetype);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(username, password, randomCode,deviceindex)) {
@@ -250,7 +251,7 @@ public class AppUserController extends BaseController {
             return baseResp;
         }
         try {
-            return userService.registerbasic(username, password, inviteuserid,deviceindex,devicetype,null);
+            return userService.registerbasic(username, password, inviteuserid,deviceindex,devicetype,null,nickname);
         } catch (Exception e) {
             logger.error("registerbasic error and msg = {}", e);
         }
@@ -473,25 +474,14 @@ public class AppUserController extends BaseController {
         logger.info("userid={},nickname={},inviteusername={},isJump={},sex={},pl={}", userid, nickname,inviteusername,isJump, sex,inviteusername);
         //必传参数 userid nickname  isJump 0
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(userid, nickname)){
+		if(StringUtils.hasBlankParams(userid)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}
-        if(!StringUtils.hasBlankParams(nickname)){
-            baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
-            if(!ResultUtil.isSuccess(baseResp)){
-                return baseResp;
-            }
-        }
 		try {
             if(isJump){
                 baseResp = userService.updateNickName(userid, "", "","","");
             }else{
-                if(!StringUtils.hasBlankParams(nickname)){
-                    if(nickname.length() > 26||nickname.length() < 2){
-                        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
-                    }
-                }
-    		    baseResp = userService.updateNickName(userid, nickname, inviteusername,sex,pl);
+    		    baseResp = userService.updateNickName(userid, "", inviteusername,sex,pl);
             }
 		} catch (Exception e) {
 			logger.error("updateNickName error and msg = {}",e);
@@ -524,6 +514,7 @@ public class AppUserController extends BaseController {
     		String inviteuserid = request.getParameter("inviteusername");
     		String deviceindex = request.getParameter("deviceindex");
             String devicetype = request.getParameter("devicetype");
+            String nickname = request.getParameter("nickname");
             logger.info("login utype={},openid={},password={},username={},avatar={},sex={},randomcode={},inviteuserid={},deviceindex={},devicetype={}",
                 utype, openid,password,username,avatar,sex,randomcode,inviteuserid,deviceindex,devicetype);
 
@@ -536,7 +527,7 @@ public class AppUserController extends BaseController {
     		//已经注册 判断是否绑定当前第三方  绑定 提示去登录   未绑定 判断验证码或者密码有一个对 就进入
     		try {
         		baseResp = userService.registerthird(username,password,utype,openid,inviteuserid,
-        				deviceindex,devicetype,randomcode,avatar);	
+        				deviceindex,devicetype,randomcode,avatar,nickname);
 		} catch (Exception e) {
 			logger.error("thirdregister error and msg = {}",e);
 		}
@@ -1531,7 +1522,35 @@ public class AppUserController extends BaseController {
         try {
             baseResp = userService.insertInviteCode(userid,invitecode);
         } catch (Exception e) {
-            logger.error("userid:[] inveitecode:{} is error:",userid,invitecode,e);
+            logger.error("userid:[] inveitecode:{} is error:", userid, invitecode, e);
+        }
+        return baseResp;
+    }
+
+
+    /**
+     * url=/user/getRandomNickName
+     *  获取随机昵称接口  没有参数
+     * @return
+     * <BaseResp>
+        <code>0</code>
+        <data>迟日深春水</data>
+        <displayStatus>0</displayStatus>
+        <rtnInfo>操作成功!</rtnInfo>
+        <expandData/>
+        </BaseResp>
+     */
+    @RequestMapping(value = "/getRandomNickName")
+    @ResponseBody
+    public BaseResp<String> getRandomNickName(){
+        BaseResp<String> baseResp = new BaseResp<>();
+        logger.info("getRandomNickName");
+        try {
+            String nickName = userService.getRandomNickName();
+            baseResp.setData(nickName);
+            return baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("getRandomNickName",e);
         }
         return baseResp;
     }

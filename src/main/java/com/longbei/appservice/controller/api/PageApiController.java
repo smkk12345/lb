@@ -6,6 +6,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
@@ -212,6 +213,83 @@ public class PageApiController {
         }
         return baseResp;
     }
+    
+    /**
+     * 查询首页---启动页列表
+     * @param homePoster
+     * @param pageno
+     * @param pagesize
+     * @return
+     * @author yinxc
+     */
+    @RequestMapping(value = "homeposterlist")
+    public BaseResp<Page<HomePoster>> homeposterlist(@RequestBody HomePoster homePoster,
+                                                          String pageno, String pagesize){
+        logger.info("homeposterlist homePoster:{},pageno={},pagesize={}", JSON.toJSONString(homePoster),pageno,pagesize);
+        BaseResp<Page<HomePoster>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        try {
+            baseResp = pageService.homeposterlist(homePoster,Integer.parseInt(pageno),Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select home poster list is error:",e);
+        }
+        return baseResp;
+    }
+    
+    
+    /**
+     * 添加启动页
+     * @param homePoster
+     * @return
+     * @author yinxc
+     */
+    @RequestMapping(value = "insertHomePoster")
+    public BaseResp<Object> insertHomePoster(@RequestBody HomePoster homePoster){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.insertHomePoster(homePoster);
+        } catch (Exception e) {
+            logger.error("insertHomePoster is error:",e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * 启动页上下线修改
+     * @author yinxc
+     */
+    @RequestMapping(value = "updateIsup")
+    public BaseResp<Object> updateIsup(String isup, String id){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.updateIsup(isup, id);
+        } catch (Exception e) {
+        	logger.error("updateIsup isup = {}, id = {}", isup, id, e);
+        }
+        return baseResp;
+    }
+    
+    /**
+     * 删除启动页
+     * @author yinxc
+     */
+    @RequestMapping(value = "updateIsdel")
+    public BaseResp<Object> updateIsdel(String id){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.updateIsdel(id);
+        } catch (Exception e) {
+        	logger.error("updateIsdel id = {}", id, e);
+        }
+        return baseResp;
+    }
+    
+    
 
     /**
      * 保存或更新注册协议

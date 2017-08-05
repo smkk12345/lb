@@ -55,7 +55,7 @@ public interface UserService {
 	* @throws
 	*/
 	BaseResp<Object> registerbasic(String username, String password,String inviteuserid
-			,String deviceindex,String devicetype,String avatar);
+			,String deviceindex,String devicetype,String avatar,String nickname);
 	
 	
 	/**
@@ -141,7 +141,7 @@ public interface UserService {
 	*/
 	BaseResp<Object> registerthird(String username, String password, String utype, 
 			String openid,String inviteuserid,String deviceindex,
-			String devicetype,String randomcode,String avatar);
+			String devicetype,String randomcode,String avatar,String nickname);
 	
 	/**
 	* @Title: updatethird
@@ -294,5 +294,9 @@ public interface UserService {
 
 	BaseResp insertInviteCode(String userid,String invitecode);
 
-
+	/**
+	 * 获取一个随机库中的用户昵称
+	 * @return
+	 */
+	String getRandomNickName();
 }

@@ -9,6 +9,7 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.SysCommon;
@@ -51,6 +52,8 @@ public class PageServiceImpl implements PageService{
     private ClassroomMapper classroomMapper;
     @Autowired
     private ClassroomMembersMapper classroomMembersMapper;
+    @Autowired
+    private HomePosterMapper homePosterMapper;
     
 
     @Override
@@ -120,6 +123,83 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
     }
+    
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Page<HomePoster>> homeposterlist(HomePoster homePoster, Integer pageno, Integer pagesize) {
+        BaseResp<Page<HomePoster>> baseResp = new BaseResp<>();
+        Page<HomePoster> page = new Page<>(pageno,pagesize);
+
+        try {
+            int totalcount = homePosterMapper.selectCount(homePoster);
+            List<HomePoster> homePictures = homePosterMapper.selectList(homePoster,(pageno-1)*pagesize,pagesize);
+            baseResp = BaseResp.ok();
+            page.setTotalCount(totalcount);
+            page.setList(homePictures);
+            baseResp.setData(page);
+        } catch (Exception e) {
+            logger.error("select home poster list is error:",e);
+        }
+        return baseResp;
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> insertHomePoster(HomePoster homePoster) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	homePoster.setCreatetime(new Date());
+        	homePoster.setIsup("0");
+        	homePoster.setIsdel("0");
+            int res = homePosterMapper.insertSelective(homePoster);
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+            logger.error("insert into homepicture is error:",e);
+        }
+        return baseResp;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateIsup(String isup, String id) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	int res = 0;
+        	//启动页上线只保留一个  (2017-08-04)
+        	if("1".equals(isup)){
+        		homePosterMapper.updateIsdown(DateUtils.formatDateTime1(new Date()));
+        		res = homePosterMapper.updateIsup(isup, id, DateUtils.formatDateTime1(new Date()), null);
+        	}else{
+        		res = homePosterMapper.updateIsup(isup, id, null, DateUtils.formatDateTime1(new Date()));
+        	}
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+        	logger.error("updateIsup isup = {}, id = {}", isup, id, e);
+        }
+        return baseResp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<Object> updateIsdel(String id) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+        	int res = homePosterMapper.deleteByPrimaryKey(Integer.parseInt(id));
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+        	logger.error("updateIsdel id = {}", id, e);
+        }
+        return baseResp;
+	}
 
 
     @Override
@@ -361,4 +441,5 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
     }
+
 }

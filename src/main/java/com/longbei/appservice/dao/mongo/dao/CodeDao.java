@@ -21,16 +21,27 @@ import java.util.Set;
 public class CodeDao extends BaseMongoDao<CodeEntity>{
 
 
+    public enum CodeType{
+        rank,
+        joinpwdrank
+    }
+
+    /**
+     * 奖品获奖码
+     * @param businessname
+     * @return
+     */
     public String getCode(String businessname){
 
         Criteria criteria = Criteria.where("businessname").is("rank");
         Query query = new Query(criteria);
+
         query.fields().slice("code",1);
 
         CodeEntity codeEntity = mongoTemplate.findOne(query,CodeEntity.class);
         if (null == codeEntity){
             CodeEntity codeEntity1 = new CodeEntity();
-            Set<String> codelist = CodeGeneratorUtil.generatorCode(1);
+            Set<String> codelist = CodeGeneratorUtil.generatorCode(CodeType.rank,1,6);
             String[] codes = new String[codelist.size()];
             codelist.toArray(codes);
             codeEntity1.setCode(codes);
@@ -38,7 +49,44 @@ public class CodeDao extends BaseMongoDao<CodeEntity>{
         } else if (codeEntity.getCode() == null || codeEntity.getCode().length == 0){
             CodeEntity codeEntity1 = new CodeEntity();
             codeEntity1.setDatatype(codeEntity.getDatatype()+1);
-            Set<String> codelist = CodeGeneratorUtil.generatorCode(codeEntity.getDatatype()+1);
+            Set<String> codelist = CodeGeneratorUtil.generatorCode(CodeType.rank,codeEntity.getDatatype()+1,6);
+            String[] codes = new String[codelist.size()];
+            codelist.toArray(codes);
+            codeEntity1.setCode(codes);
+            mongoTemplate.save(codeEntity1);
+        }
+        codeEntity = mongoTemplate.findOne(query,CodeEntity.class);
+        Update update = new Update();
+        update = update.pull("code",codeEntity.getCode()[0]);
+        mongoTemplate.updateFirst(query,update,CodeEntity.class);
+        return codeEntity.getCode()[0];
+    }
+
+    /**
+     * 榜单邀请码
+     * @param businessname
+     * @return
+     */
+    public String getRankPwdCode(String businessname){
+
+        Criteria criteria = Criteria.where("businessname").is(businessname);
+        Query query = new Query(criteria);
+
+        query.fields().slice("code",1);
+
+        CodeEntity codeEntity = mongoTemplate.findOne(query,CodeEntity.class);
+        if (null == codeEntity){
+            CodeEntity codeEntity1 = new CodeEntity();
+            Set<String> codelist = CodeGeneratorUtil.generatorCode(CodeType.joinpwdrank,1,4);
+            String[] codes = new String[codelist.size()];
+            codelist.toArray(codes);
+            codeEntity1.setCode(codes);
+            mongoTemplate.save(codeEntity1);
+        } else if (codeEntity.getCode() == null || codeEntity.getCode().length == 0){
+            CodeEntity codeEntity1 = new CodeEntity();
+            codeEntity1.setDatatype(codeEntity.getDatatype()+1);
+            Set<String> codelist = CodeGeneratorUtil.generatorCode(CodeType.joinpwdrank,
+                    codeEntity.getDatatype(),codeEntity.getLength()+1);
             String[] codes = new String[codelist.size()];
             codelist.toArray(codes);
             codeEntity1.setCode(codes);

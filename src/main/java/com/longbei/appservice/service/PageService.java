@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 
 import java.util.List;
@@ -50,6 +51,36 @@ public interface PageService {
      * @author luye
      */
     BaseResp<Page<HomePicture>> selectHomePageList(HomePicture homePicture,Integer pageno,Integer pagesize);
+    
+    
+    /**
+     * 查询首页---启动页列表
+     * @param homePoster
+     * @param pageno
+     * @param pagesize
+     * @author yinxc
+     */
+    BaseResp<Page<HomePoster>> homeposterlist(HomePoster homePoster,Integer pageno,Integer pagesize);
+    
+    /**
+     * 查询首页---启动页列表
+     * @param homePoster
+     * @author yinxc
+     */
+    BaseResp<Object> insertHomePoster(HomePoster homePoster);
+    
+    
+    /**
+     * 启动页上下线修改
+     * @author yinxc
+     */
+    BaseResp<Object> updateIsup(String isup, String id);
+    
+    /**
+     * 删除启动页
+     * @author yinxc
+     */
+    BaseResp<Object> updateIsdel(String id);
 
 
 

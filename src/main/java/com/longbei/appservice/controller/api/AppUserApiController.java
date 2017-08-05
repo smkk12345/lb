@@ -143,7 +143,7 @@ public class AppUserApiController {
             return baseResp;
         }
         try {
-            return userService.registerbasic(username, password, inviteuserid,null,null,null);
+            return userService.registerbasic(username, password, inviteuserid,null,null,null,null);
         } catch (Exception e) {
             logger.error("registerbasic error and msg = {}", e);
         }
