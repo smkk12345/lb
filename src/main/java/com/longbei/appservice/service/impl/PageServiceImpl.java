@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -56,7 +57,8 @@ public class PageServiceImpl implements PageService{
     private HomePosterMapper homePosterMapper;
     
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public BaseResp<Object> insertHomePage(HomePicture homePicture) {
         BaseResp baseResp = new BaseResp();
         try {
@@ -71,7 +73,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public BaseResp<Object> udpateHomePage(HomePicture homePicture) {
         BaseResp baseResp = new BaseResp();
         try {
@@ -92,9 +95,10 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<HomePicture> selectHomePageDetail(Integer id) {
-        BaseResp<HomePicture> baseResp = new BaseResp();
+        BaseResp<HomePicture> baseResp = new BaseResp<>();
         try {
             HomePicture homePicture = homePictureMapper.selectByPrimaryKey(id);
             baseResp = BaseResp.ok();
@@ -105,7 +109,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<Page<HomePicture>> selectHomePageList(HomePicture homePicture, Integer pageno, Integer pagesize) {
 
         BaseResp<Page<HomePicture>> baseResp = new BaseResp<>();
@@ -166,12 +171,27 @@ public class PageServiceImpl implements PageService{
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public BaseResp<Object> editPoster(HomePoster homePoster) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            int res = homePosterMapper.updateByPrimaryKeySelective(homePoster);
+            if (res > 0){
+                baseResp = BaseResp.ok();
+            }
+        } catch (Exception e) {
+        	logger.error("editPoster homePoster = {}", JSON.toJSON(homePoster).toString(), e);
+        }
+        return baseResp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public BaseResp<HomePoster> selectHomePoster(String id) {
 		BaseResp<HomePoster> baseResp = new BaseResp<>();
         try {
         	HomePoster homePoster = homePosterMapper.selectByPrimaryKey(Integer.parseInt(id));
-        	baseResp.setData(homePoster);
             baseResp = BaseResp.ok();
+            baseResp.setData(homePoster);
         } catch (Exception e) {
         	logger.error("selectHomePicture id = {}", id, e);
         }
@@ -217,7 +237,8 @@ public class PageServiceImpl implements PageService{
 	}
 
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<List<HomePicture>> selectHomePicList(String type) {
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         List<HomePicture> homePictures = new ArrayList<HomePicture>();
@@ -264,7 +285,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public BaseResp<Object> insertHomeRecommend(HomeRecommend homeRecommend) {
         BaseResp baseResp = new BaseResp();
         try {
@@ -345,7 +367,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<List<HomeRecommend>> selectHomeRecommendList(Integer startno, Integer pagesize) {
         BaseResp<List<HomeRecommend>> baseResp = new BaseResp<>();
         HomeRecommend homeRecommend = new HomeRecommend();
@@ -371,7 +394,8 @@ public class PageServiceImpl implements PageService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public BaseResp<Object> updateHomeRecommend(HomeRecommend homeRecommend) {
         BaseResp baseResp = new BaseResp();
         try {
