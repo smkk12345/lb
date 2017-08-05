@@ -81,6 +81,7 @@ public class CodeDao extends BaseMongoDao<CodeEntity>{
             String[] codes = new String[codelist.size()];
             codelist.toArray(codes);
             codeEntity1.setCode(codes);
+            codeEntity1.setBusinessname(CodeType.joinpwdrank.toString());
             mongoTemplate.save(codeEntity1);
         } else if (codeEntity.getCode() == null || codeEntity.getCode().length == 0){
             CodeEntity codeEntity1 = new CodeEntity();
@@ -89,6 +90,7 @@ public class CodeDao extends BaseMongoDao<CodeEntity>{
                     codeEntity.getDatatype(),codeEntity.getLength()+1);
             String[] codes = new String[codelist.size()];
             codelist.toArray(codes);
+            codeEntity1.setBusinessname(CodeType.joinpwdrank.toString());
             codeEntity1.setCode(codes);
             mongoTemplate.save(codeEntity1);
         }
