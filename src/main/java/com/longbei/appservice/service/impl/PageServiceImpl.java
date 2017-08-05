@@ -162,6 +162,21 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<HomePoster> selectHomePoster(String id) {
+		BaseResp<HomePoster> baseResp = new BaseResp<>();
+        try {
+        	HomePoster homePoster = homePosterMapper.selectByPrimaryKey(Integer.parseInt(id));
+        	baseResp.setData(homePoster);
+            baseResp = BaseResp.ok();
+        } catch (Exception e) {
+        	logger.error("selectHomePicture id = {}", id, e);
+        }
+        return baseResp;
+	}
 
 
 	@SuppressWarnings("unchecked")

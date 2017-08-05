@@ -69,6 +69,12 @@ public interface PageService {
      */
     BaseResp<Object> insertHomePoster(HomePoster homePoster);
     
+    /**
+     * 查询首页---启动页信息
+     * @author yinxc
+     */
+    BaseResp<HomePoster> selectHomePoster(String id);
+    
     
     /**
      * 启动页上下线修改

@@ -290,6 +290,23 @@ public class PageApiController {
     }
     
     
+    
+    /**
+     * 获取启动页信息
+     * @author yinxc
+     */
+    @RequestMapping(value = "selectHomePoster")
+    public BaseResp<HomePoster> selectHomePoster(String id){
+        BaseResp<HomePoster> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectHomePoster(id);
+        } catch (Exception e) {
+            logger.error("selectHomePicture id = {}", id, e);
+        }
+        return baseResp;
+    }
+    
+    
 
     /**
      * 保存或更新注册协议
