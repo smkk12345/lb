@@ -1850,6 +1850,8 @@ public class UserServiceImpl implements UserService {
 		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
 		map.put("maxlevel",5);
 		map.put("inviteawardinfo",createInviteAwardInfo());
+		map.put("inviteurl","http://www.baidu.com");
+		map.put("inviteruleurl","http://www.baidu.com");
 		UserInfo userInfo = null;
 		try {
 			userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
