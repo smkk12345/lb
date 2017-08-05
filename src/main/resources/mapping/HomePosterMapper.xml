@@ -26,6 +26,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   
+  <select id="selectHomePosterIsup" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from home_poster
+    where isup = 1 
+  </select>
+  
   <select id="selectCount" parameterType="com.longbei.appservice.entity.HomePoster" resultType="java.lang.Integer">
     SELECT count(*) FROM home_poster 
     WHERE isdel = 0 

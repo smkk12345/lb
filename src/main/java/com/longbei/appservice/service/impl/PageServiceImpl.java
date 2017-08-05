@@ -197,6 +197,27 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<HomePoster> selectHomePosterIsup() {
+		BaseResp<HomePoster> baseResp = new BaseResp<>();
+        try {
+        	HomePoster homePoster = homePosterMapper.selectHomePosterIsup();
+        	if(null != homePoster){
+        		//contenttype 关联 内容类型 0 - 龙榜 1 - 教室  2 - 专题   3 - 达人  4 - 商品
+        		if ("2".equals(homePoster.getContenttype())){
+        			homePoster.setHref(AppserviceConfig.seminarurl + "?seminarid=" + homePoster.getHref());
+                }
+        		homePoster.setPhotos(AppserviceConfig.oss_media + homePoster.getPhotos());
+        	}
+            baseResp = BaseResp.ok();
+            baseResp.setData(homePoster);
+        } catch (Exception e) {
+        	logger.error("selectHomePicture ", e);
+        }
+        return baseResp;
+	}
 
 
 	@SuppressWarnings("unchecked")

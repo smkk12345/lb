@@ -421,7 +421,7 @@ public class Constant {
 	 * 龙榜列表
 	 * 龙榜详情
 	 */
-	public static final String VISITOR_URL = "/home/homepics,/rank/selectWinningRankAward," +
+	public static final String VISITOR_URL = "/home/homepics,/home/homePoster,/rank/selectWinningRankAward," +
 			"/rank/selectRankListForApp," +
 			"/user/selectFashionManUser,/improve/recommendlist,/improve/line/list," +
 			"/rank/selectRankList," +
