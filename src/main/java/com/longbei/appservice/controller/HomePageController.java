@@ -3,6 +3,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.HomePicture;
+import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.service.PageService;
 import org.slf4j.Logger;
@@ -28,6 +29,22 @@ public class HomePageController {
     @Autowired
     private PageService pageService;
 
+    
+    /**
+     * 获取首页活动页---广告页
+     * @url http://ip:port/app_service/home/homePoster
+     * @return
+     */
+    @RequestMapping(value = "homePoster")
+    public BaseResp<HomePoster> homePoster(){
+        BaseResp<HomePoster> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectHomePosterIsup();
+        } catch (Exception e) {
+            logger.error("homePoster is error:", e);
+        }
+        return baseResp;
+    }
 
     /**
      * 获取首页轮播图

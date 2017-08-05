@@ -404,7 +404,7 @@ public class Constant {
 	 */
 	public static final String NOT_NEED_SECURITY_FILTER_URL_ARR = "/user/login,/user/sms," +
 			"/user/registerbasic,/user/thirdlogin,/user/thirdregister," +
-			"/user/checkSms,/init,/user/findPassword,/syssetting/upgrade,/user/getRandomNickName";
+			"/user/checkSms,/init,/home/homePoster,/user/findPassword,/syssetting/upgrade,/user/getRandomNickName";
 
 	public static final String VISITOR_UID = "-1";
 	/**

@@ -14,6 +14,12 @@ public interface HomePosterMapper {
     int insertSelective(HomePoster record);
 
     HomePoster selectByPrimaryKey(Integer id);
+    
+    /**
+     * 查询首页---启动页信息（上架）
+     * @author yinxc
+     */
+    HomePoster selectHomePosterIsup();
 
     int updateByPrimaryKeySelective(HomePoster record);
 

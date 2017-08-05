@@ -82,6 +82,12 @@ public interface PageService {
      */
     BaseResp<HomePoster> selectHomePoster(String id);
     
+    /**
+     * 查询首页---启动页信息（上架）
+     * @author yinxc
+     */
+    BaseResp<HomePoster> selectHomePosterIsup();
+    
     
     /**
      * 启动页上下线修改
