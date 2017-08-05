@@ -63,11 +63,24 @@ public interface PageService {
     BaseResp<Page<HomePoster>> homeposterlist(HomePoster homePoster,Integer pageno,Integer pagesize);
     
     /**
-     * 查询首页---启动页列表
+     * 添加首页---启动页
      * @param homePoster
      * @author yinxc
      */
     BaseResp<Object> insertHomePoster(HomePoster homePoster);
+    
+    /**
+     * 修改首页---启动页
+     * @param homePoster
+     * @author yinxc
+     */
+    BaseResp<Object> editPoster(HomePoster homePoster);
+    
+    /**
+     * 查询首页---启动页信息
+     * @author yinxc
+     */
+    BaseResp<HomePoster> selectHomePoster(String id);
     
     
     /**

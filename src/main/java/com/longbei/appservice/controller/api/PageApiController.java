@@ -260,6 +260,23 @@ public class PageApiController {
     }
     
     /**
+     * 编辑启动页
+     * @param homePoster
+     * @return
+     * @author yinxc
+     */
+    @RequestMapping(value = "editPoster")
+    public BaseResp<Object> editPoster(@RequestBody HomePoster homePoster){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.editPoster(homePoster);
+        } catch (Exception e) {
+        	logger.error("editPoster homePoster = {}", JSON.toJSON(homePoster).toString(), e);
+        }
+        return baseResp;
+    }
+    
+    /**
      * 启动页上下线修改
      * @author yinxc
      */
@@ -285,6 +302,23 @@ public class PageApiController {
             baseResp = pageService.updateIsdel(id);
         } catch (Exception e) {
         	logger.error("updateIsdel id = {}", id, e);
+        }
+        return baseResp;
+    }
+    
+    
+    
+    /**
+     * 获取启动页信息
+     * @author yinxc
+     */
+    @RequestMapping(value = "selectHomePoster")
+    public BaseResp<HomePoster> selectHomePoster(String id){
+        BaseResp<HomePoster> baseResp = new BaseResp<>();
+        try {
+            baseResp = pageService.selectHomePoster(id);
+        } catch (Exception e) {
+            logger.error("selectHomePicture id = {}", id, e);
         }
         return baseResp;
     }
