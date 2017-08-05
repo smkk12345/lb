@@ -69,6 +69,7 @@ public class Constant_Imp_Icon {
 
     public static int INVITE_LEVEL1_LIMIT = SysRulesCache.behaviorRule.getFriendregisterimpcoinsmax();
 
+
     /**
      * 添加好友赠送的进步币
      */

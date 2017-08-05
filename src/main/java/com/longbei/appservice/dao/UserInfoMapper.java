@@ -147,4 +147,10 @@ public interface UserInfoMapper {
 
 	int clearOtherDevice(@Param("userid")long userid,@Param("deviceindex") String deviceindex);
 
+	/**
+	 * 更新邀请获得进步币
+	 * @return
+	 */
+	int updateInvitTotalCoins(@Param("userid") String userid,@Param("coinnum") Integer coinnum);
+
 }

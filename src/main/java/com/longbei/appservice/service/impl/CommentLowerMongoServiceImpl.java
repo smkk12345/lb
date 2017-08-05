@@ -2,10 +2,14 @@ package com.longbei.appservice.service.impl;
 
 import java.util.List;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.ImproveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.longbei.appservice.common.BaseResp;
@@ -16,11 +20,6 @@ import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Comment;
-import com.longbei.appservice.entity.CommentCount;
-import com.longbei.appservice.entity.CommentLower;
-import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.CommentLowerMongoService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMsgService;
@@ -42,18 +41,22 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	private UserBehaviourService userBehaviourService;
 	@Autowired
 	private UserMongoDao userMongoDao;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
+	private ImproveService improveService;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentLowerMongoServiceImpl.class);
 	
 	@Override
-	public BaseResp<Object> insertCommentLower(CommentLower commentLower) {
+	public BaseResp<Object> insertCommentLower(final CommentLower commentLower) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			insert(commentLower);
 			//修改主评论条数
 			updateCountSizeInsert(commentLower.getCommentid());
 			//添加评论消息
-			Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
+			final Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 			if(null != comment){
 				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
@@ -65,6 +68,27 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 								comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
 								commentLower.getContent(), "1", "1", "评论", 0, 
 								commentLower.getCommentid(), commentLower.getId());
+
+						final String impid = comment.getImpid();
+						//24小时热门进步
+						if (!StringUtils.isBlank(impid)){
+							threadPoolTaskExecutor.execute(new Runnable() {
+								@Override
+								public void run() {
+									Improve improve = improveService.selectImproveByImpid(Long.parseLong(impid),null,
+											comment.getBusinesstype(),comment.getBusinessid());
+									Comment comment1 = commentMongoDao.selectByUseridAndImpid(impid,commentLower.getFirstuserid());
+									if (null == comment1){
+										improveService.toDoHotImprove(improve,comment.getBusinessid(),comment.getBusinesstype(),
+												1 * SysRulesCache.behaviorRule.getCommentscore());
+									}
+								}
+							});
+						}
+
+
+
+
 					}else{
 						userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
 								"", comment.getBusinesstype(), comment.getBusinessid(), 

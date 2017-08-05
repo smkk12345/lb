@@ -120,6 +120,16 @@ public class UserInfo {
 
     private String handleinvite; //邀请注册处理  0-未处理 1-已经处理
 
+    private String invitetotalcoin; //邀请所获得进步币
+
+    public String getInvitetotalcoin() {
+        return invitetotalcoin;
+    }
+
+    public void setInvitetotalcoin(String invitetotalcoin) {
+        this.invitetotalcoin = invitetotalcoin;
+    }
+
     public String getHandleinvite() {
         return handleinvite;
     }

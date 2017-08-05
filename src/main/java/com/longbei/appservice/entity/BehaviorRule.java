@@ -1,5 +1,7 @@
 package com.longbei.appservice.entity;
 
+import io.swagger.models.auth.In;
+
 public class BehaviorRule {
     /**
      *
@@ -10,6 +12,12 @@ public class BehaviorRule {
      * 注册奖励N个龙分；仅一次
      */
     private Integer registergoals;
+
+
+    /**
+     * 注册奖励N个进步币；仅一次
+     */
+    private Integer registercoins;
 
     /**
      * 绑定QQ奖励N个龙分；仅一次
@@ -285,6 +293,21 @@ public class BehaviorRule {
      */
     private Integer joincirclegoalstimes;
 
+    /**
+     * 24小时 热门进步 赞 权重
+     */
+    private Integer likescore;
+    /**
+     * 24小时 热门进步 花 权重
+     */
+    private Integer flowerscore;
+    /**
+     * 24小时 热门进步 评论人数 权重
+     */
+    private Integer commentscore;
+
+
+
     private Integer changedeveicelimitperday = 3;//同一设备每天切换帐号数量
 
     private Integer registerdevicelimit = 100;//同一设备注册帐号数
@@ -294,6 +317,38 @@ public class BehaviorRule {
     private Integer shareGroupCount = 1;//单次内部分享到群限制
 
     private Integer joinclassroomgoalstimes;//用户每天参加教室得分次数限制
+
+    public Integer getRegistercoins() {
+        return registercoins;
+    }
+
+    public void setRegistercoins(Integer registercoins) {
+        this.registercoins = registercoins;
+    }
+
+    public Integer getLikescore() {
+        return likescore;
+    }
+
+    public void setLikescore(Integer likescore) {
+        this.likescore = likescore;
+    }
+
+    public Integer getFlowerscore() {
+        return flowerscore;
+    }
+
+    public void setFlowerscore(Integer flowerscore) {
+        this.flowerscore = flowerscore;
+    }
+
+    public Integer getCommentscore() {
+        return commentscore;
+    }
+
+    public void setCommentscore(Integer commentscore) {
+        this.commentscore = commentscore;
+    }
 
     public Integer getInviteimprovenum() {
         return inviteimprovenum;

@@ -1492,4 +1492,49 @@ public class AppUserController extends BaseController {
         }
         return baseResp;
     }
+
+    /**
+     * 获取用户通过邀请所获得的进步币信息
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value = "/invitecoindetail")
+    @ResponseBody
+    public BaseResp selectInvitCoinDetail(String userid){
+
+        BaseResp baseResp = new BaseResp();
+        if(StringUtils.hasBlankParams(userid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userService.selectInviteCoinsDetail(userid);
+        } catch (Exception e) {
+            logger.error("selectInvitCoinDetail userid:{} is error:",userid,e);
+        }
+        return baseResp;
+
+    }
+
+    /**
+     * 添加邀请码
+     * @param userid 用户id
+     * @param invitecode  邀请人（手机）
+     * @return
+     */
+    @RequestMapping(value = "/insertinvitecode")
+    @ResponseBody
+    public BaseResp addInviteCode(String userid,String invitecode){
+        BaseResp baseResp = new BaseResp();
+        if(StringUtils.hasBlankParams(userid,invitecode)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userService.insertInviteCode(userid,invitecode);
+        } catch (Exception e) {
+            logger.error("userid:[] inveitecode:{} is error:",userid,invitecode,e);
+        }
+        return baseResp;
+    }
+
+
 }

@@ -13,6 +13,7 @@ import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.MsgRedMongDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
@@ -114,6 +115,8 @@ public class UserServiceImpl implements UserService {
 	private DeviceIndexMapper deviceIndexMapper;
 	@Autowired
 	private StatisticService statisticService;
+	@Autowired
+	private MsgRedMongDao msgRedMongDao;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -214,6 +217,14 @@ public class UserServiceImpl implements UserService {
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
+			//判断邀请所获收益是否显示红点    0:不显示   1：显示
+			MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
+			if (null != msgRed){
+				expandData.put("inviteMsg",1);
+				expandData.put("inviteCoin",msgRed.getRemark());
+			} else {
+				expandData.put("inviteMsg",0);
+			}
 			//查询奖品数量----
 			Integer awardnum = 0;
 			if(lookid != userid){
@@ -1538,6 +1549,10 @@ public class UserServiceImpl implements UserService {
 			int temp = userInfoMapper.updateByUseridSelective(userInfo);
 
 			if(temp > 0){
+				if (SysRulesCache.behaviorRule.getRegistercoins() > 0){
+					userImpCoinDetailService.insertPublic(Long.parseLong(userid),"14",
+							SysRulesCache.behaviorRule.getRegistercoins(),0,null);
+				}
 				//更新信息到mongodb
 				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				BeanUtils.copyProperties(userInfo,userInfo1);
@@ -1801,5 +1816,77 @@ public class UserServiceImpl implements UserService {
 			logger.error("afterShareSuccess and userid={},sharePlatform={}", userid,sharePlatform,e);
 		}
 		return baseResp;
+	}
+
+	@Override
+	public BaseResp selectInviteCoinsDetail(String userid) {
+		BaseResp baseResp = new BaseResp();
+		Map<String,Object> map = new HashedMap();
+		map.put("improvenum",SysRulesCache.behaviorRule.getInviteimprovenum());
+		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
+		map.put("maxlevel",5);
+		map.put("inviteawardinfo",createInviteAwardInfo());
+		UserInfo userInfo = null;
+		try {
+			userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
+			map.put("userinfo",userInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		baseResp.initCodeAndDesp();
+		baseResp.setData(map);
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp insertInviteCode(String userid, String invitecode) {
+		BaseResp baseResp = new BaseResp();
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUserid(Long.parseLong(userid));
+		try {
+			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
+			if (null != appUserMongoEntity){
+				userInfo.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
+				userInfoMapper.updateByUseridSelective(userInfo);
+				baseResp.initCodeAndDesp();
+			}
+		} catch (Exception e) {
+			logger.error("insert invite code userid:{} invitecode:{} is error:",userid,invitecode,e);
+		}
+		return baseResp;
+	}
+
+	private List<String> createInviteAwardInfo(){
+		List<String> list = new ArrayList<>();
+		for (int i = 1 ; i <= 5 ; i++ ){
+			String str = String.valueOf(getImproveCoin(i));
+			list.add(str);
+		}
+		return list;
+	}
+
+
+	private int getImproveCoin(int level){
+		int icoinnum = 0;
+		switch (level){
+			case 1 :
+				icoinnum = Constant_Imp_Icon.INVITE_LEVEL1;
+				break;
+			case 2 :
+				icoinnum = Constant_Imp_Icon.INVITE_LEVEL2;
+				break;
+			case 3 :
+				icoinnum = Constant_Imp_Icon.INVITE_LEVEL3;
+				break;
+			case 4 :
+				icoinnum = Constant_Imp_Icon.INVITE_LEVEL4;
+				break;
+			case 5 :
+				icoinnum = Constant_Imp_Icon.INVITE_LEVEL5;
+				break;
+			default:
+				break;
+		}
+		return icoinnum;
 	}
 }

@@ -5,11 +5,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
+import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -23,16 +29,6 @@ import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.CommentMongoDao;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Comment;
-import com.longbei.appservice.entity.CommentCount;
-import com.longbei.appservice.entity.CommentLikes;
-import com.longbei.appservice.entity.CommentLower;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.service.CommentMongoService;
-import com.longbei.appservice.service.UserBehaviourService;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserRelationService;
 
 import net.sf.json.JSONObject;
 
@@ -57,11 +53,16 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+	@Autowired
+	private ImproveService improveService;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
 	@Override
-	public BaseResp<Object> insertComment(Comment comment) {
+	public BaseResp<Object> insertComment(final Comment comment) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			insert(comment);
@@ -81,6 +82,26 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 							comment.getImpid(), comment.getBusinesstype(), 
 							comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
 				}
+
+				final String impid = comment.getImpid();
+				//24小时热门进步
+				if (!StringUtils.isBlank(impid)){
+					threadPoolTaskExecutor.execute(new Runnable() {
+						@Override
+						public void run() {
+							Improve improve = improveService.selectImproveByImpid(Long.parseLong(impid),null,
+									comment.getBusinesstype(),comment.getBusinessid());
+							Comment comment1 = commentMongoDao.selectByUseridAndImpid(impid,comment.getUserid());
+							if (null == comment1){
+								improveService.toDoHotImprove(improve,comment.getBusinessid(),comment.getBusinesstype(),
+										1 * SysRulesCache.behaviorRule.getCommentscore());
+							}
+						}
+					});
+				}
+
+
+
 //				insertMsg(comment);
 			}
 

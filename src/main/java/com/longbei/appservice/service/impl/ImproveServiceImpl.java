@@ -13,6 +13,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.ImproveMongoDao;
+import com.longbei.appservice.dao.mongo.dao.MsgRedMongDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
@@ -130,6 +131,8 @@ public class ImproveServiceImpl implements ImproveService{
     private SysSensitiveService sysSensitiveService;
     @Autowired
     private ImproveLikesMapper improveLikesMapper;
+    @Autowired
+    private MsgRedMongDao msgRedMongDao;
 
     /**
      *  @author luye
@@ -230,12 +233,12 @@ public class ImproveServiceImpl implements ImproveService{
             try{
                 final UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
                 //处理邀请发放进步币问题
-//                threadPoolTaskExecutor.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
                         inviteCoinsHandle(userInfo);
-//                    }
-//                });
+                    }
+                });
                 baseResp = userBehaviourService.pointChange(userInfo,"DAILY_ADDIMP",ptype,Constant.USER_IMP_COIN_ADDIMPROVE,improve.getImpid(),0);
                 //发布完成之后redis存储i一天数量信息
                 String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
@@ -275,7 +278,10 @@ public class ImproveServiceImpl implements ImproveService{
             List<UserMsg> userMsgs = new ArrayList<>();
             for (int i = 0 ; i < idarr.length ; i++){
                 userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
+                //邀请所获进步币累加
+                userInfoMapper.updateInvitTotalCoins(idarr[i],getImproveCoin(i));
                 userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
+                msgRedMongDao.insertOrUpdateMsgRed(idarr[i],"0","62",getImproveCoin(i)+"");
             }
             userMsgService.batchInsertUserMsg(userMsgs);
         }
@@ -2069,19 +2075,21 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/3/8 下午3:59
      */
     @Override
-    public BaseResp<Object> addFlower(String userid,String friendid, String impid,
-                                      int flowernum,String businesstype,String businessid) {
+    public BaseResp<Object> addFlower(String userid, String friendid, String impid,
+                                      final int flowernum, final String businesstype,final String businessid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         //判断龙币是否充足
 //        BaseResp baseResp = moneyService.isEnoughLongMoney(userid,flowernum*Constant.FLOWER_PRICE);
 //        if (!ResultUtil.isSuccess(baseResp)){
 //            return baseResp;
 //        }
-        if ("0".equals(businesstype)){
-            businessid = null;
-        }
 
-        Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+
+//        if ("0".equals(businesstype)){
+//            businessid = null;
+//        }
+
+        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
         UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         if(null == improve || null == userInfo){
             return baseResp;
@@ -2100,6 +2108,14 @@ public class ImproveServiceImpl implements ImproveService{
                         getTableNameByBusinessType(businesstype));
             }
             if (res > 0){
+
+                //24小时热门进步
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        toDoHotImprove(improve,businessid,businesstype,flowernum * SysRulesCache.behaviorRule.getFlowerscore());
+                    }
+                });
                 //redis
 //                addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
                 timeLineDetailDao.updateImproveFlower(businesstype,Long.valueOf(impid),flowernum);
@@ -2404,7 +2420,13 @@ public class ImproveServiceImpl implements ImproveService{
         Map<String,String> map = new HashMap<>();
         map.put("lfd"+userid,userid);
         //24小时热门进步
-        toDoHotImprove(improve,businessid,businesstype,1);
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                toDoHotImprove(improve,businessid,businesstype,1 * SysRulesCache.behaviorRule.getLikescore());
+            }
+        });
+
         //将赞保存到redis
         setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
         //添加临时记录
@@ -2414,20 +2436,18 @@ public class ImproveServiceImpl implements ImproveService{
         springJedisDao.increment(Constant.RP_USER_PERDAY+userid,dateStr+Constant.PERDAY_ADD_LIKE,1);
     }
 
-    public void toDoHotImprove(final Improve improve, final String businessid, final String businesstype, final int score){
+    public void toDoHotImprove(Improve improve, String businessid, String businesstype,int score){
+        if (null == improve){
+            return;
+        }
         if (Constant.IMPROVE_ISPUBLIC_2.equals(improve.getIspublic())){
-            threadPoolTaskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
-                    try {
-                        String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
-                        springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,score, (long) (25*60*60));
-                    } catch (ParseException e) {
-                        logger.error("date format is error:",e);
-                    }
-                }
-            });
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+            try {
+                String key = dateFormat.parse(dateFormat.format(new Date())).getTime()+"";
+                springJedisDao.zIncrby(key,improve.getImpid()+","+businessid+","+businesstype,score, (long) (25*60*60));
+            } catch (ParseException e) {
+                logger.error("date format is error:",e);
+            }
         }
     }
 

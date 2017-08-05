@@ -283,4 +283,16 @@ public interface UserService {
 	 * @currentdate:2017年6月22日
 	 */
 	BaseResp<Object> afterShareSuccess(Long userid, String sharePlatform);
+
+	/**
+	 * 用户通过邀请所获得的进步币
+	 * @param userid
+	 * @return
+	 */
+	BaseResp selectInviteCoinsDetail(String userid);
+
+
+	BaseResp insertInviteCode(String userid,String invitecode);
+
+
 }

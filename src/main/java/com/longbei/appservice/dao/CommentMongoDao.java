@@ -137,5 +137,12 @@ public class CommentMongoDao {
 			logger.error("deleteComment id = {}", id, e);
 		}
 	}
+
+
+	public Comment selectByUseridAndImpid(String impid,String userid){
+		Query query = Query.query(Criteria.where("userid").is(userid).and("impid").is(impid));
+		Comment comment = mongoTemplate1.findOne(query,Comment.class);
+		return comment;
+	}
 	
 }

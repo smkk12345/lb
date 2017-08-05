@@ -594,4 +594,9 @@ public interface ImproveService {
 
 
     BaseResp<String> improveLikesCopy();
+
+
+    void toDoHotImprove(Improve improve, String businessid, String businesstype,int score);
+
+
 }
