@@ -14,6 +14,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -58,6 +59,8 @@ public class SeminarServiceImpl implements SeminarService{
     private ClassroomMapper classroomMapper;
     @Autowired
     private ClassroomService classroomService;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 
     @Override
@@ -283,12 +286,19 @@ public class SeminarServiceImpl implements SeminarService{
     }
 
     @Override
-    public BaseResp<Seminar> selectSeminarAllDetail(String seminarid) {
+    public BaseResp<Seminar> selectSeminarAllDetail(final String seminarid) {
         BaseResp<Seminar> baseResp = new BaseResp<>();
         try {
             baseResp = selectSeminar(seminarid);
             if (ResultUtil.isSuccess(baseResp)){
                 BaseResp<List<SeminarModule>> base = selectSeminarModules(seminarid);
+                //专题浏览量
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        seminarMapper.updatePageViewBySeminarid(seminarid);
+                    }
+                });
                 if (null != baseResp.getData()){
                     baseResp.getData().setSeminarModules(base.getData());
                 }

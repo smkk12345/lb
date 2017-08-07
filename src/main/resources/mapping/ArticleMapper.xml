@@ -176,4 +176,11 @@
       pageview = #{pageview,jdbcType=BIGINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updatePageViewById">
+    update article
+    SET pageview = pageview + 1
+    WHERE id = #{id}
+  </update>
+
 </mapper>
