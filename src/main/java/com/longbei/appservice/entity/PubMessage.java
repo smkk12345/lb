@@ -48,6 +48,28 @@ public class PubMessage {
      */
     private Date createtime;
 
+    /**
+     * 消息关联内容
+     */
+    private Article article;
+    private Seminar seminar;
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+
+    public Seminar getSeminar() {
+        return seminar;
+    }
+
+    public void setSeminar(Seminar seminar) {
+        this.seminar = seminar;
+    }
+
     public Integer getId() {
         return id;
     }
