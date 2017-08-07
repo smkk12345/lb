@@ -1,5 +1,8 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class PubMessage {
@@ -12,6 +15,11 @@ public class PubMessage {
      * 消息标题
      */
     private String msgtitle;
+
+    /**
+     * 关联内容id
+     */
+    private Long targetid;
 
     /**
      * 消息内容
@@ -70,6 +78,14 @@ public class PubMessage {
         this.seminar = seminar;
     }
 
+    public Long getTargetid() {
+        return targetid;
+    }
+
+    public void setTargetid(Long targetid) {
+        this.targetid = targetid;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -125,7 +141,8 @@ public class PubMessage {
     public void setIsdel(String isdel) {
         this.isdel = isdel == null ? null : isdel.trim();
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getPublishtime() {
         return publishtime;
     }
@@ -133,7 +150,8 @@ public class PubMessage {
     public void setPublishtime(Date publishtime) {
         this.publishtime = publishtime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
