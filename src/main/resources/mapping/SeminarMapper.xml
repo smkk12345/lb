@@ -11,10 +11,11 @@
     <result column="createuserid" property="createuserid" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="pageview" property="pageview" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, seminarid, seminarpic, seminartitle, sharebrief, seminartarget, createuserid, 
-    createtime, updatetime
+    createtime, updatetime,pageview
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -177,4 +178,11 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updatePageViewBySeminarid">
+    UPDATE seminar
+    SET pageview = pageview + 1
+    WHERE seminarid = #{seminarid}
+  </update>
+
 </mapper>

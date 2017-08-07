@@ -58,6 +58,18 @@ public class Seminar {
      */
     private List<SeminarModule> seminarModules;
 
+    /**
+     * 浏览量
+     */
+    private Long pageview;
+
+    public Long getPageview() {
+        return pageview;
+    }
+
+    public void setPageview(Long pageview) {
+        this.pageview = pageview;
+    }
 
     public List<SeminarModule> getSeminarModules() {
         return seminarModules;

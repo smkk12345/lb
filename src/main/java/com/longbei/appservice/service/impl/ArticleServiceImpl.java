@@ -16,6 +16,7 @@ import org.apache.tools.ant.taskdefs.Concat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Autowired
     private RankService rankService;
+
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Override
     public boolean insertArticle(Article article) {
@@ -82,7 +86,7 @@ public class ArticleServiceImpl implements ArticleService{
 
 
     @Override
-    public BaseResp<Article> getArticleH5(String articleid) {
+    public BaseResp<Article> getArticleH5(final String articleid) {
         BaseResp<Article> baseResp = new BaseResp<Article>();
         Article article = new Article();
         try {
@@ -91,6 +95,13 @@ public class ArticleServiceImpl implements ArticleService{
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_620,Constant.RTNINFO_SYS_620);
                 return baseResp;
             }
+            //文章浏览量
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    articleMapper.updatePageViewById(articleid);
+                }
+            });
             List<ArticleBusiness> articleBusinesses =  articleBusinessMapper.selectArticleBusinessList(articleid);
             for(int i = 0;i<articleBusinesses.size();i++){
                 ArticleBusiness articleBusiness = articleBusinesses.get(i);
