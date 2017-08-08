@@ -87,6 +87,7 @@ public class UserCardServiceImpl implements UserCardService {
         try {
             int n = userCardMapper.insertUserCard(userCard);
             if(n == 1){
+                baseResp.setData(userCard.getCardid());
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {
