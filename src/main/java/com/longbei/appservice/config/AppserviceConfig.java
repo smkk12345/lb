@@ -128,6 +128,8 @@ public class AppserviceConfig {
     public static String h5_share_invite;
     public static String h5_agreementurl;
     public static String h5_levelprivilege;
+    public static String h5_invite;
+    public static String h5_invite_rule;
     public static String articleurl;
     public static String seminarurl;
 

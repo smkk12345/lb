@@ -121,6 +121,8 @@ public class UserServiceImpl implements UserService {
 	private SysNicknamesMapper sysNicknamesMapper;
 	@Autowired
 	private SysSensitiveService sysSensitiveService;
+	@Autowired
+	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -561,6 +563,7 @@ public class UserServiceImpl implements UserService {
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
 		}
+		String token = (String)baseResp.getData();
 		//Long userid,String username, String nickname,String inviteuserid
 		//获取唯一昵称
 		if(StringUtils.isBlank(nickname)){
@@ -579,7 +582,6 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
-		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		if(ResultUtil.isSuccess(baseResp)){
 			baseResp.getExpandData().put("token", token);
@@ -1851,10 +1853,10 @@ public class UserServiceImpl implements UserService {
 		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
 		map.put("maxlevel",5);
 		map.put("inviteawardinfo",createInviteAwardInfo());
-		map.put("inviteurl",ShortUrlUtils.getShortUrl("http://www.baidu.com"));
+		map.put("inviteurl",ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
 		map.put("invitetitle","我正在玩“龙杯”，推荐给你!");
 		map.put("invitecontent","总是设立美好的目标，但也总是光说不练，那么神仙也帮不了你！来龙杯，我们一起进步！还有海量进步币等你来拿。");
-		map.put("inviteruleurl","http://www.baidu.com");
+		map.put("inviteruleurl",AppserviceConfig.h5_invite_rule);
 		//判断邀请所获收益是否显示红点    0:不显示   1：显示
 		MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
 		if (null != msgRed){
@@ -1885,11 +1887,13 @@ public class UserServiceImpl implements UserService {
 			if (null != appUserMongoEntity){
 				UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				userInfo.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
-//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
-//
-//				}
 				userInfo.setHandleinvite("0");
 				userInfoMapper.updateByUseridSelective(userInfo);
+//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
+//					info.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
+//					info.setHandleinvite("0");
+//					improveService.inviteCoinsHandle(info);
+//				}
 				baseResp.initCodeAndDesp();
 			}
 		} catch (Exception e) {

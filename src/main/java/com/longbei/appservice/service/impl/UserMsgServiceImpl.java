@@ -320,6 +320,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 	public Map<String,Object> selectShowMy(long userid) {
 		//点赞:is_like  献花:is_flower  钻石:is_diamond  评论设置:is_comment(我同意接收到这些人的评论通知))
 		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//判断邀请所获收益是否显示红点    0:不显示   1：显示
+		MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
+
 		try{
 			Map<String, Object> expandData = userSettingCommonService.selectMapByUserid(userid+"");
 			List<String> msgTypeList = new ArrayList<String>();
@@ -334,13 +337,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 				//献花   打开提醒
 				msgTypeList.add(Constant.MSG_FLOWER_TYPE);
 			}
-			//判断邀请所获收益是否显示红点    0:不显示   1：显示
-			MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
-			if (null != msgRed){
-				resultMap.put("inviteMsg",1);
-			} else {
-				resultMap.put("inviteMsg",0);
-			}
+
 			Date mymaxDate = null;
 			Date commentMaxDate = null;
 			HotLine hotLine = hotLineMongoDao.selectHotLineByUid(userid+"");
@@ -353,10 +350,23 @@ public class UserMsgServiceImpl implements UserMsgService {
 			}else if(expandData.get("is_comment").toString().equals("1")){
 				commentMaxDate = getShowCommentDate(userid, mymaxDate);
 			}
+
 			if(msgTypeList.size() == 0 && commentMaxDate == null){
-				resultMap.put("mycount", 0);
+				if (null != msgRed){
+					resultMap.put("inviteMsg",1);
+					resultMap.put("mycount", 1);
+				} else {
+					resultMap.put("inviteMsg",0);
+					resultMap.put("mycount", 0);
+				}
+
 				return resultMap;
 			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
+				if (null != msgRed){
+					resultMap.put("inviteMsg",1);
+				} else {
+					resultMap.put("inviteMsg",0);
+				}
 				resultMap.put("mycount", 1);
 				return resultMap;
 			}
@@ -372,6 +382,11 @@ public class UserMsgServiceImpl implements UserMsgService {
 			int count = resultMap.containsKey("count")?Integer.parseInt(resultMap.get("count").toString()):0;
 			if(count > 0){
 				resultMap.put("mycount", 1);
+				if (null != msgRed){
+					resultMap.put("inviteMsg",1);
+				} else {
+					resultMap.put("inviteMsg",0);
+				}
 				return resultMap;
 			}
 			if(commentMaxDate == null){
@@ -382,16 +397,34 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}else{
 					resultMap.put("mycount", 1);
 				}
+				if (null != msgRed){
+					resultMap.put("inviteMsg",1);
+					resultMap.put("mycount", 1);
+				} else {
+					resultMap.put("inviteMsg",0);
+				}
 				return resultMap;
 			}else{
 				resultMap.put("mycount", 1);
+				if (null != msgRed){
+					resultMap.put("inviteMsg",1);
+				} else {
+					resultMap.put("inviteMsg",0);
+				}
 				return resultMap;
 			}
 			
 		}catch(Exception e){
 			logger.error("selectMapByUserid userid = {}", userid, e);
 		}
-		resultMap.put("mycount", 0);
+		if (null != msgRed){
+			resultMap.put("inviteMsg",1);
+			resultMap.put("mycount", 1);
+		} else {
+			resultMap.put("inviteMsg",0);
+			resultMap.put("mycount", 0);
+		}
+
 		return resultMap;
 	}
 	
