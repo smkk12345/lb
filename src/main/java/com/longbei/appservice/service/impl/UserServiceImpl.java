@@ -121,6 +121,8 @@ public class UserServiceImpl implements UserService {
 	private SysNicknamesMapper sysNicknamesMapper;
 	@Autowired
 	private SysSensitiveService sysSensitiveService;
+	@Autowired
+	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -1885,11 +1887,13 @@ public class UserServiceImpl implements UserService {
 			if (null != appUserMongoEntity){
 				UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				userInfo.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
-//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
-//
-//				}
 				userInfo.setHandleinvite("0");
 				userInfoMapper.updateByUseridSelective(userInfo);
+//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
+//					info.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
+//					info.setHandleinvite("0");
+//					improveService.inviteCoinsHandle(info);
+//				}
 				baseResp.initCodeAndDesp();
 			}
 		} catch (Exception e) {
