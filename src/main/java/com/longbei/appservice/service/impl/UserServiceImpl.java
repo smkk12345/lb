@@ -221,14 +221,7 @@ public class UserServiceImpl implements UserService {
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
-			//判断邀请所获收益是否显示红点    0:不显示   1：显示
-			MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
-			if (null != msgRed){
-				expandData.put("inviteMsg",1);
-				expandData.put("inviteCoin",msgRed.getRemark());
-			} else {
-				expandData.put("inviteMsg",0);
-			}
+
 			//查询奖品数量----
 			Integer awardnum = 0;
 			if(lookid != userid){
@@ -1850,8 +1843,17 @@ public class UserServiceImpl implements UserService {
 		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
 		map.put("maxlevel",5);
 		map.put("inviteawardinfo",createInviteAwardInfo());
-		map.put("inviteurl","http://www.baidu.com");
+		map.put("inviteurl",ShortUrlUtils.getShortUrl("http://www.baidu.com"));
+		map.put("invitetitle","我正在玩“龙杯”，推荐给你!");
+		map.put("invitecontent","总是设立美好的目标，但也总是光说不练，那么神仙也帮不了你！来龙杯，我们一起进步！还有海量进步币等你来拿。");
 		map.put("inviteruleurl","http://www.baidu.com");
+		//判断邀请所获收益是否显示红点    0:不显示   1：显示
+		MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
+		if (null != msgRed){
+			map.put("inviteCoin",msgRed.getRemark());
+		} else {
+			map.put("inviteCoin",0);
+		}
 		UserInfo userInfo = null;
 		try {
 			userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
