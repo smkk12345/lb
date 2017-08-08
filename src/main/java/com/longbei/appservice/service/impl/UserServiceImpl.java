@@ -1850,9 +1850,9 @@ public class UserServiceImpl implements UserService {
 		//判断邀请所获收益是否显示红点    0:不显示   1：显示
 		MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
 		if (null != msgRed){
-			map.put("inviteCoin",msgRed.getRemark());
+			map.put("invitecoinnew",msgRed.getRemark());
 		} else {
-			map.put("inviteCoin",0);
+			map.put("invitecoinnew",0);
 		}
 		UserInfo userInfo = null;
 		try {
