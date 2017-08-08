@@ -17,6 +17,7 @@ import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
 import com.longbei.appservice.common.utils.*;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
@@ -1222,15 +1223,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		JSONArray jsonArr = JSONArray.fromObject(mobileUserListStr);
 		Set<String> fids = getFriendIds(userid);
 		AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(userid));
-//		String usertel = appUser.getUsername();
-//		usertel = usertel.substring(0, 3) + "****" + usertel.substring(7, usertel.length());
-//		String codeUserid = DecodesUtils.getBase64(String.valueOf(userid));
-//		String enCodenickname = DecodesUtils.getBase64(appUser.getNickname());
-//		try {
-//			enCodenickname = URLEncoder.encode(appUser.getNickname(), "UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
+		String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_invite+"?userid="+appUser.getId());
 		JSONArray resultArr = new JSONArray();
 		try {
 			for (int i = 0; i < jsonArr.size(); i++) {
@@ -1290,6 +1283,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 //				logger.debug(js.toString());
 			}
 			baseResp.setData(resultArr);
+			baseResp.getExpandData().put("inviteurl",shortUrl);
 			baseResp.initCodeAndDesp();
 		} catch (Exception e) {
 			logger.error("readMobileUserList error",e);
