@@ -72,6 +72,5 @@ public interface PubMessageService {
     BaseResp publishMessage(String id, String msgstatus, Date publishtime);
 
 
-
-
+    BaseResp autoPubMessage();
 }

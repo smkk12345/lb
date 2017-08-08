@@ -10,7 +10,7 @@ spring:
       # REDIS
       redis:
             database: 0 # database name
-            host: 172.22.1.5 # server host
+            host: 172.22.2.5 # server host
             password: nVy9BTkL # server password
             port: 6379 # connection port
             pool:

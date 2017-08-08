@@ -171,6 +171,17 @@ public class PubMessageApiController {
     }
 
 
+    @RequestMapping(value = "autoPub",method = RequestMethod.POST)
+    public BaseResp autoPubMessage(){
+        BaseResp baseResp = new BaseResp();
+        logger.info("autoPubMessage call and time = {}",DateUtils.getDate());
+        try {
+            baseResp = pubMessageService.autoPubMessage();
+        } catch (Exception e) {
+            logger.error("autoPub message is error:",e);
+        }
+        return baseResp;
+    }
 
 
 }
