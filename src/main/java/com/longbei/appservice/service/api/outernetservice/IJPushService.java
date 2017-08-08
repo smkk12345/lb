@@ -19,4 +19,11 @@ public interface IJPushService {
                                  @RequestParam("alert") String alert,
                                  @RequestParam("title") String title,
                                  @RequestParam("content")String content);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/jpush/messagePushAll")
+    BaseResp<Object> messagePushAll(
+                                 @RequestParam("alert") String alert,
+                                 @RequestParam("title") String title,
+                                 @RequestParam("content")String content);
+
 }

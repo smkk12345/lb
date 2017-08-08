@@ -27,4 +27,6 @@ public interface SeminarMapper {
     int updateByPrimaryKeySelective(Seminar record);
 
     int updateByPrimaryKey(Seminar record);
+
+    int updatePageViewBySeminarid(@Param("seminarid") String seminarid);
 }

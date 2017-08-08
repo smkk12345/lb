@@ -25,4 +25,6 @@ public interface ArticleMapper {
     List<Article> selectArticleList(@Param("article") Article article,
                                               @Param("startno") Integer startno, @Param("pagesize") Integer pageszie);
 
+    int updatePageViewById(@Param("id") String id);
+
 }

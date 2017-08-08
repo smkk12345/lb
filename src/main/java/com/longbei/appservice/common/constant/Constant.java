@@ -770,6 +770,10 @@ public class Constant {
 //	public static final String JPUSH_TAG_COUNT_1501 = "1501";//榜主@好友上榜
 	public static final String JPUSH_TAG_COUNT_1502 = "1502";//龙榜获奖
 //	public static final String JPUSH_TAG_COUNT_1503 = "1503";//创建的榜单通过审核
+	/**
+	 * 运营推送消息 16开头
+	 */
+	public static final String JPUSH_TAG_COUNT_1601 = "1601";//运营推广
 	/**---------------自定义消息--设置title为空即可------------------**/
 	//100开始 10001
 

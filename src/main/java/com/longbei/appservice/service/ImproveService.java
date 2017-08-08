@@ -599,4 +599,6 @@ public interface ImproveService {
     void toDoHotImprove(Improve improve, String businessid, String businesstype,int score);
 
 
+    void inviteCoinsHandle(UserInfo userInfo);
+
 }

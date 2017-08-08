@@ -266,7 +266,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private void inviteCoinsHandle(UserInfo userInfo){
+    public void inviteCoinsHandle(UserInfo userInfo){
         if (userInfo.getTotalimp() + 1 >= SysRulesCache.behaviorRule.getInviteimprovenum() &&
                 "0".equals(userInfo.getHandleinvite())){
             UserInfo info = new UserInfo();
