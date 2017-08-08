@@ -1856,6 +1856,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
 			map.put("userinfo",userInfo);
+			msgRedMongDao.deleteMsgRed(userid,"0","62");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
