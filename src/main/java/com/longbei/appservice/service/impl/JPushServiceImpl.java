@@ -8,6 +8,8 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * Created by wangyongzhi 17/4/9.
  */
@@ -35,6 +37,26 @@ public class JPushServiceImpl extends BaseServiceImpl implements JPushService {
         pushMessage.put("msgid",msgid);
         pushMessage.put("tag", tag);
         BaseResp<Object> baseResp = iJPushService.messagePush(userId,title,content,pushMessage.toString());
+        if(baseResp.getCode() == 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean pushMessageToAll(String status,
+                                    String title,
+                                    String content,
+                                    String msgid,
+                                    String tag,
+                                    Map<String,Object> exeMap) {
+        JSONObject pushMessage = new JSONObject();
+        pushMessage.put("status",status);
+        pushMessage.put("content",content);
+        pushMessage.put("msgid",msgid);
+        pushMessage.put("tag", tag);
+        pushMessage.putAll(exeMap);
+        BaseResp<Object> baseResp = iJPushService.messagePushAll(title,content,pushMessage.toString());
         if(baseResp.getCode() == 0){
             return true;
         }

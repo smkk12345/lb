@@ -1,5 +1,7 @@
 package com.longbei.appservice.service;
 
+import java.util.Map;
+
 /**
  * Created by wangyongzhi 17/4/9.
  */
@@ -16,4 +18,20 @@ public interface JPushService extends BaseService {
      * @return
      */
     boolean pushMessage(String status,String userId,String title,String content,String msgid,String tag);
+
+    /**
+     * 发送全体push消息
+     * @param status
+     * @param title
+     * @param content
+     * @param msgid
+     * @param tag
+     * @return
+     */
+    boolean pushMessageToAll(String status,
+                             String title,
+                             String content,
+                             String msgid,
+                             String tag,
+                             Map<String,Object> exeMap);
 }

@@ -11,11 +11,49 @@
     <result column="isdel" property="isdel" jdbcType="CHAR" />
     <result column="publishtime" property="publishtime" jdbcType="TIMESTAMP" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="targetid" property="targetid" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, msgtitle, msgcontent, msgtarget, msgstatus, createuserid, isdel, publishtime, 
-    createtime
+    createtime,targetid
   </sql>
+
+
+  <select id="selectCount" resultType="java.lang.Integer">
+    SELECT count(*) FROM pubmessage
+    <where>
+      <if test="msg.msgcontent != null">
+        AND msgcontent LIKE concat(concat('%',#{msg.msgcontent}),'%')
+      </if>
+      <if test="msg.msgtarget != null">
+        AND msgtarget = #{msg.msgtarget}
+      </if>
+    </where>
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM pubmessage
+    <where>
+      <if test="msg.msgcontent != null">
+        AND msgcontent LIKE concat(concat('%',#{msg.msgcontent}),'%')
+      </if>
+      <if test="msg.msgtarget != null">
+        AND msgtarget = #{msg.msgtarget}
+      </if>
+      <if test="msg.msgstatus != null">
+        AND msgstatus = #{msg.msgstatus}
+      </if>
+    </where>
+    ORDER BY createtime DESC
+    <if test="startNo != null">
+      limit #{startNo},#{pageSize}
+    </if>
+  </select>
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -66,6 +104,9 @@
       <if test="createtime != null" >
         createtime,
       </if>
+      <if test="targetid != null" >
+        targetid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -94,6 +135,9 @@
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="targetid != null" >
+        #{targetid},
       </if>
     </trim>
   </insert>
@@ -124,6 +168,9 @@
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
+      <if test="targetid != null" >
+        targetid = #{targetid},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -139,4 +186,15 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="selectListByArea" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from pubmessage
+    where publishtime &gt;= #{starttime}
+    and publishtime  &lt;= #{endtime}
+    AND msgstatus = 1
+  </select>
+
 </mapper>

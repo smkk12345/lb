@@ -221,14 +221,7 @@ public class UserServiceImpl implements UserService {
 			//判断对话消息是否显示红点    0:不显示   1：显示
 			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
 			expandData.put("showMsg", showMsg);
-			//判断邀请所获收益是否显示红点    0:不显示   1：显示
-			MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
-			if (null != msgRed){
-				expandData.put("inviteMsg",1);
-				expandData.put("inviteCoin",msgRed.getRemark());
-			} else {
-				expandData.put("inviteMsg",0);
-			}
+
 			//查询奖品数量----
 			Integer awardnum = 0;
 			if(lookid != userid){
@@ -326,21 +319,26 @@ public class UserServiceImpl implements UserService {
 			return reseResp;
 		}
 		boolean ri = false;
+		UserInfo userInfo1 = null;
 		try{
+			if (!StringUtils.isBlank(inviteuserid)){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
+				if(null != appUserMongoEntity){
+					userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
+					//给推荐人添加龙币
+					userInfo.setInvitecode(inviteFriendIds(userInfo1));
+					userInfo.setHandleinvite("0");
+				}
+			}
 			ri = registerInfo(userInfo);
 		}catch (Exception e){
 			logger.error("registerInfo",e);
 		}
 		if (ri) {
-//			if(null != appUserMongoEntity){
-//				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
-//				//建立好友关系
-//				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
-//				//给推荐人添加龙分
-//				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
-//				//给推荐人添加龙币
-//				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
-//			}
+			//建立好友关系
+			if (null != userInfo1){
+				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
+			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -551,10 +549,13 @@ public class UserServiceImpl implements UserService {
 		long userid = idGenerateService.getUniqueIdAsLong();
 
 		//验证设备号注册
-		BaseResp reseResp = registerIndex(deviceindex,username);
-		if(ResultUtil.fail(reseResp)){
-			return reseResp;
+		if (!StringUtils.isBlank(deviceindex)){
+			BaseResp reseResp = registerIndex(deviceindex,username);
+			if(ResultUtil.fail(reseResp)){
+				return reseResp;
+			}
 		}
+
 
 		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
@@ -1850,12 +1851,22 @@ public class UserServiceImpl implements UserService {
 		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
 		map.put("maxlevel",5);
 		map.put("inviteawardinfo",createInviteAwardInfo());
-		map.put("inviteurl","http://www.baidu.com");
+		map.put("inviteurl",ShortUrlUtils.getShortUrl("http://www.baidu.com"));
+		map.put("invitetitle","我正在玩“龙杯”，推荐给你!");
+		map.put("invitecontent","总是设立美好的目标，但也总是光说不练，那么神仙也帮不了你！来龙杯，我们一起进步！还有海量进步币等你来拿。");
 		map.put("inviteruleurl","http://www.baidu.com");
+		//判断邀请所获收益是否显示红点    0:不显示   1：显示
+		MsgRed msgRed = msgRedMongDao.getMsgRed(String.valueOf(userid),"0","62");
+		if (null != msgRed){
+			map.put("invitecoinnew",msgRed.getRemark());
+		} else {
+			map.put("invitecoinnew",0);
+		}
 		UserInfo userInfo = null;
 		try {
 			userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
 			map.put("userinfo",userInfo);
+			msgRedMongDao.deleteMsgRed(userid,"0","62");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1872,7 +1883,12 @@ public class UserServiceImpl implements UserService {
 		try {
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
 			if (null != appUserMongoEntity){
+				UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				userInfo.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
+//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
+//
+//				}
+				userInfo.setHandleinvite("0");
 				userInfoMapper.updateByUseridSelective(userInfo);
 				baseResp.initCodeAndDesp();
 			}
