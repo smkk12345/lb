@@ -216,6 +216,9 @@ public class Constant {
 	public static final int STATUS_SYS_1109 = -1109;
 	public static final int STATUS_SYS_1110 = -1110;
 
+	/******* 12 开头 媒体资源库 相关  **********/
+	public static final int STATUS_SYS_1201 = -1201;
+
 	
 	
 	/**
@@ -385,6 +388,9 @@ public class Constant {
 	public static final String RTNINFO_SYS_1109 = "已发布教室至少保留一个课程";
 	public static final String RTNINFO_SYS_1110 = "教室老师已回复的问题不能忽略";
 
+	/******* 12 开头 媒体资源库 相关  **********/
+	public static final String RTNINFO_SYS_1201 = "您的资源分类数量已达最大数量,不可再添加新的资源分类!";
+
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
 	
@@ -438,7 +444,8 @@ public class Constant {
 			"/classroom/selectUsercard,"+
 			"/classroom/croomDetail,"+
 			"/classroom/selectRoomSearch,"+
-			"/classroom/selectClassroomListForApp";
+			"/classroom/selectClassroomListForApp"+
+			"/home/homePoster";
 
 	/**
 	 * 进步相关配置

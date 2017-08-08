@@ -560,6 +560,7 @@ public class UserServiceImpl implements UserService {
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
 		}
+		String token = (String)baseResp.getData();
 		//Long userid,String username, String nickname,String inviteuserid
 		//获取唯一昵称
 		if(StringUtils.isBlank(nickname)){
@@ -578,7 +579,6 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
-		String token = (String)baseResp.getData();
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		if(ResultUtil.isSuccess(baseResp)){
 			baseResp.getExpandData().put("token", token);
