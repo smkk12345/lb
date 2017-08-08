@@ -63,7 +63,7 @@ public class PubMessageApiController {
      * @return
      */
     @RequestMapping(value = "list",method = RequestMethod.POST)
-    public BaseResp<Page<PubMessage>> selectPubMessageList(PubMessage pubMessage, Integer pageNo, Integer pageSize){
+    public BaseResp<Page<PubMessage>> selectPubMessageList(@RequestBody PubMessage pubMessage, Integer pageNo, Integer pageSize){
         BaseResp<Page<PubMessage>> baseResp = new BaseResp<>();
         try {
             baseResp = pubMessageService.selectPubMessageList(pubMessage,pageNo,pageSize);
