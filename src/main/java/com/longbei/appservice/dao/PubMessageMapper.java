@@ -24,4 +24,8 @@ public interface PubMessageMapper {
     List<PubMessage> selectList(@Param("msg") PubMessage pubMessage,
                                 @Param("startNo") Integer startNo,
                                 @Param("pageSize") Integer pageSize);
+
+    List<PubMessage> selectListByArea(@Param("starttime")String starttime,
+                                      @Param("endtime")String endtime);
+
 }
