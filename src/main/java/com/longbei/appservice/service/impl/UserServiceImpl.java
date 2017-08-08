@@ -319,21 +319,26 @@ public class UserServiceImpl implements UserService {
 			return reseResp;
 		}
 		boolean ri = false;
+		UserInfo userInfo1 = null;
 		try{
+			if (!StringUtils.isBlank(inviteuserid)){
+				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
+				if(null != appUserMongoEntity){
+					userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
+					//给推荐人添加龙币
+					userInfo.setInvitecode(inviteFriendIds(userInfo1));
+					userInfo.setHandleinvite("0");
+				}
+			}
 			ri = registerInfo(userInfo);
 		}catch (Exception e){
 			logger.error("registerInfo",e);
 		}
 		if (ri) {
-//			if(null != appUserMongoEntity){
-//				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
-//				//建立好友关系
-//				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
-//				//给推荐人添加龙分
-//				userBehaviourService.pointChange(userInfo1,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
-//				//给推荐人添加龙币
-//				userImpCoinDetailService.insertPublic(userInfo1.getUserid(),"3", Constant_Imp_Icon.INVITE_LEVEL1,0,null);
-//			}
+			//建立好友关系
+			if (null != userInfo1){
+				BaseResp<Object> insertFriendBaseResp = userRelationService.insertFriend(userid,userInfo1.getUserid());
+			}
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			reseResp.setData(userInfo);
 			boolean ro = registerOther(userInfo);
@@ -544,10 +549,13 @@ public class UserServiceImpl implements UserService {
 		long userid = idGenerateService.getUniqueIdAsLong();
 
 		//验证设备号注册
-		BaseResp reseResp = registerIndex(deviceindex,username);
-		if(ResultUtil.fail(reseResp)){
-			return reseResp;
+		if (!StringUtils.isBlank(deviceindex)){
+			BaseResp reseResp = registerIndex(deviceindex,username);
+			if(ResultUtil.fail(reseResp)){
+				return reseResp;
+			}
 		}
+
 
 		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
@@ -1875,7 +1883,12 @@ public class UserServiceImpl implements UserService {
 		try {
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
 			if (null != appUserMongoEntity){
+				UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				userInfo.setInvitecode(String.valueOf(appUserMongoEntity.getUserid()));
+//				if (null != info && info.getTotalimp() >= SysRulesCache.behaviorRule.getInviteimprovenum()){
+//
+//				}
+				userInfo.setHandleinvite("0");
 				userInfoMapper.updateByUseridSelective(userInfo);
 				baseResp.initCodeAndDesp();
 			}

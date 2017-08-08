@@ -390,6 +390,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 		shareUrls.add("/api/classroom/classroomMembersDateList");
 		shareUrls.add("/api/classroom/coursesList");
 		shareUrls.add("/api/classroom/questionsList");
+		shareUrls.add("/api/user/registerbasic");
+		shareUrls.add("/api/user/sms");
+		shareUrls.add("/api/user/nickname");
 	}
 
 	/**
