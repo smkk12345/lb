@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.entity.UserInfo;
@@ -13,6 +14,7 @@ import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.UserService;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户详情接口
@@ -42,6 +45,11 @@ public class AppUserApiController {
     private SysSensitiveService sysSensitiveService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
+
+
+
+
+
 
     @RequestMapping(value = "login",method = RequestMethod.POST)
     public BaseResp<UserInfo> login(String username,String password){
@@ -125,6 +133,69 @@ public class AppUserApiController {
         return baseResp;
     }
 
+
+
+
+
+    /**
+     * http://ip:port/appservice/api/user/sms
+     * 短信验证
+     *  operateType 0 注册 1 修改密码 2 找回密码 3 第三方绑定手机号 4 安全验证
+     * @param response
+     * @return 正确返回 code 0 错误返回相应code 和 描述
+     */
+    @RequestMapping(value = "/sms")
+    @ResponseBody
+    public BaseResp<Object> sms(HttpServletRequest request, HttpServletResponse response) {
+        String mobile = request.getParameter("mobile");
+        String operateType = request.getParameter("operateType");
+        operateType = operateType == null ? "0" : operateType;
+        logger.info("sms and mobile={},operateType={}", mobile, operateType);
+        if(StringUtils.isBlank(mobile)){
+            return new BaseResp<>(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            return userService.sms(mobile, operateType);
+        } catch (Exception e) {
+            logger.error(" sms error and msg={}", e);
+        }
+        return new BaseResp<>();
+    }
+
+    /**
+     * 通过userid获取用户昵称
+     * @param userid
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/nickname")
+    @ResponseBody
+    public BaseResp<Map> getNickNameById(String userid){
+        BaseResp<Map> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        BaseResp<Object> baseResp1 = userService.selectByUserid(Long.parseLong(userid));
+        if (ResultUtil.isSuccess(baseResp1)){
+            UserInfo userInfo = (UserInfo) baseResp1.getData();
+            if (null != userInfo){
+                baseResp.initCodeAndDesp();
+                Map<String,String> map = new HashedMap();
+                map.put("nickname",userInfo.getNickname());
+                map.put("username",userInfo.getUsername());
+                baseResp.setData(map);
+            }
+        }
+        return baseResp;
+    }
+
+    /**
+     * http://ip:port/appservice/api/user/registerbasic
+     * h5注册
+     * @param request
+     * @param response
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/registerbasic")
     @ResponseBody
@@ -133,17 +204,19 @@ public class AppUserApiController {
         String password = request.getParameter("password");
         String inviteuserid = request.getParameter("inviteuserid");
         String randomCode = request.getParameter("randomCode");
-        logger.info("registerbasic params username={},password={}", username, password);
+        String nickname = request.getParameter("nickname");
+        logger.info("registerbasic params username={},password={},inviteuserid={},randomCode={}",
+                username, password,inviteuserid,randomCode);
         BaseResp<Object> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(username, password, randomCode)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        baseResp = userService.checkSms(username,randomCode);
+        baseResp = userService.checkSms(username, randomCode);
         if (baseResp.getCode() != Constant.STATUS_SYS_00) {
             return baseResp;
         }
         try {
-            return userService.registerbasic(username, password, inviteuserid,null,null,null,null);
+            return userService.registerbasic(username, password, inviteuserid,null,null,null,nickname);
         } catch (Exception e) {
             logger.error("registerbasic error and msg = {}", e);
         }
