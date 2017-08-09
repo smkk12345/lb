@@ -14,7 +14,7 @@ public class PubMessage {
     /**
      * 消息标题
      */
-    private String msgtitle;
+    private String msgtitle = "龙杯";
 
     /**
      * 关联内容id

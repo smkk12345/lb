@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.dao.PubMessageMapper;
@@ -224,10 +225,18 @@ public class PubMessageServiceImpl implements PubMessageService {
                 Map<String,Object> map = new HashMap<>();
 //                map.put("targetid",pubMessage1.getTargetid());
                 map.put("msgtarget",pubMessage1.getMsgtarget());
+                if("1".equals(pubMessage1.getMsgtarget())){
+                    //没有 1 - 文章 2 - 专题
+                    map.put("url", AppserviceConfig.articleurl+"?articleid="+pubMessage1.getTargetid());
+                }else if("2".equals(pubMessage1.getMsgtarget())){
+                    String shareurl = AppserviceConfig.seminarurl + "?seminarid=" + pubMessage1.getTargetid();
+                    String shorturl = ShortUrlUtils.getShortUrl(shareurl);
+                    map.put("url", shorturl);
+                }
                 map.put("url", AppserviceConfig.articleurl+"?articleid="+pubMessage1.getTargetid());
                 jPushService.pushMessageToAll("消息标示",
-                        pubMessage1.getMsgtitle(),
                         pubMessage1.getMsgcontent(),
+                        pubMessage1.getMsgtitle(),
                         null, Constant.JPUSH_TAG_COUNT_1601,map);
             }
         });
