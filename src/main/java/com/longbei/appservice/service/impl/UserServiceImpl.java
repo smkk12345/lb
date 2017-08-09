@@ -525,7 +525,7 @@ public class UserServiceImpl implements UserService {
 		userInfo.setTotalmoney(0);
 		userInfo.setUpdatetime(new Date());
 		if(StringUtils.isBlank(userInfo.getSex())){
-			userInfo.setSex("0");
+			userInfo.setSex("2");
 		}
 		userInfo.setHcnickname("0");
 		userInfo.setPoint(0);
