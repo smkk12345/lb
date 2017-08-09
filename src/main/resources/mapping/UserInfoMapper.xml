@@ -429,6 +429,9 @@
       <if test="devicetype != null and devicetype != ''" >
         devicetype,
       </if>
+      <if test="handleinvite != null and handleinvite != ''" >
+        handleinvite,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null and id != ''" >
@@ -508,7 +511,10 @@
       </if>      
       <if test="devicetype != null and devicetype != ''" >
         #{devicetype,jdbcType=VARCHAR},
-      </if>         
+      </if>
+      <if test="handleinvite != null and handleinvite != ''" >
+        #{handleinvite,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateDeviceIndexByUserName" parameterType="com.longbei.appservice.entity.UserInfo">
