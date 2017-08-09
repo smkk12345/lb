@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.dao.PubMessageMapper;
 import com.longbei.appservice.dao.SeminarMapper;
@@ -221,8 +222,9 @@ public class PubMessageServiceImpl implements PubMessageService {
             @Override
             public void run() {
                 Map<String,Object> map = new HashMap<>();
-                map.put("targetid",pubMessage1.getTargetid());
+//                map.put("targetid",pubMessage1.getTargetid());
                 map.put("msgtarget",pubMessage1.getMsgtarget());
+                map.put("url", AppserviceConfig.articleurl+"?articleid="+pubMessage1.getTargetid());
                 jPushService.pushMessageToAll("消息标示",
                         pubMessage1.getMsgtitle(),
                         pubMessage1.getMsgcontent(),
