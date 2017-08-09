@@ -3849,7 +3849,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != appUserMongoEntity){
                     rankAcceptAward.setUsername(appUserMongoEntity.getUsername());
                 }
-                Award award = awardMapper.selectByPrimaryKey(rkmember.getAwardid());
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rkmember.getRankAward().getAwardid()));
                 if (null != award){
                     rankAcceptAward.setAwardcateid(String.valueOf(award.getAwardcateid()));
                 }
@@ -3857,7 +3857,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 if (null != rank){
                     rankAcceptAward.setRanktitle(rank.getRanktitle());
                 }
-                RankAwardRelease awardRelease = rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid,String.valueOf(rkmember.getAwardid()));
+                RankAwardRelease awardRelease = rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid,rkmember.getRankAward().getAwardid());
                 if (null != awardRelease){
                     rankAcceptAward.setAwardnickname(awardRelease.getAwardnickname());
                 }
