@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
@@ -558,7 +559,20 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
+		if(StringUtils.isBlank(nickname)){
+			nickname = getRandomNickName();
+		}
+		nickname = getSingleNickName(nickname);
 
+		BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(nickname);
+		if(!ResultUtil.isSuccess(baseResp1)){
+			return baseResp1;
+		}
+		if(!StringUtils.hasBlankParams(nickname)){
+			if(nickname.length() > 26||nickname.length() < 2){
+				return baseResp1.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
+			}
+		}
 		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
@@ -566,22 +580,6 @@ public class UserServiceImpl implements UserService {
 		String token = (String)baseResp.getData();
 		//Long userid,String username, String nickname,String inviteuserid
 		//获取唯一昵称
-		if(StringUtils.isBlank(nickname)){
-			nickname = getRandomNickName();
-		}
-		nickname = getSingleNickName(nickname);
-
-		baseResp = sysSensitiveService.getSensitiveWordSet(nickname);
-		if(!ResultUtil.isSuccess(baseResp)){
-			return baseResp;
-		}
-
-		if(!StringUtils.hasBlankParams(nickname)){
-			if(nickname.length() > 26||nickname.length() < 2){
-				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
-			}
-		}
-
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		if(ResultUtil.isSuccess(baseResp)){
 			baseResp.getExpandData().put("token", token);
