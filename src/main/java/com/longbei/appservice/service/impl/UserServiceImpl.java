@@ -584,6 +584,10 @@ public class UserServiceImpl implements UserService {
 
 		baseResp = register(userid,username,nickname,inviteuserid,deviceindex,devicetype,avatar);
 		if(ResultUtil.isSuccess(baseResp)){
+			if (SysRulesCache.behaviorRule.getRegistercoins() > 0){
+				userImpCoinDetailService.insertPublic(userid,"14",
+						SysRulesCache.behaviorRule.getRegistercoins(),0,null);
+			}
 			baseResp.getExpandData().put("token", token);
 			baseResp.getExpandData().put("userid", userid);
 			baseResp.getExpandData().put("nickname", nickname);
@@ -1576,10 +1580,7 @@ public class UserServiceImpl implements UserService {
 			int temp = userInfoMapper.updateByUseridSelective(userInfo);
 
 			if(temp > 0){
-				if (SysRulesCache.behaviorRule.getRegistercoins() > 0){
-					userImpCoinDetailService.insertPublic(Long.parseLong(userid),"14",
-							SysRulesCache.behaviorRule.getRegistercoins(),0,null);
-				}
+
 				//更新信息到mongodb
 				UserInfo userInfo1 = userInfoMapper.selectByUserid(Long.parseLong(userid));
 				BeanUtils.copyProperties(userInfo,userInfo1);
