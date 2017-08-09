@@ -607,7 +607,7 @@
         sortno = #{sortno,jdbcType=INTEGER},
       </if>
       <if test="vcertification != null and vcertification != ''">
-        vcertification = #{vcertification,jdbcType=CHAR}
+        vcertification = #{vcertification,jdbcType=CHAR},
       </if>
       <if test="handleinvite != null and handleinvite != ''">
         handleinvite = #{handleinvite,jdbcType=CHAR}
