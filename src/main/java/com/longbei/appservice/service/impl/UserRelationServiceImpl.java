@@ -1223,7 +1223,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		JSONArray jsonArr = JSONArray.fromObject(mobileUserListStr);
 		Set<String> fids = getFriendIds(userid);
 		AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(userid));
-		String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_invite+"?userid="+appUser.getId());
+		String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
 		JSONArray resultArr = new JSONArray();
 		try {
 			for (int i = 0; i < jsonArr.size(); i++) {
