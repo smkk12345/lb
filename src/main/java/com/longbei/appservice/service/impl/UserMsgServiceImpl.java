@@ -359,7 +359,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 					resultMap.put("inviteMsg",0);
 					resultMap.put("mycount", 0);
 				}
-
 				return resultMap;
 			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
 				if (null != msgRed){
@@ -424,7 +423,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 			resultMap.put("inviteMsg",0);
 			resultMap.put("mycount", 0);
 		}
-
 		return resultMap;
 	}
 	
