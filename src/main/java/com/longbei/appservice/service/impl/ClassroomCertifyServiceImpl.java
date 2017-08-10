@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -70,6 +71,19 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
             e.printStackTrace();
         }
         return page;
+    }
+
+    @Override
+    public BaseResp<Object> selectClassroomCertifyNum(ClassroomCertify classroomCertify){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int totalcount = userUserClassroomCertifyMapper.selectClassroomCertifyListCount(classroomCertify);
+            baseResp.setData(totalcount);
+            baseResp.initCodeAndDesp();
+        } catch (Exception e) {
+            logger.error("selectClassroomCertifyNum for adminservice and classroomCertify ={}", JSON.toJSONString(classroomCertify), e);
+        }
+        return  baseResp;
     }
 
     @Override
