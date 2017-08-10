@@ -90,6 +90,7 @@ public class Constant {
 	public static final int STATUS_SYS_115 = -115;
 	public static final int STATUS_SYS_117 = -117;
 	public static final int STATUS_SYS_118 = -118;
+	public static final int STATUS_SYS_119 = -119;
 	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
@@ -254,6 +255,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_116 = "发送失败";
 	public static final String RTNINFO_SYS_117 = "您已被授予龙杯官方认证，无法修改用户名和简介";
 	public static final String RTNINFO_SYS_118 = "发送失败,同一个手机号码不能超过1条/分钟,5条/小时,10条/天";
+	public static final String RTNINFO_SYS_119 = "该号码未注册";
 
 	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
