@@ -280,10 +280,10 @@ public class ImproveServiceImpl implements ImproveService{
                 userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
                 //邀请所获进步币累加
                 userInfoMapper.updateInvitTotalCoins(idarr[i],getImproveCoin(i));
-                userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
+                //userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
                 msgRedMongDao.insertOrUpdateMsgRed(idarr[i],"0","62",getImproveCoin(i)+"");
             }
-            userMsgService.batchInsertUserMsg(userMsgs);
+            //userMsgService.batchInsertUserMsg(userMsgs);
         }
     }
 
