@@ -280,10 +280,10 @@ public class ImproveServiceImpl implements ImproveService{
                 userImpCoinDetailService.insertPublic(Long.parseLong(idarr[i]),"3",getImproveCoin(i),0,null);
                 //邀请所获进步币累加
                 userInfoMapper.updateInvitTotalCoins(idarr[i],getImproveCoin(i));
-                userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
+                //userMsgs.add(createInviteUserMsg(idarr[i],getImproveCoin(i)));
                 msgRedMongDao.insertOrUpdateMsgRed(idarr[i],"0","62",getImproveCoin(i)+"");
             }
-            userMsgService.batchInsertUserMsg(userMsgs);
+            //userMsgService.batchInsertUserMsg(userMsgs);
         }
     }
 
@@ -3848,23 +3848,31 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             Long impkey = dateFormat.parse(dateFormat.format(new Date())).getTime();
 
-            Map<String,Double> map = new HashMap<>();
+            Map<String,Double> olemap = new HashMap<>();
+            Map<String,Double> newmap = new HashMap<>();
+
             if (springJedisDao.hasKey(impkey-60*60*1000+"")){
-                map = springJedisDao.zRangeWithScores(impkey-60*60*1000+"",0,-1);
-            } else if (springJedisDao.hasKey(impkey.toString())){
-                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
-            }
-            if(null != map&&map.isEmpty()){
-                map = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+                olemap = springJedisDao.zRangeWithScores(impkey-60*60*1000+"",0,-1);
             }
 
-            long lastImpKey = impkey-60*60-60*60*24*1000;
+            for (Map.Entry<String,Double> entry : olemap.entrySet()){
+                int iValue = entry.getValue().intValue();
+                String tmpkey = entry.getKey();
+                springJedisDao.zIncrby(impkey+"",tmpkey,olemap.get(tmpkey), (long) (2*60*60));
+            }
+
+            if (springJedisDao.hasKey(impkey.toString())){
+                newmap = springJedisDao.zRangeWithScores(impkey.toString(),0,-1);
+            }
+
+
+            long lastImpKey = impkey-60*60*24*1000;
             Map<String,Double> lastMap = new HashMap<>();
-            if (!springJedisDao.hasKey(String.valueOf(lastImpKey))){
+            if (springJedisDao.hasKey(String.valueOf(lastImpKey))){
                 lastMap = springJedisDao.zRangeWithScores(String.valueOf(lastImpKey),0,-1);
-
+                springJedisDao.del(lastImpKey+"");
             }
-            for (Map.Entry<String,Double> entry : map.entrySet()){
+            for (Map.Entry<String,Double> entry : newmap.entrySet()){
                 int iValue = entry.getValue().intValue();
                 if(!lastMap.isEmpty()){
                     if(lastMap.containsKey(entry.getKey())){
@@ -3874,8 +3882,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 springJedisDao.zIncrby(key,entry.getKey(),iValue, (long) (2*60*60));
             }
-            logger.info("recommendImproveOpt impkey={},map={},key={}",impkey,
-                    JSONObject.fromObject(map).toString(),key);
+            logger.info("recommendImproveOpt impkey={},key={}",impkey,key);
             baseResp.initCodeAndDesp();
         } catch (ParseException e) {
             logger.error("option recommend improve is error:",e);

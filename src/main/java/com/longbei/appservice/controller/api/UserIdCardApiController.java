@@ -6,13 +6,15 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserIdcard;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * 用户实名认证
@@ -28,6 +30,8 @@ public class UserIdCardApiController {
 
     @Autowired
     private UserIdcardService userIdcardService;
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -114,6 +118,40 @@ public class UserIdCardApiController {
             baseResp  = userIdcardService.update(userIdcard);
         } catch (Exception e) {
             logger.error("submit useridcard check is error:",e);
+        }
+        return baseResp;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/applyIdCardValidate", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResp<Object> applyIdCardValidate(@RequestParam("userid") String userid,
+                                                @RequestParam("realname") String realname, @RequestParam("idcard") String idcard,
+                                                @RequestParam("idcardimage") String idcardimage) {
+        logger.info("userid={},realname={},idcard={},idcardimage={}", userid, realname,idcard,idcardimage);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid, realname, idcard, idcardimage)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+        try {
+            // 修改userInfo表真实姓名
+            UserInfo userInfo = new UserInfo();
+            userInfo.setRealname(realname);
+            userInfo.setUserid(Long.parseLong(userid));
+            userService.updateUserInfo(userInfo);
+
+            UserIdcard record = new UserIdcard();
+            record.setIdcard(idcard);
+            record.setIdcardimage(idcardimage);
+            //是否验证了身份证号码 0  为验证 1  验证通过 2 验证不通过
+            record.setValidateidcard("0");
+            record.setUserid(Long.parseLong(userid));
+            record.setApplydate(new Date());
+            record.setRealname(realname);
+            // 添加身份证验证 先判断是否验证过，已验证修改
+            baseResp = userIdcardService.insert(record);
+        } catch (Exception e) {
+            logger.error("applyIdCardValidate userid={},msg={}", userid, e);
         }
         return baseResp;
     }

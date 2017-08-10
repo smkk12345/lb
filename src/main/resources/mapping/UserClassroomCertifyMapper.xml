@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longbei.appservice.dao.UserClassroomCertifyMapper">
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.ClassroomCertify">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="userid" jdbcType="BIGINT" property="userid" />
+    <result column="operateuid" jdbcType="VARCHAR" property="operateuid" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="checktime" jdbcType="TIMESTAMP" property="checktime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mobile, content, data, userid, operateuid, remark, status, createtime, checktime, updatetime
+  </sql>
+  <select id="selectClassroomCertifyList"  parameterType="com.longbei.appservice.entity.ClassroomCertify" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user_classroom_certify
+    where 1=1
+    <if test="classroomCertify.userid != null and classroomCertify.userid != ''" >
+      AND userid LIKE concat(concat('%',#{classroomCertify.userid}),'%')
+    </if>
+    <if test="classroomCertify.status != null and classroomCertify.status != ''" >
+      AND status = #{classroomCertify.status}
+    </if>
+    ORDER BY createtime DESC
+    <if test="startNum != null" >
+      limit #{startNum},#{pageSize}
+    </if>
+  </select>
+  <select id="selectClassroomCertifyListCount"  parameterType="com.longbei.appservice.entity.ClassroomCertify" resultType="java.lang.Integer" >
+    select
+    count(*)
+    from user_classroom_certify
+    where 1=1
+    <if test="classroomCertify.userid != null and classroomCertify.userid != ''" >
+      AND userid LIKE concat(concat('%',#{classroomCertify.userid}),'%')
+    </if>
+    <if test="classroomCertify.status != null and classroomCertify.status != ''" >
+      AND status = #{classroomCertify.status}
+    </if>
+  </select>
+  <select id="selectClassroomCertifyByUserid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_classroom_certify
+    where userid = #{userid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_classroom_certify
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertClassroomCertify" parameterType="com.longbei.appservice.entity.ClassroomCertify">
+    insert into user_classroom_certify
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="data != null">
+        data,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateClassroomCertifyByUserid" parameterType="com.longbei.appservice.entity.ClassroomCertify">
+    update user_classroom_certify
+    <set>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        data = #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="operateuid != null">
+        operateuid = #{operateuid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checktime != null">
+        checktime = #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=BIGINT}
+  </update>
+</mapper>
