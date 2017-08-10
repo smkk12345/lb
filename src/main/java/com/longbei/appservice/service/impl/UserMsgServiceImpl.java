@@ -354,11 +354,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if(msgTypeList.size() == 0 && commentMaxDate == null){
 				if (null != msgRed){
 					resultMap.put("inviteMsg",1);
-					resultMap.put("mycount", 1);
 				} else {
 					resultMap.put("inviteMsg",0);
-					resultMap.put("mycount", 0);
 				}
+				resultMap.put("mycount", 0);
 				return resultMap;
 			}else if(msgTypeList.size() == 0 && commentMaxDate != null){
 				if (null != msgRed){
@@ -398,7 +397,6 @@ public class UserMsgServiceImpl implements UserMsgService {
 				}
 				if (null != msgRed){
 					resultMap.put("inviteMsg",1);
-					resultMap.put("mycount", 1);
 				} else {
 					resultMap.put("inviteMsg",0);
 				}
@@ -418,11 +416,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 		}
 		if (null != msgRed){
 			resultMap.put("inviteMsg",1);
-			resultMap.put("mycount", 1);
 		} else {
 			resultMap.put("inviteMsg",0);
-			resultMap.put("mycount", 0);
 		}
+		resultMap.put("mycount", 0);
 		return resultMap;
 	}
 	
