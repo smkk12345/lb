@@ -574,6 +574,12 @@ public class UserServiceImpl implements UserService {
 				return baseResp1.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
 			}
 		}
+
+		//防止重复注册
+		if ("1".equals(springJedisDao.get("register"+username))){
+			return baseResp1.initCodeAndDesp(Constant.STATUS_SYS_02,Constant.RTNINFO_SYS_02);
+		}
+
 		BaseResp<Object> baseResp = iUserBasicService.add(userid, username, password);
 		if(baseResp.getCode() != Constant.STATUS_SYS_00){
 			return baseResp;
@@ -592,6 +598,8 @@ public class UserServiceImpl implements UserService {
 			baseResp.getExpandData().put("nickname", nickname);
 			//token 放到redis中去
 			springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
+			//防止重复注册
+			springJedisDao.set("register"+username,"1",60*10);
 			//注册成功,当日注册数加1
 			statisticService.updateStatistics(Constant.SYS_REGISTER_NUM,1);
 		}else{
