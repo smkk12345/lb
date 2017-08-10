@@ -198,7 +198,8 @@ public class UserServiceImpl implements UserService {
 			//查询粉丝总数
 //			int fansCount = snsFansMapper.selectCountFans(userid);
 			expandData.put("fansCount", userInfo.getTotalfans());
-			
+			expandData.put("registerurl",
+					ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
 			//查询好友数量
 			Integer friendCount = userRelationService.selectFriendsCount(userid);
 			expandData.put("friendCount", friendCount);

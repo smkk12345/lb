@@ -23,6 +23,8 @@ import com.longbei.appservice.service.CommentLikesMongoService;
 import com.longbei.appservice.service.CommentLowerMongoService;
 import com.longbei.appservice.service.CommentMongoService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author yinxc
  * 评论
@@ -193,8 +195,9 @@ public class CommentController extends BaseController {
      @SuppressWarnings("unchecked")
  	@RequestMapping(value = "/addComment")
      @ResponseBody
-     public BaseResp<Object> addComment(String userid, String friendid, 
-    		String businessid, String businesstype, String content, String impid) {
+     public BaseResp<Object> addComment(String userid, String friendid,
+										String businessid, String businesstype, String impid, HttpServletRequest request) {
+		 String content = request.getParameter("content");
 		 logger.info("userid={},friendid={}，businessid={},businesstype={},content={}，impid={}",userid,friendid,businessid,businesstype,content,impid);
 		 BaseResp<Object> baseResp = new BaseResp<>();
  		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
