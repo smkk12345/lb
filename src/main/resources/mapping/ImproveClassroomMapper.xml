@@ -25,11 +25,12 @@
     <result column="pimpid" property="pimpid" />
     <result column="isresponded" property="isresponded" />
     <result column="duration" property="duration" />
+    <result column="picattribute" property="picattribute" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic, 
-    sourcekey, pimpid, isresponded, duration
+    sourcekey, pimpid, isresponded, duration,picattribute
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -48,7 +49,7 @@
       likes, flowers, diamonds, 
       createtime, updatetime, indexnum, 
       isdel, ismainimp, ptype, ispublic, 
-      sourcekey, pimpid, isresponded,duration
+      sourcekey, pimpid, isresponded,duration,picattribute
       )
     values (#{id,jdbcType=BIGINT}, #{impid,jdbcType=BIGINT}, #{itype,jdbcType=CHAR}, 
       #{brief,jdbcType=VARCHAR}, #{pickey,jdbcType=VARCHAR}, #{filekey,jdbcType=VARCHAR}, 
@@ -56,7 +57,7 @@
       #{likes,jdbcType=INTEGER}, #{flowers,jdbcType=INTEGER}, #{diamonds,jdbcType=INTEGER}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{indexnum,jdbcType=INTEGER}, 
       #{isdel,jdbcType=CHAR}, #{ismainimp,jdbcType=CHAR}, #{ptype,jdbcType=CHAR}, #{ispublic,jdbcType=CHAR}, 
-      #{sourcekey}, #{pimpid}, #{isresponded}, #{duration}
+      #{sourcekey}, #{pimpid}, #{isresponded}, #{duration},#{picattribute}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Improve" >
@@ -131,6 +132,9 @@
       <if test="isresponded != null" >
         isresponded,
       </if>
+      <if test="picattribute != null" >
+        picattribute,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -201,6 +205,9 @@
       </if>
       <if test="isresponded != null" >
         #{isresponded},
+      </if>
+      <if test="picattribute != null" >
+        #{picattribute},
       </if>
     </trim>
   </insert>
