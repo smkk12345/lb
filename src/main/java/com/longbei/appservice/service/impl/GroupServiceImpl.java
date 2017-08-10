@@ -987,11 +987,13 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             //校验该用户是否已经在这个群中
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
             if(snsGroupMembers == null || snsGroupMembers.getStatus() == 4 || snsGroupMembers.getStatus() == 2){
-                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_918,Constant.RTNINFO_SYS_918);
+//                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_918,Constant.RTNINFO_SYS_918);
+                resultMap.put("nickname",null);
+            }else{
+                status = snsGroupMembers.getStatus() == 0?1:2;
+                resultMap.put("nickname",snsGroupMembers.getNickname());
             }
 
-            status = snsGroupMembers.getStatus() == 0?1:2;
-            resultMap.put("nickname",snsGroupMembers.getNickname());
             if(snsGroup.getMainuserid().longValue() == userid.longValue()){
                 resultMap.put("isMainUser",true);
             }else{
