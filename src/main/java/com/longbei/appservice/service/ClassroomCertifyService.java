@@ -16,6 +16,13 @@ public interface ClassroomCertifyService {
     Page<ClassroomCertify> selectClassroomCertifyList(ClassroomCertify classroomCertify, Integer startNum, Integer pageSize);
 
     /**
+     * 获取老师认证信息列表数量
+     * @param classroomCertify
+     * @return
+     */
+    BaseResp<Object> selectClassroomCertifyNum(ClassroomCertify classroomCertify);
+
+    /**
      * @Title: selectClassroomCertifyByUserid
      * @Description: 通过用户id查看老师认证详情
      * @param userid 用户id
