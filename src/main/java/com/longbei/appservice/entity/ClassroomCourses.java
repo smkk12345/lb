@@ -45,6 +45,12 @@ public class ClassroomCourses {
     
     private String isup; //isup是否上架   0：未上架    1：已上架
 
+    private Date starttime;//直播开始时间
+
+    private Date endtime;//直播结束时间
+
+    private String teachingtypes;//教学类型 0 录播 1直播
+
     /**
      * 
      * @return id 
@@ -296,4 +302,28 @@ public class ClassroomCourses {
 	public void setIsup(String isup) {
 		this.isup = isup;
 	}
+
+    public Date getEndtime() {
+        return endtime;
+    }
+
+    public Date getStarttime() {
+        return starttime;
+    }
+
+    public String getTeachingtypes() {
+        return teachingtypes;
+    }
+
+    public void setEndtime(Date endtime) {
+        this.endtime = endtime;
+    }
+
+    public void setStarttime(Date starttime) {
+        this.starttime = starttime;
+    }
+
+    public void setTeachingtypes(String teachingtypes) {
+        this.teachingtypes = teachingtypes;
+    }
 }

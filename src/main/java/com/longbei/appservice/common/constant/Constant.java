@@ -2,6 +2,8 @@ package com.longbei.appservice.common.constant;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
 
+import java.math.BigDecimal;
+
 /**
  * 全局常量类
  */
@@ -220,6 +222,9 @@ public class Constant {
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
 
+	/*****13开头直播返回码******/
+	public static final int STATUS_SYS_1301 = -1301;//龙币不够，请充值
+
 	
 	
 	/**
@@ -392,6 +397,9 @@ public class Constant {
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final String RTNINFO_SYS_1201 = "您的资源分类数量已达最大数量,不可再添加新的资源分类!";
+
+	/*****13开头直播返回码******/
+	public static final String RTNINFO_SYS_1301 = "龙币不足，请充值";//龙币不够，请充值
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -958,5 +966,7 @@ public class Constant {
 
 
 	public static final int FRIEND_LIMIT = 5000;
+	//公司抽成30%
+	public static final BigDecimal TAKEPERCENTAGE = new BigDecimal(30);
 
 }
