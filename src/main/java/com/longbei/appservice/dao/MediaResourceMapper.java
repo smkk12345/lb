@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.MediaResource;
+import com.longbei.appservice.entity.MediaResourceType;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -49,4 +50,11 @@ public interface MediaResourceMapper {
      * @return
      */
     int updateMedia(Map<String, Object> map);
+
+    /**
+     * 将资源分类mediaResourceTypeId下的资源分类id都改成空
+     * @param mediaResourceTypeId
+     * @return
+     */
+    int updateMediaResourceTypeIsNull(@Param("mediaResourceTypeId") Integer mediaResourceTypeId);
 }
