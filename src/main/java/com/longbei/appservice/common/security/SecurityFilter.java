@@ -64,6 +64,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 			String time = request.getParameter("encrypt");
 			String params = AES.decrypt(AES.A_KEY,time);
 			Map<String,Object> map = JSONObject.fromObject(params);
+			logger.info("urlPath map={}",JSONObject.fromObject(map).toString());
 			try {
 				request = new ParamHttpServletRequestWrapper((HttpServletRequest) request, map);
 			}catch (Exception e){
