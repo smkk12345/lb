@@ -70,6 +70,7 @@
     <result column="flowerscore" property="flowerscore" jdbcType="INTEGER" />
     <result column="commentscore" property="commentscore" jdbcType="INTEGER" />
     <result column="registercoins" property="registercoins" jdbcType="INTEGER" />
+    <result column="classroomcommission" property="classroomcommission" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals,
@@ -84,7 +85,8 @@
     likegoalsmax, impcommentgoalsmax, flowergoalsmax, improvegoalsmax, improveimpcoinsmin,
     improveimpcoinsmax, improveimpcoinstimes, joinrankgoalstimes, joincirclegoalstimes,
     shareMaxCount,shareGroupCount,joinclassroomgoalstimes,friendregisterimpcoins2,friendregisterimpcoins3,
-    friendregisterimpcoins4,friendregisterimpcoins5,inviteimprovenum,likescore,flowerscore,commentscore,registercoins
+    friendregisterimpcoins4,friendregisterimpcoins5,inviteimprovenum,likescore,flowerscore,commentscore,registercoins,
+    classroomcommission
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
@@ -700,6 +702,9 @@
       </if>
       <if test="registercoins != null" >
         registercoins = #{registercoins,jdbcType=INTEGER},
+      </if>
+      <if test="classroomcommission != null" >
+        classroomcommission = #{classroomcommission,jdbcType=INTEGER},
       </if>
     </set>
   </update>

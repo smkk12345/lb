@@ -21,7 +21,7 @@ public class LiveGiftDetail {
 
     private Long businessid;
 
-    private String busenesstype;
+    private String businesstype;
 
     private String status;
 
@@ -38,7 +38,7 @@ public class LiveGiftDetail {
                           String busenesstype){
         this.fromuid = fromuid;
         this.touid = touid;
-        this.busenesstype = busenesstype;
+        this.businesstype = busenesstype;
         this.giftid = giftid;
         this.gifttitle = gifttitle;
         this.num = num;
@@ -68,14 +68,6 @@ public class LiveGiftDetail {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getBusenesstype() {
-        return busenesstype;
-    }
-
-    public void setBusenesstype(String busenesstype) {
-        this.busenesstype = busenesstype;
     }
 
     public Long getBusinessid() {
@@ -133,4 +125,13 @@ public class LiveGiftDetail {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+
+    public String getBusinesstype() {
+        return businesstype;
+    }
+
 }

@@ -36,12 +36,12 @@
         order by createtime desc
         <if test="startNum != null" >
             limit #{startNum},#{endNum}
-        </if>>
+        </if>
     </select>
 
     <!-- 添加礼物明细 -->
     <insert id="insertGiftDetail" parameterType="com.longbei.appservice.entity.LiveGiftDetail">
-        insert into media_resource(
+        insert into live_gift_detail(
         <trim prefixOverrides=",">
             <if test="liveGiftDetail.fromuid != null">
                 fromuid
@@ -95,6 +95,9 @@
                 ,#{liveGiftDetail.businessid}
             </if>
             <if test="liveGiftDetail.businesstype != null">
+                ,#{liveGiftDetail.businesstype}
+            </if>
+            <if test="liveGiftDetail.fromuid != null">
                 ,#{liveGiftDetail.fromuid}
             </if>
             <if test="liveGiftDetail.createtime != null">

@@ -7,6 +7,7 @@
     <result column="title" property="title" />
     <result column="price" property="price" />
     <result column="fileurl" property="fileurl" />
+      <result column="picurl" property="picurl" />
     <result column="doublehit" property="doublehit" />
     <result column="createetime" property="createetime" />
     <result column="updatetime" property="updatetime" />
@@ -14,21 +15,21 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, giftid, title, price, fileurl, doublehit, createetime, updatetime,isdel
+    id, giftid, title, price, fileurl, doublehit, createetime, updatetime,isdel,picurl
   </sql>
 
-  <select id="selectList">
-      SELECT Base_Column_List
+  <select id="selectList" resultMap="BaseResultMap">
+      SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
       FROM live_gift
       order by price
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
-      </if>>
+      </if>
   </select>
-    <select id="selectById">
-        SELECT Base_Column_List
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
         FROM live_gift
-        where giftid=#{giftid}
+        where giftid=#{giftId}
     </select>
 
 </mapper>

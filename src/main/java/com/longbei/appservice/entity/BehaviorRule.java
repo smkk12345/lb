@@ -318,6 +318,17 @@ public class BehaviorRule {
 
     private Integer joinclassroomgoalstimes;//用户每天参加教室得分次数限制
 
+
+    private Double classroomcommission; //教室提成
+
+    public Double getClassroomcommission() {
+        return classroomcommission;
+    }
+
+    public void setClassroomcommission(Double classroomcommission) {
+        this.classroomcommission = classroomcommission;
+    }
+
     public Integer getRegistercoins() {
         return registercoins;
     }

@@ -6,6 +6,7 @@ import com.sun.jersey.core.util.Base64;
 
 import java.security.Key;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,11 +29,18 @@ public class AES {
 			Key key = generateKey(keyStr);
 			Cipher cipher = Cipher.getInstance(AESTYPE);
 			cipher.init(Cipher.ENCRYPT_MODE, key);
-			encrypt = cipher.doFinal(plainText.getBytes());
+			encrypt = cipher.doFinal(plainText.getBytes("utf-8"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new String(Base64.encode(encrypt));
+		try{
+			String result = new String(Base64.encode(encrypt),"utf-8");
+			return result;
+		}catch (Exception e){
+
+		}
+//		String result = new String(Base64.encode(encrypt),"utf-8");
+		return null;
 	}
 	
 	/**
@@ -97,6 +105,15 @@ public class AES {
 		return jsonBody;
 	}
 
+	public static void main1(String[] args){
+		HashMap<String,String> map = new HashMap<String,String>();
+		map.put("startnum","5");
+		map.put("endnum","2");
+		String encryStr = encryptParamsMap(map);
+		System.out.println("encry:"+encryStr);
+		String deStr = AES.decrypt(A_KEY, encryStr);
+		System.out.println("decry:"+deStr);
+	}
 
 
 }

@@ -293,12 +293,12 @@ public class SeminarServiceImpl implements SeminarService{
             if (ResultUtil.isSuccess(baseResp)){
                 BaseResp<List<SeminarModule>> base = selectSeminarModules(seminarid);
                 //专题浏览量
-                threadPoolTaskExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
+//                threadPoolTaskExecutor.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
                         seminarMapper.updatePageViewBySeminarid(seminarid);
-                    }
-                });
+//                    }
+//                });
                 if (null != baseResp.getData()){
                     baseResp.getData().setSeminarModules(base.getData());
                 }

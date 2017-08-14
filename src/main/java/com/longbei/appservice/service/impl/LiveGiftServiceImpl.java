@@ -70,7 +70,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 userMoneyDetailService.insertPublic(toUId,"14",receiveMoney,fromUid);
             }
             baseResp.initCodeAndDesp();
-            baseResp.setData(num*liveGift.getPrice());
+            baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());
         }else {
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_1301, Constant.RTNINFO_SYS_1301);
         }
