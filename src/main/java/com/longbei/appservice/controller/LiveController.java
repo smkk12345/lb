@@ -5,6 +5,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.service.impl.LiveGiftServiceImpl;
+import com.longbei.appservice.service.impl.MediaResourceServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
+ * 直播互动接口
  * Created by lixb on 2017/8/11.
  */
 @RestController
@@ -24,6 +26,9 @@ public class LiveController {
 
     @Autowired
     private LiveGiftServiceImpl liveGiftService;
+
+    @Autowired
+    private MediaResourceServiceImpl mediaResourceService;
 
 
     /**
@@ -80,5 +85,6 @@ public class LiveController {
         }
         return baseResp;
     }
+    
 
 }
