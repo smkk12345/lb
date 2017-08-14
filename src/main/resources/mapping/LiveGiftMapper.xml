@@ -29,7 +29,7 @@
     <select id="selectById" resultMap="BaseResultMap">
         SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
         FROM live_gift
-        where giftid=#{giftid}
+        where giftid=#{giftId}
     </select>
 
 </mapper>
