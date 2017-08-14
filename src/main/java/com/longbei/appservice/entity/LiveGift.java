@@ -1,5 +1,7 @@
 package com.longbei.appservice.entity;
 
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -17,11 +19,13 @@ public class LiveGift {
 
     private int price;//价格 龙币
 
-    private String fileurl;//礼物访问路径
+    private String fileurl;//礼物访问动画路径
+
+    private String picurl;//礼物访问图片路径
 
     private String doublehit;//是否可以连击 0 不可以 1可以
 
-    private Date createetime;//创建时间
+    private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
 
@@ -44,12 +48,12 @@ public class LiveGift {
         this.updatetime = updatetime;
     }
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date getCreateetime() {
-        return createetime;
+    public Date getCreatetime() {
+        return createtime;
     }
 
-    public void setCreateetime(Date createetime) {
-        this.createetime = createetime;
+    public void setCreateetime(Date createtime) {
+        this.createtime = createtime;
     }
 
     public String getDoublehit() {
@@ -61,7 +65,11 @@ public class LiveGift {
     }
 
     public String getFileurl() {
-        return fileurl;
+        if(StringUtils.isNotBlank(fileurl)){
+            return AppserviceConfig.oss_media+fileurl;
+        }else {
+            return fileurl;
+        }
     }
 
     public void setFileurl(String fileurl) {
@@ -98,5 +106,17 @@ public class LiveGift {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
+    }
+
+    public String getPicurl() {
+        if(StringUtils.isNotBlank(picurl)){
+            return AppserviceConfig.oss_media+picurl;
+        }else {
+            return picurl;
+        }
     }
 }

@@ -25,6 +25,13 @@ public class LiveController {
     @Autowired
     private LiveGiftServiceImpl liveGiftService;
 
+
+    /**
+     *
+     * @param startnum
+     * @param endnum
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "giftList")
     public BaseResp<List<LiveGift>> giftList(String startnum, String endnum) {

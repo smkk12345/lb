@@ -1,6 +1,7 @@
 package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.LiveGift;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,7 +10,8 @@ import java.util.List;
  */
 public interface LiveGiftMapper {
 
-    List<LiveGift> selectList(Integer startNum, Integer endNum);
+    List<LiveGift> selectList(@Param("startNum") Integer startNum,
+                              @Param("endNum") Integer endNum);
 
-    LiveGift selectById(long giftId);
+    LiveGift selectById(@Param("giftId") long giftId);
 }
