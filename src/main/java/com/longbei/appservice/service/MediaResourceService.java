@@ -15,7 +15,7 @@ public interface MediaResourceService {
      * 查询资源分类列表
      * @return
      */
-    BaseResp<List<MediaResourceType>> findMediaResourceTypeList();
+    BaseResp<List<MediaResourceType>> findMediaResourceTypeList(Long userid);
 
     /**
      * 查询资源列表
@@ -57,4 +57,44 @@ public interface MediaResourceService {
      * @return
      */
     BaseResp<Object> updateMediaResourceInfo(String key, String pickey,String fileKey, String workflow, String duration, String picAttribute);
+
+    /**
+     * 添加资源分类
+     * @param typename
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> addMediaResourceType(String typename, String userid);
+
+    /**
+     * 更新媒体资源库
+     * @param id
+     * @param userid
+     * @param typename
+     * @return
+     */
+    BaseResp<Object> updateMediaResourceType(Integer id, String userid, String typename);
+
+    /**
+     * 校验用户是否可以继续添加媒体资源分类
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> checkUserAddMediaResourceType(String userid);
+
+    /**
+     * 删除媒体资源库分类
+     * @param id
+     * @param userid
+     * @return
+     */
+    BaseResp<Object> deleteMediaResourceType(Integer id, String userid);
+
+    /**
+     * 获取资源详情列表
+     * @param mediaresourceid
+     * @param userid
+     * @return
+     */
+    BaseResp<List<String>> findMediaResourceDetailList(Integer mediaresourceid, Long userid);
 }

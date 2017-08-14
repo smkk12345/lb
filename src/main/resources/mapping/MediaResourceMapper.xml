@@ -92,7 +92,7 @@
                 and resourcetypeid = #{mediaResource.resourcetypeid}
             </if>
             <if test="mediaResource.userid != null">
-                and userid = #{mediaResource.userid}
+                and media_resource.userid = #{mediaResource.userid}
             </if>
         </where>
     order by id desc
@@ -100,7 +100,7 @@
   </select>
 
   <!-- 添加资源数据 -->
-  <insert id="insertMediaResource" parameterType="com.longbei.appservice.entity.MediaResource">
+  <insert id="insertMediaResource" parameterType="com.longbei.appservice.entity.MediaResource" keyProperty="mediaResource.id" useGeneratedKeys="true">
       insert into media_resource(
         <trim prefixOverrides=",">
             <if test="mediaResource.resourcetypeid != null">
@@ -220,9 +220,6 @@
               <if test="mediaResource.filepath != null">
                 ,filepath = #{mediaResource.filepath}
               </if>
-              <if test="mediaResource.userid != null">
-                ,userid =#{mediaResource.userid}
-              </if>
               <if test="mediaResource.ispublic != null">
                 ,ispublic = #{mediaResource.ispublic}
               </if>
@@ -241,6 +238,9 @@
           </trim>
       </set>
     where id = #{mediaResource.id}
+      <if test="mediaResource.userid != null and mediaResource.userid != ''">
+          and userid = #{mediaResource.userid}
+      </if>
   </update>
 
     <!-- 更新视频资源 -->
@@ -258,5 +258,12 @@
             </trim>
         </set>
         where filepath = #{sourcePath}
+    </update>
+
+    <!-- 将 -->
+    <update id="updateMediaResourceTypeIsNull" parameterType="INTEGER">
+        update media_resource
+        set resourcetypeid = NULL
+        where resourcetypeid = #{mediaResourceTypeId}
     </update>
 </mapper>

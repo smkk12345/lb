@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.MediaResourceDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.MediaResourceDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mediaresourceid" property="mediaresourceid" jdbcType="INTEGER" />
+    <result column="filePath" property="filePath" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     id,mediaresourceid,filePath,sort
+  </sql>
+  <insert id="batchInsertMediaResourceDetail" parameterType="java.util.ArrayList">
+    insert into media_resource_detail(mediaresourceid,filePath,sort) values
+      <foreach collection="list" item="item" separator=",">
+        (#{item.mediaresourceid},#{item.filePath},#{item.sort})
+      </foreach>
+
+  </insert>
+
+  <select id="findMediaResourceDetailList" parameterType="INTEGER" resultType="String">
+      select filePath
+      from media_resource_detail
+      where mediaresourceid = #{mediaresourceid}
+      order by sort
+  </select>
+</mapper>
