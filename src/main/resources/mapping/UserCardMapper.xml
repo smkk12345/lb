@@ -23,7 +23,7 @@
     <include refid="Base_Column_List" />
     from user_card
     where cardid = #{cardid} 
-    and isdel = 0 
+--     and isdel = 0
   </select>
   <select id="selectUserCardList" parameterType="com.longbei.appservice.entity.UserCard" resultMap="BaseResultMap" >
     select 
