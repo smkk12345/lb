@@ -1547,42 +1547,48 @@ public class UserServiceImpl implements UserService {
 			//判断邀请人是否是龙杯用户
 			if(!StringUtils.hasBlankParams(invitecode)){
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(invitecode);
-				final UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
-				if(null != info){
-					//是龙杯用户,送分.....
-					//建立好友关系
-					BaseResp<Object> insertFriendBaseResp=userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
-					if(insertFriendBaseResp.getCode() == 0) {
-						final AppUserMongoEntity newUser = new AppUserMongoEntity();
-						newUser.setUserid(userInfo.getUserid() + "");
-						newUser.setNickname(userInfo.getNickname());
-						newUser.setUsername(userInfo.getUsername());
-						newUser.setRemark(userInfo.getRemark());
-						newUser.setAvatar(userInfo.getAvatar());
-						newUser.setSex(userInfo.getSex());
-						threadPoolTaskExecutor.execute(new Runnable() {
-							@Override
-							public void run() {
-								//JPUSH通知用户
-								JSONObject pushMessage = new JSONObject();
-								pushMessage.put("status", "消息标识");
-								pushMessage.put("userid", info.getUserid());
-								pushMessage.put("content", "加好友通知");
-								pushMessage.put("msgid", userid);
-								pushMessage.put("tag", Constant.JPUSH_TAG_COUNT_1004);
-								pushMessage.put("userInfo", newUser);
-								ijPushService.messagePush(info.getUserid()+"", "加好友成功通知", "加好友成功通知", pushMessage.toString());
-							}
-						});
+				if(null != appUserMongoEntity){
+					final UserInfo info = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
+					if(null != info){
+						//是龙杯用户,送分.....
+						//建立好友关系
+						BaseResp<Object> insertFriendBaseResp=userRelationService.insertFriend(Long.parseLong(userid),info.getUserid());
+						if(insertFriendBaseResp.getCode() == 0) {
+							final AppUserMongoEntity newUser = new AppUserMongoEntity();
+							newUser.setUserid(userInfo.getUserid() + "");
+							newUser.setNickname(userInfo.getNickname());
+							newUser.setUsername(userInfo.getUsername());
+							newUser.setRemark(userInfo.getRemark());
+							newUser.setAvatar(userInfo.getAvatar());
+							newUser.setSex(userInfo.getSex());
+							threadPoolTaskExecutor.execute(new Runnable() {
+								@Override
+								public void run() {
+									//JPUSH通知用户
+									JSONObject pushMessage = new JSONObject();
+									pushMessage.put("status", "消息标识");
+									pushMessage.put("userid", info.getUserid());
+									pushMessage.put("content", "加好友通知");
+									pushMessage.put("msgid", userid);
+									pushMessage.put("tag", Constant.JPUSH_TAG_COUNT_1004);
+									pushMessage.put("userInfo", newUser);
+									ijPushService.messagePush(info.getUserid()+"", "加好友成功通知", "加好友成功通知", pushMessage.toString());
+								}
+							});
+						}
+						//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
+						userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
+						//给推荐人添加龙币
+						userInfo.setInvitecode(inviteFriendIds(info));
+						userInfo.setHandleinvite("0");
+					}else{
+						return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 					}
-					//邀请好友获得龙分龙币 给推荐人添加龙分 给推荐人添加龙币
-					userBehaviourService.pointChange(info,"INVITE_LEVEL1",Constant_Perfect.PERFECT_GAM,null,0,0);
-					//给推荐人添加龙币
-					userInfo.setInvitecode(inviteFriendIds(info));
-					userInfo.setHandleinvite("0");
 				}else{
 					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_15, Constant.RTNINFO_SYS_15);
 				}
+
+
 			}
 			int temp = userInfoMapper.updateByUseridSelective(userInfo);
 
@@ -1903,6 +1909,8 @@ public class UserServiceImpl implements UserService {
 //					improveService.inviteCoinsHandle(info);
 //				}
 				baseResp.initCodeAndDesp();
+			}else{
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_119,Constant.RTNINFO_SYS_119);
 			}
 		} catch (Exception e) {
 			logger.error("insert invite code userid:{} invitecode:{} is error:",userid,invitecode,e);

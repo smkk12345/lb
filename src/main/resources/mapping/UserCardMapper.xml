@@ -39,6 +39,9 @@
     <if test="userCard.ctype != null and userCard.ctype != ''" >
       AND ctype = #{userCard.ctype}
     </if>
+    <if test="userCard.userid != null and userCard.userid != ''" >
+      AND userid = #{userCard.userid}
+    </if>
     order by createtime desc 
     <if test="pageSize != 0" >
       limit #{startNum},#{pageSize}
@@ -57,6 +60,9 @@
     </if>
     <if test="userCard.ctype != null and userCard.ctype != ''" >
       AND ctype = #{userCard.ctype}
+    </if>
+    <if test="userCard.userid != null and userCard.userid != ''" >
+      AND userid = #{userCard.userid}
     </if>
   </select>
   <update id="deleteByUserCardId" parameterType="java.lang.Long" >

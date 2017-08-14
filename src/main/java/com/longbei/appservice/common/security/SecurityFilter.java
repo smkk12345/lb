@@ -55,7 +55,20 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 		MDC.put("ip", localAddress);
 		//是否需要过滤逻辑
-		if(isTest(request)){
+//		if(isTest(request)){
+//			arg2.doFilter(request, response);
+//			return ;
+//		}
+
+		if(urlPath.contains("/live/")){
+			String time = request.getParameter("encrypt");
+			String params = AES.decrypt(AES.A_KEY,time);
+			Map<String,Object> map = JSONObject.fromObject(params);
+			try {
+				request = new ParamHttpServletRequestWrapper((HttpServletRequest) request, map);
+			}catch (Exception e){
+				logger.error("ParamHttpServletRequestWrapper error and msg=",e);
+			}
 			arg2.doFilter(request, response);
 			return ;
 		}

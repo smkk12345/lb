@@ -42,6 +42,23 @@ public class ClassroomCertifyApiController {
 		return baseResp;
 	}
 
+	/**
+	 * 获取老师认证信息列表数量
+	 * @param classroomCertify
+	 * @return
+	 */
+	@RequestMapping(value = {"selectClassroomCertifyNum"})
+	public BaseResp<Object> selectClassroomCertifyNum(@RequestBody ClassroomCertify classroomCertify){
+		logger.info("selectClassroomCertifyNum for adminservice and classroomCertify ={}", JSON.toJSONString(classroomCertify));
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+		try {
+			baseResp = classroomCertifyService.selectClassroomCertifyNum(classroomCertify);
+		} catch (Exception e) {
+			logger.error("selectClassroomCertifyNum for adminservice and classroomCertify ={}", JSON.toJSONString(classroomCertify), e);
+		}
+		return  baseResp;
+	}
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/selectClassroomCertifyByUserid")
 	public BaseResp<ClassroomCertify> selectClassroomCertifyByUserid(String userid) {

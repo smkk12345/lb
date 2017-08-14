@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.LiveGiftDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.LiveGiftDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="fromuid" property="fromuid" />
+    <result column="touid" property="touid" />
+    <result column="giftid" property="giftid" />
+    <result column="num" property="num" />
+    <result column="gifttitle" property="gifttitle" />
+    <result column="businessid" property="businessid" />
+    <result column="businesstype" property="businesstype" />
+    <result column="createtime" property="createtime" />
+    <result column="updatetime" property="updatetime" />
+    <result column="status" property="status" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status
+  </sql>
+
+  <select id="selectOwnGiftList">
+      SELECT Base_Column_List
+      FROM live_gift_detail
+      where touid = #{userid}
+      order by createtime desc
+      <if test="startNum != null" >
+        limit #{startNum},#{endNum}
+      </if>>
+  </select>
+
+    <select id="selectGiftList">
+        SELECT Base_Column_List
+        FROM live_gift_detail
+        where fromuid = #{userid}
+        order by createtime desc
+        <if test="startNum != null" >
+            limit #{startNum},#{endNum}
+        </if>
+    </select>
+
+    <!-- 添加礼物明细 -->
+    <insert id="insertGiftDetail" parameterType="com.longbei.appservice.entity.LiveGiftDetail">
+        insert into live_gift_detail(
+        <trim prefixOverrides=",">
+            <if test="liveGiftDetail.fromuid != null">
+                fromuid
+            </if>
+            <if test="liveGiftDetail.touid != null">
+                ,touid
+            </if>
+            <if test="liveGiftDetail.giftid != null">
+                ,giftid
+            </if>
+            <if test="liveGiftDetail.num != null">
+                ,num
+            </if>
+            <if test="liveGiftDetail.gifttitle != null">
+                ,gifttitle
+            </if>
+            <if test="liveGiftDetail.businessid != null">
+                ,businessid
+            </if>
+            <if test="liveGiftDetail.businesstype != null">
+                ,businesstype
+            </if>
+            <if test="liveGiftDetail.createtime != null">
+                ,createtime
+            </if>
+            <if test="liveGiftDetail.updatetime != null">
+                ,updatetime
+            </if>
+            <if test="liveGiftDetail.status != null">
+                ,status
+            </if>
+        </trim>
+        )values(
+        <trim prefixOverrides=",">
+            <if test="liveGiftDetail.fromuid != null">
+                ,#{liveGiftDetail.fromuid}
+            </if>
+            <if test="liveGiftDetail.touid != null">
+                ,#{liveGiftDetail.touid}
+            </if>
+            <if test="liveGiftDetail.giftid != null">
+                ,#{liveGiftDetail.giftid}
+            </if>
+            <if test="liveGiftDetail.num != null">
+                ,#{liveGiftDetail.num}
+            </if>
+            <if test="liveGiftDetail.gifttitle != null">
+                ,#{liveGiftDetail.gifttitle}
+            </if>
+            <if test="liveGiftDetail.businessid != null">
+                ,#{liveGiftDetail.businessid}
+            </if>
+            <if test="liveGiftDetail.businesstype != null">
+                ,#{liveGiftDetail.businesstype}
+            </if>
+            <if test="liveGiftDetail.fromuid != null">
+                ,#{liveGiftDetail.fromuid}
+            </if>
+            <if test="liveGiftDetail.createtime != null">
+                ,#{liveGiftDetail.createtime}
+            </if>
+            <if test="liveGiftDetail.updatetime != null">
+                ,#{liveGiftDetail.updatetime}
+            </if>
+            <if test="liveGiftDetail.status != null">
+                ,#{liveGiftDetail.status}
+            </if>
+        </trim>
+        )
+    </insert>
+
+</mapper>

@@ -20,11 +20,14 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="udpatetime" property="udpatetime" jdbcType="TIMESTAMP" />
     <result column="isup" property="isup" />
+    <result column="teachingtypes" property="teachingtypes"/>
+    <result column="starttime" property="starttime"/>
+    <result column="endtime" property="endtime"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -209,6 +212,16 @@
       <if test="udpatetime != null" >
         udpatetime,
       </if>
+      <if test="teachingtypes != null" >
+        teachingtypes,
+      </if>
+      <if test="starttime != null" >
+        starttime,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -262,6 +275,16 @@
       <if test="udpatetime != null" >
         #{udpatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="teachingtypes != null" >
+        #{teachingtypes},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >

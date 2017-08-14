@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.LiveGiftMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.LiveGift" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="giftid" property="giftid" />
+    <result column="title" property="title" />
+    <result column="price" property="price" />
+    <result column="fileurl" property="fileurl" />
+      <result column="picurl" property="picurl" />
+    <result column="doublehit" property="doublehit" />
+    <result column="createetime" property="createetime" />
+    <result column="updatetime" property="updatetime" />
+    <result column="isdel" property="isdel" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, giftid, title, price, fileurl, doublehit, createetime, updatetime,isdel,picurl
+  </sql>
+
+  <select id="selectList" resultMap="BaseResultMap">
+      SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
+      FROM live_gift
+      order by price
+      <if test="startNum != null" >
+        limit #{startNum},#{endNum}
+      </if>
+  </select>
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
+        FROM live_gift
+        where giftid=#{giftId}
+    </select>
+
+</mapper>

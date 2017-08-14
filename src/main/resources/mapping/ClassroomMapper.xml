@@ -148,6 +148,9 @@
     <if test="ishomerecommend != null and ishomerecommend != ''" >
     	and ishomerecommend = #{ishomerecommend}
     </if>
+    <if test="userid != null and userid != ''" >
+      and userid = #{userid}
+    </if>
   </select>
   
   <select id="selectSearchList" parameterType="com.longbei.appservice.entity.Classroom" resultMap="BaseResultMap" >
@@ -184,6 +187,9 @@
     </if>
     <if test="classroom.ishomerecommend != null and classroom.ishomerecommend != ''" >
     	and ishomerecommend = #{classroom.ishomerecommend}
+    </if>
+    <if test="classroom.userid != null and classroom.userid != ''" >
+      and userid = #{classroom.userid}
     </if>
     order by weight desc, createtime desc 
     <if test="endNum != 0" >

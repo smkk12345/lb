@@ -2,6 +2,8 @@ package com.longbei.appservice.common.constant;
 
 import org.omg.CORBA.PUBLIC_MEMBER;
 
+import java.math.BigDecimal;
+
 /**
  * 全局常量类
  */
@@ -90,6 +92,7 @@ public class Constant {
 	public static final int STATUS_SYS_115 = -115;
 	public static final int STATUS_SYS_117 = -117;
 	public static final int STATUS_SYS_118 = -118;
+	public static final int STATUS_SYS_119 = -119;
 	public static final int STATUS_SYS_500 = -500;
 
 	public static final int STATUS_SYS_20 = -20;
@@ -219,6 +222,9 @@ public class Constant {
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
 
+	/*****13开头直播返回码******/
+	public static final int STATUS_SYS_1301 = -1301;//龙币不够，请充值
+
 	
 	
 	/**
@@ -254,6 +260,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_116 = "发送失败";
 	public static final String RTNINFO_SYS_117 = "您已被授予龙杯官方认证，无法修改用户名和简介";
 	public static final String RTNINFO_SYS_118 = "发送失败,同一个手机号码不能超过1条/分钟,5条/小时,10条/天";
+	public static final String RTNINFO_SYS_119 = "该号码未注册";
 
 	public static final String RTNINFO_SYS_500 = "切换帐号请验证";
 
@@ -390,6 +397,9 @@ public class Constant {
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final String RTNINFO_SYS_1201 = "您的资源分类数量已达最大数量,不可再添加新的资源分类!";
+
+	/*****13开头直播返回码******/
+	public static final String RTNINFO_SYS_1301 = "龙币不足，请充值";//龙币不够，请充值
 
 	//新浪提供的短连接
 	public static final String WB_SHORTURL="http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=";
@@ -956,5 +966,7 @@ public class Constant {
 
 
 	public static final int FRIEND_LIMIT = 5000;
+	//公司抽成30%
+	public static final BigDecimal TAKEPERCENTAGE = new BigDecimal(30);
 
 }
