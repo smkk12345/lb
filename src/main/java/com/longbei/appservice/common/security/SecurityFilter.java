@@ -63,7 +63,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 		if(urlPath.contains("/live/")){
 			String encrypt = request.getParameter("encrypt");
 			logger.info("urlPath time={}",encrypt);
-			encrypt.replaceAll("%252B","%2B");
+			encrypt = encrypt.replaceAll("%252B","%2B");
 			String params = AES.decrypt(AES.A_KEY,encrypt);
 			Map<String,Object> map = JSONObject.fromObject(params);
 			logger.info("urlPath map={}",JSONObject.fromObject(map).toString());
