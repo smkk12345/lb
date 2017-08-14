@@ -3,6 +3,7 @@
 <mapper namespace="com.longbei.appservice.dao.MediaResourceTypeMapper" >
   <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.MediaResourceType" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
     <result column="typename" property="typename" jdbcType="VARCHAR" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="icount" property="icount" jdbcType="INTEGER" />
@@ -10,14 +11,75 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, typename, sort, icount, createtime
+    id, userid, typename, sort, icount, createtime
   </sql>
 
-  <select id="findMediaResourceTypeList" resultMap="BaseResultMap">
+  <select id="findMediaResourceTypeList" parameterType="Long" resultMap="BaseResultMap">
     select
       <include refid="Base_Column_List" />
     from media_resourcetype
+    <if test="userid != null and userid != ''">
+      WHERE userid = #{userid}
+    </if>
+    <if test="userid == null or userid == ''">
+      WHERE userid is NULL
+    </if>
     order by sort desc
   </select>
 
+  <!-- 添加资源库分类 -->
+  <insert id="addMediaResourceType" parameterType="com.longbei.appservice.entity.MediaResourceType">
+      insert media_resourcetype
+      ( <if test="mediaResourceType.userid != null and mediaResourceType.userid != ''">
+          userid,
+        </if>
+        typename,
+        <if test="mediaResourceType.sort != null">
+          sort,
+        </if>
+        icount,
+        createtime
+      )values(
+        <if test="mediaResourceType.userid != null and mediaResourceType.userid != ''">
+          #{mediaResourceType.userid},
+        </if>
+        #{mediaResourceType.typename},
+        <if test="mediaResourceType.sort != null">
+          #{mediaResourceType.sort},
+        </if>
+        #{mediaResourceType.icount},
+        #{mediaResourceType.createtime}
+      )
+  </insert>
+
+  <update id="updateMediaResourceType" parameterType="com.longbei.appservice.entity.MediaResourceType">
+      update media_resourcetype
+      set typename = #{mediaResourceType.typename}
+      where
+        <if test = "mediaResourceType.userid != null">
+           userid = #{mediaResourceType.userid} and
+        </if>
+      id= #{mediaResourceType.id}
+  </update>
+
+  <select id="getUserMediaResourceTypeCount" parameterType="String" resultType="INTEGER">
+    SELECT
+      COUNT(1)
+    FROM media_resourcetype
+    WHERE userid = #{userid}
+  </select>
+
+  <update id="deleteMediaResourceType">
+      delete from media_resourcetype
+      where <if test="userid != null and userid != ''">
+              userid = #{userid} and
+            </if>
+            id = #{id}
+  </update>
+
+    <update id="updateMediaResourceTypeCount">
+        update media_resourcetype
+        set icount = icount + #{count}
+        where id = #{resourcetypeid}
+    </update>
 </mapper>

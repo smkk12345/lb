@@ -30,8 +30,8 @@ public class MediaResourceApiController {
      * @return
      */
     @RequestMapping(value="findMediaResourceTypeList")
-    public BaseResp<List<MediaResourceType>> findMediaResourceTypeList(){
-        return this.mediaResourceService.findMediaResourceTypeList();
+    public BaseResp<List<MediaResourceType>> findMediaResourceTypeList(Long userid){
+        return this.mediaResourceService.findMediaResourceTypeList(userid);
     }
 
     /**
@@ -95,6 +95,68 @@ public class MediaResourceApiController {
             return new BaseResp<>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         return this.mediaResourceService.updateMediaResource(mediaResource);
+    }
+
+    /**
+     * 添加媒体资源库类型
+     * @param typename
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="addMediaResourceType")
+    public BaseResp<Object> addMediaResourceType(String typename,String userid){
+        if(StringUtils.isEmpty(typename)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }else if(typename.length() > 20){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,"资源分类名称不能超过20个字!");
+        }
+
+        return this.mediaResourceService.addMediaResourceType(typename,userid);
+    }
+
+    /**
+     * 校验用户是否可以继续添加媒体资源分类
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="checkUserAddMediaResourceType")
+    public BaseResp<Object> checkUserAddMediaResourceType(String userid){
+        if(StringUtils.isEmpty(userid)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.mediaResourceService.checkUserAddMediaResourceType(userid);
+    }
+
+    /**
+     * 更新媒体资源库类型
+     * @param typename
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="updateMediaResourceType")
+    public BaseResp<Object> updateMediaResourceType(String typename,String userid,Integer id){
+        if(id == null ||StringUtils.isEmpty(typename)){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }else if(typename.length() > 20){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,"资源分类名称不能超过20个字!");
+        }
+
+        return this.mediaResourceService.updateMediaResourceType(id,userid,typename);
+    }
+
+    /**
+     * 删除媒体资源库
+     * @param id
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="deleteMediaResourceType")
+    public BaseResp<Object> deleteMediaResourceType(Integer id,String userid){
+        if(id == null){
+            return new BaseResp<Object>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+
+        return this.mediaResourceService.deleteMediaResourceType(id,userid);
     }
 
 }
