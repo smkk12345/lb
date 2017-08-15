@@ -562,7 +562,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
     public static String getOfficeHome() {
         String osName = System.getProperty("os.name");
         if (Pattern.matches("Linux.*", osName)) {
-            return "/opt/openoffice4";
+            return "/opt/openoffice4/program";
         } else if (Pattern.matches("Windows.*", osName)) {
             return "E:/software/OpenOffice 4";
         } else if (Pattern.matches("Mac.*", osName)) {
