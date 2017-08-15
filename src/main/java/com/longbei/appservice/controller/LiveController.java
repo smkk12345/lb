@@ -1,15 +1,14 @@
 package com.longbei.appservice.controller;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.MediaResource;
 import com.longbei.appservice.service.MediaResourceService;
 import com.longbei.appservice.service.impl.LiveGiftServiceImpl;
-import com.longbei.appservice.service.impl.MediaResourceServiceImpl;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 直播互动接口
@@ -42,9 +43,10 @@ public class LiveController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "giftList")
-    public BaseResp<List<LiveGift>> giftList(String startnum, String endnum) {
+    public Map<String,String> giftList(String startnum, String endnum) {
         logger.info("giftList startNum={},endNum={}",startnum,endnum);
         BaseResp<List<LiveGift>> baseResp = new BaseResp<>();
+        Map map = new HashMap();
         int startn = 0;
         if(!StringUtils.isBlank(startnum)){
             startn = Integer.parseInt(startnum);
@@ -58,22 +60,27 @@ public class LiveController {
         } catch (Exception e) {
             logger.error("giftList startNum={},endNum={}",startnum,endnum,e);
         }
-        return baseResp;
+        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+        return map;
     }
+
 
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "giveGift")
-    public BaseResp<Object> giveGift(String giftid,
+    public Map<String,String> giveGift(String giftid,
                                      String fromuid,
                                      String num,
                                      String touid,
                                      String classroomid) {
         logger.info("giveGift giftId={},fromUid={},num={},toUId={}" +
                 "",giftid,fromuid,num,touid);
+        Map map = new HashMap();
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(giftid,fromuid,num,touid,classroomid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+            return map;
         }
         try {
             baseResp = liveGiftService.giveGift(
@@ -86,7 +93,8 @@ public class LiveController {
         } catch (Exception e) {
             logger.error("giveGift giftId={},fromUid={},num={},toUId={}",giftid,fromuid,num,touid,e);
         }
-        return baseResp;
+        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+        return map;
     }
     
 
@@ -98,11 +106,14 @@ public class LiveController {
      * @return
      */
     @RequestMapping(value="getMediaResource")
-    public BaseResp<Page<MediaResource>> getMediaResource(Long userid,Integer pageno,Integer pagesize){
+    public Map<String,String> getMediaResource(Long userid,Integer pageno,Integer pagesize){
         logger.info("get mediaResource userid:{} ",userid);
+        Map<String,String> map = new HashMap<>();
         BaseResp<Page<MediaResource>> baseResp = new BaseResp<Page<MediaResource>>();
         if(userid == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+            return map;
         }
         MediaResource mediaResource = new MediaResource();
         mediaResource.setUserid(userid);
@@ -122,7 +133,8 @@ public class LiveController {
         }
         baseResp = this.mediaResourceService.findMediaResourceList(mediaResource,null,pageno,pagesize);
         System.out.print(JSONObject.fromObject(baseResp).toString());
-        return baseResp;
+        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+        return map;
     }
 
     /**
@@ -132,15 +144,19 @@ public class LiveController {
      * @return
      */
     @RequestMapping(value="mediaDetail")
-    public BaseResp<List<String>> getMediaResourceDetailList(Integer mediaid,Long userid){
+    public Map<String,String> getMediaResourceDetailList(Integer mediaid,Long userid){
         logger.info("get mediaResource detail mediaresourceid:{} userid:{}",mediaid,userid);
         BaseResp<List<String>> baseResp = new BaseResp<>();
+        Map<String,String> map = new HashMap<>();
         if(mediaid == null || userid == null){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+            return map;
         }
         baseResp = this.mediaResourceService.findMediaResourceDetailList(mediaid,userid);
         System.out.print(JSONObject.fromObject(baseResp).toString());
-        return baseResp;
+        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+        return map;
     }
 
 }
