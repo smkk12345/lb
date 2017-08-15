@@ -402,6 +402,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         //PDF 文件名
         String outputFileString =tempMediaResourcePath+(new Date().getTime())+realFilename+".pdf";
         File outputFile = new File(outputFileString);
+        if(!outputFile.exists()){
+            outputFile.mkdirs();
+        }
         //转成图片后的输出路径
         String imageOutput = tempMediaResourcePath+realFilename+(new Date().getTime())+"/";
 
@@ -421,6 +424,18 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             startService();
 
             OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+            if(officeManager == null){
+                logger.error("------------------ officeManager null-------------------------------");
+            }
+            if(converter == null){
+                logger.error("------------------ converter null-------------------------------");
+            }
+            if(pptFile == null){
+                logger.error("------------------ pptFile null-------------------------------");
+            }
+            if(outputFile == null){
+                logger.error("------------------ outputFile null-------------------------------");
+            }
             converter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
@@ -510,7 +525,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             officeManager = configuration.buildOfficeManager();
             officeManager.start();
             System.out.println("office Manager 启动成功!");
+            System.out.println("************* success **************"+getOfficeHome());
         } catch (Exception ce) {
+            System.out.println("************* fail **************"+getOfficeHome());
             System.out.println("office Manager 启动失败:" + ce);
         }
     }
