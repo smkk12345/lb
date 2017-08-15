@@ -516,6 +516,17 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
         try {
+            File file = new File(getOfficeHome());
+            if(!file.exists()){
+                System.out.println("-----------file no exist-------------"+getOfficeHome());
+            }else{
+                String [] files = file.list();
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                for(String filename:files){
+                    System.out.println(filename);
+                }
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            }
             System.out.println("openOffice Manager 开始启动....");
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
             configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
