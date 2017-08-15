@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.UserInCome;
 import com.longbei.appservice.entity.UserInComeDetail;
-import com.longbei.appservice.entity.UserIncome;
 import com.longbei.appservice.entity.UserInfo;
 
 /**
@@ -18,17 +18,39 @@ public interface UserInComeService {
 
 
     /**
-     * 添加教室收入
-     * @param classroom  教室实体
+     * 添加教室收入,提现（包含明细的处理，消息的处理）
+     * @param classroomId  教室id
      * @param originUserId 来源用户id
-     * @param userInfo   教师实体
-     * @param origin     来源  0 教室学费，1 送礼物，2 提现 3 提现失败返还 4提现成功，5 退学费，6转入钱包
-     * @param num
+     * @param userId   教师id
+     * @param origin     来源  0 教室学费，1 送礼物，2 提现 3 提现失败 4提现成功，5 退学费，6转入钱包
+     * @param type 0 - 收入 1 - 支出
+     * @param num  龙币数量
+     * @return
+     * @author luye
+     * @create 2017-08-14 上午9:44
+     */
+    BaseResp<String> updateUserInCome(String classroomId,
+                                      String userId,
+                                      String originUserId,
+                                      String origin,
+                                      String type,
+                                      int num,
+                                      String detailremarker);
+
+
+    /**
+     * 收益结算
+     * @param userid  用户id
+     * @param num     龙币数量
+     * @param receiptUser  收款人
+     * @param receiptBank  收款银行
+     * @param receiptNum   收款账号
+     * @param origin 来源  0 教室学费，1 送礼物，2 提现 3 提现失败 4提现成功，5 退学费，6转入钱包
      * @return
      */
-    BaseResp<String> updateUserInCome(Classroom classroom, UserInfo userInfo,String originUserId,String origin,int num);
-
-
+    BaseResp insertUserInComeOrder(String userid,int num,
+                                   String receiptUser,String receiptBank,
+                                   String receiptNum,String origin);
 
 
 
@@ -38,25 +60,32 @@ public interface UserInComeService {
      * @param userid  教师id
      * @return
      */
-    BaseResp<UserIncome> selectUserInCome(String userid);
+    BaseResp<UserInCome> selectUserInCome(String userid);
+
+
+    /**
+     * 获取收益明细详细信息
+     * @param detailId  明细id
+     * @param detailType  明细类型 0 - 收入 1 - 支出
+     * @return
+     */
+    BaseResp<UserInComeDetail> selectUserInComeDetail(String detailId,String detailType);
 
 
     /**
      * 获取教师收益明细列表（分页）
      * @param userInComeDetail 检索条件 （支持明细类型，明细状态，明细时间）
+     * @param istotalinfo 是否需要获取用户收益数额
      * @param pageNo
      * @param pageSize
      * @return
      */
-    BaseResp<Page<UserInComeDetail>> selectUserInComeDetailList(UserInComeDetail userInComeDetail,Integer pageNo,Integer pageSize);
+    BaseResp<Page<UserInComeDetail>> selectUserInComeDetailList(UserInComeDetail userInComeDetail,
+                                                                Integer pageNo,
+                                                                Integer pageSize,
+                                                                boolean istotalinfo);
 
 
-    /**
-     * 查看用户收益明细
-     * @param detailId
-     * @return
-     */
-    BaseResp<UserInComeDetail> selectUserIncomeDetail(String detailId);
 
 
 }
