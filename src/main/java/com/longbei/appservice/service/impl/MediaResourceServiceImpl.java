@@ -619,6 +619,26 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         System.out.println("openOffice Manager 停止成功!");
     }
+
+    public static void initStopService(){
+        try {
+            System.out.println("openOffice Manager 开始关闭....");
+            DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+            configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
+            configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+            configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+            configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+
+            officeManager = configuration.buildOfficeManager();
+            officeManager.stop();
+            officeManager = null;
+            System.out.println("office Manager 关闭成功!");
+            System.out.println("************* success **************"+getOfficeHome());
+        } catch (Exception ce) {
+            System.out.println("************* fail **************"+getOfficeHome());
+            System.out.println("office Manager 关闭失败:" + ce);
+        }
+    }
     /*************************** PPT转图片 end *************************/
 
 }

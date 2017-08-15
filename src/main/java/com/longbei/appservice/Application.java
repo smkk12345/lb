@@ -42,11 +42,7 @@ public class Application extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
 
-        try{
-            MediaResourceServiceImpl.startService();
-        }finally {
-            MediaResourceServiceImpl.stopService();
-        }
+        MediaResourceServiceImpl.initStopService();
         logger.info("SpringBoot Start Success");
     }
 
