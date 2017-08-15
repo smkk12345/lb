@@ -72,6 +72,8 @@ public class Classroom {
     private Integer allcourses; //教室课程数量
     
     private Integer earnings;  //教室总收益---龙币
+
+	private Double commission; //提成
     
     //----------------扩展字段--------------------------
     
@@ -549,6 +551,14 @@ public class Classroom {
 
 	public void setEarnings(Integer earnings) {
 		this.earnings = earnings;
+	}
+
+	public Double getCommission() {
+		return commission;
+	}
+
+	public void setCommission(Double commission) {
+		this.commission = commission;
 	}
 
 	@JsonInclude(Include.ALWAYS)
