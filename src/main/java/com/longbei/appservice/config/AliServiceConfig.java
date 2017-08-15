@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
  * oss  alidayu
  * Created by luye on 2016/9/12.
  */
-@Configuration
-@ConfigurationProperties
+//@Configuration
+//@ConfigurationProperties
 public class AliServiceConfig {
 
 //    private static Logger logger = LoggerFactory.getLogger(AliServiceConfig.class);
