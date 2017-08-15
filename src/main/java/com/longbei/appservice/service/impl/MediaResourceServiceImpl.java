@@ -3,18 +3,41 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.service.OSSService;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.OssConfig;
+import com.longbei.appservice.dao.MediaResourceDetailMapper;
 import com.longbei.appservice.dao.MediaResourceMapper;
 import com.longbei.appservice.dao.MediaResourceTypeMapper;
 import com.longbei.appservice.entity.MediaResource;
+import com.longbei.appservice.entity.MediaResourceDetail;
 import com.longbei.appservice.entity.MediaResourceType;
 import com.longbei.appservice.service.MediaResourceService;
+import org.artofsolving.jodconverter.OfficeDocumentConverter;
+import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
+import org.artofsolving.jodconverter.office.OfficeManager;
+import org.icepdf.core.exceptions.PDFException;
+import org.icepdf.core.exceptions.PDFSecurityException;
+import org.icepdf.core.pobjects.Document;
+import org.icepdf.core.util.GraphicsRenderingHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by wangyongzhi 17/7/27.
@@ -22,22 +45,31 @@ import java.util.*;
 @Service("mediaResouceService")
 public class MediaResourceServiceImpl implements MediaResourceService {
     private Logger logger = LoggerFactory.getLogger(MediaResourceServiceImpl.class);
+    private static OfficeManager officeManager = null;
+    public static final String FILETYPE_PNG = "png";
+    public static final String SUFF_IMAGE = "." + FILETYPE_PNG;
 
     @Autowired
     private MediaResourceTypeMapper mediaResourceTypeMapper;
     @Autowired
     private MediaResourceMapper mediaResourceMapper;
+    @Autowired
+    private OSSService ossService;
+    @Autowired
+    private MediaResourceDetailMapper mediaResourceDetailMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 查询资源分类列表
      * @return
      */
     @Override
-    public BaseResp<List<MediaResourceType>> findMediaResourceTypeList() {
+    public BaseResp<List<MediaResourceType>> findMediaResourceTypeList(Long userid) {
         logger.info("find MediaResouceType List ");
         BaseResp<List<MediaResourceType>> baseResp = new BaseResp<List<MediaResourceType>>();
         try{
-            List<MediaResourceType> mediaResourceTypeList = this.mediaResourceTypeMapper.findMediaResourceTypeList();
+            List<MediaResourceType> mediaResourceTypeList = this.mediaResourceTypeMapper.findMediaResourceTypeList(userid);
             if(mediaResourceTypeList == null){
                 mediaResourceTypeList = new ArrayList<>();
             }
@@ -99,6 +131,19 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             mediaResource.setCreatetime(new Date());
             int row = this.mediaResourceMapper.insertMediaResource(mediaResource);
             if(row > 0){
+                //如果是PPT,则需要将PPT文档转成图片
+                if(mediaResource.getFiletype() == 3){
+                    final String filePath = mediaResource.getFilepath();
+                    final String filename = mediaResource.getFilename();
+                    final Integer mediaResourceId = mediaResource.getId();
+                    threadPoolTaskExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            PPTToImage(filePath,filename,mediaResourceId);
+                        }
+                    });
+
+                }
                 return baseResp.initCodeAndDesp();
             }
         }catch(Exception e){
@@ -139,8 +184,25 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         logger.info("update mediaResource mediaResource:{}",mediaResource.toString());
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
+            MediaResource oldMediaResource = this.mediaResourceMapper.getMediaResourceDetail(mediaResource.getId());
             int row = this.mediaResourceMapper.updateMediaResource(mediaResource);
             if(row > 0){
+                if(mediaResource.getIsdel() == null || mediaResource.getIsdel() != 1){
+                    if(oldMediaResource == null){
+                        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+                    }
+                    if(oldMediaResource.getResourcetypeid() == null && mediaResource.getResourcetypeid() != null){
+                        int updateRow = this.mediaResourceTypeMapper.updateMediaResourceTypeCount(mediaResource.getResourcetypeid(),1);
+                    }else if(oldMediaResource.getResourcetypeid() != null && mediaResource.getResourcetypeid() == null){
+                        int updateRow = this.mediaResourceTypeMapper.updateMediaResourceTypeCount(oldMediaResource.getResourcetypeid(),-1);
+                    }else if(!oldMediaResource.getResourcetypeid().equals(mediaResource.getResourcetypeid())){
+                        int updateRow = this.mediaResourceTypeMapper.updateMediaResourceTypeCount(oldMediaResource.getResourcetypeid(),-1);
+                        this.mediaResourceTypeMapper.updateMediaResourceTypeCount(mediaResource.getResourcetypeid(),1);
+                    }
+                }else{
+                    int updateRow = this.mediaResourceTypeMapper.updateMediaResourceTypeCount(oldMediaResource.getResourcetypeid(),-1);
+                }
+
                 return baseResp.initCodeAndDesp();
             }
         }catch(Exception e){
@@ -198,5 +260,352 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         return baseResp;
     }
+
+    /**
+     * 添加资源分类
+     * @param typename
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> addMediaResourceType(String typename, String userid) {
+        logger.info("add mediaResourceType typename:{} userid:{}",typename,userid);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            int count = this.mediaResourceTypeMapper.getUserMediaResourceTypeCount(userid);
+            if(count >= MediaResourceType.userMaxMediaResourceTypeCount){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1201,Constant.RTNINFO_SYS_1201);
+            }
+            MediaResourceType mediaResourceType = new MediaResourceType();
+            mediaResourceType.setCreatetime(new Date());
+            mediaResourceType.setIcount(0);
+            mediaResourceType.setSort(0);
+            mediaResourceType.setTypename(typename);
+            mediaResourceType.setUserid(userid);
+            int row = this.mediaResourceTypeMapper.addMediaResourceType(mediaResourceType);
+            if(row > 0){
+                return baseResp.initCodeAndDesp();
+            }
+        }catch(Exception e){
+            logger.error("add mediaResourceType error typename:{} userid:{} errorMsg:{}",typename,userid,e);
+        }
+
+        return baseResp;
+    }
+
+    /**
+     * 更新媒体资源库分类
+     * @param id
+     * @param userid
+     * @param typename
+     * @return
+     */
+    @Override
+    public BaseResp<Object> updateMediaResourceType(Integer id, String userid, String typename) {
+        logger.info("update mediaResourceType id:{} typename:{} userid:{}",id,typename,userid);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            MediaResourceType mediaResourceType = new MediaResourceType();
+            mediaResourceType.setId(id);
+            if(StringUtils.isNotEmpty(userid)){
+                mediaResourceType.setUserid(userid);
+            }
+            mediaResourceType.setTypename(typename);
+            int row = this.mediaResourceTypeMapper.updateMediaResourceType(mediaResourceType);
+            if(row > 0){
+                return baseResp.initCodeAndDesp();
+            }
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,"您没有权限修改该分类!");
+        }catch(Exception e){
+            logger.error("update mediaResourceType id:{} typename:{} userid:{} errorMsg:{}",id,typename,userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 校验用户是否可以继续添加媒体资源分类
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> checkUserAddMediaResourceType(String userid) {
+        logger.info("check UserAddMediaResourceType userid:{}",userid);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            int count = this.mediaResourceTypeMapper.getUserMediaResourceTypeCount(userid);
+            if(count >= MediaResourceType.userMaxMediaResourceTypeCount){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1201,Constant.RTNINFO_SYS_1201);
+            }
+            return baseResp.initCodeAndDesp();
+        }catch(Exception e){
+            logger.info("check UserAddMediaResourceType userid:{} errorMsg:{}",userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 删除媒体资源库分类
+     * @param id
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<Object> deleteMediaResourceType(Integer id, String userid) {
+        logger.info("delete mediaResourceType id:{} userid:{}",id,userid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            int row = this.mediaResourceTypeMapper.deleteMediaResourceType(id,userid);
+            if(row > 0){
+                //将原该分类下的所有资源分类改成空
+                this.mediaResourceMapper.updateMediaResourceTypeIsNull(id);
+                return baseResp.initCodeAndDesp();
+            }
+        }catch(Exception e){
+            logger.error("delete mediaResourceType error id:{} userid:{} errorMsg:{}",id,userid,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取资源详情列表
+     * @param mediaresourceid
+     * @param userid
+     * @return
+     */
+    @Override
+    public BaseResp<List<String>> findMediaResourceDetailList(Integer mediaresourceid, Long userid) {
+        logger.info("get mediaResource detail mediaresourceid:{} userid:{}",mediaresourceid,userid);
+        BaseResp<List<String>> baseResp = new BaseResp<List<String>>();
+        try{
+            MediaResource mediaResource = this.mediaResourceMapper.getMediaResourceDetail(mediaresourceid);
+            if(mediaResource == null || !userid.equals(mediaResource.getUserid())){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            List<String> mediaResourceDetailList = this.mediaResourceDetailMapper.findMediaResourceDetailList(mediaresourceid);
+            baseResp.setData(mediaResourceDetailList);
+            baseResp.initCodeAndDesp();
+
+        }catch(Exception e){
+            logger.info("get mediaResource detail mediaresourceid:{} userid:{} errorMsg:{}",mediaresourceid,userid,e);
+        }
+        return baseResp;
+    }
+
+    private boolean PPTToImage(String pptUrl,String filename,Integer mediaResourceId){
+        String tempMediaResourcePath = getTempFilePath();
+
+        Integer suffixIndex = filename.lastIndexOf(".");
+        String realFilename = filename.substring(0,suffixIndex);
+        //下载的ppt路径
+        String pptFilePath = tempMediaResourcePath + filename;
+        File pptFile = new File(pptFilePath);
+        //PDF 文件名
+        String outputFileString =tempMediaResourcePath+(new Date().getTime())+realFilename+".pdf";
+        File outputFile = new File(outputFileString);
+        if(!outputFile.exists()){
+            outputFile.mkdirs();
+        }
+        //转成图片后的输出路径
+        String imageOutput = tempMediaResourcePath+realFilename+(new Date().getTime())+"/";
+
+        try{
+            pptUrl = OssConfig.url+pptUrl;
+            //1. 根据url 下载ppt
+
+            if(!pptFile.getParentFile().exists()){
+                pptFile.getParentFile().mkdirs();
+            }
+            boolean flag = downloadPPT(pptUrl,pptFilePath);
+            if(!flag){
+                return false;
+            }
+            //2. 将下载的ppt 转成 pdf
+            pptFile = new File(pptFilePath);
+            startService();
+
+            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+            if(officeManager == null){
+                logger.error("------------------ officeManager null-------------------------------");
+            }
+            if(converter == null){
+                logger.error("------------------ converter null-------------------------------");
+            }
+            if(pptFile == null){
+                logger.error("------------------ pptFile null-------------------------------");
+            }
+            if(outputFile == null){
+                logger.error("------------------ outputFile null-------------------------------");
+            }
+            converter.convert(pptFile,outputFile);
+
+            //3. 将pdf转成图片
+            List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+
+            //4.将所有图片 上传的到阿里云
+            if(imageList == null || imageList.size() == 0){
+                return false;
+            }
+            List<MediaResourceDetail> mediaResourceDetailList = new ArrayList<MediaResourceDetail>();
+            for(int i=0;i<imageList.size();i++){
+                File file = new File(imageList.get(i));
+                String key = "longbei_media_resource/"+UUID.randomUUID().toString();
+                InputStream in = new FileInputStream(file);
+                ossService.putObject(OssConfig.bucketName,key, in);
+
+                MediaResourceDetail mediaResourceDetail = new MediaResourceDetail();
+                mediaResourceDetail.setSort(i);
+                mediaResourceDetail.setMediaresourceid(mediaResourceId);
+                mediaResourceDetail.setFilePath(OssConfig.url+key);
+                mediaResourceDetailList.add(mediaResourceDetail);
+            }
+
+            //5.保存到数据库 mediaResourceDetail
+            int row = this.mediaResourceDetailMapper.batchInsertMediaResourceDetail(mediaResourceDetailList);
+            if(row > 0){
+                return  true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            //pptFilePath outputFileString imageOutput
+            pptFile.deleteOnExit();
+            outputFile.deleteOnExit();
+            File tempFile = new File(imageOutput);
+            tempFile.deleteOnExit();
+        }
+        return false;
+    }
+
+    private static List<String> PDFToImage(String sourceFile,String destFile,String filename) throws InterruptedException, IOException, PDFException, PDFSecurityException {
+        ArrayList<String> imageList = new ArrayList<String>();
+        Document document = null;
+        BufferedImage img = null;
+        float rotation = 0f;
+        float zoom = 1.5f;
+
+        //输出文件夹
+        File file = new File(destFile);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        document = new Document();
+        document.setFile(sourceFile);
+        for (int i = 0; i < document.getNumberOfPages(); i++) {
+            img = (BufferedImage) document.getPageImage(i, GraphicsRenderingHints.SCREEN,
+                    org.icepdf.core.pobjects.Page.BOUNDARY_CROPBOX,rotation,zoom);
+            Iterator iter = ImageIO.getImageWritersBySuffix(FILETYPE_PNG);
+            ImageWriter writer = (ImageWriter) iter.next();
+            String imagePath =destFile+filename+"_"+(i+1)+".png";
+            File outFile = new File(imagePath);
+            FileOutputStream out = new FileOutputStream(outFile);
+            ImageOutputStream outImage = ImageIO.createImageOutputStream(out);
+            writer.setOutput(outImage);
+            writer.write(new IIOImage(img, null, null));
+            imageList.add(imagePath);
+        }
+        img.flush();
+        document.dispose();
+        System.out.println("转码成功 ");
+        return imageList;
+    }
+
+    // 启动服务
+    public static void startService() {
+        if(officeManager != null){
+            return ;
+        }
+        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+        try {
+            File file = new File(getOfficeHome());
+            if(!file.exists()){
+                System.out.println("++++++"+File.separator+"opt");
+                File parentFile = new File(File.separator+"opt");
+                if(!parentFile.exists()){
+                    System.out.println("-----------/opt file no exist-------------");
+                }else{
+                    String [] files = parentFile.list();
+                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                    for(String filename:files){
+                        System.out.println(filename);
+                    }
+                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                }
+                System.out.println("-----------file no exist-------------"+getOfficeHome());
+            }else{
+                String [] files = file.list();
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                for(String filename:files){
+                    System.out.println(filename);
+                }
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            }
+            System.out.println("openOffice Manager 开始启动....");
+            configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
+            configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+            configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+            configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+
+            officeManager = configuration.buildOfficeManager();
+            officeManager.start();
+            System.out.println("office Manager 启动成功!");
+            System.out.println("************* success **************"+getOfficeHome());
+        } catch (Exception ce) {
+            System.out.println("************* fail **************"+getOfficeHome());
+            System.out.println("office Manager 启动失败:" + ce);
+        }
+    }
+
+    private boolean downloadPPT(String pptUrl,String pptFilePath) throws MalformedURLException {
+        // 下载网络文件
+        int bytesum = 0;
+        int byteread = 0;
+        URL url = new URL(pptUrl);
+
+        try {
+            URLConnection conn = url.openConnection();
+            InputStream inStream = conn.getInputStream();
+            FileOutputStream fs = new FileOutputStream(pptFilePath);
+
+            byte[] buffer = new byte[1024];
+            while ((byteread = inStream.read(buffer)) != -1) {
+                bytesum += byteread;
+                fs.write(buffer, 0, byteread);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 获取OpenOffice安装目录
+     * @return
+     */
+    public static String getOfficeHome() {
+        String osName = System.getProperty("os.name");
+        if (Pattern.matches("Linux.*", osName)) {
+            return File.separator+"/opt/openoffice4";
+        } else if (Pattern.matches("Windows.*", osName)) {
+            return "E:/software/OpenOffice 4";
+        } else if (Pattern.matches("Mac.*", osName)) {
+            return "/Applications/OpenOffice.app/Contents";
+        }
+        return null;
+    }
+
+    private String getTempFilePath(){
+        String osName = System.getProperty("os.name");
+        if (Pattern.matches("Linux.*", osName)) {
+            return "/tmp/mediaResource/";
+        } else if (Pattern.matches("Windows.*", osName)) {
+            return "E:/MediaResourceTemp/";
+        } else if (Pattern.matches("Mac.*", osName)) {
+            return "/Users/smkk/Downloads/MediaResourceTemp/";
+        }
+        return null;
+    }
+
+    /*************************** PPT转图片 end *************************/
 
 }

@@ -86,6 +86,11 @@ alimedia:
         workflowmp4: longbei3-mp4
         outurl: http://longbei-media-resource-dev-out.oss-cn-beijing.aliyuncs.com/
     area: beijing
+    endpoint: http://oss-cn-beijing.aliyuncs.com
+    bucketName: longbei-dev-media-out
+    url: http://longbei-dev-media-out.oss-cn-beijing.aliyuncs.com/
+    inputBacketName: longbei-dev-media
+    inputurl: http://longbei-dev-media.oss-cn-beijing.aliyuncs.com/
 
 #logging:
 #        config: classpath:longbei-logback.xml

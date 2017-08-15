@@ -39,15 +39,14 @@
 
     <repositories>
         <repository>
+            <id>longbei</id>
+            <url>http://47.92.154.32:9999/nexus/content/repositories/thirdparty/</url>
+        </repository>
+        <repository>
             <id>longbei-repos</id>
             <name>Longbei Releases</name>
             <url>http://47.92.154.32:9999/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>longbei</id>
-            <url>http://47.92.154.32:9999/nexus/content/repositories/thirdparty/</url>
-        </repository>
-
         <repository>
             <id>spring-release</id>
             <url>http://repo.spring.io/release</url>
@@ -339,11 +338,7 @@
             <version>1.9.5</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/xmlpull/xmlpull -->
-        <dependency>
-            <groupId>xmlpull</groupId>
-            <artifactId>xmlpull</artifactId>
-            <version>1.1.3.1</version>
-        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
         <dependency>
@@ -427,6 +422,47 @@
             <version>2.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.artofsolving</groupId>
+            <artifactId>jodconverter</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.icepdf.os</groupId>
+            <artifactId>icepdf-core</artifactId>
+            <version>6.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.artofsolving</groupId>
+            <artifactId>jodconverter</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jod</groupId>
+            <artifactId>converter</artifactId>
+            <version>3.0</version>
+            <classifier>jahia2</classifier>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

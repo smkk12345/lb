@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @SuppressWarnings({ "unchecked", "unused", "rawtypes", "cast" })
@@ -61,9 +63,21 @@ public class SecurityFilter extends OncePerRequestFilter {
 //		}
 
 		if(urlPath.contains("/live/")){
-			String time = request.getParameter("encrypt");
-			String params = AES.decrypt(AES.A_KEY,time);
+			String encrypt = request.getParameter("encrypt");
+			logger.info("urlPath time={}",encrypt);
+			encrypt = encrypt.trim();
+			try {
+				encrypt = URLDecoder.decode(encrypt,"utf-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			encrypt = encrypt.trim();
+			logger.info(" after decode  urlPath encrypt={}",encrypt);
+//			DecodesUtils
+//			encrypt = encrypt.replaceAll("%252B","%2B");
+			String params = AES.decrypt(AES.A_KEY,encrypt);
 			Map<String,Object> map = JSONObject.fromObject(params);
+			logger.info("urlPath map={}",JSONObject.fromObject(map).toString());
 			try {
 				request = new ParamHttpServletRequestWrapper((HttpServletRequest) request, map);
 			}catch (Exception e){

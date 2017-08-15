@@ -97,3 +97,8 @@ alimedia:
             outurl: http://longbei-media-resource-test-out.oss-cn-beijing.aliyuncs.com/
         queryEndPoint: http://1808184037454567.mns.cn-beijing.aliyuncs.com/
         area: beijing
+        endpoint: http://oss-cn-beijing.aliyuncs.com
+        bucketName: longbei-test-media-out
+        url: http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/
+        inputBacketName: longbei-test-media
+        inputurl: http://longbei-test-media.oss-cn-beijing.aliyuncs.com/
