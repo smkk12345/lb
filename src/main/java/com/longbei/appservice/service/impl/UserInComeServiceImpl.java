@@ -153,7 +153,7 @@ public class UserInComeServiceImpl implements UserInComeService{
         BaseResp<UserInComeDetail> baseResp = new BaseResp<>();
         if ("0".equals(detailType)){
             UserInComeDetail userInComeDetail = userInComeDetailMapper.selectUserInComeInDetail(detailId);
-            initUserInComeClassroomInfo(userInComeDetail);
+            initUserInComeInfo(userInComeDetail);
             baseResp.initCodeAndDesp();
             baseResp.setData(userInComeDetail);
         }
@@ -178,18 +178,21 @@ public class UserInComeServiceImpl implements UserInComeService{
                     pageSize * (pageNo - 1),pageSize);
             if ("0".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
-                    initUserInComeClassroomInfo(userInComeDetail1);
+                    initUserInComeInfo(userInComeDetail1);
                 }
             }
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
             baseResp.setData(page);
+            Map<String,Object> map = new HashedMap();
             if (istotalinfo){
-                Map<String,Object> map = new HashedMap();
                 map.put("userInCome",selectUserInCome(userInComeDetail.getUserid()+"").getData());
-                baseResp.setExpandData(map);
             }
+            if (!StringUtils.isBlank(userInComeDetail.getCsourcetype())){
+                map.put("totalnum",userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
+            }
+            baseResp.setExpandData(map);
         } catch (Exception e) {
             logger.error("selectUserInComeDetailList is error:",e);
         }
@@ -355,13 +358,16 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
-    private void initUserInComeClassroomInfo(UserInComeDetail userInComeDetail){
+    private void initUserInComeInfo(UserInComeDetail userInComeDetail){
         if (null == userInComeDetail){
             return;
         }
         if ("0".equals(userInComeDetail.getBusinesstype())){
             Classroom classroom = classroomMapper.selectByPrimaryKey(userInComeDetail.getBusinesstid());
             userInComeDetail.setClassroom(classroom);
+            AppUserMongoEntity appUserMongoEntity =
+                    userMongoDao.getAppUser(String.valueOf(userInComeDetail.getOriginuserid()));
+            userInComeDetail.setAppUserMongoEntity(appUserMongoEntity);
         }
     }
 

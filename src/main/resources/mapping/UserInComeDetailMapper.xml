@@ -73,11 +73,16 @@
     <if test="userincomedetail.createtime != null">
       createtime &gt; #{userincomedetail.createtime}
     </if>
+    <if test="userincomedetail.csourcetype != null">
+      csourcetype = #{userincomedetail.csourcetype}
+    </if>
   </select>
 
 
   <select id="selectList" resultMap="BaseResultMap">
-    SELECT count(*) FROM user_income_detail
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_income_detail
     WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.itype != null">
       itype = #{userincomedetail.itype}
@@ -88,10 +93,18 @@
     <if test="userincomedetail.createtime != null">
       createtime &gt; #{userincomedetail.createtime}
     </if>
+    <if test="userincomedetail.csourcetype != null">
+      csourcetype = #{userincomedetail.csourcetype}
+    </if>
     ORDER BY createtime DESC
     <if test="startNo != null">
       limit #{startNo},#{pageSize}
     </if>
+  </select>
+
+
+  <select id="selectTotalCoin" resultType="java.lang.Integer">
+    SELECT sum(num) from user_income_detail where csourcetype = #{csourcetype}
   </select>
 
 

@@ -104,6 +104,39 @@ public class UserInComeController {
 
 
     /**
+     * 获取自有教室收益列表
+     * @param sourcetype  运营收益 0
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @RequestMapping(value = "selflist",method = RequestMethod.GET)
+    public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailByCSoureType
+            (String sourcetype,String pageno,String pagesize){
+        BaseResp<Page<UserInComeDetail>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(sourcetype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        UserInComeDetail userInComeDetail = new UserInComeDetail();
+        userInComeDetail.setCsourcetype(sourcetype);
+        userInComeDetail.setDetailtype("0");
+        try {
+            baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
+                    Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
+        } catch (NumberFormatException e) {
+            logger.error("selectUserInComeDetailByCSoureType sourcetype={} is error:",sourcetype,e);
+        }
+        return baseResp;
+    }
+
+
+    /**
      * 获取收益明细详细信息
      * @param detailid  明细id  Y
      * @param detailtype  明细类型 0 - 收入 1 - 支出  Y
