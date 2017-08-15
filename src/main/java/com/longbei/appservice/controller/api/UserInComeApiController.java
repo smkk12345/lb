@@ -11,12 +11,10 @@ import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -26,11 +24,11 @@ import java.util.Date;
  * @create 2017-08-14 下午4:52
  **/
 @RestController
-@RequestMapping("userincome")
-public class UserInComeController {
+@RequestMapping("/api/userincome")
+public class UserInComeApiController {
 
 
-    private static Logger logger = LoggerFactory.getLogger(UserInComeController.class);
+    private static Logger logger = LoggerFactory.getLogger(UserInComeApiController.class);
 
     @Autowired
     private UserInComeService userInComeService;
