@@ -516,16 +516,16 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
         try {
-            File parentFile = new File(File.separator+"opt");
+            File parentFile = new File(File.separator+"tmp");
             File file = new File(getOfficeHome());
             if(!file.exists()){
-                System.out.println("++++++"+File.separator+"opt");
+                System.out.println("++++++"+File.separator+"tmp");
 
                 if(!parentFile.exists()){
-                    System.out.println("-----------/opt file no exist-------------");
+                    System.out.println("-----------/tmp file no exist-------------");
                 }else{
                     if(parentFile.canRead()){
-                        System.out.println("-----------/opt file can read-------------");
+                        System.out.println("-----------/tmp file can read-------------");
                     }
 //                    parentFile.listFiles();
                     String [] files = parentFile.list();
@@ -590,7 +590,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
     public static String getOfficeHome() {
         String osName = System.getProperty("os.name");
         if (Pattern.matches("Linux.*", osName)) {
-            return "/opt/openoffice4";
+            return "/tmp/openoffice4";
         } else if (Pattern.matches("Windows.*", osName)) {
             return "E:/software/OpenOffice 4";
         } else if (Pattern.matches("Mac.*", osName)) {
