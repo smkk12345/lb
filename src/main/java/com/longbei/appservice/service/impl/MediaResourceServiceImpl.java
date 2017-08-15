@@ -509,7 +509,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 
             officeManager = configuration.buildOfficeManager();
 
-//            officeManager.start();
+            officeManager.start();
             System.out.println("office Manager 启动成功!");
             System.out.println("************* success **************"+getOfficeHome());
         } catch (Exception ce) {
