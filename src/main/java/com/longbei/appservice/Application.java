@@ -1,5 +1,6 @@
 package com.longbei.appservice;
 
+import com.longbei.appservice.service.impl.MediaResourceServiceImpl;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
@@ -40,6 +41,12 @@ public class Application extends SpringBootServletInitializer {
      */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+
+        try{
+            MediaResourceServiceImpl.startService();
+        }finally {
+            MediaResourceServiceImpl.stopService();
+        }
         logger.info("SpringBoot Start Success");
     }
 

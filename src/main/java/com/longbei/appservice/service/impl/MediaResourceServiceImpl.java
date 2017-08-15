@@ -611,6 +611,14 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         return null;
     }
 
+
+    public static void stopService() {
+        System.out.println("openOffice Manager 开始停止....");
+        if (officeManager != null) {
+            officeManager.stop();
+        }
+        System.out.println("openOffice Manager 停止成功!");
+    }
     /*************************** PPT转图片 end *************************/
 
 }
