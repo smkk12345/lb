@@ -517,9 +517,6 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
         try {
             File parentFile = new File(File.separator+"opt");
-            parentFile.setExecutable(true);//设置可执行权限
-            parentFile.setReadable(true);//设置可读权限
-            parentFile.setWritable(true);//设置可写权限
             File file = new File(getOfficeHome());
             if(!file.exists()){
                 System.out.println("++++++"+File.separator+"opt");
@@ -527,8 +524,12 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                 if(!parentFile.exists()){
                     System.out.println("-----------/opt file no exist-------------");
                 }else{
+                    if(parentFile.canRead()){
+                        System.out.println("-----------/opt file can read-------------");
+                    }
+//                    parentFile.listFiles();
                     String [] files = parentFile.list();
-                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$ files.size()="+files.length);
                     for(String filename:files){
                         System.out.println(filename);
                     }
