@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -859,6 +860,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 			int temp = classroomMapper.updateIsup(classroomid);
 			if(temp > 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+				//教室发布成功,获取"提成"
+				Map<String, Object> expandData = new HashMap<String, Object>();
+				expandData.put("classroomCommission", SysRulesCache.behaviorRule.getClassroomcommission());
+				reseResp.setExpandData(expandData);
 			}
 		} catch (Exception e) {
 			logger.error("uproom classroomid = {}", classroomid, e);

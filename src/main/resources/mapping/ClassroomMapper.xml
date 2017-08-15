@@ -35,12 +35,13 @@
     <result column="ishomerecommend" property="ishomerecommend" />
     <result column="allcourses" property="allcourses" />
     <result column="earnings" property="earnings" />
+    <result column="commission" property="commission" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings 
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -484,6 +485,9 @@
       </if>
       <if test="crowd != null and crowd != ''" >
         crowd = #{crowd} 
+      </if>
+      <if test="commission != null and commission != ''" >
+        commission = #{commission}
       </if>
     </set>
     where classroomid = #{classroomid} 
