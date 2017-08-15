@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserInComeMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserInCome" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="total" property="total" jdbcType="INTEGER" />
+    <result column="outgo" property="outgo" jdbcType="INTEGER" />
+    <result column="left" property="left" jdbcType="INTEGER" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, total, outgo, left, updatetime, createtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_income
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_income
+    where userid = #{userid,jdbcType=INTEGER}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_income
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserInCome" >
+    insert into user_income (id, userid, total, 
+      outgo, left, updatetime, 
+      createtime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=BIGINT}, #{total,jdbcType=INTEGER}, 
+      #{outgo,jdbcType=INTEGER}, #{left,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserInCome" >
+    insert into user_income
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="outgo != null" >
+        outgo,
+      </if>
+      <if test="left != null" >
+        left,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=INTEGER},
+      </if>
+      <if test="outgo != null" >
+        #{outgo,jdbcType=INTEGER},
+      </if>
+      <if test="left != null" >
+        #{left,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserInCome" >
+    update user_income
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=INTEGER},
+      </if>
+      <if test="outgo != null" >
+        outgo = #{outgo,jdbcType=INTEGER},
+      </if>
+      <if test="left != null" >
+        left = #{left,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInCome" >
+    update user_income
+    set userid = #{userid,jdbcType=BIGINT},
+      total = #{total,jdbcType=INTEGER},
+      outgo = #{outgo,jdbcType=INTEGER},
+      left = #{left,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="updateTotalByUserId"  >
+    update user_income
+    set
+      total = total + #{num},
+      updatetime = #{updatetime}
+    where userid = #{userid,jdbcType=BIGINT}
+  </update>
+
+
+  <update id="updateOutGoByUserId"  >
+    update user_income
+    set
+    outgo = outgo + #{num},
+    updatetime = #{updatetime}
+    where userid = #{userid,jdbcType=BIGINT} AND (total-outgo) > #{num}
+  </update>
+
+
+</mapper>

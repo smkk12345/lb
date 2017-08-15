@@ -1,111 +1,239 @@
 package com.longbei.appservice.entity;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
-/**
- * Created by lixb on 2017/8/8.
- */
 public class UserInComeDetail {
-
+    /**
+     * 
+     */
     private Integer id;
 
+    /**
+     * 
+     */
     private Long userid;
 
-    private String itype;  //明细类型  0 教室学费，1 送礼物，2 提现 3 提现失败扣除，4 退学费，5转入钱包
+    /**
+     * 明细类型  0 教室学费，1 送礼物，2 提现 3 提现失败返还，4 退学费，5转入钱包 
+     */
+    private String itype;
 
-    private Integer num;   //体现龙杯数量
+    /**
+     * 龙币数量
+     */
+    private Integer num;
 
-    private String businesstype;//业务类型
+    /**
+     * 业务类型。0 - 教室收入 1 - 提现
+     */
+    private String businesstype;
 
-    private Long businessid;//id
+    /**
+     * 业务相关联id。businesstype = 0 时 教室id businesstype=1 时 结算单id
+     */
+    private Long businesstid;
 
-    private String btitle;//冗余的业务title
+    /**
+     * 业务title 如果为教室 则为教室title
+     */
+    private String btitle;
 
-    private BigDecimal commission;//提成占比
+    /**
+     * 来源用户id
+     */
+    private Long originuserid;
 
-    private String createtime;
+    /**
+     * 
+     */
+    private Date createtime;
 
-    private String updatetime;
+    /**
+     * 
+     */
+    private Date updatetime;
 
+    /**
+     * 备注
+     */
+    private String remarker;
 
-    public String getUpdatetime() {
-        return updatetime;
+    /**
+     * 明细id
+     */
+    private Long detailid;
+
+    /**
+     * 明细类型 0 - 收入 1 - 支出
+     */
+    private String detailtype;
+
+    /**
+     * 教室类型  0:运营  1:app  2:商户
+     */
+    private String csourcetype;
+
+    /**
+     * 明细状态 0 - 结算中 1 - 成功 2 - 失败
+     */
+    private String detailstatus;
+
+    /**
+     * 显示使用
+     */
+    private Classroom classroom;
+
+    /**
+     * 显示用
+     */
+    private UserInComeOrder userInComeOrder;
+
+    /**
+     * 显示使用
+     */
+    private AppUserMongoEntity appUserMongoEntity;
+
+    public UserInComeOrder getUserInComeOrder() {
+        return userInComeOrder;
     }
 
-    public void setUserid(Long userid) {
-        this.userid = userid;
+    public void setUserInComeOrder(UserInComeOrder userInComeOrder) {
+        this.userInComeOrder = userInComeOrder;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public Classroom getClassroom() {
+        return classroom;
     }
 
-    public Long getUserid() {
-        return userid;
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
     }
 
-    public BigDecimal getCommission() {
-        return commission;
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public String getDetailstatus() {
+        return detailstatus;
+    }
+
+    public void setDetailstatus(String detailstatus) {
+        this.detailstatus = detailstatus;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Integer getNum() {
-        return num;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Long getBusinessid() {
-        return businessid;
+    public Long getUserid() {
+        return userid;
     }
 
-    public String getBtitle() {
-        return btitle;
-    }
-
-    public String getBusinesstype() {
-        return businesstype;
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 
     public String getItype() {
         return itype;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
-    public void setBtitle(String btitle) {
-        this.btitle = btitle;
-    }
-
-    public void setBusinessid(Long businessid) {
-        this.businessid = businessid;
-    }
-
-    public void setBusinesstype(String businesstype) {
-        this.businesstype = businesstype;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setItype(String itype) {
-        this.itype = itype;
+        this.itype = itype == null ? null : itype.trim();
+    }
+
+    public Integer getNum() {
+        return num;
     }
 
     public void setNum(Integer num) {
         this.num = num;
     }
 
+    public String getBusinesstype() {
+        return businesstype;
+    }
+
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype == null ? null : businesstype.trim();
+    }
+
+    public Long getBusinesstid() {
+        return businesstid;
+    }
+
+    public void setBusinesstid(Long businesstid) {
+        this.businesstid = businesstid;
+    }
+
+    public String getBtitle() {
+        return btitle;
+    }
+
+    public void setBtitle(String btitle) {
+        this.btitle = btitle == null ? null : btitle.trim();
+    }
+
+    public Long getOriginuserid() {
+        return originuserid;
+    }
+
+    public void setOriginuserid(Long originuserid) {
+        this.originuserid = originuserid;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public String getRemarker() {
+        return remarker;
+    }
+
+    public void setRemarker(String remarker) {
+        this.remarker = remarker == null ? null : remarker.trim();
+    }
+
+    public Long getDetailid() {
+        return detailid;
+    }
+
+    public void setDetailid(Long detailid) {
+        this.detailid = detailid;
+    }
+
+    public String getDetailtype() {
+        return detailtype;
+    }
+
+    public void setDetailtype(String detailtype) {
+        this.detailtype = detailtype == null ? null : detailtype.trim();
+    }
+
+    public String getCsourcetype() {
+        return csourcetype;
+    }
+
+    public void setCsourcetype(String csourcetype) {
+        this.csourcetype = csourcetype == null ? null : csourcetype.trim();
+    }
 }

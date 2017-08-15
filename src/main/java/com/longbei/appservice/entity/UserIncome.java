@@ -1,80 +1,96 @@
 package com.longbei.appservice.entity;
 
-/**
- * 用户收益
- */
-public class UserIncome {
+import java.util.Date;
+
+public class UserInCome {
     /**
-     * id
+     * 
      */
     private Integer id;
 
-    private Long userid;//用户id
+    /**
+     * 用户id，当前教室受益人id，也是当前老师uid
+     */
+    private Long userid;
 
-    private Integer total;//总龙币
+    /**
+     * 总收益
+     */
+    private Integer total;
 
-    private Integer outgo;//支出龙币
+    /**
+     * 总支出
+     */
+    private Integer outgo;
 
-    private Integer left;//剩余龙币
+    /**
+     * 
+     */
+    private Integer left;
 
-    private String updatetime;
+    /**
+     * 更新时间
+     */
+    private Date updatetime;
 
-    private String createtime;
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
-    public void setLeft(Integer left) {
-        this.left = left;
-    }
-
-    public void setOutgo(Integer outgo) {
-        this.outgo = outgo;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime;
-    }
-
-    public void setUserid(Long userid) {
-        this.userid = userid;
-    }
+    /**
+     * 创建时间
+     */
+    private Date createtime;
 
     public Integer getId() {
         return id;
     }
 
-    public Integer getLeft() {
-        return left;
-    }
-
-    public Integer getOutgo() {
-        return outgo;
-    }
-
-    public Integer getTotal() {
-        return total;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Long getUserid() {
         return userid;
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 
-    public String getUpdatetime() {
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getOutgo() {
+        return outgo;
+    }
+
+    public void setOutgo(Integer outgo) {
+        this.outgo = outgo;
+    }
+
+    public Integer getLeft() {
+        return left;
+    }
+
+    public void setLeft(Integer left) {
+        this.left = left;
+    }
+
+    public Date getUpdatetime() {
         return updatetime;
     }
 
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
 }
