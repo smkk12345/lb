@@ -546,7 +546,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             }
             System.out.println("openOffice Manager 开始启动....");
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
-            configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+            configuration.setPortNumbers(8311); // 设置转换端口，默认为8311
             configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
             configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
 
@@ -625,7 +625,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             System.out.println("openOffice Manager 开始关闭....");
             DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
-            configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+            configuration.setPortNumbers(8311); // 设置转换端口，默认为8311
             configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
             configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
 
