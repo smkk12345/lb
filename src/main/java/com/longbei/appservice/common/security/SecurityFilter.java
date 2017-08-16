@@ -66,12 +66,13 @@ public class SecurityFilter extends OncePerRequestFilter {
 			String encrypt = request.getParameter("encrypt");
 			logger.info("urlPath time={}",encrypt);
 			encrypt = encrypt.trim();
+			encrypt = encrypt.replaceAll(" ","+");
 			try {
 				encrypt = URLDecoder.decode(encrypt,"utf-8");
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			encrypt = encrypt.trim();
+			encrypt = encrypt.replaceAll(" ","+");
 			logger.info(" after decode  urlPath encrypt={}",encrypt);
 //			DecodesUtils
 //			encrypt = encrypt.replaceAll("%252B","%2B");

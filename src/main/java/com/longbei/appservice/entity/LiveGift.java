@@ -52,7 +52,7 @@ public class LiveGift {
         return createtime;
     }
 
-    public void setCreateetime(Date createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 

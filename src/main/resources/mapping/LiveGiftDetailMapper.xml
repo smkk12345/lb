@@ -97,9 +97,6 @@
             <if test="liveGiftDetail.businesstype != null">
                 ,#{liveGiftDetail.businesstype}
             </if>
-            <if test="liveGiftDetail.fromuid != null">
-                ,#{liveGiftDetail.fromuid}
-            </if>
             <if test="liveGiftDetail.createtime != null">
                 ,#{liveGiftDetail.createtime}
             </if>

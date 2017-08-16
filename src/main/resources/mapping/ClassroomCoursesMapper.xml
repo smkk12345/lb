@@ -23,11 +23,12 @@
     <result column="teachingtypes" property="teachingtypes"/>
     <result column="starttime" property="starttime"/>
     <result column="endtime" property="endtime"/>
+    <result column="playback" property="playback"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup,teachingtypes,starttime,endtime
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime,playback
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

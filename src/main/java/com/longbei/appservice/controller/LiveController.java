@@ -159,4 +159,27 @@ public class LiveController {
         return map;
     }
 
+    /**
+     * 上传图片到阿里云
+     * @param mediaid
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="uploadImage")
+    public Map<String,String> uploadImage(Integer mediaid,Long userid){
+        logger.info("get mediaResource detail mediaresourceid:{} userid:{}",mediaid,userid);
+        BaseResp<List<String>> baseResp = new BaseResp<>();
+        Map<String,String> map = new HashMap<>();
+        if(mediaid == null || userid == null){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+            return map;
+        }
+        baseResp = this.mediaResourceService.findMediaResourceDetailList(mediaid,userid);
+        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+        return map;
+    }
+
+
+
 }

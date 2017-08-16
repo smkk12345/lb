@@ -425,6 +425,43 @@
     limit #{startno},#{pagesize}
   </select>
 
+
+
+  <select id="selectClassroomImproveList" resultMap="BaseResultMap" >
+    select
+      <include refid="Classroom_List" />
+    from improve_classroom
+    <where>
+      <if test="iscomplain != null and iscomplain != ''">
+        <choose>
+          <when test="iscomplain == '1'.toString()">
+            and complaincount > 0
+          </when>
+          <otherwise>
+            and complaincount = 0
+          </otherwise>
+        </choose>
+      </if>
+      and businessid = #{businessid}
+      and isdel = '0'
+      and isbusinessdel = '0'
+      <if test="ismainimp != null" >
+        and ismainimp = #{ismainimp}
+      </if>
+      <if test="orderby != null and orderby == 1">
+        and ismainimp = '1'
+      </if>
+        AND isresponded = 0
+      <if test="userid != null" >
+        AND userid = #{userid}
+      </if>
+    </where>
+      ORDER BY createtime DESC
+    limit #{startno},#{pagesize}
+  </select>
+
+
+
   <select id="selectListTotalcount" resultType="java.lang.Integer" >
     select count(*)
     from ${tablename}
@@ -804,8 +841,17 @@
     UPDATE improve_rank
     set ismainimp = '0'
     where ismainimp = '1'
-    and userid=#{userid}
     and businessid=#{businessid}
+    and userid=#{userid}
+  </update>
+
+
+  <update id="updateClassroomMainImprove">
+    UPDATE improve_classroom
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and businessid=#{businessid}
+    and userid=#{userid}
   </update>
 
   <update id="chooseMainImprove">

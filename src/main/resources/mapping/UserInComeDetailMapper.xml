@@ -35,9 +35,9 @@
     <result column="csourcetype" property="csourcetype" jdbcType="CHAR" />
     <result column="detailstatus" property="detailstatus" jdbcType="CHAR" />
     <association property="userInComeOrder" javaType="com.longbei.appservice.entity.UserInComeOrder">
-      <result property="receiptNum" column="receiptNum"/>
-      <result property="receiptUser" column="receiptUser"/>
-      <result property="receiptBank" column="receiptBank"/>
+      <result property="receiptNum" column="receipt_num"/>
+      <result property="receiptUser" column="receipt_user"/>
+      <result property="receiptBank" column="receipt_bank"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -56,7 +56,7 @@
   </select>
 
   <select id="selectUserInComeOutDetail" resultMap="userInComeDetailAndOrder">
-    select u.*,o.receiptNum,o.receiptUser,o.receiptBank from user_income_detail u JOIN user_income_order o ON u.detailid = o.detailid
+    select u.*,o.receipt_num,o.receipt_user,o.receipt_bank from user_income_detail u JOIN user_income_order o ON u.detailid = o.detailid
     WHERE u.detailid = #{detailid}
   </select>
 
@@ -64,17 +64,20 @@
   <select id="selectCount" resultType="java.lang.Integer">
      SELECT count(*) FROM user_income_detail
      WHERE detailtype = #{userincomedetail.detailtype}
+    <if test="userincomedetail.userid != null">
+      AND userid = #{userincomedetail.userid}
+    </if>
      <if test="userincomedetail.itype != null">
-       itype = #{userincomedetail.itype}
+       AND itype = #{userincomedetail.itype}
      </if>
     <if test="userincomedetail.detailstatus != null">
-       detailstatus = #{userincomedetail.detailstatus}
+      AND detailstatus = #{userincomedetail.detailstatus}
     </if>
     <if test="userincomedetail.createtime != null">
-      createtime &gt; #{userincomedetail.createtime}
+      AND createtime &gt; #{userincomedetail.createtime}
     </if>
     <if test="userincomedetail.csourcetype != null">
-      csourcetype = #{userincomedetail.csourcetype}
+      AND csourcetype = #{userincomedetail.csourcetype}
     </if>
   </select>
 
@@ -84,17 +87,20 @@
     <include refid="Base_Column_List" />
     FROM user_income_detail
     WHERE detailtype = #{userincomedetail.detailtype}
+    <if test="userincomedetail.userid != null">
+      AND userid = #{userincomedetail.userid}
+    </if>
     <if test="userincomedetail.itype != null">
-      itype = #{userincomedetail.itype}
+      AND itype = #{userincomedetail.itype}
     </if>
     <if test="userincomedetail.detailstatus != null">
-      detailstatus = #{userincomedetail.detailstatus}
+      AND detailstatus = #{userincomedetail.detailstatus}
     </if>
     <if test="userincomedetail.createtime != null">
-      createtime &gt; #{userincomedetail.createtime}
+      AND createtime &gt; #{userincomedetail.createtime}
     </if>
     <if test="userincomedetail.csourcetype != null">
-      csourcetype = #{userincomedetail.csourcetype}
+      AND csourcetype = #{userincomedetail.csourcetype}
     </if>
     ORDER BY createtime DESC
     <if test="startNo != null">

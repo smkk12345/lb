@@ -432,9 +432,11 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public boolean insertImproveForClassroom(Improve improve) {
 
-
         int res = 0;
         try {
+            //更新主进步
+            improveMapper.updateClassroomMainImprove(improve.getBusinessid(),improve.getUserid());
+            //添加进步
             res = improveClassroomMapper.insertSelective(improve);
             if(res != 0){
             	//递增教室成员发进步总数
@@ -935,7 +937,7 @@ public class ImproveServiceImpl implements ImproveService{
                 default:
                     break;
             }
-            improves = improveMapper.selectListByBusinessid
+            improves = improveMapper.selectClassroomImproveList
                     (classroomid, Constant_table.IMPROVE_CLASSROOM,null, null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
             replyImp(improves, userid, classroomid);
