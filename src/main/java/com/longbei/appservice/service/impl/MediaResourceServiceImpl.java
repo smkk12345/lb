@@ -424,7 +424,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             pptFile = new File(pptFilePath);
 //            startService();
 
-            OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection("127.0.0.1",8100);
 
             connection.connect();
             DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
