@@ -47,6 +47,28 @@ public interface ImproveMapper {
                                          @Param("pagesize")int pagesize);
 
     /**
+     * 获取教室进步列表
+     * @param businessid
+     * @param tablename
+     * @param ismainimp
+     * @param userid
+     * @param orderby
+     * @param iscomplain
+     * @param startno
+     * @param pagesize
+     * @return
+     */
+    List<Improve> selectClassroomImproveList(@Param("businessid")String businessid,
+                                             @Param("tablename")String tablename,
+                                             @Param("ismainimp")String ismainimp,
+                                             @Param("userid") String userid,
+                                             @Param("orderby")String orderby,
+                                             @Param("iscomplain")String iscomplain,
+                                             @Param("startno")int startno,
+                                             @Param("pagesize")int pagesize);
+
+
+    /**
      * @Title: selectListTotalcount
      * @Description: 获取进步列表数量
      * @auther IngaWu
