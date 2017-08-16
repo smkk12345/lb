@@ -187,6 +187,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                 for (UserInComeDetail userInComeDetail1 : list){
                     int itype = Integer.parseInt(userInComeDetail1.getItype());
                     if (itype >= 2 && itype < 4){
+                        //TODO 这个地方可以从 user_income_order 中通过 detailid 获取 后期再说吧
                         UserInComeDetail user = userInComeDetailMapper.selectUserInComeOutDetail
                                 (String.valueOf(userInComeDetail1.getDetailid()));
                         if (null != user){

@@ -1,6 +1,6 @@
 package com.longbei.appservice.entity;
 
-import com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider;
+import com.longbei.appservice.config.AppserviceConfig;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +35,11 @@ public class UserInComeOrder {
      * 结算龙币数量
      */
     private String num;
+
+    /**
+     * 结算金额
+     */
+    private Integer settlenum;
 
     /**
      * 收款银行 
@@ -77,7 +82,14 @@ public class UserInComeOrder {
      */
     private List<String> userids;
 
+    public Integer getSettlenum() {
+        return this.num==null?0:Integer.parseInt(
+                String.valueOf(Math.ceil(Double.parseDouble(num) / AppserviceConfig.yuantomoney)));
+    }
 
+    public void setSettlenum(Integer settlenum) {
+        this.settlenum = settlenum;
+    }
 
     public AppUserMongoEntity getAppUserMongoEntity() {
         return appUserMongoEntity;
