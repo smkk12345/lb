@@ -11,6 +11,7 @@ import com.longbei.appservice.common.service.OSSService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.OssConfig;
+import com.longbei.appservice.controller.PPTToImageUtil;
 import com.longbei.appservice.dao.MediaResourceDetailMapper;
 import com.longbei.appservice.dao.MediaResourceMapper;
 import com.longbei.appservice.dao.MediaResourceTypeMapper;
@@ -423,18 +424,17 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             //2. 将下载的ppt 转成 pdf
             pptFile = new File(pptFilePath);
 //            startService();
-
-            OpenOfficeConnection connection = new SocketOpenOfficeConnection("172.18.28.128",8100);
-
-            connection.connect();
-            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-
 //            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
 
-            converter.convert(pptFile,outputFile);
+//            OpenOfficeConnection connection = new SocketOpenOfficeConnection("172.18.28.128",8100);
+//            connection.connect();
+//            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+//
+//            converter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
-            List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+//            List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+            List<String> imageList = PPTToImageUtil.doPPTtoImage(pptFile,imageOutput,realFilename,"png");
 
             //4.将所有图片 上传的到阿里云
             if(imageList == null || imageList.size() == 0){

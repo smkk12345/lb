@@ -935,7 +935,7 @@ public class ImproveServiceImpl implements ImproveService{
                 default:
                     break;
             }
-            improves = improveMapper.selectListByBusinessid
+            improves = improveMapper.selectClassroomImproveList
                     (classroomid, Constant_table.IMPROVE_CLASSROOM,null, null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
             replyImp(improves, userid, classroomid);
