@@ -1,5 +1,9 @@
 package com.longbei.appservice.service.impl;
 
+import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -45,7 +49,7 @@ import java.util.regex.Pattern;
 @Service("mediaResouceService")
 public class MediaResourceServiceImpl implements MediaResourceService {
     private Logger logger = LoggerFactory.getLogger(MediaResourceServiceImpl.class);
-    private static OfficeManager officeManager = null;
+    private static OfficeManager officeManager;
     public static final String FILETYPE_PNG = "png";
     public static final String SUFF_IMAGE = "." + FILETYPE_PNG;
 
@@ -402,16 +406,13 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         //PDF 文件名
         String outputFileString =tempMediaResourcePath+(new Date().getTime())+realFilename+".pdf";
         File outputFile = new File(outputFileString);
-        if(!outputFile.exists()){
-            outputFile.mkdirs();
-        }
+
         //转成图片后的输出路径
         String imageOutput = tempMediaResourcePath+realFilename+(new Date().getTime())+"/";
 
         try{
             pptUrl = OssConfig.url+pptUrl;
             //1. 根据url 下载ppt
-
             if(!pptFile.getParentFile().exists()){
                 pptFile.getParentFile().mkdirs();
             }
@@ -421,21 +422,15 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             }
             //2. 将下载的ppt 转成 pdf
             pptFile = new File(pptFilePath);
-            startService();
+//            startService();
 
-            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
-            if(officeManager == null){
-                logger.error("------------------ officeManager null-------------------------------");
-            }
-            if(converter == null){
-                logger.error("------------------ converter null-------------------------------");
-            }
-            if(pptFile == null){
-                logger.error("------------------ pptFile null-------------------------------");
-            }
-            if(outputFile == null){
-                logger.error("------------------ outputFile null-------------------------------");
-            }
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
+
+            connection.connect();
+            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+
+//            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+
             converter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
@@ -516,41 +511,14 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
         try {
-            File parentFile = new File(File.separator+"opt");
-            File file = new File(getOfficeHome());
-            if(!file.exists()){
-                System.out.println("++++++"+File.separator+"opt");
-
-                if(!parentFile.exists()){
-                    System.out.println("-----------/opt file no exist-------------");
-                }else{
-                    if(parentFile.canRead()){
-                        System.out.println("-----------/opt file can read-------------");
-                    }
-//                    parentFile.listFiles();
-                    String [] files = parentFile.list();
-                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$ files.size()="+files.length);
-                    for(String filename:files){
-                        System.out.println(filename);
-                    }
-                    System.out.println("1111 $$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                }
-                System.out.println("-----------file no exist-------------"+getOfficeHome());
-            }else{
-                String [] files = file.list();
-                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                for(String filename:files){
-                    System.out.println(filename);
-                }
-                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-            }
-            System.out.println("openOffice Manager 开始启动....");
+            System.out.println("openOffice Manager start open....");
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
             configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
             configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
             configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
 
             officeManager = configuration.buildOfficeManager();
+
             officeManager.start();
             System.out.println("office Manager 启动成功!");
             System.out.println("************* success **************"+getOfficeHome());
@@ -611,6 +579,34 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         return null;
     }
 
+
+    public static void stopService() {
+        System.out.println("openOffice Manager 开始停止....");
+        if (officeManager != null) {
+            officeManager.stop();
+        }
+        System.out.println("openOffice Manager 停止成功!");
+    }
+
+    public static void initStopService(){
+        try {
+            System.out.println("openOffice Manager 开始关闭....");
+            DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+            configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
+            configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+            configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+            configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+
+            officeManager = configuration.buildOfficeManager();
+            officeManager.stop();
+            officeManager = null;
+            System.out.println("office Manager 关闭成功!");
+            System.out.println("************* success **************"+getOfficeHome());
+        } catch (Exception ce) {
+            System.out.println("************* fail **************"+getOfficeHome());
+            System.out.println("office Manager 关闭失败:" + ce);
+        }
+    }
     /*************************** PPT转图片 end *************************/
 
 }
