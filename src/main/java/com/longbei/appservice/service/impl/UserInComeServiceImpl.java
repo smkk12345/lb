@@ -15,6 +15,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.UserMsgService;
 import com.netflix.discovery.converters.Auto;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,6 +181,18 @@ public class UserInComeServiceImpl implements UserInComeService{
             if ("0".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
                     initUserInComeInfo(userInComeDetail1);
+                }
+            }
+            if ("1".equals(userInComeDetail.getDetailtype())){
+                for (UserInComeDetail userInComeDetail1 : list){
+                    int itype = Integer.parseInt(userInComeDetail1.getItype());
+                    if (itype >= 2 && itype < 4){
+                        UserInComeDetail user = userInComeDetailMapper.selectUserInComeOutDetail
+                                (String.valueOf(userInComeDetail1.getDetailid()));
+                        if (null != user){
+                            BeanUtils.copyProperties(userInComeDetail1,user);
+                        }
+                    }
                 }
             }
             page.setTotalCount(totalCount);

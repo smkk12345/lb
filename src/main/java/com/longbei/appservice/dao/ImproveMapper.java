@@ -226,6 +226,9 @@ public interface ImproveMapper {
     int updateGolaMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
 
     int updateRankMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
+
+
+    int updateClassroomMainImprove(@Param("businessid")long businessid,@Param("userid")long userid);
     //improve.getBusinessid(),improve.getUserid(),tableName,"rankid"
 
     /**

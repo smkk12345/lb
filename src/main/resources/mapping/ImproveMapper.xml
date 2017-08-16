@@ -841,8 +841,17 @@
     UPDATE improve_rank
     set ismainimp = '0'
     where ismainimp = '1'
-    and userid=#{userid}
     and businessid=#{businessid}
+    and userid=#{userid}
+  </update>
+
+
+  <update id="updateClassroomMainImprove">
+    UPDATE improve_classroom
+    set ismainimp = '0'
+    where ismainimp = '1'
+    and businessid=#{businessid}
+    and userid=#{userid}
   </update>
 
   <update id="chooseMainImprove">
