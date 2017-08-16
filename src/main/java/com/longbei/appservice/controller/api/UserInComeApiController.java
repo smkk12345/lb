@@ -107,15 +107,15 @@ public class UserInComeApiController {
      * @param receiptUser  收款人
      * @param receiptNum   收款账号
      * @param nickname     昵称
-     * @param uiostatus    结算状态 0 - 申请结算。1 - 运营处理同意 2 - 育婴处理不同意 3 - 财务处理不同意 4 - 财务出来同意，完成处理
+     * @param uiostatus    结算状态 0 - 申请结算。1 - 运营处理同意 2 - 运营处理不同意 3 - 财务处理不同意 4 - 财务出来同意，完成处理
      * @param pageNo       分页
-     * @param pagesize
+     * @param pageSize
      * @return
      */
     @RequestMapping(value = "settlelist",method = RequestMethod.POST)
     public BaseResp<Page<UserInComeOrder>> selectUserIncomeOrderList(String receiptUser, String receiptNum,
                                                                      String nickname, String uiostatus,
-                                                                     String pageNo, String pagesize) {
+                                                                     String pageNo, String pageSize) {
         BaseResp<Page<UserInComeOrder>> baseResp = new BaseResp<>();
 
         if (StringUtils.isBlank(uiostatus)){
@@ -124,13 +124,13 @@ public class UserInComeApiController {
         if (StringUtils.isBlank(pageNo)){
             pageNo = "1";
         }
-        if (StringUtils.isBlank(pagesize)){
-            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
 
         try {
             baseResp = userInComeService.selectUserIncomeOrderList(receiptUser,receiptNum,nickname,uiostatus,Integer.parseInt(pageNo),
-                    Integer.parseInt(pagesize));
+                    Integer.parseInt(pageSize));
         } catch (NumberFormatException e) {
             logger.error("controller selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
         }
@@ -143,29 +143,29 @@ public class UserInComeApiController {
         /**
          * 获取自有教室收益列表
          * @param sourcetype  运营收益 0
-         * @param pageno
-         * @param pagesize
+         * @param pageNo
+         * @param pageSize
          * @return
          */
     @RequestMapping(value = "selflist",method = RequestMethod.GET)
-    public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailByCSoureType
-            (String sourcetype,String pageno,String pagesize){
+    public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailBySoureType
+            (String sourcetype,String pageNo,String pageSize){
         BaseResp<Page<UserInComeDetail>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(sourcetype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        if (StringUtils.isBlank(pageno)){
-            pageno = "1";
+        if (StringUtils.isBlank(pageNo)){
+            pageNo = "1";
         }
-        if (StringUtils.isBlank(pagesize)){
-            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        if (StringUtils.isBlank(pageSize)){
+            pageSize = Constant.DEFAULT_PAGE_SIZE;
         }
         UserInComeDetail userInComeDetail = new UserInComeDetail();
         userInComeDetail.setCsourcetype(sourcetype);
         userInComeDetail.setDetailtype("0");
         try {
             baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
-                    Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
+                    Integer.parseInt(pageNo),Integer.parseInt(pageSize),false);
         } catch (NumberFormatException e) {
             logger.error("selectUserInComeDetailByCSoureType sourcetype={} is error:",sourcetype,e);
         }

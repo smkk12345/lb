@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomMapper;
@@ -15,6 +16,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.UserMsgService;
 import com.netflix.discovery.converters.Auto;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,12 +106,13 @@ public class UserInComeServiceImpl implements UserInComeService{
         if (!ResultUtil.isSuccess(baseResp)){
             return baseResp;
         }
+        String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         UserInComeOrder userInComeOrder = new UserInComeOrder();
         userInComeOrder.setUioid(idGenerateService.getUniqueIdAsLong());
         userInComeOrder.setUserid(Long.parseLong(userid));
         userInComeOrder.setDetailid((Long) baseResp.getData());
         userInComeOrder.setNum(String.valueOf(num));
-        userInComeOrder.setCreatetime(new Date());
+        userInComeOrder.setCreatetime(date);
         //转入钱包
         if ("6".equals(origin)){
             baseResp = userInComeToWallet(userid,userInComeOrder);
@@ -182,6 +185,19 @@ public class UserInComeServiceImpl implements UserInComeService{
                     initUserInComeInfo(userInComeDetail1);
                 }
             }
+            if ("1".equals(userInComeDetail.getDetailtype())){
+                for (UserInComeDetail userInComeDetail1 : list){
+                    int itype = Integer.parseInt(userInComeDetail1.getItype());
+                    if (itype >= 2 && itype < 4){
+                        //TODO 这个地方可以从 user_income_order 中通过 detailid 获取 后期再说吧
+                        UserInComeDetail user = userInComeDetailMapper.selectUserInComeOutDetail
+                                (String.valueOf(userInComeDetail1.getDetailid()));
+                        if (null != user){
+                            BeanUtils.copyProperties(userInComeDetail1,user);
+                        }
+                    }
+                }
+            }
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
@@ -225,6 +241,10 @@ public class UserInComeServiceImpl implements UserInComeService{
             userInComeOrder.setUserids(userids);
             int totalCount = userInComeOrderMapper.selectCount(userInComeOrder);
             List<UserInComeOrder> list = userInComeOrderMapper.selectList(userInComeOrder,pagesize*(pageNo - 1),pagesize);
+            for(int i=0;i<list.size();i++) {
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid()+"");
+                list.get(i).setAppUserMongoEntity(appUserMongoEntity);
+            }
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
@@ -240,11 +260,12 @@ public class UserInComeServiceImpl implements UserInComeService{
     @Override
     public BaseResp updateUserIncomeOrderStatus(String uioid, String uiostatus, String deeloption) {
         BaseResp baseResp = new BaseResp();
+        String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         UserInComeOrder userInComeOrder = new UserInComeOrder();
         userInComeOrder.setUioid(Long.parseLong(uioid));
         userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
         userInComeOrder.setDealoption(deeloption);
-        userInComeOrder.setUpdatetime(new Date());
+        userInComeOrder.setUpdatetime(date);
         try {
             int res = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
             if (res > 0){

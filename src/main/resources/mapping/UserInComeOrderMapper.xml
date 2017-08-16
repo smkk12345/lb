@@ -88,7 +88,7 @@
     </if>
     order BY createtime DESC
     <if test="startNo != null">
-      limit 3{startNo},#{pageSize}
+      limit #{startNo},#{pageSize}
     </if>
   </select>
 

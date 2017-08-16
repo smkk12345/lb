@@ -1,8 +1,7 @@
 package com.longbei.appservice.entity;
 
-import com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider;
+import com.longbei.appservice.config.AppserviceConfig;
 
-import java.util.Date;
 import java.util.List;
 
 public class UserInComeOrder {
@@ -27,7 +26,7 @@ public class UserInComeOrder {
     private Long detailid;
 
     /**
-     * 结算单状态 0 - 申请结算。1 - 运营处理同意 2 - 育婴处理不同意 3 - 财务处理不同意 4 - 财务出来同意，完成处理
+     * 结算单状态 0 - 申请结算。1 - 运营处理同意 2 - 运营处理不同意 3 - 财务处理不同意 4 - 财务出来同意，完成处理
      */
     private Integer uiostatus;
 
@@ -35,6 +34,11 @@ public class UserInComeOrder {
      * 结算龙币数量
      */
     private String num;
+
+    /**
+     * 结算金额
+     */
+    private Integer settlenum;
 
     /**
      * 收款银行 
@@ -54,12 +58,12 @@ public class UserInComeOrder {
     /**
      * 
      */
-    private Date createtime;
+    private String createtime;
 
     /**
      * 
      */
-    private Date updatetime;
+    private String updatetime;
 
     /**
      * 
@@ -77,7 +81,14 @@ public class UserInComeOrder {
      */
     private List<String> userids;
 
+    public Integer getSettlenum() {
+        return this.num==null?0:Integer.parseInt(
+                String.valueOf(Math.ceil(Double.parseDouble(num) / AppserviceConfig.yuantomoney)));
+    }
 
+    public void setSettlenum(Integer settlenum) {
+        this.settlenum = settlenum;
+    }
 
     public AppUserMongoEntity getAppUserMongoEntity() {
         return appUserMongoEntity;
@@ -167,19 +178,19 @@ public class UserInComeOrder {
         this.receiptUser = receiptUser == null ? null : receiptUser.trim();
     }
 
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
