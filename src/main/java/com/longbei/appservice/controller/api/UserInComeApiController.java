@@ -173,6 +173,32 @@ public class UserInComeApiController {
     }
 
 
+
+    /**
+     * 更新用户结算订单审核状态
+     * @param uioid  结算单id
+     * @param uiostatus  结算单状态
+     * @param deeloption  结算意见
+     * @return
+     */
+    @RequestMapping(value = "updateorder",method = RequestMethod.POST)
+    public BaseResp updateUserIncomeOrderStatus(String uioid,String uiostatus,String deeloption){
+        BaseResp baseResp = new BaseResp();
+        if (StringUtils.hasBlankParams(uioid,uiostatus)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userInComeService.updateUserIncomeOrderStatus(uioid,uiostatus,deeloption);
+        } catch (Exception e) {
+            logger.error("controller updateUserIncomeOrderStatus uioid={} uiostatus={} is error:",uioid,uiostatus,e);
+        }
+        return baseResp;
+    }
+
+
+
+
+
     /**
      * 获取收益明细详细信息
      * @param detailid  明细id  Y

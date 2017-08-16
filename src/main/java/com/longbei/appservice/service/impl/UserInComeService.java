@@ -102,4 +102,14 @@ public interface UserInComeService {
                                                               Integer pagesize);
 
 
+    /**
+     * 更新用户结算订单审核状态
+     * @param uioid  结算单id
+     * @param uiostatus  结算单状态
+     * @param deeloption  结算意见
+     * @return
+     */
+    BaseResp updateUserIncomeOrderStatus(String uioid,String uiostatus,String deeloption);
+
+
 }

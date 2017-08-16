@@ -236,6 +236,27 @@ public class UserInComeServiceImpl implements UserInComeService{
         return baseResp;
     }
 
+
+    @Override
+    public BaseResp updateUserIncomeOrderStatus(String uioid, String uiostatus, String deeloption) {
+        BaseResp baseResp = new BaseResp();
+        UserInComeOrder userInComeOrder = new UserInComeOrder();
+        userInComeOrder.setUioid(Long.parseLong(uioid));
+        userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
+        userInComeOrder.setDealoption(deeloption);
+        userInComeOrder.setUpdatetime(new Date());
+        try {
+            int res = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (res > 0){
+                baseResp.initCodeAndDesp();
+            }
+        } catch (Exception e) {
+            logger.error("updateUserIncomeOrderStatus uioid={} uiostatus={} is error:",uioid,uiostatus,e);
+        }
+
+        return baseResp;
+    }
+
     /**
      *
      * @param userid 用户id

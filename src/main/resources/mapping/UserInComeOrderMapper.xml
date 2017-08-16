@@ -192,9 +192,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserInComeOrder" >
     update user_income_order
     <set >
-      <if test="uioid != null" >
-        uioid = #{uioid,jdbcType=BIGINT},
-      </if>
       <if test="userid != null" >
         userid = #{userid,jdbcType=BIGINT},
       </if>
@@ -226,7 +223,7 @@
         deeloption = #{dealoption,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where uioid = #{uioid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInComeOrder" >
     update user_income_order
