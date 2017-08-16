@@ -65,7 +65,7 @@
      SELECT count(*) FROM user_income_detail
      WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.userid != null">
-      itype = #{userincomedetail.userid}
+      userid = #{userincomedetail.userid}
     </if>
      <if test="userincomedetail.itype != null">
        itype = #{userincomedetail.itype}
@@ -88,7 +88,7 @@
     FROM user_income_detail
     WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.userid != null">
-      itype = #{userincomedetail.userid}
+      userid = #{userincomedetail.userid}
     </if>
     <if test="userincomedetail.itype != null">
       itype = #{userincomedetail.itype}
