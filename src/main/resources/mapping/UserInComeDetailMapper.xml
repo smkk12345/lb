@@ -65,19 +65,19 @@
      SELECT count(*) FROM user_income_detail
      WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.userid != null">
-      userid = #{userincomedetail.userid}
+      AND userid = #{userincomedetail.userid}
     </if>
      <if test="userincomedetail.itype != null">
-       itype = #{userincomedetail.itype}
+       AND itype = #{userincomedetail.itype}
      </if>
     <if test="userincomedetail.detailstatus != null">
-       detailstatus = #{userincomedetail.detailstatus}
+      AND detailstatus = #{userincomedetail.detailstatus}
     </if>
     <if test="userincomedetail.createtime != null">
-      createtime &gt; #{userincomedetail.createtime}
+      AND createtime &gt; #{userincomedetail.createtime}
     </if>
     <if test="userincomedetail.csourcetype != null">
-      csourcetype = #{userincomedetail.csourcetype}
+      AND csourcetype = #{userincomedetail.csourcetype}
     </if>
   </select>
 
@@ -88,19 +88,19 @@
     FROM user_income_detail
     WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.userid != null">
-      userid = #{userincomedetail.userid}
+      AND userid = #{userincomedetail.userid}
     </if>
     <if test="userincomedetail.itype != null">
-      itype = #{userincomedetail.itype}
+      AND itype = #{userincomedetail.itype}
     </if>
     <if test="userincomedetail.detailstatus != null">
-      detailstatus = #{userincomedetail.detailstatus}
+      AND detailstatus = #{userincomedetail.detailstatus}
     </if>
     <if test="userincomedetail.createtime != null">
-      createtime &gt; #{userincomedetail.createtime}
+      AND createtime &gt; #{userincomedetail.createtime}
     </if>
     <if test="userincomedetail.csourcetype != null">
-      csourcetype = #{userincomedetail.csourcetype}
+      AND csourcetype = #{userincomedetail.csourcetype}
     </if>
     ORDER BY createtime DESC
     <if test="startNo != null">
