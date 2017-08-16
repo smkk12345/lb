@@ -222,6 +222,9 @@
       <if test="endtime != null" >
         endtime,
       </if>
+      <if test="playback != null" >
+        playback,
+      </if>
 
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -285,7 +288,9 @@
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
       </if>
-
+      <if test="playback != null" >
+        #{playback},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
