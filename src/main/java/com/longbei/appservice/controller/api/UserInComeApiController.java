@@ -6,17 +6,16 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserInCome;
 import com.longbei.appservice.entity.UserInComeDetail;
+import com.longbei.appservice.entity.UserInComeOrder;
 import com.longbei.appservice.service.impl.UserInComeService;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -26,11 +25,11 @@ import java.util.Date;
  * @create 2017-08-14 下午4:52
  **/
 @RestController
-@RequestMapping("userincome")
-public class UserInComeController {
+@RequestMapping("/api/userincome")
+public class UserInComeApiController {
 
 
-    private static Logger logger = LoggerFactory.getLogger(UserInComeController.class);
+    private static Logger logger = LoggerFactory.getLogger(UserInComeApiController.class);
 
     @Autowired
     private UserInComeService userInComeService;
@@ -101,6 +100,103 @@ public class UserInComeController {
         }
         return baseResp;
     }
+
+
+    /**
+     * 获取结算列表
+     * @param receiptUser  收款人
+     * @param receiptNum   收款账号
+     * @param nickname     昵称
+     * @param uiostatus    结算状态 0 - 申请结算。1 - 运营处理同意 2 - 育婴处理不同意 3 - 财务处理不同意 4 - 财务出来同意，完成处理
+     * @param pageNo       分页
+     * @param pagesize
+     * @return
+     */
+    @RequestMapping(value = "settlelist",method = RequestMethod.POST)
+    public BaseResp<Page<UserInComeOrder>> selectUserIncomeOrderList(String receiptUser, String receiptNum,
+                                                                     String nickname, String uiostatus,
+                                                                     String pageNo, String pagesize) {
+        BaseResp<Page<UserInComeOrder>> baseResp = new BaseResp<>();
+
+        if (StringUtils.isBlank(uiostatus)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(pageNo)){
+            pageNo = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+
+        try {
+            baseResp = userInComeService.selectUserIncomeOrderList(receiptUser,receiptNum,nickname,uiostatus,Integer.parseInt(pageNo),
+                    Integer.parseInt(pagesize));
+        } catch (NumberFormatException e) {
+            logger.error("controller selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
+        }
+
+        return baseResp;
+    }
+
+
+
+        /**
+         * 获取自有教室收益列表
+         * @param sourcetype  运营收益 0
+         * @param pageno
+         * @param pagesize
+         * @return
+         */
+    @RequestMapping(value = "selflist",method = RequestMethod.GET)
+    public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailByCSoureType
+            (String sourcetype,String pageno,String pagesize){
+        BaseResp<Page<UserInComeDetail>> baseResp = new BaseResp<>();
+        if (StringUtils.isBlank(sourcetype)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if (StringUtils.isBlank(pageno)){
+            pageno = "1";
+        }
+        if (StringUtils.isBlank(pagesize)){
+            pagesize = Constant.DEFAULT_PAGE_SIZE;
+        }
+        UserInComeDetail userInComeDetail = new UserInComeDetail();
+        userInComeDetail.setCsourcetype(sourcetype);
+        userInComeDetail.setDetailtype("0");
+        try {
+            baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
+                    Integer.parseInt(pageno),Integer.parseInt(pagesize),false);
+        } catch (NumberFormatException e) {
+            logger.error("selectUserInComeDetailByCSoureType sourcetype={} is error:",sourcetype,e);
+        }
+        return baseResp;
+    }
+
+
+
+    /**
+     * 更新用户结算订单审核状态
+     * @param uioid  结算单id
+     * @param uiostatus  结算单状态
+     * @param deeloption  结算意见
+     * @return
+     */
+    @RequestMapping(value = "updateorder",method = RequestMethod.POST)
+    public BaseResp updateUserIncomeOrderStatus(String uioid,String uiostatus,String deeloption){
+        BaseResp baseResp = new BaseResp();
+        if (StringUtils.hasBlankParams(uioid,uiostatus)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userInComeService.updateUserIncomeOrderStatus(uioid,uiostatus,deeloption);
+        } catch (Exception e) {
+            logger.error("controller updateUserIncomeOrderStatus uioid={} uiostatus={} is error:",uioid,uiostatus,e);
+        }
+        return baseResp;
+    }
+
+
+
 
 
     /**

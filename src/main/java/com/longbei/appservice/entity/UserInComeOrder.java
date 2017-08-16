@@ -1,6 +1,9 @@
 package com.longbei.appservice.entity;
 
+import com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider;
+
 import java.util.Date;
+import java.util.List;
 
 public class UserInComeOrder {
     /**
@@ -62,6 +65,35 @@ public class UserInComeOrder {
      * 
      */
     private String dealoption;
+
+
+    /**
+     * 显示用
+     */
+    private AppUserMongoEntity appUserMongoEntity;
+
+    /**
+     * 搜索用
+     */
+    private List<String> userids;
+
+
+
+    public AppUserMongoEntity getAppUserMongoEntity() {
+        return appUserMongoEntity;
+    }
+
+    public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+        this.appUserMongoEntity = appUserMongoEntity;
+    }
+
+    public List<String> getUserids() {
+        return userids;
+    }
+
+    public void setUserids(List<String> userids) {
+        this.userids = userids;
+    }
 
     public Integer getId() {
         return id;

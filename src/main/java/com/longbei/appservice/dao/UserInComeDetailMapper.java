@@ -35,6 +35,8 @@ public interface UserInComeDetailMapper {
                                       @Param("startNo") Integer startNo,
                                       @Param("pageSize") Integer pageSize);
 
+    int selectTotalCoin(@Param("csourcetype") String csourcetype);
+
     int updateByPrimaryKeySelective(UserInComeDetail record);
 
     int updateByPrimaryKey(UserInComeDetail record);

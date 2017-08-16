@@ -3,10 +3,7 @@ package com.longbei.appservice.service.impl;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.UserInCome;
-import com.longbei.appservice.entity.UserInComeDetail;
-import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.*;
 
 /**
  * 教室老师收益相关
@@ -85,7 +82,34 @@ public interface UserInComeService {
                                                                 Integer pageSize,
                                                                 boolean istotalinfo);
 
+    /**
+     * 获取用户提现申请列表
+     * @param receiptUser  收款人
+     * @param receiptNum   收款账号
+     * @param nickname     用户昵称
+     * @param uiostatus    结算单状态 0 - 申请结算。1 - 运营处理同意
+     *                     2 - 育婴处理不同意 3 - 财务处理不同意
+     *                     4 - 财务出来同意，完成处理  -1 - 已结算
+     * @param pageNo       分页
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<UserInComeOrder>> selectUserIncomeOrderList(String receiptUser,
+                                                              String receiptNum,
+                                                              String nickname,
+                                                              String uiostatus,
+                                                              Integer pageNo,
+                                                              Integer pagesize);
 
+
+    /**
+     * 更新用户结算订单审核状态
+     * @param uioid  结算单id
+     * @param uiostatus  结算单状态
+     * @param deeloption  结算意见
+     * @return
+     */
+    BaseResp updateUserIncomeOrderStatus(String uioid,String uiostatus,String deeloption);
 
 
 }

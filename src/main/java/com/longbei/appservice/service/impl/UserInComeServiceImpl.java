@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,7 @@ public class UserInComeServiceImpl implements UserInComeService{
         BaseResp<UserInComeDetail> baseResp = new BaseResp<>();
         if ("0".equals(detailType)){
             UserInComeDetail userInComeDetail = userInComeDetailMapper.selectUserInComeInDetail(detailId);
-            initUserInComeClassroomInfo(userInComeDetail);
+            initUserInComeInfo(userInComeDetail);
             baseResp.initCodeAndDesp();
             baseResp.setData(userInComeDetail);
         }
@@ -178,18 +179,21 @@ public class UserInComeServiceImpl implements UserInComeService{
                     pageSize * (pageNo - 1),pageSize);
             if ("0".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
-                    initUserInComeClassroomInfo(userInComeDetail1);
+                    initUserInComeInfo(userInComeDetail1);
                 }
             }
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
             baseResp.setData(page);
+            Map<String,Object> map = new HashedMap();
             if (istotalinfo){
-                Map<String,Object> map = new HashedMap();
                 map.put("userInCome",selectUserInCome(userInComeDetail.getUserid()+"").getData());
-                baseResp.setExpandData(map);
             }
+            if (!StringUtils.isBlank(userInComeDetail.getCsourcetype())){
+                map.put("totalnum",userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
+            }
+            baseResp.setExpandData(map);
         } catch (Exception e) {
             logger.error("selectUserInComeDetailList is error:",e);
         }
@@ -197,6 +201,61 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
+    @Override
+    public BaseResp<Page<UserInComeOrder>> selectUserIncomeOrderList(String receiptUser, String receiptNum,
+                                                                     String nickname, String uiostatus,
+                                                                     Integer pageNo, Integer pagesize) {
+
+        BaseResp<Page<UserInComeOrder>> baseResp = new BaseResp<>();
+        Page<UserInComeOrder> page = new Page<>(pageNo,pagesize);
+        List<String> userids = new ArrayList<>();
+        try {
+            if (!StringUtils.isBlank(nickname)){
+                AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+                appUserMongoEntity.setNickname(nickname);
+                List<AppUserMongoEntity> list = userMongoDao.getAppUsers(appUserMongoEntity);
+                for (AppUserMongoEntity appuser : list){
+                    userids.add(String.valueOf(appuser.getUserid()));
+                }
+            }
+            UserInComeOrder userInComeOrder = new UserInComeOrder();
+            userInComeOrder.setReceiptUser(receiptUser);
+            userInComeOrder.setReceiptNum(receiptNum);
+            userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
+            userInComeOrder.setUserids(userids);
+            int totalCount = userInComeOrderMapper.selectCount(userInComeOrder);
+            List<UserInComeOrder> list = userInComeOrderMapper.selectList(userInComeOrder,pagesize*(pageNo - 1),pagesize);
+            page.setTotalCount(totalCount);
+            page.setList(list);
+            baseResp.initCodeAndDesp();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
+        }
+
+        return baseResp;
+    }
+
+
+    @Override
+    public BaseResp updateUserIncomeOrderStatus(String uioid, String uiostatus, String deeloption) {
+        BaseResp baseResp = new BaseResp();
+        UserInComeOrder userInComeOrder = new UserInComeOrder();
+        userInComeOrder.setUioid(Long.parseLong(uioid));
+        userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
+        userInComeOrder.setDealoption(deeloption);
+        userInComeOrder.setUpdatetime(new Date());
+        try {
+            int res = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (res > 0){
+                baseResp.initCodeAndDesp();
+            }
+        } catch (Exception e) {
+            logger.error("updateUserIncomeOrderStatus uioid={} uiostatus={} is error:",uioid,uiostatus,e);
+        }
+
+        return baseResp;
+    }
 
     /**
      *
@@ -355,13 +414,16 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
-    private void initUserInComeClassroomInfo(UserInComeDetail userInComeDetail){
+    private void initUserInComeInfo(UserInComeDetail userInComeDetail){
         if (null == userInComeDetail){
             return;
         }
         if ("0".equals(userInComeDetail.getBusinesstype())){
             Classroom classroom = classroomMapper.selectByPrimaryKey(userInComeDetail.getBusinesstid());
             userInComeDetail.setClassroom(classroom);
+            AppUserMongoEntity appUserMongoEntity =
+                    userMongoDao.getAppUser(String.valueOf(userInComeDetail.getOriginuserid()));
+            userInComeDetail.setAppUserMongoEntity(appUserMongoEntity);
         }
     }
 

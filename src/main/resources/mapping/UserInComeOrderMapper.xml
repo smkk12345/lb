@@ -19,12 +19,81 @@
     id, uioid, userid, detailid, uiostatus, num, receipt_bank, receipt_num, receipt_user, 
     createtime, updatetime, deeloption
   </sql>
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from user_income_order
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="selectCount" resultType="java.lang.Integer">
+      SELECT count(*) FROM user_income_order
+      WHERE 1=1
+      <if test="uorder.uiostatus != null">
+        <choose>
+          <when test="uorder.uiostatus == '-1'.toString()">
+            and uiostatus IN ('2','3','4')
+          </when>
+          <otherwise>
+            AND uiostatus = #{uorder.uiostatus}
+          </otherwise>
+        </choose>
+
+      </if>
+      <if test="uorder.receiptUser != null">
+        AND receipt_user = #{uorder.receiptUser}
+      </if>
+      <if test="uorder.receiptNum != null">
+        AND receipt_num = #{uorder.receiptNum}
+      </if>
+      <if test="uorder.userids != null and uorder.userids.size() > 0">
+        AND  userid in
+        <foreach item="item" index="index" collection="userids" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+  </select>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM user_income_order
+    WHERE 1=1
+    <if test="uorder.uiostatus != null">
+      <choose>
+        <when test="uorder.uiostatus == '-1'.toString()">
+          and uiostatus IN ('2','3','4')
+        </when>
+        <otherwise>
+          AND uiostatus = #{uorder.uiostatus}
+        </otherwise>
+      </choose>
+
+    </if>
+    <if test="uorder.receiptUser != null">
+      AND receipt_user = #{uorder.receiptUser}
+    </if>
+    <if test="uorder.receiptNum != null">
+      AND receipt_num = #{uorder.receiptNum}
+    </if>
+    <if test="uorder.userids != null and uorder.userids.size() > 0">
+      AND  userid in
+      <foreach item="item" index="index" collection="userids" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order BY createtime DESC
+    <if test="startNo != null">
+      limit 3{startNo},#{pageSize}
+    </if>
+  </select>
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_income_order
     where id = #{id,jdbcType=INTEGER}
@@ -123,9 +192,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.UserInComeOrder" >
     update user_income_order
     <set >
-      <if test="uioid != null" >
-        uioid = #{uioid,jdbcType=BIGINT},
-      </if>
       <if test="userid != null" >
         userid = #{userid,jdbcType=BIGINT},
       </if>
@@ -157,7 +223,7 @@
         deeloption = #{dealoption,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where uioid = #{uioid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserInComeOrder" >
     update user_income_order
