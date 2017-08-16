@@ -88,7 +88,7 @@ public interface UserInComeService {
      * @param receiptNum   收款账号
      * @param nickname     用户昵称
      * @param uiostatus    结算单状态 0 - 申请结算。1 - 运营处理同意
-     *                     2 - 育婴处理不同意 3 - 财务处理不同意
+     *                     2 - 运营处理不同意 3 - 财务处理不同意
      *                     4 - 财务出来同意，完成处理  -1 - 已结算
      * @param pageNo       分页
      * @param pagesize
