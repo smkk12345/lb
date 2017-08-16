@@ -14,7 +14,7 @@ public class UserInComeDetail {
     private Long userid;
 
     /**
-     * 明细类型  0 教室学费，1 送礼物，2 提现 3 提现失败返还，4 退学费，5转入钱包 
+     * 明细类型  0 教室学费，1 送礼物，2 提现 3 提现失败 4提现成功，5 退学费，6转入钱包
      */
     private String itype;
 
