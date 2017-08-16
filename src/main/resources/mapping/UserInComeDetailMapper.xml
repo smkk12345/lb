@@ -64,6 +64,9 @@
   <select id="selectCount" resultType="java.lang.Integer">
      SELECT count(*) FROM user_income_detail
      WHERE detailtype = #{userincomedetail.detailtype}
+    <if test="userincomedetail.userid != null">
+      itype = #{userincomedetail.userid}
+    </if>
      <if test="userincomedetail.itype != null">
        itype = #{userincomedetail.itype}
      </if>
@@ -84,6 +87,9 @@
     <include refid="Base_Column_List" />
     FROM user_income_detail
     WHERE detailtype = #{userincomedetail.detailtype}
+    <if test="userincomedetail.userid != null">
+      itype = #{userincomedetail.userid}
+    </if>
     <if test="userincomedetail.itype != null">
       itype = #{userincomedetail.itype}
     </if>
