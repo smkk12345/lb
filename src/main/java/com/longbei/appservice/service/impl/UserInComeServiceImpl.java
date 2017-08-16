@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,40 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
+    @Override
+    public BaseResp<Page<UserInComeOrder>> selectUserIncomeOrderList(String receiptUser, String receiptNum,
+                                                                     String nickname, String uiostatus,
+                                                                     Integer pageNo, Integer pagesize) {
+
+        BaseResp<Page<UserInComeOrder>> baseResp = new BaseResp<>();
+        Page<UserInComeOrder> page = new Page<>(pageNo,pagesize);
+        List<String> userids = new ArrayList<>();
+        try {
+            if (!StringUtils.isBlank(nickname)){
+                AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+                appUserMongoEntity.setNickname(nickname);
+                List<AppUserMongoEntity> list = userMongoDao.getAppUsers(appUserMongoEntity);
+                for (AppUserMongoEntity appuser : list){
+                    userids.add(String.valueOf(appuser.getUserid()));
+                }
+            }
+            UserInComeOrder userInComeOrder = new UserInComeOrder();
+            userInComeOrder.setReceiptUser(receiptUser);
+            userInComeOrder.setReceiptNum(receiptNum);
+            userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
+            userInComeOrder.setUserids(userids);
+            int totalCount = userInComeOrderMapper.selectCount(userInComeOrder);
+            List<UserInComeOrder> list = userInComeOrderMapper.selectList(userInComeOrder,pagesize*(pageNo - 1),pagesize);
+            page.setTotalCount(totalCount);
+            page.setList(list);
+            baseResp.initCodeAndDesp();
+            baseResp.setData(page);
+        } catch (NumberFormatException e) {
+            logger.error("selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
+        }
+
+        return baseResp;
+    }
 
     /**
      *
