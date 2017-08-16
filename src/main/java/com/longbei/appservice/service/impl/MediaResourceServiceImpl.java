@@ -1,5 +1,9 @@
 package com.longbei.appservice.service.impl;
 
+import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -418,9 +422,15 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             }
             //2. 将下载的ppt 转成 pdf
             pptFile = new File(pptFilePath);
-            startService();
+//            startService();
 
-            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
+
+            connection.connect();
+            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+
+//            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+
             converter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
