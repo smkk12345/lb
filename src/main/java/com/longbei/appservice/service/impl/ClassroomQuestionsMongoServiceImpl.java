@@ -158,6 +158,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			reseResp.setData(list);
 			Map<String, Object> expandData = new HashMap<>();
 			expandData.put("cardid", userCard.getUserid());
+			//是否为老师
+			expandData.put("isteacher",classroomService.isTeacher(userid,classroom));
 			reseResp.setExpandData(expandData);
 			if(list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_35);

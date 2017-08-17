@@ -21,6 +21,7 @@ import com.longbei.appservice.service.*;
 import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2991,6 +2992,7 @@ public class ImproveServiceImpl implements ImproveService{
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
 //            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
+                Map<String,Object> map = new HashedMap();
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
                     improve.setHascollect("1");
@@ -3041,6 +3043,7 @@ public class ImproveServiceImpl implements ImproveService{
                         if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
                             userCard = userCardMapper.selectByCardid(classroom.getCardid());
                         }
+                        map.put("isteacher",classroomService.isTeacher(userid,classroom));
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
@@ -3120,6 +3123,7 @@ public class ImproveServiceImpl implements ImproveService{
                     default:
                         break;
                 }
+                baseResp.setExpandData(map);
                 baseResp.setData(improve);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             } else {
