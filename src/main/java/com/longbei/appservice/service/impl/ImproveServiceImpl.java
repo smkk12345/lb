@@ -200,16 +200,16 @@ public class ImproveServiceImpl implements ImproveService{
                     isok = insertImproveForClassroomReply(improve);
                     
                     //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
-                    Comment comment = new Comment();
-         			comment.setContent("批复作业");
-         			comment.setCreatetime(new Date());
-         			comment.setBusinesstype("5");
-         			comment.setBusinessid(businessid);
-         			comment.setUserid(userid);
-         			comment.setFriendid("0");
-         			comment.setImpid(pimpid);
-         			commentMongoService.insertComment(comment);
-                    commentid = comment.getId();
+//                    Comment comment = new Comment();
+//         			comment.setContent("批复作业");
+//         			comment.setCreatetime(new Date());
+//         			comment.setBusinesstype("5");
+//         			comment.setBusinessid(businessid);
+//         			comment.setUserid(userid);
+//         			comment.setFriendid("0");
+//         			comment.setImpid(pimpid);
+//         			commentMongoService.insertComment(comment);
+                    commentid = improve.getImpid().toString();
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
@@ -3059,17 +3059,17 @@ public class ImproveServiceImpl implements ImproveService{
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
-                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
-                					businessid, "5", null, 0);
-                            if(null != list && list.size()>0){
-                                    Comment comment = list.get(0);
-                                    commentid = comment.getId();
-                                    lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
+//                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
+//                					businessid, "5", null, 0);
+//                            if(null != list && list.size()>0){
+//                                    Comment comment = list.get(0);
+                            commentid = improveClassroom.getImpid().toString();
+                            lowerlist = commentLowerMongoDao.selectLowerListByCid(commentid, null, 2);
                                     //初始化用户信息
-                                    initCommentLowerUserInfoList(lowerlist);
+                            initCommentLowerUserInfoList(lowerlist);
 //                                }
-                                    replyImprove.setLowerlist(lowerlist);
-							}
+                            replyImprove.setLowerlist(lowerlist);
+//							}
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
