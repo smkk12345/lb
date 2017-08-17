@@ -41,17 +41,16 @@
             AND uiostatus = #{uorder.uiostatus}
           </otherwise>
         </choose>
-
       </if>
-      <if test="uorder.receiptUser != null">
-        AND receipt_user = #{uorder.receiptUser}
+      <if test="uorder.receiptUser != null and uorder.receiptUser != ''">
+        AND receipt_user LIKE concat(concat('%',#{uorder.receiptUser}),'%')
       </if>
-      <if test="uorder.receiptNum != null">
+      <if test="uorder.receiptNum != null and uorder.receiptNum != ''">
         AND receipt_num = #{uorder.receiptNum}
       </if>
       <if test="uorder.userids != null and uorder.userids.size() > 0">
         AND  userid in
-        <foreach item="item" index="index" collection="userids" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="uorder.userids" open="(" separator="," close=")">
           #{item}
         </foreach>
       </if>
@@ -72,17 +71,16 @@
           AND uiostatus = #{uorder.uiostatus}
         </otherwise>
       </choose>
-
     </if>
-    <if test="uorder.receiptUser != null">
-      AND receipt_user = #{uorder.receiptUser}
+    <if test="uorder.receiptUser != null and uorder.receiptUser != ''">
+      AND receipt_user LIKE concat(concat('%',#{uorder.receiptUser}),'%')
     </if>
-    <if test="uorder.receiptNum != null">
+    <if test="uorder.receiptNum != null and uorder.receiptNum != ''">
       AND receipt_num = #{uorder.receiptNum}
     </if>
     <if test="uorder.userids != null and uorder.userids.size() > 0">
       AND  userid in
-      <foreach item="item" index="index" collection="userids" open="(" separator="," close=")">
+      <foreach item="item" index="index" collection="uorder.userids" open="(" separator="," close=")">
         #{item}
       </foreach>
     </if>

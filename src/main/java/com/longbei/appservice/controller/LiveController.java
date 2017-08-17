@@ -3,8 +3,10 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.service.OSSService;
 import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.OssConfig;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.MediaResource;
 import com.longbei.appservice.service.MediaResourceService;
@@ -14,11 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 直播互动接口
@@ -34,6 +37,8 @@ public class LiveController {
     private LiveGiftServiceImpl liveGiftService;
     @Autowired
     private MediaResourceService mediaResourceService;
+    @Autowired
+    private OSSService ossService;
 
     /**
      *
@@ -159,27 +164,48 @@ public class LiveController {
         return map;
     }
 
-    /**
-     * 上传图片到阿里云
-     * @param mediaid
-     * @param userid
-     * @return
-     */
-    @RequestMapping(value="uploadImage")
-    public Map<String,String> uploadImage(Integer mediaid,Long userid){
-        logger.info("get mediaResource detail mediaresourceid:{} userid:{}",mediaid,userid);
-        BaseResp<List<String>> baseResp = new BaseResp<>();
-        Map<String,String> map = new HashMap<>();
-        if(mediaid == null || userid == null){
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
-            return map;
+//    /**
+//     * 上传图片到阿里云
+//     * @param mediaid
+//     * @param userid
+//     * @return
+//     */
+//    @RequestMapping(value="uploadImage")
+//    public Map<String,String> uploadImage(Integer mediaid,Long userid){
+//        logger.info("get mediaResource detail mediaresourceid:{} userid:{}",mediaid,userid);
+//        BaseResp<List<String>> baseResp = new BaseResp<>();
+//        Map<String,String> map = new HashMap<>();
+//        if(mediaid == null || userid == null){
+//            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//            map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+//            return map;
+//        }
+//        baseResp = this.mediaResourceService.findMediaResourceDetailList(mediaid,userid);
+//        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
+//        return map;
+//    }
+
+
+    @RequestMapping({ "/uploadImage" })
+    @ResponseBody
+    public BaseResp<Object> uploadImage(@RequestParam("imgFiles") MultipartFile[] files) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i <files.length ; i++) {
+                MultipartFile file = files[i];
+                String key = UUID.randomUUID().toString();
+                //String bucketName, String key, MultipartFile file
+                String result = ossService.putObject(OssConfig.bucketName,key,file.getInputStream());
+                list.add(OssConfig.url+key);
+            }
+            baseResp.initCodeAndDesp();
+            baseResp.setData(list);
+        } catch (Exception e) {
+            logger.error("uploadImage eeror and msg=",e);
+            return null;
         }
-        baseResp = this.mediaResourceService.findMediaResourceDetailList(mediaid,userid);
-        map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
-        return map;
+        return baseResp;
     }
-
-
 
 }
