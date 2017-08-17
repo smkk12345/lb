@@ -1958,5 +1958,15 @@ public class UserServiceImpl implements UserService {
 		return sysNicknames.getNickname();
 	}
 
+	@Override
+	public BaseResp isMoneyEnough(int money, long userid) {
+		BaseResp baseResp = new BaseResp();
+		UserInfo userInfo = userInfoMapper.selectByUserid(userid);
+		if(userInfo.getTotalmoney()>money){
+			baseResp.initCodeAndDesp();
+		}
+		return baseResp;
+	}
+
 
 }
