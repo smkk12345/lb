@@ -1,8 +1,11 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.longbei.appservice.config.AppserviceConfig;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
 public class UserInComeOrder {
@@ -59,12 +62,12 @@ public class UserInComeOrder {
     /**
      * 
      */
-    private String createtime;
+    private Date createtime;
 
     /**
      * 
      */
-    private String updatetime;
+    private Date updatetime;
 
     /**
      * 
@@ -84,7 +87,8 @@ public class UserInComeOrder {
 
     public Integer getSettlenum() {
         return this.num==null?0:Integer.parseInt(
-                String.valueOf(new DecimalFormat("0").format(Double.parseDouble(num) / AppserviceConfig.yuantomoney)));
+                String.valueOf(new DecimalFormat("0").
+                        format(Math.ceil(Double.parseDouble(num) * AppserviceConfig.yuantomoney))));
     }
 
     public void setSettlenum(Integer settlenum) {
@@ -179,19 +183,23 @@ public class UserInComeOrder {
         this.receiptUser = receiptUser == null ? null : receiptUser.trim();
     }
 
-    public String getCreatetime() {
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 

@@ -92,7 +92,7 @@ public class UserInComeApiController {
             userInComeDetail.setItype(itype);
             userInComeDetail.setDetailstatus(detailstatus);
             userInComeDetail.setDetailtype(detailtype);
-            userInComeDetail.setCreatetime(DateUtils.formatDateTime1(dealWithPeriod(period)));
+            userInComeDetail.setCreatetime(dealWithPeriod(period));
             baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
                     Integer.parseInt(pageNo),Integer.parseInt(pageSize),true);
         } catch (Exception e) {
