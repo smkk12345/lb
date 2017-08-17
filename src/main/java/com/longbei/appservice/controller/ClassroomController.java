@@ -22,8 +22,8 @@ import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
+import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.ImproveClassroom;
 import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomMembersService;
@@ -49,9 +49,45 @@ public class ClassroomController {
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
 	
 	
+	
 	/**
      * url: http://ip:port/app_service/classroom/selectImproveReply
-     * @ 获取教室批复信息
+     * 获取教室批复信息---子评论列表(拆分)
+     * @param userid 
+     * @param impid 批复作业进步id---主评论id
+     * @param lastDate 分页数据最后一个的时间
+     * @param pageSize
+     * @return
+     */
+	 @SuppressWarnings("unchecked")
+	@ResponseBody
+    @RequestMapping(value = "selectCommentLower")
+    public BaseResp<List<CommentLower>> selectCommentLower(String userid, String impid,
+			String lastDate, Integer pageSize){
+        logger.info("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+        		impid, lastDate, userid, pageSize);
+        BaseResp<List<CommentLower>> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userid, impid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        if(null == pageSize){
+            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+        }
+        try {
+            baseResp = classroomService.selectCommentLower(Long.parseLong(userid), 
+            		impid, 
+            		lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
+        } catch (Exception e) {
+            logger.error("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+        		impid, lastDate, userid, pageSize, e);
+        }
+        return baseResp;
+    }
+	
+	
+	/**
+     * url: http://ip:port/app_service/classroom/selectImproveReply
+     * @ 获取教室批复信息(拆分)
      * @param userid 
      * @param impid 进步id---作业
      * @param classroomid 教室id
@@ -64,7 +100,7 @@ public class ClassroomController {
         logger.info("selectImproveReply impid = {}, classroomid = {}, userid = {}", 
         		impid, classroomid, userid);
         BaseResp<ReplyImprove> baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(impid, classroomid)){
+        if(StringUtils.hasBlankParams(userid, impid, classroomid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {

@@ -20,6 +20,11 @@ public class ReplyImprove {
 	private String filekey;//文件key  视频文件  音频文件 普通文件
 	private Long userid;//用户id
 	private Date createtime;//创建时间
+	
+	protected Long businessid;//业务id  榜单id  圈子id 教室id
+	
+	protected String businesstype;//微进步关联的业务类型 0 未关联 1 目标  2 榜 3 圈子 4教室
+	
 	private AppUserMongoEntity appUserMongoEntity; //进步用户信息
 	//评论
 	private List<CommentLower> lowerlist = new ArrayList<CommentLower>();
@@ -29,12 +34,15 @@ public class ReplyImprove {
 		super();
 	}
 	
-	public ReplyImprove(Long impid, String itype, String brief, String pickey, Long userid, Date createtime){
+	public ReplyImprove(Long impid, String itype, String brief, String pickey, Long userid, 
+			Long businessid, String businesstype, Date createtime){
 		this.impid = impid;
 		this.itype = itype;
 		this.brief = brief;
 		this.pickey = pickey;
 		this.userid = userid;
+		this.businessid = businessid;
+		this.businesstype = businesstype;
 		this.createtime = createtime;
 	}
 	
@@ -95,5 +103,21 @@ public class ReplyImprove {
 
 	public void setLowerlist(List<CommentLower> lowerlist) {
 		this.lowerlist = lowerlist;
+	}
+
+	public Long getBusinessid() {
+		return businessid;
+	}
+
+	public void setBusinessid(Long businessid) {
+		this.businessid = businessid;
+	}
+
+	public String getBusinesstype() {
+		return businesstype;
+	}
+
+	public void setBusinesstype(String businesstype) {
+		this.businesstype = businesstype;
 	}
 }

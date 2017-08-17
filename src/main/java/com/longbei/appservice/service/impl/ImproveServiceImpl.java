@@ -1009,7 +1009,7 @@ public class ImproveServiceImpl implements ImproveService{
                     AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
                     ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                     		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                    		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                    		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
@@ -3055,7 +3055,7 @@ public class ImproveServiceImpl implements ImproveService{
                             AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
                             ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                             		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                            		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
                             replyImprove.setAppUserMongoEntity(appUserMongo);

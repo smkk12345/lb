@@ -1,14 +1,26 @@
 package com.longbei.appservice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserCard;
 
 public interface ClassroomService {
+	
+	/**
+     * 获取教室批复信息---子评论列表(拆分)
+     * @param impid 进步id---作业
+     * @param lastDate 分页数据最后一个的时间
+     * @param pageSize
+     * @return
+     */
+	BaseResp<List<CommentLower>> selectCommentLower(Long userid, String impid,
+			Date lastdate, int pageSize);
 	
 	/**
      * @ 获取教室批复信息

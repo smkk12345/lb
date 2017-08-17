@@ -27,6 +27,7 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
@@ -46,6 +47,7 @@ import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -65,6 +67,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Autowired
 	private CommentMongoService commentMongoService;
 	@Autowired
+	private CommentLowerMongoDao commentLowerMongoDao;
+	@Autowired
 	private ImproveClassroomMapper improveClassroomMapper;
 	@Autowired
 	private UserBusinessConcernMapper userBusinessConcernMapper;
@@ -72,11 +76,38 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private HomeRecommendMapper homeRecommendMapper;
+	@Autowired
+	private UserRelationService userRelationService;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
 	
 	
+	
+	/**
+     * 获取教室批复信息---子评论列表(拆分)
+     * @param impid 进步id---作业
+     * @param lastDate 分页数据最后一个的时间
+     * @param pageSize
+     * @return
+     */
+	@Override
+	public BaseResp<List<CommentLower>> selectCommentLower(Long userid, String impid, Date lastdate, int pageSize) {
+		BaseResp<List<CommentLower>> baseResp = new BaseResp<>();
+		try{
+			List<CommentLower> lowerList = commentLowerMongoDao.selectCommentLowerListByCommentid(impid);
+			//初始化用户信息
+			initCommentLowerUserInfoList(lowerList, userid.toString());
+			baseResp.setData(lowerList);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+			logger.error("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+	        		impid, DateUtils.formatDateTime1(lastdate), userid, pageSize, e);
+        }
+    	return baseResp;
+	}
+
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -94,17 +125,17 @@ public class ClassroomServiceImpl implements ClassroomService {
 	    	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(classroomid, impid);
 	    	ReplyImprove replyImprove = null;
 	    	if(null != replyList && replyList.size()>0){
-                List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+//                List<CommentLower> lowerlist = new ArrayList<CommentLower>();
                 ImproveClassroom improveClassroom = replyList.get(0);
                 AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
                 replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                 		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
                 appUserMongo.setNickname(userCard.getDisplayname());
                 appUserMongo.setAvatar(userCard.getAvatar());
                 replyImprove.setAppUserMongoEntity(appUserMongo);
-                initCommentLowerUserInfoList(lowerlist);
-                replyImprove.setLowerlist(lowerlist);
+//                initCommentLowerUserInfoList(lowerlist);
+//                replyImprove.setLowerlist(lowerlist);
 	    	}
 	    	baseResp.setData(replyImprove);
 	    	baseResp.setExpandData(map);
@@ -1308,23 +1339,44 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return 0;
 	}
 
-	/**
+
+	//------------------------公用方法，初始化消息中用户信息------------------------------------------
+    /**
      * 初始化消息中用户信息 ------List
      */
-    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
-        if(null != lowers && lowers.size()>0){
-            for (CommentLower commentLower : lowers) {
-                if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
-                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-                    commentLower.setSecondNickname(appUserMongoEntity.getNickname());
-                }
-                if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
-                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-                    commentLower.setFirstNickname(appUserMongo.getNickname());
-                }
-            }
-        }
-
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers, String friendid){
+    	if(null != lowers && lowers.size()>0){
+			Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(friendid);
+    		for (CommentLower commentLower : lowers) {
+    			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+						commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+					}else{
+						if(friendRemark.containsKey(commentLower.getSeconduserid())){
+							commentLower.setSecondNickname(friendRemark.get(commentLower.getSeconduserid()));
+						}else{
+							AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+							commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+						}
+					}
+    			}
+				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+						commentLower.setFirstNickname(appUserMongo.getNickname());
+					}else{
+						if(friendRemark.containsKey(commentLower.getFirstuserid())){
+							commentLower.setFirstNickname(friendRemark.get(commentLower.getFirstuserid()));
+						}else{
+							AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+							commentLower.setFirstNickname(appUserMongo.getNickname());
+						}
+					}
+				}
+			}
+    	}
+        
     }
 
 }
