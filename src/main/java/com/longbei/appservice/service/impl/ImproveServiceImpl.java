@@ -3053,6 +3053,8 @@ public class ImproveServiceImpl implements ImproveService{
                             ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                             		improveClassroom.getBrief(), improveClassroom.getPickey(), 
                             		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            appUserMongo.setNickname(userCard.getDisplayname());
+                            appUserMongo.setAvatar(userCard.getAvatar());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
                 			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
                 					businessid, "5", null, 0);
