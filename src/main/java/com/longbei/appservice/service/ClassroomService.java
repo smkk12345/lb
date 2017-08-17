@@ -267,5 +267,13 @@ public interface ClassroomService {
 	 * @param userid 当前访问者id
 	 */
 	BaseResp<Object> selectRoomDetailAll(Long classroomid, Long userid);
+
+	/**
+	 * 当前用户是否为老师
+	 * @param userid
+	 * @param classroom
+	 * @return
+	 */
+	int isTeacher(String userid,Classroom classroom);
 	
 }

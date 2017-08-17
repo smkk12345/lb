@@ -191,7 +191,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
-				
+				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
+
+
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
 					//获取当前用户在教室发作业的总数
 					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
@@ -1253,6 +1255,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 			logger.error("selectRoomDetail classroomid = {}, userid = {}", classroomid, userid, e);
 		}
 		return reseResp;
+	}
+
+	@Override
+	public int isTeacher(String userid,Classroom classroom){
+		if (userid.equals(classroom.getUserid()))
+			return 1;
+		return 0;
 	}
 
 
