@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import com.longbei.appservice.config.AppserviceConfig;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class UserInComeOrder {
@@ -83,7 +84,7 @@ public class UserInComeOrder {
 
     public Integer getSettlenum() {
         return this.num==null?0:Integer.parseInt(
-                String.valueOf(Math.ceil(Double.parseDouble(num) / AppserviceConfig.yuantomoney)));
+                String.valueOf(new DecimalFormat("0").format(Double.parseDouble(num) / AppserviceConfig.yuantomoney)));
     }
 
     public void setSettlenum(Integer settlenum) {

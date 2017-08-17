@@ -3,12 +3,12 @@ package com.longbei.appservice.controller.api;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.UserInCome;
 import com.longbei.appservice.entity.UserInComeDetail;
 import com.longbei.appservice.entity.UserInComeOrder;
 import com.longbei.appservice.service.impl.UserInComeService;
-import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +92,7 @@ public class UserInComeApiController {
             userInComeDetail.setItype(itype);
             userInComeDetail.setDetailstatus(detailstatus);
             userInComeDetail.setDetailtype(detailtype);
-            userInComeDetail.setCreatetime(dealWithPeriod(period));
+            userInComeDetail.setCreatetime(DateUtils.formatDateTime1(dealWithPeriod(period)));
             baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
                     Integer.parseInt(pageNo),Integer.parseInt(pageSize),true);
         } catch (Exception e) {
@@ -163,11 +163,12 @@ public class UserInComeApiController {
         UserInComeDetail userInComeDetail = new UserInComeDetail();
         userInComeDetail.setCsourcetype(sourcetype);
         userInComeDetail.setDetailtype("0");
+        userInComeDetail.setBusinesstype("0");
         try {
             baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
                     Integer.parseInt(pageNo),Integer.parseInt(pageSize),false);
         } catch (NumberFormatException e) {
-            logger.error("selectUserInComeDetailByCSoureType sourcetype={} is error:",sourcetype,e);
+            logger.error("selectUserInComeDetailBySoureType sourcetype={} is error:",sourcetype,e);
         }
         return baseResp;
     }

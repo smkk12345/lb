@@ -198,6 +198,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                     }
                 }
             }
+            Page.setPageNo(pageNo,totalCount,pageSize);
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
@@ -207,7 +208,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                 map.put("userInCome",selectUserInCome(userInComeDetail.getUserid()+"").getData());
             }
             if (!StringUtils.isBlank(userInComeDetail.getCsourcetype())){
-                map.put("totalnum",userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
+                map.put("totalnum",null==userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype())?0:userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
             }
             baseResp.setExpandData(map);
         } catch (Exception e) {
@@ -244,6 +245,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             for(int i=0;i<list.size();i++) {
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid()+"");
                 list.get(i).setAppUserMongoEntity(appUserMongoEntity);
+                list.get(i).setSettlenum(list.get(i).getSettlenum());
             }
             page.setTotalCount(totalCount);
             page.setList(list);
@@ -363,7 +365,8 @@ public class UserInComeServiceImpl implements UserInComeService{
             userInComeDetail.setOriginuserid(Long.parseLong(originuserid));
             userInComeDetail.setRemarker(remarker);
             userInComeDetail.setDetailtype(detailtype);
-            userInComeDetail.setCreatetime(new Date());
+            String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+            userInComeDetail.setCreatetime(date);
             if ("0".equals(detailtype)){
                 userInComeDetail.setDetailstatus("0");
                 if ("0".equals(businesstype)){
@@ -424,7 +427,8 @@ public class UserInComeServiceImpl implements UserInComeService{
                 userInComeDetail.setDetailid(userInComeOrder.getDetailid());
                 //结算成功
                 userInComeDetail.setDetailstatus("1");
-                userInComeDetail.setUpdatetime(new Date());
+                String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+                userInComeDetail.setUpdatetime(date);
                 //更新明细状态
                 userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
             }
