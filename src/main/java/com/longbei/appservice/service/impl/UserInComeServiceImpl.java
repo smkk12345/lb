@@ -106,13 +106,12 @@ public class UserInComeServiceImpl implements UserInComeService{
         if (!ResultUtil.isSuccess(baseResp)){
             return baseResp;
         }
-        String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         UserInComeOrder userInComeOrder = new UserInComeOrder();
         userInComeOrder.setUioid(idGenerateService.getUniqueIdAsLong());
         userInComeOrder.setUserid(Long.parseLong(userid));
         userInComeOrder.setDetailid((Long) baseResp.getData());
         userInComeOrder.setNum(String.valueOf(num));
-        userInComeOrder.setCreatetime(date);
+        userInComeOrder.setCreatetime(new Date());
         //转入钱包
         if ("6".equals(origin)){
             baseResp = userInComeToWallet(userid,userInComeOrder);
@@ -185,12 +184,6 @@ public class UserInComeServiceImpl implements UserInComeService{
                     initUserInComeInfo(userInComeDetail1);
                 }
             }
-            for (UserInComeDetail userInComeDetail1 : list){
-                if(StringUtils.isNotBlank(userInComeDetail1.getCreatetime())) {
-                    Date createtime = DateUtils.formatDate(userInComeDetail1.getCreatetime(), "yyyy-MM-dd HH:mm:ss");
-                    userInComeDetail1.setCreatetime(DateUtils.formatDateTime1(createtime));
-                }
-            }
             if ("1".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
                     int itype = Integer.parseInt(userInComeDetail1.getItype());
@@ -251,16 +244,6 @@ public class UserInComeServiceImpl implements UserInComeService{
             for(int i=0;i<list.size();i++) {
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid()+"");
                 list.get(i).setAppUserMongoEntity(appUserMongoEntity);
-                list.get(i).setSettlenum(list.get(i).getSettlenum());
-                if(StringUtils.isNotBlank(list.get(i).getCreatetime())) {
-                    try {
-                        Date date = DateUtils.formatDate(list.get(i).getCreatetime(), "yyyy-MM-dd HH:mm:ss");
-                        list.get(i).setCreatetime(DateUtils.formatDateTime1(date));
-
-                    } catch (Exception e) {
-                        logger.error("transform createtime is error:",e);
-                    }
-                }
             }
             page.setTotalCount(totalCount);
             page.setList(list);
@@ -277,15 +260,30 @@ public class UserInComeServiceImpl implements UserInComeService{
     @Override
     public BaseResp updateUserIncomeOrderStatus(String uioid, String uiostatus, String deeloption) {
         BaseResp baseResp = new BaseResp();
+
+        UserInComeOrder uorder = userInComeOrderMapper.selectByPrimaryKey(uioid);
+        if (null == uorder){
+            return baseResp;
+        }
         String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         UserInComeOrder userInComeOrder = new UserInComeOrder();
         userInComeOrder.setUioid(Long.parseLong(uioid));
         userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
         userInComeOrder.setDealoption(deeloption);
-        userInComeOrder.setUpdatetime(date);
+        userInComeOrder.setUpdatetime(new Date());
         try {
             int res = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
             if (res > 0){
+                UserInComeDetail userInComeDetail = new UserInComeDetail();
+                userInComeDetail.setDetailid(uorder.getDetailid());
+                userInComeDetail.setUpdatetime(new Date());
+                if ("2".equals(uiostatus) || "3".equals(uiostatus)){
+                    userInComeDetail.setDetailstatus("2");
+                }
+                if ("4".equals(uiostatus)){
+                    userInComeDetail.setDetailstatus("1");
+                }
+                userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
                 baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
@@ -380,8 +378,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             userInComeDetail.setOriginuserid(Long.parseLong(originuserid));
             userInComeDetail.setRemarker(remarker);
             userInComeDetail.setDetailtype(detailtype);
-            String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
-            userInComeDetail.setCreatetime(date);
+            userInComeDetail.setCreatetime(new Date());
             if ("0".equals(detailtype)){
                 userInComeDetail.setDetailstatus("0");
                 if ("0".equals(businesstype)){
@@ -442,8 +439,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                 userInComeDetail.setDetailid(userInComeOrder.getDetailid());
                 //结算成功
                 userInComeDetail.setDetailstatus("1");
-                String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
-                userInComeDetail.setUpdatetime(date);
+                userInComeDetail.setUpdatetime(new Date());
                 //更新明细状态
                 userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
             }

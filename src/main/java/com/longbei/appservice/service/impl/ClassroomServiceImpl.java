@@ -415,7 +415,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isadd", isadd);
 				//描述
 				map.put("content", classroom.getClassbrief());
-				
+				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				//分享url
 				map.put("roomurlshare", 
 						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));

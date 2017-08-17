@@ -1,5 +1,10 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 public class UserInComeDetail {
     /**
      * 
@@ -44,12 +49,12 @@ public class UserInComeDetail {
     /**
      * 
      */
-    private String createtime;
+    private Date createtime;
 
     /**
      * 
      */
-    private String updatetime;
+    private Date updatetime;
 
     /**
      * 备注
@@ -186,20 +191,22 @@ public class UserInComeDetail {
     public void setOriginuserid(Long originuserid) {
         this.originuserid = originuserid;
     }
-
-    public String getCreatetime() {
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-
-    public String getUpdatetime() {
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
