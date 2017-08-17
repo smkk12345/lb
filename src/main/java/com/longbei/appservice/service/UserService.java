@@ -299,4 +299,6 @@ public interface UserService {
 	 * @return
 	 */
 	String getRandomNickName();
+
+	BaseResp isMoneyEnough(int money,long userid);
 }

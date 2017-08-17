@@ -21,6 +21,7 @@ import com.longbei.appservice.service.*;
 import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,16 +200,16 @@ public class ImproveServiceImpl implements ImproveService{
                     isok = insertImproveForClassroomReply(improve);
                     
                     //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
-                    Comment comment = new Comment();
-         			comment.setContent("批复作业");
-         			comment.setCreatetime(new Date());
-         			comment.setBusinesstype("5");
-         			comment.setBusinessid(businessid);
-         			comment.setUserid(userid);
-         			comment.setFriendid("0");
-         			comment.setImpid(pimpid);
-         			commentMongoService.insertComment(comment);
-                    commentid = comment.getId();
+//                    Comment comment = new Comment();
+//         			comment.setContent("批复作业");
+//         			comment.setCreatetime(new Date());
+//         			comment.setBusinesstype("5");
+//         			comment.setBusinessid(businessid);
+//         			comment.setUserid(userid);
+//         			comment.setFriendid("0");
+//         			comment.setImpid(pimpid);
+//         			commentMongoService.insertComment(comment);
+                    commentid = improve.getImpid().toString();
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
@@ -2991,6 +2992,7 @@ public class ImproveServiceImpl implements ImproveService{
             Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
 //            logger.info("select improve = {}", JSON.toJSON(improve).toString());
             if(null != improve){
+                Map<String,Object> map = new HashedMap();
                 initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
                 if(checkIsCollectImprove(userid,impid)){
                     improve.setHascollect("1");
@@ -3041,6 +3043,7 @@ public class ImproveServiceImpl implements ImproveService{
                         if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
                             userCard = userCardMapper.selectByCardid(classroom.getCardid());
                         }
+                        map.put("isteacher",classroomService.isTeacher(userid,classroom));
                     	//获取教室微进步批复作业列表
                     	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                     	String commentid = "";
@@ -3053,18 +3056,20 @@ public class ImproveServiceImpl implements ImproveService{
                             ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                             		improveClassroom.getBrief(), improveClassroom.getPickey(), 
                             		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            appUserMongo.setNickname(userCard.getDisplayname());
+                            appUserMongo.setAvatar(userCard.getAvatar());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
-                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
-                					businessid, "5", null, 0);
-                            if(null != list && list.size()>0){
-                                    Comment comment = list.get(0);
-                                    commentid = comment.getId();
-                                    lowerlist = commentLowerMongoDao.selectCommentLowerListByCommentid(comment.getId());
+//                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
+//                					businessid, "5", null, 0);
+//                            if(null != list && list.size()>0){
+//                                    Comment comment = list.get(0);
+                            commentid = improveClassroom.getImpid().toString();
+                            lowerlist = commentLowerMongoDao.selectLowerListByCid(commentid, null, 2);
                                     //初始化用户信息
-                                    initCommentLowerUserInfoList(lowerlist);
+                            initCommentLowerUserInfoList(lowerlist);
 //                                }
-                                    replyImprove.setLowerlist(lowerlist);
-							}
+                            replyImprove.setLowerlist(lowerlist);
+//							}
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
@@ -3118,6 +3123,7 @@ public class ImproveServiceImpl implements ImproveService{
                     default:
                         break;
                 }
+                baseResp.setExpandData(map);
                 baseResp.setData(improve);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             } else {

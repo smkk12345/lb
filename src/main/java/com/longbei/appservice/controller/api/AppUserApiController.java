@@ -425,4 +425,17 @@ public class AppUserApiController {
         }
         return baseResp;
     }
+
+    @RequestMapping("isMoneyEnough")
+    public BaseResp isMoneyEnough(int totalPrice,long userid){
+        logger.info("isMoneyEnough  totalPrice={},userid={}", totalPrice,userid);
+        BaseResp baseResp = new BaseResp<>();
+        try {
+            baseResp = userService.isMoneyEnough(totalPrice,userid);
+        } catch (Exception e) {
+            logger.error("isMoneyEnough totalPrice={} userid error:",totalPrice,userid,e);
+        }
+        return baseResp;
+    }
+
 }
