@@ -182,7 +182,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             if ("0".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
                     initUserInComeInfo(userInComeDetail1);
-                }
+            }
             }
             if ("1".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
