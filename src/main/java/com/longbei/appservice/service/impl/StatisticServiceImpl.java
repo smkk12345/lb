@@ -323,6 +323,10 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         BaseResp baseResp = new BaseResp();
         try {
             int sum = statisticsMapper.sumByField(field);
+            if ("moneynum".equals(field)) {
+                double radio = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
+                sum = (int)Math.round(sum*radio*100);//人民币，单位分
+            }
             baseResp.setData(sum);
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
