@@ -693,7 +693,7 @@
       set totalcoin = totalcoin + #{coin}
       where
         <if test="coin &lt; 0">
-          totalcoin > ROUND(#{coin}) and
+          totalcoin > ABS(#{coin}) and
         </if>
         userid = #{userid}
   </update>
@@ -731,10 +731,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ROUND(#{givedflowers}) and
+      givedflowers > ABS(#{givedflowers}) and
     </if>
     <if test="totalmoney &lt; 0">
-      totalmoney > ROUND(#{totalmoney}) and
+      totalmoney > ABS(#{totalmoney}) and
     </if>
     userid = #{userid}
   </update>
@@ -751,10 +751,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ROUND(#{givedflowers}) and
+      givedflowers > ABS(#{givedflowers}) and
     </if>
     <if test="totalcoin &lt; 0">
-      totalcoin > ROUND(#{totalcoin}) and
+      totalcoin > ABS(#{totalcoin}) and
     </if>
     userid = #{userid}
   </update>
