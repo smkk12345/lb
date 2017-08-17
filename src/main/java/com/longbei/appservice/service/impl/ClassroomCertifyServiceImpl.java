@@ -12,7 +12,9 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.ClassroomCertify;
 import com.longbei.appservice.entity.UserIdcard;
 import com.longbei.appservice.service.ClassroomCertifyService;
+import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.UserIdcardService;
+import com.longbei.appservice.service.UserMsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,10 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
     private UserMongoDao userMongoDao;
     @Autowired
     private UserIdcardService userIdcardService;
+    @Autowired
+    private UserMsgService userMsgService;
+    @Autowired
+    private JPushService jPushService;
 
     @Override
     public Page<ClassroomCertify> selectClassroomCertifyList(ClassroomCertify classroomCertify, Integer startNum, Integer pageSize){
@@ -158,6 +164,19 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
         try {
             int n = userUserClassroomCertifyMapper.updateClassroomCertifyByUserid(classroomCertify);
             if(n >= 1){
+                if("1".equals(classroomCertify.getStatus())){
+                    String remark = "老师认证通过";
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
+                            ,null,"9",null,remark,"0","65", "老师认证",0, "", "");
+                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
+                            "恭喜，您的老师认证审核通过！","",Constant.JPUSH_TAG_COUNT_1306);
+                }else if("2".equals(classroomCertify.getStatus())) {
+                    String remark = "老师认证未通过";
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
+                            ,null,"9",null,remark,"0","65", "实名认证",0, "", "");
+                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
+                            "您的老师认证审核未通过","",Constant.JPUSH_TAG_COUNT_1307);
+                }
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {
