@@ -5,9 +5,18 @@ import java.util.List;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
+import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserCard;
 
 public interface ClassroomService {
+	
+	/**
+     * @ 获取教室批复信息
+     * @param impid 进步id---作业
+     * @param classroomid 教室id
+     * @return
+     */
+	BaseResp<ReplyImprove> selectImproveReply(Long userid, Long impid, Long classroomid);
 	
 	/**
      * 获取教室列表 推荐的 针对app

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,10 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.HomeRecommend;
+import com.longbei.appservice.entity.ImproveClassroom;
+import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
@@ -72,6 +77,45 @@ public class ClassroomServiceImpl implements ClassroomService {
 	
 	
 	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<ReplyImprove> selectImproveReply(Long userid, Long impid, Long classroomid) {
+		BaseResp<ReplyImprove> baseResp = new BaseResp<>();
+		Map<String,Object> map = new HashedMap();
+		try{
+			Classroom classroom = selectByClassroomid(classroomid);
+            UserCard userCard = null;
+            if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+                userCard = userCardMapper.selectByCardid(classroom.getCardid());
+            }
+            map.put("isteacher", isTeacher(userid.toString(), classroom));
+			//获取教室微进步批复作业列表
+	    	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(classroomid, impid);
+	    	ReplyImprove replyImprove = null;
+	    	if(null != replyList && replyList.size()>0){
+                List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+                ImproveClassroom improveClassroom = replyList.get(0);
+                AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+                replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                appUserMongo.setNickname(userCard.getDisplayname());
+                appUserMongo.setAvatar(userCard.getAvatar());
+                replyImprove.setAppUserMongoEntity(appUserMongo);
+                initCommentLowerUserInfoList(lowerlist);
+                replyImprove.setLowerlist(lowerlist);
+	    	}
+	    	baseResp.setData(replyImprove);
+	    	baseResp.setExpandData(map);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+            logger.error("selectImproveReply impid = {} classroomid = {}", impid, classroomid, e);
+        }
+    	return baseResp;
+	}
+
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1264,5 +1308,23 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return 0;
 	}
 
+	/**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
+        if(null != lowers && lowers.size()>0){
+            for (CommentLower commentLower : lowers) {
+                if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+                    commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+                }
+                if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+                    commentLower.setFirstNickname(appUserMongo.getNickname());
+                }
+            }
+        }
+
+    }
 
 }

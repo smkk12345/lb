@@ -23,6 +23,8 @@ import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
 import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.ImproveClassroom;
+import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
@@ -45,6 +47,35 @@ public class ClassroomController {
 	private ImproveService improveService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
+	
+	
+	/**
+     * url: http://ip:port/app_service/classroom/selectImproveReply
+     * @ 获取教室批复信息
+     * @param userid 
+     * @param impid 进步id---作业
+     * @param classroomid 教室id
+     * @return
+     */
+	 @SuppressWarnings("unchecked")
+	@ResponseBody
+    @RequestMapping(value = "selectImproveReply")
+    public BaseResp<ReplyImprove> selectImproveReply(String userid, String impid, String classroomid){
+        logger.info("selectImproveReply impid = {}, classroomid = {}, userid = {}", 
+        		impid, classroomid, userid);
+        BaseResp<ReplyImprove> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(impid, classroomid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = classroomService.selectImproveReply(Long.parseLong(userid), 
+            		Long.parseLong(impid), Long.parseLong(classroomid));
+        } catch (Exception e) {
+            logger.error("selectImproveReply userid = {}, impid = {}, classroomid = {}", 
+            		userid, impid, classroomid, e);
+        }
+        return baseResp;
+    }
 	
 	
 	/**
