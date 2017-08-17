@@ -774,6 +774,8 @@ public class Constant {
 //	public static final String JPUSH_TAG_COUNT_1303 = "1303";//创建的龙榜／教室／圈子被选为推荐
 	public static final String JPUSH_TAG_COUNT_1304 = "1304";//被授予龙杯名人认证
 	public static final String JPUSH_TAG_COUNT_1305 = "1305";//被授予龙杯Star认证
+	public static final String JPUSH_TAG_COUNT_1306 = "1306";//老师认证通过
+	public static final String JPUSH_TAG_COUNT_1307 = "1307";//老师认证未通过
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息
