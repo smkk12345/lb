@@ -298,6 +298,16 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
             totalcount = statisticsMapper.selectListCount();
             pageno = Page.setPageNo(pageno,totalcount,pagesize);
             statisticsList = statisticsMapper.selectListWithPage((pageno-1)*pagesize,pagesize);
+            if (statisticsList != null) {
+                for (Statistics statistics : statisticsList) {
+                    //把龙币换算成人民币(单位：分;便于直接用整数存储);用于在运营端页面显示
+                    if (null != statistics.getMoneynum()) {
+                        double radio = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
+                        int money = (int)Math.round(statistics.getMoneynum()*radio*100);//人民币，单位分
+                        statistics.setMoneynum(money);
+                    }
+                }
+            }
         } catch (Exception e) {
             logger.error("selectStatisticsListByPage pageno={},pagesize={} is error:", pageno, pagesize, e);
         }
