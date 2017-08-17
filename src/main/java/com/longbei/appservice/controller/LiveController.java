@@ -185,10 +185,25 @@ public class LiveController {
 //        return map;
 //    }
 
-
+    /**
+     * url: http://47.93.37.85:8080/app_service/live/uploadImage
+     * @param MultipartFile[] imgFiles 参数是一个文件数组
+     * @return
+     * {
+        "expandData": {},
+        "code": 0,
+        "rtnInfo": "操作成功!",
+        "data": [
+        "http://longbei-dev-media-out.oss-cn-beijing.aliyuncs.com/9f3b985e-1f46-425c-8572-17fc5e4cdbb9",
+        "http://longbei-dev-media-out.oss-cn-beijing.aliyuncs.com/14813b69-f5cf-409a-b170-d788472948d7",
+        "http://longbei-dev-media-out.oss-cn-beijing.aliyuncs.com/8a262ab3-4259-4871-8d10-bddae98d9d9f"
+        ],
+        "displayStatus": 0
+        }
+     */
     @RequestMapping({ "/uploadImage" })
     @ResponseBody
-    public BaseResp<Object> uploadImage(@RequestParam("imgFiles") MultipartFile[] files) {
+    public Map<String,String> uploadImage(@RequestParam("imgFiles") MultipartFile[] files) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
             List<String> list = new ArrayList<>();
@@ -205,7 +220,11 @@ public class LiveController {
             logger.error("uploadImage eeror and msg=",e);
             return null;
         }
-        return baseResp;
+        Map<String,String> map = new HashMap<>();
+        String result = JSONObject.fromObject(baseResp).toString();
+        System.out.println(result);
+        map.put("result",AES.encrypt(AES.A_KEY, result));
+        return map;
     }
 
 }
