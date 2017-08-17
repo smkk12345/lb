@@ -19,11 +19,12 @@
     <result column="awardpricenum" property="awardpricenum" jdbcType="DOUBLE" />
     <result column="createtime" property="createtime" jdbcType="DATE" />
     <result column="updatetime" property="updatetime" jdbcType="DATE" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, registernum, checknum, likenum, flowernum, improvenum, ranknum, goalnum, ordernum, 
     moneynum, iconnum, moneyusenum, iconusenum, awardpeoplenum, awardpricenum, createtime, 
-    updatetime
+    updatetime, money
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -63,13 +64,13 @@
       ranknum, goalnum, ordernum, 
       moneynum, iconnum, moneyusenum, 
       iconusenum, awardpeoplenum, awardpricenum, 
-      createtime, updatetime)
+      createtime, updatetime, money)
     values (#{id,jdbcType=INTEGER}, #{registernum,jdbcType=INTEGER}, #{checknum,jdbcType=INTEGER}, 
       #{likenum,jdbcType=INTEGER}, #{flowernum,jdbcType=INTEGER}, #{improvenum,jdbcType=INTEGER}, 
       #{ranknum,jdbcType=INTEGER}, #{goalnum,jdbcType=INTEGER}, #{ordernum,jdbcType=INTEGER}, 
       #{moneynum,jdbcType=INTEGER}, #{iconnum,jdbcType=INTEGER}, #{moneyusenum,jdbcType=INTEGER}, 
       #{iconusenum,jdbcType=INTEGER}, #{awardpeoplenum,jdbcType=INTEGER}, #{awardpricenum,jdbcType=DOUBLE}, 
-      #{createtime,jdbcType=DATE}, #{updatetime,jdbcType=DATE})
+      #{createtime,jdbcType=DATE}, #{updatetime,jdbcType=DATE}, #{money,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.Statistics" >
     insert into sys_statistics
@@ -125,6 +126,9 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="money != null" >
+        money,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -177,6 +181,9 @@
       </if>
       <if test="updatetime != null" >
         #{updatetime,jdbcType=DATE},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -231,6 +238,9 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=DATE},
       </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -251,7 +261,8 @@
       awardpeoplenum = #{awardpeoplenum,jdbcType=INTEGER},
       awardpricenum = #{awardpricenum,jdbcType=DOUBLE},
       createtime = #{createtime,jdbcType=DATE},
-      updatetime = #{updatetime,jdbcType=DATE}
+      updatetime = #{updatetime,jdbcType=DATE},
+      money = #{money,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="sumByField" resultType="java.lang.Integer" >
