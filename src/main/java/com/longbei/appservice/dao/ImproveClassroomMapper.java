@@ -18,8 +18,7 @@ public interface ImproveClassroomMapper {
     int updateByPrimaryKeySelective(ImproveClassroom record);
 
     int updateByPrimaryKey(ImproveClassroom record);
-
-
+    
     /**
      * 根据classroomid查询进步列表
      * @param classroomid 教室id
@@ -46,6 +45,9 @@ public interface ImproveClassroomMapper {
 	 */
     Integer selectCountByClassroomidAndUserid(@Param("businessid") String businessid, @Param("userid") String userid);
 
+    
+    Integer updatePimpidByImpid(@Param("businessid") String businessid, 
+    		@Param("pimpid") String pimpid, @Param("impid") String impid);
 
     /**
      * 假删

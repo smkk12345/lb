@@ -459,6 +459,28 @@
       ORDER BY createtime DESC
     limit #{startno},#{pagesize}
   </select>
+  
+  
+  <select id="selectCroomImpList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from improve_classroom
+    where
+    businessid = #{businessid} 
+    and isresponded = 0 
+    and isbusinessdel = 0 and isdel = 0 
+    and businesstype = 4 
+    <if test="type == 0" >
+      and (pimpid = '' or pimpid = 0)
+    </if>
+    <if test="type == 1" >
+      and (pimpid != '' or pimpid != 0)
+    </if>
+    ORDER BY createtime DESC
+    <if test="pageSize != 0" >
+      limit #{pageNo},#{pageSize}
+    </if>
+  </select>
 
 
 
