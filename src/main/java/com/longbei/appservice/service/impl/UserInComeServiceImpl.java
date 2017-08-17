@@ -7,10 +7,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.ClassroomMapper;
-import com.longbei.appservice.dao.UserInComeDetailMapper;
-import com.longbei.appservice.dao.UserInComeMapper;
-import com.longbei.appservice.dao.UserInComeOrderMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -57,7 +54,8 @@ public class UserInComeServiceImpl implements UserInComeService{
     @Autowired
     private UserMoneyDetailService userMoneyDetailService;
     @Autowired
-    private UserMsgService userMsgService;
+    private UserMsgMapper userMsgMapper;
+
     /**
      * 添加教室收入,提现（包含明细的处理，消息的处理）
      * @param classroomId  教室id
@@ -85,15 +83,6 @@ public class UserInComeServiceImpl implements UserInComeService{
         //添加明细
         baseResp = insertUserInComeDetail(userId,origin,num,type,classroomId,originUserId,detailremarker,type);
 
-        //发送消息(只有在支出时发送消息)
-        if ("1".equals(type) && ResultUtil.isSuccess(baseResp)){
-            threadPoolTaskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    sendUserInComeMessage(userId,num,origin);
-                }
-            });
-        }
         return baseResp;
     }
 
@@ -261,7 +250,7 @@ public class UserInComeServiceImpl implements UserInComeService{
     public BaseResp updateUserIncomeOrderStatus(String uioid, String uiostatus, String deeloption) {
         BaseResp baseResp = new BaseResp();
 
-        UserInComeOrder uorder = userInComeOrderMapper.selectByPrimaryKey(uioid);
+        final UserInComeOrder uorder = userInComeOrderMapper.selectByPrimaryKey(uioid);
         if (null == uorder){
             return baseResp;
         }
@@ -272,16 +261,32 @@ public class UserInComeServiceImpl implements UserInComeService{
         userInComeOrder.setDealoption(deeloption);
         userInComeOrder.setUpdatetime(new Date());
         try {
-            int res = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            int res = 0;
+            UserInComeDetail userInComeDetail = new UserInComeDetail();
+            final String oldnum = uorder.getNum();
+            if ("2".equals(uiostatus) || "3".equals(uiostatus)){
+                res = userInComeMapper.updateOutGoByUserId(String.valueOf(uorder.getUserid())
+                        ,Integer.parseInt(oldnum)*-1,new Date());
+                userInComeDetail.setDetailstatus("2");
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendUserInComeMessage(String.valueOf(uorder.getUserid()),Integer.parseInt(oldnum),"3");
+                    }
+                });
+            }
             if (res > 0){
-                UserInComeDetail userInComeDetail = new UserInComeDetail();
+                userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
                 userInComeDetail.setDetailid(uorder.getDetailid());
                 userInComeDetail.setUpdatetime(new Date());
-                if ("2".equals(uiostatus) || "3".equals(uiostatus)){
-                    userInComeDetail.setDetailstatus("2");
-                }
                 if ("4".equals(uiostatus)){
                     userInComeDetail.setDetailstatus("1");
+                    threadPoolTaskExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendUserInComeMessage(String.valueOf(uorder.getUserid()),Integer.parseInt(oldnum),"4");
+                        }
+                    });
                 }
                 userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
                 baseResp.initCodeAndDesp();
@@ -408,17 +413,45 @@ public class UserInComeServiceImpl implements UserInComeService{
      * @param tyep    消息类型 2 - 提现到银行卡，支付宝  6 - 提现到钱包
      */
     private void sendUserInComeMessage(String userid,int num,String tyep){
+        String remark = "";
+        String title = "龙币提现";
+        //结算中消息
         if ("2".equals(tyep)){
-            String remarker = "";
-            String title = "";
-            userMsgService.insertMsg(userid,"0",null,null,null,remarker,"0","64",title,num,null,null);
+            remark = "您申请提现的"+ num + "个龙币，正在结算中，我们将以最快的速度为你处理。";
         }
+        //结算失败消息
+        if ("3".equals(tyep)){
+            remark = "您申请提现的"+ num + "个龙币，结算失败龙币已经退还到您的收益余额中，给您造成的不变尽请谅解，详细信息清登陆龙杯官网进行查看。";
+        }
+        //结算成功消息
+        if ("4".equals(tyep)){
+            remark = "您申请提现的"+ num + "个龙币，结算成功，请您留意个人账户的交易信息。";
+        }
+        //转入钱包
         if ("6".equals(tyep)){
-            String remarker = "";
-            String title = "";
-            userMsgService.insertMsg(userid,"0",null,null,null,remarker,"0","63",title,num,null,null);
+            remark = "您申请提现的"+ num + "个龙币，已转入您的钱包。";
         }
+        userMsgMapper.insertSelective(createInviteUserMsg(userid,remark,title));
+    }
 
+    private UserMsg createInviteUserMsg(String  userid,String remark,String title){
+        UserMsg userMsg = new UserMsg();
+        userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
+        userMsg.setUserid(Long.parseLong(userid));
+        //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
+        userMsg.setMtype("0");
+        userMsg.setMsgtype("64");
+        //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
+        //10：榜中  11 圈子中  12 教室中  13:教室批复作业
+        userMsg.setGtype("12");
+        userMsg.setIsdel("0");
+        userMsg.setIsread("0");
+        userMsg.setCreatetime(new Date());
+        userMsg.setUpdatetime(new Date());
+//        userMsg.setSnsid(rank.getRankid());
+        userMsg.setRemark(remark);
+        userMsg.setTitle(title);
+        return userMsg;
     }
 
 
