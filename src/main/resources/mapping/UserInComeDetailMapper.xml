@@ -38,6 +38,7 @@
       <result property="receiptNum" column="receipt_num"/>
       <result property="receiptUser" column="receipt_user"/>
       <result property="receiptBank" column="receipt_bank"/>
+      <result property="dealoption" column="deeloption"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -56,7 +57,7 @@
   </select>
 
   <select id="selectUserInComeOutDetail" resultMap="userInComeDetailAndOrder">
-    select u.*,o.receipt_num,o.receipt_user,o.receipt_bank from user_income_detail u JOIN user_income_order o ON u.detailid = o.detailid
+    select u.*,o.receipt_num,o.receipt_user,o.receipt_bank,o.deeloption from user_income_detail u JOIN user_income_order o ON u.detailid = o.detailid
     WHERE u.detailid = #{detailid}
   </select>
 
