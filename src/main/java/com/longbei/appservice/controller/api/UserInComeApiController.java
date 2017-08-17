@@ -131,25 +131,24 @@ public class UserInComeApiController {
         try {
             baseResp = userInComeService.selectUserIncomeOrderList(receiptUser,receiptNum,nickname,uiostatus,Integer.parseInt(pageNo),
                     Integer.parseInt(pageSize));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("controller selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
         }
 
         return baseResp;
     }
 
-
-
-        /**
-         * 获取自有教室收益列表
-         * @param sourcetype  运营收益 0
-         * @param pageNo
-         * @param pageSize
-         * @return
-         */
+    /**
+     * 获取自有教室收益列表
+     * @param sourcetype  运营收益 0
+     * @param monmey  龙币数量
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
     @RequestMapping(value = "selflist",method = RequestMethod.GET)
     public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailBySoureType
-            (String sourcetype,String pageNo,String pageSize){
+            (String sourcetype,String monmey,String pageNo,String pageSize){
         BaseResp<Page<UserInComeDetail>> baseResp = new BaseResp<>();
         if (StringUtils.isBlank(sourcetype)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -162,12 +161,15 @@ public class UserInComeApiController {
         }
         UserInComeDetail userInComeDetail = new UserInComeDetail();
         userInComeDetail.setCsourcetype(sourcetype);
+        if(null != monmey && !"".equals(monmey)) {
+            userInComeDetail.setNum(Integer.parseInt(monmey));
+        }
         userInComeDetail.setDetailtype("0");
         userInComeDetail.setBusinesstype("0");
         try {
             baseResp = userInComeService.selectUserInComeDetailList(userInComeDetail,
                     Integer.parseInt(pageNo),Integer.parseInt(pageSize),false);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectUserInComeDetailBySoureType sourcetype={} is error:",sourcetype,e);
         }
         return baseResp;
@@ -249,7 +251,7 @@ public class UserInComeApiController {
         try {
             baseResp = userInComeService.insertUserInComeOrder(userid,Integer.parseInt(num),
                     receiptUser,receiptBank,receiptNum,origin);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("settleUserInCome userid={} num={} origin={} is error",userid,num,origin,e
             );
         }

@@ -67,9 +67,12 @@
     <if test="userincomedetail.userid != null">
       AND userid = #{userincomedetail.userid}
     </if>
-     <if test="userincomedetail.itype != null">
+    <if test="userincomedetail.num != null">
+      AND num = #{userincomedetail.num}
+    </if>
+    <if test="userincomedetail.itype != null">
        AND itype = #{userincomedetail.itype}
-     </if>
+    </if>
     <if test="userincomedetail.detailstatus != null">
       AND detailstatus = #{userincomedetail.detailstatus}
     </if>
@@ -89,6 +92,9 @@
     WHERE detailtype = #{userincomedetail.detailtype}
     <if test="userincomedetail.userid != null">
       AND userid = #{userincomedetail.userid}
+    </if>
+    <if test="userincomedetail.num != null">
+      AND num = #{userincomedetail.num}
     </if>
     <if test="userincomedetail.itype != null">
       AND itype = #{userincomedetail.itype}

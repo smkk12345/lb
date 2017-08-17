@@ -108,7 +108,7 @@ public class PubMessageServiceImpl implements PubMessageService {
             intiTargetInfo(pubMessage);
             baseResp.initCodeAndDesp();
             baseResp.setData(pubMessage);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select publish message by id={} is error:",id,e);
         }
 
@@ -140,7 +140,7 @@ public class PubMessageServiceImpl implements PubMessageService {
             if (res > 0){
                 baseResp.initCodeAndDesp();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete publish message by id={} is error:",id,e);
         }
 
@@ -164,7 +164,7 @@ public class PubMessageServiceImpl implements PubMessageService {
                 pushMsg(pubMessage1);
                 baseResp.initCodeAndDesp();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("publish message id={} is error:",id,e);
         }
         return baseResp;
@@ -186,7 +186,7 @@ public class PubMessageServiceImpl implements PubMessageService {
                 pushMsg(oPubMessage);
                 baseResp.initCodeAndDesp();
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("publish message id={} is error:",oPubMessage.getId(),e);
         }
         return baseResp;

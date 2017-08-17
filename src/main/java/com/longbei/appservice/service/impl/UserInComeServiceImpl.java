@@ -185,6 +185,12 @@ public class UserInComeServiceImpl implements UserInComeService{
                     initUserInComeInfo(userInComeDetail1);
                 }
             }
+            for (UserInComeDetail userInComeDetail1 : list){
+                if(StringUtils.isNotBlank(userInComeDetail1.getCreatetime())) {
+                    Date createtime = DateUtils.formatDate(userInComeDetail1.getCreatetime(), "yyyy-MM-dd HH:mm:ss");
+                    userInComeDetail1.setCreatetime(DateUtils.formatDateTime1(createtime));
+                }
+            }
             if ("1".equals(userInComeDetail.getDetailtype())){
                 for (UserInComeDetail userInComeDetail1 : list){
                     int itype = Integer.parseInt(userInComeDetail1.getItype());
@@ -246,12 +252,21 @@ public class UserInComeServiceImpl implements UserInComeService{
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid()+"");
                 list.get(i).setAppUserMongoEntity(appUserMongoEntity);
                 list.get(i).setSettlenum(list.get(i).getSettlenum());
+                if(StringUtils.isNotBlank(list.get(i).getCreatetime())) {
+                    try {
+                        Date date = DateUtils.formatDate(list.get(i).getCreatetime(), "yyyy-MM-dd HH:mm:ss");
+                        list.get(i).setCreatetime(DateUtils.formatDateTime1(date));
+
+                    } catch (Exception e) {
+                        logger.error("transform createtime is error:",e);
+                    }
+                }
             }
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
             baseResp.setData(page);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
         }
 
@@ -318,7 +333,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             } else {
                 res = userInComeMapper.updateTotalByUserId(userid,num,new Date());
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("updateOrSaveUserInCome userid={} num={} is error:",userid,num,e);
         }
         if (res > 0){
@@ -382,7 +397,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                 baseResp.initCodeAndDesp();
                 baseResp.setData(detailid);
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("insertUserInComeDetail userid={} is error:",userid,e);
         }
         return baseResp;
@@ -432,7 +447,7 @@ public class UserInComeServiceImpl implements UserInComeService{
                 //更新明细状态
                 userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("userInComeToWallet userid={} is error:",userid,e);
         }
         return baseResp;
