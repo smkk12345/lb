@@ -1,7 +1,5 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
 public class UserInComeDetail {
     /**
      * 
@@ -46,12 +44,12 @@ public class UserInComeDetail {
     /**
      * 
      */
-    private Date createtime;
+    private String createtime;
 
     /**
      * 
      */
-    private Date updatetime;
+    private String updatetime;
 
     /**
      * 备注
@@ -189,19 +187,19 @@ public class UserInComeDetail {
         this.originuserid = originuserid;
     }
 
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
