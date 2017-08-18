@@ -461,9 +461,51 @@
   </select>
   
   
-  <select id="selectCroomImpList" resultMap="BaseResultMap">
+  <resultMap id="isReplyMap" type="com.longbei.appservice.entity.Improve" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="impid" property="impid" jdbcType="BIGINT" />
+    <result column="itype" property="itype" jdbcType="CHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="pickey" property="pickey" jdbcType="VARCHAR" />
+    <result column="filekey" property="filekey" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="BIGINT" />
+    <result column="businessid" property="businessid" jdbcType="BIGINT" />
+    <result column="businesstype" property="businesstype" jdbcType="CHAR" />
+    <result column="likes" property="likes" jdbcType="INTEGER" />
+    <result column="flowers" property="flowers" jdbcType="INTEGER" />
+    <result column="diamonds" property="diamonds" jdbcType="INTEGER" />
+    <result column="complaincount" property="complaincount" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="indexnum" property="indexnum" jdbcType="INTEGER" />
+    <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="ismainimp" property="ismainimp" jdbcType="CHAR" />
+    <result column="ptype" property="ptype" jdbcType="CHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="CHAR" />
+    <result column="sourcekey" property="sourcekey" jdbcType="VARCHAR" />
+    <result column="pimpid" property="pimpid" />
+    <result column="isresponded" property="isresponded" />
+    <result column="totallikes" property="totallikes" jdbcType="INTEGER" />
+    <result column="totalflowers" property="totalflowers" jdbcType="INTEGER" />
+    <result column="sortnum" property="sortnum" jdbcType="INTEGER" />
+    <result column="isrecommend" property="isrecommend" jdbcType="VARCHAR" />
+    <result column="picattribute" property="picattribute" jdbcType="VARCHAR" />
+    <result column="duration" property="duration"/>
+    <result column="isreply" property="isreply"/>
+  </resultMap>
+  
+  
+  <select id="selectCroomImpList" resultMap="isReplyMap">
     select
-    <include refid="Base_Column_List" />
+    <!-- <include refid="Classroom_List" /> -->
+    impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
+    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
+    ispublic,sourcekey,complaincount,duration,isbusinessdel,picattribute,
+    CASE pimpid
+		WHEN 0 THEN '0'
+    WHEN '' THEN '0' 
+		ELSE '1' 
+	END as isreply 
     from improve_classroom
     where
     businessid = #{businessid} 

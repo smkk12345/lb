@@ -152,7 +152,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
 			improves = improveMapper.selectCroomImpList(businessid, type, pageNo, pageSize);
 			initImproveListOtherInfo(userid, improves);
-	        replyImp(improves, userid, businessid);
+//	        replyImp(improves, userid, businessid);
 		} catch (Exception e) {
 	        logger.error("selectCroomImpList userid:{} businessid:{} is error:{}",userid,businessid,e);
 	    }
@@ -1128,6 +1128,9 @@ public class ImproveServiceImpl implements ImproveService{
                 	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
+                case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                	baseResp = removeClassroomImprove(userid,businessid,improveid);
+                	break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
                     baseResp = removeCircleImprove(userid,businessid,improveid);
                     break;

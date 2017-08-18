@@ -112,7 +112,7 @@ public interface ClassroomService {
 	 * param pageNo   pageSize
 	 * 2017年2月28日
 	 */
-	BaseResp<Object> selectListByUserid(long userid, String ptype, int startNum, int endNum);
+	BaseResp<List<Classroom>> selectListByUserid(long userid, String ptype, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc
