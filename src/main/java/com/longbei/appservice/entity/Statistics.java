@@ -3,6 +3,7 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Statistics {
@@ -90,6 +91,11 @@ public class Statistics {
      * 
      */
     private Date updatetime;
+
+    /**
+     * 龙币充值的钱数，单位：元
+     */
+    private BigDecimal money;
 
     public Integer getId() {
         return id;
@@ -229,5 +235,13 @@ public class Statistics {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 }
