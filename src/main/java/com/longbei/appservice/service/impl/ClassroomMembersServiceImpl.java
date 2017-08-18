@@ -58,7 +58,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private UserCardMapper userCardMapper;
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
-	
+	@Autowired
+	private UserInComeService userInComeService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
@@ -99,11 +100,23 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				}
 				//用户扣费
 				userMoneyDetailService.insertPublic(record.getUserid(), "12", charge, 0);
-				//创建人教室收益
-				userMoneyDetailService.insertPublic(Long.parseLong(Constant.SQUARE_USER_ID), "11", charge, record.getUserid());
-				//修改教室总收益
-				classroomMapper.updateEarningsByClassroomid(record.getClassroomid(), charge);
-				
+
+				String createuserid = "";
+				if ("0".equals(classroom.getSourcetype())){
+					createuserid = Constant.SQUARE_USER_ID;
+				}
+				if ("1".equals(classroom.getSourcetype())){
+					createuserid = String.valueOf(classroom.getUserid());
+				}
+				//添加教室收益
+				userInComeService.updateUserInCome(String.valueOf(record.getClassroomid()),
+						createuserid,String.valueOf(record.getUserid()),"0","0",charge,null);
+
+//				//创建人教室收益
+//				userMoneyDetailService.insertPublic(Long.parseLong(Constant.SQUARE_USER_ID), "11", charge, record.getUserid());
+//				//修改教室总收益
+//				classroomMapper.updateEarningsByClassroomid(record.getClassroomid(), charge);
+//
 			}
 			//itype 0—加入教室 1—退出教室     为null查全部
 			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(record.getClassroomid(), record.getUserid(), "0");

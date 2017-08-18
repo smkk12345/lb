@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -183,13 +184,6 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         BaseResp<Statistics> baseResp = new BaseResp<>();
         try {
             Statistics statistics = this.getStatisticsFromRedis();
-            //把龙币换算成人民币(单位：分;便于直接用整数存储);用于在运营端页面显示
-            if (null != statistics.getMoneynum()) {
-                double radio = AppserviceConfig.yuantomoney;//人民币兑换龙币比例
-                int money = (int)Math.round(statistics.getMoneynum()*radio*100);//人民币，单位分
-                statistics.setMoneynum(money);
-            }
-
             baseResp.setData(statistics);
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
@@ -238,9 +232,16 @@ public class StatisticServiceImpl extends BaseServiceImpl implements StatisticSe
         // 今日购买龙币总数
         String moneyNum = springJedisDao.get(Constant.SYS_MONEY_NUM);
         if (!StringUtils.isBlank(moneyNum)) {
-            statistics.setMoneynum(Integer.parseInt(moneyNum));
+            Integer tempNumber = Integer.parseInt(moneyNum);
+            statistics.setMoneynum(tempNumber);
+
+            //今日龙币充值总钱数，单位元
+            double radio = AppserviceConfig.yuantomoney;//龙币单价
+            BigDecimal money = BigDecimal.valueOf(tempNumber*radio);
+            statistics.setMoney(money);
         } else {
             statistics.setMoneynum(0);
+            statistics.setMoney(BigDecimal.ZERO);
         }
         //今日发布龙榜数
         String rankNum = springJedisDao.get(Constant.SYS_RANK_NUM);

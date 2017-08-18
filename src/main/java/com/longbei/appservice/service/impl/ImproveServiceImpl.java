@@ -66,8 +66,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserBehaviourService userBehaviourService;
     @Autowired
     private SpringJedisDao springJedisDao;
-    @Autowired
-    private ImpGoalPerdayMapper impGoalPerdayMapper;
+//    @Autowired
+//    private ImpGoalPerdayMapper impGoalPerdayMapper;
     @Autowired
     private UserCollectMapper userCollectMapper;
     @Autowired
@@ -82,8 +82,8 @@ public class ImproveServiceImpl implements ImproveService{
     private TimeLineDetailDao timeLineDetailDao;
     @Autowired
     private UserInfoMapper userInfoMapper;
-    @Autowired
-    private ImproveTopicMapper improveTopicMapper;
+//    @Autowired
+//    private ImproveTopicMapper improveTopicMapper;
     @Autowired
     private UserImpCoinDetailService userImpCoinDetailService;
     @Autowired
@@ -96,16 +96,16 @@ public class ImproveServiceImpl implements ImproveService{
 //    private ClassroomMapper classroomMapper;
     @Autowired
     private UserMsgService userMsgService;
-    @Autowired
-    private SnsFriendsMapper snsFriendsMapper;
-    @Autowired
-    private SnsFansMapper snsFansMapper;
+//    @Autowired
+//    private SnsFriendsMapper snsFriendsMapper;
+//    @Autowired
+//    private SnsFansMapper snsFansMapper;
     @Autowired
     private RankService rankService;
     @Autowired
     private UserGoalMapper userGoalMapper;
-    @Autowired
-    private UserMoneyDetailService userMoneyDetailService;
+//    @Autowired
+//    private UserMoneyDetailService userMoneyDetailService;
     @Autowired
     private RankSortService rankSortService;
     @Autowired
@@ -114,8 +114,8 @@ public class ImproveServiceImpl implements ImproveService{
     private UserRelationService userRelationService;
     @Autowired
     private CommentMongoDao commentMongoDao;
-    @Autowired
-    private CommentLowerMongoDao commentLowerMongoDao;
+//    @Autowired
+//    private CommentLowerMongoDao commentLowerMongoDao;
     @Autowired
     private ClassroomService classroomService;
     @Autowired
@@ -134,6 +134,31 @@ public class ImproveServiceImpl implements ImproveService{
     private ImproveLikesMapper improveLikesMapper;
     @Autowired
     private MsgRedMongDao msgRedMongDao;
+    
+    
+    
+    /**
+     *  获取教室未批复，已批复的进步
+     * @param userid
+     * @param businessid
+     * @param type 0:未批复   1:已批复
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+	@Override
+	public List<Improve> selectCroomImpList(String userid, String businessid, String type, int pageNo, int pageSize) {
+		List<Improve> improves = null;
+        try {
+			improves = improveMapper.selectCroomImpList(businessid, type, pageNo, pageSize);
+			initImproveListOtherInfo(userid, improves);
+	        replyImp(improves, userid, businessid);
+		} catch (Exception e) {
+	        logger.error("selectCroomImpList userid:{} businessid:{} is error:{}",userid,businessid,e);
+	    }
+	    return improves;
+	}
+	
 
     /**
      *  @author luye
@@ -198,7 +223,8 @@ public class ImproveServiceImpl implements ImproveService{
                     //0 不是批复。1 是批复
                     improve.setIsresponded("1");
                     isok = insertImproveForClassroomReply(improve);
-                    
+                    //修改用户作业信息     pimpid对应批复id
+                    improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
                     //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
 //                    Comment comment = new Comment();
 //         			comment.setContent("批复作业");
@@ -1009,7 +1035,7 @@ public class ImproveServiceImpl implements ImproveService{
                     AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
                     ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                     		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                    		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                    		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
@@ -3049,27 +3075,26 @@ public class ImproveServiceImpl implements ImproveService{
                     	String commentid = "";
                     	String isreply = "0";
                         if(null != replyList && replyList.size()>0){
-                            List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+//                            List<Comment> lowerlist = new ArrayList<Comment>();
 //                            for (ImproveClassroom improveClassroom : replyList) {
                             ImproveClassroom improveClassroom = replyList.get(0);
                             AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
                             ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
                             		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                            		improveClassroom.getUserid(), improveClassroom.getCreatetime());
+                            		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
-//                			List<Comment> list = commentMongoDao.selectCommentListByItypeid(improve.getImpid().toString(),
-//                					businessid, "5", null, 0);
-//                            if(null != list && list.size()>0){
-//                                    Comment comment = list.get(0);
                             commentid = improveClassroom.getImpid().toString();
-                            lowerlist = commentLowerMongoDao.selectLowerListByCid(commentid, null, 2);
-                                    //初始化用户信息
-                            initCommentLowerUserInfoList(lowerlist);
-//                                }
-                            replyImprove.setLowerlist(lowerlist);
-//							}
+                            List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(), 
+                            		improve.getBusinessid().toString(), "5", null, 2);
+                            if(null != list && list.size()>0){
+                				for (Comment comment : list) {
+                					//初始化用户信息
+                					initCommentUserInfoByUserid(comment, userid);
+                				}
+                            }
+                            replyImprove.setList(list);
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
@@ -3137,22 +3162,18 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     /**
-     * 初始化消息中用户信息 ------List
+     * 初始化消息中用户信息 ------Userid
      */
-    private void initCommentLowerUserInfoList(List<CommentLower> lowers){
-        if(null != lowers && lowers.size()>0){
-            for (CommentLower commentLower : lowers) {
-                if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
-                    AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
-                    commentLower.setSecondNickname(appUserMongoEntity.getNickname());
-                }
-                if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
-                    AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
-                    commentLower.setFirstNickname(appUserMongo.getNickname());
-                }
-            }
+    private void initCommentUserInfoByUserid(Comment comment, String friendid){
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(comment.getUserid()));
+        if(null != appUserMongoEntity){
+			if(StringUtils.isNotEmpty(friendid)){
+				this.userRelationService.updateFriendRemark(friendid,appUserMongoEntity);
+			}
+        	comment.setAppUserMongoEntityUserid(appUserMongoEntity);
+        }else{
+        	comment.setAppUserMongoEntityUserid(new AppUserMongoEntity());
         }
-
     }
 
     /**
@@ -4074,4 +4095,6 @@ public class ImproveServiceImpl implements ImproveService{
         }
         return baseResp.initCodeAndDesp();
     }
+
+
 }

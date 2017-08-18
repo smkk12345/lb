@@ -124,7 +124,7 @@ public class SeminarServiceImpl implements SeminarService{
                 }
             }
             baseResp.initCodeAndDesp();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete seminar:{} is error:",seminarid,e);
         }
         return baseResp;
@@ -144,7 +144,7 @@ public class SeminarServiceImpl implements SeminarService{
                 }
 
             baseResp.initCodeAndDesp();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("delete seminar:{} is error:",seminarid,e);
         }
         return baseResp;
@@ -186,7 +186,7 @@ public class SeminarServiceImpl implements SeminarService{
             Seminar seminar = seminarMapper.selectBySeminarId(Long.parseLong(seminarid));
             baseResp.initCodeAndDesp();
             baseResp.setData(seminar);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select seminar seminarid:{} is error:",seminarid,e);
         }
         return baseResp;
@@ -249,7 +249,7 @@ public class SeminarServiceImpl implements SeminarService{
 
             baseResp.initCodeAndDesp();
             baseResp.setData(seminarModules);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             logger.error("select seminar modules seminarid:{} is error:",seminarid,e);
         }
         return baseResp;

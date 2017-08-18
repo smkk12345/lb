@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
+import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
@@ -34,13 +37,17 @@ import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.HomeRecommend;
+import com.longbei.appservice.entity.ImproveClassroom;
+import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
 import com.longbei.appservice.service.UserMsgService;
+import com.longbei.appservice.service.UserRelationService;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -60,6 +67,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Autowired
 	private CommentMongoService commentMongoService;
 	@Autowired
+	private CommentLowerMongoDao commentLowerMongoDao;
+	@Autowired
 	private ImproveClassroomMapper improveClassroomMapper;
 	@Autowired
 	private UserBusinessConcernMapper userBusinessConcernMapper;
@@ -67,11 +76,70 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private UserMongoDao userMongoDao;
 	@Autowired
 	private HomeRecommendMapper homeRecommendMapper;
+	@Autowired
+	private UserRelationService userRelationService;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
 	
 	
+	
+	/**
+     * 获取教室批复信息---子评论列表(拆分)
+     * @param impid 进步id---作业
+     * @param lastdate 分页数据最后一个的时间
+     * @param pageSize
+     * @return
+     */
+	@Override
+	public BaseResp<List<CommentLower>> selectCommentLower(Long userid, String impid, Date lastdate, int pageSize) {
+		BaseResp<List<CommentLower>> baseResp = new BaseResp<>();
+		try{
+			List<CommentLower> lowerList = commentLowerMongoDao.selectCommentLowerListByCommentid(impid);
+			//初始化用户信息
+			initCommentLowerUserInfoList(lowerList, userid.toString());
+			baseResp.setData(lowerList);
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+			logger.error("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+	        		impid, DateUtils.formatDateTime1(lastdate), userid, pageSize, e);
+        }
+    	return baseResp;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseResp<ReplyImprove> selectImproveReply(Long userid, Long impid, Long classroomid) {
+		BaseResp<ReplyImprove> baseResp = new BaseResp<>();
+		Map<String,Object> map = new HashedMap();
+		try{
+			Classroom classroom = selectByClassroomid(classroomid);
+            UserCard userCard = null;
+            if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+                userCard = userCardMapper.selectByCardid(classroom.getCardid());
+            }
+            map.put("isteacher", isTeacher(userid.toString(), classroom));
+			//获取教室微进步批复作业列表
+            ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(impid);
+            AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+            		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
+            appUserMongo.setNickname(userCard.getDisplayname());
+            appUserMongo.setAvatar(userCard.getAvatar());
+            replyImprove.setAppUserMongoEntity(appUserMongo);
+	    	baseResp.setData(replyImprove);
+	    	baseResp.setExpandData(map);
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+            logger.error("selectImproveReply impid = {} classroomid = {}", impid, classroomid, e);
+        }
+    	return baseResp;
+	}
+
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -340,7 +408,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isadd", isadd);
 				//描述
 				map.put("content", classroom.getClassbrief());
-				
+				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				//分享url
 				map.put("roomurlshare", 
 						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
@@ -1259,10 +1327,49 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 	@Override
 	public int isTeacher(String userid,Classroom classroom){
-		if (userid.equals(classroom.getUserid()))
+		if (userid.equals(classroom.getUserid() + ""))
 			return 1;
 		return 0;
 	}
 
+
+	//------------------------公用方法，初始化消息中用户信息------------------------------------------
+    /**
+     * 初始化消息中用户信息 ------List
+     */
+    private void initCommentLowerUserInfoList(List<CommentLower> lowers, String friendid){
+    	if(null != lowers && lowers.size()>0){
+			Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(friendid);
+    		for (CommentLower commentLower : lowers) {
+    			if(!StringUtils.hasBlankParams(commentLower.getSeconduserid())){
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+						commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+					}else{
+						if(friendRemark.containsKey(commentLower.getSeconduserid())){
+							commentLower.setSecondNickname(friendRemark.get(commentLower.getSeconduserid()));
+						}else{
+							AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(commentLower.getSeconduserid()));
+							commentLower.setSecondNickname(appUserMongoEntity.getNickname());
+						}
+					}
+    			}
+				if(!StringUtils.hasBlankParams(commentLower.getFirstuserid())){
+					if(StringUtils.isEmpty(friendid)){
+						AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+						commentLower.setFirstNickname(appUserMongo.getNickname());
+					}else{
+						if(friendRemark.containsKey(commentLower.getFirstuserid())){
+							commentLower.setFirstNickname(friendRemark.get(commentLower.getFirstuserid()));
+						}else{
+							AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(commentLower.getFirstuserid()));
+							commentLower.setFirstNickname(appUserMongo.getNickname());
+						}
+					}
+				}
+			}
+    	}
+        
+    }
 
 }

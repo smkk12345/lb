@@ -12,7 +12,7 @@ public interface UserInComeOrderMapper {
 
     int insertSelective(UserInComeOrder record);
 
-    UserInComeOrder selectByPrimaryKey(Integer id);
+    UserInComeOrder selectByPrimaryKey(String id);
 
     int selectCount(@Param("uorder") UserInComeOrder userInComeOrder);
 

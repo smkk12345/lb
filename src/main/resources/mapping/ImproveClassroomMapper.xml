@@ -344,6 +344,12 @@
     </if>
     
   </select>
+  
+  <update id="updatePimpidByImpid" >
+    UPDATE improve_classroom 
+    	SET pimpid = #{pimpid} 
+    WHERE businessid=#{businessid} AND impid=#{impid}
+  </update>
 
 
 </mapper>
