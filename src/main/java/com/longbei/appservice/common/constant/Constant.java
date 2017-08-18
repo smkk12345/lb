@@ -1,7 +1,5 @@
 package com.longbei.appservice.common.constant;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import java.math.BigDecimal;
 
 /**
@@ -218,6 +216,7 @@ public class Constant {
 	public static final int STATUS_SYS_1108 = -1108;
 	public static final int STATUS_SYS_1109 = -1109;
 	public static final int STATUS_SYS_1110 = -1110;
+	public static final int STATUS_SYS_1111 = -1111;
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
@@ -394,6 +393,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1108 = "发布教室至少需要上传一个课程";
 	public static final String RTNINFO_SYS_1109 = "已发布教室至少保留一个课程";
 	public static final String RTNINFO_SYS_1110 = "教室老师已回复的问题不能忽略";
+	public static final String RTNINFO_SYS_1111 = "您没有权限批复作业";
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final String RTNINFO_SYS_1201 = "您的资源分类数量已达最大数量,不可再添加新的资源分类!";

@@ -2,7 +2,9 @@ package com.longbei.appservice.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +81,11 @@ public class ClassroomController {
 			sSize = pageSize.intValue();
 		}
    		try {
-   			baseResp.initCodeAndDesp();
+   			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+        	if (!userid.equals(classroom.getUserid() + "")){
+        		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1111, Constant.RTNINFO_SYS_1111);
+        	}
+        	baseResp.initCodeAndDesp();
    			List<Improve> list = improveService.selectCroomImpList(userid, classroomid, type, sNo, sSize);
    			baseResp.setData(list);
    		} catch (Exception e) {
@@ -641,10 +647,10 @@ public class ClassroomController {
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectCreateRoom")
-    public BaseResp<Object> selectCreateRoom(String userid, String ptype, Integer startNo, Integer pageSize) {
+    public BaseResp<List<Classroom>> selectCreateRoom(String userid, String ptype, Integer startNo, Integer pageSize) {
 		logger.info("selectCreateRoom userid={},ptype={},startNo={},pageSize={}",
 				userid,ptype,startNo,pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<Classroom>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
@@ -667,9 +673,9 @@ public class ClassroomController {
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/selectInsertRoom
-    * @Description: 获取我加入, 已关注的教室
+    * @Description: 获取我加入, 已关注, 我创建的的教室
     * @param @param userid
-    * @param @param type 0:已加入  1：已关注
+    * @param @param type 0:已加入  1：已关注  2:我创建的
     * @param @param startNo   pageSize
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
@@ -694,8 +700,10 @@ public class ClassroomController {
   		try {
   			if("0".equals(type)){
   				baseResp = classroomService.selectInsertByUserid(Long.parseLong(userid), sNo, sSize);
-  			}else{
+  			}else if("1".equals(type)){
   				baseResp = classroomService.selectFansByUserid(Long.parseLong(userid), sNo, sSize);
+  			}else{
+  				baseResp = classroomService.selectListByUserid(Long.parseLong(userid), null, sNo, sSize);
   			}
   		} catch (Exception e) {
   			logger.error("selectInsertRoom userid = {}, type = {], startNo = {}, pageSize = {}",
