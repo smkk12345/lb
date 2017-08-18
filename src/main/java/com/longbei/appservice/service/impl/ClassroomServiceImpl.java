@@ -88,7 +88,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	/**
      * 获取教室批复信息---子评论列表(拆分)
      * @param impid 进步id---作业
-     * @param lastDate 分页数据最后一个的时间
+     * @param lastdate 分页数据最后一个的时间
      * @param pageSize
      * @return
      */
@@ -122,21 +122,14 @@ public class ClassroomServiceImpl implements ClassroomService {
             }
             map.put("isteacher", isTeacher(userid.toString(), classroom));
 			//获取教室微进步批复作业列表
-	    	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(classroomid, impid);
-	    	ReplyImprove replyImprove = null;
-	    	if(null != replyList && replyList.size()>0){
-//                List<CommentLower> lowerlist = new ArrayList<CommentLower>();
-                ImproveClassroom improveClassroom = replyList.get(0);
-                AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
-                replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
-                		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
-                appUserMongo.setNickname(userCard.getDisplayname());
-                appUserMongo.setAvatar(userCard.getAvatar());
-                replyImprove.setAppUserMongoEntity(appUserMongo);
-//                initCommentLowerUserInfoList(lowerlist);
-//                replyImprove.setLowerlist(lowerlist);
-	    	}
+            ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(impid);
+            AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+            		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
+            appUserMongo.setNickname(userCard.getDisplayname());
+            appUserMongo.setAvatar(userCard.getAvatar());
+            replyImprove.setAppUserMongoEntity(appUserMongo);
 	    	baseResp.setData(replyImprove);
 	    	baseResp.setExpandData(map);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -1334,7 +1327,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 	@Override
 	public int isTeacher(String userid,Classroom classroom){
-		if (userid.equals(classroom.getUserid()))
+		if (userid.equals(classroom.getUserid() + ""))
 			return 1;
 		return 0;
 	}
