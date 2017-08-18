@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ClassroomMapper;
+import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.ClassroomQuestionsLowerMongoDao;
 import com.longbei.appservice.dao.ClassroomQuestionsMongoDao;
 import com.longbei.appservice.dao.UserCardMapper;
@@ -49,6 +50,10 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	private UserRelationService userRelationService;
 	@Autowired
 	private UserMsgService userMsgService;
+	@Autowired
+	private ClassroomMembersMapper classroomMembersMapper;
+	
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomQuestionsMongoServiceImpl.class);
 	
@@ -70,14 +75,14 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			//判断用户是否已加入教室，未加入教室的无法提交问题
-//			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
-//			if(null != list && list.size()>0){
-//				if(!list.contains(classroomQuestions.getUserid())){
-//					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-//				}
-//			}else{
-//				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-//			}
+			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
+			if(null != list && list.size()>0){
+				if(!list.contains(classroomQuestions.getUserid())){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+				}
+			}else{
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+			}
 			insert(classroomQuestions);
 			Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomQuestions.getClassroomid()));
 			if(null != classroom){
@@ -303,6 +308,13 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		try {
 			ClassroomQuestions classroomQuestions = classroomQuestionsMongoDao.selectQuestionsByQuestionsId(classroomQuestionsLower.getQuestionsid());
 			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomQuestions.getClassroomid()));
+			if(null == classroom){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			if(null == userCard){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			}
 			classroomQuestionsLower.setUserid(classroom.getCardid()+"");
 			classroomQuestionsLower.setFriendid(classroomQuestions.getUserid());
 			//获取老师回复,已回复的无法忽略
@@ -316,7 +328,14 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			userMsgService.insertMsg(classroom.getCardid()+"", classroomQuestionsLower.getFriendid(), 
 					"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
 			
-			initQuestionsLower(classroomQuestionsLower);
+//			initQuestionsLower(classroomQuestionsLower);
+			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+			appUserMongoEntity.setAvatar(userCard.getAvatar());
+			appUserMongoEntity.setId(userCard.getUserid().toString());
+			appUserMongoEntity.setUserid(userCard.getUserid().toString());
+			appUserMongoEntity.setNickname(userCard.getDisplayname());
+			classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongoEntity);
+			
 			reseResp.setData(classroomQuestionsLower);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {

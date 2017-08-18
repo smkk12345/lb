@@ -232,9 +232,9 @@ public class RankShareController {
     @ResponseBody
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commentList")
-    public BaseResp<Object> commentList(String impid,String businesstype,String businessid) {
+    public BaseResp<List<Comment>> commentList(String impid,String businesstype,String businessid) {
         logger.info("impid={},businesstype={},businessid={}",impid,businesstype,businessid);
-        BaseResp<Object> baseResp = new BaseResp<>();
+        BaseResp<List<Comment>> baseResp = new BaseResp<>();
         if (StringUtils.hasBlankParams(impid)) {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
