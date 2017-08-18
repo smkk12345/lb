@@ -5,6 +5,7 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.service.OSSService;
 import com.longbei.appservice.common.utils.AES;
+import com.longbei.appservice.common.utils.DecodesUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.OssConfig;
 import com.longbei.appservice.entity.LiveGift;
@@ -225,6 +226,28 @@ public class LiveController {
         System.out.println(result);
         map.put("result",AES.encrypt(AES.A_KEY, result));
         return map;
+    }
+
+    /**
+     * url: http://47.93.37.85:8080/app_service/live/closeOnLineRoom
+     * @param roomid  教室id
+     * @param userid  教师id
+     * @param duration 直播时长 格式化好的，小时，分钟，秒
+     * @return
+     */
+    @RequestMapping(value="closeOnLineRoom")
+    public BaseResp closeOnLineRoom(String roomid,String userid,String duration){
+        logger.info("closeOnLineRoom roomid:{} userid:{} duration:{}",roomid,userid,duration);
+        BaseResp baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(roomid,userid,duration)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        roomid = DecodesUtils.getFromBase64(roomid);
+        userid = DecodesUtils.getFromBase64(userid);
+        duration = DecodesUtils.getFromBase64(duration);
+        logger.info("closeOnLineRoom after getFromBase64 roomid:{} userid:{} duration:{}",roomid,userid,duration);
+        //处理关闭教室逻辑
+        return baseResp.initCodeAndDesp();
     }
 
 }

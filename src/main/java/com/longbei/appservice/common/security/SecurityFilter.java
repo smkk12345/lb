@@ -61,12 +61,19 @@ public class SecurityFilter extends OncePerRequestFilter {
 //			arg2.doFilter(request, response);
 //			return ;
 //		}
-		if(urlPath.contains("uploadImage")){
-			arg2.doFilter(request, response);
-			return ;
-		}
 
 		if(urlPath.contains("/live/")){
+
+			if(urlPath.contains("uploadImage")){
+				arg2.doFilter(request, response);
+				return ;
+			}
+
+			if(urlPath.contains("closeOnLineRoom")){
+				arg2.doFilter(request, response);
+				return ;
+			}
+
 			String encrypt = request.getParameter("encrypt");
 			logger.info("urlPath time={}",encrypt);
 			encrypt = encrypt.trim();
