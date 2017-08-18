@@ -861,12 +861,22 @@ public class ClassroomController {
    			baseResp.initCodeAndDesp();
    			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize);
    			baseResp.setData(list);
+   			Map<String,Object> map = new HashedMap();
+      		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+      		map.put("isteacher", isTeacher(userid.toString(), classroom));
+      		baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}",
    					userid, classroomid, sift, type, startNo, pageSize, e);
    		}
    		return baseResp;
     }
+  	
+  	private int isTeacher(String userid,Classroom classroom){
+		if (userid.equals(classroom.getUserid() + ""))
+			return 1;
+		return 0;
+	}
   	
 //  	/**
 //     * @Title: http://ip:port/app_service/classroom/classroomMembersDateList

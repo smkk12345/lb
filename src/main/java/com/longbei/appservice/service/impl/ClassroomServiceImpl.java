@@ -123,13 +123,16 @@ public class ClassroomServiceImpl implements ClassroomService {
             map.put("isteacher", isTeacher(userid.toString(), classroom));
 			//获取教室微进步批复作业列表
             ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(impid);
-            AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
-            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
-            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-            		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
-            appUserMongo.setNickname(userCard.getDisplayname());
-            appUserMongo.setAvatar(userCard.getAvatar());
-            replyImprove.setAppUserMongoEntity(appUserMongo);
+            ReplyImprove replyImprove = null;
+            if(null != improveClassroom){
+            	replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
+                		improveClassroom.getBrief(), improveClassroom.getPickey(), 
+                		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
+            	AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+                appUserMongo.setNickname(userCard.getDisplayname());
+                appUserMongo.setAvatar(userCard.getAvatar());
+                replyImprove.setAppUserMongoEntity(appUserMongo);
+            }
 	    	baseResp.setData(replyImprove);
 	    	baseResp.setExpandData(map);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -591,8 +594,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	}
 
 	@Override
-	public BaseResp<Object> selectListByUserid(long userid, String ptype, int startNum, int endNum) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+	public BaseResp<List<Classroom>> selectListByUserid(long userid, String ptype, int startNum, int endNum) {
+		BaseResp<List<Classroom>> reseResp = new BaseResp<>();
 		try {
 			if(StringUtils.isBlank(ptype)){
 				ptype = null;
