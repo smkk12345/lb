@@ -1,5 +1,6 @@
 package com.longbei.appservice.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -57,6 +58,9 @@ public class OrderController {
   		if (StringUtils.hasBlankParams(userid, number, paytype)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
   		}
+  		if(Integer.parseInt(number) > 9999){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, "单次充值龙币最多9999");
+		}
   		try {
   			//人民币兑换龙币比例       
   		    double yuantomoney = AppserviceConfig.yuantomoney;

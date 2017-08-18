@@ -27,7 +27,7 @@ public class ReplyImprove {
 	
 	private AppUserMongoEntity appUserMongoEntity; //进步用户信息
 	//评论
-	private List<CommentLower> lowerlist = new ArrayList<CommentLower>();
+	private List<Comment> list = new ArrayList<Comment>();
 		
 
 	public ReplyImprove(){
@@ -97,12 +97,12 @@ public class ReplyImprove {
 		this.appUserMongoEntity = appUserMongoEntity;
 	}
 	
-	public List<CommentLower> getLowerlist() {
-		return lowerlist;
+	public List<Comment> getList() {
+		return list;
 	}
 
-	public void setLowerlist(List<CommentLower> lowerlist) {
-		this.lowerlist = lowerlist;
+	public void setList(List<Comment> list) {
+		this.list = list;
 	}
 
 	public Long getBusinessid() {

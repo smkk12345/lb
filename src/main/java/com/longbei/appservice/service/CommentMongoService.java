@@ -4,6 +4,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.Comment;
 
 import java.util.Date;
+import java.util.List;
 
 public interface CommentMongoService {
 
@@ -36,7 +37,7 @@ public interface CommentMongoService {
      * @param itypeid  各类型对应的id
 	 * CommentMongoDao
 	 */
-	BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype, String impid, Date lastdate,
+	BaseResp<List<Comment>> selectCommentListByItypeidAndFriendid(String friendid, String itypeid, String itype, String impid, Date lastdate,
 			int pageSize);
 	
 	/**

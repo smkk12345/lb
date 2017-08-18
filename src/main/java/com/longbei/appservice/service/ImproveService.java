@@ -1,15 +1,12 @@
 package com.longbei.appservice.service;
 
-import java.awt.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.*;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -19,6 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
  * @create 2017-01-19 上午11:22
  **/
 public interface ImproveService {
+	
+	/**
+     *  获取教室未批复，已批复的进步
+     * @param userid
+     * @param businessid
+     * @param type 0:未批复   1:已批复
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+	List<Improve> selectCroomImpList(String userid, String businessid, String type, int pageNo, int pageSize);
 
 
 

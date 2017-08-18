@@ -1,16 +1,27 @@
 package com.longbei.appservice.dao;
 
-import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.awt.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface ImproveMapper {
+	
+	
+	/**
+     *  获取教室未批复，已批复的进步
+     * @param userid
+     * @param businessid
+     * @param type 0:未批复   1:已批复
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+	List<Improve> selectCroomImpList(@Param("businessid") String businessid, @Param("type") String type, 
+			@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
     int deleteByPrimaryKey(Long id);
 

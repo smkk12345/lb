@@ -5,13 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
-import com.netflix.discovery.converters.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,10 +201,10 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	}
 	
 	@Override
-	public BaseResp<Object> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype, 
+	public BaseResp<List<Comment>> selectCommentListByItypeidAndFriendid(String friendid, String businessid, String businesstype, 
 			String impid,
 			Date lastdate, int pageSize) {
-		BaseResp<Object> reseResp = new BaseResp<>();
+		BaseResp<List<Comment>> reseResp = new BaseResp<>();
 		Map<String, Object> expandData = new HashMap<>();
 		int commentNum = 0;
 		try {
