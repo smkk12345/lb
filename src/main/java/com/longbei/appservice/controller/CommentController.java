@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.service.SysSensitiveService;
@@ -129,11 +130,11 @@ public class CommentController extends BaseController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/commentList")
     @ResponseBody
-    public BaseResp<Object> commentList(String userid, String businessid, String businesstype, String impid,
+    public BaseResp<List<Comment>> commentList(String userid, String businessid, String businesstype, String impid,
 										String lastDate, int pageSize) {
 		logger.info("commentList userid = {},businessid = {}，businesstype = {}, impid = {}, lastDate={}，pageSize={}",
 				userid, businessid, businesstype, impid, lastDate, pageSize);
-		BaseResp<Object> baseResp = new BaseResp<>();
+		BaseResp<List<Comment>> baseResp = new BaseResp<>();
 		if (StringUtils.hasBlankParams(userid, businessid, businesstype)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 		}

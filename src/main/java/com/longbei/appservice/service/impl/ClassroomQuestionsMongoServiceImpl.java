@@ -70,17 +70,15 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 		return 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertQuestions(ClassroomQuestions classroomQuestions) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			//判断用户是否已加入教室，未加入教室的无法提交问题
-			List<String> list = classroomMembersMapper.selectMidByCid(Long.parseLong(classroomQuestions.getClassroomid()));
-			if(null != list && list.size()>0){
-				if(!list.contains(classroomQuestions.getUserid())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-				}
-			}else{
+			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(Long.parseLong(classroomQuestions.getClassroomid()), 
+					Long.parseLong(classroomQuestions.getUserid()), "0");
+			if(null == classroomMembers){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
 			}
 			insert(classroomQuestions);
@@ -414,7 +412,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateQuestionsIsReply(String questionsId,String isReply) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -441,16 +438,16 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
         
     }
     
-    /**
-     * 初始化用户信息 ------
-     */
-    private void initQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower){
-    	if(null != classroomQuestionsLower){
-	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(classroomQuestionsLower.getUserid()));
-	        classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongo);
-    	}
-        
-    }
+//    /**
+//     * 初始化用户信息 ------
+//     */
+//    private void initQuestionsLower(ClassroomQuestionsLower classroomQuestionsLower){
+//    	if(null != classroomQuestionsLower){
+//	        AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(classroomQuestionsLower.getUserid()));
+//	        classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongo);
+//    	}
+//        
+//    }
     
     /**
      * 初始化消息中用户信息 ------Userid

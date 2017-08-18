@@ -22,7 +22,6 @@ import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.ClassroomQuestions;
 import com.longbei.appservice.entity.ClassroomQuestionsLower;
-import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.service.ClassroomCoursesService;
@@ -51,38 +50,79 @@ public class ClassroomController {
 	
 	
 	/**
-     * url: http://ip:port/app_service/classroom/selectImproveReply
-     * 获取教室批复信息---子评论列表(拆分)
-     * @param userid 
-     * @param impid 批复作业进步id---主评论id
-     * @param lastDate 分页数据最后一个的时间
-     * @param pageSize
-     * @return
-     */
-	 @SuppressWarnings("unchecked")
-	@ResponseBody
-    @RequestMapping(value = "selectCommentLower")
-    public BaseResp<List<CommentLower>> selectCommentLower(String userid, String impid,
-			String lastDate, Integer pageSize){
-        logger.info("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
-        		impid, lastDate, userid, pageSize);
-        BaseResp<List<CommentLower>> baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(userid, impid)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+     * @Title: http://ip:port/app_service/classroom/selectCroomIsreplyList
+     * @Description: 获取教室未批复，已批复的进步
+     * @param @param userid 
+     * @param @param classroomid 教室业务id
+     * @param @param type 0:未批复   1:已批复
+     * @param @param startNo   pageSize
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectCroomIsreplyList")
+    public BaseResp<Object> selectCroomIsreplyList(String userid, String classroomid,
+													 String type, Integer startNo, Integer pageSize) {
+		logger.info("selectCroomIsreplyList userid={},classroomid={},type={},startNo={},pageSize={}",
+				userid,classroomid,type,startNo,pageSize);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid, type)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
-        if(null == pageSize){
-            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
-        }
-        try {
-            baseResp = classroomService.selectCommentLower(Long.parseLong(userid), 
-            		impid, 
-            		lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
-        } catch (Exception e) {
-            logger.error("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
-        		impid, lastDate, userid, pageSize, e);
-        }
-        return baseResp;
+   		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
+   		try {
+   			baseResp.initCodeAndDesp();
+   			List<Improve> list = improveService.selectCroomImpList(userid, classroomid, type, sNo, sSize);
+   			baseResp.setData(list);
+   		} catch (Exception e) {
+   			logger.error("selectCroomIsreplyList userid = {}, classroomid = {}, type = {}, startNo = {}, pageSize = {}",
+   					userid, classroomid, type, startNo, pageSize, e);
+   		}
+   		return baseResp;
     }
+  	
+	
+//	/**
+//     * url: http://ip:port/app_service/classroom/selectCommentLower
+//     * 获取教室批复信息---子评论列表(拆分)
+//     * @param userid 
+//     * @param impid 批复作业进步id---主评论id
+//     * @param lastDate 分页数据最后一个的时间
+//     * @param pageSize
+//     * @return
+//     */
+//	 @SuppressWarnings("unchecked")
+//	@ResponseBody
+//    @RequestMapping(value = "selectCommentLower")
+//    public BaseResp<List<CommentLower>> selectCommentLower(String userid, String impid,
+//			String lastDate, Integer pageSize){
+//        logger.info("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+//        		impid, lastDate, userid, pageSize);
+//        BaseResp<List<CommentLower>> baseResp = new BaseResp<>();
+//        if(StringUtils.hasBlankParams(userid, impid)){
+//            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+//        }
+//        if(null == pageSize){
+//            pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+//        }
+//        try {
+//            baseResp = classroomService.selectCommentLower(Long.parseLong(userid), 
+//            		impid, 
+//            		lastDate == null ? null : DateUtils.parseDate(lastDate), pageSize);
+//        } catch (Exception e) {
+//            logger.error("selectCommentLower impid = {}, lastDate = {}, userid = {}, pageSize = {}", 
+//        		impid, lastDate, userid, pageSize, e);
+//        }
+//        return baseResp;
+//    }
 	
 	
 	/**
@@ -90,25 +130,30 @@ public class ClassroomController {
      * @ 获取教室批复信息(拆分)
      * @param userid 
      * @param impid 进步id---作业
-     * @param classroomid 教室id
+     * @param businessid 教室id
      * @return
      */
 	 @SuppressWarnings("unchecked")
 	@ResponseBody
     @RequestMapping(value = "selectImproveReply")
-    public BaseResp<ReplyImprove> selectImproveReply(String userid, String impid, String classroomid){
-        logger.info("selectImproveReply impid = {}, classroomid = {}, userid = {}", 
-        		impid, classroomid, userid);
+    public BaseResp<ReplyImprove> selectImproveReply(String userid, String impid, String businessid){
+        logger.info("selectImproveReply impid = {}, businessid = {}, userid = {}", 
+        		impid, businessid, userid);
         BaseResp<ReplyImprove> baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(userid, impid, classroomid)){
+        if(StringUtils.hasBlankParams(userid, impid, businessid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
             baseResp = classroomService.selectImproveReply(Long.parseLong(userid), 
-            		Long.parseLong(impid), Long.parseLong(classroomid));
+            		Long.parseLong(impid), Long.parseLong(businessid));
+            if(ResultUtil.isSuccess(baseResp)){
+            	baseResp.getExpandData().put("shareurl",
+                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail
+                                + "?impid=" + impid + "&businesstype=5&businessid=" + businessid));
+            }
         } catch (Exception e) {
-            logger.error("selectImproveReply userid = {}, impid = {}, classroomid = {}", 
-            		userid, impid, classroomid, e);
+            logger.error("selectImproveReply userid = {}, impid = {}, businessid = {}", 
+            		userid, impid, businessid, e);
         }
         return baseResp;
     }
