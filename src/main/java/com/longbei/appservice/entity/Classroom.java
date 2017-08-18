@@ -37,11 +37,11 @@ public class Classroom {
     
     private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
     
-    private long userid;
+    private Long userid;
     
-    private long cardid; //名片id
+    private Long cardid; //名片id
     
-    private Integer charge = 0;  //课程价格
+    private Integer charge;  //课程价格
     
     private String isfree; //isfree是否免费。0 免费 1 收费
     
@@ -319,11 +319,11 @@ public class Classroom {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public long getUserid() {
+	public Long getUserid() {
 		return userid;
 	}
 
-	public void setUserid(long userid) {
+	public void setUserid(Long userid) {
 		this.userid = userid;
 	}
 
@@ -346,11 +346,11 @@ public class Classroom {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public long getCardid() {
+	public Long getCardid() {
 		return cardid;
 	}
 
-	public void setCardid(long cardid) {
+	public void setCardid(Long cardid) {
 		this.cardid = cardid;
 	}
 

@@ -933,10 +933,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 			int temp = classroomMapper.updateIsup(classroomid);
 			if(temp > 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-				//教室发布成功,获取"提成"
-				Map<String, Object> expandData = new HashMap<String, Object>();
-				expandData.put("classroomCommission", SysRulesCache.behaviorRule.getClassroomcommission());
-				reseResp.setExpandData(expandData);
+				//教室发布成功,添加"提成"
+				Double commission = SysRulesCache.behaviorRule.getClassroomcommission();
+				Classroom updateRoom = new Classroom();
+				updateRoom.setCommission(commission);
+				updateRoom.setClassroomid(classroomid);
+				classroomMapper.updateByPrimaryKeySelective(updateRoom);
 			}
 		} catch (Exception e) {
 			logger.error("uproom classroomid = {}", classroomid, e);
