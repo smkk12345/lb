@@ -41,7 +41,12 @@
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
     select
-    <include refid="Base_Column_List" />
+    <if test="tablename == 'improve_classroom'" >
+    	<include refid="Classroom_List" /> 
+    </if>
+    <if test="tablename != 'improve_classroom'" >
+    	<include refid="Base_Column_List" /> 
+    </if>
     from ${tablename}
     <where>
       <if test="businessid != null">
@@ -501,9 +506,9 @@
     impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
     ispublic,sourcekey,complaincount,duration,isbusinessdel,picattribute,
-    CASE pimpid
-		WHEN 0 THEN '0'
-    WHEN '' THEN '0' 
+    CASE pimpid 
+		WHEN 0 THEN '0' 
+    	WHEN '' THEN '0' 
 		ELSE '1' 
 	END as isreply 
     from improve_classroom
