@@ -222,6 +222,12 @@ public class ImproveServiceImpl implements ImproveService{
                     improve.setPimpid(Long.parseLong(pimpid));
                     //0 不是批复。1 是批复
                     improve.setIsresponded("1");
+                    //获取教室微进步批复作业列表
+                	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), 
+                			Long.parseLong(pimpid));
+                	if(null != replyList && replyList.size()>0){
+                		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
+                	}
                     isok = insertImproveForClassroomReply(improve);
                     //修改用户作业信息     pimpid对应批复id
                     improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
@@ -940,7 +946,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/1/23 下午4:54
      *  @update 2017/1/23 下午4:54
      */
-    @Override
+	@Override
     public List<Improve> selectClassroomImproveList(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize) {
         List<Improve> improves = null;
         try {
@@ -1017,12 +1023,11 @@ public class ImproveServiceImpl implements ImproveService{
 
     //批复信息
   	private void replyImp(List<Improve> improves, String userid, String classroomid){
-  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //  		List<String> list = new ArrayList<>();
 //  		if(null != classroom){
 //  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //  		}
-  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
   		if(null != improves && improves.size()>0){
   			for (Improve improve : improves) {
   				String isreply = "0";
@@ -1039,21 +1044,21 @@ public class ImproveServiceImpl implements ImproveService{
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
-  				if(!"1".equals(isreply)){
-  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
-  						//判断当前用户是否是老师
-  						if(userCard.getUserid() != Long.parseLong(userid)){
-  							isreply = "2";
-  						}
-  					}
-  				}
-  				if(!StringUtils.isBlank(userid)){
-  					if(userid.toString().equals(Constant.VISITOR_UID)){
-  	  					isreply = "2";
-  					}
-  				}else{
-  					isreply = "2";
-  				}
+//  				if(!"1".equals(isreply)){
+//  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
+//  						//判断当前用户是否是老师
+//  						if(userCard.getUserid() != Long.parseLong(userid)){
+//  							isreply = "2";
+//  						}
+//  					}
+//  				}
+//  				if(!StringUtils.isBlank(userid)){
+//  					if(userid.toString().equals(Constant.VISITOR_UID)){
+//  	  					isreply = "2";
+//  					}
+//  				}else{
+//  					isreply = "2";
+//  				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -1647,9 +1652,6 @@ public class ImproveServiceImpl implements ImproveService{
     public void initImproveListOtherInfo(String userid,List<Improve> improves){
         if(null == improves || 0 == improves.size()){
             return;
-        }
-        if(!StringUtils.isBlank(userid)){
-        	
         }
         for (Improve improve : improves){
             if(improve == null){
@@ -3078,8 +3080,6 @@ public class ImproveServiceImpl implements ImproveService{
                     	String commentid = "";
                     	String isreply = "0";
                         if(null != replyList && replyList.size()>0){
-//                            List<Comment> lowerlist = new ArrayList<Comment>();
-//                            for (ImproveClassroom improveClassroom : replyList) {
                             ImproveClassroom improveClassroom = replyList.get(0);
                             AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
                             ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
@@ -3101,18 +3101,18 @@ public class ImproveServiceImpl implements ImproveService{
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
-                        if(!"1".equals(isreply)){
-                            if(null != userCard){
-                                //判断当前用户是否是老师
-                            	if(!StringUtils.isBlank(userid)){
-                            		if(userCard.getUserid() != Long.parseLong(userid)){
-                                        isreply = "2";
-                                    }
-                            	}else{
-                            		isreply = "2";
-                            	}
-                            }
-                        }
+//                        if(!"1".equals(isreply)){
+//                            if(null != userCard){
+//                                //判断当前用户是否是老师
+//                            	if(!StringUtils.isBlank(userid)){
+//                            		if(userCard.getUserid() != Long.parseLong(userid)){
+//                                        isreply = "2";
+//                                    }
+//                            	}else{
+//                            		isreply = "2";
+//                            	}
+//                            }
+//                        }
                         improve.setIsreply(isreply);
                     	if (null != classroom){
                     		String teacher = "";

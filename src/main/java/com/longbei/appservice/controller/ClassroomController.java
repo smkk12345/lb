@@ -88,6 +88,9 @@ public class ClassroomController {
         	baseResp.initCodeAndDesp();
    			List<Improve> list = improveService.selectCroomImpList(userid, classroomid, type, sNo, sSize);
    			baseResp.setData(list);
+   			Map<String,Object> map = new HashedMap();
+   			map.put("isteacher",classroomService.isTeacher(userid,classroom));
+   			baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("selectCroomIsreplyList userid = {}, classroomid = {}, type = {}, startNo = {}, pageSize = {}",
    					userid, classroomid, type, startNo, pageSize, e);
