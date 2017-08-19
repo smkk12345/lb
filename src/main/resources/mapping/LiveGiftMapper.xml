@@ -1,35 +1,165 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.longbei.appservice.dao.LiveGiftMapper" >
-  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.LiveGift" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="giftid" property="giftid" />
-    <result column="title" property="title" />
-    <result column="price" property="price" />
-    <result column="fileurl" property="fileurl" />
-      <result column="picurl" property="picurl" />
-    <result column="doublehit" property="doublehit" />
-    <result column="createtime" property="createtime" />
-    <result column="updatetime" property="updatetime" />
-    <result column="isdel" property="isdel" />
-  </resultMap>
-
-  <sql id="Base_Column_List" >
-    id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
-  </sql>
+    <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.LiveGift" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="giftid" property="giftid" jdbcType="BIGINT" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="INTEGER" />
+        <result column="fileurl" property="fileurl" jdbcType="VARCHAR" />
+        <result column="doublehit" property="doublehit" jdbcType="CHAR" />
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+        <result column="isdel" property="isdel" jdbcType="CHAR" />
+        <result column="picurl" property="picurl" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, giftid, title, price, fileurl, doublehit, createtime, updatetime, isdel, picurl
+    </sql>
 
   <select id="selectList" resultMap="BaseResultMap">
-      SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
+      SELECT <include refid="Base_Column_List" />
       FROM live_gift
+      where isdel = '0'
       order by price
       <if test="startNum != null" >
-        limit #{startNum},#{endNum}
+        limit #{startNum},#{pageSize}
       </if>
   </select>
-    <select id="selectById" resultMap="BaseResultMap">
-        SELECT id, giftid, title, price, fileurl, doublehit, createtime, updatetime,isdel,picurl
-        FROM live_gift
-        where giftid=#{giftId}
+    <select id="selectLiveGiftList"  parameterType="com.longbei.appservice.entity.LiveGift" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from live_gift
+        where isdel = '0'
+        <if test="liveGift.giftid != null and liveGift.giftid != ''" >
+            AND giftid = #{liveGift.giftid}
+        </if>
+        <if test="liveGift.title != null and liveGift.title != ''" >
+            AND title LIKE concat(concat('%',#{liveGift.title}),'%')
+        </if>
+        <if test="liveGift.price != null and liveGift.price != ''" >
+            AND price = #{liveGift.price}
+        </if>
+        ORDER BY createtime DESC
+        <if test="startNum != null" >
+            limit #{startNum},#{pageSize}
+        </if>
     </select>
-
+    <select id="selectLiveGiftListCount"  parameterType="com.longbei.appservice.entity.LiveGift" resultType="java.lang.Integer" >
+        select
+        count(*)
+        from live_gift
+        where isdel = '0'
+        <if test="liveGift.giftid != null and liveGift.giftid != ''" >
+            AND giftid = #{liveGift.giftid}
+        </if>
+        <if test="liveGift.title != null and liveGift.title != ''" >
+            AND title LIKE concat(concat('%',#{liveGift.title}),'%')
+        </if>
+        <if test="liveGift.price != null and liveGift.price != ''" >
+            AND price = #{liveGift.price}
+        </if>
+    </select>
+    <select id="selectLiveGiftByGiftId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM live_gift
+        where giftid=#{giftId,jdbcType=BIGINT}
+    </select>
+    <update id="removeLiveGiftByGiftId" parameterType="java.lang.Long" >
+        update live_gift
+        set
+        isdel = '1'
+        where giftid=#{giftId,jdbcType=BIGINT}
+    </update>
+    <insert id="insertLiveGift" parameterType="com.longbei.appservice.entity.LiveGift" >
+        insert into live_gift
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="giftid != null" >
+                giftid,
+            </if>
+            <if test="title != null" >
+                title,
+            </if>
+            <if test="price != null" >
+                price,
+            </if>
+            <if test="fileurl != null" >
+                fileurl,
+            </if>
+            <if test="doublehit != null" >
+                doublehit,
+            </if>
+            <if test="createtime != null" >
+                createtime,
+            </if>
+            <if test="updatetime != null" >
+                updatetime,
+            </if>
+            <if test="isdel != null" >
+                isdel,
+            </if>
+            <if test="picurl != null" >
+                picurl,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="giftid != null" >
+                #{giftid,jdbcType=BIGINT},
+            </if>
+            <if test="title != null" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="fileurl != null" >
+                #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="doublehit != null" >
+                #{doublehit,jdbcType=CHAR},
+            </if>
+            <if test="createtime != null" >
+                #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null" >
+                #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isdel != null" >
+                #{isdel,jdbcType=CHAR},
+            </if>
+            <if test="picurl != null" >
+                #{picurl,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateLiveGiftByGiftId" parameterType="com.longbei.appservice.entity.LiveGift" >
+        update live_gift
+        <set >
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="fileurl != null" >
+                fileurl = #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="doublehit != null" >
+                doublehit = #{doublehit,jdbcType=CHAR},
+            </if>
+            <if test="createtime != null" >
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null" >
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isdel != null" >
+                isdel = #{isdel,jdbcType=CHAR},
+            </if>
+            <if test="picurl != null" >
+                picurl = #{picurl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where giftid=#{giftid,jdbcType=BIGINT}
+    </update>
 </mapper>

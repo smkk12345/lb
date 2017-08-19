@@ -1,6 +1,7 @@
 package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveGiftDetail;
 
@@ -34,5 +35,45 @@ public interface LiveGiftService {
 
     BaseResp<List<LiveGiftDetail>> selectGiftList(long userid,Integer startNum,Integer endNum);
 
+    /**
+     * 获取直播礼物列表
+     * @title selectLiveGiftList
+     * @author IngaWu
+     * @currentdate:2017年8月18日
+     */
+    Page<LiveGift> selectLiveGiftList(LiveGift liveGift, Integer startNum, Integer pageSize);
 
+    /**
+     * @Title: selectLiveGiftByGiftId
+     * @Description: 通过礼物id查看直播礼物详情
+     * @param giftId 礼物id
+     * @auther IngaWu
+     * @currentdate:2017年8月18日
+     */
+    BaseResp<LiveGift> selectLiveGiftByGiftId(Long giftId);
+
+    /**
+     * @Title: removeLiveGiftByGiftId
+     * @Description: 删除直播礼物
+     * @param giftId 礼物id
+     * @auther IngaWu
+     * @currentdate:2017年8月18日
+     */
+    BaseResp<Object> removeLiveGiftByGiftId(Long giftId);
+
+    /**
+     * 添加直播礼物
+     * @title insertLiveGift
+     * @author IngaWu
+     * @currentdate:2017年8月18日
+     */
+    BaseResp<Object> insertLiveGift(LiveGift liveGift);
+
+    /**
+     * 编辑直播礼物
+     * @title updateLiveGiftByGiftId
+     * @author IngaWu
+     * @currentdate:2017年8月18日
+     */
+    BaseResp<Object> updateLiveGiftByGiftId(LiveGift liveGift);
 }

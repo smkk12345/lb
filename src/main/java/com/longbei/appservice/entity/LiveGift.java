@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,7 @@ public class LiveGift {
 
     private int id;
 
-    private Long giftid;//礼物id】
+    private Long giftid;//礼物id
 
     private String title ;//礼物名称
 
@@ -39,7 +40,9 @@ public class LiveGift {
     public void setIsdel(String isdel) {
         this.isdel = isdel;
     }
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -47,7 +50,9 @@ public class LiveGift {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -65,11 +70,7 @@ public class LiveGift {
     }
 
     public String getFileurl() {
-        if(StringUtils.isNotBlank(fileurl)){
-            return AppserviceConfig.oss_media+fileurl;
-        }else {
-            return fileurl;
-        }
+        return fileurl;
     }
 
     public void setFileurl(String fileurl) {
@@ -113,10 +114,6 @@ public class LiveGift {
     }
 
     public String getPicurl() {
-        if(StringUtils.isNotBlank(picurl)){
-            return AppserviceConfig.oss_media+picurl;
-        }else {
-            return picurl;
-        }
+        return picurl;
     }
 }
