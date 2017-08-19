@@ -236,17 +236,20 @@ public class LiveController {
      * @return
      */
     @RequestMapping(value="closeOnLineRoom")
-    public BaseResp closeOnLineRoom(String roomid,String userid,String duration){
-        logger.info("closeOnLineRoom roomid:{} userid:{} duration:{}",roomid,userid,duration);
+    public BaseResp closeOnLine(String roomid,String courseid,String userid,String duration){
+        logger.info("closeOnLineRoom roomid:{} courseid:{} userid:{} duration:{}",
+                roomid,courseid,userid,duration);
         BaseResp baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(roomid,userid,duration)){
+        if(StringUtils.hasBlankParams(roomid,courseid,userid,duration)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         roomid = DecodesUtils.getFromBase64(roomid);
+        courseid = DecodesUtils.getFromBase64(courseid);
         userid = DecodesUtils.getFromBase64(userid);
         duration = DecodesUtils.getFromBase64(duration);
-        logger.info("closeOnLineRoom after getFromBase64 roomid:{} userid:{} duration:{}",roomid,userid,duration);
-        //处理关闭教室逻辑
+        logger.info("closeOnLineRoom after getFromBase64 roomid:{} courseid={} userid:{} duration:{}",
+                roomid,courseid,userid,duration);
+        //处理教室直播逻辑
         return baseResp.initCodeAndDesp();
     }
 
