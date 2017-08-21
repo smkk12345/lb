@@ -49,7 +49,7 @@ public class Classroom {
 
     private String isdel; //0 未删除。1 删除
     
-    private String sourcetype; //0:运营  1:app  2:商户
+    private String sourcetype; //sourcetype 0:运营  1:app  2:商户
     
     private String isrecommend; //isrecommend是否推荐。0 - 没有推荐 1 - 推荐   默认0
     

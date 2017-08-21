@@ -229,6 +229,7 @@ public class ImproveServiceImpl implements ImproveService{
                 		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
                 	}
                     isok = insertImproveForClassroomReply(improve);
+                    
                     //修改用户作业信息     pimpid对应批复id
                     improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
                     //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
@@ -1127,13 +1128,10 @@ public class ImproveServiceImpl implements ImproveService{
                 case Constant.IMPROVE_CLASSROOM_TYPE:
                 	//更新教室成员  总赞，总花
                 	int likes = getLikeFromRedis(improveid, businessid, Constant.IMPROVE_CLASSROOM_TYPE);
-                	likes = 0 - likes;
                 	int flowers = improves.getFlowers();
-                	flowers = 0 - flowers;
-                	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), likes, flowers);
+                	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -likes, -flowers);
                 	//更新教室成员  总进步数
                 	classroomMembersMapper.updateIcountByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -1);
-                	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
@@ -2349,6 +2347,9 @@ public class ImproveServiceImpl implements ImproveService{
                 tablename = Constant_table.IMPROVE_RANK;
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
+                tablename = Constant_table.IMPROVE_CLASSROOM;
+                break;
+            case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
                 tablename = Constant_table.IMPROVE_CLASSROOM;
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
