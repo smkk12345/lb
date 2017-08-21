@@ -589,6 +589,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 	}
 	
 	private boolean update(Classroom record){
+		//教室收费修改为免费时，将charge置为0
+		if ("0".equals(record.getIsfree())) {
+			record.setCharge(0);
+		}
 		int temp = classroomMapper.updateByPrimaryKeySelective(record);
 		return temp > 0 ? true : false;
 	}
