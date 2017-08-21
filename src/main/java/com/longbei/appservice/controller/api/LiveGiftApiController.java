@@ -81,7 +81,7 @@ public class LiveGiftApiController {
 	public BaseResp<Object> insertLiveGift(@RequestBody LiveGift liveGift) {
 		logger.info("insertLiveGift for adminservice and liveGift:{}", JSON.toJSONString(liveGift));
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(liveGift.getTitle(),liveGift.getPicurl(),liveGift.getDoublehit(),liveGift.getPrice()+"",liveGift.getFileurl())){
+		if(StringUtils.hasBlankParams(liveGift.getTitle(),liveGift.getPicurl(),liveGift.getDoublehit(),liveGift.getPrice()+"")){
 		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
@@ -96,7 +96,7 @@ public class LiveGiftApiController {
 	public BaseResp<Object> updateLiveGiftByGiftId(@RequestBody LiveGift liveGift) {
 		logger.info("updateLiveGiftByGiftId for adminservice and liveGift:{}", JSON.toJSONString(liveGift));
 		BaseResp<Object> baseResp = new BaseResp<>();
-		if(StringUtils.hasBlankParams(liveGift.getGiftid()+"",liveGift.getTitle(),liveGift.getPicurl(),liveGift.getDoublehit(),liveGift.getPrice()+"",liveGift.getFileurl())){
+		if(StringUtils.hasBlankParams(liveGift.getGiftid()+"",liveGift.getTitle(),liveGift.getPicurl(),liveGift.getDoublehit(),liveGift.getPrice()+"")){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
