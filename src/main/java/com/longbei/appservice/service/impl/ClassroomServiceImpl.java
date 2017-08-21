@@ -129,6 +129,8 @@ public class ClassroomServiceImpl implements ClassroomService {
                 		improveClassroom.getBrief(), improveClassroom.getPickey(), 
                 		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
             	AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+            	appUserMongo.setId(classroom.getUserid().toString());
+            	appUserMongo.setUserid(classroom.getUserid().toString());
                 appUserMongo.setNickname(userCard.getDisplayname());
                 appUserMongo.setAvatar(userCard.getAvatar());
                 replyImprove.setAppUserMongoEntity(appUserMongo);
@@ -1332,6 +1334,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 	@Override
 	public int isTeacher(String userid,Classroom classroom){
+		//游客
+		if(StringUtils.isBlank(userid)){
+			return 0;
+		}
 		if (userid.equals(classroom.getUserid() + ""))
 			return 1;
 		return 0;
