@@ -164,18 +164,24 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
         try {
             int n = userUserClassroomCertifyMapper.updateClassroomCertifyByUserid(classroomCertify);
             if(n >= 1){
-                if("1".equals(classroomCertify.getStatus())){
+                if ("1".equals(classroomCertify.getStatus())){
                     String remark = "老师认证通过";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
                             "恭喜，您的老师认证审核通过！","",Constant.JPUSH_TAG_COUNT_1306);
-                }else if("2".equals(classroomCertify.getStatus())) {
+                } else if ("2".equals(classroomCertify.getStatus())) {
                     String remark = "老师认证未通过";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
-                            ,null,"9",null,remark,"2","65", "实名认证",0, "", "");
+                            ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
                             "您的老师认证审核未通过","",Constant.JPUSH_TAG_COUNT_1307);
+                } else if ("3".equals(classroomCertify.getStatus())){
+                    String remark = "老师认证被撤销";
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
+                            ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
+                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
+                            "您的老师认证审核被撤销","",Constant.JPUSH_TAG_COUNT_1307);
                 }
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }

@@ -26,7 +26,14 @@
       AND userid LIKE concat(concat('%',#{classroomCertify.userid}),'%')
     </if>
     <if test="classroomCertify.status != null and classroomCertify.status != ''" >
-      AND status = #{classroomCertify.status}
+      <choose>
+        <when test="classroomCertify.status == '2'">
+          AND (status = '2' OR status = '3')
+        </when>
+        <otherwise>
+          AND status = #{classroomCertify.status}
+        </otherwise>
+      </choose>
     </if>
     ORDER BY createtime DESC
     <if test="startNum != null" >
