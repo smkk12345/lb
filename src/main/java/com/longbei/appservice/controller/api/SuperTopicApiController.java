@@ -61,7 +61,6 @@ public class SuperTopicApiController {
 		}
 		try {
 			baseResp = superTopicService.selectSuperTopicByTopicId(Long.parseLong(topicId));
-			return baseResp;
 		} catch (Exception e) {
 			logger.error("selectSuperTopicByTopicId and topicId={}",topicId,e);
 		}
@@ -77,7 +76,7 @@ public class SuperTopicApiController {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
-			return superTopicService.deleteSuperTopicByTopicId(Long.parseLong(topicId));
+			baseResp = superTopicService.deleteSuperTopicByTopicId(Long.parseLong(topicId));
 		} catch (Exception e) {
 			logger.error("deleteSuperTopicByTopicId and topicId={}",topicId,e);
 		}
@@ -94,7 +93,6 @@ public class SuperTopicApiController {
 		}
 		try {
 			baseResp = superTopicService.insertSuperTopic(superTopic);
-			return baseResp;
 		} catch (Exception e) {
 			logger.error("insertSuperTopic for adminservice superTopic:{}", JSON.toJSONString(superTopic),e);
 		}

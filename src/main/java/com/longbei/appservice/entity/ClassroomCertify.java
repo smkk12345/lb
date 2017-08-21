@@ -37,7 +37,7 @@ public class ClassroomCertify {
     private String remark;
 
     /**
-     * 审核结果。0 未审核 1 审核通过。2 审核不通过
+     * 审核结果。0 未审核 1 审核通过。2 审核不通过 3 撤销认证
      */
     private String status;
 

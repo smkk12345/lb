@@ -37,7 +37,7 @@ public class ClassroomCertifyApiController {
 			baseResp = BaseResp.ok();
 			baseResp.setData(page);
 		} catch (Exception e) {
-			logger.error("selectClassroomCertifyList for adminservice error",e);
+			logger.error("selectClassroomCertifyList for adminservice classroomCertify:{},startNum={},pageSize={}", JSON.toJSONString(classroomCertify),startNum,pageSize,e);
 		}
 		return baseResp;
 	}
@@ -69,7 +69,6 @@ public class ClassroomCertifyApiController {
 		}
 		try {
 			baseResp = classroomCertifyService.selectClassroomCertifyByUserid(Long.parseLong(userid));
-			return baseResp;
 		} catch (Exception e) {
 			logger.error("selectClassroomCertifyByUserid and userid={}",userid,e);
 		}
@@ -86,9 +85,8 @@ public class ClassroomCertifyApiController {
 		}
 		try {
 			baseResp = classroomCertifyService.insertClassroomCertify(classroomCertify);
-			return baseResp;
 		} catch (Exception e) {
-			logger.error("insertClassroomCertify for pc classroomCertify:{}", JSON.toJSONString(classroomCertify),e);
+			logger.error("insertClassroomCertify for pc and classroomCertify:{}", JSON.toJSONString(classroomCertify),e);
 		}
 		return baseResp;
 	}
@@ -103,7 +101,7 @@ public class ClassroomCertifyApiController {
 		try {
 			baseResp = classroomCertifyService.updateClassroomCertifyByUserid(classroomCertify);
 		} catch (Exception e) {
-			logger.error("updateClassroomCertifyByUserid for adminservice classroomCertify:{}", JSON.toJSONString(classroomCertify),e);
+			logger.error("updateClassroomCertifyByUserid for adminservice and classroomCertify:{}", JSON.toJSONString(classroomCertify),e);
 
 		}
 		return baseResp;

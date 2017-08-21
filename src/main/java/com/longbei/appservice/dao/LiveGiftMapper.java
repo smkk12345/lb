@@ -11,7 +11,19 @@ import java.util.List;
 public interface LiveGiftMapper {
 
     List<LiveGift> selectList(@Param("startNum") Integer startNum,
-                              @Param("endNum") Integer endNum);
+                              @Param("pageSize") Integer pageSize);
 
-    LiveGift selectById(@Param("giftId") long giftId);
+    List<LiveGift> selectLiveGiftList(@Param("liveGift") LiveGift liveGift,
+                                      @Param("startNum") Integer startNum,
+                                      @Param("pageSize") Integer pageSize);
+
+    int selectLiveGiftListCount(@Param("liveGift") LiveGift liveGift);
+
+    LiveGift selectLiveGiftByGiftId(@Param("giftId")Long giftId);
+
+    int removeLiveGiftByGiftId(@Param("giftId") Long giftId);
+
+    int insertLiveGift(LiveGift record);
+
+    int updateLiveGiftByGiftId(LiveGift record);
 }

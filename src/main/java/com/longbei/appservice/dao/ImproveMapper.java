@@ -13,7 +13,6 @@ public interface ImproveMapper {
 	
 	/**
      *  获取教室未批复，已批复的进步
-     * @param userid
      * @param businessid
      * @param type 0:未批复   1:已批复
      * @param pageNo

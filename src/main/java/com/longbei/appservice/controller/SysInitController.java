@@ -53,7 +53,7 @@ public class SysInitController extends BaseController{
             baseResp.getExpandData().put("inviteimp", Constant_Imp_Icon.INVITE_LEVEL1);
 
             baseResp.getExpandData().put("registerurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_invite));
+                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite));
             baseResp.getExpandData().put("pcurl",AppserviceConfig.pcurl);
 
             baseResp.getExpandData().put("classosspath", AppserviceConfig.oss_media);

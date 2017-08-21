@@ -1,6 +1,8 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.LiveGiftDetailMapper;
 import com.longbei.appservice.dao.LiveGiftMapper;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private LiveGiftDetailMapper liveGiftDetailMapper;
     @Autowired
     private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private IdGenerateService idGenerateService;
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
 
@@ -53,7 +58,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,
                                      long businessid,String businesstype) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        LiveGift liveGift = liveGiftMapper.selectById(giftId);
+        LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
         UserInfo userInfo = userInfoMapper.selectByUserid(fromUid);
         if(null == liveGift||null == userInfo){
             return baseResp;
@@ -124,5 +129,78 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     }
 
 
+    @Override
+    public Page<LiveGift> selectLiveGiftList(LiveGift liveGift, Integer startNum, Integer pageSize){
+        Page<LiveGift> page = new Page<>(startNum/pageSize+1,pageSize);
+        try {
+            int totalcount = liveGiftMapper.selectLiveGiftListCount(liveGift);
+            Page.setPageNo(startNum/pageSize+1,totalcount,pageSize);
+            List<LiveGift> liveGiftList = new ArrayList<LiveGift>();
+            liveGiftList = liveGiftMapper.selectLiveGiftList(liveGift,startNum,pageSize);
+            page.setTotalCount(totalcount);
+            page.setList(liveGiftList);
+        } catch (Exception e) {
+            logger.error("selectLiveGiftList error and msg={}",e);
+        }
+        return page;
+    }
 
+    @Override
+    public BaseResp<LiveGift> selectLiveGiftByGiftId(Long giftId) {
+        BaseResp<LiveGift> baseResp = new BaseResp<LiveGift>();
+        try {
+            LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
+            baseResp.setData(liveGift);
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+        }
+        catch (Exception e) {
+            logger.error("selectLiveGiftByGiftId error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> removeLiveGiftByGiftId(Long giftId) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try {
+            int m = liveGiftMapper.removeLiveGiftByGiftId(giftId);
+            if(m == 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("removeLiveGiftByGiftId error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> insertLiveGift(LiveGift liveGift){
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        liveGift.setGiftid(idGenerateService.getUniqueIdAsLong());
+        liveGift.setCreatetime(new Date());
+        try {
+            int n = liveGiftMapper.insertLiveGift(liveGift);
+            if(n == 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("insertLiveGift error and msg={}",e);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public 	BaseResp<Object> updateLiveGiftByGiftId(LiveGift liveGift) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        liveGift.setUpdatetime(new Date());
+        try {
+            int n = liveGiftMapper.updateLiveGiftByGiftId(liveGift);
+            if(n >= 1){
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("updateLiveGiftByGiftId error and msg={}",e);
+        }
+        return baseResp;
+    }
 }

@@ -21,6 +21,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.CommentCountMongoDao;
 import com.longbei.appservice.dao.CommentLikesMongoDao;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
@@ -56,6 +57,8 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private ClassroomMapper classroomMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
@@ -67,6 +70,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			comment = commentMongoDao.selectCommentByItypeid(comment.getItypeid(), comment.getItype());
 			//添加评论总数
 			insertCount(comment);
+			
 			//businesstype 类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
 			// 					10：榜评论  11 圈子评论  12 教室评论
 			if(!"10".equals(comment.getBusinesstype()) && !"11".equals(comment.getBusinesstype()) 
@@ -76,9 +80,22 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 				if(!comment.getUserid().equals(comment.getFriendid())){
-					userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
-							comment.getImpid(), comment.getBusinesstype(), 
-							comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
+					if("5".equals(comment.getBusinesstype())){
+						//批复被评论
+						Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(comment.getBusinessid()));
+						if(null == classroom){
+							return reseResp;
+						}
+						if("1".equals(classroom.getSourcetype())){
+							userMsgService.insertMsg(comment.getUserid(), classroom.getUserid().toString(), 
+									comment.getImpid(), "12", 
+									comment.getBusinessid(), comment.getContent(), "1", "68", "批复被评论", 0, comment.getId(), "");
+						}
+					}else{
+						userMsgService.insertMsg(comment.getUserid(), comment.getFriendid(), 
+								comment.getImpid(), comment.getBusinesstype(), 
+								comment.getBusinessid(), comment.getContent(), "1", "1", "评论", 0, comment.getId(), "");
+					}
 				}
 
 				final String impid = comment.getImpid();

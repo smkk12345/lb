@@ -141,8 +141,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 						ClassroomQuestionsLower classroomQuestionsLower = lowerlist.get(0);
 						AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 						appUserMongoEntity.setAvatar(userCard.getAvatar());
-						appUserMongoEntity.setId(userCard.getUserid().toString());
-						appUserMongoEntity.setUserid(userCard.getUserid().toString());
+						appUserMongoEntity.setId(classroomQuestionsLower.getUserid().toString());
+						appUserMongoEntity.setUserid(classroomQuestionsLower.getUserid().toString());
 						appUserMongoEntity.setNickname(userCard.getDisplayname());
 						classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongoEntity);
 						//已回答
@@ -313,8 +313,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			if(null == userCard){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 			}
-			classroomQuestionsLower.setUserid(classroom.getCardid()+"");
-			classroomQuestionsLower.setFriendid(classroomQuestions.getUserid());
+//			classroomQuestionsLower.setUserid(classroom.getCardid()+"");
+//			classroomQuestionsLower.setFriendid(classroomQuestions.getUserid());
 			//获取老师回复,已回复的无法忽略
 			List<ClassroomQuestionsLower> lowerlist = classroomQuestionsLowerMongoDao.selectQuestionsLowerListByQuestionsid(classroomQuestionsLower.getQuestionsid());
 			if(null != lowerlist && lowerlist.size()>0){
@@ -329,8 +329,8 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 //			initQuestionsLower(classroomQuestionsLower);
 			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
 			appUserMongoEntity.setAvatar(userCard.getAvatar());
-			appUserMongoEntity.setId(userCard.getUserid().toString());
-			appUserMongoEntity.setUserid(userCard.getUserid().toString());
+			appUserMongoEntity.setId(classroomQuestionsLower.getUserid().toString());
+			appUserMongoEntity.setUserid(classroomQuestionsLower.getUserid().toString());
 			appUserMongoEntity.setNickname(userCard.getDisplayname());
 			classroomQuestionsLower.setAppUserMongoEntityUserid(appUserMongoEntity);
 			

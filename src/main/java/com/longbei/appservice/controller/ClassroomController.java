@@ -88,6 +88,9 @@ public class ClassroomController {
         	baseResp.initCodeAndDesp();
    			List<Improve> list = improveService.selectCroomImpList(userid, classroomid, type, sNo, sSize);
    			baseResp.setData(list);
+   			Map<String,Object> map = new HashedMap();
+   			map.put("isteacher",classroomService.isTeacher(userid,classroom));
+   			baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("selectCroomIsreplyList userid = {}, classroomid = {}, type = {}, startNo = {}, pageSize = {}",
    					userid, classroomid, type, startNo, pageSize, e);
@@ -863,7 +866,7 @@ public class ClassroomController {
    			baseResp.setData(list);
    			Map<String,Object> map = new HashedMap();
       		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
-      		map.put("isteacher", isTeacher(userid.toString(), classroom));
+      		map.put("isteacher",classroomService.isTeacher(userid,classroom));
       		baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}",
@@ -871,12 +874,6 @@ public class ClassroomController {
    		}
    		return baseResp;
     }
-  	
-  	private int isTeacher(String userid,Classroom classroom){
-		if (userid.equals(classroom.getUserid() + ""))
-			return 1;
-		return 0;
-	}
   	
 //  	/**
 //     * @Title: http://ip:port/app_service/classroom/classroomMembersDateList

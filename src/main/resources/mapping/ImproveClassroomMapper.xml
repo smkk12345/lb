@@ -36,7 +36,8 @@
     select 
     <include refid="Base_Column_List" />
     from improve_classroom
-    where impid = #{impid,jdbcType=BIGINT}
+    where impid = #{impid} 
+    and isdel = 0 and isbusinessdel = 0 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from improve_classroom
@@ -329,6 +330,7 @@
     businessid = #{businessid} 
     and isresponded = 1 
     AND pimpid = #{impid} 
+    and isdel = 0 and isbusinessdel = 0 
     ORDER BY createtime DESC
   </select>
 
