@@ -293,7 +293,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
         }
-        baseResp.getExpandData().put("commentid", commentid);
+        baseResp.getExpandData().put("impid", pimpid);
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
@@ -679,6 +679,9 @@ public class ImproveServiceImpl implements ImproveService{
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_RANK,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
@@ -1134,6 +1137,8 @@ public class ImproveServiceImpl implements ImproveService{
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                	//删除批复信息    修改用户作业信息     pimpid为空，关联删除
+                    improveClassroomMapper.updatePimpidByImpid(businessid, "0", improves.getPimpid() + "");
                 	baseResp = removeClassroomImprove(userid,businessid,improveid);
                 	break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
@@ -3087,6 +3092,8 @@ public class ImproveServiceImpl implements ImproveService{
                             		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
+                            appUserMongo.setUserid(userCard.getUserid().toString());
+                            appUserMongo.setId(userCard.getUserid().toString());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
                             commentid = improveClassroom.getImpid().toString();
                             List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(), 
