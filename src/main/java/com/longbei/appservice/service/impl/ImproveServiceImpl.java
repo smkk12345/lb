@@ -3648,12 +3648,12 @@ public class ImproveServiceImpl implements ImproveService{
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
         	Classroom classroom = null;
-        	UserCard userCard = null;
+//        	UserCard userCard = null;
         	if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
         		classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
-                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
-                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
-                }
+//                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+//                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//                }
         	}
         	
             List<Improve> list = baseResp.getData();
@@ -3665,20 +3665,21 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 
                 if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
+                	baseResp.getExpandData().put("isteacher", classroomService.isTeacher(userid.toString(), classroom));
                 	//获取教室微进步批复作业列表
                 	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                 	String isreply = "0";
                     if(null != replyList && replyList.size()>0){
                     	isreply = "1";
                     }
-                    if(!"1".equals(isreply)){
-                        if(null != userCard){
-                            //判断当前用户是否是老师
-                            if(userCard.getUserid() != Long.parseLong(userid)){
-                                isreply = "2";
-                            }
-                        }
-                    }
+//                    if(!"1".equals(isreply)){
+//                        if(null != userCard){
+//                            //判断当前用户是否是老师
+//                            if(userCard.getUserid() != Long.parseLong(userid)){
+//                                isreply = "2";
+//                            }
+//                        }
+//                    }
                     improve.setIsreply(isreply);
                 }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));

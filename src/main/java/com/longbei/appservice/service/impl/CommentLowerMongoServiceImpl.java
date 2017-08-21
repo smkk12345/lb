@@ -64,10 +64,18 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 				if(!commentLower.getFirstuserid().equals(commentLower.getSeconduserid())){
 					if(!"10".equals(comment.getBusinesstype()) && !"11".equals(comment.getBusinesstype()) 
 							&& !"12".equals(comment.getBusinesstype())){
-						userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
-								comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
-								commentLower.getContent(), "1", "1", "评论", 0, 
-								commentLower.getCommentid(), commentLower.getId());
+						if("5".equals(comment.getBusinesstype())){
+							//批复被评论
+							userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+									comment.getImpid(), "12", 
+									comment.getBusinessid(), comment.getContent(), "1", "68", "批复被评论", 0, 
+									comment.getId(), commentLower.getId());
+						}else{
+							userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
+									comment.getImpid(), comment.getBusinesstype(), comment.getBusinessid(), 
+									commentLower.getContent(), "1", "1", "评论", 0, 
+									commentLower.getCommentid(), commentLower.getId());
+						}
 
 						final String impid = comment.getImpid();
 						//24小时热门进步
