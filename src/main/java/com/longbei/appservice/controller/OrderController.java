@@ -385,6 +385,9 @@ public class OrderController {
 		logger.info("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
 				+ " businesstype = {}, businessid = {}, payType = {}", 
 				userid, number, friendid, improveid, businesstype, businessid, payType);
+		if(businesstype.equals("0")){
+			businessid = null;
+		}
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);

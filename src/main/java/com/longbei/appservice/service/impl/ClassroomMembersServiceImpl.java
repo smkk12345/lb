@@ -114,8 +114,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 
 //				//创建人教室收益
 //				userMoneyDetailService.insertPublic(Long.parseLong(Constant.SQUARE_USER_ID), "11", charge, record.getUserid());
-//				//修改教室总收益
-//				classroomMapper.updateEarningsByClassroomid(record.getClassroomid(), charge);
+				//修改教室总收益
+				classroomMapper.updateEarningsByClassroomid(record.getClassroomid(), charge);
 //
 			}
 			//itype 0—加入教室 1—退出教室     为null查全部
