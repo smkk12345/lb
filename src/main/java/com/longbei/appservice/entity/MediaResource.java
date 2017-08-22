@@ -20,7 +20,7 @@ public class MediaResource {
     private String filepath;//文件路径
     private Long userid;//所属用户id
     private Integer ispublic;//是否公开 0.隐私 1.公开
-    private Integer source;//来源 0.web上传 1.admin上传
+    private Integer source;//来源 0.web上传的视频 1.admin上传 2.录制的视频 3.web端上传的课件
     private String filesuffix;//文件后缀
     private Integer filetype;//文件类型 0.视频 1.音频 2.其他文件 3.PPT 4.图片 5.doc 6.ppt 7.excel
     private Integer isdel;//是否已经删除 0.未删除 1.已删除

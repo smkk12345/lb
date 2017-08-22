@@ -51,8 +51,7 @@ public class ClassroomCourses {
 
     private String teachingtypes;//教学类型 0 录播 1直播
 
-    private String playback ;//0 未开启回放 1 开启回放
-
+    private Integer status;//直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
 
     /**
      * 
@@ -330,12 +329,11 @@ public class ClassroomCourses {
         this.teachingtypes = teachingtypes;
     }
 
-    public void setPlayback(String playback) {
-        this.playback = playback;
+    public Integer getStatus() {
+        return status;
     }
 
-    public String getPlayback() {
-        return playback;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
-
 }

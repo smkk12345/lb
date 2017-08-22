@@ -127,6 +127,12 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			record.setCusername(userInfo.getUsername());
 			boolean temp = insert(record);
 			if (temp) {
+				//推送通知消息给老师
+				if("1".equals(classroom.getSourcetype())){
+					String remark = "学员加入您发布的教室《" + classroom.getClasstitle() + "》";
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
+							"", "12", record.getClassroomid().toString(), remark, "0", "67", "学员加入教室", 0, "", "");
+				}
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(record.getClassroomid(), 1);
 				//加入圈子成功获得龙分
@@ -252,7 +258,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
-						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "");
+						"", "12", classroomid + "", remark, "2", "54", "教室踢除成员", 0, "", "");
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -328,8 +334,15 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	public BaseResp<Object> updateItypeByClassroomidAndUserid(long classroomid, long userid, String itype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
+				//推送通知消息给老师
+				if("1".equals(classroom.getSourcetype())){
+					String remark = "学员退出您发布的教室《" + classroom.getClasstitle() + "》";
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
+							"", "12", classroomid + "", remark, "0", "66", "学员退出教室", 0, "", "");
+				}
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
