@@ -242,12 +242,9 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			if(null == classroom){
 				return reseResp;
 			}
-			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-			if(null == userCard){
-				return reseResp;
-			}
 			//判断当前用户是否是老师
-			if(userCard.getUserid() != currentUserId){
+			int isteacher = isTeacher(userid + "", classroom);
+			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
 			}
 			
@@ -266,6 +263,16 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 					classroomid, userid, itype, e);
 		}
 		return reseResp;
+	}
+	
+	private int isTeacher(String userid,Classroom classroom){
+		//游客
+		if(StringUtils.isBlank(userid)){
+			return 0;
+		}
+		if (userid.equals(classroom.getUserid() + ""))
+			return 1;
+		return 0;
 	}
 	
 

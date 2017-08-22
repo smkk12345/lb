@@ -1,6 +1,5 @@
 package com.longbei.appservice.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -397,6 +396,9 @@ public class OrderController {
   			}
   			if(Integer.parseInt(number) == 0){
   				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1104, Constant.RTNINFO_SYS_1104);
+  			}
+  			if("1".equals(payType) && Integer.parseInt(number) % 10 != 0){
+  				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1113, Constant.RTNINFO_SYS_1113);
   			}
   			//payType 1:龙币兑换  2：进步币兑换
   			if("1".equals(payType)){
