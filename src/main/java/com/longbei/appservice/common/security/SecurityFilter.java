@@ -101,7 +101,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		//服务器之间api调用
 		if(urlPath.contains("/api/")){
-			if(!apiFilter(urlPath)){
+			// /api/article/getinfo/101
+//			urlPath.startsWith()
+//			String subUrl = urlPath.substring(0,urlPath.lastIndexOf());
+			if(!apiFilter(urlPath)||!apiStartWithFilter(urlPath)){
 				arg2.doFilter(request, response);
 				return;
 			}
@@ -404,6 +407,19 @@ public class SecurityFilter extends OncePerRequestFilter {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean apiStartWithFilter(String urlPath){
+		boolean res = true;
+		Iterator iter = shareUrls.iterator();
+		while (iter.hasNext()){
+			String url = iter.next().toString();
+			if(urlPath.startsWith(url)){
+				res = false;
+				break;
+			}
+		}
+		return res;
 	}
 
 
