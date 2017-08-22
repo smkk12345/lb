@@ -264,7 +264,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
-				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
+				int isTeacher = isTeacher(String.valueOf(userid),classroom);
+				map.put("isteacher",isTeacher);
 
 
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
@@ -274,12 +275,17 @@ public class ClassroomServiceImpl implements ClassroomService {
 						impNum = 0;
 					}
 					map.put("impNum", impNum);
-					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-					if(null != classroomMembers){
-						map.put("classroomMembers", classroomMembers);
-					}else{
+					if(isTeacher == 1){
 						map.put("classroomMembers", null);
+					}else{
+						ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+						if(null != classroomMembers){
+							map.put("classroomMembers", classroomMembers);
+						}else{
+							map.put("classroomMembers", null);
+						}
 					}
+					
 					
 					//itype 0—加入教室 1—退出教室     为null查全部
 					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
