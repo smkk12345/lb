@@ -229,6 +229,7 @@ public class ImproveServiceImpl implements ImproveService{
                 		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
                 	}
                     isok = insertImproveForClassroomReply(improve);
+                    
                     //修改用户作业信息     pimpid对应批复id
                     improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
                     //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
@@ -293,7 +294,7 @@ public class ImproveServiceImpl implements ImproveService{
             }
 
         }
-        baseResp.getExpandData().put("commentid", commentid);
+        baseResp.getExpandData().put("impid", pimpid);
         baseResp.setData(improve.getImpid());
         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
     }
@@ -679,6 +680,9 @@ public class ImproveServiceImpl implements ImproveService{
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_RANK,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CLASSROOM_TYPE:
+                    improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
+                    break;
+                case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
                     improve = improveMapper.selectByPrimaryKey(impid,businessid,Constant_table.IMPROVE_CLASSROOM,isdel,ispublic);
                     break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
@@ -1124,16 +1128,15 @@ public class ImproveServiceImpl implements ImproveService{
                 case Constant.IMPROVE_CLASSROOM_TYPE:
                 	//更新教室成员  总赞，总花
                 	int likes = getLikeFromRedis(improveid, businessid, Constant.IMPROVE_CLASSROOM_TYPE);
-                	likes = 0 - likes;
                 	int flowers = improves.getFlowers();
-                	flowers = 0 - flowers;
-                	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), likes, flowers);
+                	classroomMembersMapper.updateLFByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -likes, -flowers);
                 	//更新教室成员  总进步数
                 	classroomMembersMapper.updateIcountByCidAndUid(Long.parseLong(businessid), Long.parseLong(userid), -1);
-                	
                     baseResp = removeClassroomImprove(userid,businessid,improveid);
                     break;
                 case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                	//删除批复信息    修改用户作业信息     pimpid为空，关联删除
+                    improveClassroomMapper.updatePimpidByImpid(businessid, "0", improves.getPimpid() + "");
                 	baseResp = removeClassroomImprove(userid,businessid,improveid);
                 	break;
                 case Constant.IMPROVE_CIRCLE_TYPE:
@@ -2346,6 +2349,9 @@ public class ImproveServiceImpl implements ImproveService{
             case Constant.IMPROVE_CLASSROOM_TYPE:
                 tablename = Constant_table.IMPROVE_CLASSROOM;
                 break;
+            case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
+                tablename = Constant_table.IMPROVE_CLASSROOM;
+                break;
             case Constant.IMPROVE_CIRCLE_TYPE:
                 tablename = Constant_table.IMPROVE_CIRCLE;
                 break;
@@ -3087,6 +3093,8 @@ public class ImproveServiceImpl implements ImproveService{
                             		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
+                            appUserMongo.setUserid(userCard.getUserid().toString());
+                            appUserMongo.setId(userCard.getUserid().toString());
                             replyImprove.setAppUserMongoEntity(appUserMongo);
                             commentid = improveClassroom.getImpid().toString();
                             List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(), 
@@ -3640,12 +3648,12 @@ public class ImproveServiceImpl implements ImproveService{
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
         	Classroom classroom = null;
-        	UserCard userCard = null;
+//        	UserCard userCard = null;
         	if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
         		classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
-                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
-                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
-                }
+//                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+//                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//                }
         	}
         	
             List<Improve> list = baseResp.getData();
@@ -3657,20 +3665,21 @@ public class ImproveServiceImpl implements ImproveService{
                 }
                 
                 if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
+                	baseResp.getExpandData().put("isteacher", classroomService.isTeacher(userid.toString(), classroom));
                 	//获取教室微进步批复作业列表
                 	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
                 	String isreply = "0";
                     if(null != replyList && replyList.size()>0){
                     	isreply = "1";
                     }
-                    if(!"1".equals(isreply)){
-                        if(null != userCard){
-                            //判断当前用户是否是老师
-                            if(userCard.getUserid() != Long.parseLong(userid)){
-                                isreply = "2";
-                            }
-                        }
-                    }
+//                    if(!"1".equals(isreply)){
+//                        if(null != userCard){
+//                            //判断当前用户是否是老师
+//                            if(userCard.getUserid() != Long.parseLong(userid)){
+//                                isreply = "2";
+//                            }
+//                        }
+//                    }
                     improve.setIsreply(isreply);
                 }
                 initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));

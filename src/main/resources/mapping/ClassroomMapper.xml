@@ -562,7 +562,7 @@
         closeremark = #{closeremark},
       </if>
       closedate = #{closedate}, 
-      isdel = 1 
+      isdel = 2
     where classroomid = #{classroomid} 
   </update>
   

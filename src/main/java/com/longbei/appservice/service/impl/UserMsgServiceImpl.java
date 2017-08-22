@@ -998,7 +998,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 				//					61:教室疑答回复
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
-							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype())){
+							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype()) 
+							&& !"66".equals(userMsg.getMsgtype()) && !"67".equals(userMsg.getMsgtype()) 
+							&& !"68".equals(userMsg.getMsgtype())){
 						if("61".equals(userMsg.getMsgtype())){
 							if(!StringUtils.isBlank(userMsg.getFriendid().toString())){
 								//教室疑答回复---显示教室老师信息
