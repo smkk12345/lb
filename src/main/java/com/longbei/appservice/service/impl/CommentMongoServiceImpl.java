@@ -89,7 +89,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 						}
 						if("1".equals(classroom.getSourcetype())){
 							userMsgService.insertMsg(comment.getUserid(), classroom.getUserid().toString(), 
-									comment.getImpid(), "12", 
+									comment.getImpid(), "13", 
 									comment.getBusinessid(), comment.getContent(), "1", "68", "批复被评论", 0, comment.getId(), "");
 						}
 					}else{

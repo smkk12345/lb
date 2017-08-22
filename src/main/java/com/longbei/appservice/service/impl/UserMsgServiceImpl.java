@@ -1147,9 +1147,11 @@ public class UserMsgServiceImpl implements UserMsgService {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
 				//msgtype 0 聊天 1 评论 2 点赞 3 送花 4 送钻石 5:粉丝  等等
 				for (UserMsg userMsg : list) {
-					if(userMsg.getMsgtype().equals(Constant.MSG_COMMENT_TYPE)){
+					if(userMsg.getMsgtype().equals(Constant.MSG_COMMENT_TYPE) 
+							|| userMsg.getMsgtype().equals(Constant.MSG_REPLY_COMMENT_TYPE)){
 						//拼接 1 评论消息List
-						msgComment(userid, userMsg);
+//						msgComment(userid, userMsg);
+						commentMsg(userMsg);
 						if(StringUtils.isBlank(userMsg.getRemark())){
 							//获取评论内容
 							CommentLower commentLower = commentLowerMongoDao.selectCommentLowerByid(Long.toString(userMsg.getSnsid()));
@@ -1157,16 +1159,14 @@ public class UserMsgServiceImpl implements UserMsgService {
 								userMsg.setRemark(commentLower.getContent());
 							}
 						}
-					}else if(userMsg.getMsgtype().equals(Constant.MSG_FLOWER_TYPE)){
+					}
+//					else if(userMsg.getMsgtype().equals(Constant.MSG_FLOWER_TYPE)){
+//						//拼接 3 送花消息List
+//						likeMsg(userMsg);
+//					}
+					else{
 						//拼接 3 送花消息List
-						msgFlowerAndDiamond(userMsg);
-//						String remark = Constant.MSG_FLOWER_MODEL.replace("n", userMsg.getNum().toString());
-//						userMsg.setRemark(remark);
-					}else{
-						//拼接  5:送钻石消息List
-						msgFlowerAndDiamond(userMsg);
-//						String remark = Constant.MSG_DIAMOND_MODEL.replace("n", userMsg.getNum().toString());
-//						userMsg.setRemark(remark);
+						likeMsg(userMsg);
 					}
 					//初始化消息中用户信息----friendid
 					initMsgUserInfoByFriendid(userMsg, userid);
@@ -1202,10 +1202,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private void msgFlowerAndDiamond(UserMsg userMsg){
-		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步送花消息
-		likeMsg(userMsg);
-	}
+//	private void msgFlowerAndDiamond(UserMsg userMsg){
+//		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步送花消息
+//		likeMsg(userMsg);
+//	}
 	
 	/**
 	 * @author yinxc
@@ -1214,10 +1214,10 @@ public class UserMsgServiceImpl implements UserMsgService {
 	 * return_type
 	 * UserMsgServiceImpl
 	 */
-	private void msgComment(long userid, UserMsg userMsg){
-		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
-		commentMsg(userMsg);
-	}
+//	private void msgComment(long userid, UserMsg userMsg){
+//		//gtype 0 零散 1 目标中 2 榜中 3圈子中 4 教室中        针对进步点赞消息
+//		commentMsg(userMsg);
+//	}
 	
 	/**
 	 * @author yinxc
@@ -1229,45 +1229,25 @@ public class UserMsgServiceImpl implements UserMsgService {
 	private void commentMsg(UserMsg userMsg){
 		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-		if("0".equals(userMsg.getGtype())){
-			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-			if (null == improve){
-				return;
-			}
-			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-			userMsg.setImpItype(improve.getItype());
-		}else if("1".equals(userMsg.getGtype())){
-			//1 目标中  进步评论消息
-			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-			userMsg.setImpItype(improve.getItype());
-		}else if("2".equals(userMsg.getGtype())){
-			//2 榜中   进步点赞消息
-			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+		if("0".equals(userMsg.getGtype()) || "1".equals(userMsg.getGtype()) 
+				|| "2".equals(userMsg.getGtype()) || "2".equals(userMsg.getGtype())
+				|| "3".equals(userMsg.getGtype()) || "4".equals(userMsg.getGtype())){
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),
+					String.valueOf(userMsg.getUserid()), userMsg.getGtype(), String.valueOf(userMsg.getGtypeid()));
 			if(improve != null){
 				userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 				userMsg.setImpItype(improve.getItype());
 			}
-		}else if("3".equals(userMsg.getGtype())){
-			//3圈子中      进步点赞消息
-			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+		}else if("13".equals(userMsg.getGtype())){
+			//批复被评论---进步评论
+			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(), 
+					String.valueOf(userMsg.getUserid()), "5", String.valueOf(userMsg.getGtypeid()));
 			if(improve != null){
 				userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 				userMsg.setImpItype(improve.getItype());
 			}
-		}else if("4".equals(userMsg.getGtype())){
-			//4 教室中   进步点赞消息
-			Improve improve = improveService.selectImproveByImpidMuc(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
-			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
-			userMsg.setImpItype(improve.getItype());
-		}else if("10".equals(userMsg.getGtype())){
-			//10 榜中   评论消息   获取榜图片
-			userMsg = impRankItype(userMsg, userMsg.getGtype());
-		}else if("11".equals(userMsg.getGtype())){
-			//11 圈子中      评论消息   获取圈子图片
-			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}else{
-			//12 教室中   评论消息    获取教室图片
+			//10榜中 11圈子中 12教室  各类型中   评论消息    获取各类型图片
 			userMsg = impRankItype(userMsg, userMsg.getGtype());
 		}
 	}
@@ -1404,7 +1384,8 @@ public class UserMsgServiceImpl implements UserMsgService {
 		//针对进步点赞消息
 		//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
 		//10：榜中  11 圈子中  12 教室中  13:教室批复作业
-		Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
+		Improve improve = improveService.selectImproveByImpid(userMsg.getSnsid(),
+				String.valueOf(userMsg.getUserid()),userMsg.getGtype(),String.valueOf(userMsg.getGtypeid()));
 		if(null != improve){
 			userMsg.setImpPicFilekey(improveService.getFirstPhotos(improve));
 			userMsg.setImpItype(improve.getItype());
