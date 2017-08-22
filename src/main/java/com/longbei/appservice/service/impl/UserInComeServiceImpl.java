@@ -279,8 +279,8 @@ public class UserInComeServiceImpl implements UserInComeService{
                     }
                 });
             }
-            if (res > 0){
-                userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            int n= userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (n > 0){
                 userInComeDetail.setDetailid(uorder.getDetailid());
                 userInComeDetail.setUpdatetime(new Date());
                 if ("4".equals(uiostatus)){
@@ -469,7 +469,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             int res = userInComeOrderMapper.insertSelective(userInComeOrder);
             if (res > 0){
                 baseResp = userMoneyDetailService.insertPublic
-                        (Long.parseLong(userid),"15",Integer.parseInt(userInComeOrder.getNum()),0);
+                        (Long.parseLong(userid),"11",Integer.parseInt(userInComeOrder.getNum()),0);
             }
             if (ResultUtil.isSuccess(baseResp)){
                 UserInComeDetail userInComeDetail = new UserInComeDetail();
