@@ -251,8 +251,10 @@ public class ImproveServiceImpl implements ImproveService{
 //                		//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
                     	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
             			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
+                    	Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
+                    	String remark = "您在教室《" + classroom.getClasstitle() + "》中的作业已被回复";
                     	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), improve.getImpid().toString(), 
-                    			"13", businessid, "批复作业", "2", "12", "教室作业批复", 0, "", "");
+                    			"13", businessid, remark, "2", "12", "教室作业批复", 0, "", "");
 //                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
                     }
                 }
