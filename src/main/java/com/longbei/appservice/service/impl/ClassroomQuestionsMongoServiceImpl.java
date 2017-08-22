@@ -329,15 +329,14 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1100, Constant.RTNINFO_SYS_1100);
 			}
 			insertLower(classroomQuestionsLower);
+			String remark = "您在教室《" + classroom.getClasstitle() + "》中的提问已被回复："+ classroomQuestionsLower.getContent();
 			//sourcetype 0:运营  1:app  2:商户
 			if("0".equals(classroom.getSourcetype())){
 				//推送@我消息
-				String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomQuestionsLower.getFriendid(), 
 						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
 			}else if("1".equals(classroom.getSourcetype())){
 				//推送@我消息
-				String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
 				userMsgService.insertMsg(classroom.getUserid().toString(), classroomQuestionsLower.getFriendid(), 
 						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
 			}

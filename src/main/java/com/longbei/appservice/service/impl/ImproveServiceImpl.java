@@ -232,30 +232,15 @@ public class ImproveServiceImpl implements ImproveService{
                     
                     //修改用户作业信息     pimpid对应批复id
                     improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
-                    //教室批复作业---当成一条主评论信息(学员可以评论老师的批复)
-//                    Comment comment = new Comment();
-//         			comment.setContent("批复作业");
-//         			comment.setCreatetime(new Date());
-//         			comment.setBusinesstype("5");
-//         			comment.setBusinessid(businessid);
-//         			comment.setUserid(userid);
-//         			comment.setFriendid("0");
-//         			comment.setImpid(pimpid);
-//         			commentMongoService.insertComment(comment);
+                    //教室批复作业
                     commentid = improve.getImpid().toString();
                     ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
-                    	//1 对话消息(msgtype 0 聊天 1 评论 2 点赞 3  送花 4 送钻石  5:粉丝  等等)  
-//                		//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
-//                		//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
-                    	//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
-            			//10：榜中  11 圈子中  12 教室中  13:教室批复作业
                     	Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
-                    	String remark = "您在教室《" + classroom.getClasstitle() + "》中的作业已被回复";
+                    	String remark = "您在教室《" + classroom.getClasstitle() + "》中的作业已被批复";
                     	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), improve.getImpid().toString(), 
                     			"13", businessid, remark, "2", "12", "教室作业批复", 0, "", "");
-//                        addReplyMsg(improveClassroom.getUserid(), Long.parseLong(businessid), Long.parseLong(userid), improve.getImpid());
                     }
                 }
                 break;
