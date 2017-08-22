@@ -10,7 +10,9 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.UserSpecialcase;
 import com.longbei.appservice.service.SysSensitiveService;
+import com.longbei.appservice.service.UserSpecialcaseService;
 import com.longbei.appservice.service.UserLevelService;
 import com.longbei.appservice.service.UserRelationService;
 import com.longbei.appservice.service.UserService;
@@ -43,6 +45,8 @@ public class AppUserApiController {
     private UserRelationService userRelationService;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private UserSpecialcaseService userSpecialcaseService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -434,6 +438,35 @@ public class AppUserApiController {
             baseResp = userService.isMoneyEnough(totalPrice,userid);
         } catch (Exception e) {
             logger.error("isMoneyEnough totalPrice={} userid error:",totalPrice,userid,e);
+        }
+        return baseResp;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectUserSpecialcase")
+    public BaseResp<UserSpecialcase> selectUserSpecialcase() {
+        BaseResp<UserSpecialcase> baseResp = new BaseResp<>();
+        try {
+            baseResp = userSpecialcaseService.selectUserSpecialcase();
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectUserSpecialcase for adminservice ",e);
+        }
+        return baseResp;
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/updateUserSpecialcase")
+    public BaseResp<Object> updateUserSpecialcase(@RequestBody UserSpecialcase userSpecialcase) {
+        logger.info("updateUserSpecialcases and userSpecialcase={}", JSON.toJSONString(userSpecialcase));
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(userSpecialcase.getNoRegisterLimit(),userSpecialcase.getNoSwitchLogin(),userSpecialcase.getCreateuid()+"")){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = userSpecialcaseService.updateUserSpecialcase(userSpecialcase);
+        } catch (Exception e) {
+            logger.error("updateUserSpecialcases for adminservice and userSpecialcase={}", JSON.toJSONString(userSpecialcase),e);
         }
         return baseResp;
     }

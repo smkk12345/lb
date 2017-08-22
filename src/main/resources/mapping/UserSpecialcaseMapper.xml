@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longbei.appservice.dao.UserSpecialcaseMapper" >
+  <resultMap id="BaseResultMap" type="com.longbei.appservice.entity.UserSpecialcase" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="no_switch_login" property="noSwitchLogin" jdbcType="VARCHAR" />
+    <result column="no_register_limit" property="noRegisterLimit" jdbcType="VARCHAR" />
+    <result column="createuid" property="createuid" jdbcType="BIGINT" />
+    <result column="operatedate" property="operatedate" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, no_switch_login, no_register_limit, createuid, operatedate, createtime, updatetime
+  </sql>
+  <select id="selectUserSpecialcase" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_specialcase
+    limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_specialcase
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.longbei.appservice.entity.UserSpecialcase" >
+    insert into user_specialcase (createtime)
+    values (#{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.UserSpecialcase" >
+    insert into user_specialcase
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="noSwitchLogin != null" >
+        no_switch_login,
+      </if>
+      <if test="noRegisterLimit != null" >
+        no_register_limit,
+      </if>
+      <if test="createuid != null" >
+        createuid,
+      </if>
+      <if test="operatedate != null" >
+        operatedate,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="noSwitchLogin != null" >
+        #{noSwitchLogin,jdbcType=VARCHAR},
+      </if>
+      <if test="noRegisterLimit != null" >
+        #{noRegisterLimit,jdbcType=VARCHAR},
+      </if>
+      <if test="createuid != null" >
+        #{createuid,jdbcType=BIGINT},
+      </if>
+      <if test="operatedate != null" >
+        #{operatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateUserSpecialcase" parameterType="com.longbei.appservice.entity.UserSpecialcase" >
+    update user_specialcase
+    <set >
+      <if test="noSwitchLogin != null" >
+        no_switch_login = #{noSwitchLogin,jdbcType=VARCHAR},
+      </if>
+      <if test="noRegisterLimit != null" >
+        no_register_limit = #{noRegisterLimit,jdbcType=VARCHAR},
+      </if>
+      <if test="createuid != null" >
+        createuid = #{createuid,jdbcType=BIGINT},
+      </if>
+      <if test="operatedate != null" >
+        operatedate = #{operatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserSpecialcase" >
+    update user_specialcase
+    set no_switch_login = #{noSwitchLogin,jdbcType=VARCHAR},
+      no_register_limit = #{noRegisterLimit,jdbcType=VARCHAR},
+      createuid = #{createuid,jdbcType=BIGINT},
+      operatedate = #{operatedate,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
