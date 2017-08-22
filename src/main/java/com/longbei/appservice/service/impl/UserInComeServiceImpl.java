@@ -279,8 +279,8 @@ public class UserInComeServiceImpl implements UserInComeService{
                     }
                 });
             }
-            if (res > 0){
-                userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            int n= userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (n > 0){
                 userInComeDetail.setDetailid(uorder.getDetailid());
                 userInComeDetail.setUpdatetime(new Date());
                 if ("4".equals(uiostatus)){
