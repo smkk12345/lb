@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -72,9 +73,12 @@ public class UserInComeServiceImpl implements UserInComeService{
     public BaseResp<String> updateUserInCome(String classroomId,
                                              final String userId, String originUserId,
                                              final String origin, String type,
-                                             final int num, String detailremarker) {
+                                             int num, String detailremarker) {
 
         BaseResp<String> baseResp = new BaseResp<>();
+        if ("0".equals(type)){
+            num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
+        }
         //跟新 user_income
         baseResp = updateUserInCome(userId,num,type);
         if (!ResultUtil.isSuccess(baseResp)){

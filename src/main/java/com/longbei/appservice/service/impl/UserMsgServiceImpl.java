@@ -992,27 +992,31 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if (null != list && list.size()>0) {
 				//拼接获取   对话消息---除赞消息,粉丝消息  消息记录展示字段List
 				//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问
-				//					14:发布新公告   15:获奖   16:剔除  42.榜单公告更新   17:加入请求审批结果 
-				//					34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜   49:发布榜单审核未通过 50:个人定制榜邀请
-				// 					51.入榜审核通过 52.入榜审核不通过  54: 教室成员退出教室  57:教室关闭    60:教室发布新公告
-				//					61:教室疑答回复
+				//					15:获奖   16:剔除  42.榜单公告更新   17:加入龙榜/群组的申请审核结果 
+				//					34.加入的榜获奖通知---获奖消息  44: 榜中成员下榜  46 榜关闭   49:发布榜单审核未通过 50:个人定制榜邀请
+				// 					51.入榜审核通过 52.入榜审核不通过  54: 剔除教室成员  57:教室关闭    60:教室发布新公告
+				//					61:教室疑答回复 
+				//                  63：教室收益提现到钱包 64:教室提现到银行卡，支付宝 65:老师认证审核结果     )
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
 							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype()) 
-							&& !"66".equals(userMsg.getMsgtype()) && !"67".equals(userMsg.getMsgtype()) 
-							&& !"68".equals(userMsg.getMsgtype())){
-						if("61".equals(userMsg.getMsgtype())){
-							if(!StringUtils.isBlank(userMsg.getFriendid().toString())){
-								//教室疑答回复---显示教室老师信息
-								UserCard userCard = userCardMapper.selectByCardid(userMsg.getFriendid());
-								AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
-								appUserMongoEntity.setAvatar(userCard.getAvatar());
-								appUserMongoEntity.setId(userCard.getUserid().toString());
-								appUserMongoEntity.setUserid(userCard.getUserid().toString());
-								appUserMongoEntity.setNickname(userCard.getDisplayname());
-								userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
+							&& !"66".equals(userMsg.getMsgtype()) && !"67".equals(userMsg.getMsgtype())){
+						if("61".equals(userMsg.getMsgtype()) || "12".equals(userMsg.getMsgtype())){
+							Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getGtypeid());
+							if(null == classroom){
+								continue;
 							}
-							
+							UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+							if(null == userCard){
+								continue;
+							}
+							//教室疑答回复---显示教室老师信息
+							AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+							appUserMongoEntity.setAvatar(userCard.getAvatar());
+							appUserMongoEntity.setId(classroom.getUserid().toString());
+							appUserMongoEntity.setUserid(classroom.getUserid().toString());
+							appUserMongoEntity.setNickname(userCard.getDisplayname());
+							userMsg.setAppUserMongoEntityFriendid(appUserMongoEntity);
 						}else{
 							initMsgUserInfoByFriendid(userMsg, userid);
 						}

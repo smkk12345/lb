@@ -1677,14 +1677,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             if(userIdList.size() > 0){
                 String remark = null;
+                UserMsg userMsg = new UserMsg();
                 if(status == 1){
                     remark = "您提交的加入龙榜\""+rank.getRanktitle()+"\"申请,已被审核通过,快去看看吧!";
+                    userMsg.setMsgtype("51");
                 }else{
                     remark = "抱歉,您提交的加入龙榜\""+rank.getRanktitle()+"\"申请,已被榜主拒绝!";
+                    userMsg.setMsgtype("52");
                 }
-                UserMsg userMsg = new UserMsg();
                 userMsg.setFriendid(Long.parseLong(rank.getCreateuserid()));
-                userMsg.setMsgtype("17");
 //                userMsg.setSnsid(rank.getRankid());
                 userMsg.setRemark(remark);
                 //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统

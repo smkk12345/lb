@@ -72,6 +72,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			insertCount(comment);
 			
 			//businesstype 类型    0 零散进步评论   1 目标进步评论    2 榜中微进步评论  3圈子中微进步评论 4 教室中微进步评论
+			//					5:教室成员对老师回复作业的评论
 			// 					10：榜评论  11 圈子评论  12 教室评论
 			if(!"10".equals(comment.getBusinesstype()) && !"11".equals(comment.getBusinesstype()) 
 					&& !"12".equals(comment.getBusinesstype())){
@@ -114,10 +115,6 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 						}
 					});
 				}
-
-
-
-//				insertMsg(comment);
 			}
 
 			//添加评论---    +积分
