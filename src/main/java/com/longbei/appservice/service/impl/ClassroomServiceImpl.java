@@ -1089,6 +1089,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
 		Page<Classroom> page = new Page<>(startNum/endNum+1,endNum);
+		Map<String,Object> map = new HashedMap();
         try {
             int totalcount = classroomMapper.selectSearchCount(classrooms);
 //            startNum = Page.setPageNo(startNum,totalcount,endNum);
@@ -1135,6 +1136,16 @@ public class ClassroomServiceImpl implements ClassroomService {
             logger.error("selectPcSearchClassroomList for adminservice classroom, startNum = {}, pageSize = {}",
   					JSON.toJSON(classrooms).toString(), startNum, endNum, e);
         }
+        Classroom cr = new Classroom();
+		cr.setUserid(classrooms.getUserid());
+		cr.setIsdel("2");
+		int res = classroomMapper.selectSearchCount(cr);
+		if (res > 0){
+			map.put("hasclose",1);
+		} else {
+			map.put("hasclose",0);
+		}
+
         return baseResp;
 	}
 	
