@@ -130,7 +130,7 @@
     set
     outgo = outgo + #{num},
     updatetime = #{updatetime}
-    where userid = #{userid,jdbcType=BIGINT} AND (total-outgo) > #{num}
+    where userid = #{userid,jdbcType=BIGINT} AND (total-outgo) >= #{num}
   </update>
 
 
