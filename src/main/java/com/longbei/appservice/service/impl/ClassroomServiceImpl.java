@@ -847,17 +847,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
 			if(null == classroom){
-				return reseResp;
-			}
-			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-			if(null == userCard){
-				return reseResp;
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 			}
 			//判断当前用户是否是老师
-			if(userCard.getUserid() != userid){
+			int isteacher = isTeacher(userid + "", classroom);
+			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1107, Constant.RTNINFO_SYS_1107);
 			}
-			
 			boolean temp = updateClassnotice(classroomid, classnotice);
 			if (temp) {
 				if("1".equals(ismsg)){
@@ -901,13 +897,22 @@ public class ClassroomServiceImpl implements ClassroomService {
 					for (ClassroomMembers classroomMembers : list) {
 						//退出教室
 						classroomMembersMapper.updateItypeByClassroomidAndUserid(classroomid, classroomMembers.getUserid(), "1");
-						//发通知消息
+						//发@我消息
 						String remark = "您参加的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
                         userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomMembers.getUserid().toString(),
                                 "", "12",
                                 classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
 					}
 				}
+				//推送给老师@我消息
+				//sourcetype 0:运营  1:app  2:商户
+				if("1".equals(classroom.getSourcetype())){
+					String remark = "您创建的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
+	                userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(),
+	                        "", "12",
+	                        classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
+				}
+				
 				//取消关注该教室
 				userBusinessConcernMapper.deleteBusinessConcern(4, classroomid);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

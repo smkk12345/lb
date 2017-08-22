@@ -469,7 +469,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             int res = userInComeOrderMapper.insertSelective(userInComeOrder);
             if (res > 0){
                 baseResp = userMoneyDetailService.insertPublic
-                        (Long.parseLong(userid),"15",Integer.parseInt(userInComeOrder.getNum()),0);
+                        (Long.parseLong(userid),"11",Integer.parseInt(userInComeOrder.getNum()),0);
             }
             if (ResultUtil.isSuccess(baseResp)){
                 UserInComeDetail userInComeDetail = new UserInComeDetail();
