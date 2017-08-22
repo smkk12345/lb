@@ -594,6 +594,7 @@ public class Constant {
 	public static final String  MSG_FLOWER_TYPE = "3";   //送花
 	public static final String  MSG_DIAMOND_TYPE = "4";  //送钻石
 	public static final String  MSG_FANS_TYPE = "5";     //粉丝
+	public static final String  MSG_REPLY_COMMENT_TYPE = "68";  //批复被评论
 	
 	public static final String  MSG_INVITE_TYPE = "10";     //邀请
 	public static final String  MSG_APPLY_TYPE = "11";      //申请加入特定圈子
