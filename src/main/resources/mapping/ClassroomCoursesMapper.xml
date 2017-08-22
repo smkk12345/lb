@@ -23,12 +23,12 @@
     <result column="teachingtypes" property="teachingtypes"/>
     <result column="starttime" property="starttime"/>
     <result column="endtime" property="endtime"/>
-    <result column="playback" property="playback"/>
+    <result column="status" property="status"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup,teachingtypes,starttime,endtime,playback
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -222,8 +222,8 @@
       <if test="endtime != null" >
         endtime,
       </if>
-      <if test="playback != null" >
-        playback,
+      <if test="status != null" >
+        status,
       </if>
 
     </trim>
@@ -288,8 +288,8 @@
       <if test="endtime != null" >
         #{endtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="playback != null" >
-        #{playback},
+      <if test="status != null" >
+        #{status},
       </if>
     </trim>
   </insert>
@@ -336,7 +336,16 @@
         duration = #{duration},
       </if>
       <if test="udpatetime != null" >
-        udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
+        udpatetime = #{udpatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="starttime != null">
+        starttime = #{starttime},
+      </if>
+      <if test="endtime != null">
+        endtime = #{endtime}
+      </if>
+      <if test="status != null">
+        status = #{status}
       </if>
     </set>
     where id = #{id} 

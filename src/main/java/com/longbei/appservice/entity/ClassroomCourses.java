@@ -53,6 +53,7 @@ public class ClassroomCourses {
 
     private String playback ;//0 未开启回放 1 开启回放
 
+    private Integer status;//直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
 
     /**
      * 
@@ -338,4 +339,11 @@ public class ClassroomCourses {
         return playback;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }
