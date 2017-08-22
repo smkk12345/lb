@@ -84,16 +84,24 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			insert(classroomQuestions);
 			Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomQuestions.getClassroomid()));
 			if(null != classroom){
-				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+				reseResp.getExpandData().put("isteacher", classroomService.isTeacher(classroomQuestions.getUserid().toString(), classroom));
+//				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				initQuestionsUserInfoByUserid(classroomQuestions, null);
-				String isreply = "0";
-				if(!"1".equals(isreply)){
-					//判断当前用户是否是老师
-					if(userCard.getUserid() != Long.parseLong(classroomQuestions.getUserid())){
-						isreply = "2";
-					}
+//				String isreply = "0";
+//				if(!"1".equals(isreply)){
+//					//判断当前用户是否是老师
+//					if(userCard.getUserid() != Long.parseLong(classroomQuestions.getUserid())){
+//						isreply = "2";
+//					}
+//				}
+//				classroomQuestions.setIsreply(isreply);
+				//sourcetype 0:运营  1:app  2:商户
+				if("1".equals(classroom.getSourcetype())){
+					//推送@我消息
+					String remark = "您发布的教室《" + classroom.getClasstitle() + "》有新的提问";
+					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
+							"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室有新的提问", 0, "", "");
 				}
-				classroomQuestions.setIsreply(isreply);
 			}
 			reseResp.setData(classroomQuestions);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -321,10 +329,19 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1100, Constant.RTNINFO_SYS_1100);
 			}
 			insertLower(classroomQuestionsLower);
-			//推送@我消息
-			String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
-			userMsgService.insertMsg(classroom.getCardid()+"", classroomQuestionsLower.getFriendid(), 
-					"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+			//sourcetype 0:运营  1:app  2:商户
+			if("0".equals(classroom.getSourcetype())){
+				//推送@我消息
+				String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
+				userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomQuestionsLower.getFriendid(), 
+						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+			}else if("1".equals(classroom.getSourcetype())){
+				//推送@我消息
+				String remark = "您在教室中的发起的问题,老师回复:"+ classroomQuestionsLower.getContent();
+				userMsgService.insertMsg(classroom.getUserid().toString(), classroomQuestionsLower.getFriendid(), 
+						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+			}
+			
 			
 //			initQuestionsLower(classroomQuestionsLower);
 			AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
