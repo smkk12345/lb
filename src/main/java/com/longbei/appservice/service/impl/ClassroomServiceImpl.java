@@ -870,7 +870,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
 					if(null != list && list.size()>0){
 						for (ClassroomMembers classroomMembers : list) {
-							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您:" + classnotice;
+							String remark = "教室《" + classroom.getClasstitle() + "》更新了公告:" + classnotice;
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 //							//snsid---教室业务id
@@ -878,7 +878,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "2", "60", "教室发布最新公告", 0, "", "");
+									"", "12", classroomid + "", remark, "2", "60", "教室更新公告", 0, "", "");
 //							addMsg(classroomid, userid, classnotice, classroomMembers.getUserid());
 						}
 					}
@@ -907,7 +907,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 						//退出教室
 						classroomMembersMapper.updateItypeByClassroomidAndUserid(classroomid, classroomMembers.getUserid(), "1");
 						//发@我消息
-						String remark = "您参加的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
+						String remark = "很遗憾,您加入的教室《"+classroom.getClasstitle()+"》因违反龙杯相关规定，已被关闭";
                         userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomMembers.getUserid().toString(),
                                 "", "12",
                                 classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
@@ -916,7 +916,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//推送给老师@我消息
 				//sourcetype 0:运营  1:app  2:商户
 				if("1".equals(classroom.getSourcetype())){
-					String remark = "您创建的教室'"+classroom.getClasstitle()+"'因违反龙杯相关规定，已被关闭";
+					String remark = "您的教室《"+classroom.getClasstitle()+"》因违反龙杯相关规定，已被关闭";
 	                userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(),
 	                        "", "12",
 	                        classroomid + "", remark, "2", "57", "教室关闭", 0, "", "");
@@ -1109,6 +1109,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	 * param pageNo   pageSize
 	 * 2017年2月28日
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Page<Classroom>> selectPcSearchClassroomList(Classroom classrooms, int startNum, int endNum){
 		BaseResp<Page<Classroom>> baseResp = new BaseResp<>();
@@ -1169,7 +1170,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		} else {
 			map.put("hasclose",0);
 		}
-
+		baseResp.setExpandData(map);
         return baseResp;
 	}
 	
@@ -1255,7 +1256,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					List<ClassroomMembers> list = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 0);
 					if(null != list && list.size()>0){
 						for (ClassroomMembers classroomMembers : list) {
-							String remark = "在教室'" + classroom.getClasstitle() + "'中发布了最新公告,并@了您:" + classnotice;
+							String remark = "教室《" + classroom.getClasstitle() + "》更新了公告:" + classnotice;
 							//2:@我消息(msgtype  10:邀请   11:申请加入特定圈子   12:老师批复作业  13:老师回复提问   
 //							//14:发布新公告   15:获奖   16:剔除   17:加入请求审批结果  )
 //							//snsid---教室业务id
@@ -1263,7 +1264,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//10：榜中  11 圈子中  12 教室中  13:教室批复作业
 //							//mtype 0 系统消息  1 对话消息   2:@我消息
 							userMsgService.insertMsg(userid + "", classroomMembers.getUserid().toString(), 
-									"", "12", classroomid + "", remark, "2", "60", "教室发布最新公告", 0, "", "", "", classnotice);
+									"", "12", classroomid + "", remark, "2", "60", "教室更新公告", 0, "", "", "", classnotice);
 						}
 					}
 				}

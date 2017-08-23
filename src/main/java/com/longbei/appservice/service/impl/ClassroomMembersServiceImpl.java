@@ -19,13 +19,11 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
-import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.UserBehaviourService;
@@ -54,8 +52,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private ImproveService improveService;
 	@Autowired
 	private UserRelationService userRelationService;
-	@Autowired
-	private UserCardMapper userCardMapper;
+//	@Autowired
+//	private UserCardMapper userCardMapper;
 	@Autowired
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
@@ -129,7 +127,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			if (temp) {
 				//推送通知消息给老师
 				if("1".equals(classroom.getSourcetype())){
-					String remark = "学员加入您发布的教室《" + classroom.getClasstitle() + "》";
+					String remark = "您的教室《" + classroom.getClasstitle() + "》中有新学员'" + 
+										userInfo.getNickname() + "'加入啦,快去看看吧";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
 							"", "12", record.getClassroomid().toString(), remark, "0", "67", "学员加入教室", 0, "", "");
 				}
@@ -254,6 +253,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
+				remark = remark.replace("n", classroom.getClasstitle());
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
 						"", "12", classroomid + "", remark, "2", "54", "教室踢除成员", 0, "", "");
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -342,11 +342,12 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			UserInfo userInfo = userService.selectJustInfo(userid);
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//推送通知消息给老师
 				if("1".equals(classroom.getSourcetype())){
-					String remark = "学员退出您发布的教室《" + classroom.getClasstitle() + "》";
+					String remark = "学员" + userInfo.getNickname() + "已退出您的教室《" + classroom.getClasstitle() + "》";
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
 							"", "12", classroomid + "", remark, "0", "66", "学员退出教室", 0, "", "");
 				}

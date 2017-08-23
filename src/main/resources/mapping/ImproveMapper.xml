@@ -434,8 +434,13 @@
 
   <select id="selectClassroomImproveList" resultMap="BaseResultMap" >
     select
-      <include refid="Classroom_List" />
-    from improve_classroom
+    i.id, i.impid, i.itype, i.brief, i.pickey, i.filekey, i.userid, i.businessid, i.businesstype, i.likes,
+    i.flowers, i.diamonds, i.createtime, i.updatetime, i.indexnum, i.isdel, i.ismainimp, i.ptype, i.ispublic,i.sourcekey,
+    i.pimpid, i.isresponded,i.duration,c.likes as totallikes,c.flowers as totalflowers
+    from improve_classroom i
+    JOIN classroom_members c
+    on i.businessid=c.classroomid
+    AND i.userid=c.userid
     <where>
       <if test="iscomplain != null and iscomplain != ''">
         <choose>
