@@ -435,16 +435,20 @@ public class UserInComeServiceImpl implements UserInComeService{
         if ("6".equals(tyep)){
             remark = "您申请提现的"+ num + "个龙币，已转入您的钱包。";
         }
-        userMsgMapper.insertSelective(createInviteUserMsg(userid,remark,title));
+        userMsgMapper.insertSelective(createInviteUserMsg(userid,remark,title,tyep));
     }
 
-    private UserMsg createInviteUserMsg(String  userid,String remark,String title){
+    private UserMsg createInviteUserMsg(String  userid,String remark,String title,String type){
         UserMsg userMsg = new UserMsg();
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
         userMsg.setUserid(Long.parseLong(userid));
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
         userMsg.setMtype("0");
-        userMsg.setMsgtype("64");
+        if ("6".equals(type)){
+            userMsg.setMsgtype("63");
+        } else {
+            userMsg.setMsgtype("64");
+        }
         //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
         //10：榜中  11 圈子中  12 教室中  13:教室批复作业
         userMsg.setGtype("12");
