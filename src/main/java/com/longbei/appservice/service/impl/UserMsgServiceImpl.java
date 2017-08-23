@@ -1000,8 +1000,9 @@ public class UserMsgServiceImpl implements UserMsgService {
 				for (UserMsg userMsg : list) {
 					if(!"15".equals(userMsg.getMsgtype()) && !"16".equals(userMsg.getMsgtype())
 							&& !"17".equals(userMsg.getMsgtype()) && !"34".equals(userMsg.getMsgtype()) 
-							&& !"66".equals(userMsg.getMsgtype()) && !"67".equals(userMsg.getMsgtype())){
-						if("61".equals(userMsg.getMsgtype()) || "12".equals(userMsg.getMsgtype())){
+							&& !"66".equals(userMsg.getMsgtype()) && !"67".equals(userMsg.getMsgtype())
+							&& !"61".equals(userMsg.getMsgtype())){
+						if("12".equals(userMsg.getMsgtype()) || "60".equals(userMsg.getMsgtype())){
 							Classroom classroom = classroomMapper.selectByPrimaryKey(userMsg.getGtypeid());
 							if(null == classroom){
 								continue;

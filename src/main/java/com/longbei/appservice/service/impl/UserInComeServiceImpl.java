@@ -425,7 +425,7 @@ public class UserInComeServiceImpl implements UserInComeService{
         }
         //结算失败消息
         if ("3".equals(tyep)){
-            remark = "您申请提现的"+ num + "个龙币，结算失败龙币已经退还到您的收益余额中，给您造成的不变尽请谅解，详细信息清登陆龙杯官网进行查看。";
+            remark = "您申请提现的"+ num + "个龙币，结算失败龙币已经退还到您的收益余额中，给您造成的不便尽请谅解，详细信息请登录龙杯官网进行查看。";
         }
         //结算成功消息
         if ("4".equals(tyep)){

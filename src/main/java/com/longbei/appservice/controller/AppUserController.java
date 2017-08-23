@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.ShortUrlUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
@@ -211,9 +213,13 @@ public class AppUserController extends BaseController {
  		//一些其他的逻辑
  		
  		try {
+//            String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
+//            baseResp.getExpandData().put("registerurl",shortUrl);
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
             baseResp.getExpandData().put("hasnewmsg","1");
             baseResp.getExpandData().put("hasnewaskfriend","1");
+            String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
+            baseResp.getExpandData().put("registerurl",shortUrl);
         } catch (Exception e) {
             logger.error("init userid = {} ", userid, e);
         }
