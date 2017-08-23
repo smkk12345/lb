@@ -3087,6 +3087,9 @@ public class ImproveServiceImpl implements ImproveService{
                                     Constant.IMPROVE_CLASSROOM_REPLY_TYPE,
                                     improveClassroom.getCreatetime());
                             replyImprove.setFilekey(improveClassroom.getFilekey());
+                            replyImprove.setDuration(improveClassroom.getDuration());
+                            replyImprove.setPicattribute(improveClassroom.getPicattribute());
+
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
                             appUserMongo.setUserid(userCard.getUserid().toString());

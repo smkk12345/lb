@@ -125,10 +125,19 @@ public class ClassroomServiceImpl implements ClassroomService {
             ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(impid);
             ReplyImprove replyImprove = null;
             if(null != improveClassroom){
-            	replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
-                		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                		improveClassroom.getUserid(), classroomid, "5", improveClassroom.getCreatetime());
-            	AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
+            	replyImprove = new ReplyImprove(improveClassroom.getImpid(),
+						improveClassroom.getItype(),
+                		improveClassroom.getBrief(),
+						improveClassroom.getPickey(),
+                		improveClassroom.getUserid(),
+						classroomid,
+						Constant.IMPROVE_CLASSROOM_REPLY_TYPE,
+						improveClassroom.getCreatetime());
+				replyImprove.setFilekey(improveClassroom.getFilekey());
+				replyImprove.setDuration(improveClassroom.getDuration());
+				replyImprove.setPicattribute(improveClassroom.getPicattribute());
+
+				AppUserMongoEntity appUserMongo = new AppUserMongoEntity();
             	appUserMongo.setId(classroom.getUserid().toString());
             	appUserMongo.setUserid(classroom.getUserid().toString());
                 appUserMongo.setNickname(userCard.getDisplayname());
