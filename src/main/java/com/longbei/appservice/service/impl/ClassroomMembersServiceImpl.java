@@ -255,7 +255,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				String remark = Constant.MSG_CLASSROOM_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
-						"", "12", classroomid + "", remark, "2", "54", "教室踢除成员", 0, "", "");
+						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper, null);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -472,12 +472,17 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	public BaseResp<Object> quitClassroomByPC(long classroomid, long userid, String itype) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null == classroom){
+				return reseResp;
+			}
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
 				classroomMapper.updateClassinvoloedByClassroomid(classroomid, -1);
 				//推送消息
 				String remark = Constant.MSG_CLASSROOM_MODEL;
+				remark = remark.replace("n", classroom.getClasstitle());
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
 						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper, null);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

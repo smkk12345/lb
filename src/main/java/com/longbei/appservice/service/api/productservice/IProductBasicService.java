@@ -536,4 +536,22 @@ public interface IProductBasicService {
 	void testWx();
 
 
+	/**
+	 * 获取指定用户订单数量
+	 * @param userid
+	 * @return
+	 */
+	@RequestMapping(value = "/api/order/selectTotalOrderNum")
+	BaseResp<Integer> selectTotalOrderNum(String userid);
+
+	/**
+	 * 获取用户订单进步币总数
+	 * @param userid
+	 * @return
+	 */
+	@RequestMapping(value = "/api/order/selectTotalOrderCoinNum")
+	BaseResp<Integer> selectTotalOrderCoinNum(String userid);
+
+
+
 }

@@ -660,4 +660,25 @@ public class OrderServiceImpl implements OrderService {
 		return orderSercviceApi.aliPaySaoMa(price,ordernum,userid);
 	}
 
+	@Override
+	public BaseResp<Integer> selectTotalOrderNum(String userid) {
+		BaseResp<Integer> baseResp = new BaseResp<>();
+		try {
+			baseResp = iProductBasicService.selectTotalOrderNum(userid);
+		} catch (Exception e) {
+			logger.error("selectTotalOrderNum userid={} is error:",userid,e);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Integer> selectTotalOrderCoinNum(String userid) {
+		BaseResp<Integer> baseResp = new BaseResp<>();
+		try {
+			baseResp = iProductBasicService.selectTotalOrderCoinNum(userid);
+		} catch (Exception e) {
+			logger.error("selectTotalOrderCoinNum userid={} is error:",userid,e);
+		}
+		return baseResp;
+	}
 }

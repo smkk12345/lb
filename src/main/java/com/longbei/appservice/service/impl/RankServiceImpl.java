@@ -931,6 +931,27 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
+
+    @Override
+    public BaseResp<Integer> selectownRankCount(Long userId, Integer searchType) {
+        BaseResp<Integer> baseResp = new BaseResp<Integer>();
+        try{
+            if(searchType == 1){//我参与的
+                Map<String,Object> parameterMap = new HashMap<String,Object>();
+                parameterMap.put("userId",userId);
+                parameterMap.put("status","1");
+                parameterMap.put("orderType","updateTimeDesc");
+                parameterMap.put("isdel","0");
+                String num = this.rankMapper.getOwnRankCount(parameterMap);
+                baseResp.initCodeAndDesp();
+                baseResp.setData(num==null?0:Integer.parseInt(num));
+            }
+        }catch(Exception e){
+            logger.error("selectownRankCount userid={} searchType={} is error:",userId,searchType,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 查询榜单列表
      * @param rankId

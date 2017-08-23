@@ -19,6 +19,11 @@
     from user_money_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectMoneyNum" resultType="java.lang.String">
+    SELECT sum(`number`) FROM  user_money_detail
+     WHERE userid = #{userid} and origin = #{origin}
+  </select>
   
   <select id="selectListByUserid" resultMap="BaseResultMap" >
     select 

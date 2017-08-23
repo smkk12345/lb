@@ -183,6 +183,20 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 		return reseResp;
 	}
 
+	@Override
+	public BaseResp<Integer> selectMoneyNum(long userid, String origin) {
+		BaseResp<Integer> baseResp = new BaseResp<>();
+		try {
+			String num = userMoneyDetailMapper.selectMoneyNum(userid,origin);
+			baseResp.initCodeAndDesp();
+			baseResp.setData(num==null?0:Integer.parseInt(num));
+		} catch (Exception e) {
+			logger.error("selectMoneyNum userid={} origin={} is error:",userid,origin,e);
+		}
+		return baseResp;
+	}
+
+
 	//------------------------公用方法，初始化用户龙币信息------------------------------------------
 	/**
      * 初始化用户龙币信息 ------Friendid

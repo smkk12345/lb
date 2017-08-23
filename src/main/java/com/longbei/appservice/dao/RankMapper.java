@@ -115,4 +115,11 @@ public interface RankMapper {
      * @return
      */
     List<Rank> getOwnRankList(Map<String, Object> parameterMap);
+
+    /**
+     * 获取用户参与的榜单数量
+     * @param parameterMap
+     * @return
+     */
+    String getOwnRankCount(Map<String, Object> parameterMap);
 }

@@ -239,4 +239,23 @@ public interface OrderService {
      * @return
      */
 	BaseResp<Object> aliPaySaoMa(String price, String ordernum,String userid);
+
+
+
+	/**
+	 * 获取指定用户订单数量
+	 * @param userid
+	 * @return
+	 */
+	BaseResp<Integer> selectTotalOrderNum(String userid);
+
+	/**
+	 * 获取用户订单进步币总数
+	 * @param userid
+	 * @return
+	 */
+	BaseResp<Integer> selectTotalOrderCoinNum(String userid);
+
+
+
 }
