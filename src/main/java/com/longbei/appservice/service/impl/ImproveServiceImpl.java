@@ -2991,6 +2991,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
             businessid = null;
         }
+        if(type.equals(Constant.IMPROVE_CLASSROOM_REPLY_TYPE)){
+            type = Constant.IMPROVE_CLASSROOM_TYPE;
+        }
         if(!workflow.contains("mp3")){
             pickey = "[\""+pickey+"\"]";
         }
