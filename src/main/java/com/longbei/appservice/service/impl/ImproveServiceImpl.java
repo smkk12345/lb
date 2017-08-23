@@ -1146,14 +1146,14 @@ public class ImproveServiceImpl implements ImproveService{
                 improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),list,"0");
 
                 timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
-                Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
+//                Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
                 userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
-                        Long.parseLong(userid),improve,0);
+                        Long.parseLong(userid),improves,0);
 
                 //看进步是不是今天的,如果是今天的进步,则将redis中保存的用户当天发表的进步-1
                 Date startDate = DateUtils.getDateStart(new Date());
                 Date endDate = DateUtils.getDateEnd(startDate);
-                if(improve.getCreatetime().getTime() >= startDate.getTime() && improve.getCreatetime().getTime() < endDate.getTime()){
+                if(improves.getCreatetime().getTime() >= startDate.getTime() && improves.getCreatetime().getTime() < endDate.getTime()){
                     String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
                     springJedisDao.increment(key,userid,-1);
                 }
