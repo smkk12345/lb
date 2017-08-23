@@ -1,6 +1,5 @@
 package com.longbei.appservice.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -386,6 +385,9 @@ public class OrderController {
 		logger.info("exchangeFlower userid = {}, number = {}, friendid = {}, improveid = {},"
 				+ " businesstype = {}, businessid = {}, payType = {}", 
 				userid, number, friendid, improveid, businesstype, businessid, payType);
+		if(businesstype.equals("0")){
+			businessid = null;
+		}
 		BaseResp<Object> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, number, friendid, improveid, businesstype, payType)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -397,6 +399,9 @@ public class OrderController {
   			}
   			if(Integer.parseInt(number) == 0){
   				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1104, Constant.RTNINFO_SYS_1104);
+  			}
+  			if("1".equals(payType) && Integer.parseInt(number) % 10 != 0){
+  				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1113, Constant.RTNINFO_SYS_1113);
   			}
   			//payType 1:龙币兑换  2：进步币兑换
   			if("1".equals(payType)){

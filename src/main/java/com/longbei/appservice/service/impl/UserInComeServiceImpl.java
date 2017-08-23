@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -72,9 +73,12 @@ public class UserInComeServiceImpl implements UserInComeService{
     public BaseResp<String> updateUserInCome(String classroomId,
                                              final String userId, String originUserId,
                                              final String origin, String type,
-                                             final int num, String detailremarker) {
+                                             int num, String detailremarker) {
 
         BaseResp<String> baseResp = new BaseResp<>();
+        if ("0".equals(type)){
+            num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
+        }
         //跟新 user_income
         baseResp = updateUserInCome(userId,num,type);
         if (!ResultUtil.isSuccess(baseResp)){
@@ -275,8 +279,8 @@ public class UserInComeServiceImpl implements UserInComeService{
                     }
                 });
             }
-            if (res > 0){
-                userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            int n= userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (n > 0){
                 userInComeDetail.setDetailid(uorder.getDetailid());
                 userInComeDetail.setUpdatetime(new Date());
                 if ("4".equals(uiostatus)){
@@ -465,7 +469,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             int res = userInComeOrderMapper.insertSelective(userInComeOrder);
             if (res > 0){
                 baseResp = userMoneyDetailService.insertPublic
-                        (Long.parseLong(userid),"15",Integer.parseInt(userInComeOrder.getNum()),0);
+                        (Long.parseLong(userid),"11",Integer.parseInt(userInComeOrder.getNum()),0);
             }
             if (ResultUtil.isSuccess(baseResp)){
                 UserInComeDetail userInComeDetail = new UserInComeDetail();

@@ -1694,7 +1694,7 @@ public class UserServiceImpl implements UserService {
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID,String.valueOf(userInfo.getUserid()),null,"9",null,
 							remark,"0","30", "选为达人",0, "", "");
 					this.jPushService.pushMessage("消息标识",userInfo.getUserid()+"","设置为达人",
-							"恭喜，您被选为龙杯达人！","",Constant.JPUSH_TAG_COUNT_1304);
+							"恭喜，您被选为龙杯达人！","",Constant.JPUSH_TAG_COUNT_1302);
 				}
 				if ("0".equals(userInfo.getIsfashionman())){
 					String remark = "你被取消达人";

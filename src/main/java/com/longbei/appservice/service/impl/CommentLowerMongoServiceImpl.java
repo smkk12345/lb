@@ -67,7 +67,7 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 						if("5".equals(comment.getBusinesstype())){
 							//批复被评论
 							userMsgService.insertMsg(commentLower.getFirstuserid(), commentLower.getSeconduserid(), 
-									comment.getImpid(), "12", 
+									comment.getImpid(), "13", 
 									comment.getBusinessid(), comment.getContent(), "1", "68", "批复被评论", 0, 
 									comment.getId(), commentLower.getId());
 						}else{

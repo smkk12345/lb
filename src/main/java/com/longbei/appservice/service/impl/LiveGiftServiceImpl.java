@@ -38,6 +38,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private UserMoneyDetailService userMoneyDetailService;
     @Autowired
     private IdGenerateService idGenerateService;
+    @Autowired
+    private UserInComeService userInComeService;
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
 
@@ -72,7 +74,9 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 int giveMoney = liveGift.getPrice()*num;
                 int receiveMoney = giveMoney*(1-Constant.TAKEPERCENTAGE.intValue()/100);
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
-                userMoneyDetailService.insertPublic(toUId,"14",receiveMoney,fromUid);
+                //添加教室收益
+                userInComeService.updateUserInCome(String.valueOf(businessid),String.valueOf(toUId),
+                        String.valueOf(fromUid),"1","0",receiveMoney,null);
             }
             baseResp.initCodeAndDesp();
             baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());

@@ -218,6 +218,7 @@ public class Constant {
 	public static final int STATUS_SYS_1110 = -1110;
 	public static final int STATUS_SYS_1111 = -1111;
 	public static final int STATUS_SYS_1112 = -1112;
+	public static final int STATUS_SYS_1113 = -1113;
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
@@ -396,6 +397,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_1110 = "教室老师已回复的问题不能忽略";
 	public static final String RTNINFO_SYS_1111 = "您没有权限批复作业";
 	public static final String RTNINFO_SYS_1112 = "用户作业您已批复";
+	public static final String RTNINFO_SYS_1113 = "使用龙币购买必须是10朵花的倍数";
+	
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final String RTNINFO_SYS_1201 = "您的资源分类数量已达最大数量,不可再添加新的资源分类!";
@@ -594,6 +597,7 @@ public class Constant {
 	public static final String  MSG_FLOWER_TYPE = "3";   //送花
 	public static final String  MSG_DIAMOND_TYPE = "4";  //送钻石
 	public static final String  MSG_FANS_TYPE = "5";     //粉丝
+	public static final String  MSG_REPLY_COMMENT_TYPE = "68";  //批复被评论
 	
 	public static final String  MSG_INVITE_TYPE = "10";     //邀请
 	public static final String  MSG_APPLY_TYPE = "11";      //申请加入特定圈子
