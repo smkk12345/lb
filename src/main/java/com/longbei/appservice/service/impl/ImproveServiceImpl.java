@@ -239,7 +239,7 @@ public class ImproveServiceImpl implements ImproveService{
                         //批复完成后添加消息
                     	Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
                     	String remark = "您在教室《" + classroom.getClasstitle() + "》中上传的作业已被回复,快来看看吧";
-                    	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), improve.getImpid().toString(), 
+                    	userMsgService.insertMsg(userid, improveClassroom.getUserid().toString(), pimpid, 
                     			"13", businessid, remark, "2", improveClassroom.getBusinesstype(), "教室作业批复", 0, "", "");
                     }
                 }
