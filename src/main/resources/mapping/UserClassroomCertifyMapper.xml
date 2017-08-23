@@ -27,7 +27,7 @@
     </if>
     <if test="classroomCertify.status != null and classroomCertify.status != ''" >
       <choose>
-        <when test="classroomCertify.status == '1'">
+        <when test="classroomCertify.status == '1'.toString()">
           AND (status = '1' OR status = '3')
         </when>
         <otherwise>
@@ -49,7 +49,14 @@
       AND userid LIKE concat(concat('%',#{classroomCertify.userid}),'%')
     </if>
     <if test="classroomCertify.status != null and classroomCertify.status != ''" >
-      AND status = #{classroomCertify.status}
+      <choose>
+        <when test="classroomCertify.status == '1'.toString()">
+          AND (status = '1' OR status = '3')
+        </when>
+        <otherwise>
+          AND status = #{classroomCertify.status}
+        </otherwise>
+      </choose>
     </if>
   </select>
   <select id="selectClassroomCertifyByUserid" parameterType="java.lang.Long" resultMap="BaseResultMap">
