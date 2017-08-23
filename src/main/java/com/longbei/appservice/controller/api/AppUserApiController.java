@@ -7,15 +7,8 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.entity.SysSensitive;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserSpecialcase;
-import com.longbei.appservice.service.SysSensitiveService;
-import com.longbei.appservice.service.UserSpecialcaseService;
-import com.longbei.appservice.service.UserLevelService;
-import com.longbei.appservice.service.UserRelationService;
-import com.longbei.appservice.service.UserService;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +40,9 @@ public class AppUserApiController {
     private SysSensitiveService sysSensitiveService;
     @Autowired
     private UserSpecialcaseService userSpecialcaseService;
+    @Autowired
+    private UserPlDetailService userPlDetailService;
+
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -108,7 +104,14 @@ public class AppUserApiController {
         }
         try {
             UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+            BaseResp<Object> baseResp1 = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
+            Map<String,Object> map = new HashedMap();
+            if (ResultUtil.isSuccess(baseResp1)){
+                List<UserPlDetail> plList = (List<UserPlDetail>) baseResp1.getData();
+                map.put("pl",plList);
+            }
             baseResp.setData(userInfo);
+            baseResp.setExpandData(map);
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("userDetail userid = {}", userid, e);
