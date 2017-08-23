@@ -163,7 +163,7 @@ public class UserMoneyDetailServiceImpl implements UserMoneyDetailService {
 			userMoneyDetail.setFriendid(friendid);
 			userMoneyDetail.setOrigin(origin);
 			userMoneyDetail.setUserid(userInfo.getUserid());
-			if(!"0".equals(origin)){
+			if(!"0".equals(origin) && !"13".equals(origin)){
 				userMoneyDetail.setNumber(0 - number);
 			}else{
 				userMoneyDetail.setNumber(number);
