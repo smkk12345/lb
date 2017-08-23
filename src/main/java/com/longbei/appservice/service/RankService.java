@@ -424,6 +424,15 @@ public interface RankService extends BaseService{
     BaseResp<Object> selectownRank(Long userId,Integer searchType,
                                    Integer startNum, Integer pageSize,String opttype);
 
+
+    /**
+     * 查询和自己相关的榜单
+     * @param searchType 1.我参与的 2.我关注的 3.我创建的
+     * @return
+     */
+    BaseResp<Integer> selectownRankCount(Long userId,Integer searchType);
+
+
     /**
      * 查询榜单奖品列表
      * @param rankId

@@ -42,7 +42,14 @@ public class AppUserApiController {
     private UserSpecialcaseService userSpecialcaseService;
     @Autowired
     private UserPlDetailService userPlDetailService;
-
+    @Autowired
+    private UserMoneyDetailService userMoneyDetailService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private RankAcceptAwardService rankAcceptAwardService;
+    @Autowired
+    private RankService rankService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -104,12 +111,28 @@ public class AppUserApiController {
         }
         try {
             UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+            //十项全能
             BaseResp<Object> baseResp1 = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
+            //充值总龙币数
+            BaseResp<Integer> baseResp2 = userMoneyDetailService.selectMoneyNum(Long.parseLong(userid),"0");
+            //总订单数
+            BaseResp<Integer> baseResp3 = orderService.selectTotalOrderNum(userid);
+            //订单总进步币
+            BaseResp<Integer> baseResp4 = orderService.selectTotalOrderCoinNum(userid);
+            //总获奖数
+            int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(Long.parseLong(userid), "0");
+            //参与的榜总数
+            BaseResp<Integer> baseResp5 = rankService.selectownRankCount(Long.parseLong(userid),1);
             Map<String,Object> map = new HashedMap();
             if (ResultUtil.isSuccess(baseResp1)){
                 List<UserPlDetail> plList = (List<UserPlDetail>) baseResp1.getData();
                 map.put("pl",plList);
             }
+            map.put("buymoney",baseResp2.getData());
+            map.put("totalorder",baseResp3.getData());
+            map.put("totalordercoin",baseResp4.getData());
+            map.put("awardnum",awardnum);
+            map.put("totalrank",baseResp5.getData());
             baseResp.setData(userInfo);
             baseResp.setExpandData(map);
             baseResp.initCodeAndDesp();

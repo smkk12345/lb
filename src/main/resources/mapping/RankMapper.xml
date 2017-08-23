@@ -1012,4 +1012,16 @@
       limit #{startNum},#{pageSize}
   </select>
 
+  <select id="getOwnRankCount" parameterType="map" resultType="java.lang.String">
+    select
+     count(*)
+    from rank r inner join rank_members
+    on r.rankid = rank_members.rankid
+    where r.isdel = #{isdel}
+    and rank_members.status =#{status}
+    and rank_members.userid = #{userId}
+  </select>
+
+
+
 </mapper>

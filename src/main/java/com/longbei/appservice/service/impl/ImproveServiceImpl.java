@@ -18,7 +18,6 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
-import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
@@ -1364,6 +1363,13 @@ public class ImproveServiceImpl implements ImproveService{
                     classroomid,improveid,userid,e);
         }
         if(res != 0){
+            Improve improve = improveMapper.selectByPrimaryKey(Long.parseLong(improveid),
+                    classroomid,getTableNameByBusinessType(Constant.IMPROVE_CLASSROOM_TYPE),
+                    null,null);
+            if(improve.getIsmainimp().equals("1")){
+                improveMapper.chooseMainImprove(improve.getBusinessid(),improve.getUserid(),
+                        getTableNameByBusinessType(Constant.IMPROVE_CLASSROOM_TYPE),"businessid");
+            }
             String message = "updatetest";
             queueMessageSendService.sendUpdateMessage(message);
             baseResp = BaseResp.ok();
