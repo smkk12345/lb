@@ -233,7 +233,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				if(null != concernList && concernList.size()>0){
 					for (UserBusinessConcern userBusinessConcern : concernList) {
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
-								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室添加新课程", 0, "", "");
+								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室更新课程", 0, "", "");
 					}
 				}
 				
@@ -244,7 +244,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				if(null != memberList && memberList.size()>0){
 					for (int i=0;i<memberList.size();i++) {
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室添加新课程", 0, "", "");
+								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室更新课程", 0, "", "");
 					}
 				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
