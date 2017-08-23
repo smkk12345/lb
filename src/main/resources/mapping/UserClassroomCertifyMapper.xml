@@ -27,8 +27,8 @@
     </if>
     <if test="classroomCertify.status != null and classroomCertify.status != ''" >
       <choose>
-        <when test="classroomCertify.status == '2'">
-          AND (status = '2' OR status = '3')
+        <when test="classroomCertify.status == '1'">
+          AND (status = '1' OR status = '3')
         </when>
         <otherwise>
           AND status = #{classroomCertify.status}
