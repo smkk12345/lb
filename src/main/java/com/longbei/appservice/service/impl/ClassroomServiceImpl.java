@@ -1169,7 +1169,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		} else {
 			map.put("hasclose",0);
 		}
-
+		baseResp.setExpandData(map);
         return baseResp;
 	}
 	
