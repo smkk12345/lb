@@ -20,6 +20,9 @@ public class ReplyImprove {
 	private String filekey;//文件key  视频文件  音频文件 普通文件
 	private Long userid;//用户id
 	private Date createtime;//创建时间
+	private String duration;
+
+	private String picattribute; //图片属性
 	
 	protected Long businessid;//业务id  榜单id  圈子id 教室id
 	
@@ -119,5 +122,21 @@ public class ReplyImprove {
 
 	public void setBusinesstype(String businesstype) {
 		this.businesstype = businesstype;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public void setPicattribute(String picattribute) {
+		this.picattribute = picattribute;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public String getPicattribute() {
+		return picattribute;
 	}
 }

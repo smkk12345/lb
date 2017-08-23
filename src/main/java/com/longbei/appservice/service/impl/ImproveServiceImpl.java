@@ -2991,6 +2991,9 @@ public class ImproveServiceImpl implements ImproveService{
         if(type .equals(Constant.IMPROVE_SINGLE_TYPE)){
             businessid = null;
         }
+        if(type.equals(Constant.IMPROVE_CLASSROOM_REPLY_TYPE)){
+            type = Constant.IMPROVE_CLASSROOM_TYPE;
+        }
         if(!workflow.contains("mp3")){
             pickey = "[\""+pickey+"\"]";
         }
@@ -3075,9 +3078,18 @@ public class ImproveServiceImpl implements ImproveService{
                         if(null != replyList && replyList.size()>0){
                             ImproveClassroom improveClassroom = replyList.get(0);
                             AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
-                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(), improveClassroom.getItype(), 
-                            		improveClassroom.getBrief(), improveClassroom.getPickey(), 
-                            		improveClassroom.getUserid(), improve.getBusinessid(), "5", improveClassroom.getCreatetime());
+                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(),
+                                    improveClassroom.getItype(),
+                            		improveClassroom.getBrief(),
+                                    improveClassroom.getPickey(),
+                            		improveClassroom.getUserid(),
+                                    improve.getBusinessid(),
+                                    Constant.IMPROVE_CLASSROOM_REPLY_TYPE,
+                                    improveClassroom.getCreatetime());
+                            replyImprove.setFilekey(improveClassroom.getFilekey());
+                            replyImprove.setDuration(improveClassroom.getDuration());
+                            replyImprove.setPicattribute(improveClassroom.getPicattribute());
+
                             appUserMongo.setNickname(userCard.getDisplayname());
                             appUserMongo.setAvatar(userCard.getAvatar());
                             appUserMongo.setUserid(userCard.getUserid().toString());

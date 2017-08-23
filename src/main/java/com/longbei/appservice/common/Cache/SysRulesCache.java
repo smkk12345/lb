@@ -36,7 +36,7 @@ public class SysRulesCache {
      */
     public static Map<Integer,UserLevel> levelPointMap = new HashMap<>();
     /**
-     *等级特权map  key--等级 value--特权
+     *等级特权map  key--等级 value--特权UserPlDetailServiceImpl
      */
     public static Map<Integer,SysRuleLp> lpMap = new HashMap<>();
     /**
