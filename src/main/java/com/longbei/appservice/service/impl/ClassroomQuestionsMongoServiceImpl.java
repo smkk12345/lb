@@ -98,9 +98,9 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				//sourcetype 0:运营  1:app  2:商户
 				if("1".equals(classroom.getSourcetype())){
 					//推送@我消息
-					String remark = "您发布的教室《" + classroom.getClasstitle() + "》有新的提问";
+					String remark = "您的教室《" + classroom.getClasstitle() + "》中收到新的提问:" + classroomQuestions.getContent();
 					userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroom.getUserid().toString(), 
-							"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室有新的提问", 0, "", "");
+							"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室收到新的提问", 0, "", "");
 				}
 			}
 			reseResp.setData(classroomQuestions);
@@ -185,7 +185,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	}
 
 	@Override
-	public Page<ClassroomQuestions>selectQuestionsList(String classroomId, String dealStatus, String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
+	public Page<ClassroomQuestions> selectQuestionsList(String classroomId, String dealStatus, String nickname, String startCreatetime, String endCreatetime, Integer startNum, Integer pageSize) {
 
 		Page<ClassroomQuestions> page = new Page<>(startNum / pageSize + 1, pageSize);
 		try {
