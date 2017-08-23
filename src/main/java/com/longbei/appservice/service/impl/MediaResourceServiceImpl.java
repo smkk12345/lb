@@ -149,6 +149,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                     });
 
                 }
+                baseResp.getExpandData().put("mediaResourceId",mediaResource.getId());
                 return baseResp.initCodeAndDesp();
             }
         }catch(Exception e){
