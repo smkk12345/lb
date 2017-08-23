@@ -165,23 +165,23 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
             int n = userUserClassroomCertifyMapper.updateClassroomCertifyByUserid(classroomCertify);
             if(n >= 1){
                 if ("1".equals(classroomCertify.getStatus())){
-                    String remark = "老师认证通过";
+                    String remark = "恭喜您！您'创建教室资格认证'申请已通过，现在可以去龙杯官网发布第一个教室啦！";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
                             "恭喜，您的老师认证审核通过！","",Constant.JPUSH_TAG_COUNT_1306);
                 } else if ("2".equals(classroomCertify.getStatus())) {
-                    String remark = "老师认证未通过";
+                    String remark = "十分抱歉，您'创建教室资格认证'申请已被拒绝，理由是："+classroomCertify.getRemark();
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
                             "您的老师认证审核未通过","",Constant.JPUSH_TAG_COUNT_1307);
                 } else if ("3".equals(classroomCertify.getStatus())){
-                    String remark = "老师认证被撤销";
+                    String remark = "您创建新教室的权限已被禁用，如有问题，请联系龙杯工作人员010-62981937";
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","65", "老师认证",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","老师认证审核",
-                            "您的老师认证审核被撤销","",Constant.JPUSH_TAG_COUNT_1307);
+                            "您的创建教室权限被禁用","",Constant.JPUSH_TAG_COUNT_1307);
                 }
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
