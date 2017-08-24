@@ -600,7 +600,9 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
             logger.error("select improve is error:",e);
         }
-        initImproveInfo(improve,Long.parseLong(userid));
+        if(!StringUtils.isBlank(userid)){
+            initImproveInfo(improve,Long.parseLong(userid));
+        }
         if(this.checkIsCollectImprove(userid,impid.toString())){
             improve.setHascollect("1");
         }
