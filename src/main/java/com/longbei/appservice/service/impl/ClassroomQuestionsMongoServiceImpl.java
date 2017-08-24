@@ -334,11 +334,11 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			if("0".equals(classroom.getSourcetype())){
 				//推送@我消息
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, classroomQuestionsLower.getFriendid(), 
-						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "13", "教室老师回复问题", 0, "", "");
 			}else if("1".equals(classroom.getSourcetype())){
 				//推送@我消息
 				userMsgService.insertMsg(classroom.getUserid().toString(), classroomQuestionsLower.getFriendid(), 
-						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "61", "教室老师回复问题", 0, "", "");
+						"", "12", classroomQuestions.getClassroomid() + "", remark, "2", "13", "教室老师回复问题", 0, "", "");
 			}
 			
 			
