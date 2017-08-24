@@ -12,14 +12,23 @@ public interface ImproveMapper {
 	
 	
 	/**
-     *  获取教室未批复，已批复的进步
+     *  获取教室未批复的进步
      * @param businessid
-     * @param type 0:未批复   1:已批复
      * @param pageNo
      * @param pageSize
      * @return
      */
-	List<Improve> selectCroomImpList(@Param("businessid") String businessid, @Param("type") String type, 
+	List<Improve> selectNotCroomImpList(@Param("businessid") String businessid, 
+			@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+	
+	/**
+     *  获取教室已批复的进步
+     * @param businessid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+	List<Improve> selectCroomImpList(@Param("businessid") String businessid, 
 			@Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
     int deleteByPrimaryKey(Long id);

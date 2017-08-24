@@ -505,11 +505,11 @@
   </resultMap>
   
   
-  <select id="selectCroomImpList" resultMap="isReplyMap">
+  <select id="selectNotCroomImpList" resultMap="isReplyMap">
     select
-    <!-- <include refid="Classroom_List" /> -->
-    impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes,isrecommend,
-    flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype,
+    impid, itype, brief, pickey, filekey, userid, businessid, 
+    businesstype, likes,isrecommend, flowers, diamonds, 
+    createtime, updatetime, indexnum, isdel, ismainimp, ptype,
     ispublic,sourcekey,complaincount,duration,isbusinessdel,picattribute,
     CASE pimpid 
 		WHEN 0 THEN '0' 
@@ -522,13 +522,36 @@
     and isresponded = 0 
     and isbusinessdel = 0 and isdel = 0 
     and businesstype = 4 
-    <if test="type == 0" >
       and (pimpid = '' or pimpid = 0)
-    </if>
-    <if test="type == 1" >
-      and (pimpid != '' or pimpid != 0)
-    </if>
     ORDER BY createtime DESC
+    <if test="pageSize != 0" >
+      limit #{pageNo},#{pageSize}
+    </if>
+  </select>
+  
+  
+  <select id="selectCroomImpList" resultMap="isReplyMap">
+    select 
+    ic.impid, ic.itype, ic.brief, ic.pickey, ic.filekey, ic.userid, 
+    ic.businessid, ic.businesstype, ic.likes,ic.isrecommend,
+    ic.flowers, ic.diamonds, ic.createtime, ic.updatetime, ic.indexnum, 
+    ic.isdel, ic.ismainimp, ic.ptype, ic.ispublic,ic.sourcekey,
+    ic.complaincount,ic.duration,ic.isbusinessdel,ic.picattribute,
+    CASE ic.pimpid 
+		WHEN 0 THEN '0' 
+    	WHEN '' THEN '0' 
+		ELSE '1' 
+	END as isreply 
+    from improve_classroom ic
+	INNER JOIN improve_classroom a ON ic.impid = a.pimpid
+    where
+    ic.businessid = 654165112  
+    and ic.isresponded = 0 
+    and ic.isbusinessdel = 0 and ic.isdel = 0 
+	and a.isbusinessdel = 0 and a.isdel = 0 
+    and ic.businesstype = 4 
+    and (ic.pimpid != '' or ic.pimpid != 0)
+    ORDER BY a.createtime DESC
     <if test="pageSize != 0" >
       limit #{pageNo},#{pageSize}
     </if>

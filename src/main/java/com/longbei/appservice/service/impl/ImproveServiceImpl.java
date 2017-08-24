@@ -149,7 +149,13 @@ public class ImproveServiceImpl implements ImproveService{
 	public List<Improve> selectCroomImpList(String userid, String businessid, String type, int pageNo, int pageSize) {
 		List<Improve> improves = null;
         try {
-			improves = improveMapper.selectCroomImpList(businessid, type, pageNo, pageSize);
+        	//type 0:未批复   1:已批复
+        	if("0".equals(type)){
+        		improves = improveMapper.selectNotCroomImpList(businessid, pageNo, pageSize);
+        	}else{
+        		improves = improveMapper.selectCroomImpList(businessid, pageNo, pageSize);
+        	}
+			
 			initImproveListOtherInfo(userid, improves);
 //	        replyImp(improves, userid, businessid);
 		} catch (Exception e) {
