@@ -178,12 +178,19 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
                             "您的老师认证审核未通过","",Constant.JPUSH_TAG_COUNT_1307);
                 } else if ("3".equals(classroomCertify.getStatus())){
 //                    String remark = "老师认证被撤销";
-                	String remark = Constant.MSG_CLASSROOM_CERTIFY_FAIL_MODEL + classroomCertify.getRemark();
+                	String remark = Constant.MSG_CLASSROOM_CERTIFY_BACK_MODEL + classroomCertify.getRemark();
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
-                            ,null,"9",null,remark,"2","69", "教室资格认证",0, "", "");
-                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","教室资格认证审核",
-                            "您的教室资格认证审核被撤销","",Constant.JPUSH_TAG_COUNT_1307);
+                            ,null,"9",null,remark,"2","70", "创建教室资格",0, "", "");
+                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","创建教室资格",
+                            "您创建新教室的权限已被禁用","",Constant.JPUSH_TAG_COUNT_1307);
+                } else if ("4".equals(classroomCertify.getStatus())) {
+                    String remark = Constant.MSG_CLASSROOM_CERTIFY_REBACK_MODEL;
+                    userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
+                            ,null,"9",null,remark,"2","71", "创建教室资格",0, "", "");
+                    this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","创建教室资格",
+                            "您创建新教室的权限已被恢复","",Constant.JPUSH_TAG_COUNT_1307);
                 }
+
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
             }
         } catch (Exception e) {
