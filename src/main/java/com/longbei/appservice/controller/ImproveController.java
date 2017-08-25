@@ -342,7 +342,7 @@ public class ImproveController {
     @ResponseBody
     @RequestMapping(value = "classroom/list", method = RequestMethod.POST)
     public BaseResp selectClassroomImproveList(String userid, String classroomid, String sorttype, String sift,
-                                               String startNo, String pageSize) {
+                                               String startNo, String pageSize,String version) {
         logger.info("userid={},classroomid={},sorttype={},sift={},startNo={},pageSize={}", userid,classroomid,sorttype, sift, startNo,pageSize);
         if (StringUtils.hasBlankParams(userid, classroomid, sorttype, sift)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -357,11 +357,11 @@ public class ImproveController {
         try {
             if ("1".equals(sorttype)) {
                 improves = improveService.selectClassroomImproveList(userid, classroomid, sift, null,
-                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+                        Integer.parseInt(startNo), Integer.parseInt(pageSize),version);
 
             } else {
                 improves = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null,
-                        Integer.parseInt(startNo), Integer.parseInt(pageSize));
+                        Integer.parseInt(startNo), Integer.parseInt(pageSize),version);
             }
         } catch (Exception e) {
             logger.error("select classroom improve list is error:{}", e);

@@ -153,7 +153,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<Improve> selectClassroomImproveList(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveList(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize,String version);
 
     /**
      *  教室中成员动态
@@ -165,7 +165,7 @@ public interface ImproveService {
      * @param pageSize
      * @return
      */
-    List<Improve> selectClassroomImproveListByDate(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize);
+    List<Improve> selectClassroomImproveListByDate(String userid,String classroomid,String sift,String orderby,int pageNo,int pageSize,String version);
 
 
     /**

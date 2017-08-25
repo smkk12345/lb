@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -945,7 +947,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:54
      */
 	@Override
-    public List<Improve> selectClassroomImproveList(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize) {
+    public List<Improve> selectClassroomImproveList(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize,String version) {
         List<Improve> improves = null;
         try {
             switch (sift){
@@ -971,13 +973,32 @@ public class ImproveServiceImpl implements ImproveService{
             improves = improveMapper.selectClassroomImproveList
                     (classroomid, Constant_table.IMPROVE_CLASSROOM,null, null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
-            replyImp(improves, userid, classroomid);
+            replyImp(improves, userid, classroomid,version);
         } catch (Exception e) {
             logger.error("selectClassroomImproveList userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
         return improves;
     }
-    
+
+    private boolean isIos(String version){
+        //v1.0_2_3.0.2
+        if(StringUtils.isBlank(version)){
+            return false;
+        }
+        String vers[] = version.split("_");
+        if (vers.length > 0) {
+            String v = vers[2];
+            v = v.trim().replaceAll("\\.", "");
+            if ("2".equals(vers[1])){//andrion
+                return false;
+            }else{//ios
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      *  @author luye
      *  @desp 
@@ -985,7 +1006,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public List<Improve> selectClassroomImproveListByDate(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize) {
+    public List<Improve> selectClassroomImproveListByDate(String userid, String classroomid,String sift,String orderby, int pageNo, int pageSize,String version) {
         List<Improve> improves = null;
         try {
             switch (sift){
@@ -1012,7 +1033,7 @@ public class ImproveServiceImpl implements ImproveService{
             improves = improveMapper.selectListByBusinessid
                     (classroomid, Constant_table.IMPROVE_CLASSROOM, "1",null, orderby, null,pageNo, pageSize);
             initImproveListOtherInfo(userid,improves);
-            replyImp(improves, userid, classroomid);
+            replyImp(improves, userid, classroomid,version);
         } catch (Exception e) {
             logger.error("selectClassroomImproveListByDate userid:{} classroomid:{} is error:{}",userid,classroomid,e);
         }
@@ -1020,7 +1041,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     //批复信息
-  	private void replyImp(List<Improve> improves, String userid, String classroomid){
+  	private void replyImp(List<Improve> improves, String userid, String classroomid,String version){
   		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //  		List<String> list = new ArrayList<>();
 //  		if(null != classroom){
@@ -1043,23 +1064,26 @@ public class ImproveServiceImpl implements ImproveService{
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
-  				if(!"1".equals(isreply)){
-  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
-  						//判断当前用户是否是老师
-  						if(userCard.getUserid() != Long.parseLong(userid)){
-  							isreply = "2";
-  						}
-  					}
-  				}
-  				if(!StringUtils.isBlank(userid)){
-  					if(userid.toString().equals(Constant.VISITOR_UID)){
-  	  					isreply = "2";
-  					}
-  				}else{
-  					isreply = "2";
-  				}
+  				if(!isIos(version)){
+                    if(!"1".equals(isreply)){
+                        if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
+                            //判断当前用户是否是老师
+                            if(userCard.getUserid() != Long.parseLong(userid)){
+                                isreply = "2";
+                            }
+                        }
+                    }
+                    if(!StringUtils.isBlank(userid)){
+                        if(userid.toString().equals(Constant.VISITOR_UID)){
+                            isreply = "2";
+                        }
+                    }else{
+                        isreply = "2";
+                    }
+                }else {
+                    isreply = "0";
+                }
   				improve.setIsreply(isreply);
-  				
   			}
   		}
   	}

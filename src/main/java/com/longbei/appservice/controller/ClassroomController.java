@@ -821,7 +821,7 @@ public class ClassroomController {
 		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, sNo, sSize);
+   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, sNo, sSize,null);
    			baseResp.setData(list);
    		} catch (Exception e) {
    			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}",
@@ -862,7 +862,7 @@ public class ClassroomController {
 		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize);
+   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize,null);
    			baseResp.setData(list);
    			Map<String,Object> map = new HashedMap();
       		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
