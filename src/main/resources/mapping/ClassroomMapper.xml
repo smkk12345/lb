@@ -115,6 +115,15 @@
     </if>
   </select>
   
+  <select id="selectCountByUserid" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom
+    where userid = #{userid} 
+      and isup = 1 
+      and isdel = 0
+  </select>
+  
+  
   <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.Classroom" resultType="java.lang.Integer" >
     select count(*) 
     from classroom

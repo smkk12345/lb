@@ -219,6 +219,7 @@ public class Constant {
 	public static final int STATUS_SYS_1111 = -1111;
 	public static final int STATUS_SYS_1112 = -1112;
 	public static final int STATUS_SYS_1113 = -1113;
+	public static final int STATUS_SYS_1114 = -1114;
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
@@ -398,6 +399,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1111 = "您没有权限批复作业";
 	public static final String RTNINFO_SYS_1112 = "用户作业您已批复";
 	public static final String RTNINFO_SYS_1113 = "使用龙币购买必须是10朵花的倍数";
+	public static final String RTNINFO_SYS_1114 = "您发布的教室数量已达上限";
 	
 
 	/******* 12 开头 媒体资源库 相关  **********/

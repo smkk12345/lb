@@ -173,6 +173,12 @@ public interface ClassroomMapper {
      */
     Integer selectSearchCount(Classroom classroom);
     
+    
+    /*
+     * 获取用户发教室count
+     */
+    Integer selectCountByUserid(@Param("userid") long userid);
+    
     /**
 	 * @author yinxc
 	 * 获取教室信息

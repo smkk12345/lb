@@ -32,6 +32,8 @@ import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.dao.UserCardMapper;
+import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Classroom;
@@ -43,6 +45,8 @@ import com.longbei.appservice.entity.ImproveClassroom;
 import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
+import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
@@ -78,6 +82,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private HomeRecommendMapper homeRecommendMapper;
 	@Autowired
 	private UserRelationService userRelationService;
+	@Autowired
+	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserLevelMapper userLevelMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
@@ -539,10 +547,22 @@ public class ClassroomServiceImpl implements ClassroomService {
 //		}
 //	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertClassroom(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			//sourcetype 0:运营  1:app  2:商户
+			if("1".equals(record.getSourcetype())){
+				//判断是否达到个人发教室的限制
+				Integer roomCount = classroomMapper.selectCountByUserid(record.getUserid());
+				UserInfo userInfo = userInfoMapper.selectInfoMore(record.getUserid());
+				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+				if(roomCount >= userLevel.getClassroomnum()){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
+				}
+			}
+			
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
