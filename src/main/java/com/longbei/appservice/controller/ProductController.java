@@ -58,7 +58,6 @@ public class ProductController {
     * @Description: 获取商品列表
     * @param @param userid 用户id
     * @param @param cateid 商品类别id(获取全部的时候 cateid=1)
-    * @param @param starttime 上架时间    为null查全部  
     * @param @param startNum   pageSize
     * @param @param 正确返回 code 0，  -7为 参数错误，未知错误返回相应状态码
     * @auther yxc
@@ -66,9 +65,9 @@ public class ProductController {
 	*/
   	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/list")
-    public BaseResp<List<ProductBasic>> list(String userid, String cateid, String starttime, Integer startNum, Integer pageSize) {
-		logger.info("selectCategoryList cateid = {}, userid = {}, starttime = {}, startNum = {}, pageSize = {}",
-				cateid, userid, starttime, startNum, pageSize);
+    public BaseResp<List<ProductBasic>> list(String userid, String cateid, Integer startNum, Integer pageSize) {
+		logger.info("selectCategoryList cateid = {}, userid = {}, startNum = {}, pageSize = {}",
+				cateid, userid, startNum, pageSize);
 		BaseResp<List<ProductBasic>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, cateid)) {
   			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -85,7 +84,7 @@ public class ProductController {
   			if(cateid.indexOf(".0") != -1){
   				cateid = cateid.substring(0, cateid.length()-2);
   			}
-  			baseResp = productService.list(Long.parseLong(userid), Long.parseLong(cateid), starttime, sNo, sSize);
+  			baseResp = productService.list(Long.parseLong(userid), Long.parseLong(cateid), null, sNo, sSize);
 		} catch (Exception e) {
 			logger.error("list userid = {}", userid, e);
 		}

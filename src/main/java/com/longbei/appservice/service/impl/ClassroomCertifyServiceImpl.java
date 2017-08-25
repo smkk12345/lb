@@ -178,7 +178,7 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
                             "您的老师认证审核未通过","",Constant.JPUSH_TAG_COUNT_1307);
                 } else if ("3".equals(classroomCertify.getStatus())){
 //                    String remark = "老师认证被撤销";
-                	String remark = Constant.MSG_CLASSROOM_CERTIFY_BACK_MODEL + classroomCertify.getRemark();
+                	String remark = Constant.MSG_CLASSROOM_CERTIFY_BACK_MODEL.replaceAll("n",classroomCertify.getRemark());
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","70", "创建教室资格",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","创建教室资格",
