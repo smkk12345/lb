@@ -654,7 +654,7 @@ public class Improve {
 	}
 
 	public void setIsreply(String isreply) {
-		this.isreply = isreply;
+		this.isreply = "2";
 	}
 
     public String getIsbusinessdel() {
