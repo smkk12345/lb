@@ -182,13 +182,13 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","70", "创建教室资格",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","创建教室资格",
-                            "您创建新教室的权限已被禁用","",Constant.JPUSH_TAG_COUNT_1307);
+                            "您创建新教室的权限已被禁用","",Constant.JPUSH_TAG_COUNT_1308);
                 } else if ("4".equals(classroomCertify.getStatus())) {
                     String remark = Constant.MSG_CLASSROOM_CERTIFY_REBACK_MODEL;
                     userMsgService.insertMsg(Constant.SQUARE_USER_ID, String.valueOf(classroomCertify.getUserid())
                             ,null,"9",null,remark,"2","71", "创建教室资格",0, "", "");
                     this.jPushService.pushMessage("消息标识",classroomCertify.getUserid()+"","创建教室资格",
-                            "您创建新教室的权限已被恢复","",Constant.JPUSH_TAG_COUNT_1307);
+                            "您创建新教室的权限已被恢复","",Constant.JPUSH_TAG_COUNT_1309);
                 }
 
                 baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
