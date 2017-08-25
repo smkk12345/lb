@@ -253,4 +253,40 @@ public class LiveController {
         return baseResp.initCodeAndDesp();
     }
 
+
+    /**
+     * url: http://47.93.37.85:8080/app_service/live/updateLiveMedia
+     * @param uid 主播id
+     * @param filekey 视频全路径
+     * @param pickey 图片全路径
+     * @param duration 时长
+     * 参数都做base64加密
+     * @return
+     * {
+        "expandData": {},
+        "code": 0,
+        "rtnInfo": "操作成功!",
+        "data": null,
+        "displayStatus": 0
+        }
+     */
+    @RequestMapping(value="updateLiveMedia")
+    public BaseResp updateLiveMedia(String uid,String filekey,
+                                    String pickey,String duration){
+        logger.info("updateLiveMedia uid:{} filekey:{} pickey:{}",
+                uid,filekey,pickey);
+        BaseResp baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(uid,filekey,pickey,duration)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        uid = DecodesUtils.getFromBase64(uid);
+        filekey = DecodesUtils.getFromBase64(filekey);
+        pickey = DecodesUtils.getFromBase64(pickey);
+        duration = DecodesUtils.getFromBase64(duration);
+        logger.info("updateLiveMedia after base64 uid:{} filekey:{} pickey:{} duration={}",
+                uid,filekey,pickey,duration);
+        //处理教室直播逻辑
+        return baseResp.initCodeAndDesp();
+    }
+
 }

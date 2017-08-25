@@ -149,7 +149,13 @@ public class ImproveServiceImpl implements ImproveService{
 	public List<Improve> selectCroomImpList(String userid, String businessid, String type, int pageNo, int pageSize) {
 		List<Improve> improves = null;
         try {
-			improves = improveMapper.selectCroomImpList(businessid, type, pageNo, pageSize);
+        	//type 0:未批复   1:已批复
+        	if("0".equals(type)){
+        		improves = improveMapper.selectNotCroomImpList(businessid, pageNo, pageSize);
+        	}else{
+        		improves = improveMapper.selectCroomImpList(businessid, pageNo, pageSize);
+        	}
+			
 			initImproveListOtherInfo(userid, improves);
 //	        replyImp(improves, userid, businessid);
 		} catch (Exception e) {
@@ -3436,9 +3442,12 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
                     (null,null,startno,pagesize);
+            Long uid = Long.parseLong(userid);
+            Set<String> friendids = this.userRelationService.getFriendIds(uid);
+            Set<String> fansIds = this.userRelationService.getFansIds(uid);
             Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
+            Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
             if (null != timeLineDetails && timeLineDetails.size() != 0){
-                Set<String> improveIds = this.getUserCollectImproveId(userid);
                 for (int i = 0 ; i < timeLineDetails.size() ; i++){
                     TimeLineDetail timeLineDetail = timeLineDetails.get(i);
                     Improve improve = new Improve();
@@ -3456,18 +3465,22 @@ public class ImproveServiceImpl implements ImproveService{
                     if(map.containsKey(user.getId())){
                         user.setNickname(map.get(user.getId()));
                     }
-
                     improve.setAppUserMongoEntity(user);
+//                    if(!Constant.VISITOR_UID.equals(userid)){
+//                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
+//                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
+//                        initImproveInfo(improve,Long.parseLong(userid));
+//                        if(improveIds.contains(improve.getImpid().toString())){
+//                            improve.setHascollect("1");
+//                        }
+//                    }
                     if(!Constant.VISITOR_UID.equals(userid)){
-                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
-                        initImproveInfo(improve,Long.parseLong(userid));
-
-                        if(improveIds.contains(improve.getImpid().toString())){
+                        initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,fansIds);
+                        initImproveInfo(improve,uid);
+                        if(userCollectImproveIds.contains(improve.getImpid().toString())){
                             improve.setHascollect("1");
                         }
                     }
-
                     //初始化 赞 花 数量
 //                    initImproveLikeAndFlower(improve);
                     improve.setFlowers(timeLineDetail.getFlowers());
@@ -3482,7 +3495,6 @@ public class ImproveServiceImpl implements ImproveService{
         } catch (Exception e) {
             logger.error("select recommend list is error:",e);
         }
-
         return baseResp;
     }
 
