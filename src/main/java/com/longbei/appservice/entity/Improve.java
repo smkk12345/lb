@@ -1,6 +1,5 @@
 package com.longbei.appservice.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -654,7 +653,7 @@ public class Improve {
 	}
 
 	public void setIsreply(String isreply) {
-		this.isreply = "2";
+		this.isreply = isreply;
 	}
 
     public String getIsbusinessdel() {
