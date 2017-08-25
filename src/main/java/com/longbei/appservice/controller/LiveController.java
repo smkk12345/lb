@@ -259,7 +259,7 @@ public class LiveController {
      * @param uid 主播id
      * @param filekey 视频全路径
      * @param pickey 图片全路径
-     * @param duration 时长
+     * @param duration 时长 单位是 秒
      * 参数都做base64加密
      * @return
      * {
@@ -276,7 +276,7 @@ public class LiveController {
         logger.info("updateLiveMedia uid:{} filekey:{} pickey:{}",
                 uid,filekey,pickey);
         BaseResp baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(uid,filekey,pickey,duration)){
+        if(StringUtils.hasBlankParams(uid,filekey,duration)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         uid = DecodesUtils.getFromBase64(uid);
