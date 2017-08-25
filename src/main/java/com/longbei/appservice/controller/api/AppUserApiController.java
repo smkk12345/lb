@@ -52,6 +52,8 @@ public class AppUserApiController {
     private RankService rankService;
     @Autowired
     private UserIdcardService userIdcardService;
+    @Autowired
+    private SysProtectnamesService sysProtectnamesService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -524,4 +526,45 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    /**
+     * 查询受保护的昵称
+     * @author IngaWu
+     * @currentdate:2017年8月25日
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/selectProtectnames")
+    public BaseResp<SysProtectnames> selectProtectnames() {
+        BaseResp<SysProtectnames> baseResp = new BaseResp<>();
+        try {
+            baseResp = sysProtectnamesService.selectProtectnames();
+            return baseResp;
+        } catch (Exception e) {
+            logger.error("selectProtectnames for adminservice ",e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 编辑受保护的昵称
+     * @title updateProtectNames
+     * @param  nicknames 名称集合
+     * @param  protectNamesId
+     * @author IngaWu
+     * @currentdate:2017年8月25日
+     */
+    @RequestMapping(value = "/updateProtectNames")
+    public BaseResp<Object> updateProtectNames(String nicknames,String protectNamesId) {
+        logger.info("updateProtectNames for adminservice and nicknames={},protectNamesId={}", nicknames,protectNamesId);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.isBlank(nicknames)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        try {
+            baseResp = sysProtectnamesService.updateProtectNames(nicknames,protectNamesId);
+        } catch (Exception e) {
+            logger.error("updateProtectNames for adminservice and nicknames={},protectNamesId={}", nicknames,protectNamesId,e);
+
+        }
+        return baseResp;
+    }
 }
