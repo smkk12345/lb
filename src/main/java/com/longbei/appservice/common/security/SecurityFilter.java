@@ -69,7 +69,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				return ;
 			}
 
-			if(urlPath.contains("closeOnLineRoom")){
+			if(urlPath.contains("closeOnLineRoom")||urlPath.contains("updateLiveMedia")){
 				arg2.doFilter(request, response);
 				return ;
 			}
