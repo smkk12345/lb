@@ -804,7 +804,7 @@ public class ClassroomController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersList")
     public BaseResp<Object> classroomMembersList(String userid, String classroomid, String sift, 
-    		 Integer startNo, Integer pageSize) {
+    		 Integer startNo, Integer pageSize,String version) {
 		logger.info("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}",
 				userid, classroomid, sift, startNo, pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -821,7 +821,7 @@ public class ClassroomController {
 		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, sNo, sSize,null);
+   			List<Improve> list = improveService.selectClassroomImproveListByDate(userid, classroomid, sift, null, sNo, sSize,version);
    			baseResp.setData(list);
    		} catch (Exception e) {
    			logger.error("classroomMembersList userid = {}, classroomid = {}, sift = {}, startNo = {}, pageSize = {}",
@@ -845,7 +845,7 @@ public class ClassroomController {
   	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "classroomMembersDateList")
     public BaseResp<Object> classroomMembersDateList(String userid, String classroomid, String sift,
-													 String type, Integer startNo, Integer pageSize) {
+													 String type, Integer startNo, Integer pageSize,String version) {
 		logger.info("classroomMembersDateList userid={},classroomid={},sift={},type={},startNo={},pageSize={}",
 				userid,classroomid,sift,type,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
@@ -862,7 +862,7 @@ public class ClassroomController {
 		}
    		try {
    			baseResp.initCodeAndDesp();
-   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize,null);
+   			List<Improve> list = improveService.selectClassroomImproveList(userid, classroomid, sift, type, sNo, sSize,version);
    			baseResp.setData(list);
    			Map<String,Object> map = new HashedMap();
       		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
