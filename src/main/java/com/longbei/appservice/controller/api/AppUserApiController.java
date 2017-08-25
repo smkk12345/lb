@@ -112,7 +112,9 @@ public class AppUserApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         try {
-            UserInfo userInfo = userService.selectJustInfo(Long.parseLong(userid));
+            BaseResp<Object> baseRes = userService.selectByUserid(Long.parseLong(userid));
+
+            UserInfo userInfo = (UserInfo)baseRes.getData();
             //十项全能
             BaseResp<Object> baseResp1 = userPlDetailService.selectUserPerfectListByUserId(Long.parseLong(userid),0,15);
             //充值总龙币数
@@ -133,6 +135,8 @@ public class AppUserApiController {
             rankMembers.setStatus(1);
             rankMembers.setIsfashionman("1");
             BaseResp<List<RankMembers>> baseResp6 = rankService.selectRankMemberList(rankMembers);
+            //查询好友数量
+            Integer friendCount = userRelationService.selectFriendsCount(Long.parseLong(userid));
 
             Map<String,Object> map = new HashedMap();
             if (ResultUtil.isSuccess(baseResp1)){
@@ -144,12 +148,17 @@ public class AppUserApiController {
             map.put("totalordercoin",baseResp4.getData());
             map.put("awardnum",awardnum);
             map.put("totalrank",baseResp5.getData());
-            map.put("idcard",userIdCard.getIdcard());
+            if(null != userIdCard) {
+                map.put("idcard", userIdCard.getIdcard());
+            }else {
+                map.put("idcard", null);
+            }
             if(baseResp6.getData().size()>0){
                 map.put("isRankFashion","1");
             }else {
                 map.put("isRankFashion","0");
             }
+            map.put("friendCount", friendCount);
 
             baseResp.setData(userInfo);
             baseResp.setExpandData(map);
