@@ -1021,11 +1021,12 @@ public class ImproveServiceImpl implements ImproveService{
 
     //批复信息
   	private void replyImp(List<Improve> improves, String userid, String classroomid){
+  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //  		List<String> list = new ArrayList<>();
 //  		if(null != classroom){
 //  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //  		}
-//  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
   		if(null != improves && improves.size()>0){
   			for (Improve improve : improves) {
   				String isreply = "0";
@@ -1042,21 +1043,21 @@ public class ImproveServiceImpl implements ImproveService{
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
-//  				if(!"1".equals(isreply)){
-//  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
-//  						//判断当前用户是否是老师
-//  						if(userCard.getUserid() != Long.parseLong(userid)){
-//  							isreply = "2";
-//  						}
-//  					}
-//  				}
-//  				if(!StringUtils.isBlank(userid)){
-//  					if(userid.toString().equals(Constant.VISITOR_UID)){
-//  	  					isreply = "2";
-//  					}
-//  				}else{
-//  					isreply = "2";
-//  				}
+  				if(!"1".equals(isreply)){
+  					if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
+  						//判断当前用户是否是老师
+  						if(userCard.getUserid() != Long.parseLong(userid)){
+  							isreply = "2";
+  						}
+  					}
+  				}
+  				if(!StringUtils.isBlank(userid)){
+  					if(userid.toString().equals(Constant.VISITOR_UID)){
+  	  					isreply = "2";
+  					}
+  				}else{
+  					isreply = "2";
+  				}
   				improve.setIsreply(isreply);
   				
   			}
@@ -3024,7 +3025,8 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp select(String userid, String impid, String businesstype,String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
         try{
@@ -3122,18 +3124,18 @@ public class ImproveServiceImpl implements ImproveService{
                             isreply = "1";
                     		improve.setReplyImprove(replyImprove);
                     	}
-//                        if(!"1".equals(isreply)){
-//                            if(null != userCard){
-//                                //判断当前用户是否是老师
-//                            	if(!StringUtils.isBlank(userid)){
-//                            		if(userCard.getUserid() != Long.parseLong(userid)){
-//                                        isreply = "2";
-//                                    }
-//                            	}else{
-//                            		isreply = "2";
-//                            	}
-//                            }
-//                        }
+                        if(!"1".equals(isreply)){
+                            if(null != userCard){
+                                //判断当前用户是否是老师
+                            	if(!StringUtils.isBlank(userid)){
+                            		if(userCard.getUserid() != Long.parseLong(userid)){
+                                        isreply = "2";
+                                    }
+                            	}else{
+                            		isreply = "2";
+                            	}
+                            }
+                        }
                         improve.setIsreply(isreply);
                     	if (null != classroom){
                     		String teacher = "";
