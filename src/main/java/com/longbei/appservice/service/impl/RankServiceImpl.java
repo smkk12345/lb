@@ -3569,6 +3569,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     }
 
     @Override
+    public BaseResp<List<RankMembers>> selectRankMemberList(RankMembers rankMembers) {
+        BaseResp<List<RankMembers>> baseResp = new BaseResp<>();
+        try {
+            List<RankMembers> rankMemberses = rankMembersMapper.selectList(rankMembers,null,null,null);
+            baseResp = BaseResp.ok();
+            baseResp.setData(rankMemberses);
+        } catch (Exception e) {
+            logger.error("select rankmembers list  is error:",e);
+        }
+        return baseResp;
+    }
+
+    @Override
     public BaseResp<Page<RankMembers>> selectRankMemberList(RankMembers rankMembers, Integer startNum, Integer pageSize) {
         BaseResp<Page<RankMembers>> baseResp = new BaseResp<>();
         if (null == rankMembers || null == rankMembers.getRankid()){

@@ -50,6 +50,8 @@ public class AppUserApiController {
     private RankAcceptAwardService rankAcceptAwardService;
     @Autowired
     private RankService rankService;
+    @Autowired
+    private UserIdcardService userIdcardService;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserApiController.class);
 
@@ -123,6 +125,15 @@ public class AppUserApiController {
             int awardnum = rankAcceptAwardService.userRankAcceptAwardCount(Long.parseLong(userid), "0");
             //参与的榜总数
             BaseResp<Integer> baseResp5 = rankService.selectownRankCount(Long.parseLong(userid),1);
+            //身份证号
+            UserIdcard userIdCard = userIdcardService.selectByUserid(userid);
+            //是否为榜单达人
+            RankMembers rankMembers = new RankMembers();
+            rankMembers.setUserid(Long.parseLong(userid));
+            rankMembers.setStatus(1);
+            rankMembers.setIsfashionman("1");
+            BaseResp<List<RankMembers>> baseResp6 = rankService.selectRankMemberList(rankMembers);
+
             Map<String,Object> map = new HashedMap();
             if (ResultUtil.isSuccess(baseResp1)){
                 List<UserPlDetail> plList = (List<UserPlDetail>) baseResp1.getData();
@@ -133,6 +144,13 @@ public class AppUserApiController {
             map.put("totalordercoin",baseResp4.getData());
             map.put("awardnum",awardnum);
             map.put("totalrank",baseResp5.getData());
+            map.put("idcard",userIdCard.getIdcard());
+            if(baseResp6.getData().size()>0){
+                map.put("isRankFashion","1");
+            }else {
+                map.put("isRankFashion","0");
+            }
+
             baseResp.setData(userInfo);
             baseResp.setExpandData(map);
             baseResp.initCodeAndDesp();

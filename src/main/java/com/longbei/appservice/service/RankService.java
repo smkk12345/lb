@@ -204,6 +204,13 @@ public interface RankService extends BaseService{
      */
     BaseResp<Rank> selectRankDetailByRankid(Long userId,String rankId,Boolean queryCreateUser,Boolean queryAward);
 
+
+    /**
+     * 获取成员列表 admin
+     * @param rankMembers
+     * @return
+     */
+    BaseResp<List<RankMembers>> selectRankMemberList(RankMembers rankMembers);
     /**
      * 获取成员列表 pc
      * @param rankMembers

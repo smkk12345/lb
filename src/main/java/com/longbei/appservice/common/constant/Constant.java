@@ -637,7 +637,7 @@ public class Constant {
 	public static final String  MSG_CLASSROOMCOURSES_INSERT_MODEL = "您加入的教室《n》添加新课程啦，赶快去看看吧！";
 	public static final String  MSG_CLASSROOM_CERTIFY_SUCCESS_MODEL = "恭喜您!您'创建教室资格认证'申请已被通过,现在可以去龙杯官网发布您的第一个教室啦!";
 	public static final String  MSG_CLASSROOM_CERTIFY_FAIL_MODEL = "十分抱歉,您'创建教室资格认证'申请已被拒绝,理由是:";
-	public static final String  MSG_CLASSROOM_CERTIFY_BACK_MODEL = "您创建新教室的权限已被禁用，如有问题，请联系龙杯工作人员010-62981937";
+	public static final String  MSG_CLASSROOM_CERTIFY_BACK_MODEL = "您创建新教室的权限已被禁用，原因：n。如有问题，请联系龙杯工作人员010-62981937";
 	public static final String  MSG_CLASSROOM_CERTIFY_REBACK_MODEL = "您创建新教室的权限已被恢复，欢迎您继续使用龙杯教室功能。";
 
 	

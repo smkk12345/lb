@@ -665,10 +665,14 @@ public class UserRelationServiceImpl implements UserRelationService {
 		//读关系记录获取好友信息变更
 		List<String> idList = new ArrayList<>();
 		List<UserRelationChange> list = userRelationChangeDao.getListByUid(Long.parseLong(userid),dataStr);
+		long time = 0l;
 		for (int i = 0; i < list.size(); i++) {
 			UserRelationChange userRe = list.get(i);
 			if(idList.contains(userRe.getChangeuid())){
 				continue;
+			}
+			if(time < userRe.getUpdatetime().getTime()){
+				time = userRe.getUpdatetime().getTime();
 			}
 			idList.add(userRe.getChangeuid());
 			AppUserMongoEntity appUserMongEntity = userMongoDao.getAppUser(userRe.getChangeuid());
@@ -681,7 +685,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 			}
 		}
 		baseResp.setData(dataList);
-		baseResp.getExpandData().put("updateTime",DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+		baseResp.getExpandData().put("updateTime",DateUtils.formatDateTime3(time));
 		return baseResp.initCodeAndDesp();
 	}
 
