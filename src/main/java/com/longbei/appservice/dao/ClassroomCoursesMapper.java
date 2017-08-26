@@ -137,6 +137,12 @@ public interface ClassroomCoursesMapper {
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /*
+     * 获取课程信息---最近直播
+     * classroomid 教室id
+     */
+    ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid);
+    
+    /*
      * 获取最大排序值(sort desc排序)
      */
     Integer selectMaxSort(@Param("classroomid") long classroomid);

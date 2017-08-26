@@ -46,6 +46,23 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		}
 		return formatDate;
 	}
+	
+	/**
+	 * 得到日期字符串默认格式（yyyy-MM-dd） pattern可以为："yyyy-MM-dd" "HH:mm:ss" "E"
+	 */
+	public static String formatDateString(String date, Object... pattern) {
+		String formatDate = null;
+		try {
+			if (pattern != null && pattern.length > 0) {
+				formatDate = DateFormatUtils.format(formatDate(date, "yyyy-MM-dd HH:mm:ss"), pattern[0].toString());
+			} else {
+				formatDate = DateFormatUtils.format(formatDate(date, "yyyy-MM-dd HH:mm:ss"), "yyyy-MM-dd");
+			}
+		} catch (ParseException e) {
+			return formatDate;
+		}
+		return formatDate;
+	}
 
 	/**
 	 * 得到日期时间字符串，转换格式（yyyy-MM-dd HH:mm:ss）
