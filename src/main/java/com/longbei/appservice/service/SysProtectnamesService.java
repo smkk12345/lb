@@ -3,8 +3,13 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.entity.SysProtectnames;
 
+import java.util.Set;
+
 public interface SysProtectnamesService {
 
+    Set<String> selectProtectNamesSet();
+
+    BaseResp<Object> containsProtectNames(String str);
     /**
      * 查询受保护的昵称
      * @author IngaWu
