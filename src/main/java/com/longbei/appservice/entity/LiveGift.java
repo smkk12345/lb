@@ -3,6 +3,7 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.config.OssConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -70,6 +71,13 @@ public class LiveGift {
     }
 
     public String getFileurl() {
+        if(StringUtils.isNotBlank(fileurl)){
+            if(fileurl.contains("http")){
+                return fileurl;
+            }else {
+                return OssConfig.url + fileurl;
+            }
+        }
         return fileurl;
     }
 
@@ -114,6 +122,13 @@ public class LiveGift {
     }
 
     public String getPicurl() {
+        if(StringUtils.isNotBlank(picurl)){
+            if(picurl.contains("http")){
+                return picurl;
+            }else {
+                return OssConfig.url + picurl;
+            }
+        }
         return picurl;
     }
 }
