@@ -100,7 +100,7 @@ public class Classroom {
     
     private Integer coursesort; //课程序号
 
-	private Long recentLiveDate;//最近一次直播的日期时间戳
+	private String daytime;//最近一次直播的日期时间
 
 	private List<ClassroomCourses> liveCourses;//最近一天的直播课程列表，按照时间顺序排列
 
@@ -582,16 +582,16 @@ public class Classroom {
 		this.liveCourses = liveCourses;
 	}
 
-	public void setRecentLiveDate(Long recentLiveDate) {
-		this.recentLiveDate = recentLiveDate;
+	public void setDaytime(String daytime) {
+		this.daytime = daytime;
 	}
 
 	public List<ClassroomCourses> getLiveCourses() {
 		return liveCourses;
 	}
 
-	public Long getRecentLiveDate() {
-		return recentLiveDate;
+	public String getDaytime() {
+		return daytime;
 	}
 
 	public String getStatus() {

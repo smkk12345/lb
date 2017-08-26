@@ -604,7 +604,10 @@ public class ClassroomApiController {
     	logger.info("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses));
     	BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
-			classroomCourses.setDaytime(DateUtils.getDate());
+			//teachingtypes教学类型 0 录播 1直播
+			if("1".equals(classroomCourses.getTeachingtypes())){
+				classroomCourses.setDaytime(DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd"));
+			}
 			baseResp = classroomCoursesService.saveCourses(classroomCourses);
 		} catch (Exception e) {
 			logger.error("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses), e);

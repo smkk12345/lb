@@ -70,6 +70,12 @@ public interface ClassroomCoursesService {
 	*/
 	BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, int startNum, int endNum);
 	
+	/*
+     * 获取课程信息---最近直播
+     * classroomid 教室id
+     */
+	ClassroomCourses selectTeachingCoursesListByCid(long classroomid);
+	
 	/**
 	 * @author yinxc
 	 * 修改课程排序

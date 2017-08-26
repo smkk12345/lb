@@ -437,6 +437,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//描述
 				map.put("content", classroom.getClassbrief());
 				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
+				
+				//最近一次直播的日期时间
+				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+				if(null != classroomCourses){
+					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, 
+							classroomCourses.getDaytime(), 0, 0);
+					map.put("liveCourses", liveCourses);
+					map.put("daytime", classroomCourses.getDaytime());
+				}else{
+					map.put("liveCourses", new ArrayList<ClassroomCourses>());
+					map.put("daytime", null);
+				}
 				//分享url
 				map.put("roomurlshare", 
 						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));

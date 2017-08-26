@@ -184,6 +184,13 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		}
 		return reseResp;
 	}
+	
+	@Override
+	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid) {
+		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+		return classroomCourses;
+	}
+
 
 
 	@SuppressWarnings("unchecked")
@@ -339,5 +346,4 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		return reseResp;
 	}
 
-	
 }
