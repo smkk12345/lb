@@ -133,6 +133,7 @@
     and isdel = 0 
     and pickey != '' 
     and isup = 1 
+    and teachingtypes = 1 
     <if test="daytime != null and daytime != ''" >
       	and daytime = #{daytime}
     </if>
@@ -140,6 +141,20 @@
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
+  </select>
+  
+  <select id="selectTeachingCoursesListByCid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses 
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+    and pickey != '' 
+    and isup = 1 
+	and teachingtypes = 1 
+	and starttime > NOW() 
+	ORDER BY starttime ASC  
+      limit 1
   </select>
   
   <select id="selectIsdefaultByClassroomid" resultMap="BaseResultMap" >
