@@ -126,6 +126,7 @@ public class LiveGift {
             if(picurl.contains("http")){
                 return picurl;
             }else {
+                picurl = picurl.replace("\n","");
                 return OssConfig.url + picurl;
             }
         }
