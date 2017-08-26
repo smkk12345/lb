@@ -445,9 +445,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 							classroomCourses.getDaytime(), 0, 0);
 					map.put("liveCourses", liveCourses);
 					map.put("daytime", classroomCourses.getDaytime());
+					map.put("starttime", classroomCourses.getStarttime());
+					map.put("endtime", classroomCourses.getEndtime());
 				}else{
 					map.put("liveCourses", new ArrayList<ClassroomCourses>());
 					map.put("daytime", null);
+					map.put("starttime", null);
+					map.put("endtime", null);
 				}
 				//分享url
 				map.put("roomurlshare", 
