@@ -125,6 +125,16 @@ public interface ClassroomCoursesMapper {
     List<ClassroomCourses> selectSearchList(@Param("classroomCourses") ClassroomCourses classroomCourses, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
+    
+    /*
+     * 获取课程信息列表---开始年月日查询
+     * classroomid 教室id
+     * daytime 开始年月日 用于方便查询
+     */
+    List<ClassroomCourses> selectDaytimeCoursesListByCid(@Param("classroomid") long classroomid, 
+    		@Param("daytime") String daytime, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
     /*
      * 获取最大排序值(sort desc排序)
      */

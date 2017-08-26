@@ -61,6 +61,16 @@ public interface ClassroomCoursesService {
 	BaseResp<Page<ClassroomCourses>> selectPcSearchCroomCoursesList(ClassroomCourses classroomCourses, int startNum, int endNum);
 	
 	/**
+    * @Description: 获取课程信息列表---开始年月日查询
+    * @param classroomid 教室id
+    * @param daytime 开始年月日 用于方便查询
+    * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+    * @auther yinxc
+    * @currentdate:2017年8月26日
+	*/
+	BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, int startNum, int endNum);
+	
+	/**
 	 * @author yinxc
 	 * 修改课程排序
 	 * 2017年7月12日

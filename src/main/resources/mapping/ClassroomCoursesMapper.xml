@@ -24,11 +24,12 @@
     <result column="starttime" property="starttime"/>
     <result column="endtime" property="endtime"/>
     <result column="status" property="status"/>
+    <result column="daytime" property="daytime"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status, daytime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -119,6 +120,23 @@
       	and isup = #{isup}
     </if>
     order by coursesort desc, createtime desc 
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
+  
+  <select id="selectDaytimeCoursesListByCid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses 
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+    and pickey != '' 
+    and isup = 1 
+    <if test="daytime != null and daytime != ''" >
+      	and daytime = #{daytime}
+    </if>
+    order by createtime desc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
@@ -225,7 +243,9 @@
       <if test="status != null" >
         status,
       </if>
-
+	  <if test="daytime != null" >
+        daytime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -290,6 +310,9 @@
       </if>
       <if test="status != null" >
         #{status},
+      </if>
+      <if test="daytime != null" >
+        #{daytime},
       </if>
     </trim>
   </insert>
