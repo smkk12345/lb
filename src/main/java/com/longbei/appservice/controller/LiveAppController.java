@@ -46,15 +46,14 @@ public class LiveAppController{
      * @param roomid
      * @param courseid
      * @param userid
-     * @param duration
      * @return
      */
     @RequestMapping(value="closeOnLineRoom")
-    public BaseResp closeOnLine(String roomid,String courseid,String userid,String duration){
+    public BaseResp closeOnLine(String roomid,String courseid,String userid){
         logger.info("closeOnLineRoom roomid:{} courseid:{} userid:{} duration:{}",
-                roomid,courseid,userid,duration);
+                roomid,courseid,userid);
         BaseResp baseResp = new BaseResp<>();
-        if(StringUtils.hasBlankParams(roomid,courseid,userid,duration)){
+        if(StringUtils.hasBlankParams(roomid,courseid,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         //处理关闭教室直播逻辑
