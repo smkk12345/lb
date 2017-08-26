@@ -168,6 +168,23 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		}
 		return reseResp;
 	}
+	
+
+	@Override
+	public BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime,
+			int startNum, int endNum) {
+		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
+		try {
+			List<ClassroomCourses> list = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, daytime, startNum, endNum);
+			reseResp.setData(list);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectDaytimeCoursesListByCid classroomid = {}, daytime = {}, startNum = {}, endNum = {}", 
+					classroomid, daytime, startNum, endNum, e);
+		}
+		return reseResp;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override

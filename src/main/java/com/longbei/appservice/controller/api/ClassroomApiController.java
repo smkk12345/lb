@@ -19,6 +19,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 
 @RestController
@@ -603,6 +604,7 @@ public class ClassroomApiController {
     	logger.info("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses));
     	BaseResp<Object> baseResp = new BaseResp<Object>();
 		try {
+			classroomCourses.setDaytime(DateUtils.getDate());
 			baseResp = classroomCoursesService.saveCourses(classroomCourses);
 		} catch (Exception e) {
 			logger.error("saveCourses classroomCourses = {}", JSON.toJSONString(classroomCourses), e);
