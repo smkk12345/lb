@@ -4,13 +4,17 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.SysProtectnamesMapper;
 import com.longbei.appservice.entity.SysProtectnames;
+import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.service.SysProtectnamesService;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class SysProtectnamesServiceImpl implements SysProtectnamesService {
@@ -19,6 +23,35 @@ public class SysProtectnamesServiceImpl implements SysProtectnamesService {
 
     @Autowired
     private SysProtectnamesMapper sysProtectnamesMapper;
+
+    @Override
+    public Set<String> selectProtectNamesSet() {
+        SysProtectnames sysProtectnames = sysProtectnamesMapper.selectProtectnames();
+        if(null == sysProtectnames){
+            return null;
+        }
+        Set<String> set = new HashSet<>();
+        String nicknames;
+        nicknames = sysProtectnames.getNicknames();
+        nicknames = nicknames.replaceAll( "\\s", "" );
+        nicknames = nicknames.replaceAll("　"," ");
+        nicknames = nicknames.replaceAll("，",",");
+        String[] sArr = nicknames.split(",");
+        CollectionUtils.addAll(set,sArr);
+        return set;
+    }
+
+    @Override
+    public BaseResp<Object> containsProtectNames(String str) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        boolean contains = selectProtectNamesSet().contains(str);
+        if(!contains){
+            return baseResp.initCodeAndDesp();
+        }else{
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_120,Constant.RTNINFO_SYS_120);
+            return baseResp;
+        }
+    }
 
     @Override
     public BaseResp<SysProtectnames> selectProtectnames() {
