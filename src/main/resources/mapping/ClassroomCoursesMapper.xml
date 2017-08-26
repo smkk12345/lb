@@ -455,5 +455,13 @@
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>
-  
+
+  <update id="updateLiveStatus" >
+    update classroom_courses
+    set status = #{status}
+    where id = #{id}
+    and classroomid = #{classroomid}
+  </update>
+
+
 </mapper>

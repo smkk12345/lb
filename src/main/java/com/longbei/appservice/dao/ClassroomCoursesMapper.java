@@ -2,6 +2,7 @@ package com.longbei.appservice.dao;
 
 import java.util.List;
 
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.ClassroomCourses;
@@ -158,5 +159,7 @@ public interface ClassroomCoursesMapper {
      */
     Integer updateCoursetypeByid(@Param("classroomid") long classroomid, 
     		@Param("id") Integer id, @Param("coursetype") String coursetype);
-    
+
+	Integer updateLiveStatus(@Param("classroomid") long classroomid,
+							 @Param("id") Integer id, @Param("status") String status);
 }

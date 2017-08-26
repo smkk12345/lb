@@ -1,6 +1,7 @@
 package com.longbei.appservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -99,6 +100,13 @@ public class Classroom {
     
     private Integer coursesort; //课程序号
 
+	private Long recentLiveDate;//最近一次直播的日期时间戳
+
+	private List<ClassroomCourses> liveCourses;//最近一天的直播课程列表，按照时间顺序排列
+
+	private String status; //直播状态  0 没有直播 1 未开始 2 直播中
+
+
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
 	}
@@ -116,9 +124,9 @@ public class Classroom {
     }
 
     /**
-     * 
-     * @param id 
-     */
+     *
+	 * @param id
+	 */
     public void setId(Integer id) {
         this.id = id;
     }
@@ -570,4 +578,27 @@ public class Classroom {
 		this.coursesort = coursesort;
 	}
 
+	public void setLiveCourses(List<ClassroomCourses> liveCourses) {
+		this.liveCourses = liveCourses;
+	}
+
+	public void setRecentLiveDate(Long recentLiveDate) {
+		this.recentLiveDate = recentLiveDate;
+	}
+
+	public List<ClassroomCourses> getLiveCourses() {
+		return liveCourses;
+	}
+
+	public Long getRecentLiveDate() {
+		return recentLiveDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

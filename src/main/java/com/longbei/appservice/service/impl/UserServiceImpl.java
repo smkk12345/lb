@@ -124,6 +124,8 @@ public class UserServiceImpl implements UserService {
 	private SysSensitiveService sysSensitiveService;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private SysProtectnamesService sysProtectnamesService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -616,9 +618,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	private String getSingleNickName(String nickname) {
 		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
-		while (null != app ){
+		BaseResp<Object> baseResp = sysProtectnamesService.containsProtectNames(nickname);
+		while (null != app){
 			nickname = nickname + RandomUtils.getRandomCode(1,10000);
 			app = userMongoDao.getAppUserByNickName(nickname);
+		}
+		while (!ResultUtil.isSuccess(baseResp)){
+			nickname = nickname + RandomUtils.getRandomCode(1,10000);
+			baseResp = sysProtectnamesService.containsProtectNames(nickname);
 		}
 		return nickname;
 	}
@@ -1673,6 +1680,10 @@ public class UserServiceImpl implements UserService {
 			//官方认证，检查认证用户名是否重复
 			UserInfo userInfo1= userInfoMapper.selectByUserid(userInfo.getUserid());
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByNickName(userInfo.getNickname());
+			BaseResp<Object> baseResp2 = sysProtectnamesService.containsProtectNames(userInfo.getNickname());
+			if(!ResultUtil.isSuccess(baseResp2)){
+				return baseResp2;
+			}
 			if(null != appUserMongoEntity && !appUserMongoEntity.getNickname().equals(userInfo1.getNickname())){
 				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_16, Constant.RTNINFO_SYS_16);
 			}else {
@@ -1702,6 +1713,12 @@ public class UserServiceImpl implements UserService {
 							remark,"0","30", "取消达人",0, "", "");
 				}
 				if(StringUtils.isNotBlank(userInfo.getVcertification()) ) {
+					if ("1".equals(userInfo.getVcertification()) || "2".equals(userInfo.getVcertification())) {
+						BaseResp<SysProtectnames> baseResp1 = sysProtectnamesService.selectProtectnames();
+						String nicknames = baseResp1.getData().getNicknames();
+						nicknames=nicknames+("，" + userInfo.getNickname());
+						sysProtectnamesService.updateProtectNames(nicknames, baseResp1.getData().getId() + "");
+					}
 					   UserInfo userInfo2= userInfoMapper.selectByUserid(userInfo.getUserid());
 						//同步更改的用户信息
 						UserInfo updateUserInfo = compareUserInfo(userInfo2, userInfo);
