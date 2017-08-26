@@ -104,6 +104,8 @@ public class Classroom {
 
 	private List<ClassroomCourses> liveCourses;//最近一天的直播课程列表，按照时间顺序排列
 
+	private String status; //直播状态  0 没有直播 1 未开始 2 直播中
+
 
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
@@ -592,4 +594,11 @@ public class Classroom {
 		return recentLiveDate;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

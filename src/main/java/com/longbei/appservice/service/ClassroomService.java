@@ -296,5 +296,7 @@ public interface ClassroomService {
 	 * @return
 	 */
 	int isTeacher(String userid,Classroom classroom);
+
+	BaseResp updateOnlineStatus(String roomid, String courseid, String userid,String status);
 	
 }

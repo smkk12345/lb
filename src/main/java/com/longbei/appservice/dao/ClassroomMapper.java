@@ -213,5 +213,14 @@ public interface ClassroomMapper {
      * @currentdate:2017年7月13日
  	*/
     Integer updateRoomRecommendSort(@Param("classroomid") long classroomid, @Param("weight") String weight);
+
+	/**
+	 * 更新教室直播状态
+	 * @param classroomid
+	 * @param status
+	 * @return
+	 */
+	Integer updateLiveStatus(@Param("classroomid") long classroomid,
+							 @Param("status") String status);
     
 }

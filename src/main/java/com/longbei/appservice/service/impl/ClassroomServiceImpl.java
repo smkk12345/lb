@@ -1399,6 +1399,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return 0;
 	}
 
+	@Override
+	public BaseResp updateOnlineStatus(String roomid, String courseid, String userid,String status) {
+		classroomMapper.updateLiveStatus(Long.parseLong(roomid),status);
+		classroomCoursesMapper.updateLiveStatus(Long.parseLong(roomid), Integer.parseInt(courseid),status);
+		return BaseResp.ok();
+	}
+
 
 	//------------------------公用方法，初始化消息中用户信息------------------------------------------
     /**

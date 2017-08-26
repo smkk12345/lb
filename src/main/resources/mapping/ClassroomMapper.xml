@@ -36,6 +36,7 @@
     <result column="allcourses" property="allcourses" />
     <result column="earnings" property="earnings" />
     <result column="commission" property="commission" />
+    <result column="status" property="status"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
@@ -602,6 +603,13 @@
     set 
       weight = #{weight} 
     where classroomid = #{classroomid} 
+  </update>
+
+  <update id="updateLiveStatus" >
+    update classroom
+    set
+    status =  #{status}
+    where classroomid = #{classroomid}
   </update>
   
 </mapper>
