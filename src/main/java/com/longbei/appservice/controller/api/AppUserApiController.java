@@ -560,7 +560,7 @@ public class AppUserApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            baseResp = sysProtectnamesService.updateProtectNames(nicknames,protectNamesId);
+            baseResp = sysProtectnamesService.updateProtectNames(nicknames);
         } catch (Exception e) {
             logger.error("updateProtectNames for adminservice and nicknames={},protectNamesId={}", nicknames,protectNamesId,e);
 

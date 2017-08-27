@@ -4,7 +4,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.SysProtectnamesMapper;
 import com.longbei.appservice.entity.SysProtectnames;
-import com.longbei.appservice.entity.SysSensitive;
 import com.longbei.appservice.service.SysProtectnamesService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -62,7 +61,7 @@ public class SysProtectnamesServiceImpl implements SysProtectnamesService {
                 SysProtectnames sysProtectnames1= new SysProtectnames();
                 sysProtectnames1.setCreatetime(new Date());
                 sysProtectnamesMapper.insert(sysProtectnames1);
-                sysProtectnames = sysProtectnamesMapper.selectProtectnames();
+//                sysProtectnames = sysProtectnamesMapper.selectProtectnames();
             }
             baseResp.setData(sysProtectnames);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -74,10 +73,9 @@ public class SysProtectnamesServiceImpl implements SysProtectnamesService {
     }
 
     @Override
-    public 	BaseResp<Object> updateProtectNames(String nicknames,String protectNamesId) {
+    public 	BaseResp<Object> updateProtectNames(String nicknames) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         SysProtectnames sysProtectnames = new SysProtectnames();
-        sysProtectnames.setId(Integer.parseInt(protectNamesId));
         sysProtectnames.setNicknames(nicknames);
         sysProtectnames.setUpdatetime(new Date());
         try {

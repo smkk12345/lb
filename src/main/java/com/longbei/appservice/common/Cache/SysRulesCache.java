@@ -80,5 +80,6 @@ public class SysRulesCache {
      */
     public static Map<String,SysAppupdate> sysAppupdateMap = new HashMap<>();
 
+    public static Set<String> sysProtectNames = new HashSet<String>();
 
 }

@@ -13,7 +13,5 @@ public interface SysProtectnamesMapper {
 
     int updateProtectNames(SysProtectnames record);
 
-    int updateByPrimaryKeyWithBLOBs(SysProtectnames record);
-
     int updateByPrimaryKey(SysProtectnames record);
 }

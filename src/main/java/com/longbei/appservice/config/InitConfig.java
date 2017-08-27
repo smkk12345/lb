@@ -9,6 +9,7 @@ import com.longbei.appservice.common.service.mq.reciver.TopicMessageReciverServi
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
+import com.longbei.appservice.service.SysProtectnamesService;
 import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.SysSettingService;
 import com.netflix.discovery.converters.Auto;
@@ -77,6 +78,8 @@ public class InitConfig implements CommandLineRunner {
     private AddMessageReceiveService addMessageReceiveService;
     @Autowired
     private SysSettingService sysSettingService;
+    @Autowired
+    private SysProtectnamesService sysProtectnamesService;
 
     @Autowired
     private TimeLineDao timeLineDao;
@@ -95,6 +98,8 @@ public class InitConfig implements CommandLineRunner {
         initSysPerfectInfoCache();
         //缓存敏感词
         initSensitiveMap();
+        //缓存受保护的昵称
+        initSysProtectNamesCache();
 
         Constant_Imp_Icon.init();
 
@@ -103,7 +108,6 @@ public class InitConfig implements CommandLineRunner {
         initSysCommon();
         //初始化版本信息 分安卓和IOS
         initSysAppUpdateMap();
-
     }
 
     private void initUserBehaviorRule(int num){
@@ -297,6 +301,8 @@ public class InitConfig implements CommandLineRunner {
     }
 
 
-
+    private void initSysProtectNamesCache(){
+        SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+    }
 
 }

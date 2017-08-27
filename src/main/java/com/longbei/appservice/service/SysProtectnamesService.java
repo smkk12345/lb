@@ -21,10 +21,9 @@ public interface SysProtectnamesService {
      * 编辑受保护的昵称
      * @title updateProtectNames
      * @param  nicknames 昵称集合
-     * @param  protectNamesId
      * @author IngaWu
      * @currentdate:2017年8月25日
      */
-    BaseResp<Object> updateProtectNames(String nicknames, String protectNamesId);
+    BaseResp<Object> updateProtectNames(String nicknames);
 
 }

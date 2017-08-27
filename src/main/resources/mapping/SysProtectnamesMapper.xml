@@ -72,15 +72,9 @@
         nicknames = #{nicknames,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.longbei.appservice.entity.SysProtectnames" >
-    update sys_protectnames
-    set createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      nicknames = #{nicknames,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysProtectnames" >
     update sys_protectnames
     set createtime = #{createtime,jdbcType=TIMESTAMP},
