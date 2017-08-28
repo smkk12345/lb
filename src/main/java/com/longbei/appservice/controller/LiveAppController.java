@@ -42,6 +42,7 @@ public class LiveAppController{
     }
 
     /**
+     * url online/closeOnLineRoom
      * 关闭直播间 结束直播
      * @param roomid
      * @param courseid
@@ -50,7 +51,7 @@ public class LiveAppController{
      */
     @RequestMapping(value="closeOnLineRoom")
     public BaseResp closeOnLine(String roomid,String courseid,String userid){
-        logger.info("closeOnLineRoom roomid:{} courseid:{} userid:{} duration:{}",
+        logger.info("closeOnLineRoom roomid:{} courseid:{} userid:{}",
                 roomid,courseid,userid);
         BaseResp baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(roomid,courseid,userid)){
