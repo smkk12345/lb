@@ -548,13 +548,12 @@ public class AppUserApiController {
      * 编辑受保护的昵称
      * @title updateProtectNames
      * @param  nicknames 昵称集合
-     * @param  protectNamesId
      * @author IngaWu
      * @currentdate:2017年8月25日
      */
     @RequestMapping(value = "/updateProtectNames")
-    public BaseResp<Object> updateProtectNames(String nicknames,String protectNamesId) {
-        logger.info("updateProtectNames for adminservice and nicknames={},protectNamesId={}", nicknames,protectNamesId);
+    public BaseResp<Object> updateProtectNames(String nicknames) {
+        logger.info("updateProtectNames for adminservice and nicknames={}", nicknames);
         BaseResp<Object> baseResp = new BaseResp<>();
         if(StringUtils.isBlank(nicknames)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -562,7 +561,7 @@ public class AppUserApiController {
         try {
             baseResp = sysProtectnamesService.updateProtectNames(nicknames);
         } catch (Exception e) {
-            logger.error("updateProtectNames for adminservice and nicknames={},protectNamesId={}", nicknames,protectNamesId,e);
+            logger.error("updateProtectNames for adminservice and nicknames={}", nicknames,e);
 
         }
         return baseResp;
