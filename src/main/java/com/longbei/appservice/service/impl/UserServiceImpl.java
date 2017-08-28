@@ -616,15 +616,10 @@ public class UserServiceImpl implements UserService {
 	 */
 	private String getSingleNickName(String nickname) {
 		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
-//		BaseResp<Object> baseResp = sysProtectnamesService.containsProtectNames(nickname);
 		while (null != app||SysRulesCache.sysProtectNames.contains(nickname)){
 			nickname = nickname + RandomUtils.getRandomCode(1,10000);
 			app = userMongoDao.getAppUserByNickName(nickname);
 		}
-//		while (!ResultUtil.isSuccess(baseResp)){
-//			nickname = nickname + RandomUtils.getRandomCode(1,10000);
-//			baseResp = sysProtectnamesService.containsProtectNames(nickname);
-//		}
 		return nickname;
 	}
 

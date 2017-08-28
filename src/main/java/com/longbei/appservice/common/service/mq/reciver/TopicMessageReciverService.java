@@ -8,6 +8,7 @@ import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.security.SensitiveWord;
 import com.longbei.appservice.dao.BehaviorRuleMapper;
 import com.longbei.appservice.entity.BehaviorRule;
+import com.longbei.appservice.service.SysProtectnamesService;
 import com.longbei.appservice.service.SysSensitiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,8 @@ public class TopicMessageReciverService implements MessageListener{
     private BehaviorRuleMapper behaviorRuleMapper;
     @Autowired
     private SysSensitiveService sysSensitiveService;
+    @Autowired
+    private SysProtectnamesService sysProtectnamesService;
 
     @Override
     public void onMessage(Message message) {
@@ -48,6 +51,9 @@ public class TopicMessageReciverService implements MessageListener{
             }
             if (Constant.UPDATE_SENSITIVE.equals(msg)){
                 initSensitiveMap();
+            }
+            if (Constant.UPDATE_PROTECTNAMES.equals(msg)){
+                initSensitiveSet(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +81,17 @@ public class TopicMessageReciverService implements MessageListener{
                 SensitiveWord.addSensitiveWordToHashMap(list);
             }
         }catch (Exception e) {
+            logger.error("initSensitiveMape is error:",e);
+        }
+    }
+
+    public void initSensitiveSet(int num){
+        try {
+            SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+        }catch (Exception e) {
+            if (num <= 3){
+                initSensitiveSet(num++);
+            }
             logger.error("initSensitiveMape is error:",e);
         }
     }

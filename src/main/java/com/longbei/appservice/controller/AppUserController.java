@@ -5,6 +5,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -439,6 +440,10 @@ public class AppUserController extends BaseController {
             if(nickname.length() > 26||nickname.length() < 2){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_911,Constant.RTNINFO_SYS_911);
             }
+            if(SysRulesCache.sysProtectNames.contains(nickname)) {
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_120,Constant.RTNINFO_SYS_120);
+            }
+
         }
         baseResp = sysSensitiveService.getSensitiveWordSet(nickname+","+brief+","+realname);
         if(!ResultUtil.isSuccess(baseResp)){
