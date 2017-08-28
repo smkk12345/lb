@@ -399,6 +399,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", courseList.get(0).getPickey());
 					map.put("fileurl", courseList.get(0).getFileurl());
 					map.put("coursesort", courseList.get(0).getCoursesort());
+					map.put("coursestarttime", courseList.get(0).getStarttime());
+					map.put("courseendtime", courseList.get(0).getEndtime());
+					map.put("teachingtypes", courseList.get(0).getTeachingtypes());
+					map.put("coursestatus", courseList.get(0).getStatus());
+					map.put("coursedaytime", courseList.get(0).getDaytime());
+					map.put("courseliveid", courseList.get(0).getLiveid());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());
