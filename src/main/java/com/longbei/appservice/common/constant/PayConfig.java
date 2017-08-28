@@ -21,7 +21,7 @@ package com.longbei.appservice.common.constant;
  *2、更换浏览器或电脑，重新登录查询。
  */
 
-public class payConfig {
+public class PayConfig {
 	
 	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
