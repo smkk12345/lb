@@ -135,6 +135,8 @@
     and pickey != '' 
     and isup = 1 
     and teachingtypes = 1 
+    and status = 0  
+	and starttime > NOW() 
     <if test="daytime != null and daytime != ''" >
       	and daytime = #{daytime}
     </if>
@@ -152,7 +154,8 @@
     and isdel = 0 
     and pickey != '' 
     and isup = 1 
-	and teachingtypes = 1 
+	and teachingtypes = 1
+	and status = 0  
 	and starttime > NOW() 
 	ORDER BY starttime ASC  
       limit 1
