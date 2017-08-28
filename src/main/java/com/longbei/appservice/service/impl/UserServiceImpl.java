@@ -304,13 +304,6 @@ public class UserServiceImpl implements UserService {
 		userInfo.setDeviceindex(deviceindex);
 		userInfo.setDevicetype(devicetype);
 
-//		UserInfo userInfo1 = userInfoMapper.getByUserName(inviteuserid);
-//		if(!StringUtils.isBlank(inviteuserid)){
-//			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(inviteuserid);
-//			if(null != appUserMongoEntity){
-//				userInfo.setInviteuserid(Long.parseLong(appUserMongoEntity.getId()));
-//			}
-//		}
 		try {
 			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(String.valueOf(userid), username, "#");
 			if(!ResultUtil.isSuccess(tokenRtn)){
