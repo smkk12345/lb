@@ -25,11 +25,12 @@
     <result column="endtime" property="endtime"/>
     <result column="status" property="status"/>
     <result column="daytime" property="daytime"/>
+    <result column="liveid" property="liveid"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status, daytime
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status, daytime, liveid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -261,6 +262,9 @@
 	  <if test="daytime != null" >
         daytime,
       </if>
+      <if test="liveid != null" >
+        liveid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -328,6 +332,9 @@
       </if>
       <if test="daytime != null" >
         #{daytime},
+      </if>
+      <if test="liveid != null" >
+        #{liveid},
       </if>
     </trim>
   </insert>
@@ -439,6 +446,14 @@
   <update id="updateIsupByid" >
     update classroom_courses
     set isup = #{isup}  
+    where id = #{id} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateStreamingIsupByid" >
+    update classroom_courses
+    set isup = #{isup},
+    liveid = #{liveid}   
     where id = #{id} 
     and classroomid = #{classroomid} 
   </update>

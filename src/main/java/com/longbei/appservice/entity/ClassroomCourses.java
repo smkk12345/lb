@@ -54,6 +54,8 @@ public class ClassroomCourses {
     private Integer status;//直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
     
     private String daytime; //开始年月日 用于方便查询
+    
+    private String liveid;  //直播id
 
     /**
      * 
@@ -346,4 +348,13 @@ public class ClassroomCourses {
 	public void setDaytime(String daytime) {
 		this.daytime = daytime;
 	}
+
+	public String getLiveid() {
+		return liveid;
+	}
+
+	public void setLiveid(String liveid) {
+		this.liveid = liveid;
+	}
+	
 }

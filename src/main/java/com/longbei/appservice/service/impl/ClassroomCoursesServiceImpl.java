@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
@@ -21,8 +22,10 @@ import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.ClassroomMembers;
+import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.service.ClassroomCoursesService;
+import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.UserMsgService;
 
 @Service("classroomCoursesService")
@@ -38,6 +41,10 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	private UserBusinessConcernMapper userBusinessConcernMapper;
 	@Autowired
 	private ClassroomMembersMapper classroomMembersMapper;
+	@Autowired
+	private LiveInfoMongoService liveInfoMongoService;
+	@Autowired
+	private IdGenerateService idGenerateService;
 	
 	
 	
@@ -242,7 +249,24 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//修改课程排序
 				classroomCoursesMapper.updateSortByid(classroomid, id, 1);
 			}
-			int temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
+			int temp = 0;
+			ClassroomCourses classroomCourses = classroomCoursesMapper.select(classroomid, id);
+			//teachingtypes教学类型 0 录播 1直播
+			if("1".equals(classroomCourses.getTeachingtypes())){
+				long liveid = idGenerateService.getUniqueIdAsLong();
+				LiveInfo liveInfo = new LiveInfo();
+				liveInfo.setLiveid(liveid);
+				liveInfo.setClassroomid(classroomid);
+				liveInfo.setCourseid(id);
+				liveInfo.setCreatetime(new Date());
+				liveInfo.setUserid(classroom.getUserid());
+				//如果直播课程发布，mongo添加数据
+				liveInfoMongoService.insertLiveInfo(liveInfo);
+				temp = classroomCoursesMapper.updateStreamingIsupByid("1", id, classroomid, liveid);
+			}else{
+				temp = classroomCoursesMapper.updateIsupByid("1", id, classroomid);
+			}
+			
 			if (temp > 0) {
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);

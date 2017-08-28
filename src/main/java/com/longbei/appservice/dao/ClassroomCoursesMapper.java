@@ -2,7 +2,6 @@ package com.longbei.appservice.dao;
 
 import java.util.List;
 
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 
 import com.longbei.appservice.entity.ClassroomCourses;
@@ -85,6 +84,16 @@ public interface ClassroomCoursesMapper {
 	 * param isup 是否上架   0：未上架    1：已上架
 	 */
     int updateIsupByid(@Param("isup") String isup, @Param("id") Integer id, @Param("classroomid") long classroomid);
+    
+    /**
+	 * @author yinxc
+	 * 修改课程的发布状态---直播
+	 * 2017年8月28日
+	 * param id  课程id
+	 * param isup 是否上架   0：未上架    1：已上架
+	 */
+    int updateStreamingIsupByid(@Param("isup") String isup, @Param("id") Integer id, 
+    		@Param("classroomid") long classroomid, @Param("liveid") long liveid);
     
     
     /**
