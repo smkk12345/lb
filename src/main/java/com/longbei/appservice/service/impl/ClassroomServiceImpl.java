@@ -279,7 +279,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
-				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
+				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				int isTeacher = isTeacher(String.valueOf(userid),classroom);
 				map.put("isteacher",isTeacher);
@@ -396,9 +396,24 @@ public class ClassroomServiceImpl implements ClassroomService {
 //					}
 //				}
 				if(null != courseList && courseList.size()>0){
-					map.put("pickey", courseList.get(0).getPickey());
-					map.put("fileurl", courseList.get(0).getFileurl());
-					map.put("coursesort", courseList.get(0).getCoursesort());
+					ClassroomCourses classroomCourses = courseList.get(0);
+					map.put("pickey", classroomCourses.getPickey());
+					map.put("fileurl", classroomCourses.getFileurl());
+					map.put("coursesort", classroomCourses.getCoursesort());
+					if(!StringUtils.isBlank(classroomCourses.getStarttime())){
+						map.put("coursestarttime", DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd HH:mm:ss"));
+					}else{
+						map.put("coursestarttime", null);
+					}
+					if(!StringUtils.isBlank(classroomCourses.getEndtime())){
+						map.put("courseendtime", DateUtils.formatDateString(classroomCourses.getEndtime(), "yyyy-MM-dd HH:mm:ss"));
+					}else{
+						map.put("courseendtime", null);
+					}
+					map.put("teachingtypes", classroomCourses.getTeachingtypes());
+					map.put("coursestatus", classroomCourses.getStatus());
+					map.put("coursedaytime", classroomCourses.getDaytime());
+					map.put("courseliveid", classroomCourses.getLiveid());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());
@@ -445,13 +460,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 							classroomCourses.getDaytime(), 0, 0);
 					map.put("liveCourses", liveCourses);
 					map.put("daytime", classroomCourses.getDaytime());
-					map.put("starttime", classroomCourses.getStarttime());
-					map.put("endtime", classroomCourses.getEndtime());
+//					map.put("starttime", classroomCourses.getStarttime());
+//					map.put("endtime", classroomCourses.getEndtime());
 				}else{
 					map.put("liveCourses", new ArrayList<ClassroomCourses>());
 					map.put("daytime", null);
-					map.put("starttime", null);
-					map.put("endtime", null);
+//					map.put("starttime", null);
+//					map.put("endtime", null);
 				}
 				//分享url
 				map.put("roomurlshare", 
@@ -1343,7 +1358,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
-				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
+				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				if(userid != null){
 					//获取当前用户在教室发作业的总数
@@ -1415,6 +1430,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return 0;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public BaseResp updateOnlineStatus(String roomid, String courseid, String userid,String status) {
 		classroomMapper.updateLiveStatus(Long.parseLong(roomid),status);

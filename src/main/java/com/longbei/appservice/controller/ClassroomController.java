@@ -974,9 +974,15 @@ public class ClassroomController {
      * @param @param userid 当前访问id
      * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
      * @desc data: 
-     *					fileurl：教室课程视频url---转码后
-     * 					pickey:教室课程视频截图
-     * 					classphotos:教室图片
+     *					fileurl：教室课程视频url---转码后---头部显示课程
+     * 					pickey:教室课程视频截图---头部显示课程
+     * 					coursesort   课程序号---头部显示课程
+     * 					coursestarttime 直播开始时间---头部显示课程
+     * 					courseendtime   直播结束时间---头部显示课程
+     * 					teachingtypes   教学类型 0 录播 1直播---头部显示课程
+     * 					coursestatus    直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3---头部显示课程
+     * 					coursedaytime   开始年月日 用于方便查询---头部显示课程
+     * 					courseliveid    直播id---头部显示课程
      * 					cardid:创建人id
      * 					isfollow：是否已经关注教室   0：否  1：已关注
      * 					isadd：是否加入教室    0：否  1：已加入
@@ -986,11 +992,9 @@ public class ClassroomController {
      * 					isfree：是否免费。0 免费 1 收费
      * 					charge：课程价格
      * 					coursetype   课程类型.  0 不收费 1 收费
-     * 					coursesort   课程序号
+     * 					classphotos:教室图片
      * 					liveCourses  最近一天的直播课程列表，按照时间顺序排列
      * 					daytime      最近一次直播的日期时间
-     * 					starttime    直播开始时间
-     * 					endtime      直播结束时间
      * @auther yinxc
      * @currentdate:2017年6月14日
  	*/

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.longbei.appservice.common.constant.payConfig;
+import com.longbei.appservice.common.constant.PayConfig;
 
 
 /* *
@@ -82,7 +82,7 @@ public class AlipayCore {
     public static void logResult(String sWord) {
         FileWriter writer = null;
         try {
-            writer = new FileWriter(payConfig.log_path + "alipay_log_" + System.currentTimeMillis()+".txt");
+            writer = new FileWriter(PayConfig.log_path + "alipay_log_" + System.currentTimeMillis()+".txt");
             writer.write(sWord);
         } catch (Exception e) {
             e.printStackTrace();

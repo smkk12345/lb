@@ -6,9 +6,11 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.LiveGiftDetailMapper;
 import com.longbei.appservice.dao.LiveGiftMapper;
+import com.longbei.appservice.dao.LiveInfoMongoMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveGiftDetail;
+import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -40,6 +42,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private IdGenerateService idGenerateService;
     @Autowired
     private UserInComeService userInComeService;
+    @Autowired
+    private LiveInfoMongoMapper liveInfoMongoMapper;
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
 
@@ -65,17 +69,22 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         if(null == liveGift||null == userInfo){
             return baseResp;
         }
+        LiveInfo liveInfo = liveInfoMongoMapper.selectLiveInfoByLiveid(businessid);
+        if(null == liveInfo){
+            return baseResp;
+        }
+        long classroomid = liveInfo.getClassroomid();
         if(hasEnoughMoney(liveGift,userInfo,num)){
             //扣除龙币 生成记录
             //1，兑换礼物 2，送礼物
             //插入一条明细
-            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,businessid,businesstype);
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype);
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
                 int receiveMoney = giveMoney*(1-Constant.TAKEPERCENTAGE.intValue()/100);
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
                 //添加教室收益
-                userInComeService.updateUserInCome(String.valueOf(businessid),String.valueOf(toUId),
+                userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
                         String.valueOf(fromUid),"1","0",receiveMoney,null);
             }
             baseResp.initCodeAndDesp();
