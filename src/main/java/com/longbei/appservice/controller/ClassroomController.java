@@ -995,8 +995,6 @@ public class ClassroomController {
      * 					classphotos:教室图片
      * 					liveCourses  最近一天的直播课程列表，按照时间顺序排列
      * 					daytime      最近一次直播的日期时间
-     * 					starttime    直播开始时间
-     * 					endtime      直播结束时间
      * @auther yinxc
      * @currentdate:2017年6月14日
  	*/

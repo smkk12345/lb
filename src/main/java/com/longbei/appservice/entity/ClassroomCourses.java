@@ -1,12 +1,11 @@
 package com.longbei.appservice.entity;
 
-import java.util.Date;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.longbei.appservice.common.utils.StringUtils;
 
 public class ClassroomCourses {
     private Integer id;
@@ -31,9 +30,9 @@ public class ClassroomCourses {
 
     private String isdel;//0 — 未删除。1 —删除
 
-    private Date createtime;//创建时间
+    private String createtime;//创建时间
 
-    private Date udpatetime;//更新时间
+    private String udpatetime;//更新时间
     
     private String isdefault;//isdefault是否 默认   1 默认封面  0 非默认
     
@@ -253,7 +252,7 @@ public class ClassroomCourses {
      */
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
@@ -261,8 +260,16 @@ public class ClassroomCourses {
      * 创建时间
      * @param createtime 创建时间
      */
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreatetime(String createtime) {
+    	if(!StringUtils.isBlank(createtime)){
+			if(createtime.indexOf(".0") > -1){
+				this.createtime = createtime.substring(0, createtime.length()-2);
+			}else{
+				this.createtime = createtime;
+			}
+		}else{
+			this.createtime = createtime;
+		}
     }
 
     /**
@@ -271,7 +278,7 @@ public class ClassroomCourses {
      */
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    public Date getUdpatetime() {
+    public String getUdpatetime() {
         return udpatetime;
     }
 
@@ -279,8 +286,16 @@ public class ClassroomCourses {
      * 更新时间
      * @param udpatetime 更新时间
      */
-    public void setUdpatetime(Date udpatetime) {
-        this.udpatetime = udpatetime;
+    public void setUdpatetime(String udpatetime) {
+    	if(!StringUtils.isBlank(udpatetime)){
+			if(udpatetime.indexOf(".0") > -1){
+				this.udpatetime = udpatetime.substring(0, udpatetime.length()-2);
+			}else{
+				this.udpatetime = udpatetime;
+			}
+		}else{
+			this.udpatetime = udpatetime;
+		}
     }
 
     @JsonInclude(Include.ALWAYS)

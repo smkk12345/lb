@@ -15,6 +15,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
@@ -329,10 +330,10 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			}
 			classroomCourses.setCoursesort(100);
 			classroomCourses.setCoursetype(coursetype);
-			classroomCourses.setCreatetime(new Date());
+			classroomCourses.setCreatetime(DateUtils.formatDateTime1(new Date()));
 			classroomCourses.setIsdefault("0");
 			classroomCourses.setIsdel("0");
-			classroomCourses.setUdpatetime(new Date());
+			classroomCourses.setUdpatetime(DateUtils.formatDateTime1(new Date()));
 			int temp = classroomCoursesMapper.insertSelective(classroomCourses);
 			if (temp > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
