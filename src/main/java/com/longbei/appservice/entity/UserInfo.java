@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class UserInfo {
+public class UserInfo implements Serializable {
     private int id;
 
     private Long userid;//用户id

@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import net.sf.json.JSONArray;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class Improve {
+public class Improve implements Serializable{
 
     @JsonSerialize(using=ToStringSerializer.class)
     protected Long id;

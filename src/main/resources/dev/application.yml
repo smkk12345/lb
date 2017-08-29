@@ -7,6 +7,8 @@ spring:
                 username: longbei
                 password: longbei
                 driver-class-name: com.mysql.jdbc.Driver
+      cache:
+        type: REDIS
       # REDIS
       redis:
             database: 0 # database name

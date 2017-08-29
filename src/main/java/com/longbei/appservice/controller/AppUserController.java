@@ -123,7 +123,7 @@ public class AppUserController extends BaseController {
         }
    		return baseResp;
     }
-    
+
     /**
      * @Title: http://ip:port/app_service/user/info
      * @Description: 个人资料

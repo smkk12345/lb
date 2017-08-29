@@ -42,7 +42,7 @@
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission,status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 

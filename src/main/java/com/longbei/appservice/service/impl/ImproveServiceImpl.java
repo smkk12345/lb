@@ -24,11 +24,11 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @author luye
  * @create 2017-01-19 上午11:32
  **/
+@CacheConfig(cacheNames = RedisCacheNames._IMPROVE)
 @Service("improveService")
 public class ImproveServiceImpl implements ImproveService{
 
@@ -1546,6 +1547,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/3/8 下午3:58
      *  @update 2017/3/8 下午3:58
      */
+    @Cacheable(key="#userid + '_line_list'")
     @Override
     public List<Improve> selectImproveListByUser(String userid,String ptype,
                                                  String ctype,Date lastdate,int pagesize,Integer ispublic) {
