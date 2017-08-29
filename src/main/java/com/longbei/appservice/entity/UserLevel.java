@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class UserLevel {
+import java.io.Serializable;
+
+public class UserLevel implements Serializable {
     private Long id;//编码
 
     private Integer grade;//等级名称

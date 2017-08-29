@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysPerfectInfo {
+public class SysPerfectInfo implements Serializable {
     private Integer id;
 
     private String name;//十全十美  分类名字

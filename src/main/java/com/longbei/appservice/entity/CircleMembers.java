@@ -1,9 +1,10 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-public class CircleMembers {
+public class CircleMembers implements Serializable {
     public static final Integer pending = 0;//已退圈
     public static final Integer normal = 1;//待圈主审核验证
     public static final Integer delete = 2;//正常 在兴趣圈中

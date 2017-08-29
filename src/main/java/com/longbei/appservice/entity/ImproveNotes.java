@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ImproveNotes {
+public class ImproveNotes implements Serializable {
     private Long id;
 
     private Long impid;//微进步id

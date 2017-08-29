@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
-public class UserInComeOrder {
+public class UserInComeOrder implements Serializable {
     /**
      * 
      */

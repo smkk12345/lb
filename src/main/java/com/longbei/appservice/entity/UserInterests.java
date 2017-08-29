@@ -1,10 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserInterests {
+public class UserInterests implements Serializable {
     private Integer id;
 
     private String userid;

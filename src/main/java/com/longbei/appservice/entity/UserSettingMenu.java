@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserSettingMenu {
+public class UserSettingMenu implements Serializable {
     private Integer id;
 
     private Integer menutype;//一键直达 菜单id

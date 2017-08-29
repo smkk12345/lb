@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 //import org.springframework.format.annotation.DateTimeFormat;
@@ -8,7 +9,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class UserMsg {
+public class UserMsg implements Serializable {
 	private Integer id;
 
 	private Long userid;

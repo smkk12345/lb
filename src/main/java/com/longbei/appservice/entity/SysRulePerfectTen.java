@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysRulePerfectTen {
+public class SysRulePerfectTen implements Serializable {
     private Integer id;//自增主键id
 
     private Integer minscore;//最小分值

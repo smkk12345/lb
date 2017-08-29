@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class RankLottery {
+import java.io.Serializable;
+
+public class RankLottery implements Serializable {
     private Integer id;
 
     /**

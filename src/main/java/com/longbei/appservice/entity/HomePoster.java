@@ -1,12 +1,13 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class HomePoster {
+public class HomePoster implements Serializable {
     private Integer id;
 
     private String title;

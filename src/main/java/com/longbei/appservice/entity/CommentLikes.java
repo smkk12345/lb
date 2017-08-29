@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * CommentLikes
  */
 @Document(collection = "commentlikes")
-public class CommentLikes {
+public class CommentLikes implements Serializable {
 
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");

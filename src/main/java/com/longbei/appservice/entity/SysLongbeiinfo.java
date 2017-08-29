@@ -2,8 +2,10 @@ package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.Serializable;
+
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class SysLongbeiinfo {
+public class SysLongbeiinfo implements Serializable {
     private Integer id;
 
     private String about;//关于龙杯

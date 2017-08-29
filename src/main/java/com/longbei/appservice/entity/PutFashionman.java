@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class PutFashionman {
+public class PutFashionman implements Serializable {
     private Integer id;
 
     private Long userid;//用户id

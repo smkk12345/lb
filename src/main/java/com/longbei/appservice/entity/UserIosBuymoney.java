@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class UserIosBuymoney {
+import java.io.Serializable;
+
+public class UserIosBuymoney implements Serializable {
     private Integer id;
 
     private Integer money;//龙币数量

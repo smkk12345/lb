@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Document(collection = "hotline")
-public class HotLine {
+public class HotLine implements Serializable {
 
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");

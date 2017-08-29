@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Date;
  * @create 2017-02-21 上午11:06
  **/
 @Document(collection = "improveLFDDetail")
-public class ImproveLFDDetail {
+public class ImproveLFDDetail implements Serializable {
 
     @Id
     private String id;

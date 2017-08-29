@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SnsGroupMembers {
+public class SnsGroupMembers implements Serializable {
     private Integer id;
 
     private Long groupid;//群id

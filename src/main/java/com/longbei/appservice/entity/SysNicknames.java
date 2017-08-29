@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by lixb on 2017/8/4.
  */
-public class SysNicknames {
+public class SysNicknames implements Serializable {
 
     private Integer id;
     private String nickname;

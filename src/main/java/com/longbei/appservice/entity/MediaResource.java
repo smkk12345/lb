@@ -3,12 +3,13 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by wangyongzhi 17/7/27.
  */
-public class MediaResource {
+public class MediaResource implements Serializable {
 
     private Integer id;
     private Integer resourcetypeid;//所属分类的id

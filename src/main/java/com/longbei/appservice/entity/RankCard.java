@@ -5,9 +5,10 @@ import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RankCard {
+public class RankCard implements Serializable {
     /**
      * 
      */

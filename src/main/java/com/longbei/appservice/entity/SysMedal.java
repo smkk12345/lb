@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysMedal {
+public class SysMedal implements Serializable {
     private Integer id;
 
     private String medalname;//勋章的名字

@@ -1,11 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by wangyongzhi 17/7/27.
  */
-public class MediaResourceType {
+public class MediaResourceType implements Serializable {
     public static final Integer userMaxMediaResourceTypeCount = 3;
 
     private Integer id;

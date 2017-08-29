@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class SysCommon {
+import java.io.Serializable;
+
+public class SysCommon implements Serializable {
     private Integer id;
 
     private String key;//当前的属性的key值

@@ -6,11 +6,12 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Document(collection = "timelinedetail")
-public class TimeLineDetail {
+public class TimeLineDetail implements Serializable {
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
 	@DBRef

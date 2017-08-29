@@ -3,9 +3,10 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SnsFriends {
+public class SnsFriends implements Serializable {
     private Integer id;
 
     private Long userid;

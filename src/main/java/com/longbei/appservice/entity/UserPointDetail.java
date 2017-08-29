@@ -1,11 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用户十全十美积分明细表
  */
-public class UserPointDetail {
+public class UserPointDetail implements Serializable {
 
     private Long id;//编码
 

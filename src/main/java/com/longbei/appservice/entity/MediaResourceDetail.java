@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by wangyongzhi 17/8/11.
  */
-public class MediaResourceDetail {
+public class MediaResourceDetail implements Serializable {
     private Integer id;
     private Integer mediaresourceid;//对应的资源库数据id
     private String filePath;//文件路径

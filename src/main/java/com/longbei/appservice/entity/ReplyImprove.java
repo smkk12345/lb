@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 /*
  * 进步---教室相关
  */
-public class ReplyImprove {
+public class ReplyImprove implements Serializable {
 
 	private Long impid;//微进步id
 	private String itype;//类型  0 文字进步 1 图片进步 2 视频进步 3 音频进步 4 文件

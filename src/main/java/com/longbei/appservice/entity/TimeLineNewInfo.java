@@ -5,11 +5,13 @@ import com.longbei.appservice.common.utils.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 /**
  * Created by longbei on 2016/8/11.
  */
 @Document(collection = "timelinenewinfo")
-public class TimeLineNewInfo {
+public class TimeLineNewInfo implements Serializable {
     @Id
     private String id;
     private String friendid;

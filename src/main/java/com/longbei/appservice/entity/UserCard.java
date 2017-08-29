@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class UserCard {
+import java.io.Serializable;
+
+public class UserCard implements Serializable {
     private Integer id;
 
     private Long userid;//用户id

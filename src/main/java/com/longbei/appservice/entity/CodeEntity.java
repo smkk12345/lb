@@ -3,6 +3,7 @@ package com.longbei.appservice.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Set;
  * @create 2017-03-17 下午8:54
  **/
 @Document(collection = "codeentity")
-public class CodeEntity {
+public class CodeEntity implements Serializable {
     @Id
     private String id;
     private String businessname = "rank";

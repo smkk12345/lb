@@ -1,5 +1,6 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * 教室直播课程联查id
  */
 @Document(collection = "liveinfo")
-public class LiveInfo {
+public class LiveInfo implements Serializable {
 	
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");

@@ -6,12 +6,13 @@ import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.config.OssConfig;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by lixb on 2017/8/11.
  */
-public class LiveGift {
+public class LiveGift implements Serializable {
 
     private int id;
 

@@ -3,11 +3,12 @@ package com.longbei.appservice.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Document(collection = "userrelationchange")
-public class UserRelationChange {
+public class UserRelationChange implements Serializable {
 	@Id
 	private String id = UUID.randomUUID().toString();
 	private String uid;//用户id

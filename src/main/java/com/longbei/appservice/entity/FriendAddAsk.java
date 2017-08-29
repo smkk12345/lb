@@ -2,13 +2,14 @@ package com.longbei.appservice.entity;
 
 import net.sf.json.JSONArray;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用户请求加好友 实体类
  * Created by wangyongzhi 17/3/3.
  */
-public class FriendAddAsk {
+public class FriendAddAsk implements Serializable {
     //过多长时间后,用户可以再次申请加好友
     public static final Integer EXPIRETIME = 7 * 24 * 3600;
     public static final Integer MessageContentMaxLength = 100;

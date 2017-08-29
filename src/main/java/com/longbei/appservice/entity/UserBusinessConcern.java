@@ -1,12 +1,13 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 关注相关
  * Created by wangyongzhi 17/3/21.
  */
-public class UserBusinessConcern {
+public class UserBusinessConcern implements Serializable {
     private Long id;
     private Long userid;//用户id
     private Integer businesstype;//关注的类型 1 目标 2 榜单 3 圈子 4 教室

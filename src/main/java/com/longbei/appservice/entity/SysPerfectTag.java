@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by lixb on 2017/3/18.
  */
-public class SysPerfectTag {
+public class SysPerfectTag implements Serializable {
 
     private Integer id;
 

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * 进步币消息提示类
  */
 @Document(collection = "userloginhint")
-public class UserMoneyHint {
+public class UserMoneyHint implements Serializable{
 
 	@Id
 	private String id;

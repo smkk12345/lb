@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.longbei.appservice.common.web.CustomDoubleSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RankAwardRelease {
+public class RankAwardRelease implements Serializable {
     private Integer id;
 
     private String rankid;//榜单id

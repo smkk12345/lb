@@ -3,9 +3,10 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class RankMembers {
+public class RankMembers implements Serializable {
     public static final Integer maxHour = 24;//最大多长时间不发进步,则会被其他成员挤走
 
     private Integer id;

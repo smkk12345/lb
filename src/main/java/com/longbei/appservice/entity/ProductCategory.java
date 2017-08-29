@@ -3,12 +3,13 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class ProductCategory {
+public class ProductCategory implements Serializable {
     private Integer id;//类别id
 
     private String catename;//类别名字

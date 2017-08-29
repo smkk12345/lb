@@ -1,7 +1,9 @@
 package com.longbei.appservice.entity;
 
 
-public class UserBasic {
+import java.io.Serializable;
+
+public class UserBasic implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private long userid;

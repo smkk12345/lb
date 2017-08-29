@@ -6,13 +6,14 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 @Document(collection = "recommendlinedetail")
-public class RecommendImprove {
+public class RecommendImprove implements Serializable {
 	@Id
 	private String id = UUID.randomUUID().toString().replace("-", "_");
 	@DBRef

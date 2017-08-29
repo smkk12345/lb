@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SnsChatDetail {
+public class SnsChatDetail implements Serializable {
     private Integer id;
 
     private Long fuserid;//发起人用户id

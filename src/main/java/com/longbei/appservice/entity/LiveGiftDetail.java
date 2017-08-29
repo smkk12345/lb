@@ -1,11 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by lixb on 2017/8/12.
  */
-public class LiveGiftDetail {
+public class LiveGiftDetail implements Serializable {
 
     private Integer id;
 

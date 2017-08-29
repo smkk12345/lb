@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class PutRules {
+import java.io.Serializable;
+
+public class PutRules implements Serializable {
     private Integer id;
 
     /**

@@ -6,8 +6,7 @@ import java.util.List;
 /**
  * Created by smkk on 17/2/17.  Serializable
  */
-public class ImproveExpandData implements Serializable
-{
+public class ImproveExpandData implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<AppUserMongoEntity> appUserList;//点赞送花送钻用户列表 只取前5条
     private Integer lfdcount = 0;//点赞送花送钻 数量

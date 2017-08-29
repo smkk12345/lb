@@ -3,12 +3,13 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by wangyongzhi 17/6/28.
  */
-public class Video {
+public class Video implements Serializable {
 
     private Integer id;
     private Date createtime;

@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ImpGoalPerday {
+public class ImpGoalPerday implements Serializable {
     private Integer id;
 
     private String impids;//进步id  逗号隔开

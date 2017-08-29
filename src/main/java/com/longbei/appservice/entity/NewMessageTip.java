@@ -1,10 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * 用户的新消息提示
  * Created by wangyongzhi 17/3/6.
  */
-public class NewMessageTip {
+public class NewMessageTip implements Serializable {
 
     public enum MessageType{
         friendAddAsk,//加好友的请求

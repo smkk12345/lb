@@ -10,8 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.io.Serializable;
+
 @Document(collection = "appuser")
-public class AppUserMongoEntity {
+public class AppUserMongoEntity implements Serializable {
 	@Id
 	private String  id; //用户id
 	private String username;//手机号

@@ -2,7 +2,9 @@ package com.longbei.appservice.entity;
 
 import io.swagger.models.auth.In;
 
-public class BehaviorRule {
+import java.io.Serializable;
+
+public class BehaviorRule implements Serializable {
     /**
      *
      */

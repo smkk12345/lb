@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by smkk on 17/2/17.
  */
-public class PerfectTen {
+public class PerfectTen implements Serializable {
     private String id;
     private String distitle;
     private Integer sort;

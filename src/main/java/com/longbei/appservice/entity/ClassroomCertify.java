@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class ClassroomCertify {
+import java.io.Serializable;
+
+public class ClassroomCertify implements Serializable {
     /**
      * 自增id
      */

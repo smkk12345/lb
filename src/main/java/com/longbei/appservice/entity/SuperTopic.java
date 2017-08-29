@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class SuperTopic {
+import java.io.Serializable;
+
+public class SuperTopic implements Serializable {
     private Integer id;
 
     private Long topicid;//话题id

@@ -1,11 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class UserAddress {
+public class UserAddress implements Serializable {
     private Long id;
 
     private Long userid;

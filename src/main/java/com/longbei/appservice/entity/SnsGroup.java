@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SnsGroup {
+public class SnsGroup implements Serializable {
 
     public static final Integer groupIdLength = 7;
     public static final String groupIdSet = "Sns_Group_Id_Set";

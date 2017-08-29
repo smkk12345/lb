@@ -9,13 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.beans.Transient;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 
-public class TimeLine implements Cloneable{
+public class TimeLine implements Cloneable,Serializable {
 
 	@Id
 	private String id;

@@ -3,9 +3,10 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AwardClassify {
+public class AwardClassify implements Serializable {
     /**
      * 
      */

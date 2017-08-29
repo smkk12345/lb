@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class SysPerfectDefine {
+import java.io.Serializable;
+
+public class SysPerfectDefine implements Serializable {
     private Integer id;
     private String ptype;
     private String author;

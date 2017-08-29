@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ImpAward {
+public class ImpAward implements Serializable {
     private Integer id;
 
     private Long improveid;//进步id 

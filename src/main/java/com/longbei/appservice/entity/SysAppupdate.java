@@ -3,9 +3,10 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysAppupdate {
+public class SysAppupdate implements Serializable {
     private Integer id;
 
     private String ttype;//终端类别 0：android；1：ios

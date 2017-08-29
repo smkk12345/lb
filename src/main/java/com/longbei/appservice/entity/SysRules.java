@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class SysRules {
+import java.io.Serializable;
+
+public class SysRules implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private int addimprove = 10;//发进步

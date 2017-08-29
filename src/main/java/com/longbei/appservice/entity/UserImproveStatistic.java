@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by wangyongzhi 17/4/17.
  */
-public class UserImproveStatistic {
+public class UserImproveStatistic implements Serializable {
     private Integer id;
     private Long userid;//用户id
     private String currentday;//统计的日期

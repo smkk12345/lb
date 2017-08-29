@@ -3,7 +3,9 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class ProductOrderInfo {
+import java.io.Serializable;
+
+public class ProductOrderInfo implements Serializable {
     private Integer pid;
 
     private String id;//编码

@@ -1,10 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * 抽奖专用实体
  * @author smkk
  */
-public class Gift {
+public class Gift implements Serializable {
     private int index;
     private int gitfCount;
     private String giftName;

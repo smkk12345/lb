@@ -3,10 +3,11 @@ package com.longbei.appservice.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class DictArea {
+public class DictArea implements Serializable {
 	
 	private Integer id;//地址id
 

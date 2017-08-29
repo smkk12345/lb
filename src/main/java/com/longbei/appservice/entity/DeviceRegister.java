@@ -1,11 +1,12 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by lixb on 2017/6/27.
  */
-public class DeviceRegister {
+public class DeviceRegister implements Serializable {
     private String deviceindex;//设备编号
     private int registercount;//注册数量
     private Date lastregistertime;//最后注册时间

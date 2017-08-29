@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserInCome {
+public class UserInCome implements Serializable {
     /**
      * 
      */

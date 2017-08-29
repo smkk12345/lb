@@ -1,10 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class UserCheckinInfo {
+public class UserCheckinInfo implements Serializable {
     private Integer id;
 
     private Long userid;

@@ -1,9 +1,11 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by lixb on 2017/3/22.
  */
-public class SysSensitive {
+public class SysSensitive implements Serializable {
     private String words;
     private Integer id;
     private String updatetime;

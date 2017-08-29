@@ -6,9 +6,10 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.longbei.appservice.common.web.CustomDoubleSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RankAward {
+public class RankAward implements Serializable {
     private Integer id;
 
     private String rankid;

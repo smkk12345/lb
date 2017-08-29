@@ -3,6 +3,7 @@ package com.longbei.appservice.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
  * @create 2017-08-04 下午4:05
  **/
 @Document(collection = "msgred")
-public class MsgRed {
+public class MsgRed implements Serializable {
 
     @Id
     private String id;

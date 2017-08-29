@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysRuleCheckin {
+public class SysRuleCheckin implements Serializable {
     private Integer id;
 
     private Integer continues;//持续天数

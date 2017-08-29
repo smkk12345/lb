@@ -1,6 +1,8 @@
 package com.longbei.appservice.entity;
 
-public class ImproveTopic {
+import java.io.Serializable;
+
+public class ImproveTopic implements Serializable {
     private Integer id;
 
     private Long impid;

@@ -1,8 +1,9 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysTool {
+public class SysTool implements Serializable {
     private Integer id;
 
     private String tool;//工具名称

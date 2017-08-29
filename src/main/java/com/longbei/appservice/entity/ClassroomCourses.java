@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.longbei.appservice.common.utils.StringUtils;
 
-public class ClassroomCourses {
+import java.io.Serializable;
+
+public class ClassroomCourses implements Serializable {
     private Integer id;
 
     private String coursetitle;//课程标题

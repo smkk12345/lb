@@ -1,9 +1,10 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class SeminarModule{
+public class SeminarModule implements Serializable {
     /**
      * 
      */
