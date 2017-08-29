@@ -140,7 +140,7 @@
     <if test="daytime != null and daytime != ''" >
       	and daytime = #{daytime}
     </if>
-    order by createtime desc 
+    order by starttime asc 
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
