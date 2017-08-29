@@ -396,15 +396,24 @@ public class ClassroomServiceImpl implements ClassroomService {
 //					}
 //				}
 				if(null != courseList && courseList.size()>0){
-					map.put("pickey", courseList.get(0).getPickey());
-					map.put("fileurl", courseList.get(0).getFileurl());
-					map.put("coursesort", courseList.get(0).getCoursesort());
-					map.put("coursestarttime", courseList.get(0).getStarttime());
-					map.put("courseendtime", courseList.get(0).getEndtime());
-					map.put("teachingtypes", courseList.get(0).getTeachingtypes());
-					map.put("coursestatus", courseList.get(0).getStatus());
-					map.put("coursedaytime", courseList.get(0).getDaytime());
-					map.put("courseliveid", courseList.get(0).getLiveid());
+					ClassroomCourses classroomCourses = courseList.get(0);
+					map.put("pickey", classroomCourses.getPickey());
+					map.put("fileurl", classroomCourses.getFileurl());
+					map.put("coursesort", classroomCourses.getCoursesort());
+					if(!StringUtils.isBlank(classroomCourses.getStarttime())){
+						map.put("coursestarttime", DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd HH:mm:ss"));
+					}else{
+						map.put("coursestarttime", null);
+					}
+					if(!StringUtils.isBlank(classroomCourses.getEndtime())){
+						map.put("courseendtime", DateUtils.formatDateString(classroomCourses.getEndtime(), "yyyy-MM-dd HH:mm:ss"));
+					}else{
+						map.put("courseendtime", null);
+					}
+					map.put("teachingtypes", classroomCourses.getTeachingtypes());
+					map.put("coursestatus", classroomCourses.getStatus());
+					map.put("coursedaytime", classroomCourses.getDaytime());
+					map.put("courseliveid", classroomCourses.getLiveid());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());

@@ -253,6 +253,9 @@ public class ClassroomCourses {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getCreatetime() {
+    	if (!StringUtils.isBlank(createtime) && createtime.indexOf(".0") > -1) {
+			this.createtime = createtime.substring(0, createtime.length() - 2);
+		}
         return createtime;
     }
 
@@ -275,6 +278,9 @@ public class ClassroomCourses {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getUdpatetime() {
+    	if (!StringUtils.isBlank(udpatetime) && udpatetime.indexOf(".0") > -1) {
+			this.udpatetime = udpatetime.substring(0, udpatetime.length() - 2);
+		}
         return udpatetime;
     }
 
@@ -319,12 +325,18 @@ public class ClassroomCourses {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getEndtime() {
+		if (!StringUtils.isBlank(endtime) && endtime.indexOf(".0") > -1) {
+			this.endtime = endtime.substring(0, endtime.length() - 2);
+		}
         return endtime;
     }
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getStarttime() {
+    	if (!StringUtils.isBlank(starttime) && starttime.indexOf(".0") > -1) {
+			this.starttime = starttime.substring(0, starttime.length() - 2);
+		}
         return starttime;
     }
 
