@@ -261,12 +261,8 @@ public class ClassroomCourses {
      * @param createtime 创建时间
      */
     public void setCreatetime(String createtime) {
-    	if(!StringUtils.isBlank(createtime)){
-			if(createtime.indexOf(".0") > -1){
-				this.createtime = createtime.substring(0, createtime.length()-2);
-			}else{
-				this.createtime = createtime;
-			}
+    	if (!StringUtils.isBlank(createtime) && createtime.indexOf(".0") > -1) {
+			this.createtime = createtime.substring(0, createtime.length() - 2);
 		}else{
 			this.createtime = createtime;
 		}
@@ -287,12 +283,8 @@ public class ClassroomCourses {
      * @param udpatetime 更新时间
      */
     public void setUdpatetime(String udpatetime) {
-    	if(!StringUtils.isBlank(udpatetime)){
-			if(udpatetime.indexOf(".0") > -1){
-				this.udpatetime = udpatetime.substring(0, udpatetime.length()-2);
-			}else{
-				this.udpatetime = udpatetime;
-			}
+    	if (!StringUtils.isBlank(udpatetime) && udpatetime.indexOf(".0") > -1) {
+			this.udpatetime = udpatetime.substring(0, udpatetime.length() - 2);
 		}else{
 			this.udpatetime = udpatetime;
 		}
@@ -324,10 +316,14 @@ public class ClassroomCourses {
 		this.isup = isup;
 	}
 
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getEndtime() {
         return endtime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String getStarttime() {
         return starttime;
     }
@@ -337,11 +333,19 @@ public class ClassroomCourses {
     }
 
     public void setEndtime(String endtime) {
-        this.endtime = endtime;
+    	if (!StringUtils.isBlank(endtime) && endtime.indexOf(".0") > -1) {
+			this.endtime = endtime.substring(0, endtime.length() - 2);
+		}else{
+			this.endtime = endtime;
+		}
     }
 
     public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    	if (!StringUtils.isBlank(starttime) && starttime.indexOf(".0") > -1) {
+			this.starttime = starttime.substring(0, starttime.length() - 2);
+		}else{
+			this.starttime = starttime;
+		}
     }
 
     public void setTeachingtypes(String teachingtypes) {
