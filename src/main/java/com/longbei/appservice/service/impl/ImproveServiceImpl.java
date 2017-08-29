@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @author luye
  * @create 2017-01-19 上午11:32
  **/
-@CacheConfig(cacheNames = RedisCacheNames._IMPROVE)
+@CacheConfig(cacheNames = RedisCacheNames._IMPROVE_LINE)
 @Service("improveService")
 public class ImproveServiceImpl implements ImproveService{
 
@@ -1547,7 +1547,7 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/3/8 下午3:58
      *  @update 2017/3/8 下午3:58
      */
-    @Cacheable(key="#userid + '_line_list'")
+    @Cacheable(key="#userid + #ctype + #pagesize + #ispublic")
     @Override
     public List<Improve> selectImproveListByUser(String userid,String ptype,
                                                  String ctype,Date lastdate,int pagesize,Integer ispublic) {
@@ -3464,6 +3464,8 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
+    @Cacheable(cacheNames = RedisCacheNames._SYS_RECOMMAEND,
+            key = "#userid +'&'+ #startno +'&'+ #pagesize")
     public BaseResp<List<Improve>> selectRecommendImproveList(String userid, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         List<Improve> improves = new ArrayList<>();

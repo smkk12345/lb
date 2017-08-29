@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.config.AppserviceConfig;
@@ -20,6 +21,8 @@ import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import java.util.List;
  * @author luye
  * @create 2017-03-22 下午4:55
  **/
+
 @Service
 public class PageServiceImpl implements PageService{
 
@@ -197,9 +201,11 @@ public class PageServiceImpl implements PageService{
         }
         return baseResp;
 	}
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
+    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "homeposter")
 	public BaseResp<HomePoster> selectHomePosterIsup() {
 		BaseResp<HomePoster> baseResp = new BaseResp<>();
         try {
@@ -260,6 +266,7 @@ public class PageServiceImpl implements PageService{
 
     @SuppressWarnings("unchecked")
 	@Override
+    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "#type")
     public BaseResp<List<HomePicture>> selectHomePicList(String type) {
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         List<HomePicture> homePictures = new ArrayList<HomePicture>();
