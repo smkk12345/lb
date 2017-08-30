@@ -23,7 +23,7 @@ public class LiveInfo implements Serializable {
 	
 	private long classroomid;//所属教室id
 	
-	private long courseid;   //课程id
+	private Long courseid;   //课程id
 	
 	private long liveid;     //直播id
 	
@@ -54,11 +54,11 @@ public class LiveInfo implements Serializable {
 	}
 
 	@JsonInclude(Include.ALWAYS)
-	public long getCourseid() {
+	public Long getCourseid() {
 		return courseid;
 	}
 
-	public void setCourseid(long courseid) {
+	public void setCourseid(Long courseid) {
 		this.courseid = courseid;
 	}
 

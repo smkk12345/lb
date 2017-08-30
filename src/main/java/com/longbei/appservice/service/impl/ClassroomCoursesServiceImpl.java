@@ -258,7 +258,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				LiveInfo liveInfo = new LiveInfo();
 				liveInfo.setLiveid(liveid);
 				liveInfo.setClassroomid(classroomid);
-				liveInfo.setCourseid(id);
+				liveInfo.setCourseid(id.longValue());
 				liveInfo.setCreatetime(new Date());
 				liveInfo.setUserid(classroom.getUserid());
 				//如果直播课程发布，mongo添加数据
