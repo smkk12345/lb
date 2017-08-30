@@ -23,7 +23,7 @@ public interface IAlidayuService {
      * @param operateName
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/alidayu/sendMsg")
+    @RequestMapping(method = RequestMethod.GET, value = "/alidayu/sendMessage")
     BaseResp<Object> sendMsg(@RequestParam("mobile") String mobile,
                              @RequestParam("validateCode") String validateCode,
                              @RequestParam("operateName") String operateName);
