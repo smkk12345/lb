@@ -284,8 +284,8 @@ public class LiveController {
     @RequestMapping(value="updateLiveMedia")
     public BaseResp updateLiveMedia(String uid,String filekey,
                                     String pickey,String duration){
-        logger.info("updateLiveMedia uid:{} filekey:{} pickey:{}",
-                uid,filekey,pickey);
+        logger.info("updateLiveMedia uid:{} filekey:{} pickey:{},duration={}",
+                uid,filekey,pickey,duration);
         BaseResp baseResp = new BaseResp<>();
         if(StringUtils.hasBlankParams(uid,filekey,duration)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
@@ -308,7 +308,9 @@ public class LiveController {
         classroomCourses.setClassroomid(liveInfo.getClassroomid());
         classroomCourses.setFileurl(filekey);
         classroomCourses.setPickey(pickey);
-        classroomCourses.setDuration(duration);
+        Double durations = Double.parseDouble(duration)*1000;
+		Long dur = durations.longValue();
+        classroomCourses.setDuration(dur.toString());
         classroomCoursesService.editCourses(classroomCourses);
         return baseResp.initCodeAndDesp();
     }
