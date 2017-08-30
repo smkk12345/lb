@@ -8,8 +8,13 @@ import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.DecodesUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.OssConfig;
+import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.LiveGift;
+import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.MediaResource;
+import com.longbei.appservice.service.ClassroomCoursesService;
+import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.MediaResourceService;
 import com.longbei.appservice.service.impl.LiveGiftServiceImpl;
 import net.sf.json.JSONObject;
@@ -40,6 +45,12 @@ public class LiveController {
     private MediaResourceService mediaResourceService;
     @Autowired
     private OSSService ossService;
+    @Autowired
+    private ClassroomService classroomService;
+    @Autowired
+    private ClassroomCoursesService classroomCoursesService;
+    @Autowired
+    private LiveInfoMongoService liveInfoMongoService;
 
     /**
      *
@@ -286,8 +297,19 @@ public class LiveController {
         logger.info("updateLiveMedia after base64 uid:{} filekey:{} pickey:{} duration={}",
                 uid,filekey,pickey,duration);
         //处理教室直播逻辑
-        //
-//        classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
+        LiveInfo liveInfo = liveInfoMongoService.selectLiveInfoByLiveid(Long.parseLong(uid));
+        if(null == liveInfo){
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
+        //修改直播课程为录播课程参数
+        ClassroomCourses classroomCourses = new ClassroomCourses();
+        classroomCourses.setId(liveInfo.getCourseid().intValue());
+        classroomCourses.setClassroomid(liveInfo.getClassroomid());
+        classroomCourses.setFileurl(filekey);
+        classroomCourses.setPickey(pickey);
+        classroomCourses.setDuration(duration);
+        classroomCoursesService.editCourses(classroomCourses);
         return baseResp.initCodeAndDesp();
     }
 
