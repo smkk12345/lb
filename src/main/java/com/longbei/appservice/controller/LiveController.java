@@ -188,7 +188,7 @@ public class LiveController {
 
     /**
      * url: http://47.93.37.85:8080/app_service/live/uploadImage
-     * @param MultipartFile[] imgFiles 参数是一个文件数组
+//     * @param MultipartFile[] imgFiles 参数是一个文件数组
      * @return
      * {
         "expandData": {},
@@ -286,6 +286,8 @@ public class LiveController {
         logger.info("updateLiveMedia after base64 uid:{} filekey:{} pickey:{} duration={}",
                 uid,filekey,pickey,duration);
         //处理教室直播逻辑
+        //
+//        classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
         return baseResp.initCodeAndDesp();
     }
 
