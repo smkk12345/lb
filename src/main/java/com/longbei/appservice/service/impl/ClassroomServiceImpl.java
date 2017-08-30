@@ -8,10 +8,12 @@ import java.util.Map;
 
 import com.longbei.appservice.common.Cache.SysRulesCache;
 
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -690,6 +692,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 
+	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
+			,condition="#ispublic == '1'")
 	@Override
 	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 

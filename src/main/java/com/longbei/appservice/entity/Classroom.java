@@ -11,7 +11,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class Classroom implements Serializable {
-    private Integer id;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Integer id;
     
     private Long classroomid;
 
@@ -105,8 +111,7 @@ public class Classroom implements Serializable {
 
 	private List<ClassroomCourses> liveCourses;//最近一天的直播课程列表，按照时间顺序排列
 
-	private String status; //直播状态  0 没有直播 1 未开始 2 直播中
-
+	private String status; //直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
 
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;

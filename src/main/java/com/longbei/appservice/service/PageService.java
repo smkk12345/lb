@@ -2,9 +2,12 @@ package com.longbei.appservice.service;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
  * @author luye
  * @create 2017-03-22 下午4:47
  **/
+
 public interface PageService {
 
     /**
@@ -86,6 +90,7 @@ public interface PageService {
      * 查询首页---启动页信息（上架）
      * @author yinxc
      */
+//    @Cacheable()
     BaseResp<HomePoster> selectHomePosterIsup();
     
     
@@ -108,6 +113,7 @@ public interface PageService {
      * @return
      * @author luye
      */
+
     BaseResp<List<HomePicture>> selectHomePicList(String type);
 
 

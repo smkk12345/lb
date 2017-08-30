@@ -5,6 +5,7 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -22,7 +23,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -703,7 +704,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return rank;
     }
-
+    @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#userid +'&'+ #startno +'&'+ #pagesize"
+            ,condition="#status == 0")
     @Override
     public BaseResp<Object> selectRankListByCondition(Long userid,String rankTitle,String codeword, String pType, String rankscope,
                                                       Integer status, String lastDate,Integer startNo, Integer pageSize,Boolean showAward) {
@@ -2606,6 +2608,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
+    @Cacheable(cacheNames = RedisCacheNames._RANK_AWARD,key = "#userid")
     public BaseResp<Object> selectWinningRankAward(Long userid) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{

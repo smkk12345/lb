@@ -6,6 +6,7 @@ import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.service.impl.ClassroomServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class LiveAppController{
 
     private static Logger logger = LoggerFactory.getLogger(LiveAppController.class);
 
+    @Autowired
     private ClassroomServiceImpl classroomService;
     /**
      * url online/startOnLineRoom
