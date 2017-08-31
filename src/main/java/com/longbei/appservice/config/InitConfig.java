@@ -11,6 +11,7 @@ import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.SysProtectnamesService;
 import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.SysSettingService;
+import com.longbei.appservice.service.UserSpecialcaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private SysProtectnamesService sysProtectnamesService;
     @Autowired
-    private UserSpecialcaseMapper userSpecialcaseMapper;
+    private UserSpecialcaseService userSpecialcaseService;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -297,11 +298,15 @@ public class InitConfig implements CommandLineRunner {
 
     }
 
+    /**
+     * 初始化特权手机号
+     */
     private void initUserSpecialcase(){
         try {
-            SysRulesCache.userSpecialcase = userSpecialcaseMapper.selectUserSpecialcase();
+            userSpecialcaseService.updateUserSpecialcase();
         }catch (Exception e){
         }
     }
+
 
 }

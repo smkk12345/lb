@@ -24,4 +24,6 @@ public interface UserSpecialcaseService {
      */
     BaseResp<Object> updateUserSpecialcase(UserSpecialcase userSpecialcase);
 
+    void updateUserSpecialcase();
+
 }
