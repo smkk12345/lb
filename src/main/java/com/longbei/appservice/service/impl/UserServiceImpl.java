@@ -457,13 +457,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	private void initUserUserSettingCommon(long userid){
 		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
-		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", new Date(), new Date());
-		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "1", "点赞", new Date(), new Date());
-		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", new Date(), new Date());
-		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
-		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
-		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", new Date(), new Date());
-		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", new Date(), new Date());
+		Date date = new Date();
+		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", date, date);
+		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "1", "点赞", date, date);
+		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", date, date);
+		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", date, date);
+		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", date, date);
+		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", date, date);
+		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", date, date);
 		list.add(common);
 		list.add(common2);
 		list.add(common3);
