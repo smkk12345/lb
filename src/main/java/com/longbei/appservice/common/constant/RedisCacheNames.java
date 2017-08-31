@@ -19,6 +19,7 @@ public class RedisCacheNames {
     public static final String _SYS_RECOMMAEND = "6";//推荐的
     public static final String _HOME = "7";//首页相关
     public static final String _RANK_AWARD = "8";//奖品相关
+    public static final String _RANK_HOME_AWARD = "luye";//获奖公示
 
     public static final String _ROOM_LIST = "9";//教室列表
 
@@ -47,6 +48,7 @@ public class RedisCacheNames {
         expiresMap.put(_SYS_RECOMMAEND,_PERIOD_SECOND_10);
         expiresMap.put(_HOME,_PERIOD_SECOND_10);
         expiresMap.put(_RANK_AWARD,_PERIOD_SECOND_10);
+        expiresMap.put(_RANK_HOME_AWARD,_PERIOD_SECOND_60X30);
         expiresMap.put(_ROOM_LIST,_PERIOD_SECOND_08);
         expiresMap.put(_RANK_LIST,_PERIOD_SECOND_08);
     }

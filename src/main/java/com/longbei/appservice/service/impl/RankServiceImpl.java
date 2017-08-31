@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.RankCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -23,6 +24,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -117,6 +119,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private HomeRecommendMapper homeRecommendMapper;
     @Autowired
     private StatisticService statisticService;
+    @Autowired
+    private RankCache rankCache;
 
     /**
      *  @author luye
@@ -704,8 +708,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return rank;
     }
-    @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#userid +'&'+ #startno +'&'+ #pagesize"
-            ,condition="#status == 0")
+
     @Override
     public BaseResp<Object> selectRankListByCondition(Long userid,String rankTitle,String codeword, String pType, String rankscope,
                                                       Integer status, String lastDate,Integer startNo, Integer pageSize,Boolean showAward) {
@@ -1412,7 +1415,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @param rankId
      * @return
      */
-    private int getSureRemoveRankMemberCount(Long rankId) {
+    public  int getSureRemoveRankMemberCount(Long rankId) {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("rankId",rankId);
         map.put("lastUpdateTime",DateUtils.getBeforeDateTime(new Date(),RankMembers.maxHour*60));
@@ -2608,28 +2611,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     @Override
-    @Cacheable(cacheNames = RedisCacheNames._RANK_AWARD,key = "#userid")
     public BaseResp<Object> selectWinningRankAward(Long userid) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
-            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
-            List<RankMembers> winningRankAwardList = this.rankMembersMapper.selectWinningRankAward();
-            if(winningRankAwardList != null && winningRankAwardList.size() > 0){
-                for(RankMembers rankMembers: winningRankAwardList){
-                	Rank rank = this.rankMapper.selectRankByRankid(rankMembers.getRankid());
-                    if (rank == null || !"5".equals(rank.getIsfinish())){
-                        continue;
-                    }
-                    Map<String,Object> map = new HashMap<String,Object>();
-                    map.put("rankid",rankMembers.getRankid());
-
-                    Award award = this.awardMapper.selectByPrimaryKey(Long.parseLong(rankMembers.getRankAward().getAwardid()));
-                    //ranktype 榜单类型。0—公共榜 1--定制榜  2：定制私密
-//                    if("0".equals(rank.getRanktype())){
-                     map.put("awardnickname",award.getAwardtitle());
-                     map.put("nickname",this.userRelationService.getUserRemark(userid,rankMembers.getUserid(),true));
-                     resultList.add(map);
-//                    }
+            List<Map<String,Object>> resultList = rankCache.selectRankWinningAwardList();
+            if(!Constant.VISITOR_UID.equals(userid)){
+                for (Map<String,Object> map : resultList){
+                    map.put("nickname",this.userRelationService.
+                            getUserRemark(userid,Long.parseLong(map.get("awarduserid").toString()),true));
                 }
             }
             baseResp.setData(resultList);
@@ -2640,6 +2629,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
 
     /**
      * 通知关注榜单的用户 榜单已开始
@@ -3160,29 +3151,20 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      */
     @Override
     public BaseResp<Object> rankAwardList(Long userId,Integer startNum, Integer pageSize) {
+
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
         try{
-            //获取当前结束的榜单
-            Map<String,Object> parameterMap = new HashMap<String,Object>();
-
-            List<Rank> finishRankList = this.rankMapper.selectHasAwardRankList(startNum, pageSize);
-
-            //查看结束的榜单的获奖情况
-            if(finishRankList != null && finishRankList.size() > 0){
-                for(Rank rank:finishRankList){
-                    Map<String,Object> resultMap = new HashMap<String,Object>();
-                    resultMap.put("rankid",rank.getRankid());
-                    resultMap.put("ranktitle",rank.getRanktitle());
-                    resultMap.put("endtime",DateUtils.formatDate(rank.getEndtime()));
-                    resultMap.put("rankinvolved",rank.getRankinvolved());//参与人数
-                    resultMap.put("rankphotos",rank.getRankphotos());//榜单图片
-                    resultMap.put("ispublic",rank.getIspublic());//是否公开
-                    initAwardResultMap(resultMap,rank.getRankid(),userId,true);
-                    resultList.add(resultMap);
+            List<Map<String,Object>> list = rankCache.selectRankAwardList(startNum,pageSize);
+            if (Constant.VISITOR_UID.equals(userId)){
+                for (Map<String,Object> map : list){
+                    List<Map<String,Object>> ls = (List<Map<String, Object>>) map.get("rankawardList");
+                    for (Map<String,Object> m : ls){
+                        m.put("usernickname",userRelationService.getUserRemark(userId,
+                                Long.parseLong(m.get("awarduserid")+""),true));
+                    }
                 }
-                baseResp.setData(resultList);
             }
+            baseResp.setData(list);
             baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -3191,6 +3173,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+
 
     /**
      * 查询单个榜单的获奖公示
@@ -3244,9 +3229,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
                 RankAwardRelease tempRankAwardRelease = this.rankAwardReleaseMapper.selectByRankIdAndAwardId(rankid+"",rankAwardRelease.getAwardid());
                 awardMap.put("nickname",tempRankAwardRelease.getAwardnickname());
-                if(searchUserNickName){
-                    awardMap.put("usernickname",this.userRelationService.getUserRemark(userId,rankAwardRelease.getUserid(),true));
-                }
+                awardMap.put("awarduserid",rankAwardRelease.getUserid());
                 awardMap.put("awardcount",rankAwardRelease.getAwardcount());
                 awardList.add(awardMap);
                 rankAwardCount += rankAwardRelease.getAwardcount();

@@ -36,3 +36,4 @@ public interface RankAwardReleaseMapper {
 
     RankAwardRelease selectByRankIdAndAwardId(@Param("rankid") String rankid,@Param("awardid") String awardid);
 }
+
