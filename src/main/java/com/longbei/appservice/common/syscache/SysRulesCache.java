@@ -86,7 +86,7 @@ public class SysRulesCache {
     /**
      * 特殊手机号处理
      */
-    public static UserSpecialcase userSpecialcase = new UserSpecialcase();
+    public static Set<String> userSpecialcaseMobileSet = new HashSet<>();
 
 
 }

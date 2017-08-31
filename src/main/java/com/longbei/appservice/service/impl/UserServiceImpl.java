@@ -855,6 +855,10 @@ public class UserServiceImpl implements UserService {
 		if(username.equals("13716832441")){
 			return baseResp.initCodeAndDesp();
 		}
+		//如果是特权手机号，不用切换
+		if(SysRulesCache.userSpecialcaseMobileSet.contains(username)){
+			return baseResp.initCodeAndDesp();
+		}
 		//每日次数限制
 		if(!canLoginTimesPerDay(deviceindex,username)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_114,Constant.RTNINFO_SYS_114);
@@ -937,6 +941,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	private boolean addLoginRecord(String deviceindex,String username){
 		if(StringUtils.isBlank(deviceindex)){
+			return false;
+		}
+		if(SysRulesCache.userSpecialcaseMobileSet.contains(username)){
 			return false;
 		}
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
@@ -1046,7 +1053,6 @@ public class UserServiceImpl implements UserService {
 				if(ResultUtil.isSuccess(baseResp)){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
-					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
 					baseResp.getExpandData().put("userid", userInfo.getUserid());
 					String token = (String) baseResp.getData();
 					baseResp.getExpandData().put("token", token);
@@ -1061,11 +1067,6 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-//		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
-//		if(ResultUtil.fail(baseResp1)){
-//			baseResp1.setData(userInfo);
-//			return baseResp1;
-//		}
 		addLoginRecord(userInfo.getUsername(),deviceindex);
 		return baseResp;
 	}
