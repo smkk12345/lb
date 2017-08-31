@@ -33,7 +33,7 @@ public class UserRelationChangeDao extends BaseMongoDao<UserRelationChange> {
         userRelationChange.setChangeuid(changeuid);
         userRelationChange.setUpdatetime(new Date());
         try {
-            userRelationChange = save(userRelationChange);
+            mongoTemplate.save(userRelationChange);
         }catch (Exception e){
             logger.error("uid={},changeuid={}",uid,changeuid,e);
         }
