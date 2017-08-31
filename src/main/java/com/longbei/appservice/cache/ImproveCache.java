@@ -1,7 +1,5 @@
 package com.longbei.appservice.cache;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.dao.TimeLineDetailDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 进步相关缓存

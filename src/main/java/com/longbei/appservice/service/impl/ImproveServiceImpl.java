@@ -4,7 +4,7 @@ package com.longbei.appservice.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.cache.ImproveCache;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.*;
@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 

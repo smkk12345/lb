@@ -1,4 +1,4 @@
-package com.longbei.appservice.common.Cache;
+package com.longbei.appservice.common.syscache;
 
 import com.longbei.appservice.entity.*;
 
@@ -79,7 +79,14 @@ public class SysRulesCache {
      * 缓存版本IOS和安卓
      */
     public static Map<String,SysAppupdate> sysAppupdateMap = new HashMap<>();
-
+    /**
+     * 受保护的昵称集合
+     */
     public static Set<String> sysProtectNames = new HashSet<String>();
+    /**
+     * 特殊手机号处理
+     */
+    public static UserSpecialcase userSpecialcase = new UserSpecialcase();
+
 
 }
