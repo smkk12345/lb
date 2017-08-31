@@ -293,7 +293,10 @@ public class InitConfig implements CommandLineRunner {
     }
 
     private void initUserSpecialcase(){
-        SysRulesCache.userSpecialcase = userSpecialcaseMapper.selectUserSpecialcase();
+        try {
+            SysRulesCache.userSpecialcase = userSpecialcaseMapper.selectUserSpecialcase();
+        }catch (Exception e){
+        }
     }
 
 }
