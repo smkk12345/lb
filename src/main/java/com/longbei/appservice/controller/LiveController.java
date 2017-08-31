@@ -307,7 +307,7 @@ public class LiveController {
         classroomCourses.setId(liveInfo.getCourseid().intValue());
         classroomCourses.setClassroomid(liveInfo.getClassroomid());
         classroomCourses.setFileurl(filekey);
-        classroomCourses.setPickey(pickey);
+//        classroomCourses.setPickey(pickey);
         Double durations = Double.parseDouble(duration)*1000;
 		Long dur = durations.longValue();
         classroomCourses.setDuration(dur.toString());

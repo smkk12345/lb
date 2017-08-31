@@ -416,6 +416,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("coursestatus", classroomCourses.getStatus());
 					map.put("coursedaytime", classroomCourses.getDaytime());
 					map.put("courseliveid", classroomCourses.getLiveid());
+					map.put("coursesid", classroomCourses.getId());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());
