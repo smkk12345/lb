@@ -1,24 +1,19 @@
 package com.longbei.appservice.common.security;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.Constant_Version;
 import com.longbei.appservice.common.utils.*;
 
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.SysAppupdate;
 import com.longbei.appservice.service.api.authservice.AuthService;
-import com.longbei.appservice.service.api.outernetservice.ComputeClient;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -27,7 +22,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;

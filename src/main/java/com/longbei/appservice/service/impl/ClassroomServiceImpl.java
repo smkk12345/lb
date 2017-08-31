@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 
 import com.longbei.appservice.common.constant.RedisCacheNames;
 import org.apache.commons.collections.map.HashedMap;
@@ -416,6 +416,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("coursestatus", classroomCourses.getStatus());
 					map.put("coursedaytime", classroomCourses.getDaytime());
 					map.put("courseliveid", classroomCourses.getLiveid());
+					map.put("coursesid", classroomCourses.getId());
 				}
 				map.put("courseCount", classroom.getAllcourses());
 				map.put("classphotos", classroom.getClassphotos());

@@ -28,6 +28,6 @@ public interface SysSensitiveService {
      * @author IngaWu
      * @currentdate:2017年6月15日
      */
-    BaseResp<Object> updateSensitiveWords(String words,String sensitiveId);
+    BaseResp<Object> updateSensitiveWords(String words);
 
 }

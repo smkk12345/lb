@@ -1,8 +1,6 @@
 package com.longbei.appservice.common.constant;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
-import com.longbei.appservice.entity.SysRules;
-import org.apache.commons.collections.map.FixedSizeMap;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -29,7 +29,6 @@ public class UserSpecialcaseServiceImpl implements UserSpecialcaseService {
                 UserSpecialcase userSpecialcase1= new UserSpecialcase();
                 userSpecialcase1.setCreatetime(new Date());
                 userSpecialcaseMapper.insert(userSpecialcase1);
-                userSpecialcase = userSpecialcaseMapper.selectUserSpecialcase();
             }
             baseResp.setData(userSpecialcase);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

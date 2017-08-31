@@ -72,7 +72,6 @@
         nicknames = #{nicknames,jdbcType=LONGVARCHAR},
       </if>
     </set>
-
   </update>
 
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.SysProtectnames" >

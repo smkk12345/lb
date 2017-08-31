@@ -82,10 +82,9 @@ public class SysSensitiveServiceImpl implements SysSensitiveService {
     }
 
     @Override
-    public 	BaseResp<Object> updateSensitiveWords(String words,String sensitiveId) {
+    public 	BaseResp<Object> updateSensitiveWords(String words) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         SysSensitive sensitive = new SysSensitive();
-        sensitive.setId(Integer.parseInt(sensitiveId));
         sensitive.setWords(words);
         sensitive.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
         try {
