@@ -1876,7 +1876,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     @Override
-    public BaseResp<Object> addlike(final String userid, final String impid, final String businesstype, String businessid){
+    public BaseResp<Object> addlike(final String userid, final String impid,
+                                    final String businesstype, String businessid){
         BaseResp<Object> baseResp = new BaseResp<>();
         final UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(userid));
         baseResp = userBehaviourService.canOperateMore(Long.parseLong(userid),userInfo,Constant.PERDAY_ADD_LIKE);

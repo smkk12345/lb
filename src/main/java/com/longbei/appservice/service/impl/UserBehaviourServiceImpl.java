@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.cache.UserCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
@@ -18,6 +19,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,8 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
     private RankMembersMapper rankMembersMapper;
     @Autowired
     private RankMapper rankMapper;
+    @Autowired
+    private UserCache userCache;
 
     private static Logger logger = LoggerFactory.getLogger(UserBehaviourServiceImpl.class);
 
@@ -63,7 +67,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
             userInfo = userInfoMapper.selectByPrimaryKey(userid);
         }
         try{
-            String key = getPerKey(userInfo.getUserid());
+            String key = getPerKey(userid);
             switch (operateType){
                 case Constant.PERDAY_CHECK_IN:
                     int checkIn = getHashValueFromCache(key, dateStr+Constant.PERDAY_CHECK_IN);
@@ -780,6 +784,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return Constant.RP_USER_PERDAY+userid;
     }
 
+    
     private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level,Integer oldScore){
         try{
             if(!"a".equals(ptype) && oldScore == null){
