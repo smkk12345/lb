@@ -385,7 +385,7 @@
   <sql id="Classroom_List" >
     id, impid, itype, brief, pickey, filekey, userid, businessid, businesstype, likes, 
     flowers, diamonds, createtime, updatetime, indexnum, isdel, ismainimp, ptype, ispublic,sourcekey, 
-    pimpid, isresponded,duration
+    pimpid, isresponded,duration,picattribute
   </sql>
 
   <select id="selectListByBusinessid" resultMap="BaseResultMap" >
@@ -436,7 +436,7 @@
     select
     i.id, i.impid, i.itype, i.brief, i.pickey, i.filekey, i.userid, i.businessid, i.businesstype, i.likes,
     i.flowers, i.diamonds, i.createtime, i.updatetime, i.indexnum, i.isdel, i.ismainimp, i.ptype, i.ispublic,i.sourcekey,
-    i.pimpid, i.isresponded,i.duration,c.likes as totallikes,c.flowers as totalflowers
+    i.pimpid, i.isresponded,i.duration,picattribute,c.likes as totallikes,c.flowers as totalflowers
     from improve_classroom i
     JOIN classroom_members c
     on i.businessid=c.classroomid
