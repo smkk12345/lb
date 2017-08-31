@@ -713,56 +713,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<Object> selectRankListByCondition(Long userid,String rankTitle,String codeword, String pType, String rankscope,
                                                       Integer status, String lastDate,Integer startNo, Integer pageSize,Boolean showAward) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
+        List<Rank> ranks = new ArrayList<Rank>();
         try {
-            Map<String,Object> map = new HashMap<String,Object>();
-            if(StringUtils.isNotEmpty(rankTitle)){
-                map.put("ranktitle",rankTitle);
-            }
-            if(StringUtils.isNotEmpty(codeword)){
-                map.put("codeword",codeword);
-            }
-            if(StringUtils.isNotEmpty(pType) && !"-1".equals(pType)){
-                map.put("ptype",pType);
-            }
-            if(StringUtils.isNotEmpty(rankscope) && !"0".equals(rankscope) && !"-1".equals(rankscope)){
-                map.put("rankscope",rankscope);
-            }
-            if(status == 0){//推荐的
-                map.put("isrecommend","1");
-                map.put("orderByType","recommend");
-            }else if(status == 1){//进行中的
-                map.put("isfinish","1");
-                map.put("minEndDate",new Date());
-                lastDate = null;
-                map.put("orderByType","starttimeDesc");
-            }else if(status == 2){//未开始
-                map.put("isfinish","0");
-                map.put("orderByType","starttimeAsc");
-            }else if(status == 3){//已结束
-                map.put("isfinish","2");
-                map.put("orderByType","endtime");
-            }
-//            if(status != 0 && StringUtils.isNotEmpty(lastDate)){
-//                Date tempLastDate = DateUtils.parseDate(lastDate);
-//                map.put("lastDate",tempLastDate);
-//            }
-            map.put("startNum",startNo);
-            map.put("sstatus",status);
-            map.put("ispublic","0");
-            map.put("isdel","0");
-            map.put("pageSize",pageSize);
-            int totalCount = 0;
-            logger.info("selectRankListCount before map={}",JSONObject.fromObject(map).toString());
-            if(StringUtils.isNotEmpty(rankTitle) && startNo == 0){
-                 totalCount = rankMapper.selectRankListCount(map);
-            }
-            List<Rank> ranks = new ArrayList<Rank>();
-            if(StringUtils.isNotEmpty(rankTitle) && startNo == 0 && totalCount == 0){
-                ranks = new ArrayList<Rank>();
-            }else{
-                ranks =rankMapper.selectRankList(map);
-            }
-            logger.info("selectRankListCountis={},selectRankList.size={}",totalCount,ranks.size());
+            Map<String,Object> resultmap = rankCache.selectRankListByCondition(rankTitle,codeword,pType,
+                    rankscope,status,lastDate,startNo,pageSize,showAward);
+            ranks = (List<Rank>) resultmap.get("ranklist");
             if(ranks != null && ranks.size() > 0){
                 for(Rank rank1:ranks){
                     rank1.setHasjoin("0");
@@ -772,43 +727,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             rank1.setHasjoin("1");
                         }
                     }
-                    if(showAward != null && showAward){
-                        initRankAward(rank1);
-                    }
                     if (Constant.RANK_TYEP_APP.equals(rank1.getRanktype())){
 //                        rank1.setAppUserMongoEntity(this.userMongoDao.getAppUser(rank1.getCreateuserid()+""));
-                    }
-                    //初始化榜主名片
-                    if(StringUtils.isNotEmpty(rankTitle)){
-                    	if(rank1.getRankcardid() != null){
-                    		RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank1.getRankcardid()));
-                            rank1.setRankCard(rankCard);
-                    	}else{
-                    		if (Constant.RANK_SOURCE_TYPE_1.equals(rank1.getSourcetype())){
-                    			//web发榜
-                    			RankCard rankCard = new RankCard();
-                    			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(rank1.getCreateuserid()+"");
-                    			rankCard.setAdminname(appUserMongoEntity.getNickname());
-                    			rankCard.setAdminpic(appUserMongoEntity.getAvatar());
-                    			rank1.setRankCard(rankCard);
-                    		}
-                    	}
-                        
-                    }
-
-                    if(rank1.getRankinvolved() >= rank1.getRanklimite()){
-                        //获取可以挤掉的用户数量
-                        int removeCount = getSureRemoveRankMemberCount(rank1.getRankid());
-                        if(removeCount > 0){
-                            rank1.setRankinvolved(rank1.getRankinvolved()-removeCount);
-                        }
                     }
 
                     rank1.setJoincode(null);
                 }
             }
             baseResp.setData(ranks);
-            baseResp.getExpandData().put("totalCount",totalCount);
+            baseResp.getExpandData().put("totalCount",resultmap.get("totalcount"));
             //如果是按照口令搜索,则返回用户是否可以入榜
             if(StringUtils.isNotEmpty(codeword) && ranks != null && ranks.size() > 0){
                 if(userid != null && !Constant.VISITOR_UID.equals(String.valueOf(userid))){

@@ -1550,7 +1550,6 @@ public class ImproveServiceImpl implements ImproveService{
      *  @create 2017/3/8 下午3:58
      *  @update 2017/3/8 下午3:58
      */
-    @Cacheable(key="#userid + #ctype + #pagesize + #ispublic")
     @Override
     public List<Improve> selectImproveListByUser(String userid,String ptype,
                                                  String ctype,Date lastdate,int pagesize,Integer ispublic) {

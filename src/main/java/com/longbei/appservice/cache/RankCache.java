@@ -10,6 +10,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.RankService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,11 +110,12 @@ public class RankCache {
 
     @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#startno + '&' + #pagesize"
             ,condition="#status == 0")
-    public List<Rank> selectRankListByCondition(String rankTitle,
+    public Map<String,Object> selectRankListByCondition(String rankTitle,
                                                       String codeword, String pType,
                                                       String rankscope,
                                                       Integer status, String lastDate,
-                                                      Integer startNo, Integer pageSize, Boolean showAward){
+                                                        Integer startNo, Integer pageSize, Boolean showAward){
+        Map<String,Object> resultmap = new HashedMap();
         List<Rank> ranks = new ArrayList<Rank>();
         try {
             Map<String,Object> map = new HashMap<String,Object>();
@@ -201,10 +203,13 @@ public class RankCache {
                     rank1.setJoincode(null);
                 }
             }
+            resultmap.put("totalcount",totalCount);
+            resultmap.put("ranklist",ranks);
         } catch (Exception e) {
             logger.error("select rank list for adminservice is error:",e);
         }
-        return ranks;
+
+        return resultmap;
 
     }
 
