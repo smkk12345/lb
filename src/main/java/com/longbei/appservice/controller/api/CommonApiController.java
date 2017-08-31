@@ -1,8 +1,7 @@
 package com.longbei.appservice.controller.api;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
 
 /**
  * 通用接口

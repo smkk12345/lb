@@ -1,19 +1,14 @@
 package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.SysAppupdate;
-import com.longbei.appservice.entity.SysLongbeiinfo;
 import com.longbei.appservice.service.SysSettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 系统设置相关

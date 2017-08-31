@@ -3,7 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.*;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
