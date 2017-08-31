@@ -289,7 +289,12 @@ public class InitConfig implements CommandLineRunner {
 
 
     private void initSysProtectNamesCache(){
-        SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+        try{
+            SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+        }catch (Exception e){
+
+        }
+
     }
 
     private void initUserSpecialcase(){
