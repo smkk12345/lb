@@ -61,7 +61,6 @@ public class SysProtectnamesServiceImpl implements SysProtectnamesService {
                 SysProtectnames sysProtectnames1= new SysProtectnames();
                 sysProtectnames1.setCreatetime(new Date());
                 sysProtectnamesMapper.insert(sysProtectnames1);
-//                sysProtectnames = sysProtectnamesMapper.selectProtectnames();
             }
             baseResp.setData(sysProtectnames);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
