@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.ImproveCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Cache.SysRulesCache;
 import com.longbei.appservice.common.IdGenerateService;
@@ -136,6 +137,8 @@ public class ImproveServiceImpl implements ImproveService{
     private ImproveLikesMapper improveLikesMapper;
     @Autowired
     private MsgRedMongDao msgRedMongDao;
+    @Autowired
+    private ImproveCache improveCache;
     
     
     
@@ -2531,7 +2534,7 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private int getLikeFromRedis(String impid,String businessid,String businesstype){
+    public int getLikeFromRedis(String impid,String businessid,String businesstype){
         String count = springJedisDao.get(Constant.REDIS_IMPROVE_LIKE + impid);
         if (StringUtils.isBlank(count)){
 //            Improve improve = selectImprove(Long.parseLong(impid),null,businesstype,businessid,null,null);
@@ -3244,6 +3247,7 @@ public class ImproveServiceImpl implements ImproveService{
         initImproveCommentInfo(improve);
 //        long s1 = System.currentTimeMillis();
         //初始化点赞，送花，送钻简略信息
+
         initLikeFlowerDiamondInfo(improve);
 //        long s2 = System.currentTimeMillis();
         //初始化是否 点赞 送花 送钻 收藏
@@ -3464,60 +3468,26 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
     @Override
-    @Cacheable(cacheNames = RedisCacheNames._SYS_RECOMMAEND,
-            key = "#userid +'&'+ #startno +'&'+ #pagesize")
     public BaseResp<List<Improve>> selectRecommendImproveList(String userid, Integer startno, Integer pagesize) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
         List<Improve> improves = new ArrayList<>();
         try {
-            List<TimeLineDetail> timeLineDetails = timeLineDetailDao.selectRecommendImproveList
-                    (null,null,startno,pagesize);
             Long uid = Long.parseLong(userid);
             Set<String> friendids = this.userRelationService.getFriendIds(uid);
             Set<String> fansIds = this.userRelationService.getFansIds(uid);
             Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
-            Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
-            if (null != timeLineDetails && timeLineDetails.size() != 0){
-                for (int i = 0 ; i < timeLineDetails.size() ; i++){
-                    TimeLineDetail timeLineDetail = timeLineDetails.get(i);
-                    Improve improve = new Improve();
-                    improve.setImpid(timeLineDetail.getImproveId());
-                    improve.setBrief(timeLineDetail.getBrief());
-                    improve.setPickey(timeLineDetail.getPhotos());
-                    improve.setFilekey(timeLineDetail.getFileKey());
-                    improve.setSourcekey(timeLineDetail.getSourcekey());
-                    improve.setBusinessid(timeLineDetail.getBusinessid());
-                    improve.setBusinesstype(timeLineDetail.getBusinesstype());
-                    improve.setItype(timeLineDetail.getItype());
-                    improve.setCreatetime(timeLineDetail.getCreatedate());
-//                    improve.setAppUserMongoEntity(timeLineDetail.getUser());
-                    AppUserMongoEntity user = timeLineDetail.getUser();
-                    if(map.containsKey(user.getId())){
-                        user.setNickname(map.get(user.getId()));
+            Set<String> userCollectImproveIds = getUserCollectImproveId(userid);
+            improves = improveCache.selectRecommendImproveList(startno,pagesize);
+            for (Improve improve : improves){
+                if(map.containsKey(improve.getAppUserMongoEntity().getId())){
+                    improve.getAppUserMongoEntity().setNickname(map.get(improve.getAppUserMongoEntity().getId()));
+                }
+                if(!Constant.VISITOR_UID.equals(userid)){
+                    initUserRelateInfo(uid,improve.getAppUserMongoEntity(),friendids,fansIds);
+                    initImproveInfo(improve,uid);
+                    if(userCollectImproveIds.contains(improve.getImpid().toString())){
+                        improve.setHascollect("1");
                     }
-                    improve.setAppUserMongoEntity(user);
-//                    if(!Constant.VISITOR_UID.equals(userid)){
-//                        initUserRelateInfo(Long.parseLong(userid),timeLineDetail.getUser());
-//                        improve.setAppUserMongoEntity(timeLineDetail.getUser());
-//                        initImproveInfo(improve,Long.parseLong(userid));
-//                        if(improveIds.contains(improve.getImpid().toString())){
-//                            improve.setHascollect("1");
-//                        }
-//                    }
-                    if(!Constant.VISITOR_UID.equals(userid)){
-                        initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,fansIds);
-                        initImproveInfo(improve,uid);
-                        if(userCollectImproveIds.contains(improve.getImpid().toString())){
-                            improve.setHascollect("1");
-                        }
-                    }
-                    //初始化 赞 花 数量
-//                    initImproveLikeAndFlower(improve);
-                    improve.setFlowers(timeLineDetail.getFlowers());
-                    improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
-                            String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
-                    improve.setIspublic("2");
-                    improves.add(improve);
                 }
             }
             baseResp = BaseResp.ok();

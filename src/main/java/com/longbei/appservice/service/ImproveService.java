@@ -609,4 +609,6 @@ public interface ImproveService {
 
     void inviteCoinsHandle(UserInfo userInfo);
 
+    int getLikeFromRedis(String impid,String businessid,String businesstype);
+
 }

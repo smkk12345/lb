@@ -126,6 +126,13 @@ public interface RankService extends BaseService{
     BaseResp<List<Rank>> selectRankListForApp(long userid,Integer startNo,Integer pageSize);
 
     /**
+     * 初始化榜单的奖品列表
+     * @param rank
+     * @return
+     */
+    Rank initRankAward(Rank rank);
+
+    /**
      * 删除榜单 非线上
      * @param rankimageid
      * @return
@@ -193,6 +200,10 @@ public interface RankService extends BaseService{
      * @return
      */
     BaseResp<Object> insertRankMember(Long userId, Long rankId, String codeword);
+
+
+
+    int getSureRemoveRankMemberCount(Long rankId);
 
     /**
      * 获取榜单详情 线上
