@@ -1898,24 +1898,29 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
-        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+//        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
 
-        if(null == improve || null == userInfo){
+        if(null == userInfo){
             return baseResp;
         }
 
         try{
             //redis
-            addLikeOrFlowerOrDiamondToImproveForRedis(improve,userid,
+            addLikeOrFlowerOrDiamondToImproveForRedis(impid,userid,
                         Constant.IMPROVE_ALL_DETAIL_LIKE,businessid,businesstype);
-            //mongo
-            addLikeToImproveForMongo(impid,businessid,businesstype,userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
-                    userInfo.getAvatar());
 
             final String finalBusinessid = businessid;
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+                    //mongo
+                    addLikeToImproveForMongo(impid,finalBusinessid,businesstype,userid,
+                            Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
+                            userInfo.getAvatar());
+                    Improve improve = new Improve();
+                    improve.setUserid(Long.parseLong(userid));
+                    improve.setBusinessid(Long.parseLong(finalBusinessid));
+                    improve.setBusinesstype(businesstype);
                     //mysql
                     addLikeToImprove(improve,userid,impid,finalBusinessid,businesstype);
 
@@ -1944,7 +1949,7 @@ public class ImproveServiceImpl implements ImproveService{
             baseResp.getExpandData().put("haslike","1");
 //            baseResp.getExpandData().put("likes",getLikeFromRedis(improve.getImpid()+"",
 //                    improve.getBusinessid()+"",improve.getBusinesstype()));
-            baseResp.getExpandData().put("likes",improve.getLikes()+1);
+            baseResp.getExpandData().put("likes",getLikeFromRedis(impid,businessid,businesstype));
             return baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("addlike error ",e);
@@ -2481,8 +2486,8 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author luye
      */
-    private void addLikeOrFlowerOrDiamondToImproveForRedis(final Improve improve,
-                                                           String userid,
+    private void addLikeOrFlowerOrDiamondToImproveForRedis(final String impid,
+                                                           final String userid,
                                                            String opttype,
                                                            final String businessid,
                                                            final String businesstype){
@@ -2492,12 +2497,13 @@ public class ImproveServiceImpl implements ImproveService{
         threadPoolTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
                 toDoHotImprove(improve,businessid,businesstype,1 * SysRulesCache.behaviorRule.getLikescore());
             }
         });
 
         //将赞保存到redis
-        setLikeToRedis(improve.getImpid()+"",businessid,businesstype,1);
+        setLikeToRedis(impid,businessid,businesstype,1);
         //添加临时记录
 //        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
 //        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60);
