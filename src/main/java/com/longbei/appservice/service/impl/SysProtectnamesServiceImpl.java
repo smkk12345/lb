@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SysProtectnamesMapper;
 import com.longbei.appservice.entity.SysProtectnames;
 import com.longbei.appservice.service.SysProtectnamesService;
@@ -32,11 +33,13 @@ public class SysProtectnamesServiceImpl implements SysProtectnamesService {
         Set<String> set = new HashSet<>();
         String nicknames;
         nicknames = sysProtectnames.getNicknames();
-        nicknames = nicknames.replaceAll( "\\s", "" );
-        nicknames = nicknames.replaceAll("　"," ");
-        nicknames = nicknames.replaceAll("，",",");
-        String[] sArr = nicknames.split(",");
-        CollectionUtils.addAll(set,sArr);
+        if(!StringUtils.isBlank(nicknames)){
+        	 nicknames = nicknames.replaceAll( "\\s", "" );
+             nicknames = nicknames.replaceAll("　"," ");
+             nicknames = nicknames.replaceAll("，",",");
+             String[] sArr = nicknames.split(",");
+             CollectionUtils.addAll(set,sArr);
+        }
         return set;
     }
 

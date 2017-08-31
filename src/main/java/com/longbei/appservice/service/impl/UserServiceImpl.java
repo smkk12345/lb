@@ -171,19 +171,19 @@ public class UserServiceImpl implements UserService {
 //				}
 //			}
 			//查询用户十全十美的信息列表
-			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
-			if(detailList == null || detailList.size() == 0 || detailList.get(0) == null){
-				userInfo.setDetailList(new ArrayList<UserPlDetail>());
-			}else{
-				for (UserPlDetail userPlDetail : detailList) {
-					String ptype = userPlDetail.getPtype();
-					SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
-					if (null != sysPerfectInfo) {
-						userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
-					}
-				}
-				userInfo.setDetailList(detailList);
-			}
+//			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
+//			if(detailList == null || detailList.size() == 0 || detailList.get(0) == null){
+//				userInfo.setDetailList(new ArrayList<UserPlDetail>());
+//			}else{
+//				for (UserPlDetail userPlDetail : detailList) {
+//					String ptype = userPlDetail.getPtype();
+//					SysPerfectInfo sysPerfectInfo = SysRulesCache.sysPerfectInfoMap.get(ptype);
+//					if (null != sysPerfectInfo) {
+//						userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
+//					}
+//				}
+//				userInfo.setDetailList(detailList);
+//			}
 
 			//获取用户星级
 //			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
@@ -217,9 +217,6 @@ public class UserServiceImpl implements UserService {
 				userInfo.setIsfans(this.userRelationService.checkIsFans(userid,lookid)?"1":"0");
 
 			}
-			//判断对话消息是否显示红点    0:不显示   1：显示
-			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
-			expandData.put("showMsg", showMsg);
 
 			//查询奖品数量----
 			Integer awardnum = 0;
