@@ -119,6 +119,8 @@ public class UserServiceImpl implements UserService {
 	private SysSensitiveService sysSensitiveService;
 //	@Autowired
 //	private SysProtectnamesService sysProtectnamesService;
+	@Autowired
+	private UserSpecialcaseService userSpecialcaseService;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -338,6 +340,48 @@ public class UserServiceImpl implements UserService {
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
 		}
 		return reseResp;
+	}
+
+	public BaseResp<Object> fansRegister(Long userid, String username, String nickname,String sex,String avatar) {
+		BaseResp<Object> reseResp = new BaseResp<>();
+		//判断昵称是否存在
+		if(existNickName(nickname)){
+			return reseResp.initCodeAndDesp(Constant.STATUS_SYS_06, Constant.RTNINFO_SYS_06);
+		}
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUserid(userid);
+		userInfo.setUsername(username);
+		userInfo.setNickname(nickname);
+		userInfo.setSex(sex);
+		userInfo.setAvatar(avatar);
+		userInfo.setInviteuserid(10000L);//系统用户ID默认10000
+
+//		try {
+//			BaseResp<Object> tokenRtn = iRongYunService.getRYToken(String.valueOf(userid), username, "#");
+//			if(!ResultUtil.isSuccess(tokenRtn)){
+//				return reseResp;
+//			}
+//			userInfo.setRytoken((String)tokenRtn.getData());
+//		} catch (Exception e) {
+//			logger.error("rongCloud getToken error and msg = {}",e);
+//			reseResp.initCodeAndDesp(Constant.STATUS_SYS_02, Constant.RTNINFO_SYS_02);
+//			return reseResp;
+//		}
+		boolean ri = false;
+		try{
+			ri = registerInfo(userInfo);
+		}catch (Exception e){
+			logger.error("registerInfo",e);
+		}
+		if (ri) {
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			reseResp.setData(userInfo);
+			boolean ro = registerOther(userInfo);
+		} else {
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_01, Constant.RTNINFO_SYS_01);
+		}
+		return reseResp;
+
 	}
 
 	private BaseResp<Object> registerIndex(String deviceindex,String username){
@@ -593,6 +637,106 @@ public class UserServiceImpl implements UserService {
 		}else{
 			//失败之后删除登统中心数据
 			iUserBasicService.remove(username);
+		}
+		return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> fansRegisterBatch(List<UserInfo> userList) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		int registerCount = 0;//统计注册成功数量
+		Set<String> telSet = new HashSet();
+		for (UserInfo user: userList) {
+			long userid = idGenerateService.getUniqueIdAsLong();
+
+			//昵称判断：为空时，赋予随机默认值
+			String nickname = user.getNickname();
+			if(StringUtils.isBlank(nickname)){
+				nickname = getRandomNickName();
+			}
+			nickname = getSingleNickName(nickname);
+
+			//昵称敏感词检测
+			BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(nickname);
+			if(!ResultUtil.isSuccess(baseResp1)){
+				continue;
+			}
+			//昵称长度限制
+			if(!StringUtils.hasBlankParams(nickname)){
+				if(nickname.length() > 26||nickname.length() < 2){
+					continue;
+				}
+			}
+
+			//防止重复注册
+			String username = user.getUsername();
+			if ("1".equals(springJedisDao.get("register"+username))){
+				continue;
+			}
+			//头像
+			String avatar = "fans/"+username+".png";
+
+			//默认密码
+			String password = "E10ADC3949BA59ABBE56E057F20F883E";//123456加密
+			baseResp = iUserBasicService.add(userid, username, password);
+			if(baseResp.getCode() != Constant.STATUS_SYS_00){
+				continue;
+			}
+			String token = (String)baseResp.getData();
+			//Long userid,String username, String nickname,String inviteuserid
+			//获取唯一昵称
+			baseResp = fansRegister(userid,username,nickname,user.getSex(),avatar);
+			if(ResultUtil.isSuccess(baseResp)){
+				//token 放到redis中去
+				springJedisDao.set("userid&token&"+userid, token,Constant.APP_TOKEN_EXPIRE);
+				//防止重复注册
+				springJedisDao.set("register"+username,"1",60*10);
+			}else{
+				//失败之后删除登统中心数据
+				iUserBasicService.remove(username);
+			}
+			registerCount ++ ;
+			telSet.add(username);
+		}
+		String resultMessage = "批量操作条数："+userList.size()+"注册成功条数："+ registerCount;
+		baseResp.setRtnInfo(resultMessage);
+		baseResp.initCodeAndDesp();
+		baseResp.getExpandData().put("totalSize", userList.size());
+		baseResp.getExpandData().put("successCount", registerCount);
+		if (telSet == null || telSet.size() == 0 ) {
+			return baseResp;
+		}
+		//将批量注册的手机号放进注册or登陆时不需要验证码的手机号集合中
+		String telNumbers = StringUtils.join(telSet.toArray(), ",");
+		try {
+			String noRegisterLimit = "";
+			String noSwitchLogin = "";
+			UserSpecialcase updateCase = new UserSpecialcase();
+			UserSpecialcase oldCase = userSpecialcaseService.selectUserSpecialcase().getData();
+			if (oldCase != null) {
+				noRegisterLimit = oldCase.getNoRegisterLimit();
+				noSwitchLogin = oldCase.getNoSwitchLogin();
+
+				if (StringUtils.isBlank(noRegisterLimit)) {
+					updateCase.setNoRegisterLimit(telNumbers);
+				} else {
+					updateCase.setNoRegisterLimit(noRegisterLimit + "," + telNumbers);
+				}
+
+				if (StringUtils.isBlank(noSwitchLogin)) {
+					updateCase.setNoSwitchLogin(telNumbers);
+				} else {
+					updateCase.setNoSwitchLogin(noSwitchLogin + "," + telNumbers);
+				}
+				userSpecialcaseService.updateUserSpecialcase(updateCase);
+			} else {
+				updateCase.setNoSwitchLogin(telNumbers);
+				updateCase.setNoRegisterLimit(telNumbers);
+				userSpecialcaseService.insertSelective(updateCase);
+			}
+
+		} catch (Exception e) {
+			logger.error("updateUserSpecialcase is error:{}", e);
 		}
 		return baseResp;
 	}

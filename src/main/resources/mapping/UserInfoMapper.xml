@@ -95,6 +95,9 @@
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
       </if>
+      <if test="user.inviteuserid != null and user.inviteuserid!=0">
+        AND inviteuserid = #{user.inviteuserid}
+      </if>
       <if test="user.sgrade != null and user.sgrade!=0">
         AND grade &gt;= #{user.sgrade}
       </if>
@@ -149,6 +152,9 @@
       </if>
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
+      </if>
+      <if test="user.inviteuserid != null and user.inviteuserid!=0">
+        AND inviteuserid = #{user.inviteuserid}
       </if>
       <if test="user.sgrade != null and user.sgrade!=0">
         AND grade &gt;= #{user.sgrade}

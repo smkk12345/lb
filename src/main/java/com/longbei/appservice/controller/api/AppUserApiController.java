@@ -282,6 +282,24 @@ public class AppUserApiController {
         return baseResp;
     }
 
+    /**
+     * admin明星粉丝会员批量注册
+     * @param userList
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/fansRegisterBatch")
+    @ResponseBody
+    public BaseResp<Object> fansRegisterBatch(@RequestBody  List<UserInfo> userList) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = userService.fansRegisterBatch(userList);
+        } catch (Exception e) {
+            logger.error("fansRegisterBatch error", e);
+        }
+        return baseResp;
+    }
+
 
     /**
      * 获取用户列表
