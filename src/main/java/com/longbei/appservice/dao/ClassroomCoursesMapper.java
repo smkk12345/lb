@@ -179,4 +179,9 @@ public interface ClassroomCoursesMapper {
 
 	Integer updateLiveStatus(@Param("classroomid") long classroomid,
 							 @Param("id") Integer id, @Param("status") String status);
+
+	Integer updateMedia(@Param("classroomid") long classroomid,
+						@Param("id") Integer id,
+						@Param("filekey") String filekey,
+						@Param("duration") String duration);
 }
