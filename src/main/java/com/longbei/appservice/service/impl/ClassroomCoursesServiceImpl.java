@@ -353,7 +353,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			ClassroomCourses courses = classroomCoursesMapper.select(classroomCourses.getClassroomid(), classroomCourses.getId());
 			if(classroomCourses.getStatus() == 3){
 				if(StringUtils.isBlank(courses.getFileurl())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_1115);
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1115, Constant.RTNINFO_SYS_1115);
 				}
 			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);

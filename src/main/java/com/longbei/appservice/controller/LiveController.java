@@ -297,21 +297,25 @@ public class LiveController {
         logger.info("updateLiveMedia after base64 uid:{} filekey:{} pickey:{} duration={}",
                 uid,filekey,pickey,duration);
         //处理教室直播逻辑
-        LiveInfo liveInfo = liveInfoMongoService.selectLiveInfoByLiveid(Long.parseLong(uid));
-        if(null == liveInfo){
-        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-        }
-        classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
-        //修改直播课程为录播课程参数
-        ClassroomCourses classroomCourses = new ClassroomCourses();
-        classroomCourses.setId(liveInfo.getCourseid().intValue());
-        classroomCourses.setClassroomid(liveInfo.getClassroomid());
-        classroomCourses.setFileurl(filekey);
+        try{
+            LiveInfo liveInfo = liveInfoMongoService.selectLiveInfoByLiveid(Long.parseLong(uid));
+            if(null == liveInfo){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
+            }
+            classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
+            //修改直播课程为录播课程参数
+            ClassroomCourses classroomCourses = new ClassroomCourses();
+            classroomCourses.setId(liveInfo.getCourseid().intValue());
+            classroomCourses.setClassroomid(liveInfo.getClassroomid());
+            classroomCourses.setFileurl(filekey);
 //        classroomCourses.setPickey(pickey);
-        Double durations = Double.parseDouble(duration)*1000;
-		Long dur = durations.longValue();
-        classroomCourses.setDuration(dur.toString());
-        classroomCoursesService.editCourses(classroomCourses);
+            Double durations = Double.parseDouble(duration)*1000;
+            Long dur = durations.longValue();
+            classroomCourses.setDuration(dur.toString());
+            classroomCoursesService.editCourses(classroomCourses);
+        }catch (Exception e){
+            logger.error("updateLiveMedia" ,e);
+        }
         return baseResp.initCodeAndDesp();
     }
 
