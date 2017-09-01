@@ -708,6 +708,12 @@ public class UserMsgServiceImpl implements UserMsgService {
 	}
 
 	@Override
+	public List<UserMsg> selectList(String msgtype, String commentid, Long gtypeid, int startNum, int endNum){
+		List<UserMsg> list = userMsgMapper.selectList(msgtype, commentid, gtypeid, startNum, endNum);
+		return list;
+	}
+
+	@Override
 	public BaseResp<Object> selectByUserid(long userid, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
