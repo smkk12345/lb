@@ -146,6 +146,14 @@ public interface ClassroomCoursesMapper {
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /*
+     * 获取直播课程信息列表---开始年月日查询
+     * classroomid 教室id
+     * daytime 开始年月日 用于方便查询
+     */
+    List<ClassroomCourses> selectStartCoursesListByCid(@Param("classroomid") long classroomid, 
+    		@Param("daytime") String daytime);
+    
+    /*
      * 获取课程信息---最近直播
      * classroomid 教室id
      */

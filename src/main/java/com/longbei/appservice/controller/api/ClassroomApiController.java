@@ -1002,5 +1002,26 @@ public class ClassroomApiController {
 	}
 
 	//--------------------------提问答疑列表 end-------------------------
+	
+	
+	
+	
+	/**
+     * 将直播教室置为  结束未开启回放
+     * @param currentTime
+     */
+	@SuppressWarnings("unchecked")
+    @ResponseBody
+    @RequestMapping(value="endClassroom")
+    public BaseResp<Object> endClassroom(Long currentTime){
+        logger.info("endClassroom currentTime={}", currentTime);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        if(currentTime == null){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+//        Date currentDateTime= new Date(currentTime);
+        baseResp = this.classroomService.endClassroom(currentTime);
+        return baseResp;
+    }
 
 }
