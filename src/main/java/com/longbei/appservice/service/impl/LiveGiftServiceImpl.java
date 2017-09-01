@@ -81,11 +81,15 @@ public class LiveGiftServiceImpl implements LiveGiftService {
             int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype);
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
-                int receiveMoney = giveMoney*(1-Constant.TAKEPERCENTAGE.intValue()/100);
+//                Double s = Constant.TAKEPERCENTAGE.doubleValue();
+//                Double a = s/100;
+//                Double lv = 1-a;
+//                Long m = Math.round(giveMoney*lv);
+//                int receiveMoney = m.intValue();
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
                 //添加教室收益
                 userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
-                        String.valueOf(fromUid),"1","0",receiveMoney,null);
+                        String.valueOf(fromUid),"1","0",giveMoney,null);
             }
             baseResp.initCodeAndDesp();
             baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());

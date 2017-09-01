@@ -1,6 +1,6 @@
 package com.longbei.appservice.service.impl;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.UserPlDetailMapper;

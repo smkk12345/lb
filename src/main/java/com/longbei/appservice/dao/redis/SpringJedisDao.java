@@ -525,7 +525,8 @@ public class SpringJedisDao {
     public double zScore(String key,String value){
         try{
             ZSetOperations<String,String> zSetOperations = redisTemplate.opsForZSet();
-            return zSetOperations.score(key,value);
+            Double db = zSetOperations.score(key,value);
+            return db==null?0:db;
         }catch(Exception e){
             logger.error("redis zset zscore error e:{}",e);
         }

@@ -5,7 +5,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;

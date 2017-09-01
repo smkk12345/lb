@@ -31,4 +31,6 @@ public interface UserSpecialcaseService {
      */
     BaseResp<Object> insertSelective(UserSpecialcase userSpecialcase);
 
+    void updateUserSpecialcase();
+
 }

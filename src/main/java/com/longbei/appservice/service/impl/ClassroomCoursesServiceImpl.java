@@ -16,6 +16,7 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.ClassroomMembersMapper;
@@ -258,7 +259,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				LiveInfo liveInfo = new LiveInfo();
 				liveInfo.setLiveid(liveid);
 				liveInfo.setClassroomid(classroomid);
-				liveInfo.setCourseid(id);
+				liveInfo.setCourseid(id.longValue());
 				liveInfo.setCreatetime(new Date());
 				liveInfo.setUserid(classroom.getUserid());
 				//如果直播课程发布，mongo添加数据
@@ -344,10 +345,17 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		return reseResp;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> editCourses(ClassroomCourses classroomCourses) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
+			ClassroomCourses courses = classroomCoursesMapper.select(classroomCourses.getClassroomid(), classroomCourses.getId());
+			if(classroomCourses.getStatus() == 3){
+				if(StringUtils.isBlank(courses.getFileurl())){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_1115);
+				}
+			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);
 			if (temp > 0) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

@@ -24,6 +24,5 @@
         updatetime = #{updatetime},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

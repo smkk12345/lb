@@ -98,7 +98,6 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.UserSpecialcase" >
     update user_specialcase

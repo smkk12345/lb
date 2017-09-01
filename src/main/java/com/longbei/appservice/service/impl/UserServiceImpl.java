@@ -3,7 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.*;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
@@ -173,19 +173,19 @@ public class UserServiceImpl implements UserService {
 //				}
 //			}
 			//查询用户十全十美的信息列表
-			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
-			if(detailList == null || detailList.size() == 0 || detailList.get(0) == null){
-				userInfo.setDetailList(new ArrayList<UserPlDetail>());
-			}else{
-				for (UserPlDetail userPlDetail : detailList) {
-					String ptype = userPlDetail.getPtype();
-					SysPerfectInfo sysPerfectInfo = sysPerfectInfoMapper.selectPerfectPhotoByPtype(ptype);
-					if (null != sysPerfectInfo) {
-						userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
-					}
-				}
-				userInfo.setDetailList(detailList);
-			}
+//			List<UserPlDetail> detailList = userPlDetailMapper.selectUserPerfectListByUserId(userid, 0, 10);
+//			if(detailList == null || detailList.size() == 0 || detailList.get(0) == null){
+//				userInfo.setDetailList(new ArrayList<UserPlDetail>());
+//			}else{
+//				for (UserPlDetail userPlDetail : detailList) {
+//					String ptype = userPlDetail.getPtype();
+//					SysPerfectInfo sysPerfectInfo = SysRulesCache.sysPerfectInfoMap.get(ptype);
+//					if (null != sysPerfectInfo) {
+//						userPlDetail.setPhoto(sysPerfectInfo.getPhotos());
+//					}
+//				}
+//				userInfo.setDetailList(detailList);
+//			}
 
 			//获取用户星级
 //			UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
@@ -219,9 +219,6 @@ public class UserServiceImpl implements UserService {
 				userInfo.setIsfans(this.userRelationService.checkIsFans(userid,lookid)?"1":"0");
 
 			}
-			//判断对话消息是否显示红点    0:不显示   1：显示
-			int showMsg =userMsgService.selectCountShowMyByMtype(userid);
-			expandData.put("showMsg", showMsg);
 
 			//查询奖品数量----
 			Integer awardnum = 0;
@@ -501,13 +498,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	private void initUserUserSettingCommon(long userid){
 		List<UserSettingCommon> list = new ArrayList<UserSettingCommon>();
-		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", new Date(), new Date());
-		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "1", "点赞", new Date(), new Date());
-		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", new Date(), new Date());
-		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", new Date(), new Date());
-		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", new Date(), new Date());
-		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", new Date(), new Date());
-		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", new Date(), new Date());
+		Date date = new Date();
+		UserSettingCommon common = new UserSettingCommon(userid, "is_new_fans", "1", "新粉丝", date, date);
+		UserSettingCommon common2 = new UserSettingCommon(userid, "is_like", "1", "点赞", date, date);
+		UserSettingCommon common3 = new UserSettingCommon(userid, "is_flower", "1", "送花", date, date);
+		UserSettingCommon common4 = new UserSettingCommon(userid, "is_comment", "2", "评论设置", date, date);
+		UserSettingCommon common5 = new UserSettingCommon(userid, "is_nick_search", "1", "允许通过昵称搜到我", date, date);
+		UserSettingCommon common6 = new UserSettingCommon(userid, "is_phone_search", "1", "允许通过此手机号搜到我", date, date);
+		UserSettingCommon common7 = new UserSettingCommon(userid, "is_newfriendask", "1", "新好友申请", date, date);
 		list.add(common);
 		list.add(common2);
 		list.add(common3);
@@ -1001,6 +999,10 @@ public class UserServiceImpl implements UserService {
 		if(username.equals("13716832441")){
 			return baseResp.initCodeAndDesp();
 		}
+		//如果是特权手机号，不用切换
+		if(SysRulesCache.userSpecialcaseMobileSet.contains(username)){
+			return baseResp.initCodeAndDesp();
+		}
 		//每日次数限制
 		if(!canLoginTimesPerDay(deviceindex,username)){
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_114,Constant.RTNINFO_SYS_114);
@@ -1083,6 +1085,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	private boolean addLoginRecord(String deviceindex,String username){
 		if(StringUtils.isBlank(deviceindex)){
+			return false;
+		}
+		if(SysRulesCache.userSpecialcaseMobileSet.contains(username)){
 			return false;
 		}
 		String date = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
@@ -1192,7 +1197,6 @@ public class UserServiceImpl implements UserService {
 				if(ResultUtil.isSuccess(baseResp)){
 					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 					baseResp = iUserBasicService.gettokenWithoutPwd(username);
-					JSONObject jsonObject = JSONObject.fromObject(baseResp.getExpandData().get("userBasic"));
 					baseResp.getExpandData().put("userid", userInfo.getUserid());
 					String token = (String) baseResp.getData();
 					baseResp.getExpandData().put("token", token);
@@ -1207,11 +1211,6 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-//		BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
-//		if(ResultUtil.fail(baseResp1)){
-//			baseResp1.setData(userInfo);
-//			return baseResp1;
-//		}
 		addLoginRecord(userInfo.getUsername(),deviceindex);
 		return baseResp;
 	}

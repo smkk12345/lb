@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.PageCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -59,6 +60,8 @@ public class PageServiceImpl implements PageService{
     private ClassroomMembersMapper classroomMembersMapper;
     @Autowired
     private HomePosterMapper homePosterMapper;
+    @Autowired
+    private PageCache pageCache;
     
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -205,11 +208,10 @@ public class PageServiceImpl implements PageService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "homeposter")
 	public BaseResp<HomePoster> selectHomePosterIsup() {
 		BaseResp<HomePoster> baseResp = new BaseResp<>();
         try {
-        	HomePoster homePoster = homePosterMapper.selectHomePosterIsup();
+        	HomePoster homePoster = pageCache.selectHomePosterIsUp();
         	if(null != homePoster){
         		//contenttype 关联 内容类型 0 - 龙榜 1 - 教室  2 - 专题   3 - 达人  4 - 商品
         		if ("2".equals(homePoster.getContenttype())){
@@ -266,15 +268,11 @@ public class PageServiceImpl implements PageService{
 
     @SuppressWarnings("unchecked")
 	@Override
-    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "#type")
     public BaseResp<List<HomePicture>> selectHomePicList(String type) {
         BaseResp<List<HomePicture>> baseResp = new BaseResp<>();
         List<HomePicture> homePictures = new ArrayList<HomePicture>();
         try {
-                HomePicture homePicture = new HomePicture();
-                homePicture.setIsup("1");
-                homePicture.setType(type);
-                homePictures = homePictureMapper.selectList(homePicture,null,null);
+                homePictures = pageCache.selectHomePicList(type);
                 for (HomePicture homePicture1 : homePictures){
                     if ("0".equals(homePicture1.getContenttype())){
                         homePicture1.setHref(AppserviceConfig.articleurl + "?articleid=" + homePicture1.getHref());

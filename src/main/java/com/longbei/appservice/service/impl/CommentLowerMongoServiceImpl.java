@@ -2,7 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.List;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;

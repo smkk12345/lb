@@ -1,6 +1,6 @@
 package com.longbei.appservice.config;
 
-import com.longbei.appservice.common.Cache.SysRulesCache;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.security.SensitiveWord;
@@ -8,12 +8,10 @@ import com.longbei.appservice.common.service.mq.reciver.AddMessageReceiveService
 import com.longbei.appservice.common.service.mq.reciver.TopicMessageReciverService;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.RankService;
 import com.longbei.appservice.service.SysProtectnamesService;
 import com.longbei.appservice.service.SysSensitiveService;
 import com.longbei.appservice.service.SysSettingService;
-import com.netflix.discovery.converters.Auto;
-import net.sf.json.JSONObject;
+import com.longbei.appservice.service.UserSpecialcaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +42,6 @@ public class InitConfig implements CommandLineRunner {
        //签到规则
     @Autowired
     private SysRuleCheckinMapper sysRuleCheckinMapper;
-    //用户特权规则
-    @Autowired
-    private SysRuleLpMapper sysRuleLpMapper;
     //十全十美等级规则表
     @Autowired
     private SysRulePerfectTenMapper sysRulePerfectTenMapper;
@@ -54,9 +49,6 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private BehaviorRuleMapper behaviorRuleMapper;
 
-    //计分规则
-    @Autowired
-    private SysScoringRuleMapper sysScoringRuleMapper;
     @Autowired
     private UserLevelMapper userLevelMapper;
     @Autowired
@@ -71,19 +63,13 @@ public class InitConfig implements CommandLineRunner {
     @Autowired
     private Queue addqueue;
     @Autowired
-    private Topic commontopic;
-    @Autowired
-    private Queue updatequeue;
-    @Autowired
     private AddMessageReceiveService addMessageReceiveService;
     @Autowired
     private SysSettingService sysSettingService;
     @Autowired
     private SysProtectnamesService sysProtectnamesService;
-
     @Autowired
-    private TimeLineDao timeLineDao;
-
+    private UserSpecialcaseService userSpecialcaseService;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -108,6 +94,8 @@ public class InitConfig implements CommandLineRunner {
         initSysCommon();
         //初始化版本信息 分安卓和IOS
         initSysAppUpdateMap();
+        //初始化特殊手机号   userSpecialcaseService
+        initUserSpecialcase();
     }
 
     private void initUserBehaviorRule(int num){
@@ -302,7 +290,23 @@ public class InitConfig implements CommandLineRunner {
 
 
     private void initSysProtectNamesCache(){
-        SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+        try{
+            SysRulesCache.sysProtectNames = sysProtectnamesService.selectProtectNamesSet();
+        }catch (Exception e){
+
+        }
+
     }
+
+    /**
+     * 初始化特权手机号
+     */
+    private void initUserSpecialcase(){
+        try {
+            userSpecialcaseService.updateUserSpecialcase();
+        }catch (Exception e){
+        }
+    }
+
 
 }

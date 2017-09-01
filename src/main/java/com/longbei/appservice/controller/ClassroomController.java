@@ -52,6 +52,41 @@ public class ClassroomController {
 	
 	
 	/**
+     * @Title: http://ip:port/app_service/classroom/checkInsertTeaching
+     * @Description: 判断学员是否能加入直播教室
+     * @param @param userid 
+     * @param @param classroomid 教室业务id
+     * @param @param coursesid   课程id
+     * @param @param liveid      直播id
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年3月6日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "checkInsertTeaching")
+    public BaseResp<Object> checkInsertTeaching(String userid, String classroomid,
+													 String coursesid, String liveid) {
+		logger.info("checkInsertTeaching userid={},classroomid={},coursesid={},liveid={}",
+				userid,classroomid,coursesid,liveid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(userid, classroomid, coursesid, liveid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			BaseResp<ClassroomCourses> resResp = classroomCoursesService.selectCourses(Long.parseLong(classroomid), Integer.parseInt(coursesid));
+   			if(resResp.getCode() == 0){
+   				ClassroomCourses classroomCourses = resResp.getData();
+   				baseResp.setData(classroomCourses.getStatus());
+   				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+   			}
+   		} catch (Exception e) {
+   			logger.error("checkInsertTeaching userid={},classroomid={},coursesid={},liveid={}",
+   				userid,classroomid,coursesid,liveid, e);
+   		}
+   		return baseResp;
+    }
+	
+	/**
      * @Title: http://ip:port/app_service/classroom/selectCroomIsreplyList
      * @Description: 获取教室未批复，已批复的进步
      * @param @param userid 
