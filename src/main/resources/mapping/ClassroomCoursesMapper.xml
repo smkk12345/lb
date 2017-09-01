@@ -498,7 +498,7 @@
 
   <update id="updateMedia" >
     update classroom_courses
-    set filekey = #{filekey},
+    set fileurl = #{filekey},
         duration = #{duration}
     where id = #{id}
     and classroomid = #{classroomid}
