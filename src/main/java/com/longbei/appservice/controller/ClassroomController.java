@@ -74,11 +74,22 @@ public class ClassroomController {
         }
    		try {
    			BaseResp<ClassroomCourses> resResp = classroomCoursesService.selectCourses(Long.parseLong(classroomid), Integer.parseInt(coursesid));
+   			Integer status = 0;
    			if(resResp.getCode() == 0){
    				ClassroomCourses classroomCourses = resResp.getData();
-   				baseResp.setData(classroomCourses.getStatus());
-   				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//   				if(classroomCourses.getStatus().equals("1")){
+//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+//   				}else if(classroomCourses.getStatus().equals("0")){
+//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播未开始");
+//   				}else if(classroomCourses.getStatus().equals("2")||classroomCourses.getStatus().equals("3")){
+//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播已结束");
+//   				}else{
+//   					//doNothing
+//   				}
+   				status = classroomCourses.getStatus();
    			}
+   			resResp.getExpandData().put("status", status);
+   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
    		} catch (Exception e) {
    			logger.error("checkInsertTeaching userid={},classroomid={},coursesid={},liveid={}",
    				userid,classroomid,coursesid,liveid, e);
