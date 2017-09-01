@@ -50,9 +50,9 @@ public class ClassroomCourses implements Serializable {
 
     private String endtime;//直播结束时间
 
-    private String teachingtypes;//教学类型 0 录播 1直播
+    private String teachingtypes;//teachingtypes 教学类型 0 录播 1直播
 
-    private Integer status;//直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
+    private Integer status;//status 直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
     
     private String daytime; //开始年月日 用于方便查询
     
