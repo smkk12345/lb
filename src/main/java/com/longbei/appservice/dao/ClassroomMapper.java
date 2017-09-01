@@ -222,5 +222,14 @@ public interface ClassroomMapper {
 	 */
 	Integer updateLiveStatus(@Param("classroomid") long classroomid,
 							 @Param("status") String status);
+	
+	
+	
+	/**
+	 * @author yinxc
+	 * 获取直播中的教室列表
+	 * param status  直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
+	 */
+    List<Classroom> selectStatusList(@Param("status") String status);
     
 }

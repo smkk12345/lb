@@ -8,7 +8,9 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -28,6 +30,12 @@ public class LiveInfo implements Serializable {
 	private long liveid;     //直播id
 	
 	private long userid;     //用户id
+	
+	private Date starttime;  //直播开始时间
+
+    private Date endtime;    //直播结束时间
+    
+    private String isdel;    //isdel 是否删除    0:未删除   1：删除
 	
 	private Date createtime; //评论时间
 	
@@ -89,6 +97,34 @@ public class LiveInfo implements Serializable {
 
 	public void setCreatetime(Date createtime) {
 		this.createtime = createtime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public Date getStarttime() {
+		return starttime;
+	}
+
+	public void setStarttime(Date starttime) {
+		this.starttime = starttime;
+	}
+
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	public Date getEndtime() {
+		return endtime;
+	}
+
+	public void setEndtime(Date endtime) {
+		this.endtime = endtime;
+	}
+
+	public String getIsdel() {
+		return isdel;
+	}
+
+	public void setIsdel(String isdel) {
+		this.isdel = isdel;
 	}
 
 }

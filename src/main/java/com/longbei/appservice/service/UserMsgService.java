@@ -170,10 +170,8 @@ public interface UserMsgService {
 	/**
 	 * @author yinxc
 	 * 获取消息信息
-	 * 2017年2月7日
-	 * return_type
-	 * UserMsgService
 	 */
+	List<UserMsg> selectList(String msgtype, String commentid, Long gtypeid, int startNum, int endNum);
 //	List<UserMsg> selectByGtypeAndSnsid(String gtype, Long snsid);
 	
 	/**

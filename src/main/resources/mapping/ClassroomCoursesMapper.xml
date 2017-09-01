@@ -146,6 +146,21 @@
     </if>
   </select>
   
+  <select id="selectStartCoursesListByCid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_courses 
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+    and pickey != '' 
+    and isup = 1 
+    and teachingtypes = 1 
+    and (status = 0 or status = 1) 
+    <if test="daytime != null and daytime != ''" >
+      	and daytime = #{daytime}
+    </if>
+  </select>
+  
   <select id="selectTeachingCoursesListByCid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

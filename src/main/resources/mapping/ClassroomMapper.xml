@@ -90,7 +90,7 @@
 	r.charge, r.isfree, r.freecoursenum, r.isdel, r.sourcetype, 
 	r.isrecommend, r.isup, r.cusername,      
 	r.closedate, r.closeremark, r.syllabus, r.crowd, r.weight, 
-	r.ishomerecommend, r.allcourses 
+	r.ishomerecommend, r.allcourses, r.earnings, r.commission, r.status 
     from classroom  r inner join classroom_members cm 
           on r.classroomid = cm.classroomid
       where r.isdel = 0
@@ -223,6 +223,18 @@
     <if test="endNum != 0" >
       limit #{startNum},#{endNum}
     </if>
+  </select>
+  
+  <select id="selectStatusList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where
+    isdel = 0 and isup = 1 
+    <if test="status != null and status != ''" >
+      and status = #{status}
+    </if>
+    order createtime desc 
   </select>
   
   <select id="selectListByUserid" resultMap="BaseResultMap" >
