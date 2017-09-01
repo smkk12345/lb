@@ -262,6 +262,9 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				liveInfo.setCourseid(id.longValue());
 				liveInfo.setCreatetime(new Date());
 				liveInfo.setUserid(classroom.getUserid());
+				liveInfo.setIsdel("0");
+				liveInfo.setStarttime(DateUtils.formatDate(classroomCourses.getStarttime(), null));
+				liveInfo.setEndtime(DateUtils.formatDate(classroomCourses.getEndtime(), null));
 				//如果直播课程发布，mongo添加数据
 				liveInfoMongoService.insertLiveInfo(liveInfo);
 				temp = classroomCoursesMapper.updateStreamingIsupByid("1", id, classroomid, liveid);
@@ -358,6 +361,15 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);
 			if (temp > 0) {
+				//直播课程修改时，修改mongo数据   liveinfo
+				//teachingtypes 教学类型 0 录播 1直播   
+				//isup是否上架   0：未上架    1：已上架
+				if("1".equals(classroomCourses.getTeachingtypes()) && "0".equals(courses.getIsup())){
+					//需求：未上架的可以修改直播时间
+					liveInfoMongoService.updateLiveInfo(classroomCourses.getClassroomid(), classroomCourses.getId().longValue(), 
+							DateUtils.formatDate(classroomCourses.getStarttime(), null), 
+							DateUtils.formatDate(classroomCourses.getEndtime(), null));
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
