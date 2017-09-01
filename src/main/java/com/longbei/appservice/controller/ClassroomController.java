@@ -88,7 +88,7 @@ public class ClassroomController {
 //   				}
    				status = classroomCourses.getStatus();
    			}
-   			resResp.getExpandData().put("status", status);
+   			baseResp.getExpandData().put("status", status);
    			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
    		} catch (Exception e) {
    			logger.error("checkInsertTeaching userid={},classroomid={},coursesid={},liveid={}",
