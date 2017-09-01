@@ -1501,25 +1501,45 @@ public class ClassroomServiceImpl implements ClassroomService {
         	List<LiveInfo> list = liveInfoMongoMapper.selectLiveInfoList("0");
         	if(null != list && list.size()>0){
         		for (LiveInfo liveInfo : list) {
+        			Classroom classroom = classroomMapper.selectByPrimaryKey(liveInfo.getClassroomid());
+    				if(null == classroom){
+    					continue;
+    				}
+    				ClassroomCourses classroomCourses = classroomCoursesMapper.select(liveInfo.getClassroomid(), 
+    						liveInfo.getCourseid().intValue());
+    				if(null == classroomCourses){
+    					continue;
+    				}
         			//判断currentTime   及课程结束时间延迟30分钟   是否结束
         			Date currentDateTime= new Date(currentTime);
         			//返回两个时间的误差 单位是秒
         			Long end = DateUtils.getTimeDifference(liveInfo.getEndtime(), currentDateTime);
-        			if(end>30*60){
-        				//直播结束
-        				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
-        				//删除mongo数据
-        				liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
-        				continue;
+        			//status 直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
+        			//未直播的课程    结束时间到了，直接关闭      2017-09-01  
+        			if(classroomCourses.getStatus() == 0){
+        				if(end>0){
+        					//直播结束
+            				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
+            				//删除mongo数据
+            				liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
+            				continue;
+        				}
+        			}
+        			// 开启直播的课程延迟30分钟关闭   2017-09-01
+        			if(classroomCourses.getStatus() == 1){
+        				if(end>30*60){
+            				//直播结束
+            				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
+            				//删除mongo数据
+            				liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
+            				continue;
+            			}
         			}
         			
         			//教室直播课程开始前10分钟推送消息
         			Long teaching = DateUtils.getTimeDifference(currentDateTime, liveInfo.getStarttime());
         			if(teaching <= 10*60 && teaching > 0){
-        				Classroom classroom = classroomMapper.selectByPrimaryKey(liveInfo.getClassroomid());
-        				if(null == classroom){
-        					continue;
-        				}
+        				
         				//判断消息是否已发送    
         				List<UserMsg> msgList = userMsgService.selectList("72", liveInfo.getLiveid() + "",
 								liveInfo.getClassroomid(), 0, 1);
