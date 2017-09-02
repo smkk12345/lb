@@ -3,6 +3,7 @@ package com.longbei.appservice.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -1547,6 +1548,20 @@ public class ClassroomServiceImpl implements ClassroomService {
 							//消息已发送
 							continue;
 						}
+						HashSet<String> set = new HashSet<String>();
+
+        				//推送消息---已加入该教室的人员
+        				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
+        				String insertremark = "您加入的教室《" + classroom.getClasstitle() + "》直播还有十分钟开始,赶快去看看吧";
+        				if(null != memberList && memberList.size()>0){
+        					for (int i=0;i<memberList.size();i++) {
+        						set.add(memberList.get(i).getUserid() + "");
+        						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
+        								"", "12", classroom.getClassroomid() + "", insertremark, "2", "72", "直播开始提示", 0, 
+        								liveInfo.getLiveid() + "", "");
+        					}
+        				}
+        				
         				//推送消息---已关注该教室的人员
         				Map<String,Object> map = new HashMap<String,Object>();
         	            map.put("businessType","4");
@@ -1555,22 +1570,15 @@ public class ClassroomServiceImpl implements ClassroomService {
         	            String remark = "您关注的教室《" + classroom.getClasstitle() + "》直播还有十分钟开始,赶快去看看吧";
         				if(null != concernList && concernList.size()>0){
         					for (UserBusinessConcern userBusinessConcern : concernList) {
+        						if(set.contains(userBusinessConcern.getUserid().toString())){
+        							continue;
+        						}
                 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
         								"", "12", liveInfo.getClassroomid() + "", remark, "0", "72", "直播开始提示", 0, 
         								liveInfo.getLiveid() + "", "");
         					}
         				}
         				
-        				//推送消息---已加入该教室的人员
-        				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
-        				String insertremark = "您加入的教室《" + classroom.getClasstitle() + "》直播还有十分钟开始,赶快去看看吧";
-        				if(null != memberList && memberList.size()>0){
-        					for (int i=0;i<memberList.size();i++) {
-        						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-        								"", "12", classroom.getClassroomid() + "", insertremark, "2", "72", "直播开始提示", 0, 
-        								liveInfo.getLiveid() + "", "");
-        					}
-        				}
         			}
 				}
         	}

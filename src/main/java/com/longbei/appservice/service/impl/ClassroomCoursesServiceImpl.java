@@ -2,6 +2,7 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -276,6 +277,20 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
 				
+				HashSet<String> set = new HashSet<String>();
+				
+				//推送消息---已加入该教室的人员
+				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
+				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
+				if(null != memberList && memberList.size()>0){
+					for (int i=0;i<memberList.size();i++) {
+						set.add(memberList.get(i).getUserid() + "");
+						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
+								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室更新课程", 0, "", "");
+					}
+				}
+				
 				//推送消息---已关注该教室的人员
 				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
@@ -285,21 +300,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
 				if(null != concernList && concernList.size()>0){
 					for (UserBusinessConcern userBusinessConcern : concernList) {
+						if(set.contains(userBusinessConcern.getUserid().toString())){
+							continue;
+						}
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
 								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室更新课程", 0, "", "");
 					}
 				}
 				
-				//推送消息---已加入该教室的人员
-				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
-				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
-				if(null != memberList && memberList.size()>0){
-					for (int i=0;i<memberList.size();i++) {
-						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室更新课程", 0, "", "");
-					}
-				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
