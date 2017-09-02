@@ -20,6 +20,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hslf.model.Slide;
+import org.apache.poi.hslf.model.TextRun;
+import org.apache.poi.hslf.usermodel.RichTextRun;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFShape;
@@ -111,6 +113,71 @@ public class PPTToImageUtil {
         }
         return false;
     }
+
+
+//    public static boolean doPPTtoImag1(File file,String path,String picName,String picType) {
+//        boolean isppt = checkFile(file);
+//        ArrayList<String> imageList = new ArrayList<String>();
+//        if (!isppt) {
+//            return false;
+//        }
+//        File parentFile = new File(path);
+//        if(!parentFile.exists()){
+//            parentFile.mkdir();
+//        }
+//        try {
+//            FileInputStream is = new FileInputStream(file);
+//            SlideShow ppt = new SlideShow(is);
+//            is.close();
+//            // Dimension pgsize = ppt.getPageSize();
+//            Slide[] slide = ppt.getSlides();
+//            Dimension pgSize = ppt.getPageSize();
+//            for (int i = 0; i < slide.length; i++) {
+//                System.out.print("第" + i + "页。");
+//                TextRun[] truns = slide[i].getTextRuns();
+//                for (int k = 0; k < truns.length; k++) {
+//                    RichTextRun[] rtruns = truns[k].getRichTextRuns();
+//                    for (int l = 0; l < rtruns.length; l++) {
+//                        int index = rtruns[l].getFontIndex();
+//                        String name = rtruns[l].getFontName();
+//                        rtruns[l].setFontIndex(1);
+//                        rtruns[l].setFontName("宋体");
+//                        System.out.println(rtruns[l].getText());
+//                    }
+//                }
+//                BufferedImage img = new BufferedImage(pgSize.width,
+//                        pgSize.height, BufferedImage.TYPE_INT_RGB);
+//
+//                Graphics2D graphics = img.createGraphics();
+//                graphics.setPaint(Color.white);
+//                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                        RenderingHints.VALUE_ANTIALIAS_ON);
+//                graphics.setRenderingHint(RenderingHints.KEY_RENDERING,
+//                        RenderingHints.VALUE_RENDER_QUALITY);
+//                graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+//                        RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+//                graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+//                        RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+//                graphics.fill(new Rectangle2D.Float(0, 0, pgSize.width,
+//                        pgSize.height));
+//                slide[i].draw(graphics);
+//
+//                String tempPath =path+"/"+picName+"_" + (i + 1) + "."+picType;
+//                FileOutputStream out = new FileOutputStream(tempPath);
+//                javax.imageio.ImageIO.write(img, "jpeg", out);
+//                imageList.add(tempPath);
+//                out.close();
+//            }
+//            return false;
+//        } catch (FileNotFoundException e) {
+//            System.out.println(e);
+//        } catch (IOException e) {
+//        }
+//        return false;
+//    }
+
+
+
     /**
      * PPT转图片 （jpeg）(2003)
      * @param file
@@ -138,6 +205,17 @@ public class PPTToImageUtil {
             Dimension pgSize = ppt.getPageSize();
             for (int i = 0; i < slide.length; i++) {
                 System.out.print("第" + i + "页。");
+
+                TextRun[] truns = slide[i].getTextRuns();
+                for (int k = 0; k < truns.length; k++) {
+                    RichTextRun[] rtruns = truns[k].getRichTextRuns();
+                    for (int l = 0; l < rtruns.length; l++) {
+                        rtruns[l].setFontIndex(1);
+                        rtruns[l].setFontName("宋体");
+                        System.out.println(rtruns[l].getText());
+                    }
+                }
+
                 BufferedImage img = new BufferedImage(pgSize.width,
                         pgSize.height, BufferedImage.TYPE_INT_RGB);
 

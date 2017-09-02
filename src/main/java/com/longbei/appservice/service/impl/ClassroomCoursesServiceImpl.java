@@ -9,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -364,7 +365,7 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			ClassroomCourses courses = classroomCoursesMapper.select(classroomCourses.getClassroomid(), classroomCourses.getId());
 			if(classroomCourses.getStatus() == 3){
 				if(StringUtils.isBlank(courses.getFileurl())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_1115);
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1115, Constant.RTNINFO_SYS_1115);
 				}
 			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);
@@ -397,6 +398,21 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			logger.error("selectCourses classroomid = {}, id = {}", classroomid, id, e);
 		}
 		return reseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateMedia(Integer id, long classroomid,
+										String filekey,String dur) {
+		BaseResp<ClassroomCourses> reseResp = new BaseResp<>();
+		try{
+			int n = classroomCoursesMapper.updateMedia(classroomid,id,filekey,dur);
+			if(n == 0){
+				logger.info("updateMedia return result 0 ");
+			}
+		} catch (Exception e){
+			logger.error("updateMedia error",e);
+		}
+		return reseResp.initCodeAndDesp();
 	}
 
 }

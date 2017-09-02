@@ -496,5 +496,13 @@
     and classroomid = #{classroomid}
   </update>
 
+  <update id="updateMedia" >
+    update classroom_courses
+    set fileurl = #{filekey},
+        duration = #{duration}
+    where id = #{id}
+    and classroomid = #{classroomid}
+  </update>
+
 
 </mapper>

@@ -109,5 +109,7 @@ public interface ClassroomCoursesService {
      * @currentdate:2017年7月12日
  	*/
 	BaseResp<ClassroomCourses> selectCourses(long classroomid, Integer id);
+
+	BaseResp<Object> updateMedia(Integer id, long classroomid,String filekey,String dur);
 	
 }
