@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -143,6 +144,7 @@ public interface ClassroomCoursesMapper {
      */
     List<ClassroomCourses> selectDaytimeCoursesListByCid(@Param("classroomid") long classroomid, 
     		@Param("daytime") String daytime, 
+    		@Param("startdate") Date startdate, @Param("enddate") Date enddate, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /*
@@ -156,8 +158,11 @@ public interface ClassroomCoursesMapper {
     /*
      * 获取课程信息---最近直播
      * classroomid 教室id
+     * startdate 提前几分钟可进入直播---时间
+     * enddate  延迟几分钟直播结束---时间
      */
-    ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid);
+    ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid, 
+    		@Param("startdate") Date startdate, @Param("enddate") Date enddate);
     
     /*
      * 获取最大排序值(sort desc排序)
