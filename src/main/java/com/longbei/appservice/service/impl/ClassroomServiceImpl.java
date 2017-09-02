@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -462,20 +463,21 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("content", classroom.getClassbrief());
 				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				
-				//最近一次直播的日期时间
-				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+				//最近一次直播的日期时间      提前5分钟可进入     延迟5分钟直播结束
+				Date startdate = selectDate(-Constant.LIVE_START);
+				
+				Date enddate = selectDate(-Constant.LIVE_END);
+				
+				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
+						startdate, enddate);
 				if(null != classroomCourses){
-					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, 
-							classroomCourses.getDaytime(), 0, 0);
+					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid,  
+							classroomCourses.getDaytime(), startdate, enddate, 0, 0);
 					map.put("liveCourses", liveCourses);
 					map.put("daytime", classroomCourses.getDaytime());
-//					map.put("starttime", classroomCourses.getStarttime());
-//					map.put("endtime", classroomCourses.getEndtime());
 				}else{
 					map.put("liveCourses", new ArrayList<ClassroomCourses>());
 					map.put("daytime", null);
-//					map.put("starttime", null);
-//					map.put("endtime", null);
 				}
 				//分享url
 				map.put("roomurlshare", 
@@ -489,7 +491,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
-	
+	private Date selectDate(int horse){
+		Calendar calendar = Calendar.getInstance();
+		calendar.roll(Calendar.MINUTE, horse);
+		Date date = calendar.getTime();
+		return date;
+	}
 
 	@Override
 	public BaseResp<Object> selectUsercard(long classroomid) {
@@ -1526,9 +1533,10 @@ public class ClassroomServiceImpl implements ClassroomService {
             				continue;
         				}
         			}
-        			// 开启直播的课程延迟30分钟关闭   2017-09-01
+        			// 开启直播的课程延迟分钟关闭   2017-09-01
         			if(classroomCourses.getStatus() == 1){
-        				if(end>30*60){
+        				int liveend = Constant.LIVE_END;
+        				if(end>liveend*60){
             				//直播结束
             				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
             				//删除mongo数据
