@@ -3,6 +3,7 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.impl.ClassroomServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class LiveAppController{
 
     @Autowired
     private ClassroomServiceImpl classroomService;
+    @Autowired
+    private LiveInfoMongoService liveInfoMongoService;
+    
     /**
      * url online/startOnLineRoom
      * 开始直播
@@ -61,6 +65,9 @@ public class LiveAppController{
         }
         //处理关闭教室直播逻辑
         baseResp = classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
+        if(baseResp.getCode() == 0){
+        	liveInfoMongoService.deleteLiveInfo(Long.parseLong(roomid), Long.parseLong(courseid));
+        }
         return baseResp.initCodeAndDesp();
     }
 

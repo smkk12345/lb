@@ -640,7 +640,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public BaseResp<Object> fansRegisterBatch(List<UserInfo> userList) {
+	public BaseResp<Object> fansRegisterBatch(List<UserInfo> userList, String isRandom) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		int registerCount = 0;//统计注册成功数量
 		Set<String> telSet = new HashSet();
@@ -672,7 +672,15 @@ public class UserServiceImpl implements UserService {
 				continue;
 			}
 			//头像
-			String avatar = "fans/"+username+".png";
+			String avatar = "fans/";//头像前缀
+			//isRandom 是否随机分配头像 1-是(随机分配以整数次序命名的头像，可重复)；0-否（名称为手机号，唯一）
+			Random random = new Random();
+			int rInt = random.nextInt(Constant.RANDOM_AVATAR_NUMBER) + 1;
+			if ("1".equals(isRandom)) {
+				avatar += rInt + ".png";
+			} else {
+				avatar += username + ".png";
+			}
 
 			//默认密码
 			String password = "E10ADC3949BA59ABBE56E057F20F883E";//123456加密
@@ -2100,7 +2108,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp isMoneyEnough(int money, long userid) {
 		BaseResp baseResp = new BaseResp();
 		UserInfo userInfo = userInfoMapper.selectByUserid(userid);
-		if(userInfo.getTotalmoney()>money){
+		if(userInfo.getTotalmoney()>= money){
 			baseResp.initCodeAndDesp();
 		}
 		return baseResp;

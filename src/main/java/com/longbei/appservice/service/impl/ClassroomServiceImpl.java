@@ -993,6 +993,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 				
 				//取消关注该教室
 				userBusinessConcernMapper.deleteBusinessConcern(4, classroomid);
+				//关闭教室中的直播
+				classroomMapper.updateLiveStatus(classroomid, "2");
+				classroomCoursesMapper.updateTeachingLiveStatus(classroomid, "2");
+				//调用直播平台---关闭教室
+				
+				
+				
+				
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {

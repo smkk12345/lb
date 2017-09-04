@@ -11,6 +11,7 @@ public class Constant {
 	public static final String UPDATE_SENSITIVE = "updatesensitive";
 	public static final String UPDATE_PROTECTNAMES = "updateprotectnames";
 
+	public static final int RANDOM_AVATAR_NUMBER = 100; //粉丝批量注册随机分配头像数量
 
 	public static final double DISTANCE_CONVERT_2D = 111.12;
 
