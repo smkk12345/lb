@@ -2100,7 +2100,7 @@ public class UserServiceImpl implements UserService {
 	public BaseResp isMoneyEnough(int money, long userid) {
 		BaseResp baseResp = new BaseResp();
 		UserInfo userInfo = userInfoMapper.selectByUserid(userid);
-		if(userInfo.getTotalmoney()>money){
+		if(userInfo.getTotalmoney()>= money){
 			baseResp.initCodeAndDesp();
 		}
 		return baseResp;
