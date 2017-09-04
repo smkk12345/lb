@@ -784,7 +784,7 @@ public class UserBehaviourServiceImpl implements UserBehaviourService {
         return Constant.RP_USER_PERDAY+userid;
     }
 
-    
+
     private void saveLevelUpInfo(UserInfo userInfo,String ptype,int iPoint,int level,Integer oldScore){
         try{
             if(!"a".equals(ptype) && oldScore == null){
