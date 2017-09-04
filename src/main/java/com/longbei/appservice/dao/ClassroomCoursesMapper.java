@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -143,13 +144,25 @@ public interface ClassroomCoursesMapper {
      */
     List<ClassroomCourses> selectDaytimeCoursesListByCid(@Param("classroomid") long classroomid, 
     		@Param("daytime") String daytime, 
+    		@Param("startdate") Date startdate, @Param("enddate") Date enddate, 
     		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /*
+     * 获取直播课程信息列表---开始年月日查询
+     * classroomid 教室id
+     * daytime 开始年月日 用于方便查询
+     */
+    List<ClassroomCourses> selectStartCoursesListByCid(@Param("classroomid") long classroomid, 
+    		@Param("daytime") String daytime);
     
     /*
      * 获取课程信息---最近直播
      * classroomid 教室id
+     * startdate 提前几分钟可进入直播---时间
+     * enddate  延迟几分钟直播结束---时间
      */
-    ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid);
+    ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid, 
+    		@Param("startdate") Date startdate, @Param("enddate") Date enddate);
     
     /*
      * 获取最大排序值(sort desc排序)
@@ -171,4 +184,9 @@ public interface ClassroomCoursesMapper {
 
 	Integer updateLiveStatus(@Param("classroomid") long classroomid,
 							 @Param("id") Integer id, @Param("status") String status);
+
+	Integer updateMedia(@Param("classroomid") long classroomid,
+						@Param("id") Integer id,
+						@Param("filekey") String filekey,
+						@Param("duration") String duration);
 }

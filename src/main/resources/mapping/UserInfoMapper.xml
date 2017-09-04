@@ -95,6 +95,9 @@
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
       </if>
+      <if test="user.inviteuserid != null and user.inviteuserid!=0">
+        AND inviteuserid = #{user.inviteuserid}
+      </if>
       <if test="user.sgrade != null and user.sgrade!=0">
         AND grade &gt;= #{user.sgrade}
       </if>
@@ -149,6 +152,9 @@
       </if>
       <if test="user.sex != null and user.sex != '-1'.toString()">
         AND sex = #{user.sex}
+      </if>
+      <if test="user.inviteuserid != null and user.inviteuserid!=0">
+        AND inviteuserid = #{user.inviteuserid}
       </if>
       <if test="user.sgrade != null and user.sgrade!=0">
         AND grade &gt;= #{user.sgrade}
@@ -731,10 +737,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ABS(#{givedflowers}) and
+      givedflowers >= ABS(#{givedflowers}) and
     </if>
     <if test="totalmoney &lt; 0">
-      totalmoney > ABS(#{totalmoney}) and
+      totalmoney >= ABS(#{totalmoney}) and
     </if>
     userid = #{userid}
   </update>
@@ -751,10 +757,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ABS(#{givedflowers}) and
+      givedflowers >= ABS(#{givedflowers}) and
     </if>
     <if test="totalcoin &lt; 0">
-      totalcoin > ABS(#{totalcoin}) and
+      totalcoin >= ABS(#{totalcoin}) and
     </if>
     userid = #{userid}
   </update>

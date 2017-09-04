@@ -61,6 +61,21 @@ public class UserSpecialcaseServiceImpl implements UserSpecialcaseService {
         return baseResp;
     }
 
+    @Override
+    public 	BaseResp<Object> insertSelective(UserSpecialcase userSpecialcase) {
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        Date date = new Date();
+        userSpecialcase.setCreatetime(date);
+        try {
+            int n = userSpecialcaseMapper.insertSelective(userSpecialcase);
+            if (n >= 1) {
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+            }
+        } catch (Exception e) {
+            logger.error("insertUserSpecialcase error and msg={}", e);
+        }
+        return baseResp;
+    }
 
     @Override
     public void updateUserSpecialcase() {

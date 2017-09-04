@@ -24,6 +24,13 @@ public interface UserSpecialcaseService {
      */
     BaseResp<Object> updateUserSpecialcase(UserSpecialcase userSpecialcase);
 
+    /**
+     * 添加特例
+     * @param userSpecialcase
+     * @return
+     */
+    BaseResp<Object> insertSelective(UserSpecialcase userSpecialcase);
+
     void updateUserSpecialcase();
 
 }

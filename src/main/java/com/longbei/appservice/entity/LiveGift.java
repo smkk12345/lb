@@ -46,7 +46,7 @@ public class LiveGift implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
-        return updatetime;
+        return null;
     }
 
     public void setUpdatetime(Date updatetime) {
@@ -56,7 +56,7 @@ public class LiveGift implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
-        return createtime;
+        return null;
     }
 
     public void setCreatetime(Date createtime) {

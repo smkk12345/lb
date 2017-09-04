@@ -68,6 +68,9 @@ public interface UserMsgMapper {
 	int insertSelectiveBatch(List<UserMsg> records);
 
     UserMsg selectByPrimaryKey(Integer id);
+
+	List<UserMsg> selectList(@Param("msgtype") String msgtype, @Param("commentid") String commentid,
+							 @Param("gtypeid") Long gtypeid, @Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /**
 	 * @author yinxc

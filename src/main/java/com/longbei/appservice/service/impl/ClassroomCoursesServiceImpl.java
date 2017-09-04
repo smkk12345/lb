@@ -2,12 +2,14 @@ package com.longbei.appservice.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -180,11 +182,12 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	
 
 	@Override
-	public BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime,
+	public BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, 
+			Date startdate, Date enddate, 
 			int startNum, int endNum) {
 		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
 		try {
-			List<ClassroomCourses> list = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, daytime, startNum, endNum);
+			List<ClassroomCourses> list = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, daytime, startdate, enddate, startNum, endNum);
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -195,8 +198,8 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	}
 	
 	@Override
-	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid) {
-		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate) {
+		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, startdate, enddate);
 		return classroomCourses;
 	}
 
@@ -262,6 +265,9 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				liveInfo.setCourseid(id.longValue());
 				liveInfo.setCreatetime(new Date());
 				liveInfo.setUserid(classroom.getUserid());
+				liveInfo.setIsdel("0");
+				liveInfo.setStarttime(DateUtils.formatDate(classroomCourses.getStarttime(), null));
+				liveInfo.setEndtime(DateUtils.formatDate(classroomCourses.getEndtime(), null));
 				//如果直播课程发布，mongo添加数据
 				liveInfoMongoService.insertLiveInfo(liveInfo);
 				temp = classroomCoursesMapper.updateStreamingIsupByid("1", id, classroomid, liveid);
@@ -273,6 +279,20 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 				//修改课程数量
 				classroomMapper.updateAllcoursesByClassroomid(classroomid, 1);
 				
+				HashSet<String> set = new HashSet<String>();
+				
+				//推送消息---已加入该教室的人员
+				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
+				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
+				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
+				if(null != memberList && memberList.size()>0){
+					for (int i=0;i<memberList.size();i++) {
+						set.add(memberList.get(i).getUserid() + "");
+						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
+								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室更新课程", 0, "", "");
+					}
+				}
+				
 				//推送消息---已关注该教室的人员
 				String remark = Constant.MSG_CLASSROOMCOURSES_FANS_MODEL;
 				remark = remark.replace("n", classroom.getClasstitle());
@@ -282,21 +302,14 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
 				if(null != concernList && concernList.size()>0){
 					for (UserBusinessConcern userBusinessConcern : concernList) {
+						if(set.contains(userBusinessConcern.getUserid().toString())){
+							continue;
+						}
 						userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
 								"", "12", classroom.getClassroomid() + "", remark, "0", "58", "教室更新课程", 0, "", "");
 					}
 				}
 				
-				//推送消息---已加入该教室的人员
-				String insertRemark = Constant.MSG_CLASSROOMCOURSES_INSERT_MODEL;
-				insertRemark = insertRemark.replace("n", classroom.getClasstitle());
-				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
-				if(null != memberList && memberList.size()>0){
-					for (int i=0;i<memberList.size();i++) {
-						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
-								"", "12", classroom.getClassroomid() + "", insertRemark, "0", "58", "教室更新课程", 0, "", "");
-					}
-				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -353,11 +366,20 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			ClassroomCourses courses = classroomCoursesMapper.select(classroomCourses.getClassroomid(), classroomCourses.getId());
 			if(classroomCourses.getStatus() == 3){
 				if(StringUtils.isBlank(courses.getFileurl())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_1115);
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1115, Constant.RTNINFO_SYS_1115);
 				}
 			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);
 			if (temp > 0) {
+				//直播课程修改时，修改mongo数据   liveinfo
+				//teachingtypes 教学类型 0 录播 1直播   
+				//isup是否上架   0：未上架    1：已上架
+				if("1".equals(classroomCourses.getTeachingtypes()) && "0".equals(courses.getIsup())){
+					//需求：未上架的可以修改直播时间
+					liveInfoMongoService.updateLiveInfo(classroomCourses.getClassroomid(), classroomCourses.getId().longValue(), 
+							DateUtils.formatDate(classroomCourses.getStarttime(), null), 
+							DateUtils.formatDate(classroomCourses.getEndtime(), null));
+				}
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -377,6 +399,21 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 			logger.error("selectCourses classroomid = {}, id = {}", classroomid, id, e);
 		}
 		return reseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateMedia(Integer id, long classroomid,
+										String filekey,String dur) {
+		BaseResp<ClassroomCourses> reseResp = new BaseResp<>();
+		try{
+			int n = classroomCoursesMapper.updateMedia(classroomid,id,filekey,dur);
+			if(n == 0){
+				logger.info("updateMedia return result 0 ");
+			}
+		} catch (Exception e){
+			logger.error("updateMedia error",e);
+		}
+		return reseResp.initCodeAndDesp();
 	}
 
 }

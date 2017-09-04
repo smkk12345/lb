@@ -57,8 +57,8 @@ public class SysInitController extends BaseController{
 
             baseResp.getExpandData().put("classosspath", AppserviceConfig.oss_media);
 
-            baseResp.getExpandData().put("livestart",5);
-            baseResp.getExpandData().put("liveend",5);
+            baseResp.getExpandData().put("livestart", Constant.LIVE_START);
+            baseResp.getExpandData().put("liveend", Constant.LIVE_END);
 
         }catch (Exception e){
             logger.error("initerror",e);

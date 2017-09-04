@@ -119,7 +119,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private boolean hasEnoughMoney(LiveGift liveGift,
                                    UserInfo userInfo,
                                    int num){
-        if(userInfo.getTotalmoney() > liveGift.getPrice()*num){
+        if(userInfo.getTotalmoney() >= liveGift.getPrice()*num){
             return true;
         }
         return false;

@@ -56,6 +56,13 @@ public interface UserService {
 	*/
 	BaseResp<Object> registerbasic(String username, String password,String inviteuserid
 			,String deviceindex,String devicetype,String avatar,String nickname);
+
+	/**
+	 * admin明星粉丝会员批量注册
+	 * @param userList
+	 * @return
+	 */
+	BaseResp<Object> fansRegisterBatch(List<UserInfo> userList);
 	
 	
 	/**

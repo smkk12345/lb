@@ -48,4 +48,5 @@ public interface UserBusinessConcernMapper {
      * @return
      */
     List<UserBusinessConcern> findConcernUserList(Map<String, Object> paraMap);
+    
 }

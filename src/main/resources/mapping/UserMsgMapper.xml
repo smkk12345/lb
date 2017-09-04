@@ -46,6 +46,26 @@
       limit #{startNum},#{endNum}
     </if>
   </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_msg
+    where 1=1
+    <if test="commentid != null" >
+      and commentid = #{commentid}
+    </if>
+    <if test="gtypeid != null" >
+      and gtypeid = #{gtypeid}
+    </if>
+    <if test="msgtype != null" >
+      and msgtype = #{msgtype}
+    </if>
+    order by createtime desc
+    <if test="endNum != 0" >
+      limit #{startNum},#{endNum}
+    </if>
+  </select>
   
   <select id="selectExceptList" resultMap="BaseResultMap">
     select 

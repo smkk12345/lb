@@ -299,4 +299,12 @@ public interface ClassroomService {
 
 	BaseResp updateOnlineStatus(String roomid, String courseid, String userid,String status);
 	
+	
+	
+	/**
+     * 将直播教室置为  结束未开启回放
+     * @param currentTime
+     */
+	BaseResp<Object> endClassroom(Long currentTime);
+	
 }

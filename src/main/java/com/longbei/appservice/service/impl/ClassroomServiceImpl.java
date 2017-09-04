@@ -1,8 +1,10 @@
 package com.longbei.appservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ import com.longbei.appservice.dao.ClassroomMembersMapper;
 import com.longbei.appservice.dao.CommentLowerMongoDao;
 import com.longbei.appservice.dao.HomeRecommendMapper;
 import com.longbei.appservice.dao.ImproveClassroomMapper;
+import com.longbei.appservice.dao.LiveInfoMongoMapper;
 import com.longbei.appservice.dao.UserBusinessConcernMapper;
 import com.longbei.appservice.dao.UserCardMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
@@ -44,11 +47,13 @@ import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.CommentLower;
 import com.longbei.appservice.entity.HomeRecommend;
 import com.longbei.appservice.entity.ImproveClassroom;
+import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.ReplyImprove;
 import com.longbei.appservice.entity.UserBusinessConcern;
 import com.longbei.appservice.entity.UserCard;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserLevel;
+import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
@@ -88,6 +93,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserLevelMapper userLevelMapper;
+	@Autowired
+	private LiveInfoMongoMapper liveInfoMongoMapper;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
@@ -456,20 +463,21 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("content", classroom.getClassbrief());
 				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				
-				//最近一次直播的日期时间
-				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+				//最近一次直播的日期时间      提前5分钟可进入     延迟5分钟直播结束
+				Date startdate = selectDate(-Constant.LIVE_START);
+				
+				Date enddate = selectDate(-Constant.LIVE_END);
+				
+				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
+						startdate, enddate);
 				if(null != classroomCourses){
-					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, 
-							classroomCourses.getDaytime(), 0, 0);
+					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid,  
+							classroomCourses.getDaytime(), startdate, enddate, 0, 0);
 					map.put("liveCourses", liveCourses);
 					map.put("daytime", classroomCourses.getDaytime());
-//					map.put("starttime", classroomCourses.getStarttime());
-//					map.put("endtime", classroomCourses.getEndtime());
 				}else{
 					map.put("liveCourses", new ArrayList<ClassroomCourses>());
 					map.put("daytime", null);
-//					map.put("starttime", null);
-//					map.put("endtime", null);
 				}
 				//分享url
 				map.put("roomurlshare", 
@@ -483,7 +491,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
-	
+	private Date selectDate(int horse){
+		Calendar calendar = Calendar.getInstance();
+		calendar.roll(Calendar.MINUTE, horse);
+		Date date = calendar.getTime();
+		return date;
+	}
 
 	@Override
 	public BaseResp<Object> selectUsercard(long classroomid) {
@@ -1482,5 +1495,105 @@ public class ClassroomServiceImpl implements ClassroomService {
     	}
         
     }
+
+
+    /**
+     * 将直播教室置为  结束未开启回放
+     * @param currentTime
+     */
+	@Override
+	public BaseResp<Object> endClassroom(Long currentTime) {
+		BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+        	//获取直播中的教室列表---mongo   liveinfo存放的直播课程
+        	List<LiveInfo> list = liveInfoMongoMapper.selectLiveInfoList("0");
+        	if(null != list && list.size()>0){
+        		for (LiveInfo liveInfo : list) {
+        			Classroom classroom = classroomMapper.selectByPrimaryKey(liveInfo.getClassroomid());
+    				if(null == classroom){
+    					continue;
+    				}
+    				ClassroomCourses classroomCourses = classroomCoursesMapper.select(liveInfo.getClassroomid(), 
+    						liveInfo.getCourseid().intValue());
+    				if(null == classroomCourses){
+    					continue;
+    				}
+        			//判断currentTime   及课程结束时间延迟30分钟   是否结束
+        			Date currentDateTime= new Date(currentTime);
+        			//返回两个时间的误差 单位是秒
+        			Long end = DateUtils.getTimeDifference(liveInfo.getEndtime(), currentDateTime);
+        			//status 直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
+        			//未直播的课程    结束时间到了，直接关闭      2017-09-01  
+        			if(classroomCourses.getStatus() == 0){
+        				if(end>0){
+        					//直播结束
+            				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
+            				//删除mongo数据
+            				liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
+            				continue;
+        				}
+        			}
+        			// 开启直播的课程延迟分钟关闭   2017-09-01
+        			if(classroomCourses.getStatus() == 1){
+        				int liveend = Constant.LIVE_END;
+        				if(end>liveend*60){
+            				//直播结束
+            				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
+            				//删除mongo数据
+            				liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
+            				continue;
+            			}
+        			}
+        			
+        			//教室直播课程开始前10分钟推送消息
+        			Long teaching = DateUtils.getTimeDifference(currentDateTime, liveInfo.getStarttime());
+        			if(teaching <= 10*60 && teaching > 0){
+        				
+        				//判断消息是否已发送    
+        				List<UserMsg> msgList = userMsgService.selectList("72", liveInfo.getLiveid() + "",
+								liveInfo.getClassroomid(), 0, 1);
+						if(null != msgList && msgList.size()>0){
+							//消息已发送
+							continue;
+						}
+						HashSet<String> set = new HashSet<String>();
+
+        				//推送消息---已加入该教室的人员
+        				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroom.getClassroomid(),0,0);
+        				String insertremark = "您加入的教室《" + classroom.getClasstitle() + "》直播还有十分钟开始,赶快去看看吧";
+        				if(null != memberList && memberList.size()>0){
+        					for (int i=0;i<memberList.size();i++) {
+        						set.add(memberList.get(i).getUserid() + "");
+        						userMsgService.insertMsg(Constant.SQUARE_USER_ID, memberList.get(i).getUserid()+"",
+        								"", "12", classroom.getClassroomid() + "", insertremark, "2", "72", "直播开始提示", 0, 
+        								liveInfo.getLiveid() + "", "");
+        					}
+        				}
+        				
+        				//推送消息---已关注该教室的人员
+        				Map<String,Object> map = new HashMap<String,Object>();
+        	            map.put("businessType","4");
+        	            map.put("businessId", classroom.getClassroomid());
+        	            List<UserBusinessConcern> concernList = this.userBusinessConcernMapper.findConcernUserList(map);
+        	            String remark = "您关注的教室《" + classroom.getClasstitle() + "》直播还有十分钟开始,赶快去看看吧";
+        				if(null != concernList && concernList.size()>0){
+        					for (UserBusinessConcern userBusinessConcern : concernList) {
+        						if(set.contains(userBusinessConcern.getUserid().toString())){
+        							continue;
+        						}
+                				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userBusinessConcern.getUserid().toString(), 
+        								"", "12", liveInfo.getClassroomid() + "", remark, "0", "72", "直播开始提示", 0, 
+        								liveInfo.getLiveid() + "", "");
+        					}
+        				}
+        				
+        			}
+				}
+        	}
+        }catch(Exception e){
+            logger.error("endClassroom currentTime;{}", currentTime, e);
+        }
+        return baseResp;
+	}
 
 }

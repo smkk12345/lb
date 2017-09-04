@@ -61,6 +61,10 @@ public class Constant {
 
 
 	public static final String IOS_DEV_BUYFLOWER="21007";//IOS买花  走正式环境的验证返回21007表示现在使用沙盒环境
+	
+	public static final int LIVE_START = 5; //设置直播开始几分钟可进入
+	public static final int LIVE_END = 5; //设置直播结束可延迟分钟
+	
 
 	/**
 	 * 服务端返回代码  code  
