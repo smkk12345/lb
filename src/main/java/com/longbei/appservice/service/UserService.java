@@ -62,7 +62,7 @@ public interface UserService {
 	 * @param userList
 	 * @return
 	 */
-	BaseResp<Object> fansRegisterBatch(List<UserInfo> userList);
+	BaseResp<Object> fansRegisterBatch(List<UserInfo> userList, String isRandom);
 	
 	
 	/**

@@ -290,10 +290,10 @@ public class AppUserApiController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/fansRegisterBatch")
     @ResponseBody
-    public BaseResp<Object> fansRegisterBatch(@RequestBody  List<UserInfo> userList) {
+    public BaseResp<Object> fansRegisterBatch(@RequestBody  List<UserInfo> userList, String isRandom) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            baseResp = userService.fansRegisterBatch(userList);
+            baseResp = userService.fansRegisterBatch(userList, isRandom);
         } catch (Exception e) {
             logger.error("fansRegisterBatch error", e);
         }
