@@ -737,10 +737,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ABS(#{givedflowers}) and
+      givedflowers >= ABS(#{givedflowers}) and
     </if>
     <if test="totalmoney &lt; 0">
-      totalmoney > ABS(#{totalmoney}) and
+      totalmoney >= ABS(#{totalmoney}) and
     </if>
     userid = #{userid}
   </update>
@@ -757,10 +757,10 @@
     userid = #{userid}
     WHERE 
     <if test="givedflowers &lt; 0">
-      givedflowers > ABS(#{givedflowers}) and
+      givedflowers >= ABS(#{givedflowers}) and
     </if>
     <if test="totalcoin &lt; 0">
-      totalcoin > ABS(#{totalcoin}) and
+      totalcoin >= ABS(#{totalcoin}) and
     </if>
     userid = #{userid}
   </update>

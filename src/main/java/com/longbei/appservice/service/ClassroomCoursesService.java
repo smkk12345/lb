@@ -1,5 +1,6 @@
 package com.longbei.appservice.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.longbei.appservice.common.BaseResp;
@@ -68,13 +69,14 @@ public interface ClassroomCoursesService {
     * @auther yinxc
     * @currentdate:2017年8月26日
 	*/
-	BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, int startNum, int endNum);
+	BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, 
+			Date startdate, Date enddate, int startNum, int endNum);
 	
 	/*
      * 获取课程信息---最近直播
      * classroomid 教室id
      */
-	ClassroomCourses selectTeachingCoursesListByCid(long classroomid);
+	ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate);
 	
 	/**
 	 * @author yinxc
@@ -109,5 +111,7 @@ public interface ClassroomCoursesService {
      * @currentdate:2017年7月12日
  	*/
 	BaseResp<ClassroomCourses> selectCourses(long classroomid, Integer id);
+
+	BaseResp<Object> updateMedia(Integer id, long classroomid,String filekey,String dur);
 	
 }
