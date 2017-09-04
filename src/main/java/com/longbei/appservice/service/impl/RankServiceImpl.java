@@ -3082,7 +3082,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             List<Map<String,Object>> list = rankCache.selectRankAwardList(startNum,pageSize);
-            if (Constant.VISITOR_UID.equals(userId)){
+//            if (Constant.VISITOR_UID.equals(userId)){
                 for (Map<String,Object> map : list){
                     List<Map<String,Object>> ls = (List<Map<String, Object>>) map.get("rankawardList");
                     for (Map<String,Object> m : ls){
@@ -3090,7 +3090,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                                 Long.parseLong(m.get("awarduserid")+""),true));
                     }
                 }
-            }
+//            }
             baseResp.setData(list);
             baseResp.getExpandData().put("shareurl", AppserviceConfig.h5_share_rank_award);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
