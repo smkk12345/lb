@@ -40,6 +40,14 @@ public interface ClassroomCoursesMapper {
     
     /**
 	 * @author yinxc
+	 * 获取课程列表---未开始，直播中的课程
+	 * param classroomid 教室id
+	 */
+    List<ClassroomCourses> selectTeachingListByCid(@Param("classroomid") long classroomid, 
+    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    
+    /**
+	 * @author yinxc
 	 * 获取课程列表(未删除,转码成功的)---排序创建时间desc
 	 * 2017年6月9日
 	 * param classroomid 教室id
@@ -184,6 +192,13 @@ public interface ClassroomCoursesMapper {
 
 	Integer updateLiveStatus(@Param("classroomid") long classroomid,
 							 @Param("id") Integer id, @Param("status") String status);
+	
+	
+	/*
+     * 修改教室课程类型---未开始，直播中的课程
+     * coursetype 课程类型.  0 不收费 1 收费
+     */
+	Integer updateTeachingLiveStatus(@Param("classroomid") long classroomid, @Param("status") String status);
 
 	Integer updateMedia(@Param("classroomid") long classroomid,
 						@Param("id") Integer id,
