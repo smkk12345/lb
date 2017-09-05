@@ -1,26 +1,27 @@
 package com.longbei.appservice.service.impl;
 
-import java.text.DecimalFormat;
-import java.util.*;
-
-import com.longbei.appservice.common.syscache.SysRulesCache;
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.*;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.Constant_Imp_Icon;
+import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.Constant_point;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.*;
-import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.MsgRedMongDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
-
 import com.longbei.appservice.service.*;
 import com.longbei.appservice.service.api.outernetservice.IAlidayuService;
 import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import com.longbei.appservice.service.api.userservice.IUserBasicService;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.IdGenerateService;
-
-import net.sf.json.JSONObject;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * 创建时间：2015-1-27 下午5:22:59
@@ -2112,6 +2111,17 @@ public class UserServiceImpl implements UserService {
 			baseResp.initCodeAndDesp();
 		}
 		return baseResp;
+	}
+
+	/**
+	 * 根据username获取用户信息
+	 * @param userPhone
+	 * @return
+     */
+	@Override
+	public UserInfo getUserInfoByUserName(String userPhone) {
+		UserInfo userInfo = this.userInfoMapper.getByUserName(userPhone);
+		return userInfo;
 	}
 
 

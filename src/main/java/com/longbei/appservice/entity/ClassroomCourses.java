@@ -57,6 +57,10 @@ public class ClassroomCourses implements Serializable {
     private String daytime; //开始年月日 用于方便查询
     
     private String liveid;  //直播id
+    
+    private Long chapterid; //章节id
+    
+    private String chaptertitle; //章节title
 
     /**
      * 
@@ -388,6 +392,23 @@ public class ClassroomCourses implements Serializable {
 
 	public void setLiveid(String liveid) {
 		this.liveid = liveid;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public Long getChapterid() {
+		return chapterid;
+	}
+
+	public void setChapterid(Long chapterid) {
+		this.chapterid = chapterid;
+	}
+
+	public String getChaptertitle() {
+		return chaptertitle;
+	}
+
+	public void setChaptertitle(String chaptertitle) {
+		this.chaptertitle = chaptertitle;
 	}
 	
 }

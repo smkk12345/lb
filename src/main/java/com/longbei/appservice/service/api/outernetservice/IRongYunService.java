@@ -124,4 +124,16 @@ public interface IRongYunService {
     BaseResp<Object> noticeCreateGroup(@RequestParam("operatorUserId") String operatorUserId,@RequestParam("operatorNickname")String operatorNickname,
                                        @RequestParam("groupId") String groupId,@RequestParam("groupName") String groupName);
 
+
+    /**
+     * 批量创建群组
+     * @param userId
+     * @param groupIds
+     * @param groupNames
+     * @return
+     */
+    @RequestMapping(value="/rongyun/batchCreateGroup",method =RequestMethod.POST )
+    BaseResp<Object> batchCreateGroup(@RequestParam("userId") Long userId,
+                                      @RequestParam("groupIds") String groupIds,
+                                      @RequestParam("groupNames")String groupNames);
 }

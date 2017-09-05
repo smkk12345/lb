@@ -1900,8 +1900,6 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
-//        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-
         if(null == userInfo){
             return baseResp;
         }
@@ -1915,16 +1913,13 @@ public class ImproveServiceImpl implements ImproveService{
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+                	final Improve improves = selectImprove(Long.parseLong(impid),userid,businesstype,finalBusinessid,null,null);
                     //mongo
                     addLikeToImproveForMongo(impid,finalBusinessid,businesstype,userid,
                             Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                             userInfo.getAvatar());
-                    Improve improve = new Improve();
-                    improve.setUserid(Long.parseLong(userid));
-                    improve.setBusinessid(Long.parseLong(finalBusinessid));
-                    improve.setBusinesstype(businesstype);
                     //mysql
-                    addLikeToImprove(improve,userid,impid,finalBusinessid,businesstype);
+                    addLikeToImprove(improves,userid,impid,finalBusinessid,businesstype);
 
                     //更新进步赞数（mysql）
                     String tableName = getTableNameByBusinessType(businesstype);
@@ -1942,8 +1937,8 @@ public class ImproveServiceImpl implements ImproveService{
                     //添加评论消息---点赞
                     //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
                     //10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                    if(!userid.equals(improve.getUserid().toString())){
-                        userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, finalBusinessid,
+                    if(!userid.equals(improves.getUserid().toString())){
+                        userMsgService.insertMsg(userid, improves.getUserid().toString(), impid, businesstype, finalBusinessid,
                                 Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
                     }
                 }

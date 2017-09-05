@@ -3,6 +3,10 @@ package com.longbei.appservice.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Created by lixb on 2017/8/12.
  */
@@ -10,11 +14,11 @@ public class LiveGiftDetail implements Serializable {
 
     private Integer id;
 
-    private Long fromuid;
+    private Long fromuid; //赠送者id
 
-    private Long touid;
+    private Long touid; //接受人id
 
-    private Long giftid;
+    private Long giftid; //giftid 礼物类型id
 
     private Integer num;
 
@@ -24,11 +28,20 @@ public class LiveGiftDetail implements Serializable {
 
     private String businesstype;
 
-    private String status;
+    private String status; 
 
     private Date createtime;
 
     private Date updatetime;
+    
+    
+    //----------------扩展字段------------------
+    
+    private AppUserMongoEntity appUserMongoEntity;
+    
+    public LiveGiftDetail(){
+    	super();
+    }
 
     public LiveGiftDetail(Long fromuid,
                           Long touid,
@@ -46,7 +59,8 @@ public class LiveGiftDetail implements Serializable {
         this.businessid = businessid;
     }
 
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -55,6 +69,8 @@ public class LiveGiftDetail implements Serializable {
         this.updatetime = updatetime;
     }
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -134,5 +150,13 @@ public class LiveGiftDetail implements Serializable {
     public String getBusinesstype() {
         return businesstype;
     }
+
+	public AppUserMongoEntity getAppUserMongoEntity() {
+		return appUserMongoEntity;
+	}
+
+	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
+		this.appUserMongoEntity = appUserMongoEntity;
+	}
 
 }

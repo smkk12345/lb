@@ -8,15 +8,14 @@ import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.DecodesUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.OssConfig;
-import com.longbei.appservice.entity.ClassroomCourses;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.MediaResource;
 import com.longbei.appservice.service.ClassroomCoursesService;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.MediaResourceService;
-import com.longbei.appservice.service.impl.LiveGiftServiceImpl;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,7 @@ public class LiveController {
     private static Logger logger = LoggerFactory.getLogger(LiveController.class);
 
     @Autowired
-    private LiveGiftServiceImpl liveGiftService;
+    private LiveGiftService liveGiftService;
     @Autowired
     private MediaResourceService mediaResourceService;
     @Autowired

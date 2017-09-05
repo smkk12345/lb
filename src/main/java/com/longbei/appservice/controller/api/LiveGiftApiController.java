@@ -82,7 +82,7 @@ public class LiveGiftApiController {
 		logger.info("insertLiveGift for adminservice and liveGift:{}", JSON.toJSONString(liveGift));
 		BaseResp<Object> baseResp = new BaseResp<>();
 		if(StringUtils.hasBlankParams(liveGift.getTitle(),liveGift.getPicurl(),liveGift.getDoublehit(),liveGift.getPrice()+"")){
-		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 		}
 		try {
 			baseResp = liveGiftService.insertLiveGift(liveGift);
