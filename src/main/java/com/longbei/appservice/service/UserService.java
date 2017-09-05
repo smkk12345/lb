@@ -3,7 +3,6 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
 import com.longbei.appservice.entity.UserSettingMenu;
 
 import java.util.List;
@@ -308,4 +307,11 @@ public interface UserService {
 	String getRandomNickName();
 
 	BaseResp isMoneyEnough(int money,long userid);
+
+	/**
+	 * 根据用户username获取用户信息
+	 * @param userPhone
+	 * @return
+     */
+	UserInfo getUserInfoByUserName(String userPhone);
 }

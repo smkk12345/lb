@@ -1,10 +1,9 @@
 package com.longbei.appservice.dao;
 
-import java.util.List;
-
+import com.longbei.appservice.entity.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
-import com.longbei.appservice.entity.UserInfo;
+import java.util.List;
 
 public interface UserInfoMapper {
 	int deleteByPrimaryKey(long id);
@@ -17,14 +16,14 @@ public interface UserInfoMapper {
 
 	/**
 	 * @Title: getByUserName
-	 * @Description: 通过手机号获取用户基本信息
+	 * @Description: 通过手机号获取用户基本信息  只返回id,username,nickname
 	 * @param @param
 	 *            username
 	 * @param @return
 	 * @auther smkk
 	 * @currentdate:2017年1月17日
 	 */
-//	UserInfo getByUserName(String username);
+	UserInfo getByUserName(String username);
 	
 	/**
 	 * @author yinxc
