@@ -131,6 +131,27 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         return baseResp;
     }
     
+
+	@Override
+	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, Long giftid, Integer startNum, Integer endNum) {
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+        try{
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(userid, giftid, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (LiveGiftDetail liveGiftDetail : list) {
+            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
+    			}
+            }
+            baseResp.setData(list);
+            baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNum = {}, endNum = {}", 
+            		userid, giftid, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+
+    
     /**
      * 初始化礼物中用户信息 ------Userid
      */

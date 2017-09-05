@@ -41,6 +41,15 @@ public interface LiveGiftService {
     BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid,Integer startNum,Integer endNum);
     
     /**
+     * 查询用户收到的礼物类型列表
+     * @param userid
+     * @param giftid 礼物类型id
+     * @param startNum
+     * @param endNum
+     */
+    BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid,Long giftid,Integer startNum,Integer endNum);
+    
+    /**
      * 查询用户收到的各礼物类型总数
      * @param userid
      */
