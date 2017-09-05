@@ -417,4 +417,25 @@
           userid = #{userId}
         </where>
     </update>
+
+    <!-- 批量插入群组成员 -->
+    <insert id="batchInsertGroupMembersBySnsGroupMember" parameterType="list">
+        insert into sns_group_members(
+          groupid,userid,createtime,updatetime,nickname,status,avatar,topstatus,disturbstatus,identity
+        )values
+        <foreach collection="list" item="snsGroupMember" separator=",">
+            (
+              #{snsGroupMember.groupid},
+              #{snsGroupMember.userid},
+              #{snsGroupMember.createtime},
+              #{snsGroupMember.updatetime},
+              #{snsGroupMember.nickname},
+              #{snsGroupMember.status},
+              #{snsGroupMember.avatar},
+              #{snsGroupMember.topstatus},
+              #{snsGroupMember.disturbstatus},
+              #{snsGroupMember.identity}
+            )
+        </foreach>
+    </insert>
 </mapper>

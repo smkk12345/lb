@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -145,4 +146,12 @@ public interface GroupService {
      * @return
      */
     int batchUpdateGroupMemberNickName(Map<String, Object> map);
+
+    /**
+     * 批量创建群主
+     * @param mainGroupUserid
+     * @param groupname
+     * @return
+     */
+    BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid, String gradeid, String groupname);
 }

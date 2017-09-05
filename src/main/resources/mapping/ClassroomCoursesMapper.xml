@@ -26,11 +26,14 @@
     <result column="status" property="status"/>
     <result column="daytime" property="daytime"/>
     <result column="liveid" property="liveid"/>
+    <result column="chapterid" property="chapterid"/>
+    <result column="chaptertitle" property="chaptertitle"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, coursetitle, coursesort, coursetype, coursebrief, pickey, coursecontent, 
     classroomid, uploaduserid, createuserid, isdel, isdefault, fileurl, sourcekey, duration,  
-    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status, daytime, liveid
+    createtime, udpatetime, isup,teachingtypes,starttime,endtime,status, daytime, 
+    liveid, chapterid, chaptertitle 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -299,6 +302,12 @@
       <if test="liveid != null" >
         liveid,
       </if>
+      <if test="chapterid != null" >
+        chapterid,
+      </if>
+      <if test="chaptertitle != null" >
+        chaptertitle,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -370,6 +379,12 @@
       <if test="liveid != null" >
         #{liveid},
       </if>
+      <if test="chapterid != null" >
+        #{chapterid},
+      </if>
+      <if test="chaptertitle != null" >
+        #{chaptertitle},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
@@ -393,12 +408,6 @@
       <if test="coursecontent != null" >
         coursecontent = #{coursecontent,jdbcType=VARCHAR},
       </if>
-      <if test="uploaduserid != null" >
-        uploaduserid = #{uploaduserid,jdbcType=BIGINT},
-      </if>
-      <if test="createuserid != null" >
-        createuserid = #{createuserid,jdbcType=BIGINT},
-      </if>
       <if test="isdel != null" >
         isdel = #{isdel,jdbcType=CHAR},
       </if>
@@ -421,7 +430,13 @@
         starttime = #{starttime},
       </if>
       <if test="endtime != null">
-        endtime = #{endtime}
+        endtime = #{endtime},
+      </if>
+      <if test="chapterid != null and chapterid != ''">
+        chapterid = #{chapterid},
+      </if>
+      <if test="chaptertitle != null and chaptertitle != ''">
+        chaptertitle = #{chaptertitle},
       </if>
       <if test="status != null">
         status = #{status}

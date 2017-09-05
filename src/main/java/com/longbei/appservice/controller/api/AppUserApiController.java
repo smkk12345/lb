@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -581,6 +580,31 @@ public class AppUserApiController {
         } catch (Exception e) {
             logger.error("updateProtectNames for adminservice and nicknames={}", nicknames,e);
 
+        }
+        return baseResp;
+    }
+
+    /**
+     * 校验该手机号是否已经注册成为龙杯用户
+     * @param userPhone
+     * @return
+     */
+    @RequestMapping(value="checkIsExistUser")
+    public BaseResp<Object> checkIsExistUser(String userPhone){
+        logger.info("check is existUser userPhone:{}",userPhone);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        try{
+            UserInfo userInfo = this.userService.getUserInfoByUserName(userPhone);
+
+            if(userInfo == null){
+                baseResp.setData(0);
+            }else{
+                baseResp.setData(1);
+                baseResp.getExpandData().put("userid",userInfo.getUserid().toString());
+            }
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+        }catch(Exception e){
+            logger.error("check is existUser userPhone:{}",userPhone);
         }
         return baseResp;
     }

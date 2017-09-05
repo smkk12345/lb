@@ -3,16 +3,12 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.SnsGroupMapper;
 import com.longbei.appservice.dao.SnsGroupMembersMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.SnsGroup;
-import com.longbei.appservice.entity.SnsGroupMembers;
-import com.longbei.appservice.entity.UserMsg;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.GroupService;
 import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.UserMsgService;
@@ -1057,6 +1053,86 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     @Override
     public int batchUpdateGroupMemberNickName(Map<String, Object> map) {
         return this.snsGroupMembersMapper.batchUpdateGroupMemberNickName(map);
+    }
+
+    /**
+     * 批量创建群组
+     * @param mainGroupUserid
+     * @param groupname
+     * @return
+     */
+    @Override
+    public BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid,String gradeid, String groupname) {
+        logger.info("batch create group mainGroupUserid:{} groupname:{}",mainGroupUserid,groupname);
+        BaseResp<List<Map<String,Object>>> baseResp = new BaseResp<List<Map<String,Object>>>();
+        try{
+            StringBuilder groupIds = new StringBuilder();
+            String[] gradeIds = gradeid.split(",");
+            String[] groupNames = groupname.split(",");
+            List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+            List<SnsGroup> groupList = new ArrayList<SnsGroup>();
+            List<SnsGroupMembers> snsGroupMembersList = new ArrayList<SnsGroupMembers>();
+            AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(mainGroupUserid.toString());
+            if(appUserMongoEntity == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,"该用户尚未注册成为龙杯用户!");
+            }
+            for(Integer i=0;i<groupNames.length;i++){
+                String tempGroupName = groupNames[i];
+                String groupId = "";
+                do{
+                    String tempId = IdGenerateService.getRandomString(true,SnsGroup.groupIdLength);
+                    if(!springJedisDao.sIsMember(SnsGroup.groupIdSet,tempId)){
+                        springJedisDao.sAdd(SnsGroup.groupIdSet,null,tempId);
+                        groupId = tempId;
+                    }
+                }while(groupId == null);
+                groupIds.append(",").append(groupId);
+
+                Map<String,Object> gradeGroupMap = new HashMap<String,Object>();
+                gradeGroupMap.put("gradeid",gradeIds[i]);
+                gradeGroupMap.put("groupid",groupId);
+                resultList.add(gradeGroupMap);
+
+                SnsGroup snsGroup = new SnsGroup();
+                snsGroup.setMainuserid(mainGroupUserid);
+                snsGroup.setGroupname(tempGroupName);
+                snsGroup.setCreatetime(new Date());
+                snsGroup.setGroupid(Long.parseLong(groupId));
+                snsGroup.setUpdatetime(new Date());
+                snsGroup.setNeedconfirm(true);
+                snsGroup.setMaxnum(SnsGroup.maxNum);
+                snsGroup.setCurrentnum(1);
+                groupList.add(snsGroup);
+
+                //群组成员
+                SnsGroupMembers snsGroupMember = new SnsGroupMembers();
+                snsGroupMember.setGroupid(Long.parseLong(groupId));
+                snsGroupMember.setCreatetime(new Date());
+                snsGroupMember.setUpdatetime(new Date());
+                snsGroupMember.setNickname(appUserMongoEntity.getNickname());
+                snsGroupMember.setStatus(1);
+                snsGroupMember.setAvatar(appUserMongoEntity.getAvatar());
+                snsGroupMember.setTopstatus(false);
+                snsGroupMember.setDisturbstatus(false);
+                snsGroupMember.setIdentity(20);
+                snsGroupMember.setUserid(mainGroupUserid);
+                snsGroupMembersList.add(snsGroupMember);
+            }
+
+            BaseResp<Object> ryBaseResp = this.iRongYunService.batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),groupname);
+            if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
+                //批量插入到数据库
+                int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
+                if(insertRow > 0){
+                    int temp =this.snsGroupMembersMapper.batchInsertGroupMembersBySnsGroupMember(snsGroupMembersList);
+                    baseResp.setData(resultList);
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                }
+            }
+        }catch(Exception e){
+            logger.error("batch create group mainGroupUserid:{} groupname:{} errorMsg:{}",mainGroupUserid,groupname,e);
+        }
+        return baseResp;
     }
 
     /**

@@ -119,4 +119,11 @@ public interface SnsGroupMembersMapper {
      * @return
      */
     int batchUpdateGroupMemberNickName(Map<String, Object> map);
+
+    /**
+     * 批量插入群组成员
+     * @param snsGroupMembersList
+     * @return
+     */
+    int batchInsertGroupMembersBySnsGroupMember(List<SnsGroupMembers> snsGroupMembersList);
 }
