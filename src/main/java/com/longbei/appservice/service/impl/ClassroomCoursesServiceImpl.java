@@ -182,11 +182,12 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	
 
 	@Override
-	public BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime,
+	public BaseResp<List<ClassroomCourses>> selectDaytimeCoursesListByCid(long classroomid, String daytime, 
+			Date startdate, Date enddate, 
 			int startNum, int endNum) {
 		BaseResp<List<ClassroomCourses>> reseResp = new BaseResp<>();
 		try {
-			List<ClassroomCourses> list = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, daytime, startNum, endNum);
+			List<ClassroomCourses> list = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid, daytime, startdate, enddate, startNum, endNum);
 			reseResp.setData(list);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
@@ -197,8 +198,8 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 	}
 	
 	@Override
-	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid) {
-		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid);
+	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate) {
+		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, startdate, enddate);
 		return classroomCourses;
 	}
 
@@ -363,9 +364,11 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			ClassroomCourses courses = classroomCoursesMapper.select(classroomCourses.getClassroomid(), classroomCourses.getId());
-			if(classroomCourses.getStatus() == 3){
-				if(StringUtils.isBlank(courses.getFileurl())){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1115, Constant.RTNINFO_SYS_1115);
+			if(!StringUtils.isBlank(courses.getStatus().toString())){
+				if(courses.getStatus() == 3){
+					if(StringUtils.isBlank(courses.getFileurl())){
+						return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1115, Constant.RTNINFO_SYS_1115);
+					}
 				}
 			}
 			int temp = classroomCoursesMapper.updateByPrimaryKeySelective(classroomCourses);

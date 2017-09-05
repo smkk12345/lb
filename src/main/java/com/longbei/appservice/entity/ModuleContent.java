@@ -20,7 +20,7 @@ public class ModuleContent implements Serializable {
     private String contentid;
 
     /**
-     * 内容类型 0-文章 1-榜单 2-达人 3-图片 4-视频
+     * 内容类型 0-文章 1-榜单 2-达人 3-图片 4-视频 5-文字 6-专题 7 - 教室 8 - 按钮
      */
     private String contenttype;
 

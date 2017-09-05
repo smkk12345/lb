@@ -19,18 +19,28 @@
     id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status
   </sql>
 
-  <select id="selectOwnGiftList">
-      SELECT Base_Column_List
+  <select id="selectOwnGiftList" resultMap="BaseResultMap" >
+      SELECT 
+      <include refid="Base_Column_List" /> 
       FROM live_gift_detail
       where touid = #{userid}
       order by createtime desc
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
-      </if>>
+      </if>
+  </select>
+  
+  <select id="selectGiftSumList" resultMap="BaseResultMap" >
+      SELECT 
+      id, touid, giftid, SUM(num) as num, gifttitle, businessid, businesstype 
+      FROM live_gift_detail
+      where touid = #{userid}
+      GROUP BY giftid
   </select>
 
-    <select id="selectGiftList">
-        SELECT Base_Column_List
+    <select id="selectGiftList" resultMap="BaseResultMap" >
+        SELECT 
+      	<include refid="Base_Column_List" /> 
         FROM live_gift_detail
         where fromuid = #{userid}
         order by createtime desc

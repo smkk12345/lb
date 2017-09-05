@@ -350,6 +350,7 @@ public class UserMsgServiceImpl implements UserMsgService {
 			if(expandData.get("is_comment").toString().equals("2")){
 				//评论设置   打开提醒   ---所有人
 				msgTypeList.add(Constant.MSG_COMMENT_TYPE);
+				msgTypeList.add(Constant.MSG_REPLY_COMMENT_TYPE);
 			}else if(expandData.get("is_comment").toString().equals("1")){
 				commentMaxDate = getShowCommentDate(userid, mymaxDate);
 			}
