@@ -58,11 +58,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		if(urlPath.contains("/live/")){
 
-			if(urlPath.contains("uploadImage")){
-				arg2.doFilter(request, response);
-				return ;
-			}
-
 			if(urlPath.contains("closeOnLineRoom")||urlPath.contains("updateLiveMedia")){
 				arg2.doFilter(request, response);
 				return ;
