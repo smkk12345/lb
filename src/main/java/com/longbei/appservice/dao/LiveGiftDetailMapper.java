@@ -18,7 +18,14 @@ public interface LiveGiftDetailMapper {
      */
     List<LiveGiftDetail> selectOwnGiftList(@Param("userid") Long userid,
                                            @Param("startNum") Integer startNum,
-                                           @Param("endNum") Integer endNUm);
+                                           @Param("endNum") Integer endNum);
+    
+    /**
+     * 查询用户收到的各礼物类型总数
+     * @param userid
+     */
+    List<LiveGiftDetail> selectGiftSumList(@Param("userid") Long userid);
+    
 
     /**
      * 查询用户送出的礼物列表
@@ -29,7 +36,7 @@ public interface LiveGiftDetailMapper {
      */
     List<LiveGiftDetail> selectGiftList(@Param("userid") Long userid,
                                            @Param("startNum") Integer startNum,
-                                           @Param("endNum") Integer endNUm);
+                                           @Param("endNum") Integer endNum);
 
     /**
      * 插入礼物明细
