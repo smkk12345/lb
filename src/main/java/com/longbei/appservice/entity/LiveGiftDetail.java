@@ -18,7 +18,7 @@ public class LiveGiftDetail implements Serializable {
 
     private Long touid; //接受人id
 
-    private Long giftid; //礼物类型id
+    private Long giftid; //giftid 礼物类型id
 
     private Integer num;
 
