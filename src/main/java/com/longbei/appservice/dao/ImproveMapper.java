@@ -3,6 +3,7 @@ package com.longbei.appservice.dao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.Improve;
 
+import com.longbei.appservice.entity.Rank;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -160,6 +161,14 @@ public interface ImproveMapper {
                                  @Param("startno") Integer startno,
                                  @Param("pagesize") Integer pagesize);
 
+
+    int selectRankImproveCountByids(@Param("users") List<AppUserMongoEntity> users,
+                                    @Param("ranks") List<Rank> ranks);
+
+    List<Improve> selectRankImproveListByids(@Param("users") List<AppUserMongoEntity> users,
+                                             @Param("ranks") List<Rank> ranks,
+                                             @Param("startno") Integer startno,
+                                             @Param("pagesize") Integer pagesize);
 
     int selectRankImproveCount(@Param("startdate")Date startdate,
                                         @Param("ismain") String ismain,

@@ -701,6 +701,46 @@
     </if>
   </select>
 
+  <select id="selectRankImproveCountByids" resultType="java.lang.Integer">
+    SELECT count(*) FROM improve_rank
+    where itype = '2' AND isdel = '0'
+    <if test="users != null and users.size() > 0">
+      AND userid IN
+      <foreach item="user" index="index" collection="users" open="(" separator="," close=")">
+        #{user.id}
+      </foreach>
+    </if>
+    <if test="ranks != null and ranks.size() > 0">
+      AND businessid IN
+      <foreach item="rank" index="index" collection="ranks" open="(" separator="," close=")">
+        #{rank.rankid}
+      </foreach>
+    </if>
+  </select>
+
+  <select id="selectRankImproveListByids" resultMap="BaseResultMap">
+    SELECT
+    ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid, ir.businessid,
+    ir.businesstype, ir.likes,ir.isrecommend,
+    ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ir.ismainimp,ir.ptype,
+    ir.ispublic,ir.sourcekey,ir.complaincount,ir.duration,ir.isbusinessdel,ir.picattribute
+    FROM improve_rank ir
+    where ir.itype = '2' AND ir.isdel = '0'
+    <if test="users != null and users.size() > 0">
+      AND ir.userid IN
+      <foreach item="user" index="index" collection="users" open="(" separator="," close=")">
+        #{user.id}
+      </foreach>
+    </if>
+    <if test="ranks != null and ranks.size() > 0">
+      AND ir.businessid IN
+      <foreach item="rank" index="index" collection="ranks" open="(" separator="," close=")">
+        #{rank.rankid}
+      </foreach>
+    </if>
+    limit #{startno},#{pagesize}
+  </select>
+
   <select id="selectRankImproveList" resultMap="BaseResultMap">
     SELECT
     ir.id, ir.impid, ir.itype, ir.brief, ir.pickey, ir.filekey, ir.userid,ir.duration,

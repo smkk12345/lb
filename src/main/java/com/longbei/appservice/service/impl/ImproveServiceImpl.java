@@ -3903,6 +3903,37 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp<Page<Improve>> selectImproveVideos(String nickname, String ranktitle, Integer pageno, Integer pagesize) {
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+        //根据nickname查询users
+        List<AppUserMongoEntity> users = new ArrayList<>();
+        if (!StringUtils.isBlank(nickname)){
+            AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
+            appUserMongoEntity.setNickname(nickname);
+            users = userMongoDao.getAppUsers(appUserMongoEntity);
+        }
+
+        //根据ranktitle查询ranks
+        List<Rank> ranks = new ArrayList<>();
+        if (!StringUtils.isBlank(ranktitle)) {
+            ranks = rankMapper.selectListByRankTitle(ranktitle);
+        }
+
+        int totalcount = 0;
+        List<Improve> improves = null;
+
+        totalcount = improveMapper.selectRankImproveCountByids(users, ranks);
+        improves = improveMapper.selectRankImproveListByids(users, ranks, pagesize*(pageno-1), pagesize);
+
+        Page<Improve> page = new Page<>();
+        page.setTotalCount(totalcount);
+        page.setList(improves);
+        baseResp = BaseResp.ok();
+        baseResp.setData(page);
+	    return baseResp;
+    }
+
 
     @Override
     public BaseResp recommendImproveOpt() {
