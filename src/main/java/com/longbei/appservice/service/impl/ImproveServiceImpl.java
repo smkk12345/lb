@@ -1901,6 +1901,8 @@ public class ImproveServiceImpl implements ImproveService{
         }
 
 //        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
+        
+        final Improve improves = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
 
         if(null == userInfo){
             return baseResp;
@@ -1942,8 +1944,8 @@ public class ImproveServiceImpl implements ImproveService{
                     //添加评论消息---点赞
                     //gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统
                     //10：榜中  11 圈子中  12 教室中  13:教室批复作业
-                    if(!userid.equals(improve.getUserid().toString())){
-                        userMsgService.insertMsg(userid, improve.getUserid().toString(), impid, businesstype, finalBusinessid,
+                    if(!userid.equals(improves.getUserid().toString())){
+                        userMsgService.insertMsg(userid, improves.getUserid().toString(), impid, businesstype, finalBusinessid,
                                 Constant.MSG_LIKE_MODEL, "1", "2", "点赞", 0, "", "");
                     }
                 }
