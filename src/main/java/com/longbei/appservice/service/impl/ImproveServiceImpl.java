@@ -1900,10 +1900,6 @@ public class ImproveServiceImpl implements ImproveService{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_64,Constant.RTNINFO_SYS_64);
         }
 
-//        final Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-        
-        final Improve improves = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,null,null);
-
         if(null == userInfo){
             return baseResp;
         }
@@ -1917,16 +1913,13 @@ public class ImproveServiceImpl implements ImproveService{
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+                	final Improve improves = selectImprove(Long.parseLong(impid),userid,businesstype,finalBusinessid,null,null);
                     //mongo
                     addLikeToImproveForMongo(impid,finalBusinessid,businesstype,userid,
                             Constant.MONGO_IMPROVE_LFD_OPT_LIKE,
                             userInfo.getAvatar());
-                    Improve improve = new Improve();
-                    improve.setUserid(Long.parseLong(userid));
-                    improve.setBusinessid(Long.parseLong(finalBusinessid));
-                    improve.setBusinesstype(businesstype);
                     //mysql
-                    addLikeToImprove(improve,userid,impid,finalBusinessid,businesstype);
+                    addLikeToImprove(improves,userid,impid,finalBusinessid,businesstype);
 
                     //更新进步赞数（mysql）
                     String tableName = getTableNameByBusinessType(businesstype);
