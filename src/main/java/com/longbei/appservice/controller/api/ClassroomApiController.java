@@ -1,10 +1,15 @@
 package com.longbei.appservice.controller.api;
 
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.common.web.JsonDateValueProcessor;
+import com.longbei.appservice.common.web.JsonLongValueProcessor;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,8 @@ import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/api/classroom")
@@ -1023,5 +1030,45 @@ public class ClassroomApiController {
         baseResp = this.classroomService.endClassroom(currentTime);
         return baseResp;
     }
+
+	/**
+	 * http://localhost:9090/app_service//api/classroom/roomListByIds?roomids=654165112&callback=jsonp
+	 * @param roomids id逗号隔开
+	 * @param response
+	 * @param callback
+	 */
+	@RequestMapping(value="roomListByIds")
+	public void roomListByIds(String roomids, HttpServletResponse response, String callback){
+		logger.info("roomListByIds roomids = {}", roomids);
+		BaseResp<List<Classroom>> baseResp = new BaseResp<>();
+		if(StringUtils.isEmpty(roomids)){
+			try{
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+				PrintWriter out = response.getWriter();
+				response.setContentType("text/javascript;charset=UTF-8");
+				out.print(callback+"("+ JSONObject.fromObject(baseResp).toString()+")");
+				out.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		baseResp = classroomService.roomListByIds(roomids);
+
+		try{
+			PrintWriter out = response.getWriter();
+			response.setContentType("text/javascript;charset=UTF-8");
+			JsonConfig jsonConfig = new JsonConfig();
+			jsonConfig.registerJsonValueProcessor(Long.class,new JsonLongValueProcessor());
+			jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor());
+			JSONObject jsonObject = JSONObject.fromObject(baseResp,jsonConfig);
+			out.print(callback+"("+jsonObject.toString()+")");
+			out.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+//        return baseResp;
+	}
 
 }

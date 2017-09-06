@@ -97,6 +97,7 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 
 	/**
 	 * 查询教室中章节列表，章节带分页
+	 * 为了兼容老数据 对于老的没有章节的课程 生成默认章节
 	 * @param classroomid
 	 * @param startNo   pageSize
 	 * @param pageSize

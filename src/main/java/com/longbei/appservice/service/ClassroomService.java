@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.Classroom;
@@ -310,5 +311,7 @@ public interface ClassroomService {
 
 
 	BaseResp<List<UserCard>> selectUsercardList(Long classroonid);
+
+	BaseResp<List<Classroom>> roomListByIds(String roomids);
 	
 }
