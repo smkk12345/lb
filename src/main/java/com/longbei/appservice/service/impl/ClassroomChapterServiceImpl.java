@@ -30,6 +30,7 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 	@Autowired
 	private IdGenerateService idGenerateService;
 	
+	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomChapterServiceImpl.class);
 
 	
@@ -147,10 +148,15 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
     	return baseResp;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> updateIsdel(long classroomid, long chapterid) {
 		BaseResp<Object> baseResp = new BaseResp<>();
 		try{
+			Integer count = classroomCoursesMapper.selectCountByCidAndChapterid(classroomid, chapterid);
+			if(count > 0){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1116, Constant.RTNINFO_SYS_1116);
+			}
 			int temp = classroomChapterMapper.updateIsdel(classroomid, chapterid);
 			if(temp>0){
 				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
