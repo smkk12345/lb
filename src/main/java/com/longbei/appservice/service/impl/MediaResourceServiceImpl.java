@@ -4,6 +4,7 @@ import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -443,7 +444,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             OpenOfficeConnection connection =
                     new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
             connection.connect();
-            DocumentConverter documentConverter = new OpenOfficeDocumentConverter(connection);
+            DocumentConverter documentConverter = new StreamOpenOfficeDocumentConverter(connection);
 
             documentConverter.convert(pptFile,outputFile);
 
