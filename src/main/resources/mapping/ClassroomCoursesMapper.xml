@@ -101,6 +101,17 @@
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
     </if>
+    <if test="classroomCourses.chapterid != null" >
+      	and chapterid = #{classroomCourses.chapterid}
+    </if>
+  </select>
+  
+  <select id="selectCountByCidAndChapterid" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom_courses
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+    and chapterid = #{chapterid}
   </select>
   
   <select id="selectMaxSort" resultType="java.lang.Integer" >
@@ -122,6 +133,9 @@
     </if>
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
+    </if>
+    <if test="classroomCourses.chapterid != null" >
+      	and chapterid = #{classroomCourses.chapterid}
     </if>
     order by isup desc, coursesort asc, createtime asc 
     <if test="endNum != 0" >
@@ -544,6 +558,30 @@
         duration = #{duration}
     where id = #{id}
     and classroomid = #{classroomid}
+  </update>
+
+
+  <select id="selectOldCourseCount"  resultType="java.lang.Integer" >
+    select count(*)
+    from classroom_courses
+    where classroomid = #{classroomid}
+    and
+    chapterid is null
+  </select>
+
+  <select id="selectByChapterId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from classroom_courses
+    where classroomid = #{classroomid}
+    and
+    chapterid = #{chapterid}
+  </select>
+
+  <update id="updateChapterIdByCid" >
+    update classroom_courses
+    set chapterid = #{chapterid}
+    where  classroomid = #{classroomid}
   </update>
 
 

@@ -108,6 +108,9 @@ public class Classroom implements Serializable {
 
 	private List<ClassroomCourses> liveCourses;//最近一天的直播课程列表，按照时间顺序排列
 
+	private List<ClassroomChapter> classroomChapters; //章节列表
+
+
 	private String status; //直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
 
 	public AppUserMongoEntity getAppUserMongoEntity() {
@@ -612,4 +615,13 @@ public class Classroom implements Serializable {
 	public List<UserCard> getUserCards() {
 		return userCards;
 	}
+
+	public void setClassroomChapters(List<ClassroomChapter> classroomChapters) {
+		this.classroomChapters = classroomChapters;
+	}
+
+	public List<ClassroomChapter> getClassroomChapters() {
+		return classroomChapters;
+	}
+
 }

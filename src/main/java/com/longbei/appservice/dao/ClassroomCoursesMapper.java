@@ -139,6 +139,11 @@ public interface ClassroomCoursesMapper {
     Integer selectSearchCount(@Param("classroomCourses") ClassroomCourses classroomCourses);
     
     /*
+     * 获取Count
+     */
+    Integer selectCountByCidAndChapterid(@Param("classroomid") long classroomid, @Param("chapterid") long chapterid);
+    
+    /*
      * 获取课程信息列表
      */
     List<ClassroomCourses> selectSearchList(@Param("classroomCourses") ClassroomCourses classroomCourses, 
@@ -204,4 +209,14 @@ public interface ClassroomCoursesMapper {
 						@Param("id") Integer id,
 						@Param("filekey") String filekey,
 						@Param("duration") String duration);
+
+	Integer selectOldCourseCount(@Param("classroomid") long classroomid);
+
+	List<ClassroomCourses> selectByChapterId(@Param("classroomid") long classroomid,
+											 @Param("chapterid")long chapterid);
+
+
+	Integer updateChapterIdByCid(@Param("classroomid") long classroomid,
+								 @Param("chapterid") long chapterid);
+
 }
