@@ -444,7 +444,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 //            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
 
             OpenOfficeConnection connection =
-                    new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
+            new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
             connection.connect();
             DocumentConverter documentConverter = new StreamOpenOfficeDocumentConverter(connection);
 
@@ -479,7 +479,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                 return  true;
             }
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("ppt to iamge is error:",e);
         }finally {
             //pptFilePath outputFileString imageOutput
             pptFile.deleteOnExit();
@@ -549,19 +549,21 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 
     private boolean downloadPPT(String pptUrl,String pptFilePath) throws MalformedURLException {
         // 下载网络文件
-        int bytesum = 0;
-        int byteread = 0;
         URL url = new URL(pptUrl);
 
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
+            InputStreamReader sr = new InputStreamReader(inStream,"GBK");
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-
-            byte[] buffer = new byte[1024];
-            while ((byteread = inStream.read(buffer)) != -1) {
-                bytesum += byteread;
-                fs.write(buffer, 0, byteread);
+            OutputStreamWriter sw = new OutputStreamWriter(fs,"GBK");
+            BufferedReader reader = new BufferedReader(sr);
+            BufferedWriter bufw = new BufferedWriter(sw);
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                bufw.write(line);
+                bufw.newLine();
+                bufw.flush();
             }
             return true;
         } catch (Exception e) {
