@@ -1622,4 +1622,24 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return baseResp.initCodeAndDesp();
 	}
 
+	@Override
+	public BaseResp<List<Classroom>> roomListByIds(String roomids) {
+		BaseResp<List<Classroom>> baseResp = new BaseResp<>();
+		try{
+			List<Classroom> list = new ArrayList<>();
+			String[] roomidArr = roomids.split(",");
+			for (int i = 0; i < roomidArr.length; i++) {
+				Classroom room = classroomMapper.selectByPrimaryKey(Long.parseLong(roomidArr[i]));
+				if(null != room){
+					list.add(room);
+				}
+			}
+			baseResp.setData(list);
+			baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("roomListByIds error roomids = {}",roomids,e);
+		}
+		return baseResp;
+	}
+
 }
