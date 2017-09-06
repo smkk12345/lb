@@ -31,6 +31,9 @@ public interface RankMapper {
     List<Rank> selectListWithPage(@Param("rank") Rank rank,
                                        @Param("startno")Integer startno,
                                        @Param("pagesize")Integer pagesize);
+
+    List<Rank> selectListByRankTitle(@Param("ranktitle") String ranktitle);
+
     /**
      * 获取榜单列表 （带人数、评论数排序）
      * @param rank

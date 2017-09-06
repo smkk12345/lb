@@ -102,6 +102,43 @@ public class MoneyController {
 	
 	
 	/**
+    * @Title: http://ip:port/app_service/money/selectGiftDetailList
+    * @Description: 收到的单个礼物类型明细
+    * @param @param userid 当前登录者id
+    * @param @param giftid 礼物类型id
+    * @param @param startNo   pageSize
+    * @auther yinxc
+    * @currentdate:2017年9月5日
+    */
+	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectGiftDetailList")
+    public BaseResp<List<LiveGiftDetail>> selectGiftDetailList(String userid, String giftid, 
+    		Integer startNo, Integer pageSize) {
+		logger.info("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+        		userid, giftid, startNo, pageSize);
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, giftid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
+  		try {
+  			baseResp = liveGiftService.selectGiftListByGiftid(Long.parseLong(userid), Long.parseLong(giftid), sNo, sSize);
+        } catch (Exception e) {
+            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+            		userid, giftid, startNo, pageSize, e);
+        }
+  		return baseResp;
+    }
+	
+	
+	/**
     * @Title: http://ip:port/app_service/money/selectWallet
     * @Description: 我的钱包
     * @param @param userid

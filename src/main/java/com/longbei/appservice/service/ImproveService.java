@@ -559,7 +559,15 @@ public interface ImproveService {
      */
     BaseResp<List<Improve>> selectRecommendImprove(String userid,Integer startNum,Integer pageSize);
 
-
+    /**
+     * 查询龙榜中视频微进步
+     * @param nickname 用户昵称－查询条件
+     * @param ranktitle 龙榜标题－查询条件
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    BaseResp<Page<Improve>> selectImproveVideos(String nickname, String ranktitle, Integer pageno, Integer pagesize);
 
     BaseResp recommendImproveOpt();
 
@@ -610,5 +618,12 @@ public interface ImproveService {
     void inviteCoinsHandle(UserInfo userInfo);
 
     int getLikeFromRedis(String impid,String businessid,String businesstype);
+
+
+    BaseResp<Object> selectImproveBusinessInfo(String impid,
+                                               String businesstype,
+                                               String businessid,
+                                               String userid);
+
 
 }

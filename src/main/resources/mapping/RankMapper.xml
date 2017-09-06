@@ -214,6 +214,16 @@
     </if>
   </select>
 
+  <select id="selectListByRankTitle" parameterType="java.lang.String" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List" />
+  FROM rank
+  WHERE isup = '1' AND isdel='0'
+  <if test="ranktitle != null and ranktitle != ''" >
+    AND ranktitle LIKE concat(concat('%',#{ranktitle}),'%')
+  </if>
+  </select>
+
   <select id="selectListWithPageOrderByInvolved" parameterType="com.longbei.appservice.entity.Rank" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />

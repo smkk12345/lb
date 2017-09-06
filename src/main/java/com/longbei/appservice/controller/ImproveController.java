@@ -1001,4 +1001,49 @@ public class ImproveController {
     }
 
 
+    /**
+     * 是否收藏了该进步
+     * @param userid  用户id
+     * @param improveId  进步id
+     * @return
+     */
+    @RequestMapping("iscollect")
+    @ResponseBody
+    public BaseResp<Object> selectIsCollectImprove(String userid,String improveId){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            boolean iscollect = improveService.checkIsCollectImprove(userid,improveId);
+            baseResp.initCodeAndDesp();
+            baseResp.setData(iscollect);
+        } catch (Exception e) {
+            logger.error("selectIsCollectImprove userid:{} improveid:{}",userid,improveId);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 获取进步关联的 榜，教室，圈子 等信息
+     * @param impid   进步id
+     * @param businesstype   业务类型
+     * @param businessid     业务id
+     * @param userid   用户id
+     * @return
+     */
+    @RequestMapping("businessinfo")
+    @ResponseBody
+    public BaseResp<Object> selectImproveBusinessInfo(String impid,
+                                                      String businesstype,
+                                                      String businessid,
+                                                      String userid){
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            baseResp = improveService.selectImproveBusinessInfo(impid,businesstype,businessid,userid);
+        } catch (Exception e) {
+            logger.error("selectImproveBusinessInfo impid:{} businesstype:{} businessid:{} userid:{} is error:",
+                    impid,businesstype,businessid,userid,e);
+        }
+        return baseResp;
+    }
+
+
 }

@@ -1,8 +1,15 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ClassroomChapter {
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+public class ClassroomChapter implements Serializable {
     private Integer id;
 
     private Long chapterid;
@@ -11,15 +18,19 @@ public class ClassroomChapter {
 
     private Integer sort;//章节顺序
 
-
     private Long classroomid;//教室id
 
-    private String isdel;//是否删除
-
+    private String isdel;//isdel 是否删除  0：未删除   1：已删除
+    
+    private String display; //display 0 显示 1 隐藏
 
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
+    
+    public ClassroomChapter(){
+    	super();
+    }
 
 
     /**
@@ -42,6 +53,7 @@ public class ClassroomChapter {
      * 
      * @return chapterid 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getChapterid() {
         return chapterid;
     }
@@ -74,6 +86,7 @@ public class ClassroomChapter {
      * 章节顺序 
      * @return sort 章节顺序 
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getSort() {
         return sort;
     }
@@ -90,6 +103,7 @@ public class ClassroomChapter {
      * 教室id
      * @return classroomid 教室id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getClassroomid() {
         return classroomid;
     }
@@ -106,6 +120,7 @@ public class ClassroomChapter {
      * 是否删除 
      * @return isdel 是否删除 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
         return isdel;
     }
@@ -122,6 +137,8 @@ public class ClassroomChapter {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -138,6 +155,8 @@ public class ClassroomChapter {
      * 更新时间 
      * @return updatetime 更新时间 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -149,4 +168,13 @@ public class ClassroomChapter {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(String display) {
+		this.display = display;
+	}
 }
