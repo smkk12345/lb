@@ -444,12 +444,12 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 //            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
 
             OpenOfficeConnection connection =
-            new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
+                    new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
             connection.connect();
             DocumentConverter documentConverter = new StreamOpenOfficeDocumentConverter(connection);
 
             documentConverter.convert(pptFile,outputFile);
-
+            connection.disconnect();
             //3. 将pdf转成图片
             List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
             logger.info("ppttoImagelist imageList:{}",imageList);
@@ -549,21 +549,20 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 
     private boolean downloadPPT(String pptUrl,String pptFilePath) throws MalformedURLException {
         // 下载网络文件
+        int bytesum = 0;
+        int byteread = 0;
         URL url = new URL(pptUrl);
 
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
-            InputStreamReader sr = new InputStreamReader(inStream,"GBK");
+            InputStreamReader isr = new InputStreamReader(inStream,"UTF8");
+            logger.info("InputStreamReader encode:{}",isr.getEncoding());
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-            OutputStreamWriter sw = new OutputStreamWriter(fs,"GBK");
-            BufferedReader reader = new BufferedReader(sr);
-            BufferedWriter bufw = new BufferedWriter(sw);
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                bufw.write(line);
-                bufw.newLine();
-                bufw.flush();
+            OutputStreamWriter out = new OutputStreamWriter(fs,"UTF8");
+            logger.info("OutputStreamWriter encode:{}",out.getEncoding());
+            while ((byteread = isr.read()) != -1) {
+                out.write(byteread);
             }
             return true;
         } catch (Exception e) {
@@ -595,7 +594,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         } else if (Pattern.matches("Windows.*", osName)) {
             return "E:/MediaResourceTemp/";
         } else if (Pattern.matches("Mac.*", osName)) {
-            return "/Users/smkk/Downloads/MediaResourceTemp/";
+            return "/Users/luye/Downloads/MediaResourceTemp/";
         }
         return null;
     }
