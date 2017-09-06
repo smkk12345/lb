@@ -556,10 +556,10 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
-            InputStreamReader isr = new InputStreamReader(inStream);
+            InputStreamReader isr = new InputStreamReader(inStream,"UTF8");
             logger.info("InputStreamReader encode:{}",isr.getEncoding());
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-            OutputStreamWriter out = new OutputStreamWriter(fs);
+            OutputStreamWriter out = new OutputStreamWriter(fs,"UTF8");
             logger.info("OutputStreamWriter encode:{}",out.getEncoding());
             while ((byteread = isr.read()) != -1) {
                 out.write(byteread);
