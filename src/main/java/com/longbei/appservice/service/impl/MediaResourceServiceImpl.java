@@ -449,7 +449,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             DocumentConverter documentConverter = new StreamOpenOfficeDocumentConverter(connection);
 
             documentConverter.convert(pptFile,outputFile);
-
+            connection.disconnect();
             //3. 将pdf转成图片
             List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
             logger.info("ppttoImagelist imageList:{}",imageList);
@@ -556,11 +556,13 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
+            InputStreamReader isr = new InputStreamReader(inStream);
+            logger.info("InputStreamReader encode:{}",isr.getEncoding());
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-            byte[] buffer = new byte[1024];
-            while ((byteread = inStream.read(buffer)) != -1) {
-                bytesum += byteread;
-                fs.write(buffer, 0, byteread);
+            OutputStreamWriter out = new OutputStreamWriter(fs);
+            logger.info("OutputStreamWriter encode:{}",out.getEncoding());
+            while ((byteread = isr.read()) != -1) {
+                out.write(byteread);
             }
             return true;
         } catch (Exception e) {
