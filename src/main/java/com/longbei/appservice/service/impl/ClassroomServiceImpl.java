@@ -11,6 +11,8 @@ import java.util.Map;
 import com.longbei.appservice.common.syscache.SysRulesCache;
 
 import com.longbei.appservice.common.constant.RedisCacheNames;
+import com.longbei.appservice.dao.*;
+import com.longbei.appservice.entity.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,32 +30,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.ClassroomCoursesMapper;
-import com.longbei.appservice.dao.ClassroomMapper;
-import com.longbei.appservice.dao.ClassroomMembersMapper;
-import com.longbei.appservice.dao.CommentLowerMongoDao;
-import com.longbei.appservice.dao.HomeRecommendMapper;
-import com.longbei.appservice.dao.ImproveClassroomMapper;
-import com.longbei.appservice.dao.LiveInfoMongoMapper;
-import com.longbei.appservice.dao.UserBusinessConcernMapper;
-import com.longbei.appservice.dao.UserCardMapper;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.UserLevelMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.ClassroomCourses;
-import com.longbei.appservice.entity.ClassroomMembers;
-import com.longbei.appservice.entity.CommentLower;
-import com.longbei.appservice.entity.HomeRecommend;
-import com.longbei.appservice.entity.ImproveClassroom;
-import com.longbei.appservice.entity.LiveInfo;
-import com.longbei.appservice.entity.ReplyImprove;
-import com.longbei.appservice.entity.UserBusinessConcern;
-import com.longbei.appservice.entity.UserCard;
-import com.longbei.appservice.entity.UserInfo;
-import com.longbei.appservice.entity.UserLevel;
-import com.longbei.appservice.entity.UserMsg;
 import com.longbei.appservice.service.ClassroomQuestionsMongoService;
 import com.longbei.appservice.service.ClassroomService;
 import com.longbei.appservice.service.CommentMongoService;
@@ -95,8 +72,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private UserLevelMapper userLevelMapper;
 	@Autowired
 	private LiveInfoMongoMapper liveInfoMongoMapper;
-	
-	
+	@Autowired
+	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
+	@Autowired
+	private ClassroomChapterMapper classroomChapterMapper;
+
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
 	
@@ -306,16 +286,25 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("impNum", impNum);
 					if(isTeacher == 1){
 						map.put("classroomMembers", null);
+						map.put("shownotice", "1"); //教室公告 1 显示  0 不现实
 					}else{
 						ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 						if(null != classroomMembers){
+							if(null != classroomMembers.getNoticeid()&&null != classroom.getNoticeid()){
+								if(classroomMembers.getNoticeid() < classroom.getNoticeid()){
+									map.put("shownotice", "1"); //教室公告
+								}else{
+									map.put("shownotice", "0"); //教室公告
+								}
+							}else{
+								map.put("shownotice", "1"); //教室公告
+							}
 							map.put("classroomMembers", classroomMembers);
 						}else{
 							map.put("classroomMembers", null);
+							map.put("shownotice", "1"); //教室公告
 						}
 					}
-					
-					
 					//itype 0—加入教室 1—退出教室     为null查全部
 					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(null != members){
@@ -323,6 +312,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					}
 				}else{
 					map.put("classroomMembers", null);
+					map.put("shownotice", "1"); //教室公告
 				}
 				
 				map.put("isadd", isadd);
@@ -412,6 +402,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", classroomCourses.getPickey());
 					map.put("fileurl", classroomCourses.getFileurl());
 					map.put("coursesort", classroomCourses.getCoursesort());
+					ClassroomChapter classroomChapter = classroomChapterMapper.selectByPrimaryKey(classroomCourses.getChapterid());
+					int n = classroomChapterMapper.selectChapterCountByTime(classroomChapter.getClassroomid(),classroomChapter.getCreatetime());
+					if(n > 0){
+						map.put("chaptersort", 2);
+					}else {
+						map.put("chaptersort", 1);
+					}
 					if(!StringUtils.isBlank(classroomCourses.getStarttime())){
 						map.put("coursestarttime", DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd HH:mm:ss"));
 					}else{
@@ -1082,8 +1079,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	}
 	
 	private boolean updateClassnotice(long classroomid, String classnotice){
+		ClassroomClassnotice classroomClassnotice = new ClassroomClassnotice();
+		classroomClassnotice.setClassroomid(classroomid);
+		classroomClassnotice.setClassnotice(classnotice);
+		Date date = new Date();
+		classroomClassnotice.setUpdatetime(date);
+		classroomClassnotice.setCreatetime(date);
+		classroomClassnoticeMapper.insert(classroomClassnotice);
 		int temp = classroomMapper.updateClassnoticeByClassroomid(classroomid, 
-				classnotice, DateUtils.formatDateTime1(new Date()));
+				classnotice, DateUtils.formatDateTime1(new Date()),classroomClassnotice.getId());
 		return temp > 0 ? true : false;
 	}
 
@@ -1641,5 +1645,22 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return baseResp;
 	}
+
+	@Override
+	public BaseResp<Object> ignoreNotice(long classroomid, long userid) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+			if(null != classroom.getNoticeid()){
+				classroomMembersMapper.updateNoticeId(classroom.getClassroomid(),
+						classroom.getNoticeid(),userid);
+			}
+			baseResp.initCodeAndDesp();
+		}catch (Exception e){
+			logger.error("ignoreNotice error and classroomid={},userid={}",classroomid,userid,e);
+		}
+		return baseResp;
+	}
+
 
 }

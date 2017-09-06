@@ -16,11 +16,12 @@
     <result column="icount" property="icount" />
     <result column="cusername" property="cusername" />
     <result column="complaintotalcount" property="complaintotalcount" />
+    <result column="noticeid" property="noticeid"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, userid, itype, userstatus, hascharge, 
     likes, flowers, diamonds, createtime, updatetime, 
-    icount, cusername, complaintotalcount
+    icount, cusername, complaintotalcount,noticeid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -309,5 +310,12 @@
     classroomid = #{classroomid} 
     and userid = #{userid} 
   </update>
-  
+
+  <update id="updateNoticeId" >
+    update classroom_members
+    set noticeid = #{noticeid}
+    where classroomid = #{classroomid}
+    and userid = #{userid}
+  </update>
+
 </mapper>

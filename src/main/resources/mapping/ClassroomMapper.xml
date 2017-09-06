@@ -37,12 +37,13 @@
     <result column="earnings" property="earnings" />
     <result column="commission" property="commission" />
     <result column="status" property="status"/>
+    <result column="noticeid" property="noticeid"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission,status
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission,status,noticeid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -539,7 +540,8 @@
     update classroom
     set 
       classnotice = #{classnotice},
-      updatetime = #{updatetime} 
+      updatetime = #{updatetime} ,
+      noticeid = #{noticeid}
     where classroomid = #{classroomid} 
   </update>
   

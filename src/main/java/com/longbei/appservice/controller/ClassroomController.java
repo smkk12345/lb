@@ -1167,4 +1167,29 @@ public class ClassroomController {
 	}
 
 
+	/**
+	 *  http://ip:port/app_service/classroom/ignoreNotice
+	 * 忽略公告
+	 * @param classroomid
+	 * @param userid
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "ignoreNotice")
+	public BaseResp<Object> ignoreNotice(String classroomid, String userid) {
+		logger.info("ignoreNotice classroomid={},userid={}",classroomid,userid);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(classroomid,userid)){
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+			return baseResp;
+		}
+		try{
+			baseResp = classroomService.ignoreNotice(Long.parseLong(classroomid),Long.parseLong(userid));
+		}catch (Exception e){
+			logger.error("ignoreNotice classroomid={},userid={}",classroomid,userid,e);
+		}
+		return baseResp;
+	}
+
+
 }

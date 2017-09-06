@@ -108,5 +108,9 @@ public interface ClassroomMembersMapper {
 	 * param classroomid 教室id
 	 */
     int selectCountMembers(@Param("classroomid") long classroomid);
+
+	int updateNoticeId(@Param("classroomid") long classroomid,
+					   @Param("noticeid") int noticeid,
+					   @Param("userid") long userid);
     
 }

@@ -188,5 +188,15 @@
     where chapterid = #{chapterid} 
     and classroomid = #{classroomid} 
   </update>
+
+
+  <select id="selectChapterCountByTime" resultType="java.lang.Integer" >
+    select
+    count(*)
+    from classroom_chapter
+    where classroomid = #{classroomid}
+    and isdel = 0
+    and createtime &lt; #{createtime}
+  </select>
   
 </mapper>
