@@ -94,6 +94,10 @@ alimedia:
     inputBacketName: longbei-dev-media
     inputurl: http://longbei-dev-media.oss-cn-beijing.aliyuncs.com/
 
+openoffice:
+            addr: 192.168.1.170
+            port: 8100
+
 #logging:
 #        config: classpath:longbei-logback.xml
 #        level.com.longbei.appservice.dao:

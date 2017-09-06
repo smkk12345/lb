@@ -102,3 +102,7 @@ alimedia:
         url: http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/
         inputBacketName: longbei-test-media
         inputurl: http://longbei-test-media.oss-cn-beijing.aliyuncs.com/
+
+openoffice:
+            addr: 172.18.28.108
+            port: 8100

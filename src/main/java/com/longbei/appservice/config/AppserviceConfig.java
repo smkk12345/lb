@@ -43,6 +43,20 @@ public class AppserviceConfig {
     public static String alimedia_mp3_workflowmp3;
     public static String alimedia_mp4_outurl;
 
+    public static String openoffice_addr;
+
+    public static int openoffice_port;
+
+    @Value("${openoffice.port}")
+    public void setOpenoffice_port(int openoffice_port) {
+        this.openoffice_port = openoffice_port;
+    }
+
+    @Value("${openoffice.addr}")
+    public  void setOpenoffice_addr(String openoffice_addr) {
+        this.openoffice_addr = openoffice_addr;
+    }
+
     @Value("${service.outernet}")
     public void setHost_outernet_service(String host_outernet_service) {
         this.host_outernet_service = host_outernet_service;

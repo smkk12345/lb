@@ -10,6 +10,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.service.OSSService;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.config.OssConfig;
 import com.longbei.appservice.controller.PPTToImageUtil;
 import com.longbei.appservice.dao.MediaResourceDetailMapper;
@@ -147,9 +148,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                     threadPoolTaskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-//                            PPTToImage(filePath,filename,mediaResourceId);
-                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
-                            batchInsertMediaResourceDetail(baseResp1.getData());
+                            PPTToImage(filePath,filename,mediaResourceId);
+//                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
+//                            batchInsertMediaResourceDetail(baseResp1.getData());
                         }
                     });
 
@@ -439,15 +440,16 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 //            startService();
 //            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
 
-//            OpenOfficeConnection connection = new SocketOpenOfficeConnection("172.18.28.128",8100);
-//            connection.connect();
-//            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-//
-//            converter.convert(pptFile,outputFile);
+            OpenOfficeConnection connection =
+                    new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
+            connection.connect();
+            DocumentConverter documentConverter = new OpenOfficeDocumentConverter(connection);
+
+            documentConverter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
-//            List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
-            List<String> imageList = PPTToImageUtil.doPPTtoImage(pptFile,imageOutput,realFilename,"png");
+            List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+//            List<String> imageList = PPTToImageUtil.doPPTtoImage(pptFile,imageOutput,realFilename,"png");
 
             //4.将所有图片 上传的到阿里云
             if(imageList == null || imageList.size() == 0){
