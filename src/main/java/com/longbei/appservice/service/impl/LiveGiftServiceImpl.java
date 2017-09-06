@@ -4,17 +4,21 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.dao.LiveGiftDetailMapper;
 import com.longbei.appservice.dao.LiveGiftMapper;
 import com.longbei.appservice.dao.LiveInfoMongoMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.AppUserMongoEntity;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveGiftDetail;
 import com.longbei.appservice.entity.LiveInfo;
 import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.UserMoneyDetailService;
-import org.apache.tomcat.util.bcel.Const;
+import com.longbei.appservice.service.UserRelationService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +48,12 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private UserInComeService userInComeService;
     @Autowired
     private LiveInfoMongoMapper liveInfoMongoMapper;
+    @Autowired
+    private UserMongoDao userMongoDao;
+    @Autowired
+    private UserRelationService userRelationService;
+    
+    
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
 
@@ -81,11 +91,6 @@ public class LiveGiftServiceImpl implements LiveGiftService {
             int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype);
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
-//                Double s = Constant.TAKEPERCENTAGE.doubleValue();
-//                Double a = s/100;
-//                Double lv = 1-a;
-//                Long m = Math.round(giveMoney*lv);
-//                int receiveMoney = m.intValue();
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
                 //添加教室收益
                 userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
@@ -99,10 +104,86 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         return baseResp;
     }
 
+    /**
+     * 查询用户收到的礼物列表
+     * @param userid 当前登录者id
+     * @param friendid
+     * @param startNum
+     * @param endNUm
+     * @return
+     */
     @Override
-    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(long userid, Integer startNum, Integer endNum) {
-        return null;
+    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, Integer startNum, Integer endNum) {
+    	BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+        try{
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(userid, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (LiveGiftDetail liveGiftDetail : list) {
+            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
+    			}
+            }
+            baseResp.setData(list);
+            baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectOwnGiftList userid = {}, startNum = {}, endNum = {}", 
+            		userid, startNum, endNum, e);
+        }
+        return baseResp;
     }
+    
+
+	@Override
+	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, Long giftid, Integer startNum, Integer endNum) {
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+        try{
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(userid, giftid, startNum, endNum);
+            if(null != list && list.size()>0){
+            	for (LiveGiftDetail liveGiftDetail : list) {
+            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
+    			}
+            }
+            baseResp.setData(list);
+            baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNum = {}, endNum = {}", 
+            		userid, giftid, startNum, endNum, e);
+        }
+        return baseResp;
+	}
+
+    
+    /**
+     * 初始化礼物中用户信息 ------Userid
+     */
+    private void initLiveGiftDetailByUserid(LiveGiftDetail liveGiftDetail, String friendid){
+        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(liveGiftDetail.getFromuid()));
+        if(null != appUserMongoEntity){
+			if(StringUtils.isNotEmpty(friendid)){
+				this.userRelationService.updateFriendRemark(friendid,appUserMongoEntity);
+			}
+			liveGiftDetail.setAppUserMongoEntity(appUserMongoEntity);
+        }else{
+        	liveGiftDetail.setAppUserMongoEntity(new AppUserMongoEntity());
+        }
+    }
+    
+
+    /**
+     * 查询用户收到的各礼物类型总数
+     * @param userid
+     */
+	@Override
+	public BaseResp<List<LiveGiftDetail>> selectGiftSumList(long userid) {
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+        try{
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(userid);
+            baseResp.setData(list);
+            baseResp.initCodeAndDesp();
+        }catch (Exception e){
+            logger.error("selectGiftSumList userid = {}", userid, e);
+        }
+        return baseResp;
+	}
 
     @Override
     public BaseResp<List<LiveGiftDetail>> selectGiftList(long userid, Integer startNum, Integer endNum) {
@@ -220,4 +301,5 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         }
         return baseResp;
     }
+
 }

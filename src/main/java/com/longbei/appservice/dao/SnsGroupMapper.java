@@ -2,7 +2,6 @@ package com.longbei.appservice.dao;
 
 import com.longbei.appservice.entity.SnsGroup;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.data.web.PageableDefault;
 
 import java.util.Date;
 import java.util.List;
@@ -68,4 +67,11 @@ public interface SnsGroupMapper {
      * @return
      */
     List<SnsGroup> selectGroup(@Param("keyword") String keyword, @Param("startNum")Integer startNum,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 批量插入群组
+     * @param list
+     * @return
+     */
+    int batchInsertGroup(List<SnsGroup> list);
 }

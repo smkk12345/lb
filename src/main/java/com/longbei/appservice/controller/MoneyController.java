@@ -3,7 +3,9 @@ package com.longbei.appservice.controller;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.LiveGiftDetail;
 import com.longbei.appservice.entity.UserFlowerDetail;
+import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.UserFlowerDetailService;
 import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
@@ -34,8 +36,106 @@ public class MoneyController {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserFlowerDetailService userFlowerDetailService;
+	@Autowired
+    private LiveGiftService liveGiftService;
 	
 	private static Logger logger = LoggerFactory.getLogger(MoneyController.class);
+	
+	
+	/**
+    * @Title: http://ip:port/app_service/money/selectLiveGift
+    * @Description: 我的礼物
+    * @param @param userid
+    * @auther yinxc
+    * @currentdate:2017年9月5日
+    */
+	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectLiveGift")
+    public BaseResp<List<LiveGiftDetail>> selectLiveGift(String userid) {
+		logger.info("selectLiveGift userid={}",userid);
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		try {
+  			baseResp = liveGiftService.selectGiftSumList(Long.parseLong(userid));
+        } catch (Exception e) {
+            logger.error("selectLiveGift userid = {}", userid, e);
+        }
+  		return baseResp;
+    }
+	
+	/**
+    * @Title: http://ip:port/app_service/money/selectLiveGiftDetail
+    * @Description: 我的礼物明细
+    * @param @param userid 当前登录者id
+    * @param @param startNo   pageSize
+    * @auther yinxc
+    * @currentdate:2017年9月5日
+    */
+	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectLiveGiftDetail")
+    public BaseResp<List<LiveGiftDetail>> selectLiveGiftDetail(String userid, 
+    		Integer startNo, Integer pageSize) {
+		logger.info("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
+            		userid, startNo, pageSize);
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
+  		try {
+  			baseResp = liveGiftService.selectOwnGiftList(Long.parseLong(userid), sNo, sSize);
+        } catch (Exception e) {
+            logger.error("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
+            		userid, startNo, pageSize, e);
+        }
+  		return baseResp;
+    }
+	
+	
+	/**
+    * @Title: http://ip:port/app_service/money/selectGiftDetailList
+    * @Description: 收到的单个礼物类型明细
+    * @param @param userid 当前登录者id
+    * @param @param giftid 礼物类型id
+    * @param @param startNo   pageSize
+    * @auther yinxc
+    * @currentdate:2017年9月5日
+    */
+	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "selectGiftDetailList")
+    public BaseResp<List<LiveGiftDetail>> selectGiftDetailList(String userid, String giftid, 
+    		Integer startNo, Integer pageSize) {
+		logger.info("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+        		userid, giftid, startNo, pageSize);
+		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+  		if (StringUtils.hasBlankParams(userid, giftid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+  		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
+  		try {
+  			baseResp = liveGiftService.selectGiftListByGiftid(Long.parseLong(userid), Long.parseLong(giftid), sNo, sSize);
+        } catch (Exception e) {
+            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+            		userid, giftid, startNo, pageSize, e);
+        }
+  		return baseResp;
+    }
 	
 	
 	/**

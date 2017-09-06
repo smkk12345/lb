@@ -227,4 +227,31 @@
       limit #{startNum},#{pageSize}
   </select>
 
+
+  <!-- 批量创建群组 -->
+  <insert id="batchInsertGroup" parameterType="list">
+    insert into sns_group(
+    groupid,
+    groupname,
+    createtime,
+    updatetime,
+    currentnum,
+    maxnum,
+    mainuserid,
+    needconfirm
+    )VALUES
+    <foreach collection="list" item="group" separator=",">
+      (
+      #{group.groupid},
+      #{group.groupname},
+      #{group.createtime},
+      #{group.updatetime},
+      #{group.currentnum},
+      #{group.maxnum},
+      #{group.mainuserid},
+      #{group.needconfirm}
+      )
+    </foreach>
+  </insert>
+
 </mapper>

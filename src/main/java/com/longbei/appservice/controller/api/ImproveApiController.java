@@ -222,6 +222,26 @@ public class ImproveApiController {
         return baseResp;
     }
 
+    /**
+     * 查询龙榜中视频微进步
+     * @param nickname 用户昵称－查询条件
+     * @param ranktitle 龙榜标题－查询条件
+     * @param pageno
+     * @param pagesize
+     * @return
+     */
+    @RequestMapping(value = "selectImproveVideos")
+    public BaseResp<Page<Improve>> selectImproveVideos(String nickname, String ranktitle, String pageno, String pagesize){
+        BaseResp<Page<Improve>> baseResp = new BaseResp<>();
+        logger.info("selectImproveVideos() nickname={}, ranktitle={}", nickname, ranktitle);
+        try {
+            baseResp = improveService.selectImproveVideos(nickname, ranktitle, Integer.parseInt(pageno), Integer.parseInt(pagesize));
+        } catch (Exception e) {
+            logger.error("select Improve Videos() is error:",e);
+        }
+        return baseResp;
+    }
+
     
    //------------------------------share调用---------------------------------------
 
