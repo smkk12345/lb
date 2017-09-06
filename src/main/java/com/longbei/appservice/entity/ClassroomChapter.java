@@ -1,8 +1,13 @@
 package com.longbei.appservice.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ClassroomChapter {
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class ClassroomChapter implements Serializable {
     private Integer id;
 
     private Long chapterid;
@@ -14,12 +19,16 @@ public class ClassroomChapter {
 
     private Long classroomid;//教室id
 
-    private String isdel;//是否删除
+    private String isdel;//isdel 是否删除  0：未删除   1：已删除
 
 
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
+    
+    public ClassroomChapter(){
+    	super();
+    }
 
 
     /**
@@ -122,6 +131,8 @@ public class ClassroomChapter {
      * 创建时间
      * @return createtime 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getCreatetime() {
         return createtime;
     }
@@ -138,6 +149,8 @@ public class ClassroomChapter {
      * 更新时间 
      * @return updatetime 更新时间 
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getUpdatetime() {
         return updatetime;
     }

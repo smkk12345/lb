@@ -14,12 +14,25 @@
   <sql id="Base_Column_List" >
     id, chapterid, title, sort, classroomid, isdel, createtime, updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from classroom_chapter
-    where id = #{id,jdbcType=INTEGER}
+    where chapterid = #{chapterid}
   </select>
+  
+  <select id="selectChapterByCid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom_chapter
+    where classroomid = #{classroomid} 
+    and isdel = 0 
+    order by sort desc, createtime desc 
+    <if test="pageSize != 0" >
+      limit #{startNo},#{pageSize}
+    </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_chapter
     where id = #{id,jdbcType=INTEGER}
@@ -115,4 +128,19 @@
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where chapterid = #{chapterid}
   </update>
+  
+  <update id="updateIsdel" >
+    update classroom_chapter
+    set isdel = 1 
+    where chapterid = #{chapterid} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateSortByid" >
+    update classroom_chapter
+    set sort = #{sort} 
+    where chapterid = #{chapterid} 
+    and classroomid = #{classroomid} 
+  </update>
+  
 </mapper>
