@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ClassroomChapterMapper;
 import com.longbei.appservice.entity.ClassroomChapter;
@@ -22,6 +23,26 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomChapterServiceImpl.class);
 
+	
+
+	@Override
+	public BaseResp<Page<ClassroomChapter>> selectPcSearchChapterList(ClassroomChapter classroomChapter, int startNo, int pageSize) {
+		BaseResp<Page<ClassroomChapter>> reseResp = new BaseResp<>();
+		Page<ClassroomChapter> page = new Page<>(startNo/pageSize+1, pageSize);
+		try {
+			int totalcount = classroomChapterMapper.selectSearchCount(classroomChapter);
+			List<ClassroomChapter> list = classroomChapterMapper.selectPcSearchChapterList(classroomChapter, startNo, pageSize);
+			page.setTotalCount(totalcount);
+            page.setList(list);
+			reseResp.setData(page);
+			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+		} catch (Exception e) {
+			logger.error("selectPcSearchChapterList classroomid = {}, startNo = {}, pageSize = {}", 
+					classroomChapter.getClassroomid(), startNo, pageSize, e);
+		}
+		return reseResp;
+	}
+	
 	@Override
 	public BaseResp<ClassroomChapter> selectByPrimaryKey(long chapterid) {
 		BaseResp<ClassroomChapter> baseResp = new BaseResp<>();
@@ -105,6 +126,21 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 		}catch(Exception e){
 			logger.error("updateSortByid classroomid = {}, chapterid = {}, sort = {}", 
 					classroomid, chapterid, sort, e);
+        }
+    	return baseResp;
+	}
+
+	@Override
+	public BaseResp<Object> updateDisplayByid(long classroomid, long chapterid, String display) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			int temp = classroomChapterMapper.updateDisplayByid(classroomid, chapterid, display);
+			if(temp>0){
+				baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+			}
+		}catch(Exception e){
+			logger.error("updateDisplayByid classroomid = {}, chapterid = {}, display = {}", 
+					classroomid, chapterid, display, e);
         }
     	return baseResp;
 	}
