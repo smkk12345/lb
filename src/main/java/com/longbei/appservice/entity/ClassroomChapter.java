@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class ClassroomChapter implements Serializable {
     private Integer id;
@@ -16,11 +18,11 @@ public class ClassroomChapter implements Serializable {
 
     private Integer sort;//章节顺序
 
-
     private Long classroomid;//教室id
 
     private String isdel;//isdel 是否删除  0：未删除   1：已删除
-
+    
+    private String display; //display 0 显示 1 隐藏
 
     private Date createtime;//创建时间
 
@@ -51,6 +53,7 @@ public class ClassroomChapter implements Serializable {
      * 
      * @return chapterid 
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getChapterid() {
         return chapterid;
     }
@@ -83,6 +86,7 @@ public class ClassroomChapter implements Serializable {
      * 章节顺序 
      * @return sort 章节顺序 
      */
+    @JsonInclude(Include.ALWAYS)
     public Integer getSort() {
         return sort;
     }
@@ -99,6 +103,7 @@ public class ClassroomChapter implements Serializable {
      * 教室id
      * @return classroomid 教室id
      */
+    @JsonInclude(Include.ALWAYS)
     public Long getClassroomid() {
         return classroomid;
     }
@@ -115,6 +120,7 @@ public class ClassroomChapter implements Serializable {
      * 是否删除 
      * @return isdel 是否删除 
      */
+    @JsonInclude(Include.ALWAYS)
     public String getIsdel() {
         return isdel;
     }
@@ -162,4 +168,13 @@ public class ClassroomChapter implements Serializable {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+    @JsonInclude(Include.ALWAYS)
+	public String getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(String display) {
+		this.display = display;
+	}
 }

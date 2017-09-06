@@ -8,11 +8,12 @@
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="classroomid" property="classroomid" jdbcType="BIGINT" />
     <result column="isdel" property="isdel" jdbcType="CHAR" />
+    <result column="display" property="display" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, chapterid, title, sort, classroomid, isdel, createtime, updatetime
+    id, chapterid, title, sort, classroomid, isdel, display, createtime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -30,6 +31,37 @@
     order by sort desc, createtime desc 
     <if test="pageSize != 0" >
       limit #{startNo},#{pageSize}
+    </if>
+  </select>
+  
+  <select id="selectPcSearchChapterList" parameterType="com.longbei.appservice.entity.ClassroomChapter" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+    from classroom_chapter
+    where classroomid = #{classroomChapter.classroomid} 
+    and isdel = 0 
+    <if test="classroomChapter.title != null and classroomChapter.title != ''" >
+      	and title LIKE concat(concat('%',#{classroomChapter.title}),'%')
+    </if>
+    <if test="classroomChapter.display != null and classroomChapter.display != ''" >
+      	and display = #{classroomChapter.display}
+    </if>
+    order by sort desc, createtime desc 
+    <if test="pageSize != 0" >
+      limit #{startNo},#{pageSize}
+    </if>
+  </select>
+  
+  <select id="selectSearchCount" parameterType="com.longbei.appservice.entity.ClassroomChapter" resultType="java.lang.Integer" >
+    select count(*) 
+    from classroom_chapter
+    where classroomid = #{classroomChapter.classroomid} 
+    and isdel = 0 
+    <if test="classroomChapter.title != null and classroomChapter.title != ''" >
+      	and title LIKE concat(concat('%',#{classroomChapter.title}),'%')
+    </if>
+    <if test="classroomChapter.display != null and classroomChapter.display != ''" >
+      	and display = #{classroomChapter.display}
     </if>
   </select>
   
@@ -63,6 +95,9 @@
       <if test="isdel != null" >
         isdel,
       </if>
+      <if test="display != null" >
+        display,
+      </if>
       <if test="createtime != null" >
         createtime,
       </if>
@@ -85,6 +120,9 @@
       </if>
       <if test="isdel != null" >
         #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="display != null" >
+        #{display},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -139,6 +177,13 @@
   <update id="updateSortByid" >
     update classroom_chapter
     set sort = #{sort} 
+    where chapterid = #{chapterid} 
+    and classroomid = #{classroomid} 
+  </update>
+  
+  <update id="updateDisplayByid" >
+    update classroom_chapter
+    set display = #{display} 
     where chapterid = #{chapterid} 
     and classroomid = #{classroomid} 
   </update>
