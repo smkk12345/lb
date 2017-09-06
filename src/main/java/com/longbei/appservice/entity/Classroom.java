@@ -1,17 +1,12 @@
 package com.longbei.appservice.entity;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 public class Classroom implements Serializable {
-	
 	/**
 	 * 
 	 */
@@ -88,6 +83,8 @@ public class Classroom implements Serializable {
     private String nickname; //创建人信息
     
     private UserCard userCard; //名片类
+
+	List<UserCard> userCards;//名片列表
 
 	private AppUserMongoEntity appUserMongoEntity;
     
@@ -606,5 +603,13 @@ public class Classroom implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public void setUserCards(List<UserCard> userCards) {
+		this.userCards = userCards;
+	}
+
+	public List<UserCard> getUserCards() {
+		return userCards;
 	}
 }
