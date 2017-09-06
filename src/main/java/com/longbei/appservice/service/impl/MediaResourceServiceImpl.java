@@ -146,14 +146,14 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                     final String filePath = mediaResource.getFilepath();
                     final String filename = mediaResource.getFilename();
                     final Integer mediaResourceId = mediaResource.getId();
-                    threadPoolTaskExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
+//                    threadPoolTaskExecutor.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
                             PPTToImage(filePath,filename,mediaResourceId);
 //                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
 //                            batchInsertMediaResourceDetail(baseResp1.getData());
-                        }
-                    });
+//                        }
+//                    });
 
                 }
                 baseResp.getExpandData().put("mediaResourceId",mediaResource.getId());
@@ -432,7 +432,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             if(!pptFile.getParentFile().exists()){
                 pptFile.getParentFile().mkdirs();
             }
+            logger.info("pptUrl = {}",pptUrl);
             boolean flag = downloadPPT(pptUrl,pptFilePath);
+            logger.info("ppt download result:{}",flag);
             if(!flag){
                 return false;
             }
@@ -450,6 +452,7 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 
             //3. 将pdf转成图片
             List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+            logger.info("ppttoImagelist imageList:{}",imageList);
 //            List<String> imageList = PPTToImageUtil.doPPTtoImage(pptFile,imageOutput,realFilename,"png");
 
             //4.将所有图片 上传的到阿里云
