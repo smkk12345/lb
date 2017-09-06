@@ -19,6 +19,7 @@ import com.longbei.appservice.entity.MediaResource;
 import com.longbei.appservice.entity.MediaResourceDetail;
 import com.longbei.appservice.entity.MediaResourceType;
 import com.longbei.appservice.service.MediaResourceService;
+import com.longbei.appservice.service.api.staticresourceservice.PPTServiceApi;
 import org.artofsolving.jodconverter.OfficeDocumentConverter;
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeManager;
@@ -64,6 +65,8 @@ public class MediaResourceServiceImpl implements MediaResourceService {
     private MediaResourceDetailMapper mediaResourceDetailMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private PPTServiceApi pptServiceApi;
 
     /**
      * 查询资源分类列表
@@ -144,7 +147,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                     threadPoolTaskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            PPTToImage(filePath,filename,mediaResourceId);
+//                            PPTToImage(filePath,filename,mediaResourceId);
+                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
+                            batchInsertMediaResourceDetail(baseResp1.getData());
                         }
                     });
 
@@ -156,6 +161,13 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             logger.error("add mediaResource mediaResource errorMsg:{}",mediaResource.toString(),e);
         }
         return baseResp;
+    }
+
+    public void batchInsertMediaResourceDetail(List<MediaResourceDetail> mediaResourceDetailList){
+        if (null == mediaResourceDetailList){
+            return;
+        }
+        this.mediaResourceDetailMapper.batchInsertMediaResourceDetail(mediaResourceDetailList);
     }
 
     /**

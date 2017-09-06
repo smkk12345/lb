@@ -611,4 +611,11 @@ public interface ImproveService {
 
     int getLikeFromRedis(String impid,String businessid,String businesstype);
 
+
+    BaseResp<Object> selectImproveBusinessInfo(String impid,
+                                               String businesstype,
+                                               String businessid,
+                                               String userid);
+
+
 }
