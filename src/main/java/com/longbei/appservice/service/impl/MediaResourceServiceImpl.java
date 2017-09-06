@@ -554,9 +554,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
-            InputStreamReader sr = new InputStreamReader(inStream,"GBK");
+            InputStreamReader sr = new InputStreamReader(inStream,"utf8");
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-            OutputStreamWriter sw = new OutputStreamWriter(fs,"GBK");
+            OutputStreamWriter sw = new OutputStreamWriter(fs);
             BufferedReader reader = new BufferedReader(sr);
             BufferedWriter bufw = new BufferedWriter(sw);
             String line = null;
