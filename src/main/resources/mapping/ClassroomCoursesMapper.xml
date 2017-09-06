@@ -547,4 +547,28 @@
   </update>
 
 
+  <select id="selectOldCourseCount"  resultType="java.lang.Integer" >
+    select count(*)
+    from classroom_courses
+    where classroomid = #{classroomid}
+    and
+    chapterid is null
+  </select>
+
+  <select id="selectByChapterId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from classroom_courses
+    where classroomid = #{classroomid}
+    and
+    chapterid = #{chapterid}
+  </select>
+
+  <update id="updateChapterIdByCid" >
+    update classroom_courses
+    set chapterid = #{chapterid}
+    where  classroomid = #{classroomid}
+  </update>
+
+
 </mapper>

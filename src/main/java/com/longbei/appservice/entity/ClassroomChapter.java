@@ -2,6 +2,7 @@ package com.longbei.appservice.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,6 +28,8 @@ public class ClassroomChapter implements Serializable {
     private Date createtime;//创建时间
 
     private Date updatetime;//更新时间
+
+    private List<ClassroomCourses> coursesList;//课程列表
     
     public ClassroomChapter(){
     	super();
@@ -177,4 +180,12 @@ public class ClassroomChapter implements Serializable {
 	public void setDisplay(String display) {
 		this.display = display;
 	}
+
+    public void setCoursesList(List<ClassroomCourses> coursesList) {
+        this.coursesList = coursesList;
+    }
+
+    public List<ClassroomCourses> getCoursesList() {
+        return coursesList;
+    }
 }

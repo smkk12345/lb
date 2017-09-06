@@ -204,4 +204,14 @@ public interface ClassroomCoursesMapper {
 						@Param("id") Integer id,
 						@Param("filekey") String filekey,
 						@Param("duration") String duration);
+
+	Integer selectOldCourseCount(@Param("classroomid") long classroomid);
+
+	List<ClassroomCourses> selectByChapterId(@Param("classroomid") long classroomid,
+											 @Param("chapterid")long chapterid);
+
+
+	Integer updateChapterIdByCid(@Param("classroomid") long classroomid,
+								 @Param("chapterid") long chapterid);
+
 }
