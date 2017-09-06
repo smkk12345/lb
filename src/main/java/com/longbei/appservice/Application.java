@@ -28,7 +28,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         {"com.longbei.appservice.service.api.outernetservice",
                 "com.longbei.appservice.service.api.userservice" ,
                         "com.longbei.appservice.service.api.productservice",
-                "com.longbei.appservice.service.api.authservice"})
+                "com.longbei.appservice.service.api.authservice",
+                "com.longbei.appservice.service.api.staticresourceservice"})
 public class Application extends SpringBootServletInitializer {
     private static Logger logger = Logger.getLogger(Application.class);
 
