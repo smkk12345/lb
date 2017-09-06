@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +21,6 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.ClassroomCourses;
-import com.longbei.appservice.entity.ClassroomMembers;
-import com.longbei.appservice.entity.ClassroomQuestions;
-import com.longbei.appservice.entity.ClassroomQuestionsLower;
-import com.longbei.appservice.entity.Improve;
-import com.longbei.appservice.entity.ReplyImprove;
-import com.longbei.appservice.service.ClassroomCoursesService;
-import com.longbei.appservice.service.ClassroomMembersService;
-import com.longbei.appservice.service.ClassroomQuestionsMongoService;
-import com.longbei.appservice.service.ClassroomService;
-import com.longbei.appservice.service.ImproveService;
 
 @RestController
 @RequestMapping(value = "/classroom")
@@ -46,6 +36,8 @@ public class ClassroomController {
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
 	@Autowired
 	private ImproveService improveService;
+	@Autowired
+	private ClassroomChapterService classroomChapterService;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
 	
@@ -1117,5 +1109,62 @@ public class ClassroomController {
    		}
    		return baseResp;
     }
-  	
+
+	/**
+	 * http://ip:port/app_service/classroom/selectUsercardList
+	 * 获取教室中老师列表
+	 * @param classroomid
+	 * @return  BaseResp<List<UserCard>>
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "selectUsercardList")
+	public BaseResp<List<UserCard>> selectUsercardList(String classroomid) {
+		logger.info("selectUsercard classroomid = {}", classroomid);
+		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		try {
+			baseResp = classroomService.selectUsercardList(Long.parseLong(classroomid));
+		} catch (Exception e) {
+			logger.error("selectUsercard classroomid = {}", classroomid, e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * @Title: http://ip:port/app_service/classroom/chapterList
+	 * @Description: 获取章节列表
+	 * @param @param classroomid
+	 * @param @param startNo   pageSize
+	 * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+	 * @auther yinxc
+	 * @currentdate:2017年3月1日
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "chapterList")
+	public BaseResp<List<ClassroomChapter>> chapterList(String classroomid, Integer startNo, Integer pageSize) {
+		logger.info("chapterList classroomid={},startNo={},pageSize={}",classroomid,startNo,pageSize);
+		BaseResp<List<ClassroomChapter>> baseResp = new BaseResp<>();
+		if (StringUtils.hasBlankParams(classroomid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+		}
+		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
+		int sSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
+		if(null != startNo){
+			sNo = startNo.intValue();
+		}
+		if(null != pageSize){
+			sSize = pageSize.intValue();
+		}
+		try {
+			baseResp = classroomChapterService.selectChapterByCid(Long.parseLong(classroomid), sNo, sSize);
+		} catch (Exception e) {
+			logger.error("coursesList classroomid = {}, startNo = {}, pageSize = {}",
+					classroomid, startNo, pageSize, e);
+		}
+		return baseResp;
+	}
+
+
 }

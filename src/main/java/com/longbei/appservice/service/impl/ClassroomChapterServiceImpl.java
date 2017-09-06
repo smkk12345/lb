@@ -1,7 +1,12 @@
 package com.longbei.appservice.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.longbei.appservice.common.IdGenerateService;
+import com.longbei.appservice.dao.ClassroomCoursesMapper;
+import com.longbei.appservice.entity.ClassroomCourses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +17,6 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.dao.ClassroomChapterMapper;
-import com.longbei.appservice.dao.ClassroomCoursesMapper;
 import com.longbei.appservice.entity.ClassroomChapter;
 import com.longbei.appservice.service.ClassroomChapterService;
 
@@ -23,6 +27,8 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 	private ClassroomChapterMapper classroomChapterMapper;
 	@Autowired
 	private ClassroomCoursesMapper classroomCoursesMapper;
+	@Autowired
+	private IdGenerateService idGenerateService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomChapterServiceImpl.class);
@@ -89,12 +95,49 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
     	return baseResp;
 	}
 
-
+	/**
+	 * 查询教室中章节列表，章节带分页
+	 * @param classroomid
+	 * @param startNo   pageSize
+	 * @param pageSize
+	 * @return
+	 */
 	@Override
 	public BaseResp<List<ClassroomChapter>> selectChapterByCid(long classroomid, Integer startNo, Integer pageSize) {
 		BaseResp<List<ClassroomChapter>> baseResp = new BaseResp<>();
 		try{
-			List<ClassroomChapter> chapterList = classroomChapterMapper.selectChapterByCid(classroomid, startNo, pageSize);
+			List<ClassroomChapter> chapterList = new ArrayList<>();
+			int n = classroomCoursesMapper.selectOldCourseCount(classroomid);
+			if(n>0){
+				ClassroomChapter classroomChapter = new ClassroomChapter();
+				classroomChapter.setChapterid(idGenerateService.getUniqueIdAsLong());
+				classroomChapter.setDisplay("0");
+				classroomChapter.setClassroomid(classroomid);
+				classroomChapter.setTitle("默认章节");
+				classroomChapter.setSort(0);
+				Date date = new Date();
+				classroomChapter.setCreatetime(date);
+				classroomChapter.setUpdatetime(date);
+				classroomChapterMapper.insert(classroomChapter);
+				classroomCoursesMapper.updateChapterIdByCid(classroomid,classroomChapter.getChapterid());
+				List<ClassroomCourses> courses = classroomCoursesMapper.selectListByClassroomid(classroomid,"1",0,500);
+				if(null == courses || courses.size() == 0){
+				}else{
+					for (int i = 0; i < courses.size(); i++) {
+						courses.get(i).setChapterid(classroomChapter.getChapterid());
+						courses.get(i).setChaptertitle(classroomChapter.getTitle());
+					}
+					classroomChapter.setCoursesList(courses);
+					chapterList.add(classroomChapter);
+				}
+			}else{
+				chapterList = classroomChapterMapper.selectChapterByCid(classroomid, startNo, pageSize);
+				for (int i = 0; i < chapterList.size(); i++) {
+					ClassroomChapter classroomChapter = chapterList.get(i);
+					List<ClassroomCourses> courseList = classroomCoursesMapper.selectByChapterId(classroomid,classroomChapter.getChapterid());
+					classroomChapter.setCoursesList(courseList);
+				}
+			}
 			baseResp.setData(chapterList);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		}catch(Exception e){

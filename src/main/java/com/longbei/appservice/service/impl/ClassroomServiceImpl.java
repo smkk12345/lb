@@ -283,6 +283,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("cardid", userCard.getUserid());
 				map.put("displayname", displayname);
 				map.put("ptype", classroom.getPtype()); //十全十美类型
+				map.put("crowd",classroom.getCrowd());//使用人群
+				map.put("classbrief", classroom.getClassbrief());
+				map.put("syllabus", classroom.getSyllabus());
 				map.put("classtitle", classroom.getClasstitle()); //教室标题
 				map.put("charge", classroom.getCharge()); //课程价格
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
@@ -1602,6 +1605,21 @@ public class ClassroomServiceImpl implements ClassroomService {
             logger.error("endClassroom currentTime;{}", currentTime, e);
         }
         return baseResp;
+	}
+
+	@Override
+	public BaseResp<List<UserCard>> selectUsercardList(Long classroonid) {
+		BaseResp<List<UserCard>> baseResp = new BaseResp<>();
+		List<UserCard> list = new ArrayList<>();
+		try{
+			Classroom classroom = classroomMapper.selectByPrimaryKey(classroonid);
+			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+			list.add(userCard);
+			baseResp.setData(list);
+		}catch (Exception e){
+			logger.error("selectUsercardList error and msg={}",e);
+		}
+		return baseResp.initCodeAndDesp();
 	}
 
 }

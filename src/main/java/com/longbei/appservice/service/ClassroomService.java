@@ -306,5 +306,9 @@ public interface ClassroomService {
      * @param currentTime
      */
 	BaseResp<Object> endClassroom(Long currentTime);
+
+
+
+	BaseResp<List<UserCard>> selectUsercardList(Long classroonid);
 	
 }
