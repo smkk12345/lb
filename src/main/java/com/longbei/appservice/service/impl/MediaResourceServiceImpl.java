@@ -4,6 +4,7 @@ import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -145,14 +146,14 @@ public class MediaResourceServiceImpl implements MediaResourceService {
                     final String filePath = mediaResource.getFilepath();
                     final String filename = mediaResource.getFilename();
                     final Integer mediaResourceId = mediaResource.getId();
-                    threadPoolTaskExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
+//                    threadPoolTaskExecutor.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
                             PPTToImage(filePath,filename,mediaResourceId);
 //                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
 //                            batchInsertMediaResourceDetail(baseResp1.getData());
-                        }
-                    });
+//                        }
+//                    });
 
                 }
                 baseResp.getExpandData().put("mediaResourceId",mediaResource.getId());
@@ -431,7 +432,9 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             if(!pptFile.getParentFile().exists()){
                 pptFile.getParentFile().mkdirs();
             }
+            logger.info("pptUrl = {}",pptUrl);
             boolean flag = downloadPPT(pptUrl,pptFilePath);
+            logger.info("ppt download result:{}",flag);
             if(!flag){
                 return false;
             }
@@ -443,12 +446,13 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             OpenOfficeConnection connection =
                     new SocketOpenOfficeConnection(AppserviceConfig.openoffice_addr,AppserviceConfig.openoffice_port);
             connection.connect();
-            DocumentConverter documentConverter = new OpenOfficeDocumentConverter(connection);
+            DocumentConverter documentConverter = new StreamOpenOfficeDocumentConverter(connection);
 
             documentConverter.convert(pptFile,outputFile);
 
             //3. 将pdf转成图片
             List<String> imageList = PDFToImage(outputFileString,imageOutput,realFilename);
+            logger.info("ppttoImagelist imageList:{}",imageList);
 //            List<String> imageList = PPTToImageUtil.doPPTtoImage(pptFile,imageOutput,realFilename,"png");
 
             //4.将所有图片 上传的到阿里云
