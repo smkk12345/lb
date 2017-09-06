@@ -101,6 +101,9 @@
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
     </if>
+    <if test="classroomCourses.chapterid != null" >
+      	and chapterid = #{classroomCourses.chapterid}
+    </if>
   </select>
   
   <select id="selectMaxSort" resultType="java.lang.Integer" >
@@ -122,6 +125,9 @@
     </if>
     <if test="classroomCourses.isup != null and classroomCourses.isup != ''" >
       	and isup = #{classroomCourses.isup}
+    </if>
+    <if test="classroomCourses.chapterid != null" >
+      	and chapterid = #{classroomCourses.chapterid}
     </if>
     order by isup desc, coursesort asc, createtime asc 
     <if test="endNum != 0" >
