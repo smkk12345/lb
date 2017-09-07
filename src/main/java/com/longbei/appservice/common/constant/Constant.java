@@ -230,6 +230,7 @@ public class Constant {
 	public static final int STATUS_SYS_1114 = -1114;
 	public static final int STATUS_SYS_1115 = -1115;
 	public static final int STATUS_SYS_1116 = -1116;
+	public static final int STATUS_SYS_1117 = -1117;
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
@@ -413,6 +414,7 @@ public class Constant {
 	public static final String RTNINFO_SYS_1114 = "您发布的教室数量已达上限";
 	public static final String RTNINFO_SYS_1115 = "视频转码中，请稍后重试";
 	public static final String RTNINFO_SYS_1116 = "章节中已有课程不能删除";
+	public static final String RTNINFO_SYS_1117 = "暂无认证信息";
 	
 
 	/******* 12 开头 媒体资源库 相关  **********/
