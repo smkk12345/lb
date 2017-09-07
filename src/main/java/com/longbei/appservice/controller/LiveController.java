@@ -307,6 +307,7 @@ public class LiveController {
                     liveInfo.getCourseid().intValue(),liveInfo.getClassroomid(),filekey,durations);
             classroomCoursesService.updateMedia(liveInfo.getCourseid().intValue(),
                     liveInfo.getClassroomid(),filekey,durations.longValue()+"");
+            liveInfoMongoService.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
         }catch (Exception e){
             logger.error("updateLiveMedia" ,e);
         }
