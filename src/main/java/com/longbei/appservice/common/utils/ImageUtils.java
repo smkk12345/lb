@@ -24,11 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import javax.imageio.ImageIO;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
@@ -623,27 +619,5 @@ public class ImageUtils {
 			return "0";
 		}
 	}
-
-	public static void main1(String[] args) throws Exception {
-
-		int i=1;
-		int j=2;
-		InputStream imagein = new FileInputStream(i + ".jpg");
-		InputStream imagein2 = new FileInputStream(j + ".png");
-
-		BufferedImage image = ImageIO.read(imagein);
-		BufferedImage image2 = ImageIO.read(imagein2);
-		Graphics g = image.getGraphics();
-		g.drawImage(image2, image.getWidth() - image2.getWidth() - 15, image.getHeight() - image2.getHeight() - 10,
-				image2.getWidth() + 10, image2.getHeight() + 5, null);
-		OutputStream outImage = new FileOutputStream("custom" + j + "-" + i + ".jpg");
-		JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(outImage);
-		enc.encode(image);
-		imagein.close();
-		imagein2.close();
-		outImage.close();
-
-	}
-
 
 }
