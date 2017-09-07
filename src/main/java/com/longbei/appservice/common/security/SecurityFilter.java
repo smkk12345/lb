@@ -392,6 +392,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 		if(outernetUrls.contains(urlPath)){
 			return false;
 		}
+		if(urlPath.contains("/api/staticresource")){
+			return false;
+		}
 		if(urlPath.contains("/api/notify/verify")){
 			return false;
 		}

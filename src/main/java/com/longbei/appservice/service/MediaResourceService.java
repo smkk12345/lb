@@ -3,6 +3,7 @@ package com.longbei.appservice.service;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.entity.MediaResource;
+import com.longbei.appservice.entity.MediaResourceDetail;
 import com.longbei.appservice.entity.MediaResourceType;
 
 import java.util.List;
@@ -39,6 +40,13 @@ public interface MediaResourceService {
      * @return
      */
     BaseResp<MediaResource> mediaResourceDetail(Integer id);
+
+
+    /**
+     * 出入图片
+     * @param mediaResourceDetailList
+     */
+    void batchInsertMediaResourceDetail(List<MediaResourceDetail> mediaResourceDetailList);
 
     /**
      * 更新资源库文件
