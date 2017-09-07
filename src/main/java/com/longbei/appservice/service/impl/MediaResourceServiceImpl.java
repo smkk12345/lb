@@ -146,8 +146,8 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 //                    threadPoolTaskExecutor.execute(new Runnable() {
 //                        @Override
 //                        public void run() {
-                            PPTToImage(filePath,filename,mediaResourceId);
-//                            BaseResp<List<MediaResourceDetail>> baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
+//                            PPTToImage(filePath,filename,mediaResourceId);
+                            BaseResp baseResp1 = pptServiceApi.PPTToImage(filePath,filename,mediaResourceId);
 //                            batchInsertMediaResourceDetail(baseResp1.getData());
 //                        }
 //                    });
