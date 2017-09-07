@@ -113,6 +113,8 @@ public class Classroom implements Serializable {
 
 	private String status; //直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
 
+	private Integer noticeid;//公告id
+
 	public AppUserMongoEntity getAppUserMongoEntity() {
 		return appUserMongoEntity;
 	}
@@ -622,6 +624,14 @@ public class Classroom implements Serializable {
 
 	public List<ClassroomChapter> getClassroomChapters() {
 		return classroomChapters;
+	}
+
+	public Integer getNoticeid() {
+		return noticeid;
+	}
+
+	public void setNoticeid(Integer noticeid) {
+		this.noticeid = noticeid;
 	}
 
 }

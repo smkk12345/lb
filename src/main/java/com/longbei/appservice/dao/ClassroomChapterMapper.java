@@ -1,5 +1,6 @@
 package com.longbei.appservice.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -79,6 +80,8 @@ public interface ClassroomChapterMapper {
      * 获取Count
      */
     Integer selectSearchCount(@Param("classroomChapter") ClassroomChapter classroomChapter);
-    
+
+	Integer selectChapterCountByTime(@Param("classroomid") long classroomid,
+									 @Param("createtime")Date createtime);
     
 }

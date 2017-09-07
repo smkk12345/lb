@@ -116,6 +116,7 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 				classroomChapter.setClassroomid(classroomid);
 				classroomChapter.setTitle("默认章节");
 				classroomChapter.setSort(0);
+				classroomChapter.setIsdel("0");
 				Date date = new Date();
 				classroomChapter.setCreatetime(date);
 				classroomChapter.setUpdatetime(date);
@@ -123,6 +124,8 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 				classroomCoursesMapper.updateChapterIdByCid(classroomid,classroomChapter.getChapterid());
 				List<ClassroomCourses> courses = classroomCoursesMapper.selectListByClassroomid(classroomid,"1",0,500);
 				if(null == courses || courses.size() == 0){
+					baseResp.getExpandData().put("courses",0);
+					baseResp.getExpandData().put("chapters",0);
 				}else{
 					for (int i = 0; i < courses.size(); i++) {
 						courses.get(i).setChapterid(classroomChapter.getChapterid());
@@ -130,14 +133,20 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 					}
 					classroomChapter.setCoursesList(courses);
 					chapterList.add(classroomChapter);
+					baseResp.getExpandData().put("courses",courses.size());
+					baseResp.getExpandData().put("courses",1);
 				}
 			}else{
+				int coursecount = 0;
 				chapterList = classroomChapterMapper.selectChapterByCid(classroomid, startNo, pageSize);
 				for (int i = 0; i < chapterList.size(); i++) {
 					ClassroomChapter classroomChapter = chapterList.get(i);
 					List<ClassroomCourses> courseList = classroomCoursesMapper.selectByChapterId(classroomid,classroomChapter.getChapterid());
 					classroomChapter.setCoursesList(courseList);
+					coursecount = coursecount + courseList.size();
 				}
+				baseResp.getExpandData().put("courses",coursecount);
+				baseResp.getExpandData().put("chapters",chapterList.size());
 			}
 			baseResp.setData(chapterList);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

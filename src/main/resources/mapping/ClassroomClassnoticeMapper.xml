@@ -21,13 +21,14 @@
     delete from classroom_classnotice
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomClassnotice" >
+  <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomClassnotice" useGeneratedKeys="true" keyProperty="id">
     insert into classroom_classnotice (classnotice, createtime, 
       updatetime, classroomid)
     values (#{classnotice,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{classroomid,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.longbei.appservice.entity.ClassroomClassnotice" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"
+          parameterType="com.longbei.appservice.entity.ClassroomClassnotice" >
     insert into classroom_classnotice
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="classnotice != null" >

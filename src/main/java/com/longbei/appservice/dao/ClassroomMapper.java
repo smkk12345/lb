@@ -82,8 +82,11 @@ public interface ClassroomMapper {
 	 * 修改教室公告---classnotice
 	 * 2017年3月2日
 	 */
-    int updateClassnoticeByClassroomid(@Param("classroomid") long classroomid, 
-    		@Param("classnotice") String classnotice, @Param("updatetime") String updatetime); 
+    int updateClassnoticeByClassroomid(
+    		@Param("classroomid") long classroomid,
+    		@Param("classnotice") String classnotice,
+			@Param("updatetime") String updatetime,
+			@Param("noticeid") int noticeid);
     
     /**
 	 * @author yinxc

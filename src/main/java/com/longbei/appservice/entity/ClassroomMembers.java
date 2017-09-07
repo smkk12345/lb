@@ -42,6 +42,8 @@ public class ClassroomMembers implements Serializable {
     
     private Integer complaintotalcount; //投诉次数
 
+    private Integer noticeid;
+
     /**
      * 
      * @return id 
@@ -239,4 +241,12 @@ public class ClassroomMembers implements Serializable {
 	public void setCnickname(String cnickname) {
 		this.cnickname = cnickname;
 	}
+
+    public Integer getNoticeid() {
+        return noticeid;
+    }
+
+    public void setNoticeid(Integer noticeid) {
+        this.noticeid = noticeid;
+    }
 }

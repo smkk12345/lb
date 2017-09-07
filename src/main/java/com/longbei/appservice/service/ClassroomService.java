@@ -313,5 +313,7 @@ public interface ClassroomService {
 	BaseResp<List<UserCard>> selectUsercardList(Long classroonid);
 
 	BaseResp<List<Classroom>> roomListByIds(String roomids);
+
+	BaseResp<Object> ignoreNotice(long classroomid,long userid);
 	
 }
