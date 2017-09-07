@@ -402,13 +402,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", classroomCourses.getPickey());
 					map.put("fileurl", classroomCourses.getFileurl());
 					map.put("coursesort", classroomCourses.getCoursesort());
-					ClassroomChapter classroomChapter = classroomChapterMapper.selectByPrimaryKey(classroomCourses.getChapterid());
-					int n = classroomChapterMapper.selectChapterCountByTime(classroomChapter.getClassroomid(),classroomChapter.getCreatetime());
-					if(n > 0){
-						map.put("chaptersort", 2);
-					}else {
+					if(null != classroomCourses.getChapterid()){
+						ClassroomChapter classroomChapter = classroomChapterMapper.selectByPrimaryKey(classroomCourses.getChapterid());
+						int n = classroomChapterMapper.selectChapterCountByTime(classroomChapter.getClassroomid(),classroomChapter.getCreatetime());
+						if(n > 0){
+							map.put("chaptersort", 2);
+						}else {
+							map.put("chaptersort", 1);
+						}
+					}else{
 						map.put("chaptersort", 1);
 					}
+
 					if(!StringUtils.isBlank(classroomCourses.getStarttime())){
 						map.put("coursestarttime", DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd HH:mm:ss"));
 					}else{
