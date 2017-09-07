@@ -1136,6 +1136,122 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     /**
+     * 加入叶圣陶的群组 当groupid群满的时候,新建一个群 并把该用户加入该群
+     * @param userid
+     * @param groupid
+     * @param groupuserid
+     * @param groupname
+     * @return
+     */
+    @Override
+    public BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname) {
+        logger.info("join YST institution group userid:{} groupid:{} groupuserid:{} groupname:{}",userid,groupid,groupuserid,groupname);
+        BaseResp<Object> baseResp = new BaseResp<Object>();
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        try{
+            //根据groupiD查询群
+            SnsGroup snsGroup = this.snsGroupMapper.selectByGroupIdAndMainUserId(groupid.toString(), null);
+            if (snsGroup == null) {
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+            }
+            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(userid.toString());
+            if(appUserMongoEntity == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            AppUserMongoEntity mainUserMongoEntity = this.userMongoDao.getAppUser(groupuserid.toString());
+            if(appUserMongoEntity == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            }
+            if ((1 + snsGroup.getCurrentnum()) > snsGroup.getMaxnum()) {//
+                //新建一个群
+                String newGroupId = "";
+                do{
+                    String tempId = IdGenerateService.getRandomString(true,SnsGroup.groupIdLength);
+                    if(!springJedisDao.sIsMember(SnsGroup.groupIdSet,tempId)){
+                        springJedisDao.sAdd(SnsGroup.groupIdSet,null,tempId);
+                        newGroupId = tempId;
+                    }
+                }while(newGroupId == null);
+
+                StringBuilder userIdSB = new StringBuilder().append(groupuserid).append(",").append(userid);
+                BaseResp<Object> baseResp1 = iRongYunService.createGroup(userIdSB.toString(),groupid,groupname);
+                if(baseResp1.getCode() == Constant.STATUS_SYS_00){
+                    SnsGroup newSnsGroup = new SnsGroup();
+                    newSnsGroup.setMainuserid(groupuserid);
+                    newSnsGroup.setGroupname(groupname);
+                    newSnsGroup.setCreatetime(new Date());
+                    newSnsGroup.setGroupid(Long.parseLong(newGroupId));
+                    newSnsGroup.setUpdatetime(new Date());
+                    newSnsGroup.setNeedconfirm(true);
+                    newSnsGroup.setMaxnum(SnsGroup.maxNum);
+                    newSnsGroup.setCurrentnum(2);
+                    int insertRow = this.snsGroupMapper.insertSelective(newSnsGroup);
+
+                    SnsGroupMembers newSnsGroupMember = new SnsGroupMembers();
+                    newSnsGroupMember.setCreatetime(new Date());
+                    newSnsGroupMember.setUpdatetime(new Date());
+                    newSnsGroupMember.setGroupid(Long.parseLong(newGroupId));
+                    newSnsGroupMember.setStatus(1);
+
+                    List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
+                    userList.add(appUserMongoEntity);
+                    userList.add(mainUserMongoEntity);
+
+                    Map<String,Object> insertMap = new HashMap<String,Object>();
+                    insertMap.put("snsGroupMembers",newSnsGroupMember);
+                    insertMap.put("userList",userList);
+                    int groupMemberRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
+                    if(groupMemberRow > 0){
+                        resultMap.put("newgroup",1);
+                        resultMap.put("groupid",groupid);
+                        baseResp.setData(resultMap);
+                        return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                    }
+                }
+            }
+            //校验用户是否已经在群里面
+            SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupid.toString());
+            if(snsGroupMembers != null && snsGroupMembers.getStatus() == 1){
+                return baseResp.initCodeAndDesp();
+            }else if(snsGroupMembers != null && snsGroupMembers.getStatus() != 1){
+                Map<String,Object> updateMap = new HashMap<String,Object>();
+                ArrayList<Long> tempUserArrayList = new ArrayList<Long>();
+                tempUserArrayList.add(snsGroupMembers.getUserid());
+                updateMap.put("updateUserIds",tempUserArrayList);
+                updateMap.put("groupId",groupid);
+                updateMap.put("status",1);
+                //更改用户加群的状态
+                int updateStatusRow = this.snsGroupMembersMapper.batchUpdateSnsGroupMemberStatus(updateMap);
+                return baseResp.ok();
+            }
+            SnsGroupMembers newSnsGroupMember = new SnsGroupMembers();
+            newSnsGroupMember.setCreatetime(new Date());
+            newSnsGroupMember.setUpdatetime(new Date());
+            newSnsGroupMember.setGroupid(groupid);
+
+            newSnsGroupMember.setAvatar(appUserMongoEntity.getAvatar());
+            newSnsGroupMember.setNickname(appUserMongoEntity.getNickname());
+            newSnsGroupMember.setStatus(1);
+            //保存到融云
+            boolean insertFlag = this.insertRongYunGroupMember(userid.toString(),appUserMongoEntity.getNickname(),appUserMongoEntity.getNickname(),new String[]{userid.toString()},groupid.toString(),groupname);
+            if(insertFlag){
+                //保存到数据库
+                int insertRow = snsGroupMembersMapper.insertSelective(newSnsGroupMember);
+                //更新数据库中group的当前人数+1
+                if(insertRow > 0){
+                    updateGroupCurrentNum(groupid.toString(),1);
+                }
+                resultMap.put("newgroup",0);
+                resultMap.put("groupid",groupid);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            }
+        }catch(Exception e){
+            logger.info("join YST institution group userid:{} groupid:{} groupuserid:{} groupname:{} errorMsg:{}",userid,groupid,groupuserid,groupname,e);
+        }
+        return baseResp;
+    }
+
+    /**
      * 将用户加入到群组中,同步到融云
      * @param operatorUserId 操作人用户id
      * @param operatorNickname 操作人用户昵称

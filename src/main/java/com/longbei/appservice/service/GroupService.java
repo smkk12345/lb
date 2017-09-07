@@ -154,4 +154,14 @@ public interface GroupService {
      * @return
      */
     BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid, String gradeid, String groupname);
+
+    /**
+     * 加入叶圣陶的群组 当groupid群满的时候,新建一个群 并把该用户加入该群
+     * @param userid
+     * @param groupid
+     * @param groupuserid
+     * @param groupname
+     * @return
+     */
+    BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname);
 }
