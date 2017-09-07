@@ -21,6 +21,7 @@ public class RedisCacheNames {
     public static final String _RANK_AWARD = "8";//奖品相关
     public static final String _RANK_HOME_AWARD = "10";//获奖公示
     public static final String _USER_GRADE = "11";//用户等级
+    public static final String _LIVE = "12";//直播
 
     public static final String _ROOM_LIST = "9";//教室列表
 
@@ -54,6 +55,7 @@ public class RedisCacheNames {
         expiresMap.put(_ROOM_LIST,_PERIOD_SECOND_08);
         expiresMap.put(_RANK_LIST,_PERIOD_SECOND_08);
         expiresMap.put(_USER_GRADE,_PERIOD_SECOND_60X60);
+        expiresMap.put(_LIVE,_PERIOD_SECOND_30);
     }
 
     public Map<String, Long> getExpiresMap(){

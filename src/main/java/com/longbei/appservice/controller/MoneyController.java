@@ -11,6 +11,7 @@ import com.longbei.appservice.service.UserImpCoinDetailService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +52,9 @@ public class MoneyController {
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectLiveGift")
-    public BaseResp<List<LiveGiftDetail>> selectLiveGift(String userid) {
+    public BaseResp<List<Map<String,String>>> selectLiveGift(String userid) {
 		logger.info("selectLiveGift userid={}",userid);
-		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }

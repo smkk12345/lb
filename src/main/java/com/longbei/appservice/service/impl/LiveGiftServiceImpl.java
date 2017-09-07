@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.cache.LiveCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -24,9 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lixb on 2017/8/11.
@@ -52,7 +51,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private UserMongoDao userMongoDao;
     @Autowired
     private UserRelationService userRelationService;
-    
+    @Autowired
+    private LiveCache liveCache;
     
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
@@ -61,7 +61,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     public BaseResp<List<LiveGift>> selectList(Integer startNum, Integer endNum) {
         BaseResp<List<LiveGift>> baseResp = new BaseResp<>();
         try{
-            List<LiveGift> list = liveGiftMapper.selectList(startNum,endNum);
+            List<LiveGift> list = liveCache.selectList(startNum,endNum);
             baseResp.setData(list);
             baseResp.initCodeAndDesp();
         }catch (Exception e){
@@ -173,11 +173,32 @@ public class LiveGiftServiceImpl implements LiveGiftService {
      * @param userid
      */
 	@Override
-	public BaseResp<List<LiveGiftDetail>> selectGiftSumList(long userid) {
-		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
+	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid) {
+		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
         try{
+            List<Map<String,String>> resultList = new ArrayList<>();
             List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(userid);
-            baseResp.setData(list);
+            if(null == list||list.size()==0){
+                return baseResp.initCodeAndDesp();
+            }
+            Map<Long,Integer> map = new HashMap<>();
+            for (int i = 0; i < list.size(); i++) {
+                LiveGiftDetail detail = list.get(i);
+                map.put(detail.getGiftid(),detail.getNum());
+            }
+            List<LiveGift> giftList = liveCache.selectList(0,500);
+            for (int i = 0; i < giftList.size(); i++) {
+                LiveGift gift = giftList.get(i);
+                if(map.containsKey(gift.getGiftid())){
+                    Map<String,String> reMap = new HashMap<>();
+                    reMap.put("num",map.get(gift.getGiftid())+"");
+                    reMap.put("gifttitle",gift.getTitle());
+                    reMap.put("picurl",gift.getPicurl());
+                    reMap.put("giftid",gift.getGiftid()+"");
+                    resultList.add(reMap);
+                }
+            }
+            baseResp.setData(resultList);
             baseResp.initCodeAndDesp();
         }catch (Exception e){
             logger.error("selectGiftSumList userid = {}", userid, e);
