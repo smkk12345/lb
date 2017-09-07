@@ -3,17 +3,14 @@ package com.longbei.appservice.service.impl;
 import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.service.OSSService;
-import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.config.OssConfig;
-import com.longbei.appservice.controller.PPTToImageUtil;
 import com.longbei.appservice.dao.MediaResourceDetailMapper;
 import com.longbei.appservice.dao.MediaResourceMapper;
 import com.longbei.appservice.dao.MediaResourceTypeMapper;
@@ -556,13 +553,11 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         try {
             URLConnection conn = url.openConnection();
             InputStream inStream = conn.getInputStream();
-            InputStreamReader isr = new InputStreamReader(inStream,"UTF8");
-            logger.info("InputStreamReader encode:{}",isr.getEncoding());
             FileOutputStream fs = new FileOutputStream(pptFilePath);
-            OutputStreamWriter out = new OutputStreamWriter(fs,"UTF8");
-            logger.info("OutputStreamWriter encode:{}",out.getEncoding());
-            while ((byteread = isr.read()) != -1) {
-                out.write(byteread);
+            byte[] buffer = new byte[1024];
+            while ((byteread = inStream.read(buffer)) != -1) {
+                bytesum += byteread;
+                fs.write(buffer, 0, byteread);
             }
             return true;
         } catch (Exception e) {
