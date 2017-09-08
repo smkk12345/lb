@@ -18,17 +18,24 @@ import java.awt.image.ColorConvertOp;
 import java.awt.image.CropImageFilter;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+
 
 /**
  * 图片处理工具类：<br>
@@ -619,5 +626,302 @@ public class ImageUtils {
 			return "0";
 		}
 	}
+	public static void main1(String[] args){
+		List<String> paths = new ArrayList<>();
+		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ec5f288a-0370-40c6-9d39-0efb6548ebcb");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ca6a6c3d-54ab-47f9-a829-93d6de4ff55b");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/d3c0075d-c140-4bd7-ab6e-5746e229e14f");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/57a88e78-4d5d-4dfe-93b0-3a252c0afa11");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ec5f288a-0370-40c6-9d39-0efb6548ebcb");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ca6a6c3d-54ab-47f9-a829-93d6de4ff55b");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/d3c0075d-c140-4bd7-ab6e-5746e229e14f");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/57a88e78-4d5d-4dfe-93b0-3a252c0afa11");
+//		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ec5f288a-0370-40c6-9d39-0efb6548ebcb");
+		String dir = "/Users/smkk/image";
+		String groupId = "images";
+		try {
+			getCombinationOfhead(paths);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public static InputStream getCombinationOfhead(List<String> paths)
+			throws IOException {
+		List<BufferedImage> bufferedImages = new ArrayList<BufferedImage>();
+		// 压缩图片所有的图片生成尺寸同意的 为 50x50
+		int w = 40;//小图的宽
+		int h = 40;//小图的高
+		int width = 120; // 这是画板的宽高
+		int height = 120; // 这是画板的高度
+		if(paths.size() > 4 ){// 40*3+5*4 照片压缩尺寸为40，间距为5
+			w = 40;
+			h = 40;
+			width = 140;
+			height = 140;
+			// 50*2+5*3 照片压缩尺寸为50，间距为5
+		}else if(paths.size()==4||paths.size()==3||paths.size()==2){
+			w = 50;
+			h = 50;
+			width = 115;
+			height = 115;
+			// 100*1+10*2 照片压缩尺寸为100，间距为10
+		}else if (paths.size()==1){
+			w = 100;
+			h = 100;
+			width = 120;
+			height = 120;
+		}
+		for (int i = 0; i < paths.size(); i++) {
+			BufferedImage resize2 = resize2(paths.get(i), w, h, true);
+			bufferedImages.add(resize2);
+		}
+		// BufferedImage.TYPE_INT_RGB可以自己定义可查看API
+		BufferedImage outImage = new BufferedImage(width, height,
+				BufferedImage.TYPE_INT_RGB);
+		// 生成画布
+		Graphics g = outImage.getGraphics();
+		Graphics2D g2d = (Graphics2D) g;
+		// 设置背景色透明
+		g2d.setBackground(new Color(231,231,231));
+		// 通过使用当前绘图表面的背景色进行填充来清除指定的矩形。
+		g2d.clearRect(0, 0, width, height);
+		// 开始拼凑 根据图片的数量判断该生成那种样式的组合头像目前为4中
+		int j = 1;
+		int k = 1;
+		for (int i = 1; i <= bufferedImages.size(); i++) {
+			if (bufferedImages.size()==9) {
+				if (i<=3) {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * i + 5 * i
+							- 40, 5, null);
+				}else if(i<=6) {
+					g2d.drawImage(bufferedImages.get(i - 1),40 * j + 5 * j
+							- 40, 50, null);
+					j++;
+				}else{
+					g2d.drawImage(bufferedImages.get(i - 1),40 * k + 5 * k
+							- 40,  95, null);
+					k++;
+				}
+			}
+			else if (bufferedImages.size()== 8) {
+				if (i<=3) {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * i + 5 * i
+							- 40, 5, null);
+				}else if(i<=6) {
+					g2d.drawImage(bufferedImages.get(i - 1),40 * j + 5 * j
+							- 40, 50, null);
+					j++;
+				}else{
+					g2d.drawImage(bufferedImages.get(i - 1),40 * k + 22+5*k
+							- 40,  95, null);
+					k++;
+				}
+
+			}
+			else if (bufferedImages.size()== 7) {
+				if (i<=3) {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * i + 5 * i
+							- 40, 5, null);
+				}else if(i<=6) {
+					g2d.drawImage(bufferedImages.get(i - 1),40 * j + 5 * j
+							- 40, 50, null);
+					j++;
+				}else{
+					g2d.drawImage(bufferedImages.get(i - 1), 5 , 95, null);
+				}
+
+			}
+
+
+			else    if (bufferedImages.size()== 6) {
+				if (i<=3) {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * i + 5 * i
+							- 40, 27, null);
+				}else {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * j + 5 * j
+							- 40, 72, null);
+					j++;
+				}
+			}
+			else if (bufferedImages.size()== 5) {
+				if (i<=3) {
+					g2d.drawImage(bufferedImages.get(i - 1), 40 * i + 5 * i
+							- 40, 27, null);
+				}else {
+					g2d.drawImage(bufferedImages.get(i - 1),40 * k + 22+5*k
+							- 40,  72, null);
+					k++;
+				}
+
+			}
+			else if (bufferedImages.size()== 4) {
+				if (i <= 2) {
+					g2d.drawImage(bufferedImages.get(i - 1), 50 * i + 5 * i
+							- 50, 5, null);
+				} else {
+					g2d.drawImage(bufferedImages.get(i - 1), 50 * j + 5 * j
+							- 50, 60, null);
+					j++;
+				}
+			} else if (bufferedImages.size() == 3) {
+				if (i <= 2) {
+
+					g2d.drawImage(bufferedImages.get(i - 1), 50 * i + 5 * i
+							- 50, 5, null);
+
+				} else {
+
+					g2d.drawImage(bufferedImages.get(i - 1), 32
+							, 60, null);
+					j++;
+				}
+
+			} else if (bufferedImages.size() == 2) {
+				if(i == 1){
+					g2d.drawImage(bufferedImages.get(i-1),  5,
+							32, null);
+				}else {
+					g2d.drawImage(bufferedImages.get(i-1),  60,
+							32, null);
+				}
+			} else if (bufferedImages.size() == 1) {
+				g2d.drawImage(bufferedImages.get(i - 1), 10, 10, null);
+			}
+
+			// 需要改变颜色的话在这里绘上颜色。可能会用到AlphaComposite类
+		}
+//        new File(dir + "groupPicture" + File.separatorChar
+//              + groupId.substring(0, 4) + File.separatorChar + groupId+".jpg")
+//        String outPath = dir+groupId+".jpg";
+		String dir = "/Users/smkk/image";
+		String groupId = "images";
+//		StringBuffer outPath = new StringBuffer().append(dir)
+//				.append("groupPicture")
+//				.append(File.separatorChar)
+//				.append(groupId.substring(0, 4))
+//				.append(File.separatorChar)
+//				.append(paths.size()+"_smkk11").append(".jpg");
+
+//		String format = "JPG";
+//		File file = new File(outPath.toString());
+//		if(!file.exists()){
+//			file.mkdirs();
+//		}
+
+		File file = File.createTempFile(UUID.randomUUID().toString(),".png");
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();//存储图片文件byte数组
+		ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
+		ImageIO.write(outImage, "JPG", file); //图片写入到 ImageOutputStream
+
+		FileInputStream fis = new FileInputStream(file);
+
+//		InputStream input = new ByteArrayInputStream(bos.toByteArray());
+//		InputStream inputTmp = new ByteArrayInputStream(bos.toByteArray());
+//		ByteArrayOutputStream os = new ByteArrayOutputStream();
+//		ImageIO.write(outImage, "JPG", os);
+//		InputStream is = new ByteArrayInputStream(os.toByteArray());
+		return fis;
+//		return ImageIO.write(outImage, format, file);
+	}
+
+	/**
+	 * 图片压缩
+	 * @param filePath
+	 * @param height
+	 * @param width
+	 * @param bb
+	 * @return
+	 */
+	public static BufferedImage resize2(String filePath, int height, int width,
+										boolean bb) {
+		try {
+			double ratio = 0; // 缩放比例
+//            System.out.println("图片缩放"+filePath);
+			BufferedImage bi =null;
+			if(filePath.indexOf("http://")==0){
+				bi = ImageIO.read(new URL(filePath));
+			}else{
+				bi = ImageIO.read(new File(filePath));
+			}
+			Image itemp = bi.getScaledInstance(width, height,
+					Image.SCALE_SMOOTH);
+			// 计算比例
+			if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
+				if (bi.getHeight() > bi.getWidth()) {
+					ratio = (new Integer(height)).doubleValue()
+							/ bi.getHeight();
+				} else {
+					ratio = (new Integer(width)).doubleValue() / bi.getWidth();
+				}
+				AffineTransformOp op = new AffineTransformOp(
+						AffineTransform.getScaleInstance(ratio, ratio), null);
+				itemp = op.filter(bi, null);
+			}
+			if (bb) {
+				// copyimg(filePath, "D:\\img");
+				BufferedImage image = new BufferedImage(width, height,
+						BufferedImage.TYPE_INT_RGB);
+				Graphics2D g = image.createGraphics();
+				g.setColor(Color.white);
+				g.fillRect(0, 0, width, height);
+				if (width == itemp.getWidth(null))
+					g.drawImage(itemp, 0, (height - itemp.getHeight(null)) / 2,
+							itemp.getWidth(null), itemp.getHeight(null),
+							Color.white, null);
+				else
+					g.drawImage(itemp, (width - itemp.getWidth(null)) / 2, 0,
+							itemp.getWidth(null), itemp.getHeight(null),
+							Color.white, null);
+				g.dispose();
+				itemp = image;
+			}
+			return (BufferedImage) itemp;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public static StringBuffer httpsRequest(String requestUrl, String dir) throws NoSuchAlgorithmException, NoSuchProviderException,
+			KeyManagementException, MalformedURLException, IOException,
+			ProtocolException, UnsupportedEncodingException {
+
+		URL url = new URL(requestUrl);
+		InputStream connection1 = url.openStream();
+		try {
+			byte[] bb=readInputStream(connection1);
+			writeImageToDisk(bb,dir+".jpg");
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static byte[] readInputStream(InputStream inStream) throws Exception{
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		while( (len=inStream.read(buffer)) != -1 ){
+			outStream.write(buffer, 0, len);
+		}
+		inStream.close();
+		return outStream.toByteArray();
+	}
+
+	public static void writeImageToDisk(byte[] img, String fileName){
+		try {
+			File file = new File(fileName);
+			FileOutputStream fops = new FileOutputStream(file);
+			fops.write(img);
+			fops.flush();
+			fops.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }

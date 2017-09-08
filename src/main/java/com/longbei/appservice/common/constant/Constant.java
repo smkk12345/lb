@@ -479,7 +479,8 @@ public class Constant {
 			"/classroom/selectClassroomListForApp"+
 			"/home/homePoster"+
 			"/classroom/selectUsercardList"+
-			"/classroom/chapterList";
+			"/classroom/chapterList"+
+			"/classroom/questionsList";
 
 	/**
 	 * 进步相关配置

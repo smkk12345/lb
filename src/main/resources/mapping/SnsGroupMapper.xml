@@ -14,9 +14,10 @@
     <result column="mainuserid" property="mainuserid" jdbcType="BIGINT" />
     <result column="maxnum" property="maxnum" jdbcType="INTEGER" />
     <result column="currentnum" property="currentnum" jdbcType="INTEGER" />
+    <result column="avatar" property="avatar"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, groupid, groupname, grouptype, relateid, createtime, updatetime,currentnum,maxnum,mainuserid,notice,needconfirm
+    id, groupid, groupname, grouptype, relateid, createtime, updatetime,currentnum,maxnum,mainuserid,notice,needconfirm,avatar
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -31,10 +32,10 @@
   <insert id="insert" parameterType="com.longbei.appservice.entity.SnsGroup" >
     insert into sns_group (id, groupid, groupname, 
       grouptype, relateid, createtime, 
-      updatetime,currentnum,maxnum,mainuserid,notice,needconfirm)
+      updatetime,currentnum,maxnum,mainuserid,notice,needconfirm,avatar)
     values (#{id,jdbcType=INTEGER}, #{groupid,jdbcType=BIGINT}, #{groupname,jdbcType=VARCHAR}, 
       #{grouptype,jdbcType=CHAR}, #{relateid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP},#{currentnum},#{maxnum},#{mainuserid},#{notice},#{needconfirm})
+      #{updatetime,jdbcType=TIMESTAMP},#{currentnum},#{maxnum},#{mainuserid},#{notice},#{needconfirm},#{avatar})
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.SnsGroup" >
     insert into sns_group
@@ -75,6 +76,9 @@
       <if test="currentnum != null" >
         currentnum,
       </if>
+      <if test="avatar != null" >
+        avatar
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -113,6 +117,9 @@
       <if test="currentnum != null" >
         #{currentnum},
       </if>
+      <if test="avatar != null" >
+        #{avatar}
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.SnsGroup" >
@@ -150,6 +157,9 @@
       </if>
       <if test="currentnum != null" >
         currentnum = #{currentnum},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar}
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -216,6 +226,10 @@
   <!-- 更新群组群主id -->
   <update id="updateGroupMainUser" parameterType="String">
       update sns_group set mainuserid=#{userId} where groupid = #{groupId}
+  </update>
+
+  <update id="updateAvatar">
+    update sns_group set avatar=#{avatar} where groupid = #{groupId}
   </update>
 
   <!-- 根据关键字搜索群 -->

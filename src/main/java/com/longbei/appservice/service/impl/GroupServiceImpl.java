@@ -3,7 +3,11 @@ package com.longbei.appservice.service.impl;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.service.OSSService;
+import com.longbei.appservice.common.utils.ImageUtils;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.config.OssConfig;
 import com.longbei.appservice.dao.SnsGroupMapper;
 import com.longbei.appservice.dao.SnsGroupMembersMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -48,6 +53,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     private JPushService jPushService;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private OSSService ossService;
 
     /**
      * 新建群组
@@ -138,24 +145,30 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             snsGroup.setGroupname(groupName);
             snsGroup.setNeedconfirm(needConfirm);
             snsGroup.setMaxnum(1000);
+            List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
+            List<String> avatars = new ArrayList<>();
+            for(String tempUserId:newUserIds){
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
+                if(appUserMongoEntity != null){
+                    userList.add(appUserMongoEntity);
+                    avatars.add(OssConfig.url+appUserMongoEntity.getAvatar());
+                }
+            }
+            snsGroup.setAvatarArray((String[])avatars.toArray(new String[avatars.size()]));
+            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+            String key = getGroupAvatar();
+            ossService.putObject(OssConfig.bucketName,key,inputStream);
+            snsGroup.setAvatar(key);
             int row = snsGroupMapper.insertSelective(snsGroup);
             if(row < 1){
                 return BaseResp.fail("系统异常");
             }
-
             //3.插入群成员
             SnsGroupMembers snsGroupMembers = new SnsGroupMembers();
             snsGroupMembers.setCreatetime(new Date());
             snsGroupMembers.setUpdatetime(new Date());
             snsGroupMembers.setGroupid(groupId);
             snsGroupMembers.setStatus(1);//加群是否需要验证
-            List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
-            for(String tempUserId:newUserIds){
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
-                if(appUserMongoEntity != null){
-                    userList.add(appUserMongoEntity);
-                }
-            }
 
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("userList",userList);
@@ -165,8 +178,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             if(insertGroupMemebersRow > 0){
                 //通知群成员 发送群组通知消息,通知创建了群组
                 this.iRongYunService.noticeCreateGroup(mainGroupUserId,mainGroupUser.getNickname(),groupId+"",groupName);
-
-                snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
                 baseResp.setData(snsGroup);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
@@ -176,6 +187,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             printExceptionAndRollBackTransaction(e);
             return baseResp.fail("系统异常");
         }
+    }
+
+    private String getGroupAvatar(){
+        return "groupavatar/"+UUID.randomUUID().toString()+".jpg";
     }
 
     /**
@@ -459,6 +474,18 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             printExceptionAndRollBackTransaction(e);
         }
         return baseResp.fail("系统异常");
+    }
+
+    private void updateGroupAvatar(List<String> avatars,String groupId){
+        try{
+            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+            String key = getGroupAvatar();
+            ossService.putObject(OssConfig.bucketName,key,inputStream);
+            snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
+        }catch (Exception e){
+
+        }
+
     }
 
     /**

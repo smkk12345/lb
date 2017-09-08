@@ -74,4 +74,13 @@ public interface SnsGroupMapper {
      * @return
      */
     int batchInsertGroup(List<SnsGroup> list);
+
+    /**
+     * 更新群组图像
+     * @param groupid
+     * @param avatar
+     * @return
+     */
+    int updateAvatar(@Param("groupid") long groupid,
+                     @Param("avatar") String avatar);
 }
