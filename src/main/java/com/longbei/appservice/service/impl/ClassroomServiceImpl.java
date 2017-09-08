@@ -286,7 +286,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("impNum", impNum);
 					if(isTeacher == 1){
 						map.put("classroomMembers", null);
-						map.put("shownotice", "1"); //教室公告 1 显示  0 不现实
+						map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
 					}else{
 						ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 						if(null != classroomMembers){
@@ -436,13 +436,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree());
 				map.put("charge", classroom.getCharge());
 				map.put("ptype", classroom.getPtype());
+				map.put("classnotice", classroom.getClassnotice()); //教室公告
+				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
 				map.put("classroomid", classroomid);
+				int isTeacher = isTeacher(String.valueOf(userid),classroom);
+				map.put("isteacher",isTeacher);
 				//是否已经关注教室
-				if(userid.toString().equals(Constant.VISITOR_UID)){
-					map.put("isfollow", "0");
-				}else{
+				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
 					Map<String,Object> usermap = new HashMap<String,Object>();
 					usermap.put("businessType", "4");
 					usermap.put("businessId", classroomid);
@@ -454,19 +456,36 @@ public class ClassroomServiceImpl implements ClassroomService {
 					}else{
 						map.put("isfollow", "0");
 					}
-					if(userid != null){
+					if(isTeacher == 1){
+						map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
+					}else{
 						//itype 0—加入教室 1—退出教室     为null查全部
 						ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 						if(null != members){
+							if(null != members.getNoticeid()&&null != classroom.getNoticeid()){
+								if(members.getNoticeid() < classroom.getNoticeid()){
+									map.put("shownotice", "1"); //教室公告
+								}else{
+									map.put("shownotice", "0"); //教室公告
+								}
+							}else{
+								map.put("shownotice", "1"); //教室公告
+							}
 							isadd = "1";
+						}else{
+							map.put("shownotice", "1"); //教室公告
 						}
 					}
+					
+				}else{
+					map.put("isfollow", "0");
+					map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
 				}
 
 				map.put("isadd", isadd);
 				//描述
 				map.put("content", classroom.getClassbrief());
-				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
+//				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				
 				//最近一次直播的日期时间      提前5分钟可进入     延迟5分钟直播结束
 				Date startdate = selectDate(-Constant.LIVE_START);
@@ -484,6 +503,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("liveCourses", new ArrayList<ClassroomCourses>());
 					map.put("daytime", null);
 				}
+				
 				//分享url
 				map.put("roomurlshare", 
 						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
