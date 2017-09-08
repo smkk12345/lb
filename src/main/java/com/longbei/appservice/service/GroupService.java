@@ -153,7 +153,7 @@ public interface GroupService {
      * @param groupname
      * @return
      */
-    BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid, String gradeid, String groupname);
+    BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid, String gradeid, String groupname,Long managerid);
 
     /**
      * 加入叶圣陶的群组 当groupid群满的时候,新建一个群 并把该用户加入该群

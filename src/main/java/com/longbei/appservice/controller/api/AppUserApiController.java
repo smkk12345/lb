@@ -608,4 +608,17 @@ public class AppUserApiController {
         }
         return baseResp;
     }
+
+    /**
+     * 根据userid获取用户基本信息
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value="getUserInfo")
+    public BaseResp<Map<String,Object>> getUserInfo(Long userid){
+        if(userid == null){
+            return new BaseResp<Map<String,Object>>().initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        return this.userService.getUserInfoByUserId(userid);
+    }
 }
