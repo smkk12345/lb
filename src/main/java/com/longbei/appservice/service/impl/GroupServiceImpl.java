@@ -887,7 +887,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 //                    Map<String,Object> map = new HashMap<String,Object>();
 //
                     snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
-//
+                    updateGroupAvatar(snsGroup.getGroupid().toString());
 //                    map.put("groupid",snsGroup.getGroupid());
 //                    map.put("groupname",snsGroup.getGroupname());
 //                    map.put("grouptype",snsGroup.getGrouptype());
