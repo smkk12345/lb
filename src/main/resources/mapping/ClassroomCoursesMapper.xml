@@ -576,6 +576,7 @@
     where classroomid = #{classroomid}
     and
     chapterid = #{chapterid}
+    and isup = 1 
   </select>
 
   <update id="updateChapterIdByCid" >
