@@ -28,7 +28,7 @@
     from classroom_chapter
     where classroomid = #{classroomid} 
     and isdel = 0 
-    order by sort desc, createtime desc 
+    order by sort desc, createtime asc 
     <if test="pageSize != 0" >
       limit #{startNo},#{pageSize}
     </if>
