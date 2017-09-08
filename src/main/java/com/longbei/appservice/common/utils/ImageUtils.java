@@ -683,7 +683,11 @@ public class ImageUtils {
 		Graphics g = outImage.getGraphics();
 		Graphics2D g2d = (Graphics2D) g;
 		// 设置背景色透明
-		g2d.setBackground(new Color(231,231,231));
+		g2d.setBackground(new Color(255, 255,255));
+//		outImage = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+//		g2d.dispose();
+//		g2d = outImage.createGraphics();
+
 		// 通过使用当前绘图表面的背景色进行填充来清除指定的矩形。
 		g2d.clearRect(0, 0, width, height);
 		// 开始拼凑 根据图片的数量判断该生成那种样式的组合头像目前为4中
