@@ -26,15 +26,16 @@ public class GroupApiController {
      * @param mainGroupUserid
      * @param gradeid 代表年级权限 的id
      * @param groupname
+     * @param managerid 代表机构管理员的用户id
      * @return
      */
     @RequestMapping(value="batchCreateYSTGroup")
-    public BaseResp<List<Map<String,Object>>> batchCreateYSTGroup(Long mainGroupUserid, String gradeid, String groupname){
+    public BaseResp<List<Map<String,Object>>> batchCreateYSTGroup(Long mainGroupUserid, String gradeid, String groupname,Long managerid){
         BaseResp<List<Map<String,Object>>> baseResp = new BaseResp<List<Map<String,Object>>>();
-        if(mainGroupUserid == null || StringUtils.isEmpty(groupname) || StringUtils.isEmpty(gradeid)){
+        if(mainGroupUserid == null || StringUtils.isEmpty(groupname) || StringUtils.isEmpty(gradeid) || managerid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.groupService.batchCreateGroup(mainGroupUserid,gradeid,groupname);
+        baseResp = this.groupService.batchCreateGroup(mainGroupUserid,gradeid,groupname,managerid);
         return baseResp;
     }
 

@@ -6,6 +6,7 @@ import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.entity.UserSettingMenu;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * insert
@@ -314,4 +315,11 @@ public interface UserService {
 	 * @return
      */
 	UserInfo getUserInfoByUserName(String userPhone);
+
+	/**
+	 * 根据userid 获取用户的基本信息
+	 * @param userid
+	 * @return
+     */
+	BaseResp<Map<String,Object>> getUserInfoByUserId(Long userid);
 }

@@ -2124,5 +2124,33 @@ public class UserServiceImpl implements UserService {
 		return userInfo;
 	}
 
+	/**
+	 * 根据userid获取用户的基本信息
+	 * @param userid
+	 * @return
+     */
+	@Override
+	public BaseResp<Map<String, Object>> getUserInfoByUserId(Long userid) {
+		logger.info("get userinfo by userid userid:{}",userid);
+		BaseResp<Map<String,Object>> baseResp = new BaseResp<Map<String,Object>>();
+		try{
+			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid.toString());
+			if(appUserMongoEntity == null){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			}
+			Map<String,Object> resultMap = new HashMap<String,Object>();
+			resultMap.put("userid",userid);
+			resultMap.put("username",appUserMongoEntity.getUsername());
+			resultMap.put("nickname",appUserMongoEntity.getNickname());
+			resultMap.put("avatar",appUserMongoEntity.getAvatar());
+			resultMap.put("sex",appUserMongoEntity.getSex());
+			baseResp.setData(resultMap);
+			return baseResp.initCodeAndDesp();
+		}catch(Exception e){
+			logger.info("get userinfo by userid userid:{} errorMsg:{}",userid,e);
+		}
+		return baseResp;
+	}
+
 
 }

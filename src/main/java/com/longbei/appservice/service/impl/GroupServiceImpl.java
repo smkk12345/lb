@@ -1062,7 +1062,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid,String gradeid, String groupname) {
+    public BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid,String gradeid, String groupname,Long managerid) {
         logger.info("batch create group mainGroupUserid:{} groupname:{}",mainGroupUserid,groupname);
         BaseResp<List<Map<String,Object>>> baseResp = new BaseResp<List<Map<String,Object>>>();
         try{
@@ -1117,9 +1117,30 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 snsGroupMember.setIdentity(20);
                 snsGroupMember.setUserid(mainGroupUserid);
                 snsGroupMembersList.add(snsGroupMember);
+
+                if(managerid != null){
+                    AppUserMongoEntity managerUser = this.userMongoDao.getAppUser(managerid.toString());
+                    if(managerUser == null){
+                        continue;
+                    }
+                    SnsGroupMembers managerGroupMember = new SnsGroupMembers();
+                    managerGroupMember.setGroupid(Long.parseLong(groupId));
+                    managerGroupMember.setCreatetime(new Date());
+                    managerGroupMember.setUpdatetime(new Date());
+                    managerGroupMember.setNickname(managerUser.getNickname());
+                    managerGroupMember.setStatus(1);
+                    managerGroupMember.setAvatar(managerUser.getAvatar());
+                    managerGroupMember.setTopstatus(false);
+                    managerGroupMember.setDisturbstatus(false);
+                    managerGroupMember.setIdentity(0);
+                    managerGroupMember.setUserid(managerid);
+                    snsGroupMembersList.add(managerGroupMember);
+
+                    snsGroup.setCurrentnum(snsGroup.getCurrentnum()+1);
+                }
             }
 
-            BaseResp<Object> ryBaseResp = this.iRongYunService.batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),groupname);
+            BaseResp<Object> ryBaseResp = this.iRongYunService.batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),groupname,managerid.toString());
             if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
                 //批量插入到数据库
                 int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
@@ -1203,7 +1224,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     int groupMemberRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
                     if(groupMemberRow > 0){
                         resultMap.put("newgroup",1);
-                        resultMap.put("groupid",groupid);
+                        resultMap.put("groupid",groupid.toString());
+                        resultMap.put("groupname",groupname);
                         baseResp.setData(resultMap);
                         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
                     }
@@ -1212,7 +1234,11 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             //校验用户是否已经在群里面
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupid.toString());
             if(snsGroupMembers != null && snsGroupMembers.getStatus() == 1){
-                return baseResp.initCodeAndDesp();
+                resultMap.put("newgroup",0);
+                resultMap.put("groupname",snsGroup.getGroupname());
+                resultMap.put("groupid",groupid.toString());
+                baseResp.setData(resultMap);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }else if(snsGroupMembers != null && snsGroupMembers.getStatus() != 1){
                 Map<String,Object> updateMap = new HashMap<String,Object>();
                 ArrayList<Long> tempUserArrayList = new ArrayList<Long>();
@@ -1222,13 +1248,17 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 updateMap.put("status",1);
                 //更改用户加群的状态
                 int updateStatusRow = this.snsGroupMembersMapper.batchUpdateSnsGroupMemberStatus(updateMap);
-                return baseResp.ok();
+                resultMap.put("newgroup",0);
+                resultMap.put("groupid",groupid.toString());
+                resultMap.put("groupname",snsGroup.getGroupname());
+                baseResp.setData(resultMap);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
             SnsGroupMembers newSnsGroupMember = new SnsGroupMembers();
             newSnsGroupMember.setCreatetime(new Date());
             newSnsGroupMember.setUpdatetime(new Date());
             newSnsGroupMember.setGroupid(groupid);
-
+            newSnsGroupMember.setUserid(userid);
             newSnsGroupMember.setAvatar(appUserMongoEntity.getAvatar());
             newSnsGroupMember.setNickname(appUserMongoEntity.getNickname());
             newSnsGroupMember.setStatus(1);
@@ -1242,7 +1272,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     updateGroupCurrentNum(groupid.toString(),1);
                 }
                 resultMap.put("newgroup",0);
-                resultMap.put("groupid",groupid);
+                resultMap.put("groupid",groupid.toString());
+                resultMap.put("groupname",snsGroup.getGroupname());
+                baseResp.setData(resultMap);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
         }catch(Exception e){
