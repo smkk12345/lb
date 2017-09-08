@@ -487,20 +487,26 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         return baseResp.fail("系统异常");
     }
 
-    private void updateGroupAvatar(String groupId){
-        try{
-            List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
-            List<String> avatars = new ArrayList<>();
-            for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
+    private void updateGroupAvatar(final String groupId){
+        final List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try{
+//                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+                    List<String> avatars = new ArrayList<>();
+                    for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                        avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
+                    }
+                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+                    String key = getGroupAvatar();
+                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+                    snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
+                }catch (Exception e){
+                    logger.error("update Group Avatar error groupId:{}",groupId);
+                }
             }
-            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-            String key = getGroupAvatar();
-            ossService.putObject(OssConfig.bucketName,key,inputStream);
-            snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
-        }catch (Exception e){
-            logger.error("update Group Avatar error groupId:{}",groupId);
-        }
+        });
     }
 
     /**
