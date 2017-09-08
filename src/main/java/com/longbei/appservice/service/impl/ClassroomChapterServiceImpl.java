@@ -142,7 +142,12 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 				for (int i = 0; i < chapterList.size(); i++) {
 					ClassroomChapter classroomChapter = chapterList.get(i);
 					List<ClassroomCourses> courseList = classroomCoursesMapper.selectByChapterId(classroomid,classroomChapter.getChapterid());
-					classroomChapter.setCoursesList(courseList);
+					if(null != courseList && courseList.size()>0){
+						classroomChapter.setCoursesList(courseList);
+					}else{
+						chapterList.remove(classroomChapter);
+						continue;
+					}
 					coursecount = coursecount + courseList.size();
 				}
 				baseResp.getExpandData().put("courses",coursecount);

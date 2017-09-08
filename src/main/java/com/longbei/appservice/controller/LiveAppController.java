@@ -65,9 +65,7 @@ public class LiveAppController{
         }
         //处理关闭教室直播逻辑
         baseResp = classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
-        if(baseResp.getCode() == 0){
-        	liveInfoMongoService.deleteLiveInfo(Long.parseLong(roomid), Long.parseLong(courseid));
-        }
+
         return baseResp.initCodeAndDesp();
     }
 

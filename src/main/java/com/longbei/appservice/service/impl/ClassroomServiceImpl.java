@@ -271,7 +271,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
-				map.put("updatetime", classroom.getUpdatetime()); //教室公告更新时间
+				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				int isTeacher = isTeacher(String.valueOf(userid),classroom);
 				map.put("isteacher",isTeacher);
@@ -402,13 +402,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 					map.put("pickey", classroomCourses.getPickey());
 					map.put("fileurl", classroomCourses.getFileurl());
 					map.put("coursesort", classroomCourses.getCoursesort());
-					ClassroomChapter classroomChapter = classroomChapterMapper.selectByPrimaryKey(classroomCourses.getChapterid());
-					int n = classroomChapterMapper.selectChapterCountByTime(classroomChapter.getClassroomid(),classroomChapter.getCreatetime());
-					if(n > 0){
-						map.put("chaptersort", 2);
-					}else {
+					if(null != classroomCourses.getChapterid()){
+						ClassroomChapter classroomChapter = classroomChapterMapper.selectByPrimaryKey(classroomCourses.getChapterid());
+						int n = classroomChapterMapper.selectChapterCountByTime(classroomChapter.getClassroomid(),classroomChapter.getCreatetime());
+						if(n > 0){
+							map.put("chaptersort", 2);
+						}else {
+							map.put("chaptersort", 1);
+						}
+					}else{
 						map.put("chaptersort", 1);
 					}
+
 					if(!StringUtils.isBlank(classroomCourses.getStarttime())){
 						map.put("coursestarttime", DateUtils.formatDateString(classroomCourses.getStarttime(), "yyyy-MM-dd HH:mm:ss"));
 					}else{

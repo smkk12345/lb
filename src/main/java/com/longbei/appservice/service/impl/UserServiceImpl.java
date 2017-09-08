@@ -22,6 +22,7 @@ import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -725,21 +726,25 @@ public class UserServiceImpl implements UserService {
 				if (StringUtils.isBlank(noRegisterLimit)) {
 					updateCase.setNoRegisterLimit(telNumbers);
 				} else {
-					updateCase.setNoRegisterLimit(noRegisterLimit + "," + telNumbers);
+					noRegisterLimit = noRegisterLimit + "," + telNumbers;
+					updateCase.setNoRegisterLimit(noRegisterLimit);
 				}
 
 				if (StringUtils.isBlank(noSwitchLogin)) {
 					updateCase.setNoSwitchLogin(telNumbers);
 				} else {
-					updateCase.setNoSwitchLogin(noSwitchLogin + "," + telNumbers);
+					noSwitchLogin = noSwitchLogin + "," + telNumbers;
+					updateCase.setNoSwitchLogin(noSwitchLogin);
 				}
 				userSpecialcaseService.updateUserSpecialcase(updateCase);
 			} else {
+				noSwitchLogin = telNumbers;
 				updateCase.setNoSwitchLogin(telNumbers);
 				updateCase.setNoRegisterLimit(telNumbers);
 				userSpecialcaseService.insertSelective(updateCase);
 			}
-
+			String[] s = noSwitchLogin.split(",");
+			CollectionUtils.addAll(SysRulesCache.userSpecialcaseMobileSet, s);
 		} catch (Exception e) {
 			logger.error("updateUserSpecialcase is error:{}", e);
 		}

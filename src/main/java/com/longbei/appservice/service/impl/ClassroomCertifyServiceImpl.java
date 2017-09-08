@@ -92,11 +92,15 @@ public class ClassroomCertifyServiceImpl implements ClassroomCertifyService {
         return  baseResp;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public BaseResp<ClassroomCertify> selectClassroomCertifyByUserid(Long userid) {
         BaseResp<ClassroomCertify> baseResp = new BaseResp<ClassroomCertify>();
         try {
             ClassroomCertify classroomCertify = userUserClassroomCertifyMapper.selectClassroomCertifyByUserid(userid);
+            if(null == classroomCertify){
+            	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1117, Constant.RTNINFO_SYS_1117);
+            }
             AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomCertify.getUserid()));
             if(null != appUserMongoEntity) {
                 classroomCertify.setUser(appUserMongoEntity);

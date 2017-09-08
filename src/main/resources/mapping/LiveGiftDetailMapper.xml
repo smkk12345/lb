@@ -13,6 +13,7 @@
     <result column="createtime" property="createtime" />
     <result column="updatetime" property="updatetime" />
     <result column="status" property="status" />
+    <result column="picurl" property="picurl" />
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -21,10 +22,12 @@
 
   <select id="selectOwnGiftList" resultMap="BaseResultMap" >
       SELECT 
-      <include refid="Base_Column_List" /> 
-      FROM live_gift_detail
-      where touid = #{userid}
-      order by createtime desc
+      lgd.fromuid,lgd.touid,lgd.giftid,lgd.num,
+      lg.title as gifttitle,lgd.createtime,lg.picurl as picurl 
+      FROM live_gift_detail lgd 
+	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
+	  WHERE lgd.touid =  #{userid}
+      order by lgd.createtime desc
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
       </if>
@@ -32,11 +35,13 @@
   
   <select id="selectGiftListByGiftid" resultMap="BaseResultMap" >
       SELECT 
-      <include refid="Base_Column_List" /> 
-      FROM live_gift_detail
-      where touid = #{userid} 
-	    and giftid = #{giftid} 
-      order by createtime desc
+      lgd.fromuid,lgd.touid,lgd.giftid,lgd.num,
+      lg.title as gifttitle,lgd.createtime,lg.picurl as picurl 
+      FROM live_gift_detail lgd 
+	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
+	  WHERE lgd.touid = #{userid} 
+	    and lgd.giftid = #{giftid} 
+      order by lgd.createtime desc
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
       </if>

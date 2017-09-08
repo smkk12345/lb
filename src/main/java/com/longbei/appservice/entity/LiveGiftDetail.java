@@ -39,6 +39,8 @@ public class LiveGiftDetail implements Serializable {
     
     private AppUserMongoEntity appUserMongoEntity;
     
+    private String picurl;//礼物访问图片路径
+    
     public LiveGiftDetail(){
     	super();
     }
@@ -157,6 +159,14 @@ public class LiveGiftDetail implements Serializable {
 
 	public void setAppUserMongoEntity(AppUserMongoEntity appUserMongoEntity) {
 		this.appUserMongoEntity = appUserMongoEntity;
+	}
+
+	public String getPicurl() {
+		return picurl;
+	}
+
+	public void setPicurl(String picurl) {
+		this.picurl = picurl;
 	}
 
 }
