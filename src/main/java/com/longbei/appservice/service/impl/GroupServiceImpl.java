@@ -498,6 +498,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     List<String> avatars = new ArrayList<>();
                     for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
                         avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
+                        logger.info("updateGroupAvatardetail avatars={}",OssConfig.url + snsGroupMembers.getAvatar());
                     }
                     InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
                     String key = getGroupAvatar();
@@ -894,7 +895,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 //                    Map<String,Object> map = new HashMap<String,Object>();
 //
                     snsGroup.setAvatarArray(getGroupAvatarArray(snsGroup.getGroupid()));
-                    updateGroupAvatar(snsGroup.getGroupid().toString());
+                    if(StringUtils.isBlank(snsGroup.getAvatar())){
+                        updateGroupAvatar(snsGroup.getGroupid().toString());
+                    }
 //                    map.put("groupid",snsGroup.getGroupid());
 //                    map.put("groupname",snsGroup.getGroupname());
 //                    map.put("grouptype",snsGroup.getGrouptype());
