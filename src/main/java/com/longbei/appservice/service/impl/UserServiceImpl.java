@@ -1166,6 +1166,13 @@ public class UserServiceImpl implements UserService {
 			if(baseResp.getCode()!=Constant.STATUS_SYS_00){
 				return baseResp;
 			}
+			BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(nickname);
+			if(!ResultUtil.isSuccess(baseResp1)){
+				if(StringUtils.isBlank(nickname)){
+					nickname = getRandomNickName();
+				}
+				nickname = getSingleNickName(nickname);
+			}
 
 			baseResp = registerbasic(username,password,inviteuserid,deviceindex,devicetype,avatar,nickname);
 			//登统中心注册失败  直接返回了
