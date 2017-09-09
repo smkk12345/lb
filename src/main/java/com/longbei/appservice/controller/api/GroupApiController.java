@@ -48,12 +48,12 @@ public class GroupApiController {
      * @return
      */
     @RequestMapping(value="joinYSTInstitutionGroup")
-    public BaseResp<Object> joinYSTInstitutionGroup(Long userid,Long groupid,Long groupuserid,String groupname){
+    public BaseResp<Object> joinYSTInstitutionGroup(Long userid,Long groupid,Long groupuserid,String groupname,Long managerid){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(userid == null || groupid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        baseResp = this.groupService.joinYSTInstitutionGroup(userid,groupid,groupuserid,groupname);
+        baseResp = this.groupService.joinYSTInstitutionGroup(userid,groupid,groupuserid,groupname,managerid);
         return baseResp;
     }
 }

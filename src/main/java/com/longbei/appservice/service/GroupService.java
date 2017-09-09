@@ -163,5 +163,5 @@ public interface GroupService {
      * @param groupname
      * @return
      */
-    BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname);
+    BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname,Long managerid);
 }

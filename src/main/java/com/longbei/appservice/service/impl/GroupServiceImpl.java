@@ -1070,6 +1070,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
+            if(snsGroupMembers == null){
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_919,Constant.RTNINFO_SYS_919);
+            }
             baseResp.setData(snsGroupMembers);
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -1225,8 +1228,8 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname) {
-        logger.info("join YST institution group userid:{} groupid:{} groupuserid:{} groupname:{}",userid,groupid,groupuserid,groupname);
+    public BaseResp<Object> joinYSTInstitutionGroup(Long userid, Long groupid, Long groupuserid, String groupname,Long managerid) {
+        logger.info("join YST institution group userid:{} groupid:{} groupuserid:{} groupname:{} managerid:{}",userid,groupid,groupuserid,groupname,managerid);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         Map<String,Object> resultMap = new HashMap<String,Object>();
         try{
@@ -1255,6 +1258,9 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }while(newGroupId == null);
 
                 StringBuilder userIdSB = new StringBuilder().append(groupuserid).append(",").append(userid);
+                if(managerid != null){
+                    userIdSB.append(",").append(managerid);
+                }
                 BaseResp<Object> baseResp1 = iRongYunService.createGroup(userIdSB.toString(),groupid,groupname);
                 if(baseResp1.getCode() == Constant.STATUS_SYS_00){
                     SnsGroup newSnsGroup = new SnsGroup();
@@ -1266,9 +1272,15 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     newSnsGroup.setNeedconfirm(true);
                     newSnsGroup.setMaxnum(SnsGroup.maxNum);
                     newSnsGroup.setCurrentnum(2);
+
+                    AppUserMongoEntity managerUser = null;
                     List<String> avatars = new ArrayList<String>();
                     avatars.add(OssConfig.url+appUserMongoEntity.getAvatar());
                     avatars.add(OssConfig.url+mainUserMongoEntity.getAvatar());
+                    if(managerid != null){
+                        managerUser = this.userMongoDao.getAppUser(managerid.toString());
+                        avatars.add(OssConfig.url+managerUser.getAvatar());
+                    }
                     InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
                     String key = getGroupAvatar();
                     ossService.putObject(OssConfig.bucketName,key,inputStream);
@@ -1280,10 +1292,12 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     newSnsGroupMember.setUpdatetime(new Date());
                     newSnsGroupMember.setGroupid(Long.parseLong(newGroupId));
                     newSnsGroupMember.setStatus(1);
-
                     List<AppUserMongoEntity> userList = new ArrayList<AppUserMongoEntity>();
                     userList.add(appUserMongoEntity);
                     userList.add(mainUserMongoEntity);
+                    if(managerUser != null){
+                        userList.add(managerUser);
+                    }
 
                     Map<String,Object> insertMap = new HashMap<String,Object>();
                     insertMap.put("snsGroupMembers",newSnsGroupMember);
