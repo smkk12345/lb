@@ -33,6 +33,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -40,7 +41,7 @@ import sun.misc.BASE64Encoder;
 /**
  * 图片处理工具类：<br>
  * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等
- * 
+ *
  * @author Bear.Xiong
  */
 @SuppressWarnings("restriction")
@@ -140,7 +141,7 @@ public class ImageUtils {
 
 	/**
 	 * 创建图片缩略图
-	 * 
+	 *
 	 * @param srcImageFile
 	 * @param scaledWidth
 	 * @param scaledHeight
@@ -530,7 +531,7 @@ public class ImageUtils {
 
 	/**
 	 * 生成背景透明的圆形图片，前提是图片为正方形
-	 * 
+	 *
 	 * @param srcImageFile
 	 * @return
 	 */
@@ -568,7 +569,7 @@ public class ImageUtils {
 
 	/**
 	 * 对字节数组字符串进行Base64解码并生成图片
-	 * 
+	 *
 	 * @param imgStr
 	 * @param filePath
 	 * @param fileName
@@ -602,7 +603,7 @@ public class ImageUtils {
 
 	/**
 	 * 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
-	 * 
+	 *
 	 * @param imgFilePath
 	 * @return
 	 */
@@ -637,13 +638,15 @@ public class ImageUtils {
 //		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/d3c0075d-c140-4bd7-ab6e-5746e229e14f");
 //		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/57a88e78-4d5d-4dfe-93b0-3a252c0afa11");
 //		paths.add("http://longbei-test-media-out.oss-cn-beijing.aliyuncs.com/livegift/ec5f288a-0370-40c6-9d39-0efb6548ebcb");
-		String dir = "/Users/smkk/image";
-		String groupId = "images";
-		try {
-			getCombinationOfhead(paths);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+//		String dir = "/Users/smkk/image";
+//		String groupId = "images";
+//		try {
+//			getCombinationOfhead(paths);
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
+
+		makeRoundedCorner1(paths.get(0),"/Users/smkk/image/2.png","png",1000);
 	}
 
 	public static InputStream getCombinationOfhead(List<String> paths)
@@ -674,7 +677,9 @@ public class ImageUtils {
 		}
 		for (int i = 0; i < paths.size(); i++) {
 			BufferedImage resize2 = resize2(paths.get(i), w, h, true);
-			bufferedImages.add(resize2);
+			if(null != resize2){
+				bufferedImages.add(resize2);
+			}
 		}
 		// BufferedImage.TYPE_INT_RGB可以自己定义可查看API
 		BufferedImage outImage = new BufferedImage(width, height,
@@ -683,7 +688,7 @@ public class ImageUtils {
 		Graphics g = outImage.getGraphics();
 		Graphics2D g2d = (Graphics2D) g;
 		// 设置背景色透明
-		g2d.setBackground(new Color(255, 255,255));
+		g2d.setBackground(new Color(214, 214,214));
 //		outImage = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
 //		g2d.dispose();
 //		g2d = outImage.createGraphics();
@@ -795,37 +800,33 @@ public class ImageUtils {
 
 			// 需要改变颜色的话在这里绘上颜色。可能会用到AlphaComposite类
 		}
+//		RoundRectangle2D rect=new RoundRectangle2D.Double(0,0,width,height,20,20);
+//		path.append(rect,false);
+//		g2.setClip(path);
+//		g2.drawImage(image,0,0,null);
+
+//		BufferedImage bufferedImage = makeRoundedCorner(outImage,100);
+
 //        new File(dir + "groupPicture" + File.separatorChar
 //              + groupId.substring(0, 4) + File.separatorChar + groupId+".jpg")
 //        String outPath = dir+groupId+".jpg";
-		String dir = "/Users/smkk/image";
-		String groupId = "images";
-//		StringBuffer outPath = new StringBuffer().append(dir)
-//				.append("groupPicture")
-//				.append(File.separatorChar)
-//				.append(groupId.substring(0, 4))
-//				.append(File.separatorChar)
-//				.append(paths.size()+"_smkk11").append(".jpg");
+//		String dir = "/Users/smkk/image";
+//		String groupId = "images";
 
-//		String format = "JPG";
-//		File file = new File(outPath.toString());
-//		if(!file.exists()){
-//			file.mkdirs();
-//		}
-
-		File file = File.createTempFile(UUID.randomUUID().toString(),".png");
+//		File file = File.createTempFile(UUID.randomUUID().toString(),".png");
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();//存储图片文件byte数组
 		ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
-		ImageIO.write(outImage, "JPG", file); //图片写入到 ImageOutputStream
+		ImageIO.write(outImage, "JPG", bos); //图片写入到 ImageOutputStream
 
-		FileInputStream fis = new FileInputStream(file);
+//		FileInputStream fis = new FileInputStream(file);
+		InputStream is = new ByteArrayInputStream(bos.toByteArray());
 
 //		InputStream input = new ByteArrayInputStream(bos.toByteArray());
 //		InputStream inputTmp = new ByteArrayInputStream(bos.toByteArray());
 //		ByteArrayOutputStream os = new ByteArrayOutputStream();
 //		ImageIO.write(outImage, "JPG", os);
 //		InputStream is = new ByteArrayInputStream(os.toByteArray());
-		return fis;
+		return is;
 //		return ImageIO.write(outImage, format, file);
 	}
 
@@ -844,7 +845,15 @@ public class ImageUtils {
 //            System.out.println("图片缩放"+filePath);
 			BufferedImage bi =null;
 			if(filePath.indexOf("http://")==0){
-				bi = ImageIO.read(new URL(filePath));
+				try {
+					bi = ImageIO.read(new URL(filePath));
+				}catch (Exception e){
+					e.printStackTrace();
+					ClassPathResource resource = new ClassPathResource("static/image/avatar_default.png");
+					File file = resource.getFile();
+					bi = ImageIO.read(file);
+//					return null;
+				}
 			}else{
 				bi = ImageIO.read(new File(filePath));
 			}
@@ -925,6 +934,51 @@ public class ImageUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static BufferedImage makeRoundedCorner(BufferedImage image, int cornerRadius) {
+		try {
+			int w = image.getWidth();
+			int h = image.getHeight();
+			BufferedImage output = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2 = output.createGraphics();
+			output = g2.getDeviceConfiguration().createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+			g2.dispose();
+			g2 = output.createGraphics();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.fillRoundRect(0, 0,w, h, cornerRadius, cornerRadius);
+			g2.setComposite(AlphaComposite.SrcIn);
+			g2.drawImage(image, 0, 0, w, h, null);
+			g2.dispose();
+			return output;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String makeRoundedCorner1(String srcImageFile, String result, String type, int cornerRadius) {
+		try {
+//			bi = ImageIO.read(new URL(filePath));
+			BufferedImage image = ImageIO.read(new URL(srcImageFile));
+			int w = image.getWidth();
+			int h = image.getHeight();
+			BufferedImage output = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2 = output.createGraphics();
+			output = g2.getDeviceConfiguration().createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+			g2.dispose();
+			g2 = output.createGraphics();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.fillRoundRect(0, 0,w, h, cornerRadius, cornerRadius);
+			g2.setComposite(AlphaComposite.SrcIn);
+			g2.drawImage(image, 0, 0, w, h, null);
+			g2.dispose();
+			ImageIO.write(output, type, new File(result));
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
