@@ -1074,7 +1074,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         try{
             SnsGroupMembers snsGroupMembers = this.snsGroupMembersMapper.findByUserIdAndGroupId(userid,groupId+"");
-            if(snsGroupMembers == null){
+            if(snsGroupMembers == null || snsGroupMembers.getStatus() != 1){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_919,Constant.RTNINFO_SYS_919);
             }
             baseResp.setData(snsGroupMembers);
