@@ -494,6 +494,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
             public void run() {
                 try{
 //                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+                    logger.info("groupList init avatar start and groupId={}",groupId);
                     List<String> avatars = new ArrayList<>();
                     for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
                         avatars.add(OssConfig.url + snsGroupMembers.getAvatar());

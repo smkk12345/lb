@@ -674,7 +674,9 @@ public class ImageUtils {
 		}
 		for (int i = 0; i < paths.size(); i++) {
 			BufferedImage resize2 = resize2(paths.get(i), w, h, true);
-			bufferedImages.add(resize2);
+			if(null != resize2){
+				bufferedImages.add(resize2);
+			}
 		}
 		// BufferedImage.TYPE_INT_RGB可以自己定义可查看API
 		BufferedImage outImage = new BufferedImage(width, height,
@@ -844,7 +846,12 @@ public class ImageUtils {
 //            System.out.println("图片缩放"+filePath);
 			BufferedImage bi =null;
 			if(filePath.indexOf("http://")==0){
-				bi = ImageIO.read(new URL(filePath));
+				try {
+					bi = ImageIO.read(new URL(filePath));
+				}catch (Exception e){
+					e.printStackTrace();
+					return null;
+				}
 			}else{
 				bi = ImageIO.read(new File(filePath));
 			}
