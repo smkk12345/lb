@@ -2563,11 +2563,14 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
                 {
+                    TimeLineDetail timeLineDetail = timeLineDetailDao.select(Long.parseLong(impid));
+                    String suserid = timeLineDetail.getUser().getId();
                     Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
+                    logger.info("selectImproveBusinessInfoselectByRankid businessid={} and return rank={}",businessid,rank.getRankbrief());
                     if (null != rank){
                         int sortnum = 0;
                         RankMembers rankMembers = this.rankMembersMapper.
-                                selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+                                selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(suserid));
                         if("0".equals(rank.getIsfinish())){
 
                         }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
