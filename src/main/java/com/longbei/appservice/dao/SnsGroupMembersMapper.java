@@ -33,7 +33,8 @@ public interface SnsGroupMembersMapper {
      * @param groupId
      * @return
      */
-    SnsGroupMembers findByUserIdAndGroupId(@Param("userId") Long userId,@Param("groupId") String groupId);
+    SnsGroupMembers findByUserIdAndGroupId(@Param("userId") Long userId,
+                                           @Param("groupId") String groupId);
 
     /**
      * 修改群组成员信息

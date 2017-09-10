@@ -1205,18 +1205,22 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 ossService.putObject(OssConfig.bucketName,key,inputStream);
                 snsGroup.setAvatar(key);
                 groupList.add(snsGroup);
+                this.iRongYunService.createGroup(mainGroupUserid+","+managerid,Long.parseLong(groupId),tempGroupName);
             }
+//            this.iRongYunService.createGroup(mainGroupUserid+","+managerid+,groupId,);
 
-            BaseResp<Object> ryBaseResp = this.iRongYunService.batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),groupname,managerid.toString());
-            if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
+//            BaseResp<Object> ryBaseResp = this.iRongYunService.
+//                    batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),
+//                            groupname,managerid.toString());
+//            if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
                 //批量插入到数据库
-                int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
-                if(insertRow > 0){
-                    int temp =this.snsGroupMembersMapper.batchInsertGroupMembersBySnsGroupMember(snsGroupMembersList);
-                    baseResp.setData(resultList);
-                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
-                }
+            int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
+            if(insertRow > 0){
+                int temp =this.snsGroupMembersMapper.batchInsertGroupMembersBySnsGroupMember(snsGroupMembersList);
+                baseResp.setData(resultList);
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             }
+//            }
         }catch(Exception e){
             logger.error("batch create group mainGroupUserid:{} groupname:{} errorMsg:{}",mainGroupUserid,groupname,e);
         }
