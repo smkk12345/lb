@@ -6,6 +6,7 @@ import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveGiftDetail;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixb on 2017/8/11.
@@ -53,7 +54,7 @@ public interface LiveGiftService {
      * 查询用户收到的各礼物类型总数
      * @param userid
      */
-    BaseResp<List<LiveGiftDetail>> selectGiftSumList(long userid);
+    BaseResp<List<Map<String,String>>> selectGiftSumList(long userid);
 
     BaseResp<List<LiveGiftDetail>> selectGiftList(long userid,Integer startNum,Integer endNum);
 

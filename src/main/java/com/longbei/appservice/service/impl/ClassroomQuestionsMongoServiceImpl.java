@@ -471,7 +471,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
     private void initQuestionsUserInfoByUserid(ClassroomQuestions classroomQuestions, String userid){
         AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(classroomQuestions.getUserid()));
         if(null != appUserMongoEntity){
-			if(StringUtils.isNotEmpty(userid)){
+			if(StringUtils.isNotEmpty(userid) && !userid.toString().equals(Constant.VISITOR_UID)){
 				this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
 			}
 			classroomQuestions.setAppUserMongoEntityUserid(appUserMongoEntity);

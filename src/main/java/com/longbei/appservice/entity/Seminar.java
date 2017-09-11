@@ -53,6 +53,10 @@ public class Seminar implements Serializable {
      */
     private Date updatetime;
 
+    /**
+     * css文件
+     */
+    private String cssfile;
 
     /**
      * 专题所关联模块
@@ -63,6 +67,14 @@ public class Seminar implements Serializable {
      * 浏览量
      */
     private Long pageview;
+
+    public String getCssfile() {
+        return cssfile;
+    }
+
+    public void setCssfile(String cssfile) {
+        this.cssfile = cssfile;
+    }
 
     public Long getPageview() {
         return pageview;

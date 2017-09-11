@@ -303,10 +303,12 @@ public class LiveController {
             }
             classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
             Double durations = Double.parseDouble(duration)*1000;
+            Integer dur = durations.intValue();
             logger.info("courseid={},roomid={},filekey={},durations={}",
                     liveInfo.getCourseid().intValue(),liveInfo.getClassroomid(),filekey,durations);
             classroomCoursesService.updateMedia(liveInfo.getCourseid().intValue(),
-                    liveInfo.getClassroomid(),filekey,durations.longValue()+"");
+                    liveInfo.getClassroomid(),filekey,dur.toString());
+            liveInfoMongoService.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
         }catch (Exception e){
             logger.error("updateLiveMedia" ,e);
         }

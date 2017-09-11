@@ -14,7 +14,7 @@ public class ClassroomCourses implements Serializable {
 
     private String coursetitle;//课程标题
 
-    private Integer coursesort;//课程序号
+    private Integer coursesort;//课程序号   递增排序
 
     private String coursetype;//coursetype 课程类型.  0 不收费 1 收费
 

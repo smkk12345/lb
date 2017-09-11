@@ -22,6 +22,7 @@ import com.longbei.appservice.service.api.outernetservice.IJPushService;
 import com.longbei.appservice.service.api.outernetservice.IRongYunService;
 import com.longbei.appservice.service.api.userservice.IUserBasicService;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -726,21 +727,25 @@ public class UserServiceImpl implements UserService {
 				if (StringUtils.isBlank(noRegisterLimit)) {
 					updateCase.setNoRegisterLimit(telNumbers);
 				} else {
-					updateCase.setNoRegisterLimit(noRegisterLimit + "," + telNumbers);
+					noRegisterLimit = noRegisterLimit + "," + telNumbers;
+					updateCase.setNoRegisterLimit(noRegisterLimit);
 				}
 
 				if (StringUtils.isBlank(noSwitchLogin)) {
 					updateCase.setNoSwitchLogin(telNumbers);
 				} else {
-					updateCase.setNoSwitchLogin(noSwitchLogin + "," + telNumbers);
+					noSwitchLogin = noSwitchLogin + "," + telNumbers;
+					updateCase.setNoSwitchLogin(noSwitchLogin);
 				}
 				userSpecialcaseService.updateUserSpecialcase(updateCase);
 			} else {
+				noSwitchLogin = telNumbers;
 				updateCase.setNoSwitchLogin(telNumbers);
 				updateCase.setNoRegisterLimit(telNumbers);
 				userSpecialcaseService.insertSelective(updateCase);
 			}
-
+			String[] s = noSwitchLogin.split(",");
+			CollectionUtils.addAll(SysRulesCache.userSpecialcaseMobileSet, s);
 		} catch (Exception e) {
 			logger.error("updateUserSpecialcase is error:{}", e);
 		}
@@ -1167,6 +1172,13 @@ public class UserServiceImpl implements UserService {
 			baseResp = checkSms(username,randomcode);
 			if(baseResp.getCode()!=Constant.STATUS_SYS_00){
 				return baseResp;
+			}
+			BaseResp baseResp1 = sysSensitiveService.getSensitiveWordSet(nickname);
+			if(!ResultUtil.isSuccess(baseResp1)){
+				if(StringUtils.isBlank(nickname)){
+					nickname = getRandomNickName();
+				}
+				nickname = getSingleNickName(nickname);
 			}
 
 			baseResp = registerbasic(username,password,inviteuserid,deviceindex,devicetype,avatar,nickname);
@@ -2129,6 +2141,34 @@ public class UserServiceImpl implements UserService {
 	public UserInfo getUserInfoByUserName(String userPhone) {
 		UserInfo userInfo = this.userInfoMapper.getByUserName(userPhone);
 		return userInfo;
+	}
+
+	/**
+	 * 根据userid获取用户的基本信息
+	 * @param userid
+	 * @return
+     */
+	@Override
+	public BaseResp<Map<String, Object>> getUserInfoByUserId(Long userid) {
+		logger.info("get userinfo by userid userid:{}",userid);
+		BaseResp<Map<String,Object>> baseResp = new BaseResp<Map<String,Object>>();
+		try{
+			AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(userid.toString());
+			if(appUserMongoEntity == null){
+				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+			}
+			Map<String,Object> resultMap = new HashMap<String,Object>();
+			resultMap.put("userid",userid);
+			resultMap.put("username",appUserMongoEntity.getUsername());
+			resultMap.put("nickname",appUserMongoEntity.getNickname());
+			resultMap.put("avatar",appUserMongoEntity.getAvatar());
+			resultMap.put("sex",appUserMongoEntity.getSex());
+			baseResp.setData(resultMap);
+			return baseResp.initCodeAndDesp();
+		}catch(Exception e){
+			logger.info("get userinfo by userid userid:{} errorMsg:{}",userid,e);
+		}
+		return baseResp;
 	}
 
 

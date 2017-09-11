@@ -33,7 +33,8 @@ public interface SnsGroupMembersMapper {
      * @param groupId
      * @return
      */
-    SnsGroupMembers findByUserIdAndGroupId(@Param("userId") Long userId,@Param("groupId") String groupId);
+    SnsGroupMembers findByUserIdAndGroupId(@Param("userId") Long userId,
+                                           @Param("groupId") String groupId);
 
     /**
      * 修改群组成员信息
@@ -73,7 +74,12 @@ public interface SnsGroupMembersMapper {
      * @param status
      * @return
      */
-    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,@Param("status") Integer status,@Param("keyword")String keyword,@Param("noQueryUserId") Long noQueryUserId,@Param("startNum")Integer startNum,@Param("pageSize") Integer pageSize);
+    List<SnsGroupMembers> groupMemberList(@Param("groupId") String groupId,
+                                          @Param("status") Integer status,
+                                          @Param("keyword")String keyword,
+                                          @Param("noQueryUserId") Long noQueryUserId,
+                                          @Param("startNum")Integer startNum,
+                                          @Param("pageSize") Integer pageSize);
 
     /**
      * 查询群成员数量

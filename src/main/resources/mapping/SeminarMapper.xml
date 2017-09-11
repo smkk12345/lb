@@ -12,10 +12,12 @@
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="pageview" property="pageview" jdbcType="BIGINT" />
+    <result column="cssfile" property="cssfile" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List" >
     id, seminarid, seminarpic, seminartitle, sharebrief, seminartarget, createuserid, 
-    createtime, updatetime,pageview
+    createtime, updatetime,pageview,cssfile
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -108,6 +110,9 @@
       <if test="updatetime != null" >
         updatetime,
       </if>
+      <if test="cssfile != null" >
+        cssfile,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -137,6 +142,9 @@
       <if test="updatetime != null" >
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="cssfile != null" >
+        #{cssfile,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.Seminar" >
@@ -163,6 +171,9 @@
       <if test="updatetime != null" >
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="cssfile != null" >
+        cssfile = #{cssfile,jdbcType=VARCHAR},
+      </if>
     </set>
     where seminarid = #{seminarid,jdbcType=INTEGER}
   </update>
@@ -175,7 +186,8 @@
       seminartarget = #{seminartarget,jdbcType=VARCHAR},
       createuserid = #{createuserid,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      cssfile = #{cssfile,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

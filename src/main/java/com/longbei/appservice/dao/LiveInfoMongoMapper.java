@@ -41,7 +41,7 @@ public class LiveInfoMongoMapper {
 	 * 根据liveid查询
 	 */
 	public LiveInfo selectLiveInfoByLiveid(long liveid){
-		Criteria criteria  = Criteria.where("liveid").is(liveid).and("isdel").is("0");
+		Criteria criteria  = Criteria.where("liveid").is(liveid);
 		Query query = Query.query(criteria);
 		LiveInfo liveInfo = null;
 		try {

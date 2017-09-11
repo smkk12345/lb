@@ -1107,7 +1107,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 		if(springJedisDao.hasKey(Constant.USER_REMARK_REDIS_KEY + currentUserId)){
 			//获取昵称
-			return springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,friendId);
+			String nickname = springJedisDao.getHashValue(Constant.USER_REMARK_REDIS_KEY + currentUserId,friendId);
+			if(StringUtils.isBlank(nickname)){
+				AppUserMongoEntity appUserMongoEntity = this.userMongoDao.getAppUser(friendId);
+				return appUserMongoEntity != null?appUserMongoEntity.getNickname():null;
+			}
+			return nickname;
 		}
 		Map<String,String> map = this.initFriendRemarkRedis(currentUserId);
 		if(map.containsKey(friendId)){

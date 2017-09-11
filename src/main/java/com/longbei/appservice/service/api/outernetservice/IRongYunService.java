@@ -135,5 +135,6 @@ public interface IRongYunService {
     @RequestMapping(value="/rongyun/batchCreateGroup",method =RequestMethod.POST )
     BaseResp<Object> batchCreateGroup(@RequestParam("userId") Long userId,
                                       @RequestParam("groupIds") String groupIds,
-                                      @RequestParam("groupNames")String groupNames);
+                                      @RequestParam("groupNames")String groupNames,
+                                      @RequestParam("otheruserids")String otheruserids);
 }

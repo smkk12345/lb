@@ -38,6 +38,8 @@ public class SnsGroup implements Serializable {
 
     private String hasjoin;//0 未加入  1 已加入
 
+    private String avatar;//群头像
+
     /**
      * 
      * @return id 
@@ -232,5 +234,13 @@ public class SnsGroup implements Serializable {
 
     public String getHasjoin() {
         return hasjoin;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }

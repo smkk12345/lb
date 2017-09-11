@@ -88,5 +88,4 @@ public class SysRulesCache {
      */
     public static Set<String> userSpecialcaseMobileSet = new HashSet<>();
 
-
 }
