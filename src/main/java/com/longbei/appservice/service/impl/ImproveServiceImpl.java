@@ -3008,7 +3008,7 @@ public class ImproveServiceImpl implements ImproveService{
         String count = springJedisDao.get("ImpLFD"+improveid);
         if (StringUtils.isBlank(count)){
             count = improveMongoDao.selectTotalCountImproveLFD(improveid)+"";
-            springJedisDao.set("ImpLFD"+improveid,count,5);
+            springJedisDao.set("ImpLFD"+improveid,count,10);
         }
         return Long.parseLong(count);
     }
@@ -3024,7 +3024,7 @@ public class ImproveServiceImpl implements ImproveService{
                 improveLFD.setVcertification(appUser.getVcertification());
             }
             improveLFDstr = JSON.toJSONString(improveLFDs);
-            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,5);
+            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,10);
             return improveLFDs;
         }
         List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
