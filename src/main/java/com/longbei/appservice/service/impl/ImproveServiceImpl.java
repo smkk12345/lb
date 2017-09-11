@@ -1569,6 +1569,8 @@ public class ImproveServiceImpl implements ImproveService{
         Long s1 = System.currentTimeMillis();
         Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         Long s2 = System.currentTimeMillis();
+        logger.info("initset time={},initcollect time={}",
+                s1-s,s2-s1);
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
