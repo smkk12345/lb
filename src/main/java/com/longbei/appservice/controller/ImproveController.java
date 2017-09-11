@@ -1036,6 +1036,9 @@ public class ImproveController {
                                                       String businessid,
                                                       String userid){
         BaseResp<Object> baseResp = new BaseResp<>();
+        if (StringUtils.hasBlankParams(userid,businesstype,businesstype,impid)){
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
         try {
             baseResp = improveService.selectImproveBusinessInfo(impid,businesstype,businessid,userid);
         } catch (Exception e) {
