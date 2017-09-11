@@ -668,6 +668,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 		}
 		return classroom;
 	}
+	
+
+	@Override
+	public Classroom selectByCid(long classroomid) {
+		Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+		return classroom;
+	}
+
 
 	@Override
 	public BaseResp<Object> updateByClassroomid(Classroom record) {

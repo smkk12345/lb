@@ -45,6 +45,9 @@ public class ClassroomApiController {
 	private ImproveService improveService;
 	@Autowired
 	private ClassroomQuestionsMongoService classroomQuestionsMongoService;
+	@Autowired
+	private ClassroomChapterService classroomChapterService;
+	
 //	@Autowired
 //	private UserCardService userCardService;
 	
@@ -343,7 +346,7 @@ public class ClassroomApiController {
         	return baseResp;
         }
   		try {
-  			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+  			Classroom classroom = classroomService.selectByCid(Long.parseLong(classroomid));
   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
   			baseResp.setData(classroom);
         } catch (Exception e) {
@@ -783,6 +786,7 @@ public class ClassroomApiController {
          }
    		try {
    			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), 0, 15);
+//   			baseResp = classroomChapterService.selectChapterByCid(Long.parseLong(classroomid), 0, 15);
    		} catch (Exception e) {
    			logger.error("coursesList classroomid = {}", classroomid, e);
    		}
