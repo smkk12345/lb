@@ -88,8 +88,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserInterestsService userInterestsService;
 	@Autowired
-	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-	@Autowired
 	private QueueMessageSendService queueMessageSendService;
 	@Autowired
 	private UserBehaviourService userBehaviourService;
@@ -121,6 +119,9 @@ public class UserServiceImpl implements UserService {
 //	private SysProtectnamesService sysProtectnamesService;
 	@Autowired
 	private UserSpecialcaseService userSpecialcaseService;
+
+	@Autowired
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -580,7 +581,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BaseResp<Object> registerbasic(String username, String password,String inviteuserid,
 			String deviceindex,String devicetype,String avatar,String nickname) {
-		long userid = idGenerateService.getUniqueIdAsLong();
 
 		//验证设备号注册
 		if (!StringUtils.isBlank(deviceindex)){
@@ -589,6 +589,7 @@ public class UserServiceImpl implements UserService {
 				return reseResp;
 			}
 		}
+		long userid = idGenerateService.getUniqueIdAsLong();
 
 		if(StringUtils.isBlank(nickname)){
 			nickname = getRandomNickName();
@@ -760,7 +761,7 @@ public class UserServiceImpl implements UserService {
 		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
 		while (null != app||SysRulesCache.sysProtectNames.contains(nickname)){
 			nickname = nickname + RandomUtils.getRandomCode(1,10000);
-			app = userMongoDao.getAppUserByNickName(nickname);
+//			app = userMongoDao.getAppUserByNickName(nickname);
 		}
 		return nickname;
 	}
@@ -871,23 +872,29 @@ public class UserServiceImpl implements UserService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<Object> checkSms(String mobile, String random,String deviceindex,String devicetype) {
+	public BaseResp<Object> checkSms(final String mobile, String random, final String deviceindex, String devicetype) {
 		BaseResp<Object> baseResp = checkSms(mobile,random);
 		if(StringUtils.isBlank(deviceindex)){
 			return baseResp;
 		}
 		if(ResultUtil.isSuccess(baseResp)){
-			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
+			threadPoolTaskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
 //			UserInfo userInfo = userInfoMapper.getByUserName(mobile);
-			try{
-				if(null != appUserMongoEntity){
-					userInfoMapper.clearOtherDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
-					userInfoMapper.updateIndexDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
-				}
+					try{
+						if(null != appUserMongoEntity){
+							userInfoMapper.clearOtherDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
+							userInfoMapper.updateIndexDevice(Long.parseLong(appUserMongoEntity.getId()), deviceindex);
+						}
 //				userInfoMapper.updateDeviceIndexByUserName(userInfo);
-			}catch(Exception e){
-				logger.error("updateDeviceIndexByUserName error and msg={}",e);
-			}
+					}catch(Exception e){
+						logger.error("updateDeviceIndexByUserName error and msg={}",e);
+					}
+				}
+			});
+
 		}
 		return baseResp;
 	}
