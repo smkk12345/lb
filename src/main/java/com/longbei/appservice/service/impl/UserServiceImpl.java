@@ -1019,6 +1019,9 @@ public class UserServiceImpl implements UserService {
 			return baseResp.initCodeAndDesp();
 		}
 		//如果是特权手机号，不用切换
+		if(username.startsWith("26665")){
+			return baseResp.initCodeAndDesp();
+		}
 		if(SysRulesCache.userSpecialcaseMobileSet.contains(username)){
 			return baseResp.initCodeAndDesp();
 		}
