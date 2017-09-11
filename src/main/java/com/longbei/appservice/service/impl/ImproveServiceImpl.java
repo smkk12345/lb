@@ -1562,14 +1562,20 @@ public class ImproveServiceImpl implements ImproveService{
         logger.info("select time line time={}",w-l);
         List<Improve> improves = new ArrayList<>();
         Long uid = Long.parseLong(userid);
+        Long s = System.currentTimeMillis();
         Set<String> friendids = this.userRelationService.getFriendIds(uid);
         Set<String> fansIds = this.userRelationService.getFansIds(uid);
         Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
+        Long s1 = System.currentTimeMillis();
         Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
+        Long s2 = System.currentTimeMillis();
         for (int i = 0; i < timeLines.size() ; i++){
             try {
                 TimeLine timeLine = timeLines.get(i);
+                Long s4 = System.currentTimeMillis();
                 TimeLineDetail timeLineDetail = timeLine.getTimeLineDetail();
+                Long s5 = System.currentTimeMillis();
+                logger.info("getTimeLineDetail time={}",s5-s4);
                 if (null == timeLineDetail){
                     continue;
                 }
@@ -1580,8 +1586,8 @@ public class ImproveServiceImpl implements ImproveService{
                 improve.setFilekey(timeLineDetail.getFileKey());
                 improve.setSourcekey(timeLineDetail.getSourcekey());
                 improve.setItype(timeLineDetail.getItype());
-                improve.setLikes(getLikeFromRedis(String.valueOf(timeLineDetail.getImproveId()),
-                        timeLineDetail.getBusinessid()+"",timeLineDetail.getBusinesstype()));
+//                improve.setLikes(getLikeFromRedis(String.valueOf(timeLineDetail.getImproveId()),
+//                        timeLineDetail.getBusinessid()+"",timeLineDetail.getBusinesstype()));
                 improve.setFlowers(timeLineDetail.getFlowers());
                 improve.setIspublic(timeLineDetail.getIspublic());
                 improve.setPicattribute(timeLineDetail.getPicattribute());
@@ -1602,11 +1608,17 @@ public class ImproveServiceImpl implements ImproveService{
 
                 improve.setAppUserMongoEntity(user);
                 if(!Constant.VISITOR_UID.equals(userid)){
+                    Long s6 = System.currentTimeMillis();
                     initUserRelateInfo(uid,timeLineDetail.getUser(),friendids,fansIds);
+                    Long s7 = System.currentTimeMillis();
                     initImproveInfo(improve,uid);
+                    Long s8 = System.currentTimeMillis();
                     if(userCollectImproveIds.contains(improve.getImpid().toString())){
                         improve.setHascollect("1");
                     }
+                    Long s9 = System.currentTimeMillis();
+                    logger.info("initUserRelateInfo time={},initImproveInfo time={},userCollectImproveIds={}",
+                            s7-s6,s8-s7,s9-s8);
                 }
                 //初始化 赞 花 数量
 //                initImproveLikeAndFlower(improve);
@@ -3399,23 +3411,23 @@ public class ImproveServiceImpl implements ImproveService{
         //初始化赞数
         improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
                 String.valueOf(improve.getBusinessid()),improve.getBusinesstype()));
-//        Long s = System.currentTimeMillis();
+        Long s = System.currentTimeMillis();
         //初始化评论数
         initImproveCommentInfo(improve);
-//        long s1 = System.currentTimeMillis();
+        long s1 = System.currentTimeMillis();
         //初始化点赞，送花，送钻简略信息
 
         initLikeFlowerDiamondInfo(improve);
-//        long s2 = System.currentTimeMillis();
+        long s2 = System.currentTimeMillis();
         //初始化是否 点赞 送花 送钻 收藏
         initIsOptionForImprove(userid != null?userid+"":null,improve);
-//        long s3 = System.currentTimeMillis();
+        long s3 = System.currentTimeMillis();
         //初始化超级话题列表
         initTopicInfo(improve);
-//        long s4 = System.currentTimeMillis();
-//        logger.info("init comment time=" + (s1-s) +
-//                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
-//                "");
+        long s4 = System.currentTimeMillis();
+        logger.info("init comment time=" + (s1-s) +
+                "; initlikeflowers time = " + (s2-s1) + "; init isoption time=" + (s3-s2) +
+                "");
     }
 
 
