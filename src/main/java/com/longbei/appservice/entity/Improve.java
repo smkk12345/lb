@@ -77,7 +77,7 @@ public class Improve implements Serializable{
     //批复列表
     protected ReplyImprove replyImprove;
     
-    protected String isreply; //是否已批复  0：未批复  1：已批复  2:不显示未批复(只有教室老师有批复权限)
+    protected String isreply; //是否已批复  0：未批复  1：已批复  
 
     private Integer complaincount; //投诉次数
 
