@@ -56,7 +56,7 @@ public class Classroom implements Serializable {
     
     private String isrecommend; //isrecommend是否推荐。0 - 没有推荐 1 - 推荐   默认0
     
-    private String isup; // 0 - 未发布 。1 --已发布    默认0
+    private String isup; //isup 0 - 未发布 。1 --已发布    默认0
     
     private String cusername; //创建人手机号
     
