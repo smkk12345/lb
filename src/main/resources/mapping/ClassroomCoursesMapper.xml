@@ -577,6 +577,7 @@
     and
     chapterid = #{chapterid}
     and isup = 1 
+    order by coursesort desc, createtime desc 
   </select>
 
   <update id="updateChapterIdByCid" >

@@ -682,6 +682,10 @@ public class ClassroomServiceImpl implements ClassroomService {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
+			//isup 0 - 未发布 。1 --已发布    默认0
+			if("1".equals(record.getIsup())){
+				record.setIsfree(classroom.getIsfree());
+			}
 			boolean temp = update(record);
 			if (temp) {
 				if(!classroom.getIsfree().equals(record.getIsfree())){
