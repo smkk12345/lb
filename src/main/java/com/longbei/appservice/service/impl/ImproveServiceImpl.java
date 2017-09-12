@@ -1069,25 +1069,25 @@ public class ImproveServiceImpl implements ImproveService{
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
-  				if(!isIos(version)){
-                    if(!"1".equals(isreply)){
-                        if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
-                            //判断当前用户是否是老师
-                            if(userCard.getUserid() != Long.parseLong(userid)){
-                                isreply = "2";
-                            }
-                        }
-                    }
-                    if(!StringUtils.isBlank(userid)){
-                        if(userid.toString().equals(Constant.VISITOR_UID)){
-                            isreply = "2";
-                        }
-                    }else{
-                        isreply = "2";
-                    }
-                }else {
-                    isreply = "0";
-                }
+//  				if(!isIos(version)){
+//                    if(!"1".equals(isreply)){
+//                        if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
+//                            //判断当前用户是否是老师
+//                            if(userCard.getUserid() != Long.parseLong(userid)){
+//                                isreply = "2";
+//                            }
+//                        }
+//                    }
+//                    if(!StringUtils.isBlank(userid)){
+//                        if(userid.toString().equals(Constant.VISITOR_UID)){
+//                            isreply = "2";
+//                        }
+//                    }else{
+//                        isreply = "2";
+//                    }
+//                }else {
+//                    isreply = "0";
+//                }
   				improve.setIsreply(isreply);
   			}
   		}
@@ -1625,8 +1625,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author:luye
      * @date update 02月10日
-     */
-    private BaseResp insertImproveFilter(String businessid,String userid,String improvetype){
+     */ private BaseResp insertImproveFilter(String businessid,String userid,String improvetype){
         BaseResp baseResp = new BaseResp();
         switch (improvetype){
             case Constant.IMPROVE_SINGLE_TYPE:
@@ -2639,18 +2638,6 @@ public class ImproveServiceImpl implements ImproveService{
                         replyImprove.setList(list);
                         isreply = "1";
                         improve.setReplyImprove(replyImprove);
-                    }
-                    if(!"1".equals(isreply)){
-                        if(null != userCard){
-                            //判断当前用户是否是老师
-                            if(!StringUtils.isBlank(userid)){
-                                if(userCard.getUserid() != Long.parseLong(userid)){
-                                    isreply = "2";
-                                }
-                            }else{
-                                isreply = "2";
-                            }
-                        }
                     }
                     improve.setIsreply(isreply);
                     if (null != classroom){
