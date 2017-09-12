@@ -42,6 +42,8 @@ public interface ClassroomService {
 
 	Classroom selectByClassroomid(long classroomid);
 	
+	Classroom selectByCid(long classroomid);
+	
 	BaseResp<Object> updateByClassroomid(Classroom record);
 	
 	/**

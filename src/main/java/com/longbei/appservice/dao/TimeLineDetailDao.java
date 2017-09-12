@@ -4,10 +4,7 @@ package com.longbei.appservice.dao;/**
 
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.TimeLine;
-import com.longbei.appservice.entity.TimeLineDetail;
-import com.longbei.appservice.entity.UserImproveStatistic;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.impl.UserCheckinDetailImpl;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -72,6 +69,14 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Query query = new Query(criteria);
         Long count = mongoTemplate.count(query,TimeLineDetail.class);
         return count;
+    }
+
+    public TimeLineDetail select(Long improveId){
+        Criteria criteria = Criteria.where("improveId").is(improveId);
+
+        Query query = new Query(criteria);
+        TimeLineDetail timeLineDetail = mongoTemplate.findOne(query,TimeLineDetail.class);
+        return timeLineDetail;
     }
 
     public List<TimeLineDetail> selectRecommendImproveList(String brief,List<String> userids, int startno,
