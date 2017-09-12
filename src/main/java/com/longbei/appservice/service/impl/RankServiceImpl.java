@@ -2394,7 +2394,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(newRankAcceptAward.getAcceptdate() != null){
                 BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
             }
-
             resultMap.put("award",award);
             resultMap.put("rankMember",rankMember);
 
@@ -2402,7 +2401,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
-            logger.error("user accept award error userId:{} rankId:{} errorMsg:{}",userId,rankId,e);
+            logger.error("user accept award error userId:{} rankId:{} errorMsg:",userId,rankId,e);
             printExceptionAndRollBackTransaction(e);
         }
 
