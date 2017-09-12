@@ -69,6 +69,16 @@ public class ModuleContent implements Serializable {
 
     private Classroom classroom;
 
+    private TimeLineDetail timeLineDetail;
+
+    public TimeLineDetail getTimeLineDetail() {
+        return timeLineDetail;
+    }
+
+    public void setTimeLineDetail(TimeLineDetail timeLineDetail) {
+        this.timeLineDetail = timeLineDetail;
+    }
+
     public Classroom getClassroom() {
         return classroom;
     }
