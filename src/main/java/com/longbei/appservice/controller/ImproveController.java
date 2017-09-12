@@ -1016,7 +1016,7 @@ public class ImproveController {
         try {
             Map<String,Object> map = improveService.selectImproveOtherInfo(userid,improveId,impuserid);
             baseResp.initCodeAndDesp();
-            baseResp.setData(map);
+            baseResp.setExpandData(map);
         } catch (Exception e) {
             logger.error("selectIsCollectImprove userid:{} improveid:{}",userid,improveId);
         }
