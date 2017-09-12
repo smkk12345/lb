@@ -2,6 +2,7 @@ package com.longbei.appservice.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.longbei.appservice.common.BaseResp;
@@ -591,6 +592,16 @@ public interface ImproveService {
     boolean checkIsCollectImprove(String userid,String improveId);
     //功能同以上方法
     boolean checkIsCollectImprove(Long userid,Long improveId);
+
+
+    /**
+     * 获取用户和进步之间的关系 收藏，关注，好友
+     * @param userid
+     * @param impid
+     * @param impuserid
+     * @return
+     */
+    Map<String,Object> selectImproveOtherInfo(String userid, String impid, String impuserid);
 
     /**
      * 添加redis中用户收藏的进步

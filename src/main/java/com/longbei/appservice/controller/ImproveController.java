@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 进步操作
@@ -1002,19 +1003,20 @@ public class ImproveController {
 
 
     /**
-     * 是否收藏了该进步
+     * 是否收藏,关注，好友
      * @param userid  用户id
      * @param improveId  进步id
+     * @param impuserid 进步所属人的id
      * @return
      */
     @RequestMapping("iscollect")
     @ResponseBody
-    public BaseResp<Object> selectIsCollectImprove(String userid,String improveId){
+    public BaseResp<Object> selectIsCollectImprove(String userid,String improveId,String impuserid){
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-            boolean iscollect = improveService.checkIsCollectImprove(userid,improveId);
+            Map<String,Object> map = improveService.selectImproveOtherInfo(userid,improveId,impuserid);
             baseResp.initCodeAndDesp();
-            baseResp.setData(iscollect);
+            baseResp.setData(map);
         } catch (Exception e) {
             logger.error("selectIsCollectImprove userid:{} improveid:{}",userid,improveId);
         }
