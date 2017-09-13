@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImproveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.service.CommentLowerMongoService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMsgService;
+
+import net.sf.json.JSONObject;
 
 @Service("commentLowerMongoService")
 public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
@@ -52,11 +56,12 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 	public BaseResp<Object> insertCommentLower(final CommentLower commentLower) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			insert(commentLower);
+			final Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
+			
+			insert(comment.getImpid(), commentLower);
 			//修改主评论条数
 			updateCountSizeInsert(commentLower.getCommentid());
 			//添加评论消息
-			final Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 			if(null != comment){
 				//gtype 0:零散 1:目标中 2:榜中微进步  3:圈子中微进步 4.教室中微进步  5:龙群  6:龙级  7:订单  8:认证 9：系统 
 				//10：榜中  11 圈子中  12 教室中  13:教室批复作业
@@ -151,8 +156,15 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 //		}
 //	}
 	
-	private void insert(CommentLower commentLower){
-		commentLowerMongoDao.insertCommentLower(commentLower);
+	//删除缓存
+	@CacheEvict(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+	private void insert(String impid,CommentLower commentLower) throws Exception {
+		try {
+			commentLowerMongoDao.insertCommentLower(commentLower);
+		} catch (Exception e) {
+			logger.error("insert commentLower = {}", JSONObject.fromObject(commentLower).toString(), e);
+			throw e;
+		}
 	}
 	
 	/**
@@ -240,17 +252,17 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		try {
 			//修改当前主评论的条数
 			CommentLower commentLower = commentLowerMongoDao.selectCommentLowerByid(id);
+			Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 			if(null != commentLower){
 				//修改
 				updateCountSizeDelete(commentLower.getCommentid());
-				Comment comment = commentMongoDao.selectCommentByid(commentLower.getCommentid());
 				if(null != comment){
 					//删除评论消息
 					userMsgService.deleteCommentMsg(comment.getImpid(), comment.getBusinesstype(), 
 							comment.getBusinessid(), commentLower.getCommentid(), commentLower.getId());
 				}
 			}
-			deleteByid(id);
+			deleteByid(comment.getImpid(), id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("deleteCommentLower id = {}", id, e);
@@ -258,8 +270,15 @@ public class CommentLowerMongoServiceImpl implements CommentLowerMongoService {
 		return reseResp;
 	}
 	
-	private void deleteByid(String id){
-		commentLowerMongoDao.deleteCommentLower(id);
+	//删除缓存
+	@CacheEvict(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+	private void deleteByid(String impid, String id) throws Exception {
+		try {
+			commentLowerMongoDao.deleteCommentLower(id);
+		} catch (Exception e) {
+			logger.error("deleteByid id = {}", id, e);
+			throw e;
+		}
 	}
 
 	@Override

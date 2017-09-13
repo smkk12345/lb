@@ -34,6 +34,8 @@ public class Constant {
 	public static final String USER_FRIEND_REDIS_KEY = "userFriend";
 	//redis中 缓存用户收藏的所有进步id 前缀
 	public static final String USER_Collect_IMPROVE_REDIS_KEY = "userCollectImprove";
+	//redis中 缓存进步id评论总数  前缀
+	public static final String USER_COMMENT_IMPROVE_REDIS_KEY = "comImpid";
 
 	public static final String TOKEN_SIGN_USER = "appservice&token";
 
