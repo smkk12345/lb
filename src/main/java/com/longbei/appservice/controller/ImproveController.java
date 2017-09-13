@@ -2,10 +2,7 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
-import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ImpComplaintsService;
@@ -797,15 +794,20 @@ public class ImproveController {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @ResponseBody
     @RequestMapping(value = "select")
-    public BaseResp select(String userid, String impid, String businesstype, String businessid) {
+    public BaseResp select(String userid,String version, String impid, String businesstype, String businessid) {
         logger.info("userid={},impid={},businesstype={},businessid={}", userid,impid,businesstype,businessid);
         BaseResp baseResp = new BaseResp();
-        if (StringUtils.hasBlankParams(userid, impid)) {
+        if (StringUtils.hasBlankParams(userid, impid,version)) {
             return new BaseResp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         logger.info("inprove select userid={},impid={}", userid, impid);
         try {
-            baseResp = improveService.select(userid, impid, businesstype, businessid);
+            if(RequestUtils.isIos(version)){
+                baseResp = improveService.selectForIos(userid, impid, businesstype, businessid);
+            } else {
+                baseResp = improveService.select(userid, impid, businesstype, businessid);
+            }
+
             if(ResultUtil.isSuccess(baseResp)){
                 if(StringUtils.isBlank(businessid)){
                     businessid = "";
