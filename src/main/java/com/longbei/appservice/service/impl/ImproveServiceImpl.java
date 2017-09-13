@@ -3282,6 +3282,167 @@ public class ImproveServiceImpl implements ImproveService{
         return baseResp;
     }
 
+    @Override
+    public BaseResp selectForIos(String userid, String impid, String businesstype, String businessid) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try{
+            //Long impid,String userid,
+            //String businesstype,String businessid, String isdel,String ispublic
+            Improve improve = selectImprove(Long.parseLong(impid),userid,businesstype,businessid,"0",null);
+//            logger.info("select improve = {}", JSON.toJSON(improve).toString());
+            if(null != improve){
+                Map<String,Object> map = new HashedMap();
+                initImproveInfo(improve,userid != null?Long.parseLong(userid):null);
+                if(checkIsCollectImprove(userid,impid)){
+                    improve.setHascollect("1");
+                }
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
+                //获取好友昵称
+                if (StringUtils.isNotBlank(userid)){
+                    this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+                    initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+                }
+                improve.setAppUserMongoEntity(appUserMongoEntity);
+                //初始化目标，榜单，圈子，教室等信息
+                switch(businesstype){
+                    case Constant.IMPROVE_SINGLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_RANK_TYPE:
+                    {
+                        if("1".equals(improve.getIsbusinessdel())){
+                            break;
+                        }
+                        Rank rank = rankService.selectByRankid(improve.getBusinessid());
+                        if (null != rank){
+                            int sortnum = 0;
+                            RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
+                            if("0".equals(rank.getIsfinish())){
+
+                            }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
+                                long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
+                                sortnum = Integer.parseInt(s+"");
+                            }else{
+                                sortnum = rankMembers.getSortnum();
+                            }
+                            improve.setBusinessEntity(rank.getPtype(),
+                                    rank.getRanktitle(),
+                                    rank.getRankinvolved(),
+                                    rank.getStarttime(),
+                                    rank.getEndtime(),
+                                    sortnum,0,
+                                    rank.getRankphotos(),
+                                    rankMembers.getIcount());
+                        }
+
+                    }
+                    break;
+                    case Constant.IMPROVE_CLASSROOM_TYPE:
+                        Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
+                        UserCard userCard = null;
+                        if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
+                            userCard = userCardMapper.selectByCardid(classroom.getCardid());
+                        }
+                        map.put("isteacher",classroomService.isTeacher(userid,classroom));
+                        //获取教室微进步批复作业列表
+                        List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
+                        String commentid = "";
+                        String isreply = "0";
+                        if(null != replyList && replyList.size()>0){
+                            ImproveClassroom improveClassroom = replyList.get(0);
+                            AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
+                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(),
+                                    improveClassroom.getItype(),
+                                    improveClassroom.getBrief(),
+                                    improveClassroom.getPickey(),
+                                    improveClassroom.getUserid(),
+                                    improve.getBusinessid(),
+                                    Constant.IMPROVE_CLASSROOM_REPLY_TYPE,
+                                    improveClassroom.getCreatetime());
+                            replyImprove.setFilekey(improveClassroom.getFilekey());
+                            replyImprove.setDuration(improveClassroom.getDuration());
+                            replyImprove.setPicattribute(improveClassroom.getPicattribute());
+
+                            appUserMongo.setNickname(userCard.getDisplayname());
+                            appUserMongo.setAvatar(userCard.getAvatar());
+                            appUserMongo.setUserid(userCard.getUserid().toString());
+                            appUserMongo.setId(userCard.getUserid().toString());
+                            replyImprove.setAppUserMongoEntity(appUserMongo);
+                            commentid = improveClassroom.getImpid().toString();
+                            List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(),
+                                    improve.getBusinessid().toString(), "5", null, 2);
+                            if(null != list && list.size()>0){
+                                for (Comment comment : list) {
+                                    //初始化用户信息
+                                    initCommentUserInfoByUserid(comment, userid);
+                                }
+                            }
+                            replyImprove.setList(list);
+                            isreply = "1";
+                            improve.setReplyImprove(replyImprove);
+                        }
+                        if(!"1".equals(isreply)){
+                            if(null != userCard){
+                                //判断当前用户是否是老师
+                                if(!StringUtils.isBlank(userid)){
+                                    if(userCard.getUserid() != Long.parseLong(userid)){
+                                        isreply = "2";
+                                    }
+                                }else{
+                                    isreply = "2";
+                                }
+                            }
+                        }
+                        improve.setIsreply(isreply);
+                        if (null != classroom){
+                            String teacher = "";
+                            if(null != userCard){
+                                teacher += userCard.getDisplayname();
+                            }
+                            improve.setBusinessEntity(classroom.getPtype(),
+                                    classroom.getClasstitle(),
+                                    classroom.getClassphotos(),
+                                    classroom.getClassinvoloed(),
+                                    teacher, commentid);
+                        }
+                        break;
+                    case Constant.IMPROVE_CIRCLE_TYPE:
+                        break;
+                    case Constant.IMPROVE_GOAL_TYPE:
+                        UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
+                        if(null != userGoal){
+                            String photos = improve.getPickey();
+                            if(!StringUtils.isBlank(photos)){
+                                JSONArray jsonArray = JSONArray.fromObject(photos);
+                                if(jsonArray.size()>0){
+                                    photos = jsonArray.getString(0);
+                                }else
+                                    photos = null;
+                            }
+                            improve.setBusinessEntity(userGoal.getPtype(),
+                                    userGoal.getGoaltag(),
+                                    0,
+                                    userGoal.getCreatetime(),
+                                    null,
+                                    0,
+                                    userGoal.getIcount(),photos,userGoal.getIcount());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                baseResp.setExpandData(map);
+                baseResp.setData(improve);
+                return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+            } else {
+                baseResp.initCodeAndDesp(Constant.STATUS_SYS_401,Constant.RTNINFO_SYS_401);
+            }
+
+        }catch (Exception e){
+            logger.error("selectImprove error and impid={},userid={}",impid,userid,e);
+        }
+        return baseResp;
+    }
+
     /**
      * 初始化消息中用户信息 ------Userid
      */

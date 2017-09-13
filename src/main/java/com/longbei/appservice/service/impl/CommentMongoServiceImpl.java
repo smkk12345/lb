@@ -161,7 +161,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //			logger.error("insertMsg record = {}", JSONObject.fromObject(record).toString(), e);
 //		}
 //	}
-	
+
 	private void insert(Comment comment){
 		try {
 			commentMongoDao.insertComment(comment);

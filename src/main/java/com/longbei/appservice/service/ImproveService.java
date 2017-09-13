@@ -362,6 +362,19 @@ public interface ImproveService {
      */
     BaseResp select(String userid, String impid, String businesstype,String businessid);
 
+
+
+    /**
+     * 获取进步详情
+     * @param userid
+     * @param impid
+     * @param businesstype
+     * @param businessid
+     * @return
+     */
+    BaseResp selectForIos(String userid, String impid, String businesstype,String businessid);
+
+
     /**
      * 查询某个用户在business中的进步
      * @param curuserid 当前登录用户
