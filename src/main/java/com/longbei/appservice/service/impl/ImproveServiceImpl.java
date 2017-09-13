@@ -1047,12 +1047,12 @@ public class ImproveServiceImpl implements ImproveService{
 
     //批复信息
   	private void replyImp(List<Improve> improves, String userid, String classroomid,String version){
-  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+//  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //  		List<String> list = new ArrayList<>();
 //  		if(null != classroom){
 //  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //  		}
-  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
   		if(null != improves && improves.size()>0){
   			for (Improve improve : improves) {
   				String isreply = "0";
