@@ -3418,14 +3418,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("userRankMemberStatus",userRankMemberStatus);
 
             //加载评论数
-            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
-            if(commentResp.getCode() == 0){
-                resultMap.put("commentCount",commentResp.getData());
-                rank.setCommentCount(commentResp.getData());
-            }else{
-                resultMap.put("commentCount","0");
-                rank.setCommentCount(0);
-            }
+//            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
+//            if(commentResp.getCode() == 0){
+//                resultMap.put("commentCount",commentResp.getData());
+//                rank.setCommentCount(commentResp.getData());
+//            }else{
+//                resultMap.put("commentCount","0");
+//                rank.setCommentCount(0);
+//            }
 
             //计算入榜截止时间
             Date endJoinTime = rank.getEndtime();
